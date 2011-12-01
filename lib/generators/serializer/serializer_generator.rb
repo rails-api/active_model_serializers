@@ -1,6 +1,7 @@
 module Rails
   module Generators
     class SerializerGenerator < NamedBase
+      source_root File.expand_path("../templates", __FILE__)
       check_class_collision :suffix => "Serializer"
 
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
@@ -26,8 +27,9 @@ module Rails
       def parent_class_name
         if options[:parent]
           options[:parent]
-        elsif (n = Rails::Generators.namespace) && n.const_defined?(:ApplicationSerializer)
-          "ApplicationSerializer"
+        # Only works on 3.2
+        # elsif (n = Rails::Generators.namespace) && n.const_defined?(:ApplicationSerializer)
+        #   "ApplicationSerializer"
         elsif Object.const_defined?(:ApplicationSerializer)
           "ApplicationSerializer"
         else

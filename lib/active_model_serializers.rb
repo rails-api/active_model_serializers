@@ -7,7 +7,13 @@ ActiveModel::Serialization.class_eval do
   module ClassMethods #:nodoc:
     def active_model_serializer
       return @active_model_serializer if defined?(@active_model_serializer)
-      @active_model_serializer = "#{self.name}Serializer".safe_constantize
+
+      # Use safe constantize when Rails 3.2 is out
+      begin
+        @active_model_serializer = "#{self.name}Serializer".constantize
+      rescue NameError => e
+        raise unless e.message =~ /uninitialized constant$/ && e.name.to_s == "#{self.name}Serializer"
+      end
     end
   end
 
