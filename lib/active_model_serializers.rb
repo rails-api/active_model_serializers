@@ -25,8 +25,12 @@ end
 
 begin
   require 'action_controller'
-  require 'rails'
-  require 'railtie'
+  require 'action_controller/serialization'
+
+  ActiveSupport.on_load(:action_controller) do
+    include ::ActionController::Serialization
+  end
 rescue LoadError => ex
+  puts ex
   # rails on installed, continuing
 end
