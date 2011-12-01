@@ -16,7 +16,7 @@ module ActionController
   #
   #    class ApplicationController < ActionController::Base
   #      private
-  #      
+  #
   #      def serialization_scope
   #        current_user
   #      end
