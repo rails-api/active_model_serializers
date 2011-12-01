@@ -35,17 +35,17 @@ h3. The Most Basic Serializer
 
 A basic serializer is a simple Ruby object named after the model class it is serializing.
 
-<ruby>
-    class PostSerializer
-      def initialize(post, scope)
-        @post, @scope = post, scope
-      end
+<ruby>@
+class PostSerializer
+  def initialize(post, scope)
+    @post, @scope = post, scope
+  end
 
-      def as_json
-        { post: { title: @post.name, body: @post.body } }
-      end
-    end
-</ruby>
+  def as_json
+    { post: { title: @post.name, body: @post.body } }
+  end
+end
+@</ruby>
 
 A serializer is initialized with two parameters: the model object it should serialize and an authorization scope. By default, the
 authorization scope is the current user (+current_user+) but you can use a different object if you want. The serializer also
@@ -53,14 +53,14 @@ implements an +as_json+ method, which returns a Hash that will be sent to the JS
 
 Rails will transparently use your serializer when you use +render :json+ in your controller.
 
-<ruby>
-    class PostsController < ApplicationController
-      def show
-        @post = Post.find(params[:id])
-        render json: @post
-      end
-    end
-</ruby>
+<ruby>@
+class PostsController < ApplicationController
+  def show
+    @post = Post.find(params[:id])
+    render json: @post
+  end
+end
+@</ruby>
 
 Because +respond_with+ uses +render :json+ under the hood for JSON requests, Rails will automatically use your serializer when
 you use +respond_with+ as well.
@@ -70,94 +70,94 @@ h4. +serializable_hash+
 In general, you will want to implement +serializable_hash+ and +as_json+ to allow serializers to embed associated content
 directly. The easiest way to implement these two methods is to have +as_json+ call +serializable_hash+ and insert the root.
 
-<ruby>
-    class PostSerializer
-      def initialize(post, scope)
-        @post, @scope = post, scope
-      end
+<ruby>@
+class PostSerializer
+  def initialize(post, scope)
+    @post, @scope = post, scope
+  end
 
-      def serializable_hash
-        { title: @post.name, body: @post.body }
-      end
+  def serializable_hash
+    { title: @post.name, body: @post.body }
+  end
 
-      def as_json
-        { post: serializable_hash }
-      end
-    end
-</ruby>
+  def as_json
+    { post: serializable_hash }
+  end
+end
+@</ruby>
 
 h4. Authorization
 
 Let's update our serializer to include the email address of the author of the post, but only if the current user has superuser
 access.
 
-<ruby>
-    class PostSerializer
-      def initialize(post, scope)
-        @post, @scope = post, scope
-      end
+<ruby>@
+class PostSerializer
+  def initialize(post, scope)
+    @post, @scope = post, scope
+  end
 
-      def as_json
-        { post: serializable_hash }
-      end
+  def as_json
+    { post: serializable_hash }
+  end
 
-      def serializable_hash
-        hash = post
-        hash.merge!(super_data) if super?
-        hash
-      end
+  def serializable_hash
+    hash = post
+    hash.merge!(super_data) if super?
+    hash
+  end
 
-    private
-      def post
-        { title: @post.name, body: @post.body }
-      end
+private
+  def post
+    { title: @post.name, body: @post.body }
+  end
 
-      def super_data
-        { email: @post.email }
-      end
+  def super_data
+    { email: @post.email }
+  end
 
-      def super?
-        @scope.superuser?
-      end
-    end
-</ruby>
+  def super?
+    @scope.superuser?
+  end
+end
+@</ruby>
 
 h4. Testing
 
 One benefit of encapsulating our objects this way is that it becomes extremely straight-forward to test the serialization
 logic in isolation.
 
-<ruby>
-    require "ostruct"
+<ruby>@
+require "ostruct"
 
-    class PostSerializerTest < ActiveSupport::TestCase
-      # For now, we use a very simple authorization structure. These tests will need
-      # refactoring if we change that.
-      plebe = OpenStruct.new(super?: false)
-      god   = OpenStruct.new(super?: true)
+class PostSerializerTest < ActiveSupport::TestCase
+  # For now, we use a very simple authorization structure. These tests will need
+  # refactoring if we change that.
+  plebe = OpenStruct.new(super?: false)
+  god   = OpenStruct.new(super?: true)
 
-      post  = OpenStruct.new(title: "Welcome to my blog!", body: "Blah blah blah", email: "tenderlove@gmail.com")
+  post  = OpenStruct.new(title: "Welcome to my blog!", body: "Blah blah blah", email: "tenderlove@gmail.com")
 
-      test "a regular user sees just the title and body" do
-        json = PostSerializer.new(post, plebe).to_json
-        hash = JSON.parse(json)
+  test "a regular user sees just the title and body" do
+    json = PostSerializer.new(post, plebe).to_json
+    hash = JSON.parse(json)
 
-        assert_equal post.title, hash.delete("title")
-        assert_equal post.body, hash.delete("body")
-        assert_empty hash
-      end
+    assert_equal post.title, hash.delete("title")
+    assert_equal post.body, hash.delete("body")
+    assert_empty hash
+  end
 
-      test "a superuser sees the title, body and email" do
-        json = PostSerializer.new(post, god).to_json
-        hash = JSON.parse(json)
+  test "a superuser sees the title, body and email" do
+    json = PostSerializer.new(post, god).to_json
+    hash = JSON.parse(json)
 
-        assert_equal post.title, hash.delete("title")
-        assert_equal post.body, hash.delete("body")
-        assert_equal post.email, hash.delete("email")
-        assert_empty hash
-      end
-    end
-</ruby>
+    assert_equal post.title, hash.delete("title")
+    assert_equal post.body, hash.delete("body")
+    assert_equal post.email, hash.delete("email")
+    assert_empty hash
+  end
+end
+@</ruby>
 
 It's important to note that serializer objects define a clear interface specifically for serializing an existing object.
 In this case, the serializer expects to receive a post object with +name+, +body+ and +email+ attributes and an authorization
@@ -168,17 +168,17 @@ the serializer doesn't need to concern itself with how the authorization scope d
 whether it is set. In general, you should document these requirements in your serializer files and programatically via tests.
 The documentation library +YARD+ provides excellent tools for describing this kind of requirement:
 
-<ruby>
-    class PostSerializer
-      # @param [~body, ~title, ~email] post the post to serialize
-      # @param [~super] scope the authorization scope for this serializer
-      def initialize(post, scope)
-        @post, @scope = post, scope
-      end
+<ruby>@
+class PostSerializer
+  # @param [~body, ~title, ~email] post the post to serialize
+  # @param [~super] scope the authorization scope for this serializer
+  def initialize(post, scope)
+    @post, @scope = post, scope
+  end
 
-      # ...
-    end
-</ruby>
+  # ...
+end
+@</ruby>
 
 h3. Attribute Sugar
 
@@ -189,30 +189,30 @@ For example, you will sometimes want to simply include a number of existing attr
 JSON. In the above example, the +title+ and +body+ attributes were always included in the JSON. Let's see how to use
 +ActiveModel::Serializer+ to simplify our post serializer.
 
-<ruby>
-    class PostSerializer < ActiveModel::Serializer
-      attributes :title, :body
+<ruby>@
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body
 
-      def initialize(post, scope)
-        @post, @scope = post, scope
-      end
+  def initialize(post, scope)
+    @post, @scope = post, scope
+  end
 
-      def serializable_hash
-        hash = attributes
-        hash.merge!(super_data) if super?
-        hash
-      end
+  def serializable_hash
+    hash = attributes
+    hash.merge!(super_data) if super?
+    hash
+  end
 
-    private
-      def super_data
-        { email: @post.email }
-      end
+private
+  def super_data
+    { email: @post.email }
+  end
 
-      def super?
-        @scope.superuser?
-      end
-    end
-</ruby>
+  def super?
+    @scope.superuser?
+  end
+end
+@</ruby>
 
 First, we specified the list of included attributes at the top of the class. This will create an instance method called
 +attributes+ that extracts those attributes from the post model.
@@ -223,22 +223,22 @@ Next, we use the attributes methood in our +serializable_hash+ method, which all
 earlier. We could also eliminate the +as_json+ method, as +ActiveModel::Serializer+ provides a default +as_json+ method for
 us that calls our +serializable_hash+ method and inserts a root. But we can go a step further!
 
-<ruby>
-    class PostSerializer < ActiveModel::Serializer
-      attributes :title, :body
+<ruby>@
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body
 
-    private
-      def attributes
-        hash = super
-        hash.merge!(email: post.email) if super?
-        hash
-      end
+private
+  def attributes
+    hash = super
+    hash.merge!(email: post.email) if super?
+    hash
+  end
 
-      def super?
-        @scope.superuser?
-      end
-    end
-</ruby>
+  def super?
+    @scope.superuser?
+  end
+end
+@</ruby>
 
 The superclass provides a default +initialize+ method as well as a default +serializable_hash+ method, which uses
 +attributes+. We can call +super+ to get the hash based on the attributes we declared, and then add in any additional
@@ -251,100 +251,100 @@ h3. Associations
 In most JSON APIs, you will want to include associated objects with your serialized object. In this case, let's include
 the comments with the current post.
 
-<ruby>
-    class PostSerializer < ActiveModel::Serializer
-      attributes :title, :body
-      has_many :comments
+<ruby>@
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body
+  has_many :comments
 
-    private
-      def attributes
-        hash = super
-        hash.merge!(email: post.email) if super?
-        hash
-      end
+private
+  def attributes
+    hash = super
+    hash.merge!(email: post.email) if super?
+    hash
+  end
 
-      def super?
-        @scope.superuser?
-      end
-    end
-</ruby>
+  def super?
+    @scope.superuser?
+  end
+end
+@</ruby>
 
 The default +serializable_hash+ method will include the comments as embedded objects inside the post.
 
-<javascript>
-    {
-      post: {
-        title: "Hello Blog!",
-        body: "This is my first post. Isn't it fabulous!",
-        comments: [
-          {
-            title: "Awesome",
-            body: "Your first post is great"
-          }
-        ]
+<javascript>@
+{
+  post: {
+    title: "Hello Blog!",
+    body: "This is my first post. Isn't it fabulous!",
+    comments: [
+      {
+        title: "Awesome",
+        body: "Your first post is great"
       }
-    }
-</javascript>
+    ]
+  }
+}
+@</javascript>
 
 Rails uses the same logic to generate embedded serializations as it does when you use +render :json+. In this case,
 because you didn't define a +CommentSerializer+, Rails used the default +as_json+ on your comment object.
 
 If you define a serializer, Rails will automatically instantiate it with the existing authorization scope.
 
-<ruby>
-    class CommentSerializer
-      def initialize(comment, scope)
-        @comment, @scope = comment, scope
-      end
+<ruby>@
+class CommentSerializer
+  def initialize(comment, scope)
+    @comment, @scope = comment, scope
+  end
 
-      def serializable_hash
-        { title: @comment.title }
-      end
+  def serializable_hash
+    { title: @comment.title }
+  end
 
-      def as_json
-        { comment: serializable_hash }
-      end
-    end
-</ruby>
+  def as_json
+    { comment: serializable_hash }
+  end
+end
+@</ruby>
 
 If we define the above comment serializer, the outputted JSON will change to:
 
-<javascript>
-    {
-      post: {
-        title: "Hello Blog!",
-        body: "This is my first post. Isn't it fabulous!",
-        comments: [{ title: "Awesome" }]
-      }
-    }
-</javascript>
+<javascript>@
+{
+  post: {
+    title: "Hello Blog!",
+    body: "This is my first post. Isn't it fabulous!",
+    comments: [{ title: "Awesome" }]
+  }
+}
+@</javascript>
 
 Let's imagine that our comment system allows an administrator to kill a comment, and we only want to allow
 users to see the comments they're entitled to see. By default, +has_many :comments+ will simply use the
 +comments+ accessor on the post object. We can override the +comments+ accessor to limit the comments used
 to just the comments we want to allow for the current user.
 
-<ruby>
-    class PostSerializer < ActiveModel::Serializer
-      attributes :title. :body
-      has_many :comments
+<ruby>@
+class PostSerializer < ActiveModel::Serializer
+  attributes :title. :body
+  has_many :comments
 
-    private
-      def attributes
-        hash = super
-        hash.merge!(email: post.email) if super?
-        hash
-      end
+private
+  def attributes
+    hash = super
+    hash.merge!(email: post.email) if super?
+    hash
+  end
 
-      def comments
-        post.comments_for(scope)
-      end
+  def comments
+    post.comments_for(scope)
+  end
 
-      def super?
-        @scope.superuser?
-      end
-    end
-</ruby>
+  def super?
+    @scope.superuser?
+  end
+end
+@</ruby>
 
 +ActiveModel::Serializer+ will still embed the comments, but this time it will use just the comments
 for the current user.
@@ -359,68 +359,68 @@ build up the hash manually.
 
 For example, let's say our front-end expects the posts and comments in the following format:
 
-<plain>
+<plain>@
+{
+  post: {
+    id: 1
+    title: "Hello Blog!",
+    body: "This is my first post. Isn't it fabulous!",
+    comments: [1,2]
+  },
+  comments: [
     {
-      post: {
-        id: 1
-        title: "Hello Blog!",
-        body: "This is my first post. Isn't it fabulous!",
-        comments: [1,2]
-      },
-      comments: [
-        {
-          id: 1
-          title: "Awesome",
-          body: "Your first post is great"
-        },
-        {
-          id: 2
-          title: "Not so awesome",
-          body: "Why is it so short!"
-        }
-      ]
+      id: 1
+      title: "Awesome",
+      body: "Your first post is great"
+    },
+    {
+      id: 2
+      title: "Not so awesome",
+      body: "Why is it so short!"
     }
-</plain>
+  ]
+}
+@</plain>
 
 We could achieve this with a custom +as_json+ method. We will also need to define a serializer for comments.
 
-<ruby>
-    class CommentSerializer < ActiveModel::Serializer
-      attributes :id, :title, :body
+<ruby>@
+class CommentSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
 
-      # define any logic for dealing with authorization-based attributes here
-    end
+  # define any logic for dealing with authorization-based attributes here
+end
 
-    class PostSerializer < ActiveModel::Serializer
-      attributes :title, :body
-      has_many :comments
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body
+  has_many :comments
 
-      def as_json
-        { post: serializable_hash }.merge!(associations)
-      end
+  def as_json
+    { post: serializable_hash }.merge!(associations)
+  end
 
-      def serializable_hash
-        post_hash = attributes
-        post_hash.merge!(association_ids)
-        post_hash
-      end
+  def serializable_hash
+    post_hash = attributes
+    post_hash.merge!(association_ids)
+    post_hash
+  end
 
-    private
-      def attributes
-        hash = super
-        hash.merge!(email: post.email) if super?
-        hash
-      end
+private
+  def attributes
+    hash = super
+    hash.merge!(email: post.email) if super?
+    hash
+  end
 
-      def comments
-        post.comments_for(scope)
-      end
+  def comments
+    post.comments_for(scope)
+  end
 
-      def super?
-        @scope.superuser?
-      end
-    end
-</ruby>
+  def super?
+    @scope.superuser?
+  end
+end
+@</ruby>
 
 Here, we used two convenience methods: +associations+ and +association_ids+. The first,
 +associations+, creates a hash of all of the define associations, using their defined
@@ -442,16 +442,16 @@ For instance, we might want to provide the full comment when it is requested dir
 but only its title when requested as part of the post. To achieve this, you can define
 a serializer for associated objects nested inside the main serializer.
 
-<ruby>
-    class PostSerializer < ActiveModel::Serializer
-      class CommentSerializer < ActiveModel::Serializer
-        attributes :id, :title
-      end
+<ruby>@
+class PostSerializer < ActiveModel::Serializer
+  class CommentSerializer < ActiveModel::Serializer
+    attributes :id, :title
+  end
 
-      # same as before
-      # ...
-    end
-</ruby>
+  # same as before
+  # ...
+end
+@</ruby>
 
 In other words, if a +PostSerializer+ is trying to serialize comments, it will first
 look for +PostSerializer::CommentSerializer+ before falling back to +CommentSerializer+
@@ -468,11 +468,11 @@ its +current_user+ method and pass that along to the serializer's initializer.
 If you want to change that behavior, simply use the +serialization_scope+ class
 method.
 
-<ruby>
-    class PostsController < ApplicationController
-      serialization_scope :current_app
-    end
-</ruby>
+<ruby>@
+class PostsController < ApplicationController
+  serialization_scope :current_app
+end
+@</ruby>
 
 You can also implement an instance method called (no surprise) +serialization_scope+,
 which allows you to define a dynamic authorization scope based on the current request.
@@ -489,19 +489,19 @@ outside a request.
 For instance, if you want to generate the JSON representation of a post for a user outside
 of a request:
 
-<ruby>
+<ruby>@
 user = get_user # some logic to get the user in question
 PostSerializer.new(post, user).to_json # reliably generate JSON output
-</ruby>
+@</ruby>
 
 If you want to generate JSON for an anonymous user, you should be able to use whatever
 technique you use in your application to generate anonymous users outside of a request.
 Typically, that means creating a new user and not saving it to the database:
 
-<ruby>
+<ruby>@
 user = User.new # create a new anonymous user
 PostSerializer.new(post, user).to_json
-</ruby>
+@</ruby>
 
 In general, the better you encapsulate your authorization logic, the more easily you
 will be able to use the serializer outside of the context of a request. For instance,
@@ -519,38 +519,38 @@ as the root).
 
 For example, an Array of post objects would serialize as:
 
-<plain>
+<plain>@
+{
+  posts: [
     {
-      posts: [
-        {
-          title: "FIRST POST!",
-          body: "It's my first pooooost"
-        },
-        { title: "Second post!",
-          body: "Zomg I made it to my second post"
-        }
-      ]
+      title: "FIRST POST!",
+      body: "It's my first pooooost"
+    },
+    { title: "Second post!",
+      body: "Zomg I made it to my second post"
     }
-</plain>
+  ]
+}
+@</plain>
 
 If you want to change the behavior of serialized Arrays, you need to create
 a custom Array serializer.
 
-<ruby>
-    class ArraySerializer < ActiveModel::ArraySerializer
-      def serializable_array
-        serializers.map do |serializer|
-          serializer.serializable_hash
-        end
-      end
-
-      def as_json
-        hash = { root => serializable_array }
-        hash.merge!(associations)
-        hash
-      end
+<ruby>@
+class ArraySerializer < ActiveModel::ArraySerializer
+  def serializable_array
+    serializers.map do |serializer|
+      serializer.serializable_hash
     end
-</ruby>
+  end
+
+  def as_json
+    hash = { root => serializable_array }
+    hash.merge!(associations)
+    hash
+  end
+end
+@</ruby>
 
 When generating embedded associations using the +associations+ helper inside a
 regular serializer, it will create a new <code>ArraySerializer</code> with the
