@@ -31,6 +31,5 @@ begin
     include ::ActionController::Serialization
   end
 rescue LoadError => ex
-  puts ex
   # rails on installed, continuing
 end
