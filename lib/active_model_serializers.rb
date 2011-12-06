@@ -23,12 +23,13 @@ ActiveModel::Serialization.class_eval do
   end
 end
 
-require "action_controller"
+begin
+  require 'action_controller'
+  require 'action_controller/serialization'
 
-module ActionController
-  autoload :Serialization, "action_controller/serialization"
-end
-
-ActiveSupport.on_load(:action_controller) do
-  include ::ActionController::Serialization
+  ActiveSupport.on_load(:action_controller) do
+    include ::ActionController::Serialization
+  end
+rescue LoadError => ex
+  # rails on installed, continuing
 end

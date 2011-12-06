@@ -1,4 +1,4 @@
-require 'rails'
+require 'test_helper'
 
 class Foo < Rails::Application
 end
