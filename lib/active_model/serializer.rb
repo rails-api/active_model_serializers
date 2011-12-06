@@ -68,6 +68,10 @@ module ActiveModel
         def serializer
           options[:serializer]
         end
+
+        def key
+          options[:as] || name
+        end
       end
 
       class HasMany < Config #:nodoc:
@@ -122,7 +126,14 @@ module ActiveModel
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
 
-          options[:serializer] ||= const_get("#{attr.to_s.camelize}Serializer")
+          # if :as is specified without :serializer, then use conventions
+          # to determine the serializer
+          if options[:as] && !options[:serializer]
+            options[:serializer] = const_get("#{options[:as].to_s.camelize.singularize}Serializer")
+          else
+            options[:serializer] ||= const_get("#{attr.to_s.camelize}Serializer")
+          end
+
           klass.new(attr, options)
         end
       end
@@ -212,7 +223,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.name] = association.serialize(associated_object, scope)
+        hash[association.key] = association.serialize(associated_object, scope)
       end
 
       hash
@@ -225,7 +236,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.name] = association.serialize_ids(associated_object, scope)
+        hash[association.key] = association.serialize_ids(associated_object, scope)
       end
 
       hash

@@ -34,6 +34,11 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   class Post < Model
+    def initialize(attributes)
+      super(attributes)
+      self.comments ||= []
+    end
+
     attr_accessor :comments
     def active_model_serializer; PostSerializer; end
   end
@@ -428,5 +433,79 @@ class SerializerTest < ActiveModel::TestCase
       { :user => { :last_name=>"Valim", :ok=>true, :first_name=>"Jose", :scope => true } },
       { :comment => { :title => "Comment1" } }
     ], serializer.as_json)
+  end
+
+  class CustomBlog < Blog
+    attr_accessor :public_posts, :public_user
+  end
+
+  class CustomBlogSerializer < ActiveModel::Serializer
+    has_many :public_posts, :as => :posts, :serializer => PostSerializer
+    has_one :public_user, :as => :user, :serializer => UserSerializer
+  end
+
+  def test_associations_with_as
+    posts = [
+      Post.new(:title => 'First Post', :body => 'text'), 
+      Post.new(:title => 'Second Post', :body => 'text')
+    ]
+    user = User.new
+
+    custom_blog = CustomBlog.new
+    custom_blog.public_posts = posts
+    custom_blog.public_user = user
+
+    serializer = CustomBlogSerializer.new(custom_blog, :scope => true)
+
+    assert_equal({
+      :custom_blog => {
+        :posts => [
+          {:title => 'First Post', :body => 'text', :comments => []},
+          {:title => 'Second Post', :body => 'text', :comments => []}
+        ],
+        :user => {
+          :first_name => "Jose", 
+          :last_name => "Valim", :ok => true, 
+          :scope => true
+        }
+      }
+    }, serializer.as_json)
+  end
+
+  def test_implicity_detection_for_association_serializers 
+    implicit_serializer = Class.new(ActiveModel::Serializer) do
+      root :custom_blog
+      const_set(:UserSerializer, UserSerializer)
+      const_set(:PostSerializer, PostSerializer)
+
+      has_many :public_posts, :as => :posts
+      has_one :public_user, :as => :user
+    end
+
+    posts = [
+      Post.new(:title => 'First Post', :body => 'text', :comments => []), 
+      Post.new(:title => 'Second Post', :body => 'text', :comments => [])
+    ]
+    user = User.new
+
+    custom_blog = CustomBlog.new
+    custom_blog.public_posts = posts
+    custom_blog.public_user = user
+
+    serializer = implicit_serializer.new(custom_blog, :scope => true)
+
+    assert_equal({
+      :custom_blog => {
+        :posts => [
+          {:title => 'First Post', :body => 'text', :comments => []},
+          {:title => 'Second Post', :body => 'text', :comments => []}
+        ],
+        :user => {
+          :first_name => "Jose", 
+          :last_name => "Valim", :ok => true, 
+          :scope => true
+        }
+      }
+    }, serializer.as_json)
   end
 end

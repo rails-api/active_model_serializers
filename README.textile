@@ -351,6 +351,32 @@ for the current user.
 
 NOTE: The logic for deciding which comments a user should see still belongs in the model layer. In general, you should encapsulate concerns that require making direct Active Record queries in scopes or public methods on your models.
 
+h4. Modifying Associations
+
+You can also rename associations if required. Say for example you have an association that
+makes sense to be named one thing in your code, but another when data is serialized.
+You can use the <code>:as</code> option to specify a different name for an association. 
+Here is an exmaple:
+
+<pre lang="ruby">
+class UserSerializer < ActiveModel::Serializer
+  has_many :followed_posts, :as => :posts
+  has_one :owne_account, :as => :account
+end
+</pre>
+
+Using the <code>:as</code> without a <code>:serializer</code> option will use implicit detection
+to determine a serializer. In this example, you'd have to define two classes: <code>PostSerializer</code>
+and <code>AccountSerializer</code>. You can also add the <code>:serializer</code> option
+to set it explicitly:
+
+<pre lang="ruby">
+class UserSerializer < ActiveModel::Serializer
+  has_many :followed_posts, :as => :posts, :serializer => CustomPostSerializer
+  has_one :owne_account, :as => :account, :serializer => PrivateAccountSerializer
+end
+</pre>
+
 h3. Customizing Associations
 
 Not all front-ends expect embedded documents in the same form. In these cases, you can override the
@@ -430,6 +456,7 @@ name and whose value is an Array of the association's keys.
 The +association_ids+ helper will use the overridden version of the association, so in
 this case, +association_ids+ will only include the ids of the comments provided by the
 +comments+ method.
+
 
 h3. Special Association Serializers
 
