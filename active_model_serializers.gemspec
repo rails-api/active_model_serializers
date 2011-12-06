@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |gem|
-  gem.authors       = ["José Valim"]
-  gem.email         = ["jose.valim@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.authors       = ["José Valim", "Yehuda Katz"]
+  gem.email         = ["jose.valim@gmail.com", "wycats@gmail.com"]
+  gem.description   = %q{Making it easy to serialize models for client-side use}
+  gem.summary       = %q{Bringing consistency and object orientation to model serialization. Works great for client-side MVC frameworks!}
   gem.homepage      = ""
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
