@@ -7,6 +7,8 @@ require "active_model_serializers"
 require "active_support/json"
 require "test/unit"
 
+require 'rails'
+
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
