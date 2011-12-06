@@ -12,7 +12,7 @@ module Rails
         template 'serializer.rb', File.join('app/serializers', class_path, "#{file_name}_serializer.rb")
       end
 
-      hook_for :test_framework
+      # hook_for :test_framework
 
       private
 
