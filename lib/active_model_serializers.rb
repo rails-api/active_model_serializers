@@ -1,7 +1,7 @@
 require "active_model"
 require "active_model/serializer"
 
-ActiveModel::Serialization.class_eval do
+module ActiveModel::SerializerSupport
   extend ActiveSupport::Concern
 
   module ClassMethods #:nodoc:
@@ -23,6 +23,10 @@ ActiveModel::Serialization.class_eval do
   end
 
   alias :read_attribute_for_serialization :send
+end
+
+ActiveSupport.on_load(:active_record) do
+  include ActiveModel::SerializerSupport
 end
 
 begin

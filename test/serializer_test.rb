@@ -16,7 +16,7 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   class User
-    include ActiveModel::Serialization
+    include ActiveModel::SerializerSupport
 
     attr_accessor :superuser
 
