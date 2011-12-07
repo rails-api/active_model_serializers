@@ -70,7 +70,7 @@ module ActiveModel
         end
 
         def key
-          options[:as] || name
+          options[:key] || name
         end
       end
 
@@ -126,10 +126,10 @@ module ActiveModel
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
 
-          # if :as is specified without :serializer, then use conventions
+          # if :key is specified without :serializer, then use conventions
           # to determine the serializer
-          if options[:as] && !options[:serializer]
-            options[:serializer] = const_get("#{options[:as].to_s.camelize.singularize}Serializer")
+          if options[:key] && !options[:serializer]
+            options[:serializer] = const_get("#{options[:key].to_s.camelize.singularize}Serializer")
           else
             options[:serializer] ||= const_get("#{attr.to_s.camelize}Serializer")
           end
@@ -171,10 +171,10 @@ module ActiveModel
       #
       #     { :posts => { :has_many => :posts } }
       #
-      # If :as is used:
+      # If :key is used:
       #
       #     class PostsSerializer < ActiveModel::Serializer
-      #       has_many :my_posts, :as => :posts
+      #       has_many :posts, :key => :my_posts
       #     end
       #
       # the hash looks like this:
@@ -198,7 +198,7 @@ module ActiveModel
         end
 
         associations = _associations.inject({}) do |hash, association|
-          model_association = klass.reflect_on_association(association.key)
+          model_association = klass.reflect_on_association(association.name)
           hash.merge association.key => { model_association.macro => model_association.name }
         end
 

@@ -440,8 +440,8 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   class CustomBlogSerializer < ActiveModel::Serializer
-    has_many :public_posts, :as => :posts, :serializer => PostSerializer
-    has_one :public_user, :as => :user, :serializer => UserSerializer
+    has_many :public_posts, :key => :posts, :serializer => PostSerializer
+    has_one :public_user, :key => :user, :serializer => UserSerializer
   end
 
   def test_associations_with_as
@@ -478,8 +478,8 @@ class SerializerTest < ActiveModel::TestCase
       const_set(:UserSerializer, UserSerializer)
       const_set(:PostSerializer, PostSerializer)
 
-      has_many :public_posts, :as => :posts
-      has_one :public_user, :as => :user
+      has_many :public_posts, :key => :posts
+      has_one :public_user, :key => :user
     end
 
     posts = [
@@ -559,8 +559,8 @@ class SerializerTest < ActiveModel::TestCase
       end
 
       attributes :name, :age
-      has_many :my_posts, :as => :posts, :serializer => Class.new
-      has_one :my_parent, :as => :parent, :serializer => Class.new
+      has_many :posts, :key => :my_posts, :serializer => Class.new
+      has_one :parent, :key => :my_parent, :serializer => Class.new
     end
 
     assert_equal serializer.schema, {
