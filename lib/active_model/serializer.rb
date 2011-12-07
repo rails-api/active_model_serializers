@@ -103,7 +103,7 @@ module ActiveModel
     end
 
     class_attribute :_attributes
-    self._attributes = Set.new
+    self._attributes = {}
 
     class_attribute :_associations
     self._associations = []
@@ -116,7 +116,15 @@ module ActiveModel
     class << self
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
-        self._attributes += attrs
+        self._attributes = _attributes.dup
+
+        attrs.each do |attr|
+          self._attributes[attr] = attr
+        end
+      end
+
+      def attribute(attr, options={})
+        self._attributes = _attributes.merge(attr => options[:key] || attr)
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -192,9 +200,9 @@ module ActiveModel
         klass = model_class
         columns = klass.columns_hash
 
-        attrs = _attributes.inject({}) do |hash, name|
+        attrs = _attributes.inject({}) do |hash, (name,key)|
           column = columns[name]
-          hash.merge name => column[:type]
+          hash.merge key => column[:type]
         end
 
         associations = _associations.inject({}) do |hash, association|
@@ -299,8 +307,8 @@ module ActiveModel
     def attributes
       hash = {}
 
-      _attributes.each do |name|
-        hash[name] = @object.read_attribute_for_serialization(name)
+      _attributes.each do |name,key|
+        hash[key] = @object.read_attribute_for_serialization(name)
       end
 
       hash
