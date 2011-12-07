@@ -48,7 +48,7 @@ module ActiveModel
   #     class PostSerializer < ActiveModel::Serializer
   #       attributes :title, :body
   #       has_many :comments
-  #     
+  #
   #       private
   #
   #       def attributes
@@ -56,7 +56,7 @@ module ActiveModel
   #         hash.merge!(:email => post.email) if author?
   #         hash
   #       end
-  #     
+  #
   #       def author?
   #         post.author == scope
   #       end
