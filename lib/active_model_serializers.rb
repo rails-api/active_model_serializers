@@ -21,6 +21,8 @@ ActiveModel::Serialization.class_eval do
   def active_model_serializer
     self.class.active_model_serializer
   end
+
+  alias :read_attribute_for_serialization :send
 end
 
 begin
