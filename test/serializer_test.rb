@@ -591,4 +591,69 @@ class SerializerTest < ActiveModel::TestCase
       }
     }
   end
+
+  def test_embed_id_for_has_one
+    author_serializer = Class.new(ActiveModel::Serializer)
+
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      root :post
+
+      attributes :title, :body
+      has_one :author, :serializer => author_serializer
+    end
+
+    post_class = Class.new(Model) do
+      attr_accessor :author
+    end
+
+    author_class = Class.new(Model)
+
+    post = post_class.new(:title => "New Post", :body => "It's a new post!")
+    author = author_class.new(:id => 5)
+    post.author = author
+
+    hash = serializer_class.new(post, nil)
+
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "It's a new post!",
+        :author => 5
+      }
+    }, hash.as_json)
+  end
+
+  def test_embed_objects_for_has_one
+    author_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :id, :name
+    end
+
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :post
+
+      attributes :title, :body
+      has_one :author, :serializer => author_serializer
+    end
+
+    post_class = Class.new(Model) do
+      attr_accessor :author
+    end
+
+    author_class = Class.new(Model)
+
+    post = post_class.new(:title => "New Post", :body => "It's a new post!")
+    author = author_class.new(:id => 5, :name => "Tom Dale")
+    post.author = author
+
+    hash = serializer_class.new(post, nil)
+
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "It's a new post!",
+        :author => { :id => 5, :name => "Tom Dale" }
+      }
+    }, hash.as_json)
+  end
 end
