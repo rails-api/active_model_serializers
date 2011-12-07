@@ -508,4 +508,67 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, serializer.as_json)
   end
+
+  def setup_model
+    Class.new do
+      class << self
+        def columns_hash
+          { :name => { :type => :string }, :age => { :type => :integer } }
+        end
+
+        def reflect_on_association(name)
+          case name
+          when :posts
+            Struct.new(:macro, :name).new(:has_many, :posts)
+          when :parent
+            Struct.new(:macro, :name).new(:belongs_to, :parent)
+          end
+        end
+      end
+    end
+  end
+
+  def test_schema
+    model = setup_model
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      class << self; self; end.class_eval do
+        define_method(:model_class) do model end
+      end
+
+      attributes :name, :age
+      has_many :posts, :serializer => Class.new
+      has_one :parent, :serializer => Class.new
+    end
+
+    assert_equal serializer.schema, {
+      :attributes => { :name => :string, :age => :integer },
+      :associations => {
+        :posts => { :has_many => :posts },
+        :parent => { :belongs_to => :parent }
+      }
+    }
+  end
+
+  def test_schema_with_as
+    model = setup_model
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      class << self; self; end.class_eval do
+        define_method(:model_class) do model end
+      end
+
+      attributes :name, :age
+      has_many :my_posts, :as => :posts, :serializer => Class.new
+      has_one :my_parent, :as => :parent, :serializer => Class.new
+    end
+
+    assert_equal serializer.schema, {
+      :attributes => { :name => :string, :age => :integer },
+      :associations => {
+        :my_posts => { :has_many => :posts },
+        :my_parent => { :belongs_to => :parent }
+      }
+    }
+  end
 end

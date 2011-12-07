@@ -158,6 +158,58 @@ module ActiveModel
         associate(Associations::HasOne, attrs)
       end
 
+      # Return a schema hash for the current serializer. This information
+      # can be used to generate clients for the serialized output.
+      #
+      # The schema hash has two keys: +attributes+ and +associations+.
+      #
+      # The +attributes+ hash looks like this:
+      #
+      #     { :name => :string, :age => :integer }
+      #
+      # The +associations+ hash looks like this:
+      #
+      #     { :posts => { :has_many => :posts } }
+      #
+      # If :as is used:
+      #
+      #     class PostsSerializer < ActiveModel::Serializer
+      #       has_many :my_posts, :as => :posts
+      #     end
+      #
+      # the hash looks like this:
+      #
+      #     { :my_posts => { :has_many => :posts }
+      #
+      # This information is extracted from the serializer's model class,
+      # which is provided by +SerializerClass.model_class+.
+      #
+      # The schema method uses the +columns_hash+ and +reflect_on_association+
+      # methods, provided by default by ActiveRecord. You can implement these
+      # methods on your custom models if you want the serializer's schema method
+      # to work.
+      def schema
+        klass = model_class
+        columns = klass.columns_hash
+
+        attrs = _attributes.inject({}) do |hash, name|
+          column = columns[name]
+          hash.merge name => column[:type]
+        end
+
+        associations = _associations.inject({}) do |hash, association|
+          model_association = klass.reflect_on_association(association.key)
+          hash.merge association.key => { model_association.macro => model_association.name }
+        end
+
+        { :attributes => attrs, :associations => associations }
+      end
+
+      # The model class associated with this serializer.
+      def model_class
+        name.sub(/Serializer$/, '')
+      end
+
       # Define how associations should be embedded.
       #
       #   embed :objects               # Embed associations as full objects
