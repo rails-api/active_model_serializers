@@ -557,7 +557,7 @@ class SerializerTest < ActiveModel::TestCase
     Class.new do
       class << self
         def columns_hash
-          { :name => { :type => :string }, :age => { :type => :integer } }
+          { "name" => Struct.new(:type).new(:string), "age" => Struct.new(:type).new(:integer) }
         end
 
         def reflect_on_association(name)

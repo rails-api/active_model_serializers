@@ -198,8 +198,8 @@ module ActiveModel
         columns = klass.columns_hash
 
         attrs = _attributes.inject({}) do |hash, (name,key)|
-          column = columns[name]
-          hash.merge key => column[:type]
+          column = columns[name.to_s]
+          hash.merge key => column.type
         end
 
         associations = _associations.inject({}) do |hash, association|
@@ -212,7 +212,7 @@ module ActiveModel
 
       # The model class associated with this serializer.
       def model_class
-        name.sub(/Serializer$/, '')
+        name.sub(/Serializer$/, '').constantize
       end
 
       # Define how associations should be embedded.
