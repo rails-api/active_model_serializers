@@ -355,25 +355,25 @@ h4. Modifying Associations
 
 You can also rename associations if required. Say for example you have an association that
 makes sense to be named one thing in your code, but another when data is serialized.
-You can use the <code>:as</code> option to specify a different name for an association. 
+You can use the <code:key</code> option to specify a different name for an association. 
 Here is an exmaple:
 
 <pre lang="ruby">
 class UserSerializer < ActiveModel::Serializer
-  has_many :followed_posts, :as => :posts
-  has_one :owne_account, :as => :account
+  has_many :followed_posts, :key => :posts
+  has_one :owned_account, :key => :account
 end
 </pre>
 
-Using the <code>:as</code> without a <code>:serializer</code> option will use implicit detection
+Using the <code>:key</code> without a <code>:serializer</code> option will use implicit detection
 to determine a serializer. In this example, you'd have to define two classes: <code>PostSerializer</code>
 and <code>AccountSerializer</code>. You can also add the <code>:serializer</code> option
 to set it explicitly:
 
 <pre lang="ruby">
 class UserSerializer < ActiveModel::Serializer
-  has_many :followed_posts, :as => :posts, :serializer => CustomPostSerializer
-  has_one :owne_account, :as => :account, :serializer => PrivateAccountSerializer
+  has_many :followed_posts, :key => :posts, :serializer => CustomPostSerializer
+  has_one :owne_account, :key => :account, :serializer => PrivateAccountSerializer
 end
 </pre>
 
