@@ -211,6 +211,30 @@ class SerializerTest < ActiveModel::TestCase
     }, json)
   end
 
+  def test_implicit_serializer_for_has_many
+    blog_with_posts = Class.new(Blog) do
+      attr_accessor :posts
+    end
+
+    blog_serializer = Class.new(ActiveModel::Serializer) do
+      const_set(:PostSerializer, PostSerializer)
+      has_many :posts
+    end
+
+    user = User.new
+    blog = blog_with_posts.new
+    blog.posts = [Post.new(:title => 'test')]
+
+    json = blog_serializer.new(blog, user).as_json
+    assert_equal({
+     :posts => [{
+       :title => "test", 
+       :body => nil, 
+       :comments => []
+     }]
+    }, json)
+  end
+
   def test_overridden_associations
     author_serializer = Class.new(ActiveModel::Serializer) do
       attributes :first_name
