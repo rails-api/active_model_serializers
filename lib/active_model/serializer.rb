@@ -138,6 +138,8 @@ module ActiveModel
           # to determine the serializer
           if options[:key] && !options[:serializer]
             options[:serializer] = const_get("#{options[:key].to_s.camelize.singularize}Serializer")
+          elsif !options[:serializer] && klass == Associations::HasMany
+            options[:serializer] = const_get("#{attr.to_s.camelize.singularize}Serializer")
           else
             options[:serializer] ||= const_get("#{attr.to_s.camelize}Serializer")
           end
