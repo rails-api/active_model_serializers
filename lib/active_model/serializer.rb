@@ -72,6 +72,10 @@ module ActiveModel
         def key
           options[:key] || name
         end
+
+        def polymorphic?
+          options[:polymorphic]
+        end
       end
 
       class HasMany < Config #:nodoc:
@@ -93,7 +97,14 @@ module ActiveModel
 
       class HasOne < Config #:nodoc:
         def serialize(object, scope)
-          object && serializer.new(object, scope).serializable_hash
+          return unless object
+
+          if polymorphic?
+            serializer_class = "#{object.class.to_s}Serializer".constantize
+            serializer_class.new(object, scope).serializable_hash
+          else
+            serializer.new(object, scope).serializable_hash
+          end
         end
 
         def serialize_ids(object, scope)
@@ -134,7 +145,7 @@ module ActiveModel
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
 
-          options[:serializer] ||= begin
+          options[:serializer] ||= options[:polymorphic] || begin
             serializer_class = (options[:key] || attr).to_s.classify
             const_get("#{serializer_class}Serializer")
           end
@@ -281,6 +292,11 @@ module ActiveModel
       _associations.each do |association|
         associated_object = send(association.name)
         hash[association.key] = association.serialize(associated_object, scope)
+
+        if association.polymorphic? && associated_object
+          polymorphic_type = associated_object.class.to_s.split('::').last
+          hash["#{association.name}_type".to_sym] = polymorphic_type
+        end
       end
 
       hash

@@ -680,4 +680,34 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, hash.as_json)
   end
+
+  class PolymorphicUser < User ; end
+
+  class PolymorphicUserSerializer < ActiveModel::Serializer
+    attributes :first_name, :last_name
+  end
+
+  def test_polymorphic_has_one
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new
+    blog = polymorphic_blog.new
+    blog.writer = user
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
+      :writer_type => 'PolymorphicUser',
+      :writer => {
+        :first_name => "Jose",
+        :last_name => "Valim"
+      }
+    }, serializer.as_json)
+  end
 end
