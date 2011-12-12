@@ -100,7 +100,7 @@ module ActiveModel
           return unless object
 
           if polymorphic?
-            polymorphic_type = object.class.to_s.split('::').last
+            polymorphic_type = object.class.to_s.demodulize
             serializer_class = "#{object.class.to_s}Serializer".constantize
 
             serializer_class.new(object, scope).serializable_hash.merge({
@@ -117,7 +117,7 @@ module ActiveModel
           if polymorphic?
             { 
               :id => object.read_attribute_for_serialization(:id),
-              "#{name}_type".to_sym => object.class.to_s.split('::').last
+              "#{name}_type".to_sym => object.class.to_s.demodulize
             }
           else
             object.read_attribute_for_serialization(:id)
