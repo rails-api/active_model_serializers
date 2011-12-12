@@ -134,12 +134,9 @@ module ActiveModel
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
 
-          # if :key is specified without :serializer, then use conventions
-          # to determine the serializer
-          if options[:key] && !options[:serializer]
-            options[:serializer] = const_get("#{options[:key].to_s.camelize.singularize}Serializer")
-          else
-            options[:serializer] ||= const_get("#{attr.to_s.camelize}Serializer")
+          options[:serializer] ||= begin
+            serializer_class = (options[:key] || attr).to_s.classify
+            const_get("#{serializer_class}Serializer")
           end
 
           klass.new(attr, options)
