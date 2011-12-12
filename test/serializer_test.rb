@@ -703,8 +703,8 @@ class SerializerTest < ActiveModel::TestCase
     serializer = polymorphic_serializer.new(blog, user)
 
     assert_equal({
-      :writer_type => 'PolymorphicUser',
       :writer => {
+        :writer_type => 'PolymorphicUser',
         :first_name => "Jose",
         :last_name => "Valim"
       }

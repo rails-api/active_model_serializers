@@ -100,8 +100,12 @@ module ActiveModel
           return unless object
 
           if polymorphic?
+            polymorphic_type = object.class.to_s.split('::').last
             serializer_class = "#{object.class.to_s}Serializer".constantize
-            serializer_class.new(object, scope).serializable_hash
+
+            serializer_class.new(object, scope).serializable_hash.merge({
+              "#{name}_type".to_sym => polymorphic_type
+            })
           else
             serializer.new(object, scope).serializable_hash
           end
@@ -294,8 +298,6 @@ module ActiveModel
         hash[association.key] = association.serialize(associated_object, scope)
 
         if association.polymorphic? && associated_object
-          polymorphic_type = associated_object.class.to_s.split('::').last
-          hash["#{association.name}_type".to_sym] = polymorphic_type
         end
       end
 
