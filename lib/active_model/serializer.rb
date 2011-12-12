@@ -112,7 +112,16 @@ module ActiveModel
         end
 
         def serialize_ids(object, scope)
-          object && object.read_attribute_for_serialization(:id)
+          return unless object
+
+          if polymorphic?
+            { 
+              :id => object.read_attribute_for_serialization(:id),
+              "#{name}_type".to_sym => object.class.to_s.split('::').last
+            }
+          else
+            object.read_attribute_for_serialization(:id)
+          end
         end
       end
     end
