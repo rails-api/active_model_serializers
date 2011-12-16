@@ -29,6 +29,7 @@ module ActionController
 
     included do
       class_attribute :_serialization_scope
+      self._serialization_scope = :current_user
     end
 
     def serialization_scope
