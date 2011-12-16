@@ -193,10 +193,6 @@ JSON. In the above example, the +title+ and +body+ attributes were always includ
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
-  def initialize(post, scope)
-    @post, @scope = post, scope
-  end
-
   def serializable_hash
     hash = attributes
     hash.merge!(super_data) if super?
@@ -355,7 +351,7 @@ h4. Modifying Associations
 
 You can also rename associations if required. Say for example you have an association that
 makes sense to be named one thing in your code, but another when data is serialized.
-You can use the <code:key</code> option to specify a different name for an association. 
+You can use the <code:key</code> option to specify a different name for an association.
 Here is an exmaple:
 
 <pre lang="ruby">
