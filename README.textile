@@ -582,3 +582,17 @@ embedded associations will not recursively include associations.
 
 When generating an Array using +render json: posts+, the controller will invoke
 the +as_json+ method, which will include its associations and its root.
+
+ArraySerializer supports also +Special Association Serializers+.
+
+<pre lang="ruby">
+class ArraySerializer < ActiveModel::ArraySerializer
+  class CommentSerializer < ActiveModel::Serializer
+    attributes :id, :title
+  end
+end
+</pre>
+
+In other words, if a ArraySerializer is trying to serialize comments, it will first
+look for ArraySerializer::CommentSerializer before falling back to CommentSerializer
+and finally comment.as_json.

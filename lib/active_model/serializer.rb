@@ -17,12 +17,19 @@ module ActiveModel
 
     def serializable_array
       @object.map do |item|
-        if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
+        if item.respond_to?(:active_model_serializer) && (serializer = serializer_class(item))
           serializer.new(item, scope)
         else
           item
         end
       end
+    end
+
+    def serializer_class(item)
+      const_name = "#{self.class.name}::#{item.class.name.demodulize}Serializer"
+      const_name.constantize
+    rescue NameError => e
+      item.active_model_serializer
     end
 
     def as_json(*args)
