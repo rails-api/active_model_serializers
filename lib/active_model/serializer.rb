@@ -26,10 +26,8 @@ module ActiveModel
     end
 
     def serializer_class(item)
-      const_name = "#{self.class.name}::#{item.class.name.demodulize}Serializer"
-      const_name.constantize
-    rescue NameError => e
-      item.active_model_serializer
+      const_name = :"#{item.class.name.demodulize}Serializer"
+      self.class.const_defined?(const_name) ? self.class.const_get(const_name) : item.active_model_serializer
     end
 
     def as_json(*args)
