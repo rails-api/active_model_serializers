@@ -228,8 +228,8 @@ class SerializerTest < ActiveModel::TestCase
     json = blog_serializer.new(blog, user).as_json
     assert_equal({
      :posts => [{
-       :title => "test", 
-       :body => nil, 
+       :title => "test",
+       :body => nil,
        :comments => []
      }]
     }, json)
@@ -459,6 +459,27 @@ class SerializerTest < ActiveModel::TestCase
     ], serializer.as_json)
   end
 
+  class CustomArraySerializer < ActiveModel::ArraySerializer
+    class UserSerializer < ActiveModel::Serializer
+      attributes :first_name
+    end
+  end
+
+  def test_implicity_detection_for_array_serializer
+    model    = Model.new
+    user     = User.new
+    comments = Comment.new(:title => "Comment1", :id => 1)
+    array = [model, user, comments]
+
+   serializer = CustomArraySerializer.new(array, {:scope => true})
+
+    assert_equal([
+      { :model => "Model" },
+      { :user => { :first_name => "Jose" } },
+      { :comment => { :title => "Comment1" } }
+    ], serializer.as_json)
+  end
+
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
   end
@@ -470,7 +491,7 @@ class SerializerTest < ActiveModel::TestCase
 
   def test_associations_with_as
     posts = [
-      Post.new(:title => 'First Post', :body => 'text'), 
+      Post.new(:title => 'First Post', :body => 'text'),
       Post.new(:title => 'Second Post', :body => 'text')
     ]
     user = User.new
@@ -488,15 +509,15 @@ class SerializerTest < ActiveModel::TestCase
           {:title => 'Second Post', :body => 'text', :comments => []}
         ],
         :user => {
-          :first_name => "Jose", 
-          :last_name => "Valim", :ok => true, 
+          :first_name => "Jose",
+          :last_name => "Valim", :ok => true,
           :scope => true
         }
       }
     }, serializer.as_json)
   end
 
-  def test_implicity_detection_for_association_serializers 
+  def test_implicity_detection_for_association_serializers
     implicit_serializer = Class.new(ActiveModel::Serializer) do
       root :custom_blog
       const_set(:UserSerializer, UserSerializer)
@@ -507,7 +528,7 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     posts = [
-      Post.new(:title => 'First Post', :body => 'text', :comments => []), 
+      Post.new(:title => 'First Post', :body => 'text', :comments => []),
       Post.new(:title => 'Second Post', :body => 'text', :comments => [])
     ]
     user = User.new
@@ -525,8 +546,8 @@ class SerializerTest < ActiveModel::TestCase
           {:title => 'Second Post', :body => 'text', :comments => []}
         ],
         :user => {
-          :first_name => "Jose", 
-          :last_name => "Valim", :ok => true, 
+          :first_name => "Jose",
+          :last_name => "Valim", :ok => true,
           :scope => true
         }
       }
