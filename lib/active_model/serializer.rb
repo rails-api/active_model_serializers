@@ -11,14 +11,15 @@ module ActiveModel
   class ArraySerializer
     attr_reader :object, :scope
 
-    def initialize(object, scope)
-      @object, @scope = object, scope
+    def initialize(object, scope, options={})
+      @object, @scope, @options = object, scope, options
+      @hash = options[:hash]
     end
 
     def serializable_array
       @object.map do |item|
         if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
-          serializer.new(item, scope)
+          serializer.new(item, scope, :hash => @hash)
         else
           item
         end
@@ -26,7 +27,14 @@ module ActiveModel
     end
 
     def as_json(*args)
-      serializable_array.as_json(*args)
+      @hash = {}
+      array = serializable_array.as_json(*args)
+
+      if root = @options[:root]
+        @hash.merge!(root => array)
+      else
+        array
+      end
     end
   end
 
@@ -75,9 +83,9 @@ module ActiveModel
       end
 
       class HasMany < Config #:nodoc:
-        def serialize(collection, scope)
+        def serialize(collection, scope, options)
           collection.map do |item|
-            serializer.new(item, scope).serializable_hash
+            serializer.new(item, scope, options).serializable_hash
           end
         end
 
@@ -92,8 +100,8 @@ module ActiveModel
       end
 
       class HasOne < Config #:nodoc:
-        def serialize(object, scope)
-          object && serializer.new(object, scope).serializable_hash
+        def serialize(object, scope, options)
+          object && serializer.new(object, scope, options).serializable_hash
         end
 
         def serialize_ids(object, scope)
@@ -245,19 +253,20 @@ module ActiveModel
 
     attr_reader :object, :scope
 
-    def initialize(object, scope)
-      @object, @scope = object, scope
+    def initialize(object, scope, options={})
+      @object, @scope, @options = object, scope, options
+      @hash = options[:hash]
     end
 
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(*)
-      if _root
-        hash = { _root => serializable_hash }
-        hash.merge!(associations) if _root_embed
+      if root = @options[:root] || _root
+        @hash = hash = {}
+        hash.merge!(root => serializable_hash)
         hash
       else
-        serializable_hash
+        @hash = serializable_hash
       end
     end
 
@@ -265,11 +274,22 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       if _embed == :ids
+        merge_associations(@hash, associations) if _root_embed
         attributes.merge(association_ids)
       elsif _embed == :objects
         attributes.merge(associations)
       else
         attributes
+      end
+    end
+
+    def merge_associations(hash, associations)
+      associations.each do |key, value|
+        if hash[key]
+          hash[key] |= value
+        elsif value
+          hash[key] = value
+        end
       end
     end
 
@@ -280,7 +300,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.key] = association.serialize(associated_object, scope)
+        hash[association.key] = association.serialize(associated_object, scope, :hash => @hash)
       end
 
       hash
