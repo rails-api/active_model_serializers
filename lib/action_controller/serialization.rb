@@ -29,6 +29,7 @@ module ActionController
 
     included do
       class_attribute :_serialization_scope
+      self._serialization_scope = :current_user
     end
 
     def serialization_scope
@@ -37,7 +38,7 @@ module ActionController
 
     def _render_option_json(json, options)
       if json.respond_to?(:active_model_serializer) && (serializer = json.active_model_serializer)
-        json = serializer.new(json, serialization_scope)
+        json = serializer.new(json, serialization_scope, options)
       end
       super
     end

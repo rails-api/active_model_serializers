@@ -15,12 +15,14 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class JsonSerializer
-    def initialize(object, scope)
-      @object, @scope = object, scope
+    def initialize(object, scope, options={})
+      @object, @scope, @options = object, scope, options
     end
 
     def as_json(*)
-      { :object => @object.as_json, :scope => @scope.as_json }
+      hash = { :object => @object.as_json, :scope => @scope.as_json }
+      hash.merge!(:options => true) if @options[:options]
+      hash
     end
   end
 
@@ -87,6 +89,11 @@ class RenderJsonTest < ActionController::TestCase
     def render_json_with_serializer
       @current_user = Struct.new(:as_json).new(:current_user => true)
       render :json => JsonSerializable.new
+    end
+
+    def render_json_with_serializer_and_options
+      @current_user = Struct.new(:as_json).new(:current_user => true)
+      render :json => JsonSerializable.new, :options => true
     end
 
     def render_json_with_serializer_api_but_without_serializer
@@ -163,6 +170,13 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_with_serializer
     assert_match '"scope":{"current_user":true}', @response.body
     assert_match '"object":{"serializable_object":true}', @response.body
+  end
+
+  def test_render_json_with_serializer_and_options
+    get :render_json_with_serializer_and_options
+    assert_match '"scope":{"current_user":true}', @response.body
+    assert_match '"object":{"serializable_object":true}', @response.body
+    assert_match '"options":true', @response.body
   end
 
   def test_render_json_with_serializer_api_but_without_serializer

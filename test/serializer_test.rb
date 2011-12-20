@@ -70,7 +70,7 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   class CommentSerializer
-    def initialize(comment, scope)
+    def initialize(comment, scope, options={})
       @comment, @scope = comment, scope
     end
 
@@ -557,7 +557,7 @@ class SerializerTest < ActiveModel::TestCase
     Class.new do
       class << self
         def columns_hash
-          { :name => { :type => :string }, :age => { :type => :integer } }
+          { "name" => Struct.new(:type).new(:string), "age" => Struct.new(:type).new(:integer) }
         end
 
         def reflect_on_association(name)
@@ -733,5 +733,134 @@ class SerializerTest < ActiveModel::TestCase
         :id => 1
       }
     }, serializer.as_json)
+  end
+
+  def test_root_provided_in_options
+    author_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :id, :name
+    end
+
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :post
+
+      attributes :title, :body
+      has_one :author, :serializer => author_serializer
+    end
+
+    post_class = Class.new(Model) do
+      attr_accessor :author
+    end
+
+    author_class = Class.new(Model)
+
+    post = post_class.new(:title => "New Post", :body => "It's a new post!")
+    author = author_class.new(:id => 5, :name => "Tom Dale")
+    post.author = author
+
+    hash = serializer_class.new(post, nil, :root => :blog_post)
+
+    assert_equal({
+      :blog_post => {
+        :title => "New Post",
+        :body => "It's a new post!",
+        :author => { :id => 5, :name => "Tom Dale" }
+      }
+    }, hash.as_json)
+  end
+
+  def test_serializer_has_access_to_root_object
+    hash_object = nil
+
+    author_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :id, :name
+
+      define_method :serializable_hash do
+        hash_object = @hash
+        super()
+      end
+    end
+
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :post
+
+      attributes :title, :body
+      has_one :author, :serializer => author_serializer
+    end
+
+    post_class = Class.new(Model) do
+      attr_accessor :author
+    end
+
+    author_class = Class.new(Model)
+
+    post = post_class.new(:title => "New Post", :body => "It's a new post!")
+    author = author_class.new(:id => 5, :name => "Tom Dale")
+    post.author = author
+
+    expected = serializer_class.new(post, nil).as_json
+    assert_equal expected, hash_object
+  end
+
+  # the point of this test is to illustrate that deeply nested serializers
+  # still side-load at the root.
+  def test_embed_with_include_inserts_at_root
+    tag_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :id, :name
+    end
+
+    comment_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      attributes :id, :body
+      has_many :tags, :serializer => tag_serializer
+    end
+
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      attributes :id, :title, :body
+      has_many :comments, :serializer => comment_serializer
+    end
+
+    post_class = Class.new(Model) do
+      attr_accessor :comments
+
+      define_method :active_model_serializer do
+        post_serializer
+      end
+    end
+
+    comment_class = Class.new(Model) do
+      attr_accessor :tags
+    end
+
+    tag_class = Class.new(Model)
+
+    post = post_class.new(:title => "New Post", :body => "NEW POST", :id => 1)
+    comment1 = comment_class.new(:body => "EWOT", :id => 1)
+    comment2 = comment_class.new(:body => "YARLY", :id => 2)
+    tag1 = tag_class.new(:name => "lolcat", :id => 1)
+    tag2 = tag_class.new(:name => "nyancat", :id => 2)
+    tag3 = tag_class.new(:name => "violetcat", :id => 3)
+
+    post.comments = [comment1, comment2]
+    comment1.tags = [tag1, tag3]
+    comment2.tags = [tag1, tag2]
+
+    actual = ActiveModel::ArraySerializer.new([post], nil, :root => :posts).as_json
+    assert_equal({
+      :posts => [
+        { :title => "New Post", :body => "NEW POST", :id => 1, :comments => [1,2] }
+      ],
+
+      :comments => [
+        { :body => "EWOT", :id => 1, :tags => [1,3] },
+        { :body => "YARLY", :id => 2, :tags => [1,2] }
+      ],
+
+      :tags => [
+        { :name => "lolcat", :id => 1 },
+        { :name => "violetcat", :id => 3 },
+        { :name => "nyancat", :id => 2 }
+      ]
+    }, actual)
   end
 end
