@@ -193,6 +193,7 @@ class SerializerTest < ActiveModel::TestCase
     }, json)
   end
 
+  # FIXME this behavior has changed
   def test_implicit_serializer
     author_serializer = Class.new(ActiveModel::Serializer) do
       attributes :first_name
