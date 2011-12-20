@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/josevalim/active_model_serializers.png)](http://travis-ci.org/josevalim/active_model_serializers)
+"!https://secure.travis-ci.org/josevalim/active_model_serializers.png!":http://travis-ci.org/josevalim/active_model_serializers
 
 
 h2. Rails Serializers
