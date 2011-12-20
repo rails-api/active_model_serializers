@@ -65,20 +65,18 @@ module ActiveModel
   class Serializer
     module Associations #:nodoc:
       class Config < Struct.new(:name, :options) #:nodoc:
-        def serializer
-          options[:serializer]
-        end
-
         def key
           options[:key] || name
+        end
+
+        def serializer
+          options[:serializer]
         end
       end
 
       class HasMany < Config #:nodoc:
         def serialize(collection, scope)
-          collection.map do |item|
-            serializer.new(item, scope).serializable_hash
-          end
+          ArraySerializer.new(collection, scope).serializable_array.map(&:serializable_hash)
         end
 
         def serialize_ids(collection, scope)
@@ -93,7 +91,13 @@ module ActiveModel
 
       class HasOne < Config #:nodoc:
         def serialize(object, scope)
-          object && serializer.new(object, scope).serializable_hash
+          return unless object
+
+          if serializer
+            serializer.new(object, scope).serializable_hash
+          else
+            object.active_model_serializer.new(object, scope).serializable_hash
+          end
         end
 
         def serialize_ids(object, scope)
@@ -132,11 +136,6 @@ module ActiveModel
         self._associations += attrs.map do |attr|
           unless method_defined?(attr)
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
-          end
-
-          options[:serializer] ||= begin
-            serializer_class = (options[:key] || attr).to_s.classify
-            const_get("#{serializer_class}Serializer")
           end
 
           klass.new(attr, options)

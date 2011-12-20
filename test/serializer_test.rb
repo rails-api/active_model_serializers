@@ -51,7 +51,11 @@ class SerializerTest < ActiveModel::TestCase
     attributes :first_name, :last_name
 
     def serializable_hash
-      attributes.merge(:ok => true).merge(scope)
+      if scope.is_a? Hash
+        attributes.merge(:ok => true).merge(scope)
+      else
+        attributes.merge(:ok => true)
+      end
     end
   end
 
