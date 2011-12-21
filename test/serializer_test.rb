@@ -703,7 +703,19 @@ class SerializerTest < ActiveModel::TestCase
     author = author_class.new(:id => 5, :name => "Tom Dale")
     post.author = author
 
-    hash = serializer_class.new(post, nil, :root => :blog_post)
+    assert_equal({
+      :blog_post => {
+        :title => "New Post",
+        :body => "It's a new post!",
+        :author => { :id => 5, :name => "Tom Dale" }
+      }
+    }, serializer_class.new(post, nil, :root => :blog_post).as_json)
+
+    assert_equal({
+      :title => "New Post",
+      :body => "It's a new post!",
+      :author => { :id => 5, :name => "Tom Dale" }
+    }, serializer_class.new(post, nil, :root => false).as_json)
 
     assert_equal({
       :blog_post => {
@@ -711,7 +723,13 @@ class SerializerTest < ActiveModel::TestCase
         :body => "It's a new post!",
         :author => { :id => 5, :name => "Tom Dale" }
       }
-    }, hash.as_json)
+    }, serializer_class.new(post, nil).as_json(:root => :blog_post))
+
+    assert_equal({
+      :title => "New Post",
+      :body => "It's a new post!",
+      :author => { :id => 5, :name => "Tom Dale" }
+    }, serializer_class.new(post, nil).as_json(:root => false))
   end
 
   def test_serializer_has_access_to_root_object

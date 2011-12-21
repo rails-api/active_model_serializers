@@ -201,6 +201,9 @@ module ActiveModel
       # methods, provided by default by ActiveRecord. You can implement these
       # methods on your custom models if you want the serializer's schema method
       # to work.
+      #
+      # TODO: This is currently coupled to Active Record. We need to
+      # figure out a way to decouple those two.
       def schema
         klass = model_class
         columns = klass.columns_hash
@@ -241,7 +244,6 @@ module ActiveModel
 
       def inherited(klass) #:nodoc:
         return if klass.anonymous?
-
         name = klass.name.demodulize.underscore.sub(/_serializer$/, '')
 
         klass.class_eval do
@@ -260,8 +262,9 @@ module ActiveModel
 
     # Returns a json representation of the serializable
     # object including the root.
-    def as_json(*)
-      if root = @options[:root] || _root
+    def as_json(options=nil)
+      options ||= {}
+      if root = options.fetch(:root, @options.fetch(:root, _root))
         @hash = hash = {}
         hash.merge!(root => serializable_hash)
         hash
