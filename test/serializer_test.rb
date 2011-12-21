@@ -78,8 +78,13 @@ class SerializerTest < ActiveModel::TestCase
       { :title => @comment.read_attribute_for_serialization(:title) }
     end
 
-    def as_json(*)
-      { :comment => serializable_hash }
+    def as_json(options=nil)
+      options ||= {}
+      if options[:root] == false
+        serializable_hash
+      else
+        { :comment => serializable_hash }
+      end
     end
   end
 
@@ -189,65 +194,17 @@ class SerializerTest < ActiveModel::TestCase
     }, json)
   end
 
-  def test_implicit_serializer
-    author_serializer = Class.new(ActiveModel::Serializer) do
-      attributes :first_name
-    end
-
-    blog_serializer = Class.new(ActiveModel::Serializer) do
-      const_set(:AuthorSerializer, author_serializer)
-      has_one :author
-    end
-
-    user = User.new
-    blog = Blog.new
-    blog.author = user
-
-    json = blog_serializer.new(blog, user).as_json
-    assert_equal({
-      :author => {
-        :first_name => "Jose"
-      }
-    }, json)
-  end
-
-  def test_implicit_serializer_for_has_many
-    blog_with_posts = Class.new(Blog) do
-      attr_accessor :posts
-    end
-
-    blog_serializer = Class.new(ActiveModel::Serializer) do
-      const_set(:PostSerializer, PostSerializer)
-      has_many :posts
-    end
-
-    user = User.new
-    blog = blog_with_posts.new
-    blog.posts = [Post.new(:title => 'test')]
-
-    json = blog_serializer.new(blog, user).as_json
-    assert_equal({
-     :posts => [{
-       :title => "test", 
-       :body => nil, 
-       :comments => []
-     }]
-    }, json)
-  end
-
   def test_overridden_associations
     author_serializer = Class.new(ActiveModel::Serializer) do
       attributes :first_name
     end
 
     blog_serializer = Class.new(ActiveModel::Serializer) do
-      const_set(:PersonSerializer, author_serializer)
-
       def person
         object.author
       end
 
-      has_one :person
+      has_one :person, :serializer => author_serializer
     end
 
     user = User.new
@@ -703,8 +660,7 @@ class SerializerTest < ActiveModel::TestCase
     serializer = polymorphic_serializer.new(blog, user)
 
     assert_equal({
-      :writer => {
-        :writer_type => 'PolymorphicUser',
+      :polymorphic_user => {
         :first_name => "Jose",
         :last_name => "Valim"
       }
@@ -728,10 +684,7 @@ class SerializerTest < ActiveModel::TestCase
     serializer = polymorphic_serializer.new(blog, user)
 
     assert_equal({
-      :writer => {
-        :writer_type => 'PolymorphicUser',
-        :id => 1
-      }
+      :polymorphic_user => 1
     }, serializer.as_json)
   end
 
@@ -757,7 +710,19 @@ class SerializerTest < ActiveModel::TestCase
     author = author_class.new(:id => 5, :name => "Tom Dale")
     post.author = author
 
-    hash = serializer_class.new(post, nil, :root => :blog_post)
+    assert_equal({
+      :blog_post => {
+        :title => "New Post",
+        :body => "It's a new post!",
+        :author => { :id => 5, :name => "Tom Dale" }
+      }
+    }, serializer_class.new(post, nil, :root => :blog_post).as_json)
+
+    assert_equal({
+      :title => "New Post",
+      :body => "It's a new post!",
+      :author => { :id => 5, :name => "Tom Dale" }
+    }, serializer_class.new(post, nil, :root => false).as_json)
 
     assert_equal({
       :blog_post => {
@@ -765,7 +730,13 @@ class SerializerTest < ActiveModel::TestCase
         :body => "It's a new post!",
         :author => { :id => 5, :name => "Tom Dale" }
       }
-    }, hash.as_json)
+    }, serializer_class.new(post, nil).as_json(:root => :blog_post))
+
+    assert_equal({
+      :title => "New Post",
+      :body => "It's a new post!",
+      :author => { :id => 5, :name => "Tom Dale" }
+    }, serializer_class.new(post, nil).as_json(:root => false))
   end
 
   def test_serializer_has_access_to_root_object

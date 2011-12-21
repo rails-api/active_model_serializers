@@ -1,7 +1,5 @@
 require "active_support/core_ext/class/attribute"
-require "active_support/core_ext/string/inflections"
 require "active_support/core_ext/module/anonymous"
-require "set"
 
 module ActiveModel
   # Active Model Array Serializer
@@ -84,51 +82,64 @@ module ActiveModel
         def polymorphic?
           options[:polymorphic]
         end
+
+        protected
+
+        def find_serializable(object, scope, context, options)
+          if serializer
+            serializer.new(object, scope, options)
+          elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
+            ams.new(object, scope, options)
+          else
+            object
+          end
+        end
       end
 
       class HasMany < Config #:nodoc:
-        def serialize(collection, scope, options)
-          collection.map do |item|
-            serializer.new(item, scope, options).serializable_hash
+        def serialize(collection, scope, context, options)
+          array = collection.map do |item|
+            find_serializable(item, scope, context, options).as_json(:root => false)
           end
+          { key => array }
         end
 
         def serialize_ids(collection, scope)
-          # use named scopes if they are present
+          # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
 
-          collection.map do |item|
+          array = collection.map do |item|
             item.read_attribute_for_serialization(:id)
           end
+
+          { key => array }
         end
       end
 
       class HasOne < Config #:nodoc:
-        def serialize(object, scope, options)
-          return unless object
-
+        def serialize(object, scope, context, options)
           if polymorphic?
-            polymorphic_type = object.class.to_s.demodulize
-            serializer_class = "#{object.class.to_s}Serializer".constantize
-
-            serializer_class.new(object, scope, options).serializable_hash.merge({
-              "#{name}_type".to_sym => polymorphic_type
-            })
+            if object
+              find_serializable(object, scope, context, options).as_json(:root => object.class.to_s.demodulize.underscore.to_sym)
+            else
+              {}
+            end
           else
-            serializer.new(object, scope, options).serializable_hash
+            { key => object && find_serializable(object, scope, context, options).as_json(:root => false) }
           end
         end
 
+
         def serialize_ids(object, scope)
-          return unless object
 
           if polymorphic?
             { 
-              :id => object.read_attribute_for_serialization(:id),
-              "#{name}_type".to_sym => object.class.to_s.demodulize
+              object.class.to_s.demodulize.underscore.to_sym => object.read_attribute_for_serialization(:id),
             }
+          elsif object
+            { key => object.read_attribute_for_serialization(:id) }
           else
-            object.read_attribute_for_serialization(:id)
+            { key => nil }
           end
         end
       end
@@ -165,12 +176,6 @@ module ActiveModel
           unless method_defined?(attr)
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
-
-          options[:serializer] ||= options[:polymorphic] || begin
-            serializer_class = (options[:key] || attr).to_s.classify
-            const_get("#{serializer_class}Serializer")
-          end
-
           klass.new(attr, options)
         end
       end
@@ -225,6 +230,9 @@ module ActiveModel
       # methods, provided by default by ActiveRecord. You can implement these
       # methods on your custom models if you want the serializer's schema method
       # to work.
+      #
+      # TODO: This is currently coupled to Active Record. We need to
+      # figure out a way to decouple those two.
       def schema
         klass = model_class
         columns = klass.columns_hash
@@ -265,7 +273,6 @@ module ActiveModel
 
       def inherited(klass) #:nodoc:
         return if klass.anonymous?
-
         name = klass.name.demodulize.underscore.sub(/_serializer$/, '')
 
         klass.class_eval do
@@ -284,8 +291,9 @@ module ActiveModel
 
     # Returns a json representation of the serializable
     # object including the root.
-    def as_json(*)
-      if root = @options[:root] || _root
+    def as_json(options=nil)
+      options ||= {}
+      if root = options.fetch(:root, @options.fetch(:root, _root))
         @hash = hash = {}
         hash.merge!(root => serializable_hash)
         hash
@@ -307,6 +315,8 @@ module ActiveModel
       end
     end
 
+    # Merge associations for embed case by always adding
+    # root associations to the given hash.
     def merge_associations(hash, associations)
       associations.each do |key, value|
         if hash[key]
@@ -324,7 +334,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.key] = association.serialize(associated_object, scope, :hash => @hash)
+        hash.merge! association.serialize(associated_object, scope, self, :hash => @hash)
       end
 
       hash
@@ -337,7 +347,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.key] = association.serialize_ids(associated_object, scope)
+        hash.merge! association.serialize_ids(associated_object, scope)
       end
 
       hash
