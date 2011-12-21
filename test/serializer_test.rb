@@ -327,11 +327,12 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_embed_ids
-    serializer = post_serializer(:super)
-
-    serializer.class_eval do
-      root :post
+    serializer = Class.new(ActiveModel::Serializer) do
       embed :ids
+      root :post
+
+      attributes :title, :body
+      has_many :comments, :serializer => CommentSerializer
     end
 
     post = Post.new(:title => "New Post", :body => "Body of new post", :email => "tenderlove@tenderlove.com")
@@ -350,11 +351,12 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_embed_ids_include_true
-    serializer = post_serializer(:super)
-
-    serializer.class_eval do
-      root :post
+    serializer = Class.new(ActiveModel::Serializer) do
       embed :ids, :include => true
+      root :post
+
+      attributes :title, :body
+      has_many :comments, :serializer => CommentSerializer
     end
 
     post = Post.new(:title => "New Post", :body => "Body of new post", :email => "tenderlove@tenderlove.com")
