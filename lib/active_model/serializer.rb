@@ -80,32 +80,47 @@ module ActiveModel
         def key
           options[:key] || name
         end
+
+        protected
+
+        def find_serializable(object, scope, context, options)
+          if serializer
+            serializer.new(object, scope, options)
+          elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
+            ams.new(object, scope, options)
+          else
+            object
+          end
+        end
       end
 
       class HasMany < Config #:nodoc:
-        def serialize(collection, scope, options)
-          collection.map do |item|
-            serializer.new(item, scope, options).serializable_hash
+        def serialize(collection, scope, context, options)
+          array = collection.map do |item|
+            find_serializable(item, scope, context, options).as_json(:root => false)
           end
+          { key => array }
         end
 
         def serialize_ids(collection, scope)
-          # use named scopes if they are present
+          # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
 
-          collection.map do |item|
+          array = collection.map do |item|
             item.read_attribute_for_serialization(:id)
           end
+
+          { key => array }
         end
       end
 
       class HasOne < Config #:nodoc:
-        def serialize(object, scope, options)
-          object && serializer.new(object, scope, options).serializable_hash
+        def serialize(object, scope, context, options)
+          { key => object && find_serializable(object, scope, context, options).as_json(:root => false) }
         end
 
         def serialize_ids(object, scope)
-          object && object.read_attribute_for_serialization(:id)
+          { key => object && object.read_attribute_for_serialization(:id) }
         end
       end
     end
@@ -141,12 +156,6 @@ module ActiveModel
           unless method_defined?(attr)
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
-
-          options[:serializer] ||= begin
-            serializer_class = (options[:key] || attr).to_s.classify
-            const_get("#{serializer_class}Serializer")
-          end
-
           klass.new(attr, options)
         end
       end
@@ -286,6 +295,8 @@ module ActiveModel
       end
     end
 
+    # Merge associations for embed case by always adding
+    # root associations to the given hash.
     def merge_associations(hash, associations)
       associations.each do |key, value|
         if hash[key]
@@ -303,7 +314,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.key] = association.serialize(associated_object, scope, :hash => @hash)
+        hash.merge! association.serialize(associated_object, scope, self, :hash => @hash)
       end
 
       hash
@@ -316,7 +327,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash[association.key] = association.serialize_ids(associated_object, scope)
+        hash.merge! association.serialize_ids(associated_object, scope)
       end
 
       hash

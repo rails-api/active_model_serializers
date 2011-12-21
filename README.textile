@@ -456,36 +456,7 @@ The +association_ids+ helper will use the overridden version of the association,
 this case, +association_ids+ will only include the ids of the comments provided by the
 +comments+ method.
 
-
-h3. Special Association Serializers
-
-So far, associations defined in serializers use either the +as_json+ method on the model
-or the defined serializer for the association type. Sometimes, you may want to serialize
-associated models differently when they are requested as part of another resource than
-when they are requested on their own.
-
-For instance, we might want to provide the full comment when it is requested directly,
-but only its title when requested as part of the post. To achieve this, you can define
-a serializer for associated objects nested inside the main serializer.
-
-<pre lang="ruby">
-class PostSerializer < ActiveModel::Serializer
-  class CommentSerializer < ActiveModel::Serializer
-    attributes :id, :title
-  end
-
-  # same as before
-  # ...
-end
-</pre>
-
-In other words, if a +PostSerializer+ is trying to serialize comments, it will first
-look for +PostSerializer::CommentSerializer+ before falling back to +CommentSerializer+
-and finally +comment.as_json+.
-
-h3. Overriding the Defaults
-
-h4. Authorization Scope
+h3. Authorization Scope
 
 By default, the authorization scope for serializers is +:current_user+. This means
 that when you call +render json: @post+, the controller will automatically call
