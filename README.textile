@@ -420,8 +420,8 @@ Would generate
 }
 </pre>
 
-*NOTE*: The `:embed` option defaults to whatever the `embed` method is. This means, that all
-associations will be embedded based on what `embed` is set to at declaration time. Here is 
+*NOTE*: The <code>:embed</code> option defaults to whatever the <code>embed</code> method is. This means, that all
+associations will be embedded based on what <code>embed</code> is set to at declaration time. Here is 
 an example
 
 <pre lang="ruby">
@@ -450,7 +450,7 @@ has_many :links
 has_many :track_backs
 </pre>
 
-You of course can explictly set `:embed` for any association.
+You of course can explictly set <code>:embed</code> for any association.
 
 h4. Modifying Associations
 
