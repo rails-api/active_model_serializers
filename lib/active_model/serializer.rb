@@ -26,7 +26,8 @@ module ActiveModel
 
     def as_json(*args)
       @hash = {}
-      array = serializable_array.as_json(*args)
+
+      array = serializable_array.map(&:serializable_hash)
 
       if root = @options[:root]
         @hash.merge!(root => array)

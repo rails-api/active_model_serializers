@@ -416,6 +416,20 @@ class SerializerTest < ActiveModel::TestCase
     ], serializer.as_json)
   end
 
+  def test_array_serializer
+    comment1 = Comment.new(:title => "Comment1", :id => 1)
+    comment2 = Comment.new(:title => "Comment2", :id => 2)
+
+    array = [ comment1, comment2 ]
+
+    serializer = array.active_model_serializer.new(array, nil, :root => :comments)
+
+    assert_equal({ :comments => [
+      { :title => "Comment1" },
+      { :title => "Comment2" }
+    ]}, serializer.as_json)
+  end
+
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
   end
