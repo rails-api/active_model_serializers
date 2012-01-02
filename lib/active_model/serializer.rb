@@ -80,6 +80,18 @@ module ActiveModel
           options[:key] || name
         end
 
+        def embed
+          options[:embed]
+        end
+
+        def serialize(object, scope, context, options)
+          if embed == :ids
+            serialize_ids(object, scope)
+          elsif embed == :objects
+            serialize_objects(object, scope, context, options)
+          end
+        end
+
         protected
 
         def find_serializable(object, scope, context, options)
@@ -94,7 +106,7 @@ module ActiveModel
       end
 
       class HasMany < Config #:nodoc:
-        def serialize(collection, scope, context, options)
+        def serialize_objects(collection, scope, context, options)
           array = collection.map do |item|
             find_serializable(item, scope, context, options).as_json(:root => false)
           end
@@ -114,7 +126,7 @@ module ActiveModel
       end
 
       class HasOne < Config #:nodoc:
-        def serialize(object, scope, context, options)
+        def serialize_objects(object, scope, context, options)
           { key => object && find_serializable(object, scope, context, options).as_json(:root => false) }
         end
 
@@ -155,6 +167,9 @@ module ActiveModel
           unless method_defined?(attr)
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
+
+          options[:embed] ||= _embed
+
           klass.new(attr, options)
         end
       end
@@ -284,14 +299,8 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      if _embed == :ids
-        merge_associations(@hash, associations) if _root_embed
-        attributes.merge(association_ids)
-      elsif _embed == :objects
-        attributes.merge(associations)
-      else
-        attributes
-      end
+      merge_associations(@hash, association_objects) if _root_embed
+      attributes.merge associations
     end
 
     # Merge associations for embed case by always adding
@@ -307,7 +316,7 @@ module ActiveModel
     end
 
     # Returns a hash representation of the serializable
-    # object associations.
+    # associations based on their embed settings
     def associations
       hash = {}
 
@@ -318,9 +327,22 @@ module ActiveModel
 
       hash
     end
-
+ 
     # Returns a hash representation of the serializable
-    # object associations ids.
+    # object associations.
+    def association_objects
+      hash = {}
+
+      _associations.each do |association|
+        associated_object = send(association.name)
+        hash.merge! association.serialize_objects(associated_object, scope, self, :hash => @hash)
+      end
+
+      hash
+    end
+    #
+    # Returns a hash representation of the serializable
+    # id associations.
     def association_ids
       hash = {}
 
@@ -331,6 +353,7 @@ module ActiveModel
 
       hash
     end
+
 
     # Returns a hash representation of the serializable
     # object attributes.

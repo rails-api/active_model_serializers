@@ -350,6 +350,108 @@ for the current user.
 
 NOTE: The logic for deciding which comments a user should see still belongs in the model layer. In general, you should encapsulate concerns that require making direct Active Record queries in scopes or public methods on your models.
 
+h4. Embedding Associated Objects
+
+You can also choose to embed associated objects or their ids. You can set this as a preference on your serializer
+or override it per association.
+
+<pre lang="ruby">
+class PostSerializer < ActiveModel::Serializer
+  embed :objects # default
+  has_many :comments
+end
+</pre>
+
+Would generate
+
+<pre lang="json">
+{
+  :post => {
+    :title => 'Hello World!',
+    :comments => [
+      { :text => 'Comment 1' },
+      { :text => 'Comment 2' }
+    ]
+  }
+}
+</pre>
+
+You can also embed ids only if you want.
+
+<pre lang="ruby">
+class PostSerializer < ActiveModel::Serializer
+  embed :ids
+  has_many :comments
+end
+</pre>
+
+Would generate
+
+<pre lang="json">
+{
+  :post => {
+    :title => 'Hello World!',
+    :comments => [1,2,3,4]
+  }
+}
+</pre>
+
+You may also you a combination of ids and objects. 
+
+<pre lang="ruby">
+class PostSerializer < ActiveModel::Serializer
+  has_many :comments, :embed => :objects
+  has_many :tags, :embed => :ids
+end
+</pre>
+
+Would generate
+
+<pre lang="json">
+{
+  :post => {
+    :title => 'Hello World!',
+    :comments => [
+      { :text => 'Comment 1' },
+      { :text => 'Comment 2' }
+    ], 
+    :tags => [1,2,3,4]
+  }
+}
+</pre>
+
+*NOTE*: The <code>:embed</code> option defaults to whatever the <code>embed</code> method is. This means, that all
+associations will be embedded based on what <code>embed</code> is set to at declaration time. Here is 
+an example
+
+<pre lang="ruby">
+# embed defaults to :objects
+has_many :comments # would serialize as objects
+has_many :tags, :embed => :ids # override embed and use ids
+
+embed :ids
+
+has_many :authors # would serialize ids
+has_many :other_things, :embed => :objects # overide the id default now
+</pre>
+
+This means you could declare your object and id associations like this:
+
+<pre lang="ruby">
+embed :objects
+
+has_many :comments
+has_many :authors
+
+embed :ids
+
+has_many :tags
+has_many :links
+has_many :track_backs
+</pre>
+
+You of course can explictly set <code>:embed</code> for any association.
+
 h4. Modifying Associations
 
 You can also rename associations if required. Say for example you have an association that
