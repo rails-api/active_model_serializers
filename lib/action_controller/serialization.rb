@@ -37,6 +37,10 @@ module ActionController
     end
 
     def _render_option_json(json, options)
+      if json.is_a?(Array)
+        options[:root] ||= controller_name
+      end
+
       if json.respond_to?(:active_model_serializer) && (serializer = json.active_model_serializer)
         json = serializer.new(json, serialization_scope, options)
       end

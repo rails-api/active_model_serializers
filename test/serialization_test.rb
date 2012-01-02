@@ -20,9 +20,13 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def as_json(*)
-      hash = { :object => @object.as_json, :scope => @scope.as_json }
+      hash = { :object => serializable_hash, :scope => @scope.as_json }
       hash.merge!(:options => true) if @options[:options]
       hash
+    end
+
+    def serializable_hash
+      @object.as_json
     end
   end
 
@@ -89,6 +93,11 @@ class RenderJsonTest < ActionController::TestCase
     def render_json_with_serializer
       @current_user = Struct.new(:as_json).new(:current_user => true)
       render :json => JsonSerializable.new
+    end
+
+    def render_json_with_serializer_and_implicit_root
+      @current_user = Struct.new(:as_json).new(:current_user => true)
+      render :json => [JsonSerializable.new]
     end
 
     def render_json_with_serializer_and_options
@@ -170,6 +179,11 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_with_serializer
     assert_match '"scope":{"current_user":true}', @response.body
     assert_match '"object":{"serializable_object":true}', @response.body
+  end
+
+  def test_render_json_with_serializer_and_implicit_root
+    get :render_json_with_serializer_and_implicit_root
+    assert_match '"test":[{"serializable_object":true}]', @response.body
   end
 
   def test_render_json_with_serializer_and_options
