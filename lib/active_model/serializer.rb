@@ -120,7 +120,7 @@ module ActiveModel
         def serialize(object, scope, context, options)
           if polymorphic?
             if object
-              find_serializable(object, scope, context, options).as_json(:root => object.class.to_s.demodulize.underscore.to_sym)
+              find_serializable(object, scope, context, options).as_json(:root => polymorphic_key(object))
             else
               {}
             end
@@ -131,16 +131,19 @@ module ActiveModel
 
 
         def serialize_ids(object, scope)
-
           if polymorphic?
             { 
-              object.class.to_s.demodulize.underscore.to_sym => object.read_attribute_for_serialization(:id),
+              polymorphic_key(object) => object.read_attribute_for_serialization(:id),
             }
           elsif object
             { key => object.read_attribute_for_serialization(:id) }
           else
             { key => nil }
           end
+        end
+
+        def polymorphic_key(object)
+          object.class.to_s.demodulize.underscore.to_sym 
         end
       end
     end
