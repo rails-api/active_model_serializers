@@ -652,6 +652,95 @@ class SerializerTest < ActiveModel::TestCase
     }, hash.as_json)
   end
 
+  class PolymorphicUser < User ; end
+
+  class PolymorphicUserSerializer < ActiveModel::Serializer
+    attributes :first_name, :last_name
+  end
+
+  def test_polymorphic_has_one
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new
+    blog = polymorphic_blog.new
+    blog.writer = user
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
+      :polymorphic_user => {
+        :first_name => "Jose",
+        :last_name => "Valim"
+      }
+    }, serializer.as_json)
+  end
+
+  def test_polymorphic_has_one_with_nil
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new
+    blog = polymorphic_blog.new
+    blog.writer = nil
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
+    }, serializer.as_json)
+  end
+
+  def test_polymorphic_has_one_with_ids
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new :id => 1
+    blog = polymorphic_blog.new
+    blog.writer = user
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
+      :polymorphic_user => 1
+    }, serializer.as_json)
+  end
+
+  def test_polymorphic_has_one_id_with_nil
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new
+    blog = polymorphic_blog.new
+    blog.writer = nil
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
+    }, serializer.as_json)
+  end
+
   def test_root_provided_in_options
     author_serializer = Class.new(ActiveModel::Serializer) do
       attributes :id, :name
