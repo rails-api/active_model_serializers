@@ -80,6 +80,10 @@ module ActiveModel
           options[:key] || name
         end
 
+        def polymorphic?
+          options[:polymorphic]
+        end
+
         protected
 
         def find_serializable(object, scope, context, options)
@@ -115,11 +119,34 @@ module ActiveModel
 
       class HasOne < Config #:nodoc:
         def serialize(object, scope, context, options)
-          { key => object && find_serializable(object, scope, context, options).as_json(:root => false) }
+          if polymorphic?
+            if object
+              find_serializable(object, scope, context, options).as_json(:root => polymorphic_key(object))
+            else
+              {}
+            end
+          else
+            { key => object && find_serializable(object, scope, context, options).as_json(:root => false) }
+          end
         end
 
+
         def serialize_ids(object, scope)
-          { key => object && object.read_attribute_for_serialization(:id) }
+          if polymorphic? && object
+            { 
+              polymorphic_key(object) => object.read_attribute_for_serialization(:id),
+            }
+          elsif polymorphic? && !object
+            { }
+          elsif object
+            { key => object.read_attribute_for_serialization(:id) }
+          else
+            { key => nil }
+          end
+        end
+
+        def polymorphic_key(object)
+          object.class.to_s.demodulize.underscore.to_sym 
         end
       end
     end
