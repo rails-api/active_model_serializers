@@ -667,6 +667,25 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
+  def test_polymorphic_has_one_with_nil
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new
+    blog = polymorphic_blog.new
+    blog.writer = nil
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
+    }, serializer.as_json)
+  end
+
   def test_polymorphic_has_one_with_ids
     polymorphic_blog = Class.new do
       attr_accessor :writer
@@ -685,6 +704,26 @@ class SerializerTest < ActiveModel::TestCase
 
     assert_equal({
       :polymorphic_user => 1
+    }, serializer.as_json)
+  end
+
+  def test_polymorphic_has_one_id_with_nil
+    polymorphic_blog = Class.new do
+      attr_accessor :writer
+    end
+
+    polymorphic_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      has_one :writer, :polymorphic => true
+    end
+
+    user = PolymorphicUser.new
+    blog = polymorphic_blog.new
+    blog.writer = nil
+
+    serializer = polymorphic_serializer.new(blog, user)
+
+    assert_equal({
     }, serializer.as_json)
   end
 

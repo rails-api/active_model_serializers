@@ -131,10 +131,12 @@ module ActiveModel
 
 
         def serialize_ids(object, scope)
-          if polymorphic?
+          if polymorphic? && object
             { 
               polymorphic_key(object) => object.read_attribute_for_serialization(:id),
             }
+          elsif polymorphic? && !object
+            { }
           elsif object
             { key => object.read_attribute_for_serialization(:id) }
           else
