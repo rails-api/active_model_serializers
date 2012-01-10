@@ -1,5 +1,6 @@
 require "rubygems"
 require "bundler/setup"
+require "pry"
 
 require "active_model_serializers"
 require "active_support/json"
