@@ -37,9 +37,10 @@ class SerializerTest < ActiveModel::TestCase
     def initialize(attributes)
       super(attributes)
       self.comments ||= []
+      self.author = nil
     end
 
-    attr_accessor :comments
+    attr_accessor :comments, :author
     def active_model_serializer; PostSerializer; end
   end
 
@@ -223,6 +224,7 @@ class SerializerTest < ActiveModel::TestCase
     Class.new(ActiveModel::Serializer) do
       attributes :title, :body
       has_many :comments, :serializer => CommentSerializer
+      has_one :author, :serializer => DefaultUserSerializer
 
       if type != :super
         define_method :serializable_hash do
@@ -244,6 +246,7 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({
       :title => "New Post",
       :body => "Body of new post",
+      :author => nil,
       :comments => [
         { :title => "Comment1" },
         { :title => "Comment2" }
@@ -256,7 +259,7 @@ class SerializerTest < ActiveModel::TestCase
 
     serializer.class_eval do
       def as_json(*)
-        { :post => serializable_hash }.merge(associations)
+        { :post => serializable_hash }.merge(plural_associations)
       end
     end
 
@@ -270,12 +273,14 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "Body of new post",
-        :comments => [1, 2]
+        :comments => [1, 2],
+        :author => nil
       },
       :comments => [
         { :title => "Comment1" },
         { :title => "Comment2" }
-      ]
+      ],
+      :authors => []
     }, serializer.as_json)
   end
 
@@ -344,15 +349,16 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "Body of new post",
-        :comments => [1, 2]
+        :comments => [1, 2],
+        :author => nil
       }
     }, serializer.as_json)
   end
 
   def test_embed_ids_include_true
-    serializer = post_serializer(:super)
+    serializer_class = post_serializer(:super)
 
-    serializer.class_eval do
+    serializer_class.class_eval do
       root :post
       embed :ids, :include => true
     end
@@ -361,18 +367,38 @@ class SerializerTest < ActiveModel::TestCase
     comments = [Comment.new(:title => "Comment1", :id => 1), Comment.new(:title => "Comment2", :id => 2)]
     post.comments = comments
 
-    serializer = serializer.new(post, nil)
+    serializer = serializer_class.new(post, nil)
 
     assert_equal({
       :post => {
         :title => "New Post",
         :body => "Body of new post",
-        :comments => [1, 2]
+        :comments => [1, 2],
+        :author => nil
       },
       :comments => [
         { :title => "Comment1" },
         { :title => "Comment2" }
-      ]
+      ],
+      :authors => []
+    }, serializer.as_json)
+
+    post.author = User.new(:id => 1)
+
+    serializer = serializer_class.new(post, nil)
+
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "Body of new post",
+        :comments => [1, 2],
+        :author => 1
+      },
+      :comments => [
+        { :title => "Comment1" },
+        { :title => "Comment2" }
+      ],
+      :authors => [{ :first_name => "Jose", :last_name => "Valim" }]
     }, serializer.as_json)
   end
 
@@ -394,6 +420,7 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "Body of new post",
+        :author => nil,
         :comments => [
           { :title => "Comment1" },
           { :title => "Comment2" }

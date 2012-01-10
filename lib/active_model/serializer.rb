@@ -105,6 +105,8 @@ module ActiveModel
           { key => array }
         end
 
+        alias serialize_many serialize
+
         def serialize_ids(collection, scope)
           # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
@@ -130,6 +132,20 @@ module ActiveModel
           end
         end
 
+        def serialize_many(object, scope, context, options)
+          if polymorphic?
+            if object
+              find_serializable(object, scope, context, options).as_json(:root => polymorphic_key(object))
+            else
+              {}
+            end
+          else
+            key = self.key.to_s.pluralize.to_sym
+            value = object && find_serializable(object, scope, context, options).as_json(:root => false)
+            value = value ? [value] : []
+            { key => value }
+          end
+        end
 
         def serialize_ids(object, scope)
           if polymorphic? && object
@@ -312,7 +328,7 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       if _embed == :ids
-        merge_associations(@hash, associations) if _root_embed
+        merge_associations(@hash, plural_associations) if _root_embed
         attributes.merge(association_ids)
       elsif _embed == :objects
         attributes.merge(associations)
@@ -341,6 +357,17 @@ module ActiveModel
       _associations.each do |association|
         associated_object = send(association.name)
         hash.merge! association.serialize(associated_object, scope, self, :hash => @hash)
+      end
+
+      hash
+    end
+
+    def plural_associations
+      hash = {}
+
+      _associations.each do |association|
+        associated_object = send(association.name)
+        hash.merge! association.serialize_many(associated_object, scope, self, :hash => @hash)
       end
 
       hash
