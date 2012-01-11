@@ -91,8 +91,9 @@ module ActiveModel
 
         self.options = {}
 
-        def initialize(name, options={})
+        def initialize(name, source, options={})
           @name = name
+          @source = source
           @options = options
         end
 
@@ -108,6 +109,10 @@ module ActiveModel
           option(:serializer)
         end
 
+        def source_serializer
+          @source
+        end
+
         def key
           option(:key) || @name
         end
@@ -116,17 +121,21 @@ module ActiveModel
           option(:name) || @name
         end
 
-        def associated_object(serializer)
-          option(:value) || serializer.send(name)
+        def associated_object
+          option(:value) || source_serializer.send(name)
+        end
+
+        def scope
+          source_serializer.scope
         end
 
       protected
 
-        def find_serializable(object, scope, serializer)
+        def find_serializable(object)
           if target_serializer
-            target_serializer.new(object, scope, serializer.options)
+            target_serializer.new(object, scope, source_serializer.options)
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, scope, serializer.options)
+            ams.new(object, scope, source_serializer.options)
           else
             object
           end
@@ -136,18 +145,18 @@ module ActiveModel
       class HasMany < Config #:nodoc:
         alias plural_key key
 
-        def serialize(serializer, scope)
-          associated_object(serializer).map do |item|
-            find_serializable(item, scope, serializer).serializable_hash
+        def serialize
+          associated_object.map do |item|
+            find_serializable(item).serializable_hash
           end
         end
         alias serialize_many serialize
 
-        def serialize_ids(serializer, scope)
+        def serialize_ids
           # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
 
-          associated_object(serializer).map do |item|
+          associated_object.map do |item|
             item.read_attribute_for_serialization(:id)
           end
         end
@@ -158,19 +167,19 @@ module ActiveModel
           key.to_s.pluralize.to_sym
         end
 
-        def serialize(serializer, scope)
-          object = associated_object(serializer)
-          object && find_serializable(object, scope, serializer).serializable_hash
+        def serialize
+          object = associated_object
+          object && find_serializable(object).serializable_hash
         end
 
-        def serialize_many(serializer, scope)
-          object = associated_object(serializer)
-          value = object && find_serializable(object, scope, serializer).serializable_hash
+        def serialize_many
+          object = associated_object
+          value = object && find_serializable(object).serializable_hash
           value ? [value] : []
         end
 
-        def serialize_ids(serializer, scope)
-          if object = associated_object(serializer)
+        def serialize_ids
+          if object = associated_object
             object.read_attribute_for_serialization(:id)
           else
             nil
@@ -279,7 +288,7 @@ module ActiveModel
         end
 
         associations = _associations.inject({}) do |hash, (attr,association_class)|
-          association = association_class.new(attr)
+          association = association_class.new(attr, self)
 
           model_association = klass.reflect_on_association(association.name)
           hash.merge association.key => { model_association.macro => model_association.name }
@@ -371,16 +380,16 @@ module ActiveModel
           Associations::HasOne
         end
 
-      association = association_class.new(name, options)
+      association = association_class.new(name, self, options)
 
       if embed == :ids
-        node[association.key] = association.serialize_ids(self, scope)
+        node[association.key] = association.serialize_ids
 
         if root_embed
-          merge_association hash, association.plural_key, association.serialize_many(self, scope)
+          merge_association hash, association.plural_key, association.serialize_many
         end
       elsif embed == :objects
-        node[association.key] = association.serialize(self, scope)
+        node[association.key] = association.serialize
       end
     end
 
