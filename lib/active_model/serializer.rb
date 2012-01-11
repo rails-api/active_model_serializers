@@ -94,44 +94,44 @@ module ActiveModel
       end
 
       class HasMany < Config #:nodoc:
+        alias plural_key key
+
         def serialize(collection, scope, context, options)
-          array = collection.map do |item|
+          collection.map do |item|
             find_serializable(item, scope, context, options).as_json(:root => false)
           end
-          { key => array }
         end
-
         alias serialize_many serialize
 
         def serialize_ids(collection, scope)
           # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
 
-          array = collection.map do |item|
+          collection.map do |item|
             item.read_attribute_for_serialization(:id)
           end
-
-          { key => array }
         end
       end
 
       class HasOne < Config #:nodoc:
+        def plural_key
+          key.to_s.pluralize.to_sym
+        end
+
         def serialize(object, scope, context, options)
-          { key => object && find_serializable(object, scope, context, options).as_json(:root => false) }
+          object && find_serializable(object, scope, context, options).as_json(:root => false)
         end
 
         def serialize_many(object, scope, context, options)
-          key = self.key.to_s.pluralize.to_sym
           value = object && find_serializable(object, scope, context, options).as_json(:root => false)
-          value = value ? [value] : []
-          { key => value }
+          value ? [value] : []
         end
 
         def serialize_ids(object, scope)
           if object
-            { key => object.read_attribute_for_serialization(:id) }
+            object.read_attribute_for_serialization(:id)
           else
-            { key => nil }
+            nil
           end
         end
       end
@@ -307,15 +307,41 @@ module ActiveModel
       end
     end
 
+    def include!(key, options={})
+      embed = options[:embed]
+      root_embed = options[:include]
+      hash = options[:hash]
+      node = options[:node]
+      value = options[:value]
+      serializer = options[:serializer]
+      scope = options[:scope]
+
+      association = Associations::HasMany.new(key, { :serializer => serializer })
+
+      if embed == :ids
+        node[key] = association.serialize_ids(value, scope)
+
+        if root_embed
+          merge_association hash, key, association.serialize_many(value, scope, self, {})
+        end
+      elsif embed == :objects
+        node[key] = association.serialize(value, scope)
+      end
+    end
+
     # Merge associations for embed case by always adding
     # root associations to the given hash.
     def merge_associations(hash, associations)
       associations.each do |key, value|
-        if hash[key]
-          hash[key] |= value
-        elsif value
-          hash[key] = value
-        end
+        merge_association(hash, key, value)
+      end
+    end
+
+    def merge_association(hash, key, value)
+      if hash[key]
+        hash[key] |= value
+      elsif value
+        hash[key] = value
       end
     end
 
@@ -326,7 +352,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash.merge! association.serialize(associated_object, scope, self, :hash => @hash)
+        hash[association.key] = association.serialize(associated_object, scope, self, :hash => @hash)
       end
 
       hash
@@ -337,7 +363,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash.merge! association.serialize_many(associated_object, scope, self, :hash => @hash)
+        hash[association.plural_key] = association.serialize_many(associated_object, scope, self, :hash => @hash)
       end
 
       hash
@@ -350,7 +376,7 @@ module ActiveModel
 
       _associations.each do |association|
         associated_object = send(association.name)
-        hash.merge! association.serialize_ids(associated_object, scope)
+        hash[association.key] = association.serialize_ids(associated_object, scope)
       end
 
       hash
