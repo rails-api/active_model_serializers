@@ -350,24 +350,25 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      if _embed == :ids
-        merge_associations(@options[:hash], plural_associations) if _root_embed
-        attributes.merge(association_ids)
-      elsif _embed == :objects
-        attributes.merge(associations)
-      else
-        attributes
+      node = attributes
+
+      if _embed
+        _associations.each do |attr, klass|
+          include! attr, :node => node
+        end
       end
+
+      node
     end
 
     def include!(name, options={})
-      embed = options[:embed]
-      root_embed = options[:include]
-      hash = options[:hash]
+      embed = options[:embed] || _embed
+      root_embed = options[:include] || _root_embed
+      hash = options[:hash] || @options[:hash]
       node = options[:node]
       value = options[:value]
       serializer = options[:serializer]
-      scope = options[:scope]
+      scope = options[:scope] || self.scope
 
       association_class = _associations[name]
       association = association_class.new(options) if association_class
