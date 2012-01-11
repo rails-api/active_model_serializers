@@ -37,7 +37,7 @@ module ActionController
     end
 
     def _render_option_json(json, options)
-      if json.is_a?(Array)
+      if json.respond_to?(:to_ary)
         options[:root] ||= controller_name
       end
 
