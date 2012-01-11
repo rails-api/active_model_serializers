@@ -71,7 +71,6 @@ module ActiveModel
   class Serializer
     module Associations #:nodoc:
       class Config #:nodoc:
-        class_attribute :association_name
         class_attribute :options
 
         def self.refine(name, class_options)
@@ -86,21 +85,14 @@ module ActiveModel
               alias inspect to_s
             end
 
-            self.association_name = name
             self.options = class_options
-
-            class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def initialize(options={})
-                super(self.class.association_name, options)
-              end
-            RUBY
           end
         end
 
         self.options = {}
 
-        def initialize(name=nil, options={})
-          @name = name || self.class.association_name
+        def initialize(name, options={})
+          @name = name
           @options = options
         end
 
@@ -287,7 +279,7 @@ module ActiveModel
         end
 
         associations = _associations.inject({}) do |hash, (attr,association_class)|
-          association = association_class.new
+          association = association_class.new(attr)
 
           model_association = klass.reflect_on_association(association.name)
           hash.merge association.key => { model_association.macro => model_association.name }
@@ -370,14 +362,16 @@ module ActiveModel
       serializer = options[:serializer]
       scope = options[:scope] || self.scope
 
-      association_class = _associations[name]
-      association = association_class.new(options) if association_class
+      association_class =
+        if klass = _associations[name]
+          klass
+        elsif value.respond_to?(:to_ary)
+          Associations::HasMany
+        else
+          Associations::HasOne
+        end
 
-      association ||= if value.respond_to?(:to_ary)
-        Associations::HasMany.new(name, options)
-      else
-        Associations::HasOne.new(name, options)
-      end
+      association = association_class.new(name, options)
 
       if embed == :ids
         node[association.key] = association.serialize_ids(self, scope)
