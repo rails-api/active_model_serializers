@@ -191,7 +191,7 @@ module ActiveModel
     self._attributes = {}
 
     class_attribute :_associations
-    self._associations = []
+    self._associations = {}
 
     class_attribute :_root
     class_attribute :_embed
@@ -214,12 +214,14 @@ module ActiveModel
 
       def associate(klass, attrs) #:nodoc:
         options = attrs.extract_options!
-        self._associations += attrs.map do |attr|
+        self._associations = _associations.dup
+
+        attrs.each do |attr|
           unless method_defined?(attr)
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
 
-          klass.refine(attr, options)
+          self._associations[attr] = klass.refine(attr, options)
         end
       end
 
@@ -284,7 +286,7 @@ module ActiveModel
           hash.merge key => column.type
         end
 
-        associations = _associations.inject({}) do |hash, association_class|
+        associations = _associations.inject({}) do |hash, (attr,association_class)|
           association = association_class.new
 
           model_association = klass.reflect_on_association(association.name)
@@ -367,10 +369,7 @@ module ActiveModel
       serializer = options[:serializer]
       scope = options[:scope]
 
-      association_class = _associations.find do |a|
-        a.association_name == name
-      end
-
+      association_class = _associations[name]
       association = association_class.new(options) if association_class
 
       association ||= if value.respond_to?(:to_ary)
@@ -411,7 +410,7 @@ module ActiveModel
     def associations
       hash = {}
 
-      _associations.each do |association_class|
+      _associations.each do |attr, association_class|
         association = association_class.new
         hash[association.key] = association.serialize(self, scope)
       end
@@ -422,7 +421,7 @@ module ActiveModel
     def plural_associations
       hash = {}
 
-      _associations.each do |association_class|
+      _associations.each do |attr, association_class|
         association = association_class.new
         hash[association.plural_key] = association.serialize_many(self, scope)
       end
@@ -435,7 +434,7 @@ module ActiveModel
     def association_ids
       hash = {}
 
-      _associations.each do |association_class|
+      _associations.each do |attr, association_class|
         association = association_class.new
         hash[association.key] = association.serialize_ids(self, scope)
       end
