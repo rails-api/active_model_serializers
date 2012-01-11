@@ -316,13 +316,17 @@ module ActiveModel
       serializer = options[:serializer]
       scope = options[:scope]
 
-      association = Associations::HasMany.new(key, { :serializer => serializer })
+      if value.respond_to?(:to_ary)
+        association = Associations::HasMany.new(key, :serializer => serializer)
+      else
+        association = Associations::HasOne.new(key, :serializer => serializer)
+      end
 
       if embed == :ids
         node[key] = association.serialize_ids(value, scope)
 
         if root_embed
-          merge_association hash, key, association.serialize_many(value, scope, self, {})
+          merge_association hash, association.plural_key, association.serialize_many(value, scope, self, {})
         end
       elsif embed == :objects
         node[key] = association.serialize(value, scope)

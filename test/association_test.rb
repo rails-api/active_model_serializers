@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SerializerTest < ActiveModel::TestCase
+class AssociationTest < ActiveModel::TestCase
   def def_serializer(&block)
     Class.new(ActiveModel::Serializer, &block)
   end
@@ -29,39 +29,61 @@ class SerializerTest < ActiveModel::TestCase
     end
   end
 
-  def test_include_associations
-    post = Model.new(:title => "New Post", :body => "Body")
-    comment = Model.new(:id => 1, :body => "ZOMG A COMMENT")
-    post.comments = [ comment ]
+  def setup
+    @post = Model.new(:title => "New Post", :body => "Body")
+    @comment = Model.new(:id => 1, :body => "ZOMG A COMMENT")
+    @post.comments = [ @comment ]
+    @post.comment = @comment
 
-    comment_serializer_class = def_serializer do
+    @comment_serializer_class = def_serializer do
       attributes :body
     end
 
-    post_serializer_class = def_serializer do
+    @post_serializer_class = def_serializer do
       attributes :title, :body
     end
 
-    post_serializer = post_serializer_class.new(post, nil)
+    @post_serializer = @post_serializer_class.new(@post, nil)
 
-    hash = {}
-    root_hash = {}
-    post_serializer.include! :comments,
+    @hash = {}
+    @root_hash = {}
+  end
+
+  def test_include_bang_has_many_associations
+    @post_serializer.include! :comments,
       :embed => :ids,
       :include => true,
-      :hash => root_hash,
-      :node => hash,
-      :value => post.comments,
-      :serializer => comment_serializer_class
+      :hash => @root_hash,
+      :node => @hash,
+      :value => @post.comments,
+      :serializer => @comment_serializer_class
 
     assert_equal({
       :comments => [ 1 ]
-    }, hash)
+    }, @hash)
 
     assert_equal({
       :comments => [
         { :body => "ZOMG A COMMENT" }
       ]
-    }, root_hash)
+    }, @root_hash)
+  end
+
+  def test_include_bang_has_one_associations
+    @post_serializer.include! :comment,
+      :embed => :ids,
+      :include => true,
+      :hash => @root_hash,
+      :node => @hash,
+      :value => @post.comment,
+      :serializer => @comment_serializer_class
+
+    assert_equal({
+      :comment => 1
+    }, @hash)
+
+    assert_equal({
+      :comments => [{ :body => "ZOMG A COMMENT" }]
+    }, @root_hash)
   end
 end
