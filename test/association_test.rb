@@ -49,41 +49,61 @@ class AssociationTest < ActiveModel::TestCase
     @root_hash = {}
   end
 
-  def test_include_bang_has_many_associations
-    @post_serializer.include! :comments,
+  def include!(key, options={})
+    @post_serializer.include! key, options.merge(
       :embed => :ids,
       :include => true,
       :hash => @root_hash,
       :node => @hash,
-      :value => @post.comments,
       :serializer => @comment_serializer_class
-
-    assert_equal({
-      :comments => [ 1 ]
-    }, @hash)
-
-    assert_equal({
-      :comments => [
-        { :body => "ZOMG A COMMENT" }
-      ]
-    }, @root_hash)
+    )
   end
 
-  def test_include_bang_has_one_associations
-    @post_serializer.include! :comment,
-      :embed => :ids,
-      :include => true,
-      :hash => @root_hash,
-      :node => @hash,
-      :value => @post.comment,
-      :serializer => @comment_serializer_class
+  class NoDefaults < AssociationTest
+    def test_include_bang_has_many_associations
+      include! :comments, :value => @post.comments
 
-    assert_equal({
-      :comment => 1
-    }, @hash)
+      assert_equal({
+        :comments => [ 1 ]
+      }, @hash)
 
-    assert_equal({
-      :comments => [{ :body => "ZOMG A COMMENT" }]
-    }, @root_hash)
+      assert_equal({
+        :comments => [
+          { :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_include_bang_has_one_associations
+      include! :comment, :value => @post.comment
+
+      assert_equal({
+        :comment => 1
+      }, @hash)
+
+      assert_equal({
+        :comments => [{ :body => "ZOMG A COMMENT" }]
+      }, @root_hash)
+    end
+  end
+
+  class DefaultsTest < AssociationTest
+    def test_with_default_has_many
+      @post_serializer_class.class_eval do
+        has_many :comments
+      end
+
+      include! :comments
+
+      assert_equal({
+        :comments => [ 1 ]
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
   end
 end

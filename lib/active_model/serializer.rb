@@ -80,6 +80,16 @@ module ActiveModel
           options[:key] || name
         end
 
+        def associated_object(serializer)
+          options[:value] || serializer.send(name)
+        end
+
+        def with_options(options)
+          config = dup
+          config.options.merge!(options)
+          config
+        end
+
         protected
 
         def find_serializable(object, scope, context, options)
@@ -96,18 +106,18 @@ module ActiveModel
       class HasMany < Config #:nodoc:
         alias plural_key key
 
-        def serialize(collection, scope, context, options)
-          collection.map do |item|
-            find_serializable(item, scope, context, options).as_json(:root => false)
+        def serialize(serializer, scope)
+          associated_object(serializer).map do |item|
+            find_serializable(item, scope, serializer, options).as_json(:root => false)
           end
         end
         alias serialize_many serialize
 
-        def serialize_ids(collection, scope)
+        def serialize_ids(serializer, scope)
           # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
 
-          collection.map do |item|
+          associated_object(serializer).map do |item|
             item.read_attribute_for_serialization(:id)
           end
         end
@@ -118,17 +128,19 @@ module ActiveModel
           key.to_s.pluralize.to_sym
         end
 
-        def serialize(object, scope, context, options)
-          object && find_serializable(object, scope, context, options).as_json(:root => false)
+        def serialize(serializer, scope)
+          object = associated_object(serializer)
+          object && find_serializable(object, scope, serializer, options).as_json(:root => false)
         end
 
-        def serialize_many(object, scope, context, options)
-          value = object && find_serializable(object, scope, context, options).as_json(:root => false)
+        def serialize_many(serializer, scope)
+          object = associated_object(serializer)
+          value = object && find_serializable(object, scope, serializer, options).as_json(:root => false)
           value ? [value] : []
         end
 
-        def serialize_ids(object, scope)
-          if object
+        def serialize_ids(serializer, scope)
+          if object = associated_object(serializer)
             object.read_attribute_for_serialization(:id)
           else
             nil
@@ -202,8 +214,7 @@ module ActiveModel
       #     { :name => :string, :age => :integer }
       #
       # The +associations+ hash looks like this:
-      #
-      #     { :posts => { :has_many => :posts } }
+           { :posts => { :has_many => :posts } }
       #
       # If :key is used:
       #
@@ -307,7 +318,7 @@ module ActiveModel
       end
     end
 
-    def include!(key, options={})
+    def include!(name, options={})
       embed = options[:embed]
       root_embed = options[:include]
       hash = options[:hash]
@@ -316,20 +327,26 @@ module ActiveModel
       serializer = options[:serializer]
       scope = options[:scope]
 
-      if value.respond_to?(:to_ary)
-        association = Associations::HasMany.new(key, :serializer => serializer)
+      association = _associations.find do |a|
+        a.name == name
+      end
+
+      association = association.with_options(options) if association
+
+      association ||= if value.respond_to?(:to_ary)
+        Associations::HasMany.new(name, options)
       else
-        association = Associations::HasOne.new(key, :serializer => serializer)
+        Associations::HasOne.new(name, options)
       end
 
       if embed == :ids
-        node[key] = association.serialize_ids(value, scope)
+        node[association.key] = association.serialize_ids(self, scope)
 
         if root_embed
-          merge_association hash, association.plural_key, association.serialize_many(value, scope, self, {})
+          merge_association hash, association.plural_key, association.serialize_many(self, scope)
         end
       elsif embed == :objects
-        node[key] = association.serialize(value, scope)
+        node[association.key] = association.serialize(self, scope)
       end
     end
 
@@ -355,8 +372,8 @@ module ActiveModel
       hash = {}
 
       _associations.each do |association|
-        associated_object = send(association.name)
-        hash[association.key] = association.serialize(associated_object, scope, self, :hash => @hash)
+        association = association.with_options(:hash => @hash)
+        hash[association.key] = association.serialize(self, scope)
       end
 
       hash
@@ -366,8 +383,8 @@ module ActiveModel
       hash = {}
 
       _associations.each do |association|
-        associated_object = send(association.name)
-        hash[association.plural_key] = association.serialize_many(associated_object, scope, self, :hash => @hash)
+        association = association.with_options(:hash => @hash)
+        hash[association.plural_key] = association.serialize_many(self, scope)
       end
 
       hash
@@ -379,8 +396,7 @@ module ActiveModel
       hash = {}
 
       _associations.each do |association|
-        associated_object = send(association.name)
-        hash[association.key] = association.serialize_ids(associated_object, scope)
+        hash[association.key] = association.serialize_ids(self, scope)
       end
 
       hash
