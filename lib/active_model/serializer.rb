@@ -390,57 +390,12 @@ module ActiveModel
       end
     end
 
-    # Merge associations for embed case by always adding
-    # root associations to the given hash.
-    def merge_associations(hash, associations)
-      associations.each do |key, value|
-        merge_association(hash, key, value)
-      end
-    end
-
     def merge_association(hash, key, value)
       if hash[key]
         hash[key] |= value
       elsif value
         hash[key] = value
       end
-    end
-
-    # Returns a hash representation of the serializable
-    # object associations.
-    def associations
-      hash = {}
-
-      _associations.each do |attr, association_class|
-        association = association_class.new
-        hash[association.key] = association.serialize(self, scope)
-      end
-
-      hash
-    end
-
-    def plural_associations
-      hash = {}
-
-      _associations.each do |attr, association_class|
-        association = association_class.new
-        hash[association.plural_key] = association.serialize_many(self, scope)
-      end
-
-      hash
-    end
-
-    # Returns a hash representation of the serializable
-    # object associations ids.
-    def association_ids
-      hash = {}
-
-      _associations.each do |attr, association_class|
-        association = association_class.new
-        hash[association.key] = association.serialize_ids(self, scope)
-      end
-
-      hash
     end
 
     # Returns a hash representation of the serializable
