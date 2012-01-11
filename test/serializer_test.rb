@@ -737,7 +737,7 @@ class SerializerTest < ActiveModel::TestCase
       attributes :id, :name
 
       define_method :serializable_hash do
-        hash_object = @hash
+        hash_object = @options[:hash]
         super()
       end
     end

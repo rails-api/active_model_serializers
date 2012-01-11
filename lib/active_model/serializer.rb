@@ -11,13 +11,12 @@ module ActiveModel
 
     def initialize(object, scope, options={})
       @object, @scope, @options = object, scope, options
-      @hash = options[:hash]
     end
 
     def serializable_array
       @object.map do |item|
         if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
-          serializer.new(item, scope, :hash => @hash)
+          serializer.new(item, scope, @options)
         else
           item
         end
@@ -25,12 +24,12 @@ module ActiveModel
     end
 
     def as_json(*args)
-      @hash = {}
+      @options[:hash] = hash = {}
 
       array = serializable_array.map(&:serializable_hash)
 
       if root = @options[:root]
-        @hash.merge!(root => array)
+        hash.merge!(root => array)
       else
         array
       end
@@ -71,32 +70,71 @@ module ActiveModel
   #
   class Serializer
     module Associations #:nodoc:
-      class Config < Struct.new(:name, :options) #:nodoc:
-        def serializer
-          options[:serializer]
+      class Config #:nodoc:
+        class_attribute :association_name
+        class_attribute :options
+
+        def self.refine(name, class_options)
+          current_class = self
+
+          Class.new(self) do
+            singleton_class.class_eval do
+              define_method(:to_s) do
+                "(subclass of #{current_class.name})"
+              end
+
+              alias inspect to_s
+            end
+
+            self.association_name = name
+            self.options = class_options
+
+            class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def initialize(options={})
+                super(self.class.association_name, options)
+              end
+            RUBY
+          end
+        end
+
+        self.options = {}
+
+        def initialize(name=nil, options={})
+          @name = name || self.class.association_name
+          @options = options
+        end
+
+        def option(key)
+          if @options.key?(key)
+            @options[key]
+          elsif self.class.options[key]
+            self.class.options[key]
+          end
+        end
+
+        def target_serializer
+          option(:serializer)
         end
 
         def key
-          options[:key] || name
+          option(:key) || @name
+        end
+
+        def name
+          option(:name) || @name
         end
 
         def associated_object(serializer)
-          options[:value] || serializer.send(name)
+          option(:value) || serializer.send(name)
         end
 
-        def with_options(options)
-          config = dup
-          config.options.merge!(options)
-          config
-        end
+      protected
 
-        protected
-
-        def find_serializable(object, scope, context, options)
-          if serializer
-            serializer.new(object, scope, options)
+        def find_serializable(object, scope, serializer)
+          if target_serializer
+            target_serializer.new(object, scope, serializer.options)
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, scope, options)
+            ams.new(object, scope, serializer.options)
           else
             object
           end
@@ -108,7 +146,7 @@ module ActiveModel
 
         def serialize(serializer, scope)
           associated_object(serializer).map do |item|
-            find_serializable(item, scope, serializer, options).as_json(:root => false)
+            find_serializable(item, scope, serializer).serializable_hash
           end
         end
         alias serialize_many serialize
@@ -130,12 +168,12 @@ module ActiveModel
 
         def serialize(serializer, scope)
           object = associated_object(serializer)
-          object && find_serializable(object, scope, serializer, options).as_json(:root => false)
+          object && find_serializable(object, scope, serializer).serializable_hash
         end
 
         def serialize_many(serializer, scope)
           object = associated_object(serializer)
-          value = object && find_serializable(object, scope, serializer, options).as_json(:root => false)
+          value = object && find_serializable(object, scope, serializer).serializable_hash
           value ? [value] : []
         end
 
@@ -180,7 +218,8 @@ module ActiveModel
           unless method_defined?(attr)
             class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
           end
-          klass.new(attr, options)
+
+          klass.refine(attr, options)
         end
       end
 
@@ -245,7 +284,9 @@ module ActiveModel
           hash.merge key => column.type
         end
 
-        associations = _associations.inject({}) do |hash, association|
+        associations = _associations.inject({}) do |hash, association_class|
+          association = association_class.new
+
           model_association = klass.reflect_on_association(association.name)
           hash.merge association.key => { model_association.macro => model_association.name }
         end
@@ -285,11 +326,10 @@ module ActiveModel
       end
     end
 
-    attr_reader :object, :scope
+    attr_reader :object, :scope, :options
 
     def initialize(object, scope, options={})
       @object, @scope, @options = object, scope, options
-      @hash = options[:hash]
     end
 
     # Returns a json representation of the serializable
@@ -297,11 +337,11 @@ module ActiveModel
     def as_json(options=nil)
       options ||= {}
       if root = options.fetch(:root, @options.fetch(:root, _root))
-        @hash = hash = {}
+        @options[:hash] = hash = {}
         hash.merge!(root => serializable_hash)
         hash
       else
-        @hash = serializable_hash
+        serializable_hash
       end
     end
 
@@ -309,7 +349,7 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       if _embed == :ids
-        merge_associations(@hash, plural_associations) if _root_embed
+        merge_associations(@options[:hash], plural_associations) if _root_embed
         attributes.merge(association_ids)
       elsif _embed == :objects
         attributes.merge(associations)
@@ -327,11 +367,11 @@ module ActiveModel
       serializer = options[:serializer]
       scope = options[:scope]
 
-      association = _associations.find do |a|
-        a.name == name
+      association_class = _associations.find do |a|
+        a.association_name == name
       end
 
-      association = association.with_options(options) if association
+      association = association_class.new(options) if association_class
 
       association ||= if value.respond_to?(:to_ary)
         Associations::HasMany.new(name, options)
@@ -371,8 +411,8 @@ module ActiveModel
     def associations
       hash = {}
 
-      _associations.each do |association|
-        association = association.with_options(:hash => @hash)
+      _associations.each do |association_class|
+        association = association_class.new
         hash[association.key] = association.serialize(self, scope)
       end
 
@@ -382,8 +422,8 @@ module ActiveModel
     def plural_associations
       hash = {}
 
-      _associations.each do |association|
-        association = association.with_options(:hash => @hash)
+      _associations.each do |association_class|
+        association = association_class.new
         hash[association.plural_key] = association.serialize_many(self, scope)
       end
 
@@ -395,7 +435,8 @@ module ActiveModel
     def association_ids
       hash = {}
 
-      _associations.each do |association|
+      _associations.each do |association_class|
+        association = association_class.new
         hash[association.key] = association.serialize_ids(self, scope)
       end
 
