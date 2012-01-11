@@ -55,6 +55,14 @@ class SerializerTest < ActiveModel::TestCase
       attributes.merge(:ok => true).merge(scope)
     end
   end
+  
+  class UserWithInitialsSerializer < ActiveModel::Serializer
+    attributes :first_name, :last_name, :initials
+    
+    def initials
+      "JV"
+    end
+  end
 
   class DefaultUserSerializer < ActiveModel::Serializer
     attributes :first_name, :last_name
@@ -106,6 +114,17 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_attributes_method
+    user = User.new
+    user_serializer = UserWithInitialsSerializer.new(user, {})
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      :user_with_initials => { :first_name => "Jose", :last_name => "Valim", :initials => "JV" }
+    }, hash)
+  end
+  
+  def test_attribute_method
     user = User.new
     user_serializer = UserSerializer.new(user, {})
 

@@ -392,11 +392,16 @@ module ActiveModel
       hash = {}
 
       _attributes.each do |name,key|
-        hash[key] = @object.read_attribute_for_serialization(name)
+        hash[key] = read_attribute_for_serialization(name)
       end
 
       hash
     end
+    
+    def read_attribute_for_serialization(name)
+      respond_to?(name) ? send(name) : @object.read_attribute_for_serialization(name)
+    end
+    
   end
 end
 
