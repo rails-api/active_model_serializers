@@ -105,5 +105,23 @@ class AssociationTest < ActiveModel::TestCase
         ]
       }, @root_hash)
     end
+
+    def test_with_default_has_one
+      @post_serializer_class.class_eval do
+        has_one :comment
+      end
+
+      include! :comment
+
+      assert_equal({
+        :comment => 1
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
   end
 end
