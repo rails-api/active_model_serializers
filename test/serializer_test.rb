@@ -220,95 +220,29 @@ class SerializerTest < ActiveModel::TestCase
     }, json)
   end
 
-  def post_serializer(type)
+  def post_serializer
     Class.new(ActiveModel::Serializer) do
       attributes :title, :body
       has_many :comments, :serializer => CommentSerializer
       has_one :author, :serializer => DefaultUserSerializer
-
-      if type != :super
-        define_method :serializable_hash do
-          post_hash = attributes
-          post_hash.merge!(send(type))
-          post_hash
-        end
-      end
-    end
-  end
-
-  def test_associations
-    pending "improve serializers public API" do
-      post = Post.new(:title => "New Post", :body => "Body of new post", :email => "tenderlove@tenderlove.com")
-      comments = [Comment.new(:title => "Comment1"), Comment.new(:title => "Comment2")]
-      post.comments = comments
-
-      serializer = post_serializer(:associations).new(post, nil)
-
-      assert_equal({
-        :title => "New Post",
-        :body => "Body of new post",
-        :author => nil,
-        :comments => [
-          { :title => "Comment1" },
-          { :title => "Comment2" }
-        ]
-      }, serializer.as_json)
-    end
-  end
-
-  def test_association_ids
-    pending "Update for new API. Calling plural_associations directly is wrong" do
-      serializer = post_serializer(:association_ids)
-
-      serializer.class_eval do
-        def as_json(*)
-          { :post => serializable_hash }.merge(plural_associations)
-        end
-      end
-
-      post = Post.new(:title => "New Post", :body => "Body of new post", :email => "tenderlove@tenderlove.com")
-      comments = [Comment.new(:title => "Comment1", :id => 1), Comment.new(:title => "Comment2", :id => 2)]
-      post.comments = comments
-
-      serializer = serializer.new(post, nil)
-
-      assert_equal({
-        :post => {
-          :title => "New Post",
-          :body => "Body of new post",
-          :comments => [1, 2],
-          :author => nil
-        },
-        :comments => [
-          { :title => "Comment1" },
-          { :title => "Comment2" }
-        ],
-        :authors => []
-      }, serializer.as_json)
     end
   end
 
   def test_associations_with_nil_association
-    pending "use public API instead of association_ids" do
-      user = User.new
-      blog = Blog.new
+    user = User.new
+    blog = Blog.new
 
-      json = BlogSerializer.new(blog, user).as_json
-      assert_equal({
-        :blog => { :author => nil }
-      }, json)
+    json = BlogSerializer.new(blog, user).as_json
+    assert_equal({
+      :blog => { :author => nil }
+    }, json)
 
-      serializer = Class.new(BlogSerializer) do
-        root :blog
-
-        def serializable_hash
-          attributes.merge(association_ids)
-        end
-      end
-
-      json = serializer.new(blog, user).as_json
-      assert_equal({ :blog =>  { :author => nil } }, json)
+    serializer = Class.new(BlogSerializer) do
+      root :blog
     end
+
+    json = serializer.new(blog, user).as_json
+    assert_equal({ :blog =>  { :author => nil } }, json)
   end
 
   def test_custom_root
@@ -338,7 +272,7 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_embed_ids
-    serializer = post_serializer(:super)
+    serializer = post_serializer
 
     serializer.class_eval do
       root :post
@@ -362,7 +296,7 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_embed_ids_include_true
-    serializer_class = post_serializer(:super)
+    serializer_class = post_serializer
 
     serializer_class.class_eval do
       root :post
@@ -409,7 +343,7 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_embed_objects
-    serializer = post_serializer(:super)
+    serializer = post_serializer
 
     serializer.class_eval do
       root :post
