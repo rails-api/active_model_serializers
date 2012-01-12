@@ -82,6 +82,23 @@ class AssociationTest < ActiveModel::TestCase
       }, @root_hash)
     end
 
+    def test_include_bang_with_embed_false
+      include! :comments, :value => @post.comments, :embed => false
+
+      assert_equal({}, @hash)
+      assert_equal({}, @root_hash)
+    end
+
+    def test_include_bang_with_embed_ids_include_false
+      include! :comments, :value => @post.comments, :embed => :ids, :include => false
+
+      assert_equal({
+        :comments => [ 1 ]
+      }, @hash)
+
+      assert_equal({}, @root_hash)
+    end
+
     def test_include_bang_has_one_associations
       include! :comment, :value => @post.comment
 
@@ -216,6 +233,17 @@ class AssociationTest < ActiveModel::TestCase
       assert_equal({}, @root_hash)
     end
 
+    def test_embed_false_for_has_many_associations
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => false
+      end
+
+      include_bare! :comments
+
+      assert_equal({}, @hash)
+      assert_equal({}, @root_hash)
+    end
+
     def test_embed_ids_include_true_for_has_many_associations
       @post_serializer_class.class_eval do
         has_many :comments, :embed => :ids, :include => true
@@ -225,6 +253,49 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [ 1 ]
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_embed_ids_for_has_one_associations
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => :ids
+      end
+
+      include_bare! :comment
+
+      assert_equal({
+        :comment => 1
+      }, @hash)
+
+      assert_equal({}, @root_hash)
+    end
+
+    def test_embed_false_for_has_one_associations
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => false
+      end
+
+      include_bare! :comment
+
+      assert_equal({}, @hash)
+      assert_equal({}, @root_hash)
+    end
+
+    def test_embed_ids_include_true_for_has_one_associations
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => :ids, :include => true
+      end
+
+      include_bare! :comment
+
+      assert_equal({
+        :comment => 1
       }, @hash)
 
       assert_equal({
