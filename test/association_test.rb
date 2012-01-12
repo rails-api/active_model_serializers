@@ -305,4 +305,88 @@ class AssociationTest < ActiveModel::TestCase
       }, @root_hash)
     end
   end
+
+  class InclusionTest < AssociationTest
+    def setup
+      super
+
+      comment_serializer_class = @comment_serializer_class
+
+      @post_serializer_class.class_eval do
+        root :post
+        embed :ids, :include => true
+        has_many :comments, :serializer => comment_serializer_class
+      end
+    end
+
+    def test_when_it_is_included
+      post_serializer = @post_serializer_class.new(
+        @post, nil, :include => [:comments]
+      )
+
+      json = post_serializer.as_json
+
+      assert_equal({
+        :post => {
+          :title => "New Post",
+          :body => "Body",
+          :comments => [ 1 ]
+        },
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, json)
+    end
+
+    def test_when_it_is_not_included
+      post_serializer = @post_serializer_class.new(
+        @post, nil, :include => []
+      )
+
+      json = post_serializer.as_json
+
+      assert_equal({
+        :post => {
+          :title => "New Post",
+          :body => "Body",
+          :comments => [ 1 ]
+        }
+      }, json)
+    end
+
+    def test_when_it_is_excluded
+      post_serializer = @post_serializer_class.new(
+        @post, nil, :exclude => [:comments]
+      )
+
+      json = post_serializer.as_json
+
+      assert_equal({
+        :post => {
+          :title => "New Post",
+          :body => "Body",
+          :comments => [ 1 ]
+        }
+      }, json)
+    end
+
+    def test_when_it_is_not_excluded
+      post_serializer = @post_serializer_class.new(
+        @post, nil, :exclude => []
+      )
+
+      json = post_serializer.as_json
+
+      assert_equal({
+        :post => {
+          :title => "New Post",
+          :body => "Body",
+          :comments => [ 1 ]
+        },
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, json)
+    end
+  end
 end

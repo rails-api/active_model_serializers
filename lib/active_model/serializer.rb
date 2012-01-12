@@ -372,7 +372,23 @@ module ActiveModel
 
     def include_associations!(node)
       _associations.each do |attr, klass|
-        include! attr, :node => node
+        opts = { :node => node }
+
+        if options.include?(:include) || options.include?(:exclude)
+          opts[:include] = included_association?(attr)
+        end
+
+        include! attr, opts
+      end
+    end
+
+    def included_association?(name)
+      if options.key?(:include)
+        options[:include].include?(name)
+      elsif options.key?(:exclude)
+        !options[:exclude].include?(name)
+      else
+        true
       end
     end
 
