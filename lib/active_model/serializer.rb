@@ -366,14 +366,14 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       node = attributes
-
-      if _embed
-        _associations.each do |attr, klass|
-          include! attr, :node => node
-        end
-      end
-
+      include_associations!(node) if _embed
       node
+    end
+
+    def include_associations!(node)
+      _associations.each do |attr, klass|
+        include! attr, :node => node
+      end
     end
 
     def include!(name, options={})
