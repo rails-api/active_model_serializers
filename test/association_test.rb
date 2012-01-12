@@ -43,7 +43,7 @@ class AssociationTest < ActiveModel::TestCase
       attributes :title, :body
     end
 
-    @post_serializer = @post_serializer_class.new(@post, nil)
+    @post_serializer = @post_serializer_class.new(@post)
 
     @hash = {}
     @root_hash = {}
@@ -321,7 +321,7 @@ class AssociationTest < ActiveModel::TestCase
 
     def test_when_it_is_included
       post_serializer = @post_serializer_class.new(
-        @post, nil, :include => [:comments]
+        @post, :include => [:comments]
       )
 
       json = post_serializer.as_json
@@ -340,7 +340,7 @@ class AssociationTest < ActiveModel::TestCase
 
     def test_when_it_is_not_included
       post_serializer = @post_serializer_class.new(
-        @post, nil, :include => []
+        @post, :include => []
       )
 
       json = post_serializer.as_json
@@ -356,7 +356,7 @@ class AssociationTest < ActiveModel::TestCase
 
     def test_when_it_is_excluded
       post_serializer = @post_serializer_class.new(
-        @post, nil, :exclude => [:comments]
+        @post, :exclude => [:comments]
       )
 
       json = post_serializer.as_json
@@ -372,7 +372,7 @@ class AssociationTest < ActiveModel::TestCase
 
     def test_when_it_is_not_excluded
       post_serializer = @post_serializer_class.new(
-        @post, nil, :exclude => []
+        @post, :exclude => []
       )
 
       json = post_serializer.as_json

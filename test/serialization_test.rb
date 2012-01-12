@@ -15,12 +15,12 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class JsonSerializer
-    def initialize(object, scope, options={})
-      @object, @scope, @options = object, scope, options
+    def initialize(object, options={})
+      @object, @options = object, options
     end
 
     def as_json(*)
-      hash = { :object => serializable_hash, :scope => @scope.as_json }
+      hash = { :object => serializable_hash, :scope => @options[:scope].as_json }
       hash.merge!(:options => true) if @options[:options]
       hash
     end

@@ -5,18 +5,18 @@ module ActiveModel
   # Active Model Array Serializer
   #
   # It serializes an array checking if each element that implements
-  # the +active_model_serializer+ method passing down the current scope.
+  # the +active_model_serializer+ method.
   class ArraySerializer
-    attr_reader :object, :scope
+    attr_reader :object
 
-    def initialize(object, scope, options={})
-      @object, @scope, @options = object, scope, options
+    def initialize(object, options={})
+      @object, @options = object, options
     end
 
     def serializable_array
       @object.map do |item|
         if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
-          serializer.new(item, scope, @options)
+          serializer.new(item, @options)
         else
           item
         end
@@ -40,12 +40,13 @@ module ActiveModel
   #
   # Provides a basic serializer implementation that allows you to easily
   # control how a given object is going to be serialized. On initialization,
-  # it expects to object as arguments, a resource and a scope. For example,
+  # it expects to object as arguments, a resource and options. For example,
   # one may do in a controller:
   #
-  #     PostSerializer.new(@post, current_user).to_json
+  #     PostSerializer.new(@post, :scope => current_user).to_json
   #
-  # The object to be serialized is the +@post+ and the scope is +current_user+.
+  # The object to be serialized is the +@post+ and the current user is passed
+  # in for authorization purposes.
   #
   # We use the scope to check if a given attribute should be serialized or not.
   # For example, some attributes maybe only be returned if +current_user+ is the
@@ -127,10 +128,6 @@ module ActiveModel
           option(:value) || source_serializer.send(name)
         end
 
-        def scope
-          option(:scope) || source_serializer.scope
-        end
-
         def embed_ids?
           option(:embed, source_serializer._embed) == :ids
         end
@@ -147,9 +144,9 @@ module ActiveModel
 
         def find_serializable(object)
           if target_serializer
-            target_serializer.new(object, scope, source_serializer.options)
+            target_serializer.new(object, source_serializer.options)
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, scope, source_serializer.options)
+            ams.new(object, source_serializer.options)
           else
             object
           end
@@ -343,10 +340,10 @@ module ActiveModel
       end
     end
 
-    attr_reader :object, :scope, :options
+    attr_reader :object, :options
 
-    def initialize(object, scope, options={})
-      @object, @scope, @options = object, scope, options
+    def initialize(object, options={})
+      @object, @options = object, options
     end
 
     # Returns a json representation of the serializable

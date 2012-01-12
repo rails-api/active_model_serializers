@@ -42,7 +42,8 @@ module ActionController
       end
 
       if json.respond_to?(:active_model_serializer) && (serializer = json.active_model_serializer)
-        json = serializer.new(json, serialization_scope, options)
+        options[:scope] = serialization_scope
+        json = serializer.new(json, options)
       end
       super
     end

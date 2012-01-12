@@ -4,3 +4,4 @@ source 'http://rubygems.org'
 gemspec
 
 gem "pry"
+gem "simplecov", :require => false
