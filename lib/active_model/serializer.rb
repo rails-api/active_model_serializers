@@ -97,11 +97,13 @@ module ActiveModel
           @options = options
         end
 
-        def option(key)
+        def option(key, default=nil)
           if @options.key?(key)
             @options[key]
-          elsif self.class.options[key]
+          elsif self.class.options.key?(key)
             self.class.options[key]
+          else
+            default
           end
         end
 
@@ -126,7 +128,19 @@ module ActiveModel
         end
 
         def scope
-          source_serializer.scope
+          option(:scope) || source_serializer.scope
+        end
+
+        def embed_ids?
+          option(:embed, source_serializer._embed) == :ids
+        end
+
+        def embed_objects?
+          option(:embed, source_serializer._embed) == :objects
+        end
+
+        def embed_in_root?
+          option(:include, source_serializer._root_embed)
         end
 
       protected
@@ -363,13 +377,9 @@ module ActiveModel
     end
 
     def include!(name, options={})
-      embed = options[:embed] || _embed
-      root_embed = options[:include] || _root_embed
       hash = options[:hash] || @options[:hash]
       node = options[:node]
       value = options[:value]
-      serializer = options[:serializer]
-      scope = options[:scope] || self.scope
 
       association_class =
         if klass = _associations[name]
@@ -382,13 +392,13 @@ module ActiveModel
 
       association = association_class.new(name, self, options)
 
-      if embed == :ids
+      if association.embed_ids?
         node[association.key] = association.serialize_ids
 
-        if root_embed
+        if association.embed_in_root?
           merge_association hash, association.plural_key, association.serialize_many
         end
-      elsif embed == :objects
+      elsif association.embed_objects?
         node[association.key] = association.serialize
       end
     end
