@@ -36,7 +36,7 @@ class AssociationTest < ActiveModel::TestCase
     @post.comment = @comment
 
     @comment_serializer_class = def_serializer do
-      attributes :body
+      attributes :id, :body
     end
 
     @post_serializer_class = def_serializer do
@@ -50,13 +50,21 @@ class AssociationTest < ActiveModel::TestCase
   end
 
   def include!(key, options={})
-    @post_serializer.include! key, options.merge(
+    @post_serializer.include! key, {
       :embed => :ids,
       :include => true,
       :hash => @root_hash,
       :node => @hash,
       :serializer => @comment_serializer_class
-    )
+    }.merge(options)
+  end
+
+  def include_bare!(key, options={})
+    @post_serializer.include! key, {
+      :hash => @root_hash,
+      :node => @hash,
+      :serializer => @comment_serializer_class
+    }.merge(options)
   end
 
   class NoDefaults < AssociationTest
@@ -69,7 +77,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :body => "ZOMG A COMMENT" }
+          { :id => 1, :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -82,7 +90,7 @@ class AssociationTest < ActiveModel::TestCase
       }, @hash)
 
       assert_equal({
-        :comments => [{ :body => "ZOMG A COMMENT" }]
+        :comments => [{ :id => 1, :body => "ZOMG A COMMENT" }]
       }, @root_hash)
     end
   end
@@ -101,7 +109,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :body => "ZOMG A COMMENT" }
+          { :id => 1, :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -119,7 +127,109 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :body => "ZOMG A COMMENT" }
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_many_with_custom_key
+      @post_serializer_class.class_eval do
+        has_many :comments, :key => :custom_comments
+      end
+
+      include! :comments
+
+      assert_equal({
+        :custom_comments => [ 1 ]
+      }, @hash)
+
+      assert_equal({
+        :custom_comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_one_with_custom_key
+      @post_serializer_class.class_eval do
+        has_one :comment, :key => :custom_comment
+      end
+
+      include! :comment
+
+      assert_equal({
+        :custom_comment => 1
+      }, @hash)
+
+      assert_equal({
+        :custom_comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_one_with_custom_key
+      @post_serializer_class.class_eval do
+        has_one :comment, :key => :custom_comment
+      end
+
+      include! :comment
+
+      assert_equal({
+        :custom_comment => 1
+      }, @hash)
+
+      assert_equal({
+        :custom_comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_embed_objects_for_has_many_associations
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :objects
+      end
+
+      include_bare! :comments
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @hash)
+
+      assert_equal({}, @root_hash)
+    end
+
+    def test_embed_ids_for_has_many_associations
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :ids
+      end
+
+      include_bare! :comments
+
+      assert_equal({
+        :comments => [ 1 ]
+      }, @hash)
+
+      assert_equal({}, @root_hash)
+    end
+
+    def test_embed_ids_include_true_for_has_many_associations
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :ids, :include => true
+      end
+
+      include_bare! :comments
+
+      assert_equal({
+        :comments => [ 1 ]
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
