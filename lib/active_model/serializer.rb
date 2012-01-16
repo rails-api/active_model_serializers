@@ -1,7 +1,32 @@
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
+require "set"
 
 module ActiveModel
+  class OrderedSet
+    def initialize(array)
+      @array = array
+      @hash = {}
+
+      array.each do |item|
+        @hash[item] = true
+      end
+    end
+
+    def merge!(other)
+      other.each do |item|
+        next if @hash.key?(item)
+
+        @hash[item] = true
+        @array.push item
+      end
+    end
+
+    def to_a
+      @array
+    end
+  end
+
   # Active Model Array Serializer
   #
   # It serializes an array checking if each element that implements
@@ -25,6 +50,7 @@ module ActiveModel
 
     def as_json(*args)
       @options[:hash] = hash = {}
+      @options[:unique_values] = {}
 
       array = serializable_array.map(&:serializable_hash)
 
@@ -352,6 +378,8 @@ module ActiveModel
       options ||= {}
       if root = options.fetch(:root, @options.fetch(:root, _root))
         @options[:hash] = hash = {}
+        @options[:unique_values] = {}
+
         hash.merge!(root => serializable_hash)
         hash
       else
@@ -390,7 +418,24 @@ module ActiveModel
     end
 
     def include!(name, options={})
-      hash = options[:hash] || @options[:hash]
+      # Make sure that if a special options[:hash] was passed in, we generate
+      # a new unique values hash and don't clobber the original. If the hash
+      # passed in is the same as the current options hash, use the current
+      # unique values.
+      #
+      # TODO: Should passing in a Hash even be public API here?
+      unique_values =
+        if hash = options[:hash]
+          if @options[:hash] == hash
+            @options[:unique_values] ||= {}
+          else
+            {}
+          end
+        else
+          hash = @options[:hash]
+          @options[:unique_values] ||= {}
+        end
+
       node = options[:node]
       value = options[:value]
 
@@ -409,18 +454,29 @@ module ActiveModel
         node[association.key] = association.serialize_ids
 
         if association.embed_in_root?
-          merge_association hash, association.plural_key, association.serialize_many
+          merge_association hash, association.plural_key, association.serialize_many, unique_values
         end
       elsif association.embed_objects?
         node[association.key] = association.serialize
       end
     end
 
-    def merge_association(hash, key, value)
-      if hash[key]
-        hash[key] |= value
+    # In some cases, an Array of associations is built by merging the associated
+    # content for all of the children. For instance, if a Post has_many comments,
+    # which has_many tags, the top-level :tags key will contain the merged list
+    # of all tags for all comments of the post.
+    #
+    # In order to make this efficient, we store a :unique_values hash containing
+    # a unique list of all of the objects that are already in the Array. This
+    # avoids the need to scan through the Array looking for entries every time
+    # we want to merge a new list of values.
+    def merge_association(hash, key, value, unique_values)
+      if current_value = unique_values[key]
+        current_value.merge! value
+        hash[key] = current_value.to_a
       elsif value
         hash[key] = value
+        unique_values[key] = OrderedSet.new(value)
       end
     end
 
