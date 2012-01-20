@@ -32,7 +32,7 @@ module ActiveModel
   # It serializes an array checking if each element that implements
   # the +active_model_serializer+ method.
   class ArraySerializer
-    attr_reader :object
+    attr_reader :object, :options
 
     def initialize(object, options={})
       @object, @options = object, options

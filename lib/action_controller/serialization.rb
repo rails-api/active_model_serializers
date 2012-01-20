@@ -44,7 +44,10 @@ module ActionController
         options[:root] ||= controller_name
       end
 
-      if json.respond_to?(:active_model_serializer) && (serializer = json.active_model_serializer)
+      serializer = options.delete(:serializer) ||
+        (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
+
+      if serializer
         options[:scope] = serialization_scope
 
         if default_options = default_serializer_options

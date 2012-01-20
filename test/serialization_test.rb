@@ -45,6 +45,15 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class CustomSerializer
+    def initialize(*)
+    end
+
+    def as_json(*)
+      { :hello => true }
+    end
+  end
+
   class TestController < ActionController::Base
     protect_from_forgery
 
@@ -109,6 +118,10 @@ class RenderJsonTest < ActionController::TestCase
     def render_json_with_serializer_api_but_without_serializer
       @current_user = Struct.new(:as_json).new(:current_user => true)
       render :json => JsonSerializable.new(true)
+    end
+
+    def render_json_with_custom_serializer
+      render :json => [], :serializer => CustomSerializer
     end
 
   private
@@ -210,5 +223,10 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_with_serializer_api_but_without_serializer
     get :render_json_with_serializer_api_but_without_serializer
     assert_match '{"serializable_object":true}', @response.body
+  end
+
+  def test_render_json_with_custom_serializer
+    get :render_json_with_custom_serializer
+    assert_match '{"hello":true}', @response.body
   end
 end
