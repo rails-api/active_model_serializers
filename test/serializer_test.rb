@@ -397,6 +397,17 @@ class SerializerTest < ActiveModel::TestCase
     ]}, serializer.as_json)
   end
 
+  def test_array_serializer_on_poros
+    name1 = "John Doe"
+    name2 = "Jane Roe"
+
+    array = [ name1, name2 ]
+
+    serializer = array.active_model_serializer.new(array)
+
+    assert_equal([ "\"John Doe\"", "\"Jane Roe\"" ], serializer.as_json)
+  end
+
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
   end
