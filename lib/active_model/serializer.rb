@@ -293,7 +293,7 @@ module ActiveModel
       #     { :name => :string, :age => :integer }
       #
       # The +associations+ hash looks like this:
-           { :posts => { :has_many => :posts } }
+      #     { :posts => { :has_many => :posts } }
       #
       # If :key is used:
       #
