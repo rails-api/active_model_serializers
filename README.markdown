@@ -49,7 +49,7 @@ This also works with `render_with`, which uses `to_json` under the hood. Also no
 
 ## Getting the old version
 
-If you find that your project is already relying on the old rails to_json change `render :json` to `render :text => @your_object.to_json`.
+If you find that your project is already relying on the old rails to_json change `render :json` to `render :json => @your_object.to_json`.
 
 # Attributes and Associations
 
