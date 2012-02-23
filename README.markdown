@@ -163,6 +163,30 @@ Assuming that the comments also `has_many :tags`, you will get a JSON like this:
 			{ "id": 3, "name": "happy" }
 		]
 	}
+	
+You can also specify a different root for the embedded objects than the key used to reference them, such as like this:
+
+	class PostSerializer < ApplicationSerializer
+		embed :ids, :include => true
+
+		attributes :id, :title, :body
+		has_many :comments, :key => :comment_ids, :root => :comment_objects
+	end
+	
+This would generate JSON that would look like this:
+
+	{
+		"post": {
+			"id": 1,
+			"title": "New post",
+			"body": "A body!",
+			"comment_ids": [ 1 ]
+		},
+		"comment_objects": [
+			{ "id": 1, "body": "what a dumb post" }
+		]
+	}
+
 
 **NOTE**: The `embed :ids` mechanism is primary useful for clients that process data in bulk and load it into a local store. For these clients, the ability to easily see all of the data per type, rather than having to recursively scan the data looking for information, is extremely useful.
 
