@@ -146,6 +146,10 @@ module ActiveModel
           option(:key) || @name
         end
 
+        def root
+          option(:root) || plural_key
+        end
+
         def name
           option(:name) || @name
         end
@@ -454,7 +458,7 @@ module ActiveModel
         node[association.key] = association.serialize_ids
 
         if association.embed_in_root?
-          merge_association hash, association.plural_key, association.serialize_many, unique_values
+          merge_association hash, association.root, association.serialize_many, unique_values
         end
       elsif association.embed_objects?
         node[association.key] = association.serialize

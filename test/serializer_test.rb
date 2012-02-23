@@ -702,7 +702,56 @@ class SerializerTest < ActiveModel::TestCase
     expected = serializer_class.new(post).as_json
     assert_equal expected, hash_object
   end
+  
+  def test_embed_ids_include_true_with_root
+    serializer_class = post_serializer
 
+    serializer_class.class_eval do
+      root :post
+      embed :ids, :include => true
+      has_many :comments, :key => :comment_ids, :root => :comments
+      has_one :author, :serializer => DefaultUserSerializer, :key => :author_id, :root => :author
+    end
+
+    post = Post.new(:title => "New Post", :body => "Body of new post", :email => "tenderlove@tenderlove.com")
+    comments = [Comment.new(:title => "Comment1", :id => 1), Comment.new(:title => "Comment2", :id => 2)]
+    post.comments = comments
+
+    serializer = serializer_class.new(post)
+
+    assert_equal({
+    :post => {
+      :title => "New Post",
+      :body => "Body of new post",
+      :comment_ids => [1, 2],
+      :author_id => nil
+    },
+    :comments => [
+      { :title => "Comment1" },
+      { :title => "Comment2" }
+    ],
+    :author => []
+    }, serializer.as_json)
+
+    post.author = User.new(:id => 1)
+
+    serializer = serializer_class.new(post)
+
+    assert_equal({
+    :post => {
+      :title => "New Post",
+      :body => "Body of new post",
+      :comment_ids => [1, 2],
+      :author_id => 1
+    },
+    :comments => [
+      { :title => "Comment1" },
+      { :title => "Comment2" }
+    ],
+    :author => [{ :first_name => "Jose", :last_name => "Valim" }]
+    }, serializer.as_json)
+  end
+  
   # the point of this test is to illustrate that deeply nested serializers
   # still side-load at the root.
   def test_embed_with_include_inserts_at_root
