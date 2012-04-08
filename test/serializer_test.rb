@@ -70,6 +70,52 @@ class SerializerTest < ActiveModel::TestCase
     end
   end
 
+  class IfSerializer < ActiveModel::Serializer
+    root :user
+
+    attribute :first_name, :if => :first_name?
+    attribute :last_name,  :if => lambda { |s| s.last_name? }
+    attribute :password,   :if => :super_user?
+
+    def first_name?
+      true
+    end
+    def last_name?
+      false
+    end
+  end
+
+  class UnlessSerializer < ActiveModel::Serializer
+    root :user
+
+    attribute :first_name, :unless => :first_name?
+    attribute :last_name,  :unless => lambda { |s| s.last_name? }
+    attribute :password,   :unless => :super_user?
+
+    def first_name?
+      true
+    end
+    def last_name?
+      false
+    end
+  end
+
+  class ValueSerializer < ActiveModel::Serializer
+    root :user
+
+    attribute :first_name, :value => :lower_first_name
+    attribute :last_name,  :value => lambda { |s| s.upper_last_name }
+    attribute :admin,      :value => :super_user?
+    attribute :static,     :value => "constant"
+
+    def lower_first_name
+      @object.read_attribute_for_serialization(:first_name).downcase
+    end
+    def upper_last_name
+      @object.read_attribute_for_serialization(:last_name).upcase
+    end
+  end
+
   class CommentSerializer
     def initialize(comment, scope, options={})
       @comment, @scope = comment, scope
@@ -408,7 +454,7 @@ class SerializerTest < ActiveModel::TestCase
 
   def test_associations_with_as
     posts = [
-      Post.new(:title => 'First Post', :body => 'text'), 
+      Post.new(:title => 'First Post', :body => 'text'),
       Post.new(:title => 'Second Post', :body => 'text')
     ]
     user = User.new
@@ -426,15 +472,15 @@ class SerializerTest < ActiveModel::TestCase
           {:title => 'Second Post', :body => 'text', :comments => []}
         ],
         :user => {
-          :first_name => "Jose", 
-          :last_name => "Valim", :ok => true, 
+          :first_name => "Jose",
+          :last_name => "Valim", :ok => true,
           :scope => true
         }
       }
     }, serializer.as_json)
   end
 
-  def test_implicity_detection_for_association_serializers 
+  def test_implicity_detection_for_association_serializers
     implicit_serializer = Class.new(ActiveModel::Serializer) do
       root :custom_blog
       const_set(:UserSerializer, UserSerializer)
@@ -445,7 +491,7 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     posts = [
-      Post.new(:title => 'First Post', :body => 'text', :comments => []), 
+      Post.new(:title => 'First Post', :body => 'text', :comments => []),
       Post.new(:title => 'Second Post', :body => 'text', :comments => [])
     ]
     user = User.new
@@ -463,8 +509,8 @@ class SerializerTest < ActiveModel::TestCase
           {:title => 'Second Post', :body => 'text', :comments => []}
         ],
         :user => {
-          :first_name => "Jose", 
-          :last_name => "Valim", :ok => true, 
+          :first_name => "Jose",
+          :last_name => "Valim", :ok => true,
           :scope => true
         }
       }
@@ -487,6 +533,46 @@ class SerializerTest < ActiveModel::TestCase
         :firstName => "Jose",
         :lastName => "Valim",
         :password => "oh noes yugive my password"
+      }
+    }, serializer.as_json)
+  end
+
+  def test_attribute_that_uses_if
+    u = User.new
+    u.superuser = true
+    serializer = IfSerializer.new(u)
+
+    assert_equal({
+      :user => {
+        :first_name => "Jose",
+        :password => "oh noes yugive my password"
+      }
+    }, serializer.as_json)
+  end
+
+  def test_attribute_that_uses_unless
+    u = User.new
+    u.superuser = true
+    serializer = UnlessSerializer.new(u)
+
+    assert_equal({
+      :user => {
+        :last_name => "Valim"
+      }
+    }, serializer.as_json)
+  end
+
+  def test_attribute_that_uses_value
+    u = User.new
+    u.superuser = true
+    serializer = ValueSerializer.new(u)
+
+    assert_equal({
+      :user => {
+        :first_name => "jose",
+        :last_name =>  "VALIM",
+        :admin =>      true,
+        :static =>     "constant"
       }
     }, serializer.as_json)
   end
@@ -702,7 +788,7 @@ class SerializerTest < ActiveModel::TestCase
     expected = serializer_class.new(post).as_json
     assert_equal expected, hash_object
   end
-  
+
   def test_embed_ids_include_true_with_root
     serializer_class = post_serializer
 
@@ -751,7 +837,7 @@ class SerializerTest < ActiveModel::TestCase
     :author => [{ :first_name => "Jose", :last_name => "Valim" }]
     }, serializer.as_json)
   end
-  
+
   # the point of this test is to illustrate that deeply nested serializers
   # still side-load at the root.
   def test_embed_with_include_inserts_at_root

@@ -232,6 +232,9 @@ module ActiveModel
     class_attribute :_attributes
     self._attributes = {}
 
+    class_attribute :_attribute_options
+    self._attribute_options = {}
+
     class_attribute :_associations
     self._associations = {}
 
@@ -252,6 +255,15 @@ module ActiveModel
 
       def attribute(attr, options={})
         self._attributes = _attributes.merge(attr => options[:key] || attr)
+        if options[:if] || options[:unless] || options[:value]
+          self._attribute_options = _attribute_options.dup
+          [:if, :unless, :value].each do |opt|
+            if options[opt]
+              self._attribute_options[opt] ||= {}
+              self._attribute_options[opt][attr] = options[opt]
+            end
+          end
+        end
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -484,13 +496,46 @@ module ActiveModel
       end
     end
 
+    def include_attribute?(name)
+      [:if, :unless].each do |opt|
+        if self._attribute_options.key?(opt) && self._attribute_options[opt].include?(name)
+          ret = eval_attribute_option_value(self._attribute_options[opt][name])
+          return (opt == :if) ? ret : !ret
+        end
+      end
+
+      true
+    end
+
+    def attribute_value(name)
+      if self._attribute_options.key?(:value) && self._attribute_options[:value].include?(name)
+        eval_attribute_option_value(self._attribute_options[:value][name])
+      else
+        @object.read_attribute_for_serialization(name)
+      end
+    end
+
+    def eval_attribute_option_value(value)
+      if value.respond_to? :call
+        value.call(self)
+      elsif value.kind_of?(Symbol) && respond_to?(value)
+        instance_eval(&value)
+      elsif value.kind_of?(Symbol) && @object.respond_to?(value)
+        @object.instance_eval(&value)
+      else
+        value
+      end
+    end
+
     # Returns a hash representation of the serializable
     # object attributes.
     def attributes
       hash = {}
 
-      _attributes.each do |name,key|
-        hash[key] = @object.read_attribute_for_serialization(name)
+      _attributes.each do |name, key|
+        if include_attribute?(name)
+          hash[key] = attribute_value(name)
+        end
       end
 
       hash
