@@ -232,11 +232,11 @@ module ActiveModel
     class_attribute :_attributes
     self._attributes = {}
 
-    class_attribute :_attribute_options
-    self._attribute_options = {}
-
     class_attribute :_associations
     self._associations = {}
+
+    class_attribute :_field_options
+    self._field_options = {}
 
     class_attribute :_root
     class_attribute :_embed
@@ -256,11 +256,11 @@ module ActiveModel
       def attribute(attr, options={})
         self._attributes = _attributes.merge(attr => options[:key] || attr)
         if options[:if] || options[:unless] || options[:value]
-          self._attribute_options = _attribute_options.dup
+          self._field_options = _field_options.dup
           [:if, :unless, :value].each do |opt|
             if options[opt]
-              self._attribute_options[opt] ||= {}
-              self._attribute_options[opt][attr] = options[opt]
+              self._field_options[opt] ||= {}
+              self._field_options[opt][attr] = options[opt]
             end
           end
         end
@@ -269,6 +269,18 @@ module ActiveModel
       def associate(klass, attrs) #:nodoc:
         options = attrs.extract_options!
         self._associations = _associations.dup
+
+        if options[:if] || options[:unless]
+          self._field_options = _field_options.dup
+          [:if, :unless].each do |opt|
+            if options[opt]
+              attrs.each do |attr|
+                self._field_options[opt] ||= {}
+                self._field_options[opt][attr] = options[opt]
+              end
+            end
+          end
+        end
 
         attrs.each do |attr|
           unless method_defined?(attr)
@@ -413,13 +425,15 @@ module ActiveModel
 
     def include_associations!(node)
       _associations.each do |attr, klass|
-        opts = { :node => node }
+        if include_field?(attr)
+          opts = { :node => node }
 
-        if options.include?(:include) || options.include?(:exclude)
-          opts[:include] = included_association?(attr)
+          if options.include?(:include) || options.include?(:exclude)
+            opts[:include] = included_association?(attr)
+          end
+
+          include! attr, opts
         end
-
-        include! attr, opts
       end
     end
 
@@ -496,23 +510,15 @@ module ActiveModel
       end
     end
 
-    def include_attribute?(name)
+    def include_field?(name)
       [:if, :unless].each do |opt|
-        if self._attribute_options.key?(opt) && self._attribute_options[opt].include?(name)
-          ret = eval_attribute_option_value(self._attribute_options[opt][name])
+        if self._field_options.key?(opt) && self._field_options[opt].include?(name)
+          ret = eval_attribute_option_value(self._field_options[opt][name])
           return (opt == :if) ? ret : !ret
         end
       end
 
       true
-    end
-
-    def attribute_value(name)
-      if self._attribute_options.key?(:value) && self._attribute_options[:value].include?(name)
-        eval_attribute_option_value(self._attribute_options[:value][name])
-      else
-        @object.read_attribute_for_serialization(name)
-      end
     end
 
     def eval_attribute_option_value(value)
@@ -533,8 +539,12 @@ module ActiveModel
       hash = {}
 
       _attributes.each do |name, key|
-        if include_attribute?(name)
-          hash[key] = attribute_value(name)
+        if include_field?(name)
+          hash[key] = if self._field_options.key?(:value) && self._field_options[:value].include?(name)
+                        eval_attribute_option_value(self._field_options[:value][name])
+                      else
+                        @object.read_attribute_for_serialization(name)
+                      end
         end
       end
 

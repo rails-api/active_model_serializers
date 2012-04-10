@@ -70,52 +70,6 @@ class SerializerTest < ActiveModel::TestCase
     end
   end
 
-  class IfSerializer < ActiveModel::Serializer
-    root :user
-
-    attribute :first_name, :if => :first_name?
-    attribute :last_name,  :if => lambda { |s| s.last_name? }
-    attribute :password,   :if => :super_user?
-
-    def first_name?
-      true
-    end
-    def last_name?
-      false
-    end
-  end
-
-  class UnlessSerializer < ActiveModel::Serializer
-    root :user
-
-    attribute :first_name, :unless => :first_name?
-    attribute :last_name,  :unless => lambda { |s| s.last_name? }
-    attribute :password,   :unless => :super_user?
-
-    def first_name?
-      true
-    end
-    def last_name?
-      false
-    end
-  end
-
-  class ValueSerializer < ActiveModel::Serializer
-    root :user
-
-    attribute :first_name, :value => :lower_first_name
-    attribute :last_name,  :value => lambda { |s| s.upper_last_name }
-    attribute :admin,      :value => :super_user?
-    attribute :static,     :value => "constant"
-
-    def lower_first_name
-      @object.read_attribute_for_serialization(:first_name).downcase
-    end
-    def upper_last_name
-      @object.read_attribute_for_serialization(:last_name).upcase
-    end
-  end
-
   class CommentSerializer
     def initialize(comment, scope, options={})
       @comment, @scope = comment, scope
@@ -537,10 +491,25 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
-  def test_attribute_that_uses_if
+  def test_attribute_defined_with_if
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :user
+
+      attribute :first_name, :if => :show_first_name?
+      attribute :last_name,  :if => lambda { |s| s.show_last_name? }
+      attribute :password,   :if => :super_user?
+
+      def show_first_name?
+        true
+      end
+      def show_last_name?
+        false
+      end
+    end
+
     u = User.new
     u.superuser = true
-    serializer = IfSerializer.new(u)
+    serializer = serializer_class.new(u)
 
     assert_equal({
       :user => {
@@ -550,10 +519,25 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
-  def test_attribute_that_uses_unless
+  def test_attribute_defined_with_unless
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :user
+
+      attribute :first_name, :unless => :hide_first_name?
+      attribute :last_name,  :unless => lambda { |s| s.hide_last_name? }
+      attribute :password,   :unless => :super_user?
+
+      def hide_first_name?
+        true
+      end
+      def hide_last_name?
+        false
+      end
+    end
+
     u = User.new
     u.superuser = true
-    serializer = UnlessSerializer.new(u)
+    serializer = serializer_class.new(u)
 
     assert_equal({
       :user => {
@@ -562,10 +546,26 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
-  def test_attribute_that_uses_value
+  def test_attribute_that_specifies_value
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :user
+
+      attribute :first_name, :value => :lower_first_name
+      attribute :last_name,  :value => lambda { |s| s.upper_last_name }
+      attribute :admin,      :value => :super_user?
+      attribute :static,     :value => "constant"
+
+      def lower_first_name
+        @object.read_attribute_for_serialization(:first_name).downcase
+      end
+      def upper_last_name
+        @object.read_attribute_for_serialization(:last_name).upcase
+      end
+    end
+
     u = User.new
     u.superuser = true
-    serializer = ValueSerializer.new(u)
+    serializer = serializer_class.new(u)
 
     assert_equal({
       :user => {
@@ -897,6 +897,79 @@ class SerializerTest < ActiveModel::TestCase
         { :name => "lolcat", :id => 1 },
         { :name => "violetcat", :id => 3 },
         { :name => "nyancat", :id => 2 }
+      ]
+    }, actual)
+  end
+
+  def test_association_conditionals
+    user_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      attributes :id, :name
+    end
+
+    comment_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      attributes :id, :body
+    end
+
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      attributes :id, :title, :body
+      has_many :comments, :serializer => comment_serializer, :if => :comment_reader?
+      has_one  :author, :serializer => user_serializer, :unless => :anonymous?
+
+      def comment_reader?
+        options[:scope][:comment_reader]
+      end
+
+      def anonymous?
+        options[:scope][:anonymous]
+      end
+    end
+
+    post_class = Class.new(Model) do
+      attr_accessor :comments, :author
+
+      define_method :active_model_serializer do
+        post_serializer
+      end
+    end
+
+    comment_class = Class.new(Model) do
+    end
+
+    user_class = Class.new(Model) do
+    end
+
+    steinbeck = user_class.new(:name => "John Steinbeck", :id => 1)
+
+    comment1 = comment_class.new(:body => "EWOT", :id => 1)
+    comment2 = comment_class.new(:body => "YARLY", :id => 2)
+
+    post = post_class.new(:title => "New Post", :body => "NEW POST", :id => 1)
+    post.author = steinbeck
+    post.comments = [comment1, comment2]
+
+    actual = ActiveModel::ArraySerializer.new([post], :root => :posts,
+                                              :scope => {:comment_reader => true, :anonymous => false}).as_json
+    assert_equal({
+      :posts => [
+        { :title => "New Post", :body => "NEW POST", :id => 1, :comments => [1,2], :author => 1 }
+      ],
+      :authors => [
+        { :name => "John Steinbeck", :id => 1 },
+      ],
+      :comments => [
+        { :body => "EWOT", :id => 1 },
+        { :body => "YARLY", :id => 2 }
+      ]
+    }, actual)
+
+    actual = ActiveModel::ArraySerializer.new([post], :root => :posts,
+                                              :scope => {:comment_reader => false, :anonymous => true}).as_json
+    assert_equal({
+      :posts => [
+        { :title => "New Post", :body => "NEW POST", :id => 1 }
       ]
     }, actual)
   end
