@@ -17,9 +17,6 @@ For now, the easiest way to install `ActiveModel::Serializers` is to add this to
 Then, install it on the command line:
 
 	$ bundle install
-	$ rails g serializers:install
-
-The installation will generate an `app/serializers` directory and create an `ApplicationSerializer` inside it. You can use the `ApplicationSerializer` for common functionality, and to customize the behavior of embedded associations. See more on this later.
 
 # Creating a Serializer
 
@@ -30,6 +27,10 @@ The easiest way to create a new serializer is to generate a new resource, which 
 This will generate a serializer in `app/serializers/post_serializer.rb` for your new model. You can also generate a serializer for an existing model with the `serializer generator`:
 
 	$ rails g serializer post
+
+# ApplicationSerializer the global serializer
+
+All new serializers descend from either ActiveModel::Serializer or from ApplicationSerializer if you create this file in `app/serializers`. This file is no longer required.
 
 # render :json
 
@@ -42,9 +43,13 @@ In your controllers, when you use `render :json`, Rails will now first search fo
 		end
 	end
 
-In this case, Rails will look for a serializer named `PostSerializer`, and if it exists, use it to serialize the `Post`. If it does not exist, Rails will simply call `to_json` on the `@post` object.
+In this case, Rails will look for a serializer named `PostSerializer`, and if it exists, use it to serialize the `Post`. 
 
 This also works with `render_with`, which uses `to_json` under the hood. Also note that any options passed to `render :json` will be passed to your serializer and available as `@options` inside.
+
+## Getting the old version
+
+If you find that your project is already relying on the old rails to_json change `render :json` to `render :json => @your_object.to_json`.
 
 # Attributes and Associations
 
