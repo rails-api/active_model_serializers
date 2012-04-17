@@ -39,24 +39,26 @@ module ActionController
     def default_serializer_options
     end
 
-    def _render_option_json(json, options)
-      if json.respond_to?(:to_ary)
-        options[:root] ||= controller_name
-      end
-
-      serializer = options.delete(:serializer) ||
-        (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
-
-      if serializer
-        options[:scope] = serialization_scope
-
-        if default_options = default_serializer_options
-          options = options.merge(default_options)
+    [:json, :xml].each do |format|
+      define_method("_render_option_#{format}") do |object, options|
+        if object.respond_to?(:to_ary)
+          options[:root] ||= controller_name
         end
 
-        json = serializer.new(json, options)
+        serializer = options.delete(:serializer) ||
+          (object.respond_to?(:active_model_serializer) && object.active_model_serializer)
+
+        if serializer
+          options[:scope] = serialization_scope
+
+          if default_options = default_serializer_options
+            options = options.merge(default_options)
+          end
+
+          object = serializer.new(object, options)
+        end
+        super(object, options)
       end
-      super
     end
 
     module ClassMethods
