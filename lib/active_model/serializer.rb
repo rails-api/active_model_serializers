@@ -216,13 +216,26 @@ module ActiveModel
       end
 
       class HasOne < Config #:nodoc:
+        def polymorphic?
+          option :polymorphic
+        end
+
+        def polymoprhic_key
+          associated_object.class.to_s.demodulize.underscore.to_sym
+        end
+
         def plural_key
           key.to_s.pluralize.to_sym
         end
 
         def serialize
           object = associated_object
-          object && find_serializable(object).serializable_hash
+
+          if object && polymorphic?
+            { polymoprhic_key => find_serializable(object).serializable_hash }
+          elsif object
+            find_serializable(object).serializable_hash
+          end
         end
 
         def serialize_many
