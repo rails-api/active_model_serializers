@@ -999,4 +999,40 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, actual)
   end
+
+  def test_can_handle_polymoprhic_ids
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      attributes :name, :url
+      has_one :attachable, :polymorphic => true
+    end
+
+    email = email_class.new :id => 1
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :attachable => {
+        :email => 1
+      }
+    }, actual)
+  end
 end
