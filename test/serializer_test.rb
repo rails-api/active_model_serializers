@@ -1093,7 +1093,10 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     orange_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+
       attributes :plu, :id
+      has_one :readable, :polymorphic => true
     end
 
     email_class = Class.new(Model) do
@@ -1111,8 +1114,12 @@ class SerializerTest < ActiveModel::TestCase
         "Orange"
       end
 
+      def readable
+        @attributes[:readable]
+      end
+
       define_method :active_model_serializer do
-       orange_serializer
+        orange_serializer
       end
     end
 
@@ -1128,7 +1135,7 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     email  = email_class.new  :id => 1, :subject => "Hello", :body => "World"
-    orange = orange_class.new :id => 1, :plu => "3027"
+    orange = orange_class.new :id => 1, :plu => "3027",  readable: email
 
     attachment = Attachment.new({
       :name       => 'logo.png',
@@ -1141,22 +1148,25 @@ class SerializerTest < ActiveModel::TestCase
     actual = attachment_serializer.new(attachment, {}).as_json
 
     assert_equal({
+      :emails => [{
+        :subject => "Hello",
+        :body => "World",
+        :id => 1
+      }],
+
+      :oranges => [{
+        :plu => "3027",
+        :id => 1,
+        :readable => { :email => 1 }
+      }],
+
       :attachment => {
         :name => 'logo.png',
         :url => 'http://example.com/logo.png',
         :attachable => { :email => 1 },
         :readable => { :email => 1 },
         :edible => { :orange => 1 }
-      },
-      :emails => [{
-        :id => 1,
-        :subject => "Hello",
-        :body => "World"
-      }],
-      :oranges => [{
-        :id => 1,
-        :plu => "3027"
-      }]
+      }
     }, actual)
   end
 end
