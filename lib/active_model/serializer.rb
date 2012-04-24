@@ -225,7 +225,11 @@ module ActiveModel
         end
 
         def plural_key
-          key.to_s.pluralize.to_sym
+          if polymorphic?
+            associated_object.class.to_s.pluralize.demodulize.underscore.to_sym
+          else
+            key.to_s.pluralize.to_sym
+          end
         end
 
         def serialize

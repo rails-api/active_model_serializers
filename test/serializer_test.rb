@@ -1038,7 +1038,7 @@ class SerializerTest < ActiveModel::TestCase
 
   def test_polymorphic_associations_are_included_at_root
     email_serializer = Class.new(ActiveModel::Serializer) do
-      attributes :subject, :body
+      attributes :subject, :body, :id
     end
 
     email_class = Class.new(Model) do
@@ -1052,6 +1052,7 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     attachment_serializer = Class.new(ActiveModel::Serializer) do
+      root :attachment
       embed :ids, :include => true
       attributes :name, :url
       has_one :attachable, :polymorphic => true
@@ -1064,11 +1065,12 @@ class SerializerTest < ActiveModel::TestCase
     actual = attachment_serializer.new(attachment, {}).as_json
 
     assert_equal({
-      :name => 'logo.png', 
-      :url => 'http://example.com/logo.png',
-      :attachable => {
-        :email => 1
-      },
+      :attachment => {
+        :name => 'logo.png', 
+        :url => 'http://example.com/logo.png',
+        :attachable => {
+          :email => 1
+        }},
       :emails => [{
         :id => 1,
         :subject => "Hello",
