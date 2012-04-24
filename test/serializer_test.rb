@@ -963,6 +963,14 @@ class SerializerTest < ActiveModel::TestCase
     def attachable
       @attributes[:attachable]
     end
+
+    def readable
+      @attributes[:readable]
+    end
+
+    def edible
+      @attributes[:edible]
+    end
   end
 
   def tests_can_handle_polymorphism
@@ -1075,6 +1083,79 @@ class SerializerTest < ActiveModel::TestCase
         :id => 1,
         :subject => "Hello",
         :body => "World"
+      }]
+    }, actual)
+  end
+
+  def test_multiple_polymorphic_associations
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body, :id
+    end
+
+    orange_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :plu, :id
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    orange_class = Class.new(Model) do
+      def self.to_s
+        "Orange"
+      end
+
+      define_method :active_model_serializer do
+       orange_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      root :attachment
+      embed :ids, :include => true
+
+      attributes :name, :url
+
+      has_one :attachable, :polymorphic => true
+      has_one :readable,   :polymorphic => true
+      has_one :edible,     :polymorphic => true
+    end
+
+    email  = email_class.new  :id => 1, :subject => "Hello", :body => "World"
+    orange = orange_class.new :id => 1, :plu => "3027"
+
+    attachment = Attachment.new({
+      :name       => 'logo.png',
+      :url        => 'http://example.com/logo.png',
+      :attachable => email,
+      :readable   => email,
+      :edible     => orange
+    })
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :attachment => {
+        :name => 'logo.png',
+        :url => 'http://example.com/logo.png',
+        :attachable => { :email => 1 },
+        :readable => { :email => 1 },
+        :edible => { :orange => 1 }
+      },
+      :emails => [{
+        :id => 1,
+        :subject => "Hello",
+        :body => "World"
+      }],
+      :oranges => [{
+        :id => 1,
+        :plu => "3027"
       }]
     }, actual)
   end
