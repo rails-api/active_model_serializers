@@ -220,7 +220,7 @@ module ActiveModel
           option :polymorphic
         end
 
-        def polymoprhic_key
+        def polymorphic_key
           associated_object.class.to_s.demodulize.underscore.to_sym
         end
 
@@ -236,7 +236,7 @@ module ActiveModel
           object = associated_object
 
           if object && polymorphic?
-            { polymoprhic_key => find_serializable(object).serializable_hash }
+            { polymorphic_key => find_serializable(object).serializable_hash }
           elsif object
             find_serializable(object).serializable_hash
           end
@@ -252,7 +252,7 @@ module ActiveModel
           object = associated_object
 
           if object && polymorphic?
-            { polymoprhic_key => object.read_attribute_for_serialization(:id) }
+            { polymorphic_key => object.read_attribute_for_serialization(:id) }
           elsif object
             object.read_attribute_for_serialization(:id)
           else
