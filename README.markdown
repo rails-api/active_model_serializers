@@ -236,7 +236,7 @@ this:
 ```
 
 You can also specify a different root for the embedded objects than the key
-used to reference them, such as like this:
+used to reference them:
 
 ```ruby
 class PostSerializer < ApplicationSerializer
