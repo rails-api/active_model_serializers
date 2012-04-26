@@ -410,9 +410,13 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      node = attributes
-      include_associations!(node) if _embed
-      node
+      instrument(:serialize, :serializer => self.class.name) do
+        node = attributes
+        instrument :associations do
+          include_associations!(node) if _embed
+        end
+        node
+      end
     end
 
     def include_associations!(node)
@@ -513,6 +517,12 @@ module ActiveModel
     end
 
     alias :read_attribute_for_serialization :send
+
+    # Use ActiveSupport::Notifications to send events to external systems.
+    # The event name is: name.class_name.serializer
+    def instrument(name, payload = {}, &block)
+      ActiveSupport::Notifications.instrument("#{name}.serializer", payload, &block)
+    end
   end
 end
 
