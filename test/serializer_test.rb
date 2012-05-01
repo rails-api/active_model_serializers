@@ -491,6 +491,26 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
+  def test_attribute_block
+    serializer_class = Class.new(ActiveModel::Serializer) do
+      root :user
+
+      attribute :fullName do
+        "#{@attributes[:first_name]} #{@attributes[:last_name]}"
+      end
+      attribute :password
+    end
+
+    serializer = serializer_class.new(User.new)
+
+    assert_equal({
+      :user => {
+        :fullName => "Jose Valim",
+        :password => "oh noes yugive my password"
+      }
+    }, serializer.as_json)
+  end
+
   def setup_model
     Class.new do
       class << self

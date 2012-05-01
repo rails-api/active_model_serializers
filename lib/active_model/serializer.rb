@@ -250,8 +250,8 @@ module ActiveModel
         end
       end
 
-      def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr)
+      def attribute(attr, options={}, &block)
+        self._attributes = _attributes.merge((options[:key] || attr) => (block || attr))
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -489,8 +489,12 @@ module ActiveModel
     def attributes
       hash = {}
 
-      _attributes.each do |name,key|
-        hash[key] = @object.read_attribute_for_serialization(name)
+      _attributes.each do |key, value|
+        hash[key] = if value.respond_to? :call
+                      @object.instance_eval(&value)
+                    else
+                      @object.read_attribute_for_serialization(value)
+                    end
       end
 
       hash
