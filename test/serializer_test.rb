@@ -814,4 +814,46 @@ class SerializerTest < ActiveModel::TestCase
       ]
     }, actual)
   end
+
+  def test_paginatable_array_serialization
+    tag_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name
+    end
+
+    tag_class = Class.new(Model) do
+      def name
+        @attributes[:name]
+      end
+
+      define_method :active_model_serializer do
+        tag_serializer
+      end
+    end
+
+    serializable_array = Class.new(Array) do
+      def num_pages
+        10
+      end
+
+      def current_page
+        5
+      end
+    end
+
+    array = serializable_array.new
+    array << tag_class.new(:name => 'Rails')
+    array << tag_class.new(:name => 'Sinatra')
+
+    actual = array.active_model_serializer.new(array, :root => :tags).as_json
+
+    assert_equal({
+      :meta => {
+        :pagination => { :total => 10, :current => 5 },
+      },
+      :tags => [
+        { :name => "Rails" },
+        { :name => "Sinatra" },
+      ]
+    }, actual)
+  end
 end

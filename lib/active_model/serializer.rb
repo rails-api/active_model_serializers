@@ -55,10 +55,23 @@ module ActiveModel
       array = serializable_array.map(&:serializable_hash)
 
       if root = @options[:root]
+        if pages?
+          hash[:meta] = {
+            :pagination => {
+              :current => @object.current_page,
+              :total => @object.num_pages
+            }
+          }
+        end
+
         hash.merge!(root => array)
       else
         array
       end
+    end
+
+    def pages?
+      object.respond_to?(:num_pages) && object.respond_to?(:current_page)
     end
   end
 
