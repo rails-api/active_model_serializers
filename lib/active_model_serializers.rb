@@ -3,6 +3,17 @@ require "active_support/core_ext/string/inflections"
 require "active_model"
 require "active_model/serializer"
 
+if defined?(Rails)
+  module ActiveModel
+    class Railtie < Rails::Railtie
+      generators do |app|
+        Rails::Generators.configure!(app.config.generators)
+        require "generators/resource_override"
+      end
+    end
+  end
+end
+
 module ActiveModel::SerializerSupport
   extend ActiveSupport::Concern
 
