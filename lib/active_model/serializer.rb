@@ -27,6 +27,23 @@ module ActiveModel
     end
   end
 
+  # Active Model Default Serializer
+  #
+  # This is a dummy serializer that simply calls to_json on its subject. Useful
+  # to maintain a consistent interface for the ArraySerializer. Also, this would
+  # be a good place to include options that should affect all JSON generated.
+  class DefaultSerializer
+    attr_reader :object, :options
+
+    def initialize(object, options={})
+      @object, @options = object, options
+    end
+
+    def serializable_hash
+      object.to_json
+    end
+  end
+
   # Active Model Array Serializer
   #
   # It serializes an array checking if each element that implements
@@ -43,7 +60,7 @@ module ActiveModel
         if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
           serializer.new(item, @options)
         else
-          item
+          DefaultSerializer.new(item, @options)
         end
       end
     end
