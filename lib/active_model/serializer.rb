@@ -235,6 +235,9 @@ module ActiveModel
     class_attribute :_associations
     self._associations = {}
 
+    class_attribute :_field_options
+    self._field_options = {}
+
     class_attribute :_root
     class_attribute :_embed
     self._embed = :objects
@@ -252,11 +255,32 @@ module ActiveModel
 
       def attribute(attr, options={})
         self._attributes = _attributes.merge(attr => options[:key] || attr)
+        if options[:if] || options[:unless] || options[:value]
+          self._field_options = _field_options.dup
+          [:if, :unless, :value].each do |opt|
+            if options[opt]
+              self._field_options[opt] ||= {}
+              self._field_options[opt][attr] = options[opt]
+            end
+          end
+        end
       end
 
       def associate(klass, attrs) #:nodoc:
         options = attrs.extract_options!
         self._associations = _associations.dup
+
+        if options[:if] || options[:unless]
+          self._field_options = _field_options.dup
+          [:if, :unless].each do |opt|
+            if options[opt]
+              attrs.each do |attr|
+                self._field_options[opt] ||= {}
+                self._field_options[opt][attr] = options[opt]
+              end
+            end
+          end
+        end
 
         attrs.each do |attr|
           unless method_defined?(attr)
@@ -401,13 +425,15 @@ module ActiveModel
 
     def include_associations!(node)
       _associations.each do |attr, klass|
-        opts = { :node => node }
+        if include_field?(attr)
+          opts = { :node => node }
 
-        if options.include?(:include) || options.include?(:exclude)
-          opts[:include] = included_association?(attr)
+          if options.include?(:include) || options.include?(:exclude)
+            opts[:include] = included_association?(attr)
+          end
+
+          include! attr, opts
         end
-
-        include! attr, opts
       end
     end
 
@@ -484,13 +510,42 @@ module ActiveModel
       end
     end
 
+    def include_field?(name)
+      [:if, :unless].each do |opt|
+        if self._field_options.key?(opt) && self._field_options[opt].include?(name)
+          ret = eval_attribute_option_value(self._field_options[opt][name])
+          return (opt == :if) ? ret : !ret
+        end
+      end
+
+      true
+    end
+
+    def eval_attribute_option_value(value)
+      if value.respond_to? :call
+        value.call(self)
+      elsif value.kind_of?(Symbol) && respond_to?(value)
+        instance_eval(&value)
+      elsif value.kind_of?(Symbol) && @object.respond_to?(value)
+        @object.instance_eval(&value)
+      else
+        value
+      end
+    end
+
     # Returns a hash representation of the serializable
     # object attributes.
     def attributes
       hash = {}
 
-      _attributes.each do |name,key|
-        hash[key] = @object.read_attribute_for_serialization(name)
+      _attributes.each do |name, key|
+        if include_field?(name)
+          hash[key] = if self._field_options.key?(:value) && self._field_options[:value].include?(name)
+                        eval_attribute_option_value(self._field_options[:value][name])
+                      else
+                        @object.read_attribute_for_serialization(name)
+                      end
+        end
       end
 
       hash

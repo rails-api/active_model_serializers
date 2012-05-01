@@ -109,6 +109,43 @@ class PostSerializer < ApplicationSerializer
 end
 ```
 
+Use an `:if` or `:unless` option to conditionally include a particular attribute:
+
+	class PostSerializer < ApplicationSerializer
+		attributes :id, :body
+		attribute :admin_note, :if => :admin?   # will be evaluated by the serializer (see below)
+		attribute :hidden,     :if => :hidden?  # will be evaluated on the serialized object
+		attribute :synopsis,   :unless => lambda { |serializer| serializer.object.content.size < 100 }
+
+		has_many :comments
+
+		def admin?
+			scope.admin?
+		end
+	end
+
+Use the `:value` option to define a value other than the attribute on the serialized object:
+
+	class UserSerializer < ApplicationSerializer
+		attribute :first_name
+		attribute :last_name,  :value => lambda { |serializer| serializer.object.last_name.upcase }
+		attribute :full_name,  :value => :full_name  # will be evaluated by the serializer (see below)
+		attribute :code_name,  :value => :code       # will be evaluated on the serialized object
+		attribute :admin,      :value => true, :if => :show_admin? # value is static
+
+		def full_name do
+			"#{object.first_name} #{object.last_name}"
+		end
+
+		def show_admin?
+			scope.admin? && object.admin?
+		end
+	end
+
+The `:value` option can optionally be combined with `:if` or `:unless`.
+
+All of these options can be either procs (see the `lambda` examples above), methods on the serializer, methods on the serialized object, or simply static values. Arguments are evaluated in that order.
+
 ## Associations
 
 For specified associations, the serializer will look up the association and
