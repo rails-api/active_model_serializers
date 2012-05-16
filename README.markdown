@@ -45,11 +45,9 @@ the `serializer generator`:
 $ rails g serializer post
 ```
 
-# ApplicationSerializer the global serializer
+# ActiveModel::Serializer
 
-All new serializers descend from either ActiveModel::Serializer or from
-ApplicationSerializer if you create this file in `app/serializers`. This file
-is no longer required.
+All new serializers descend from ActiveModel::Serializer
 
 # render :json
 
@@ -57,7 +55,7 @@ In your controllers, when you use `render :json`, Rails will now first search
 for a serializer for the object and use it if available.
 
 ```ruby
-class PostController < ApplicationController
+class PostsController < ApplicationController
   def show
     @post = Post.find(params[:id])
     render :json => @post
@@ -83,7 +81,7 @@ Once you have a serializer, you can specify which attributes and associations
 you would like to include in the serialized form.
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
   has_many :comments
 end
@@ -100,7 +98,7 @@ If you would like the key in the outputted JSON to be different from its name
 in ActiveRecord, you can use the `:key` option to customize it:
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :body
 
   # look up :subject on the model, but use +title+ in the JSON
@@ -122,7 +120,7 @@ association and returning a different Array. Often, you will do this to
 customize the objects returned based on the current user.
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
   has_many :comments
 
@@ -141,7 +139,7 @@ As with attributes, you can also change the JSON key that the serializer should
 use for a particular association.
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
 
   # look up comments, but use +my_comments+ as the key in JSON
@@ -174,7 +172,7 @@ flexible from a performance standpoint and avoids wasteful duplication.
 To embed IDs instead of associations, simply use the `embed` class method:
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   embed :ids
 
   attributes :id, :title, :body
@@ -204,7 +202,7 @@ objects (like tags), are only delivered once for the entire payload.
 You can specify that the data be included like this:
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   embed :ids, :include => true
 
   attributes :id, :title, :body
@@ -239,7 +237,7 @@ You can also specify a different root for the embedded objects than the key
 used to reference them:
 
 ```ruby
-class PostSerializer < ApplicationSerializer
+class PostSerializer < ActiveModel::Serializer
   embed :ids, :include => true
 
   attributes :id, :title, :body
