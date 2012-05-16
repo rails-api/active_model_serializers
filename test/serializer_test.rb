@@ -814,4 +814,12 @@ class SerializerTest < ActiveModel::TestCase
       ]
     }, actual)
   end
+
+  def test_active_support_on_load_hooks_fired
+    loaded = nil
+    ActiveSupport.on_load(:active_model_serializers) do
+      loaded = self
+    end
+    assert_equal ActiveModel::Serializer, loaded
+  end
 end
