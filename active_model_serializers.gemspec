@@ -1,4 +1,8 @@
 # -*- encoding: utf-8 -*-
+
+$:.unshift File.expand_path("../lib", __FILE__)
+require "active_model/serializers/version"
+
 Gem::Specification.new do |gem|
   gem.authors       = ["José Valim", "Yehuda Katz"]
   gem.email         = ["jose.valim@gmail.com", "wycats@gmail.com"]
@@ -11,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.name          = "active_model_serializers"
   gem.require_paths = ["lib"]
-  gem.version       = "0.1.0"
+  gem.version       = ActiveModel::Serializer::VERSION
 
   gem.add_dependency 'activemodel', '~> 3.0'
   gem.add_development_dependency "rails", "~> 3.0"
