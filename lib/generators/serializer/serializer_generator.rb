@@ -27,8 +27,13 @@ module Rails
       def parent_class_name
         if options[:parent]
           options[:parent]
-        else
+        # Only works on 3.2
+        # elsif (n = Rails::Generators.namespace) && n.const_defined?(:ApplicationSerializer)
+        #   "ApplicationSerializer"
+        elsif defined?(::ApplicationSerializer)
           "ApplicationSerializer"
+        else
+          "ActiveModel::Serializer"
         end
       end
     end
