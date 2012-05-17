@@ -246,12 +246,16 @@ module ActiveModel
         self._attributes = _attributes.dup
 
         attrs.each do |attr|
-          self._attributes[attr] = attr
+          attribute attr
         end
       end
 
       def attribute(attr, options={})
         self._attributes = _attributes.merge(attr => options[:key] || attr)
+
+        unless method_defined?(attr)
+          class_eval "def #{attr}() object.read_attribute_for_serialization(:#{attr}) end", __FILE__, __LINE__
+        end
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -490,10 +494,14 @@ module ActiveModel
       hash = {}
 
       _attributes.each do |name,key|
-        hash[key] = @object.read_attribute_for_serialization(name)
+        hash[key] = read_attribute_for_serialization(name)
       end
 
       hash
+    end
+
+    def read_attribute_for_serialization(name)
+      send name
     end
   end
 end
