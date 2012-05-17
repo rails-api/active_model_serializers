@@ -20,11 +20,13 @@ require 'rails'
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
+    resource 'hypermedia'
     match ':controller(/:action(/:id))'
     match ':controller(/:action)'
   end
 
-  ActionController::Base.send :include, Routes.url_helpers
+  ActionController::Base.send  :include, Routes.url_helpers
+  ActiveModel::Serializer.send :include, Routes.url_helpers
 end
 
 ActiveSupport::TestCase.class_eval do
