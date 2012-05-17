@@ -91,7 +91,7 @@ module ActiveModel
   #       end
   #
   #       def author?
-  #         post.author == scope
+  #         post.author == options[:scope]
   #       end
   #     end
   #
