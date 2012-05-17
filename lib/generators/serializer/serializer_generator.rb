@@ -30,7 +30,7 @@ module Rails
         # Only works on 3.2
         # elsif (n = Rails::Generators.namespace) && n.const_defined?(:ApplicationSerializer)
         #   "ApplicationSerializer"
-        elsif defined?(:ApplicationSerializer)
+        elsif Object.const_defined?(:ApplicationSerializer)
           "ApplicationSerializer"
         else
           "ActiveModel::Serializer"
