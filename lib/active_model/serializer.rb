@@ -504,9 +504,7 @@ module ActiveModel
       hash
     end
 
-    def read_attribute_for_serialization(name)
-      send name
-    end
+    alias :read_attribute_for_serialization :send
   end
 end
 

@@ -34,3 +34,7 @@ ActiveSupport::TestCase.class_eval do
     @routes = ::TestHelper::Routes
   end
 end
+
+class Object
+  undef_method :id if respond_to?(:id)
+end
