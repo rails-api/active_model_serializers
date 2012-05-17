@@ -10,6 +10,10 @@ if defined?(Rails)
         Rails::Generators.configure!(app.config.generators)
         require "generators/resource_override"
       end
+
+      initializer 'active_model_serializers.url_helpers' do |app|
+        ActiveModel::Serializer.send(:include, app.routes.url_helpers)
+      end
     end
   end
 end

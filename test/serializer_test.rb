@@ -132,6 +132,13 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
+  def test_serializer_receives_url_options
+    user = User.new
+    user_serializer = UserSerializer.new(user, :url_options => { :host => "test.local" })
+
+    assert_equal({ :host => "test.local" }, user_serializer.url_options)
+  end
+
   def test_pretty_accessors
     user = User.new
     user.superuser = true

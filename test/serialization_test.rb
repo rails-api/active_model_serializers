@@ -54,6 +54,18 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class HypermediaSerializable
+    def active_model_serializer
+      HypermediaSerializer
+    end
+  end
+
+  class HypermediaSerializer < ActiveModel::Serializer
+    def as_json(*)
+      { :link => hypermedia_url }
+    end
+  end
+
   class TestController < ActionController::Base
     protect_from_forgery
 
@@ -122,6 +134,10 @@ class RenderJsonTest < ActionController::TestCase
 
     def render_json_with_custom_serializer
       render :json => [], :serializer => CustomSerializer
+    end
+
+    def render_json_with_links
+      render :json => HypermediaSerializable.new
     end
 
   private
@@ -228,5 +244,10 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_with_custom_serializer
     get :render_json_with_custom_serializer
     assert_match '{"hello":true}', @response.body
+  end
+
+  def test_render_json_with_links
+    get :render_json_with_links
+    assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
   end
 end

@@ -376,6 +376,10 @@ module ActiveModel
       @object, @options = object, options
     end
 
+    def url_options
+      options[:url_options]
+    end
+
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(options=nil)
