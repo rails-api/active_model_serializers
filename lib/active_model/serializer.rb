@@ -52,7 +52,13 @@ module ActiveModel
       @options[:hash] = hash = {}
       @options[:unique_values] = {}
 
-      array = serializable_array.map(&:serializable_hash)
+      array = serializable_array.map do |item|
+        if item.respond_to?(:serializable_hash)
+          item.serializable_hash
+        else
+          item
+        end
+      end
 
       if root = @options[:root]
         hash.merge!(root => array)
