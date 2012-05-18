@@ -402,6 +402,13 @@ class SerializerTest < ActiveModel::TestCase
       { :title => "Comment2" }
     ]}, serializer.as_json)
   end
+  
+  def test_array_serializer_with_hash
+    hash = {:value => "something"}
+    array = [hash]
+    serializer = array.active_model_serializer.new(array, :root => :items)
+    assert_equal({ :items => [ hash ]}, serializer.as_json)
+  end
 
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
