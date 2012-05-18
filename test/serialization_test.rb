@@ -140,6 +140,11 @@ class RenderJsonTest < ActionController::TestCase
       render :json => HypermediaSerializable.new
     end
 
+    def render_json_array_with_no_root
+      render :json => [], :root => false
+    end
+
+
   private
     def default_serializer_options
       if params[:check_defaults]
@@ -249,5 +254,10 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_with_links
     get :render_json_with_links
     assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
+  end
+
+  def test_render_json_array_with_no_root
+    get :render_json_array_with_no_root
+    assert_equal '[]', @response.body
   end
 end

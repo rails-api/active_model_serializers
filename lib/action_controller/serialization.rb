@@ -41,7 +41,7 @@ module ActionController
 
     def _render_option_json(json, options)
       if json.respond_to?(:to_ary)
-        options[:root] ||= controller_name
+        options[:root] ||= controller_name unless options[:root] == false
       end
 
       serializer = options.delete(:serializer) ||
