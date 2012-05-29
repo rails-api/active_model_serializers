@@ -126,12 +126,12 @@ class PostSerializer < ActiveModel::Serializer
 
   # only let the user see comments he created.
   def comments
-    post.comments.where(:created_by => @scope)
+    post.comments.where(:created_by => options[:scope])
   end
 end
 ```
 
-In a serializer, `@scope` is the current authorization scope (usually
+In a serializer, `options[:scope]` is the current authorization scope (usually
 `current_user`), which the controller gives to the serializer when you call
 `render :json`
 
