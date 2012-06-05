@@ -185,24 +185,6 @@ class AssociationTest < ActiveModel::TestCase
       }, @root_hash)
     end
 
-    def test_with_default_has_one_with_custom_key
-      @post_serializer_class.class_eval do
-        has_one :comment, :key => :custom_comment
-      end
-
-      include! :comment
-
-      assert_equal({
-        :custom_comment => 1
-      }, @hash)
-
-      assert_equal({
-        :custom_comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
-        ]
-      }, @root_hash)
-    end
-
     def test_embed_objects_for_has_many_associations
       @post_serializer_class.class_eval do
         has_many :comments, :embed => :objects
