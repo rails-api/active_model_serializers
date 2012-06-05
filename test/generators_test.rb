@@ -55,13 +55,13 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   def test_generates_attributes_and_associations
     run_generator
     assert_file "app/serializers/account_serializer.rb" do |serializer|
-      assert_match(/^  attributes :name, :description$/, serializer)
+      assert_match(/^  attributes :id, :name, :description$/, serializer)
       assert_match(/^  has_one :business$/, serializer)
     end
   end
 
   def test_with_no_attributes_does_not_add_extra_space
     run_generator ["account"]
-    assert_file "app/serializers/account_serializer.rb", /class AccountSerializer < ActiveModel::Serializer\nend/
+    assert_file "app/serializers/account_serializer.rb", /class AccountSerializer < ActiveModel::Serializer\n  attributes :id\nend/
   end
 end
