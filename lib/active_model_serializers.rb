@@ -11,6 +11,7 @@ if defined?(Rails)
         app ||= Rails.application # Rails 3.0.x does not yield `app`
 
         Rails::Generators.configure!(app.config.generators)
+        Rails::Generators.hidden_namespaces.uniq!
         require "generators/resource_override"
       end
 
