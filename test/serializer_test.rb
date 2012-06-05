@@ -375,17 +375,18 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
+  # serialize different typed objects
   def test_array_serializer
     model    = Model.new
     user     = User.new
     comments = Comment.new(:title => "Comment1", :id => 1)
 
     array = [model, user, comments]
-    serializer = array.active_model_serializer.new(array, {:scope => true})
+    serializer = array.active_model_serializer.new(array, :scope => {:scope => true})
     assert_equal([
       { :model => "Model" },
-      { :user => { :last_name=> "Valim", :ok => true, :first_name => "Jose", :scope => true } },
-      { :comment => { :title => "Comment1" } }
+      { :last_name => "Valim", :ok => true, :first_name => "Jose", :scope => true },
+      { :title => "Comment1" }
     ], serializer.as_json)
   end
 
@@ -401,6 +402,13 @@ class SerializerTest < ActiveModel::TestCase
       { :title => "Comment1" },
       { :title => "Comment2" }
     ]}, serializer.as_json)
+  end
+
+  def test_array_serializer_with_hash
+    hash = {:value => "something"}
+    array = [hash]
+    serializer = array.active_model_serializer.new(array, :root => :items)
+    assert_equal({ :items => [ hash ]}, serializer.as_json)
   end
 
   class CustomBlog < Blog
