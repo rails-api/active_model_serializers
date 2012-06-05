@@ -384,12 +384,12 @@ class SerializerTest < ActiveModel::TestCase
     serializer = array.active_model_serializer.new(array, {:scope => true})
     assert_equal([
       { :model => "Model" },
-      { :user => { :last_name=>"Valim", :ok=>true, :first_name=>"Jose", :scope => true } },
+      { :user => { :last_name=> "Valim", :ok => true, :first_name => "Jose", :scope => true } },
       { :comment => { :title => "Comment1" } }
     ], serializer.as_json)
   end
 
-  def test_array_serializer
+  def test_array_serializer_with_root
     comment1 = Comment.new(:title => "Comment1", :id => 1)
     comment2 = Comment.new(:title => "Comment2", :id => 2)
 

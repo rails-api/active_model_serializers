@@ -217,7 +217,7 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '"object":{"serializable_object":true}', @response.body
   end
 
-  def test_render_json_with_serializer
+  def test_render_json_with_serializer_checking_defaults
     get :render_json_with_serializer, :check_defaults => true
     assert_match '"scope":{"current_user":true}', @response.body
     assert_match '"object":{"serializable_object":true}', @response.body
