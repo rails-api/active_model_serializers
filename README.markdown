@@ -219,11 +219,11 @@ this:
     "id": 1,
     "title": "New post",
     "body": "A body!",
-    "comments": [ 1 ]
+    "comments": [ 1, 2 ]
   },
   "comments": [
     { "id": 1, "body": "what a dumb post", "tags": [ 1, 2 ] },
-    { "id": 1, "body": "i liked it", "tags": [ 1, 3 ] },
+    { "id": 2, "body": "i liked it", "tags": [ 1, 3 ] },
   ],
   "tags": [
     { "id": 1, "name": "short" },
