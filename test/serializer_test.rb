@@ -71,8 +71,8 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   class CommentSerializer
-    def initialize(comment, scope, options={})
-      @comment, @scope = comment, scope
+    def initialize(comment, options={})
+      @comment = comment
     end
 
     def serializable_hash
