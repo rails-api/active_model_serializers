@@ -248,6 +248,9 @@ module ActiveModel
     self._embed = :objects
     class_attribute :_root_embed
 
+    class_attribute :include_root_in_json
+    self.include_root_in_json = true
+
     class << self
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
@@ -396,7 +399,7 @@ module ActiveModel
     # object including the root.
     def as_json(options=nil)
       options ||= {}
-      if root = options.fetch(:root, @options.fetch(:root, _root))
+      if include_root_in_json && root = options.fetch(:root, @options.fetch(:root, _root))
         @options[:hash] = hash = {}
         @options[:unique_values] = {}
 
