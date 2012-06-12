@@ -408,7 +408,7 @@ class SerializerTest < ActiveModel::TestCase
     hash = {:value => "something"}
     array = [hash]
     serializer = array.active_model_serializer.new(array, :root => :items)
-    assert_equal({ :items => [ hash ]}, serializer.as_json)
+    assert_equal({ :items => [ hash.as_json ]}, serializer.as_json)
   end
 
   class CustomBlog < Blog

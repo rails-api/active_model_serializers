@@ -53,9 +53,7 @@ module ActiveModel
       @options[:unique_values] = {}
 
       array = serializable_array.map do |item|
-        if item.is_a?(Hash)
-          item
-        elsif item.respond_to?(:serializable_hash)
+        if item.respond_to?(:serializable_hash)
           item.serializable_hash
         else
           item.as_json
