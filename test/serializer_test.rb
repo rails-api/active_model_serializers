@@ -953,6 +953,45 @@ class SerializerTest < ActiveModel::TestCase
     }, actual)
   end
 
+  def test_private_attributes
+    secret_user = Class.new(Object) do
+      def read_attribute_for_serialization(name)
+        send name
+      end
+
+      def secrets
+        %w(my secrets)
+      end
+
+      def api_key
+        'foo'
+      end
+    end
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      private_attributes :secrets, :api_key
+    end
+
+    user = secret_user.new
+
+    actual = serializer.new(user, :root => :user, :scope => user).as_json
+
+    assert_equal({
+      :user => {
+        :secrets => ['my', 'secrets'],
+        :api_key => 'foo'
+      }
+    }, actual)
+
+    other_user = secret_user.new
+
+    actual = serializer.new(other_user, :root => :user, :scope => user).as_json
+
+    assert_equal({
+      :user => { }
+    }, actual)
+  end
+
   def test_active_support_on_load_hooks_fired
     loaded = nil
     ActiveSupport.on_load(:active_model_serializers) do

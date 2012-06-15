@@ -262,9 +262,17 @@ module ActiveModel
         end
       end
 
+      def private_attributes(*attrs)
+        self._private_attributes = _attributes.dup
+
+        attrs.each do |attr|
+          attribute attr, :private => true
+        end
+      end
+
       def attribute(attr, options={})
         if options[:private]
-          self._private_attributes = _attributes.merge(attr => options[:key] || attr)
+          self._private_attributes = _private_attributes.merge(attr => options[:key] || attr)
         else
           self._attributes = _attributes.merge(attr => options[:key] || attr)
         end
