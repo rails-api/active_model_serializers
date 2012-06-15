@@ -920,12 +920,6 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def test_can_include_private_attributes
-    secret_serializer = Class.new(ActiveModel::Serializer) do
-      def serializable_hash
-        object
-      end
-    end
-
     secret_user = Class.new(Object) do
       def read_attribute_for_serialization(name)
         send name
