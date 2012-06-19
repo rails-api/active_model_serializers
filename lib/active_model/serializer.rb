@@ -394,7 +394,12 @@ module ActiveModel
     # object including the root.
     def as_json(options=nil)
       options ||= {}
+
       if root = options.fetch(:root, @options.fetch(:root, _root))
+        if @object.respond_to?(:each)
+          return ArraySerializer.new(@object, options).as_json
+        end
+
         @options[:hash] = hash = {}
         @options[:unique_values] = {}
 
