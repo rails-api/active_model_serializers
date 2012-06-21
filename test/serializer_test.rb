@@ -411,6 +411,24 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :items => [ hash.as_json ]}, serializer.as_json)
   end
 
+  class CustomPostSerializer < ActiveModel::Serializer
+    attributes :title
+  end
+
+  def test_array_serializer_with_specified_seriailizer
+    post1 = Post.new(:title => "Post1", :author => "Author1", :id => 1)
+    post2 = Post.new(:title => "Post2", :author => "Author2", :id => 2)
+
+    array = [ post1, post2 ]
+
+    serializer = array.active_model_serializer.new array, :each_serializer => CustomPostSerializer
+
+    assert_equal([
+      { :title => "Post1" },
+      { :title => "Post2" }
+    ], serializer.as_json)
+  end
+
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
   end

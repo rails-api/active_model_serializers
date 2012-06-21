@@ -40,7 +40,13 @@ module ActiveModel
 
     def serializable_array
       @object.map do |item|
-        if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
+        if @options.has_key? :each_serializer
+          serializer = @options[:each_serializer]
+        elsif item.respond_to?(:active_model_serializer)
+          serializer = item.active_model_serializer
+        end
+
+        if serializer
           serializer.new(item, @options)
         else
           item
