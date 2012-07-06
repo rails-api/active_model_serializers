@@ -256,11 +256,37 @@ module ActiveModel
         end
       end
 
-      def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr)
+      # Alternative serialization configurarition using a hash
+      #
+      # The key is the public API name used in the JSON document. If a value is provided
+      # it is used to call a method on (first) the serializer or (secondly) on the model
+      # to retrieve the value. The hash value can also be a callable whose return value
+      # will be used to populate the API field.
+      def attributes_hash(fields_and_procs)
+        self._attributes = _attributes.dup
 
+        fields_and_procs.each do |serialized_field_name, proc_or_internal_method|
+          attribute serialized_field_name, proc_or_internal_method: proc_or_internal_method
+        end
+      end
+
+      def attribute(attr, options={})
+        serialized_field_name = options[:key] || attr
+        internal_method       = options[:proc_or_internal_method] || attr
+
+        self._attributes = _attributes.merge( serialized_field_name => serialized_field_name )
+
+        # TODO: this is executed in the class scope which means that instance methods on the serializer class defined
+        # after the call to attribute() are not present (defined) yet. This means that this `method_defined?` check 
+        # *always* return false. Things work anyway because the "real" instance method is subsequently parsed and
+        # clobbers the one we define here. It is very ugly though. The fix is to populate the _attributes hash but not
+        # define any methods until the data is needed.
         unless method_defined?(attr)
-          class_eval "def #{attr}() object.read_attribute_for_serialization(:#{attr}) end", __FILE__, __LINE__
+          define_method serialized_field_name do
+            internal_method.respond_to?(:call) ?
+              internal_method.bind(object).call :
+              object.read_attribute_for_serialization(internal_method)
+          end
         end
       end
 
