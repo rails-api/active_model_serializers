@@ -58,10 +58,10 @@ class SerializerTest < ActiveModel::TestCase
 
   class UserSerializerWithHash < ActiveModel::Serializer
     root :user
-    attributes_hash first_name:         nil,
-                    surname:            :last_name,
-                    full_name:          ->{ "#{@attributes[:first_name]} #{@attributes[:last_name]}"},
-                    secret:             nil
+    attributes  :first_name,
+                surname:            :last_name,
+                full_name:          ->{ "#{@attributes[:first_name]} #{@attributes[:last_name]}"},
+                secret:             nil
 
     def secret
       object.instance_eval do

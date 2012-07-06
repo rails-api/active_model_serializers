@@ -248,25 +248,24 @@ module ActiveModel
 
     class << self
       # Define attributes to be used in the serialization.
+      #
+      # Attributes can be provided as a list of symbols representing instance methods on
+      # the model or the serializer, or, if preferred, as a hash where the key is the
+      # public API name used for serialization. If a value is provided it is used to call
+      # a method on (first) the serializer or (secondly) on the model to retrieve the value.
+      # The hash value can also be a callable whose return value will be used to populate
+      # the API field.
       def attributes(*attrs)
         self._attributes = _attributes.dup
 
         attrs.each do |attr|
-          attribute attr
-        end
-      end
-
-      # Alternative serialization configurarition using a hash
-      #
-      # The key is the public API name used in the JSON document. If a value is provided
-      # it is used to call a method on (first) the serializer or (secondly) on the model
-      # to retrieve the value. The hash value can also be a callable whose return value
-      # will be used to populate the API field.
-      def attributes_hash(fields_and_procs)
-        self._attributes = _attributes.dup
-
-        fields_and_procs.each do |serialized_field_name, proc_or_internal_method|
-          attribute serialized_field_name, proc_or_internal_method: proc_or_internal_method
+          if attr.is_a? Hash
+            attr.each do |serialized_field_name, proc_or_internal_method|
+              attribute serialized_field_name, proc_or_internal_method: proc_or_internal_method
+            end
+          else
+            attribute attr
+          end
         end
       end
 
