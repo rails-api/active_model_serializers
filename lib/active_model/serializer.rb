@@ -524,9 +524,15 @@ module ActiveModel
   end
 end
 
-class Array
-  # Array uses ActiveModel::ArraySerializer.
+module ActiveModel::ArraySerializerSupport
   def active_model_serializer
     ActiveModel::ArraySerializer
   end
 end
+
+Array.send(:include, ActiveModel::ArraySerializerSupport)
+
+ActiveSupport.on_load(:active_record) do
+  ActiveRecord::Relation.send(:include, ActiveModel::ArraySerializerSupport)
+end
+
