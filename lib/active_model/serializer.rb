@@ -523,10 +523,3 @@ module ActiveModel
     end
   end
 end
-
-class Array
-  # Array uses ActiveModel::ArraySerializer.
-  def active_model_serializer
-    ActiveModel::ArraySerializer
-  end
-end
