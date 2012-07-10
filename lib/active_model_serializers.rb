@@ -56,6 +56,18 @@ ActiveSupport.on_load(:active_record) do
   include ActiveModel::SerializerSupport
 end
 
+module ActiveModel::ArraySerializerSupport
+  def active_model_serializer
+    ActiveModel::ArraySerializer
+  end
+end
+
+Array.send(:include, ActiveModel::ArraySerializerSupport)
+
+ActiveSupport.on_load(:active_record) do
+  ActiveRecord::Relation.send(:include, ActiveModel::ArraySerializerSupport)
+end
+
 begin
   require 'action_controller'
   require 'action_controller/serialization'
