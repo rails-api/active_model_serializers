@@ -30,10 +30,6 @@ class CachingTest < ActiveModel::TestCase
       %w(ruby)
     end
 
-    def cache_key
-      name
-    end
-
     def read_attribute_for_serialization(name)
       send name
     end
@@ -61,6 +57,10 @@ class CachingTest < ActiveModel::TestCase
       def self.to_s
         'serializer'
       end
+
+      def cache_key
+        object.name
+      end
     end
 
     serializer.cache = NullStore.new
@@ -81,6 +81,10 @@ class CachingTest < ActiveModel::TestCase
 
       def self.to_s
         'serializer'
+      end
+
+      def cache_key
+        object.name
       end
     end
 

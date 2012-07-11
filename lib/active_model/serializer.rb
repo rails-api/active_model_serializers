@@ -441,17 +441,7 @@ module ActiveModel
     end
 
     def perform_caching?
-      perform_caching && cache && cache_key
-    end
-
-    # Override this method if you want to create a key based on associations
-    # Here's an example: your serializer has associations and the scope
-    #
-    # def cache_key
-    #   [ object, scope, scope.comments ]
-    # end
-    def cache_key
-      object.try :cache_key
+      perform_caching && cache && try(:cache_key)
     end
 
     def expand_cache_key(*args)
