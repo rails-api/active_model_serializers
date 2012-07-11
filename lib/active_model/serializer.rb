@@ -69,7 +69,15 @@ module ActiveModel
     class_attribute :use_default_render_json
     self.use_default_render_json = false
 
+    class_attribute :cache
+    class_attribute :perform_caching
+
     class << self
+      # set peform caching like root
+      def cache(value = true)
+        self.perform_caching = value
+      end
+
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
 
@@ -266,6 +274,16 @@ module ActiveModel
       hash[meta_key] = @options[:meta] if @options.has_key?(:meta)
     end
 
+    def to_json(*args)
+      if perform_caching?
+        cache.fetch expand_cache_key([self.class.to_s.underscore, object.cache_key, 'to-json']) do
+          super
+        end
+      else
+        super
+      end
+    end
+
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(options={})
@@ -284,10 +302,15 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      return nil if @object.nil?
-      @node = attributes
-      include_associations! if _embed
-      @node
+<<<<<<< HEAD
+=======
+      if perform_caching?
+        cache.fetch expand_cache_key([self.class.to_s.underscore, object.cache_key, 'serializable-hash']) do
+          _serializable_hash
+        end
+      else
+        _serializable_hash
+      end
     end
 
     def include_associations!
@@ -399,6 +422,31 @@ module ActiveModel
     end
 
     alias :read_attribute_for_serialization :send
+
+    # def _serializable_hash
+    #   instrument(:serialize, :serializer => self.class.name) do
+    #     node = attributes
+    #     instrument :associations do
+    #       include_associations!(node) if _embed
+    #     end
+    #     node
+    #   end
+    # end
+
+    def _serializable_hash
+      return nil if @object.nil?
+      @node = attributes
+      include_associations! if _embed
+      @node
+    end
+
+    def perform_caching?
+      perform_caching && cache && object.respond_to?(:cache_key)
+    end
+
+    def expand_cache_key(*args)
+      ActiveSupport::Cache.expand_cache_key(args)
+    end
 
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
