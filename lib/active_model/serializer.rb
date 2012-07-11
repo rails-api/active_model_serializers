@@ -276,7 +276,7 @@ module ActiveModel
 
     def to_json(*args)
       if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, object.cache_key, 'to-json']) do
+        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'to-json']) do
           super
         end
       else
@@ -305,7 +305,7 @@ module ActiveModel
 <<<<<<< HEAD
 =======
       if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, object.cache_key, 'serializable-hash']) do
+        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-hash']) do
           _serializable_hash
         end
       else
@@ -441,7 +441,17 @@ module ActiveModel
     end
 
     def perform_caching?
-      perform_caching && cache && object.respond_to?(:cache_key)
+      perform_caching && cache && cache_key
+    end
+
+    # Override this method if you want to create a key based on associations
+    # Here's an example: your serializer has associations and the scope
+    #
+    # def cache_key
+    #   [ object, scope, scope.comments ]
+    # end
+    def cache_key
+      object.try :cache_key
     end
 
     def expand_cache_key(*args)

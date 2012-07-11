@@ -94,4 +94,27 @@ class CachingTest < ActiveModel::TestCase
       :skills => ['ruby'],
     }.to_json, serializer.cache.read('serializer/Adam/to-json'))
   end
+
+  def test_can_use_defined_cache_key
+    serializer = Class.new(ActiveModel::Serializer) do
+      cache true
+      attributes :name, :skills
+
+      def self.to_s
+        'serializer'
+      end
+
+      def cache_key
+        'custom-key'
+      end
+    end
+
+    serializer.cache = NullStore.new
+    instance = serializer.new Programmer.new
+
+    instance.to_json
+
+    assert serializer.cache.read('serializer/custom-key/to-json')
+    assert serializer.cache.read('serializer/custom-key/serializable-hash')
+  end
 end
