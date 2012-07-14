@@ -166,6 +166,10 @@ module ActiveModel
           option(:name) || @name
         end
 
+        def private?
+          option(:private)
+        end
+
         def associated_object
           option(:value) || source_serializer.send(name)
         end
@@ -243,6 +247,8 @@ module ActiveModel
 
     class_attribute :_attributes
     self._attributes = {}
+    class_attribute :_private_attributes
+    self._private_attributes = {}
 
     class_attribute :_associations
     self._associations = {}
@@ -262,8 +268,20 @@ module ActiveModel
         end
       end
 
+      def private_attributes(*attrs)
+        self._private_attributes = _attributes.dup
+
+        attrs.each do |attr|
+          attribute attr, :private => true
+        end
+      end
+
       def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr)
+        if options[:private]
+          self._private_attributes = _private_attributes.merge(attr => options[:key] || attr)
+        else
+          self._attributes = _attributes.merge(attr => options[:key] || attr)
+        end
 
         unless method_defined?(attr)
           class_eval "def #{attr}() object.read_attribute_for_serialization(:#{attr}) end", __FILE__, __LINE__
@@ -478,6 +496,8 @@ module ActiveModel
 
       association = association_class.new(name, self, options)
 
+      return if association.private? && !scoped?
+
       if association.embed_ids?
         node[association.key] = association.serialize_ids
 
@@ -517,6 +537,10 @@ module ActiveModel
         hash[key] = read_attribute_for_serialization(name)
       end
 
+      _private_attributes.each do |name,key|
+        hash[key] = read_attribute_for_serialization(name) if scoped?
+      end
+
       hash
     end
 
@@ -526,6 +550,15 @@ module ActiveModel
     # The event name is: name.class_name.serializer
     def instrument(name, payload = {}, &block)
       ActiveSupport::Notifications.instrument("#{name}.serializer", payload, &block)
+    end
+
+    # Returns true if the scope and object are the same
+    def scoped?
+      object == scope
+    end
+
+    def scope
+      @options[:scope]
     end
   end
 end
