@@ -74,7 +74,7 @@ module ActiveModel
 
     class << self
       # set peform caching like root
-      def cache(value = true)
+      def cached(value = true)
         self.perform_caching = value
       end
 
@@ -441,7 +441,7 @@ module ActiveModel
     end
 
     def perform_caching?
-      perform_caching && cache && try(:cache_key)
+      perform_caching && cache && respond_to?(:cache_key)
     end
 
     def expand_cache_key(*args)

@@ -38,12 +38,12 @@ class CachingTest < ActiveModel::TestCase
   def test_serializers_have_a_cache_store
     ActiveModel::Serializer.cache = NullStore.new
 
-    assert ActiveModel::Serializer.cache
+    assert_kind_of NullStore, ActiveModel::Serializer.cache
   end
 
   def test_serializers_can_enable_caching
     serializer = Class.new(ActiveModel::Serializer) do
-      cache true
+      cached true
     end
 
     assert serializer.perform_caching
@@ -51,7 +51,7 @@ class CachingTest < ActiveModel::TestCase
 
   def test_serializers_cache_serializable_hash
     serializer = Class.new(ActiveModel::Serializer) do
-      cache true
+      cached true
       attributes :name, :skills
 
       def self.to_s
@@ -76,7 +76,7 @@ class CachingTest < ActiveModel::TestCase
 
   def test_serializers_cache_to_json
     serializer = Class.new(ActiveModel::Serializer) do
-      cache true
+      cached true
       attributes :name, :skills
 
       def self.to_s
@@ -101,7 +101,7 @@ class CachingTest < ActiveModel::TestCase
 
   def test_can_use_defined_cache_key
     serializer = Class.new(ActiveModel::Serializer) do
-      cache true
+      cached true
       attributes :name, :skills
 
       def self.to_s
