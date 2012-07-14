@@ -103,7 +103,7 @@ module ActiveModel
   #       end
   #
   #       def author?
-  #         post.author == options[:scope]
+  #         post.author == scope
   #       end
   #     end
   #
@@ -518,6 +518,11 @@ module ActiveModel
       end
 
       hash
+    end
+
+    # Returns options[:scope]
+    def scope 
+      @options[:scope]
     end
 
     alias :read_attribute_for_serialization :send
