@@ -56,6 +56,20 @@ class SerializerTest < ActiveModel::TestCase
     end
   end
 
+  class UserSerializerWithHash < ActiveModel::Serializer
+    root :user
+    attributes  :first_name,
+                surname:            :last_name,
+                full_name:          ->{ "#{@attributes[:first_name]} #{@attributes[:last_name]}"},
+                secret:             nil
+
+    def secret
+      object.instance_eval do
+        @attributes[:password].each_char.to_a.reverse.join('')
+      end
+    end
+  end
+
   class DefaultUserSerializer < ActiveModel::Serializer
     attributes :first_name, :last_name
   end
@@ -113,6 +127,17 @@ class SerializerTest < ActiveModel::TestCase
 
     assert_equal({
       :user => { :first_name => "Jose", :last_name => "Valim", :ok => true }
+    }, hash)
+  end
+
+  def test_attributes_hash_method
+    user = User.new
+    user_serializer = UserSerializerWithHash.new(user, :scope => {})
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      :user => { :first_name => "Jose", :surname => "Valim", :full_name => "Jose Valim", :secret => "drowssap ym eviguy seon ho" }
     }, hash)
   end
 
