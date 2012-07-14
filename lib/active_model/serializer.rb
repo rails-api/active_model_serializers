@@ -263,7 +263,7 @@ module ActiveModel
       end
 
       def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr)
+        self._attributes = _attributes.merge(attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym)
 
         unless method_defined?(attr)
           class_eval "def #{attr}() object.read_attribute_for_serialization(:#{attr}) end", __FILE__, __LINE__
