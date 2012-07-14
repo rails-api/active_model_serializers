@@ -890,4 +890,48 @@ class SerializerTest < ActiveModel::TestCase
     end
     assert_equal ActiveModel::Serializer, loaded
   end
+
+  def tests_query_attributes_strip_question_mark
+    todo = Class.new do
+      def overdue?
+        true
+      end
+
+      def read_attribute_for_serialization(name)
+        send name
+      end
+    end
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      attribute :overdue?
+    end
+
+    actual = serializer.new(todo.new).as_json
+
+    assert_equal({
+      :overdue => true
+    }, actual)
+  end
+
+  def tests_query_attributes_allow_key_option
+    todo = Class.new do
+      def overdue?
+        true
+      end
+
+      def read_attribute_for_serialization(name)
+        send name
+      end
+    end
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      attribute :overdue?, :key => :foo
+    end
+
+    actual = serializer.new(todo.new).as_json
+
+    assert_equal({
+      :foo => true
+    }, actual)
+  end
 end
