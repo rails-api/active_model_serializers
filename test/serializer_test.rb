@@ -105,6 +105,21 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
+  def test_collection
+    posts = [
+      Post.new({ :title => "Moby Dick", :body => "There once was a whale..." }),
+      Post.new({ :title => "SICP", :body => "Really hard stuff..." })
+    ]
+    post_serializer = PostSerializer.new(posts)
+
+    hash = post_serializer.as_json
+
+    assert_equal([
+      { :title => "Moby Dick", :body => "There once was a whale...", :comments => [] },
+      { :title => "SICP", :body => "Really hard stuff...", :comments => [] }
+    ], hash);
+  end
+
   def test_attributes_method
     user = User.new
     user_serializer = UserSerializer.new(user, :scope => {})
