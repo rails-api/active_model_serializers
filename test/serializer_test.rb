@@ -96,7 +96,7 @@ class SerializerTest < ActiveModel::TestCase
 
   def test_scope_works_correct
     serializer = ActiveModel::Serializer.new :foo, :scope => :bar
-    asser_equal serializer.scope, :bar
+    assert_equal serializer.scope, :bar
   end
 
   def test_attributes
