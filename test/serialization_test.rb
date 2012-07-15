@@ -136,8 +136,14 @@ class RenderJsonTest < ActionController::TestCase
       render :json => JsonSerializable.new(true)
     end
 
+    # To specify a custom serializer for an object, use :serializer.
     def render_json_with_custom_serializer
-      render :json => [], :serializer => CustomSerializer
+      render :json => Object.new, :serializer => CustomSerializer
+    end
+
+    # To specify a custom serializer for each item in the Array, use :each_serializer.
+    def render_json_array_with_custom_serializer
+      render :json => [Object.new], :each_serializer => CustomSerializer
     end
 
     def render_json_with_links
@@ -261,6 +267,11 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_with_custom_serializer
     get :render_json_with_custom_serializer
     assert_match '{"hello":true}', @response.body
+  end
+
+  def test_render_json_array_with_custom_serializer
+    get :render_json_array_with_custom_serializer
+    assert_match '{"test":[{"hello":true}]}', @response.body
   end
 
   def test_render_json_with_links
