@@ -66,6 +66,10 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class CustomArraySerializer < ActiveModel::ArraySerializer
+    self.root = "items"
+  end
+
   class TestController < ActionController::Base
     protect_from_forgery
 
@@ -142,6 +146,14 @@ class RenderJsonTest < ActionController::TestCase
 
     def render_json_array_with_no_root
       render :json => [], :root => false
+    end
+
+    def render_json_empty_array
+      render :json => []
+    end
+
+    def render_json_array_with_custom_array_serializer
+      render :json => [], :serializer => CustomArraySerializer
     end
 
 
@@ -260,4 +272,23 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_array_with_no_root
     assert_equal '[]', @response.body
   end
+
+  def test_render_json_empty_array
+    get :render_json_empty_array
+    assert_equal '{"test":[]}', @response.body
+  end
+
+  def test_render_json_empty_arry_with_array_serializer_root_false
+    ActiveModel::ArraySerializer.root = false
+    get :render_json_empty_array
+    assert_equal '[]', @response.body
+  ensure # teardown
+    ActiveModel::ArraySerializer.root = nil
+  end
+
+  def test_render_json_array_with_custom_array_serializer
+    get :render_json_array_with_custom_array_serializer
+    assert_equal '{"items":[]}', @response.body
+  end
+
 end

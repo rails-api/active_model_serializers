@@ -29,10 +29,17 @@ module ActiveModel
 
   # Active Model Array Serializer
   #
-  # It serializes an array checking if each element that implements
+  # It serializes an Array, checking if each element that implements
   # the +active_model_serializer+ method.
+  #
+  # To disable serialization of root elements, in an initializer:
+  #
+  #     ActiveModel::ArraySerializer.root = false
+  #
   class ArraySerializer
     attr_reader :object, :options
+
+    class_attribute :root
 
     def initialize(object, options={})
       @object, @options = object, options
