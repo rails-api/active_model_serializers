@@ -434,6 +434,10 @@ class SerializerTest < ActiveModel::TestCase
     ], serializer.as_json)
   end
 
+  def test_sets_use_an_array_serializer
+    assert_equal Set.new.active_model_serializer, ActiveModel::ArraySerializer
+  end
+
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
   end
