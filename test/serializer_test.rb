@@ -1135,7 +1135,7 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     email  = email_class.new  :id => 1, :subject => "Hello", :body => "World"
-    orange = orange_class.new :id => 1, :plu => "3027",  readable: email
+    orange = orange_class.new :id => 1, :plu => "3027",  :readable => email
 
     attachment = Attachment.new({
       :name       => 'logo.png',
