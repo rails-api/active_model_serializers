@@ -108,6 +108,18 @@ module ActiveModel
   #     end
   #
   class Serializer
+    class IncludeError < StandardError
+      attr_reader :source, :association
+
+      def initialize(source, association)
+        @source, @association = source, association
+      end
+
+      def to_s
+        "Cannot serialize #{association} when #{source} does not have a root!"
+      end
+    end
+
     module Associations #:nodoc:
       class Config #:nodoc:
         class_attribute :options
@@ -502,7 +514,9 @@ module ActiveModel
       if association.embed_ids?
         node[association.key] = association.serialize_ids
 
-        if association.embed_in_root?
+        if association.embed_in_root? && hash.nil?
+          raise IncludeError.new(self.class, association.name)
+        elsif association.embed_in_root?
           merge_association hash, association.root, association.serialize_many, unique_values
         end
       elsif association.embed_objects?
