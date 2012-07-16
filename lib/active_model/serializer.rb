@@ -78,7 +78,7 @@ module ActiveModel
   #
   # Provides a basic serializer implementation that allows you to easily
   # control how a given object is going to be serialized. On initialization,
-  # it expects to object as arguments, a resource and options. For example,
+  # it expects two objects as arguments, a resource and options. For example,
   # one may do in a controller:
   #
   #     PostSerializer.new(@post, :scope => current_user).to_json
@@ -87,7 +87,7 @@ module ActiveModel
   # in for authorization purposes.
   #
   # We use the scope to check if a given attribute should be serialized or not.
-  # For example, some attributes maybe only be returned if +current_user+ is the
+  # For example, some attributes may only be returned if +current_user+ is the
   # author of the post:
   #
   #     class PostSerializer < ActiveModel::Serializer
