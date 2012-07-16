@@ -1244,4 +1244,24 @@ class SerializerTest < ActiveModel::TestCase
       smoothie.as_json
     end
   end
+
+  def tests_includes_does_not_include_nil_polymoprhic_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      root :post
+      embed :ids, :include => true
+      has_one :author, :polymorphic => true
+      attributes :title
+    end
+
+    post = Post.new(:title => 'Foo')
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :post => {
+        :title => 'Foo',
+        :author => nil
+      }
+    }, actual)
+  end
 end
