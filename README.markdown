@@ -107,6 +107,37 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+## Custom Attributes
+
+If you would like customize your JSON to include things beyond the simple 
+attributes of the model, you can override its `serializable_hash` method 
+to return anything you need. For example:
+
+```ruby
+class Person < ActiveRecord::Base
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+  
+  def serializable_hash options = nil
+    hash = super(options)
+    hash["full_name"] = full_name
+    hash
+  end
+  
+end
+```
+
+The attributes returned by `serializable_hash` are then available in your serializer 
+as usual:
+
+```ruby
+class PersonSerializer < ActiveModel::Serializer
+  attributes :first_name, :last_name, :full_name
+end
+```
+
 ## Associations
 
 For specified associations, the serializer will look up the association and
