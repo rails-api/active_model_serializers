@@ -1169,4 +1169,99 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, actual)
   end
+
+  def test_raises_an_error_when_a_child_serializer_includes_associations_when_the_source_doesnt
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name
+    end
+
+    fruit_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      has_one :attachment, :serializer => attachment_serializer
+      attribute :color
+    end
+
+    banana_class = Class.new Model do
+      def self.to_s
+        'banana'
+      end
+
+      def attachment
+        @attributes[:attachment]
+      end
+
+      define_method :active_model_serializer do
+        fruit_serializer
+      end
+    end
+
+    strawberry_class = Class.new Model do
+      def self.to_s
+        'strawberry'
+      end
+
+      def attachment
+        @attributes[:attachment]
+      end
+
+      define_method :active_model_serializer do
+        fruit_serializer
+      end
+    end
+
+    smoothie = Class.new do
+      attr_reader :base, :flavor
+
+      def initialize(base, flavor)
+        @base, @flavor = base, flavor
+      end
+    end
+
+    smoothie_serializer = Class.new(ActiveModel::Serializer) do
+      root false
+      embed :ids, :include => true
+
+      has_one :base, :polymorphic => true
+      has_one :flavor, :polymorphic => true
+    end
+
+    banana_attachment = Attachment.new({
+      :name => 'banana_blending.md',
+      :id => 3,
+    })
+
+    strawberry_attachment = Attachment.new({
+      :name => 'strawberry_cleaning.doc',
+      :id => 4
+    })
+
+    banana = banana_class.new :color => "yellow", :id => 1, :attachment => banana_attachment
+    strawberry = strawberry_class.new :color => "red", :id => 2, :attachment => strawberry_attachment
+
+    smoothie = smoothie_serializer.new(smoothie.new(banana, strawberry))
+
+    assert_raise ActiveModel::Serializer::IncludeError do
+      smoothie.as_json
+    end
+  end
+
+  def tests_includes_does_not_include_nil_polymoprhic_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      root :post
+      embed :ids, :include => true
+      has_one :author, :polymorphic => true
+      attributes :title
+    end
+
+    post = Post.new(:title => 'Foo')
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :post => {
+        :title => 'Foo',
+        :author => nil
+      }
+    }, actual)
+  end
 end
