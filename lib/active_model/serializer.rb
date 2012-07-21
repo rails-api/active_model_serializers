@@ -32,7 +32,7 @@ module ActiveModel
   # It serializes an Array, checking if each element that implements
   # the +active_model_serializer+ method.
   #
-  # To disable serialization of root elements, in an initializer:
+  # To disable serialization of root elements:
   #
   #     ActiveModel::ArraySerializer.root = false
   #
