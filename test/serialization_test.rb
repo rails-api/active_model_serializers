@@ -66,6 +66,10 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class CustomArraySerializer < ActiveModel::ArraySerializer
+    self.root = "items"
+  end
+
   class TestController < ActionController::Base
     protect_from_forgery
 
@@ -132,8 +136,14 @@ class RenderJsonTest < ActionController::TestCase
       render :json => JsonSerializable.new(true)
     end
 
+    # To specify a custom serializer for an object, use :serializer.
     def render_json_with_custom_serializer
-      render :json => [], :serializer => CustomSerializer
+      render :json => Object.new, :serializer => CustomSerializer
+    end
+
+    # To specify a custom serializer for each item in the Array, use :each_serializer.
+    def render_json_array_with_custom_serializer
+      render :json => [Object.new], :each_serializer => CustomSerializer
     end
 
     def render_json_with_links
@@ -142,6 +152,14 @@ class RenderJsonTest < ActionController::TestCase
 
     def render_json_array_with_no_root
       render :json => [], :root => false
+    end
+
+    def render_json_empty_array
+      render :json => []
+    end
+
+    def render_json_array_with_custom_array_serializer
+      render :json => [], :serializer => CustomArraySerializer
     end
 
 
@@ -251,6 +269,11 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '{"hello":true}', @response.body
   end
 
+  def test_render_json_array_with_custom_serializer
+    get :render_json_array_with_custom_serializer
+    assert_match '{"test":[{"hello":true}]}', @response.body
+  end
+
   def test_render_json_with_links
     get :render_json_with_links
     assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
@@ -260,4 +283,23 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_array_with_no_root
     assert_equal '[]', @response.body
   end
+
+  def test_render_json_empty_array
+    get :render_json_empty_array
+    assert_equal '{"test":[]}', @response.body
+  end
+
+  def test_render_json_empty_arry_with_array_serializer_root_false
+    ActiveModel::ArraySerializer.root = false
+    get :render_json_empty_array
+    assert_equal '[]', @response.body
+  ensure # teardown
+    ActiveModel::ArraySerializer.root = nil
+  end
+
+  def test_render_json_array_with_custom_array_serializer
+    get :render_json_array_with_custom_array_serializer
+    assert_equal '{"items":[]}', @response.body
+  end
+
 end
