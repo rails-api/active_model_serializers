@@ -39,7 +39,7 @@ $ rails g resource post title:string body:string
 
 This will generate a serializer in `app/serializers/post_serializer.rb` for
 your new model. You can also generate a serializer for an existing model with
-the `serializer generator`:
+the serializer generator:
 
 ```
 $ rails g serializer post
@@ -66,7 +66,7 @@ end
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`. 
 
-This also works with `render_with`, which uses `to_json` under the hood. Also
+This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
 serializer and available as `@options` inside.
 
@@ -110,31 +110,35 @@ end
 ## Custom Attributes
 
 If you would like customize your JSON to include things beyond the simple 
-attributes of the model, you can override its `serializable_hash` method 
-to return anything you need. For example:
+attributes of the model, you can override its `attributes` method 
+to return anything you need.
+
+The most common scenario to use this feature is when an attribute
+depends on a serialization scope. By default, the current user of your
+application will be available in your serializer under the method
+`scope`. This allows you to check for permissions before adding
+an attribute. For example:
 
 ```ruby
 class Person < ActiveRecord::Base
-
   def full_name
     "#{first_name} #{last_name}"
   end
   
-  def serializable_hash options = nil
+  def attributes
     hash = super(options)
-    hash["full_name"] = full_name
+    hash["full_name"] = full_name if scope.admin?
     hash
   end
-  
 end
 ```
 
-The attributes returned by `serializable_hash` are then available in your serializer 
-as usual:
+The serialization scope can be customized in your controller by
+calling `serialization_scope`:
 
 ```ruby
-class PersonSerializer < ActiveModel::Serializer
-  attributes :first_name, :last_name, :full_name
+class ApplicationController < ActionController::Base
+  serialization_scope :current_admin
 end
 ```
 
