@@ -70,6 +70,24 @@ This also works with `render_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
 serializer and available as `@options` inside.
 
+To specify a custom serializer for an object, there are 2 options:
+
+1. Specify the serializer in your model:
+
+```ruby
+  class Post < ActiveRecord::Base
+    def active_model_serializer
+      FancyPostSerializer
+    end
+  end
+```
+
+2. Specify the serializer when you render the object:
+
+```ruby
+  render :json => @post, :serializer => FancyPostSerializer
+```
+
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
