@@ -444,10 +444,10 @@ class SerializerTest < ActiveModel::TestCase
 
     serializer = set.active_model_serializer.new set, :each_serializer => CustomPostSerializer
 
-    assert_equal([
-      { :title => "Post1" },
-      { :title => "Post2" }
-    ], serializer.as_json)
+    as_json = serializer.as_json
+    assert_equal 2, as_json.size
+    assert_include(as_json, { :title => "Post1" })
+    assert_include(as_json, { :title => "Post2" })
   end
 
   class CustomBlog < Blog
