@@ -282,6 +282,21 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :author => nil }, serializer.new(blog, :scope => user).as_json)
   end
 
+  def test_include_root_in_json
+    user = User.new
+    blog = Blog.new
+
+    serializer = Class.new(BlogSerializer)
+
+    # include root in json by default
+    assert_equal({ :blog => { :author => nil } }, serializer.new(blog, :scope => user).as_json)
+
+    # AS.include_root_in_json = false
+    serializer.include_root_in_json = false
+
+    assert_equal({ :author => nil }, serializer.new(blog, :scope => user).as_json)
+  end
+
   def test_embed_ids
     serializer = post_serializer
 
