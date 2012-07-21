@@ -40,12 +40,16 @@ module ActionController
     end
 
     def _render_option_json(json, options)
-      if json.respond_to?(:to_ary)
-        options[:root] ||= controller_name unless options[:root] == false
-      end
-
       serializer = options.delete(:serializer) ||
         (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
+
+      if json.respond_to?(:to_ary)
+        if options[:root] != false && serializer.root != false
+          # default root element for arrays is serializer's root or the controller name
+          # the serializer for an Array is ActiveModel::ArraySerializer
+          options[:root] ||= serializer.root || controller_name
+        end
+      end
 
       if serializer
         options[:scope] = serialization_scope
