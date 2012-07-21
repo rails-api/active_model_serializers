@@ -434,6 +434,22 @@ class SerializerTest < ActiveModel::TestCase
     ], serializer.as_json)
   end
 
+  def test_sets_can_be_serialized
+    post1 = Post.new(:title => "Post1", :author => "Author1", :id => 1)
+    post2 = Post.new(:title => "Post2", :author => "Author2", :id => 2)
+
+    set = Set.new
+    set << post1
+    set << post2
+
+    serializer = set.active_model_serializer.new set, :each_serializer => CustomPostSerializer
+
+    assert_equal([
+      { :title => "Post1" },
+      { :title => "Post2" }
+    ], serializer.as_json)
+  end
+
   class CustomBlog < Blog
     attr_accessor :public_posts, :public_user
   end
