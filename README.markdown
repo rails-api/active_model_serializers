@@ -91,8 +91,8 @@ render :json => @post, :serializer => FancyPostSerializer
 ## Arrays
 
 In your controllers, when you use `render :json` for an array of objects, AMS will
-use ActiveModel::ArraySerializer (included in this project) as the base serializer,
-and the individual Serializer for the objects contained in that array.
+use `ActiveModel::ArraySerializer` (included in this project) as the base serializer,
+and the individual `Serializer` for the objects contained in that array.
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
@@ -112,14 +112,14 @@ Given the example above, the index action will return
 ```json
 {
   "posts":
-  [
-    { "title": "Post 1", "body": "Hello!" },
-    { "title": "Post 2", "body": "Goodbye!" }
-  ]
+    [
+      { "title": "Post 1", "body": "Hello!" },
+      { "title": "Post 2", "body": "Goodbye!" }
+    ]
 }
 ```
 
-By default, the root element is the name of the controller. For example, PostsController
+By default, the root element is the name of the controller. For example, `PostsController`
 generates a root element "posts". To change it:
 
 ```ruby
@@ -129,7 +129,7 @@ render :json => @posts, :root => "some_posts"
 You may disable the root element for arrays at the top level, which will result in
 more concise json. To disable the root element for arrays, you have 3 options:
 
-#### 1. Disable root globally for in ArraySerializer. In an initializer:
+#### 1. Disable root globally for in `ArraySerializer`. In an initializer:
 
 ```ruby
 ActiveModel::ArraySerializer.root = false
@@ -141,7 +141,7 @@ ActiveModel::ArraySerializer.root = false
 render :json => @posts, :root => false
 ```
 
-#### 3. Create a custom ArraySerializer and render arrays with it:
+#### 3. Create a custom `ArraySerializer` and render arrays with it:
 
 ```ruby
 class CustomArraySerializer < ActiveModel::ArraySerializer
