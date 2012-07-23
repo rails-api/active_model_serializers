@@ -72,20 +72,20 @@ serializer and available as `@options` inside.
 
 To specify a custom serializer for an object, there are 2 options:
 
-1. Specify the serializer in your model:
+#### 1. Specify the serializer in your model:
 
 ```ruby
-  class Post < ActiveRecord::Base
-    def active_model_serializer
-      FancyPostSerializer
-    end
+class Post < ActiveRecord::Base
+  def active_model_serializer
+    FancyPostSerializer
   end
+end
 ```
 
-2. Specify the serializer when you render the object:
+#### 2. Specify the serializer when you render the object:
 
 ```ruby
-  render :json => @post, :serializer => FancyPostSerializer
+render :json => @post, :serializer => FancyPostSerializer
 ```
 
 ## Arrays
@@ -123,33 +123,33 @@ By default, the root element is the name of the controller. For example, PostsCo
 generates a root element "posts". To change it:
 
 ```ruby
-  render :json => @posts, :root => "some_posts"
+render :json => @posts, :root => "some_posts"
 ```
 
 You may disable the root element for arrays at the top level, which will result in
 more concise json. To disable the root element for arrays, you have 3 options:
 
-1. Disable root globally for in ArraySerializer. In an initializer:
+#### 1. Disable root globally for in ArraySerializer. In an initializer:
 
 ```ruby
-  ActiveModel::ArraySerializer.root = false
+ActiveModel::ArraySerializer.root = false
 ```
 
-2. Disable root per render call in your controller:
+#### 2. Disable root per render call in your controller:
 
 ```ruby
-  render :json => @posts, :root => false
+render :json => @posts, :root => false
 ```
 
-3. Create a custom ArraySerializer and render arrays with it:
+#### 3. Create a custom ArraySerializer and render arrays with it:
 
 ```ruby
-  class CustomArraySerializer < ActiveModel::ArraySerializer
-    self.root = "items"
-  end
+class CustomArraySerializer < ActiveModel::ArraySerializer
+  self.root = "items"
+end
 
-  # controller:
-  render :json => @posts, :serializer => CustomArraySerializer
+# controller:
+render :json => @posts, :serializer => CustomArraySerializer
 ```
 
 Disabling the root element of the array with any of the above 3 methods
@@ -165,7 +165,7 @@ will produce
 To specify a custom serializer for the items within an array:
 
 ```ruby
-  render :json => @posts, :each_serializer => FancyPostSerializer
+render :json => @posts, :each_serializer => FancyPostSerializer
 ```
 
 ## Getting the old version
