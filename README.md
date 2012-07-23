@@ -70,6 +70,104 @@ This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
 serializer and available as `@options` inside.
 
+To specify a custom serializer for an object, there are 2 options:
+
+#### 1. Specify the serializer in your model:
+
+```ruby
+class Post < ActiveRecord::Base
+  def active_model_serializer
+    FancyPostSerializer
+  end
+end
+```
+
+#### 2. Specify the serializer when you render the object:
+
+```ruby
+render :json => @post, :serializer => FancyPostSerializer
+```
+
+## Arrays
+
+In your controllers, when you use `render :json` for an array of objects, AMS will
+use `ActiveModel::ArraySerializer` (included in this project) as the base serializer,
+and the individual `Serializer` for the objects contained in that array.
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body
+end
+
+class PostsController < ApplicationController
+  def index
+    @posts = Post.all
+    render :json => @posts
+  end
+end
+```
+
+Given the example above, the index action will return
+
+```json
+{
+  "posts":
+    [
+      { "title": "Post 1", "body": "Hello!" },
+      { "title": "Post 2", "body": "Goodbye!" }
+    ]
+}
+```
+
+By default, the root element is the name of the controller. For example, `PostsController`
+generates a root element "posts". To change it:
+
+```ruby
+render :json => @posts, :root => "some_posts"
+```
+
+You may disable the root element for arrays at the top level, which will result in
+more concise json. To disable the root element for arrays, you have 3 options:
+
+#### 1. Disable root globally for in `ArraySerializer`. In an initializer:
+
+```ruby
+ActiveModel::ArraySerializer.root = false
+```
+
+#### 2. Disable root per render call in your controller:
+
+```ruby
+render :json => @posts, :root => false
+```
+
+#### 3. Create a custom `ArraySerializer` and render arrays with it:
+
+```ruby
+class CustomArraySerializer < ActiveModel::ArraySerializer
+  self.root = "items"
+end
+
+# controller:
+render :json => @posts, :serializer => CustomArraySerializer
+```
+
+Disabling the root element of the array with any of the above 3 methods
+will produce
+
+```json
+[
+  { "title": "Post 1", "body": "Hello!" },
+  { "title": "Post 2", "body": "Goodbye!" }
+]
+```
+
+To specify a custom serializer for the items within an array:
+
+```ruby
+render :json => @posts, :each_serializer => FancyPostSerializer
+```
+
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
