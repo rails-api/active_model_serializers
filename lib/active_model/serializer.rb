@@ -318,7 +318,9 @@ module ActiveModel
         self._attributes = _attributes.merge(attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym)
 
         unless method_defined?(attr)
-          class_eval "def #{attr}() object.read_attribute_for_serialization(:#{attr}) end", __FILE__, __LINE__
+          define_method attr do
+            object.read_attribute_for_serialization(attr.to_sym)
+          end
         end
       end
 
@@ -328,7 +330,9 @@ module ActiveModel
 
         attrs.each do |attr|
           unless method_defined?(attr)
-            class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
+            define_method attr do
+              object.send attr
+            end
           end
 
           self._associations[attr] = klass.refine(attr, options)
@@ -575,7 +579,7 @@ module ActiveModel
     end
 
     # Returns options[:scope]
-    def scope 
+    def scope
       @options[:scope]
     end
 
