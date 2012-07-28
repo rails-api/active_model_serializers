@@ -133,8 +133,8 @@ class RenderJsonTest < ActionController::TestCase
 
     def render_json_with_serializer_and_scope_option
       @current_user = Struct.new(:as_json).new(:current_user => true)
-      @scope = Struct.new(:as_json).new(:current_user => false)
-      render :json => JsonSerializable.new, :scope => @scope
+      scope = Struct.new(:as_json).new(:current_user => false)
+      render :json => JsonSerializable.new, :scope => scope
     end
 
     def render_json_with_serializer_api_but_without_serializer
