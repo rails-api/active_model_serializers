@@ -222,10 +222,14 @@ class Person < ActiveRecord::Base
   def full_name
     "#{first_name} #{last_name}"
   end
-  
+end
+
+class PersonSerializer < ActiveModel::Serializer
+  attributes :first_name, :last_name
+
   def attributes
-    hash = super(options)
-    hash["full_name"] = full_name if scope.admin?
+    hash = super
+    hash["full_name"] = object.full_name if scope.admin?
     hash
   end
 end
