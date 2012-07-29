@@ -52,7 +52,7 @@ module ActionController
       end
 
       if serializer
-        options[:scope] = serialization_scope
+        options[:scope] = serialization_scope unless options.has_key?(:scope)
         options[:url_options] = url_options
         json = serializer.new(json, options.merge(default_serializer_options || {}))
       end
