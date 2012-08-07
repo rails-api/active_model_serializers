@@ -449,7 +449,7 @@ module ActiveModel
     end
 
     def url_options
-      @options[:url_options]
+      @options[:url_options] || {}
     end
 
     # Returns a json representation of the serializable
