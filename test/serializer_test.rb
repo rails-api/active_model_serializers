@@ -6,6 +6,10 @@ class SerializerTest < ActiveModel::TestCase
       @attributes = hash
     end
 
+    def [](name)
+      @attributes[name]
+    end
+
     def read_attribute_for_serialization(name)
       @attributes[name]
     end
@@ -1284,6 +1288,83 @@ class SerializerTest < ActiveModel::TestCase
         :title => 'Foo',
         :author => nil
       }
+    }, actual)
+  end
+
+  def test_serializers_support_if_with_method_names
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      attributes :open_for_comments, :if => :published?
+
+      def published?
+        Time.now >= object[:publish_at]
+      end
+    end
+
+    post = Post.new :title => "AMS", :open_for_comments => true, :publish_at => (Time.now - 5000)
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
+      :open_for_comments => true
+    }, actual)
+  end
+
+  def test_serializers_support_unless_with_method_names
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      attributes :open_for_comments, :unless => :locked?
+
+      def locked?
+        object[:locked]
+      end
+    end
+
+    post = Post.new :title => "AMS", :open_for_comments => true, :locked => true
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
+    }, actual)
+  end
+
+  def test_serializers_support_if_with_method_names_for_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      has_many :comments, :if => :published?
+
+      def published?
+        Time.now <= object[:publish_at]
+      end
+    end
+
+    post = Post.new :title => "AMS", :comments => [], :publish_at => (Time.now - 5000)
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS'
+    }, actual)
+  end
+
+  def test_serializers_support_unless_with_method_names_for_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      has_many :comments, :unless => :locked?
+
+      def locked?
+        object[:locked]
+      end
+    end
+
+    post = Post.new :title => "AMS", :comments => [], :locked => true
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
     }, actual)
   end
 end

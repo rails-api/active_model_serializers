@@ -127,6 +127,46 @@ module ActiveModel
       end
     end
 
+    class Attribute #:nodoc:
+      class_attribute :options
+
+      attr_reader :serializer, :name
+
+      def self.refine(name, class_options)
+        current_class = self
+
+        Class.new(self) do
+          singleton_class.class_eval do
+            define_method(:to_s) do
+              "(subclass of #{current_class.name})"
+            end
+
+            alias inspect to_s
+          end
+
+          self.options = class_options
+        end
+      end
+
+      def initialize(name, serializer)
+        @name, @serializer = name, serializer
+      end
+
+      def key
+        options[:key] || name.to_s.gsub(/\?$/, '').to_sym
+      end
+
+      def include?
+        if options[:if]
+          serializer.send(options[:if])
+        elsif options[:unless]
+          !serializer.send(options[:unless])
+        else
+          true
+        end
+      end
+    end
+
     module Associations #:nodoc:
       class Config #:nodoc:
         class_attribute :options
@@ -203,6 +243,16 @@ module ActiveModel
 
         def embeddable?
           !associated_object.nil?
+        end
+
+        def include?
+          if option :if
+            source_serializer.send(option(:if))
+          elsif option :unless
+            !source_serializer.send(option(:unless))
+          else
+            true
+          end
         end
 
       protected
@@ -307,15 +357,15 @@ module ActiveModel
     class << self
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
-        self._attributes = _attributes.dup
-
+        options = attrs.extract_options!
         attrs.each do |attr|
-          attribute attr
+          attribute attr, options
         end
       end
 
       def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym)
+        self._attributes = _attributes.dup
+        self._attributes[attr] = Attribute.refine(attr, options)
 
         unless method_defined?(attr)
           define_method attr do
@@ -395,9 +445,9 @@ module ActiveModel
         klass = model_class
         columns = klass.columns_hash
 
-        attrs = _attributes.inject({}) do |hash, (name,key)|
-          column = columns[name.to_s]
-          hash.merge key => column.type
+        attrs = _attributes.inject({}) do |hash, (attr,attribute_class)|
+          column = columns[attr.to_s]
+          hash.merge attribute_class.new(attr, name).key => column.type
         end
 
         associations = _associations.inject({}) do |hash, (attr,association_class)|
@@ -534,6 +584,8 @@ module ActiveModel
 
       association = association_class.new(name, self, options)
 
+      return unless association.include?
+
       if association.embed_ids?
         node[association.key] = association.serialize_ids
 
@@ -571,8 +623,9 @@ module ActiveModel
     def attributes
       hash = {}
 
-      _attributes.each do |name,key|
-        hash[key] = read_attribute_for_serialization(name)
+      _attributes.each_pair do |name, attribute_class|
+        attribute = attribute_class.new name, self
+        hash[attribute.key] = read_attribute_for_serialization(name) if attribute.include?
       end
 
       hash

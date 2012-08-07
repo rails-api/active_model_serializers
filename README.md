@@ -205,6 +205,20 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+You may also use `:if` and `:unless`. They take a method name on the
+serializer
+
+```
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+  attribute :published_at, :if => :published?
+
+  def published?
+    object.published?
+  end
+end
+```
+
 ## Custom Attributes
 
 If you would like customize your JSON to include things beyond the simple 
@@ -281,6 +295,21 @@ class PostSerializer < ActiveModel::Serializer
 
   # look up comments, but use +my_comments+ as the key in JSON
   has_many :comments, :key => :my_comments
+end
+```
+
+You may also use `:if` and `:unless`. They take method names on the
+serializer.
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+
+  has_many :comments, :unless => :locked?
+
+  def locked?
+    object.locked?
+  end
 end
 ```
 
