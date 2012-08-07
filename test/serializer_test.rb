@@ -1280,4 +1280,82 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, actual)
   end
+
+  def test_serializers_support_if_with_method_names
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      attributes :open_for_comments, :if => :published?
+
+      def published?
+        Time.now >= scope['publish_at']
+      end
+    end
+
+    post = Post.new :title => "AMS", :open_for_comments => true, :published_at => (Time.now - 5000)
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
+      :open_for_comments => true
+    }, actual)
+  end
+
+  def test_serializers_support_unless_with_method_names
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      attributes :open_for_comments, :unless => :locked?
+
+      def locked?
+        scope['locked']
+      end
+    end
+
+    post = Post.new :title => "AMS", :open_for_comments => true, :locked => true
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
+    }, actual)
+  end
+
+  def test_serializers_support_if_with_method_names_for_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      has_many :comments, :if => :published?
+
+      def published?
+        Time.now >= scope['publish_at']
+      end
+    end
+
+    post = Post.new :title => "AMS", :comments => [], :published_at => (Time.now - 5000)
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
+      :comments => []
+    }, actual)
+  end
+
+  def test_serializers_support_unless_with_method_names_for_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      has_many :comments, :unless => :locked?
+
+      def locked?
+        scope['locked']
+      end
+    end
+
+    post = Post.new :title => "AMS", :comments => [], :locked => true
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :title => 'AMS',
+    }, actual)
+  end
 end
