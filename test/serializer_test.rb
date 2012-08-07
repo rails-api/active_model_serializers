@@ -6,6 +6,10 @@ class SerializerTest < ActiveModel::TestCase
       @attributes = hash
     end
 
+    def [](name)
+      @attributes[name]
+    end
+
     def read_attribute_for_serialization(name)
       @attributes[name]
     end
@@ -1287,11 +1291,11 @@ class SerializerTest < ActiveModel::TestCase
       attributes :open_for_comments, :if => :published?
 
       def published?
-        Time.now >= scope['publish_at']
+        Time.now >= object[:publish_at]
       end
     end
 
-    post = Post.new :title => "AMS", :open_for_comments => true, :published_at => (Time.now - 5000)
+    post = Post.new :title => "AMS", :open_for_comments => true, :publish_at => (Time.now - 5000)
 
     actual = post_serializer.new(post).as_json
 
@@ -1307,7 +1311,7 @@ class SerializerTest < ActiveModel::TestCase
       attributes :open_for_comments, :unless => :locked?
 
       def locked?
-        scope['locked']
+        object[:locked]
       end
     end
 
@@ -1326,17 +1330,16 @@ class SerializerTest < ActiveModel::TestCase
       has_many :comments, :if => :published?
 
       def published?
-        Time.now >= scope['publish_at']
+        Time.now <= object[:publish_at]
       end
     end
 
-    post = Post.new :title => "AMS", :comments => [], :published_at => (Time.now - 5000)
+    post = Post.new :title => "AMS", :comments => [], :publish_at => (Time.now - 5000)
 
     actual = post_serializer.new(post).as_json
 
     assert_equal({
-      :title => 'AMS',
-      :comments => []
+      :title => 'AMS'
     }, actual)
   end
 
@@ -1346,7 +1349,7 @@ class SerializerTest < ActiveModel::TestCase
       has_many :comments, :unless => :locked?
 
       def locked?
-        scope['locked']
+        object[:locked]
       end
     end
 
