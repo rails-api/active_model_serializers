@@ -445,9 +445,9 @@ module ActiveModel
         klass = model_class
         columns = klass.columns_hash
 
-        attrs = _attributes.inject({}) do |hash, (name,key)|
-          column = columns[name.to_s]
-          hash.merge key => column.type
+        attrs = _attributes.inject({}) do |hash, (attr,attribute_class)|
+          column = columns[attr.to_s]
+          hash.merge attribute_class.new(attr, name).key => column.type
         end
 
         associations = _associations.inject({}) do |hash, (attr,association_class)|
