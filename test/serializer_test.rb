@@ -143,6 +143,12 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :host => "test.local" }, user_serializer.url_options)
   end
 
+  def test_serializer_returns_empty_hash_without_url_options
+    user = User.new
+    user_serializer = UserSerializer.new(user)
+    assert_equal({}, user_serializer.url_options)
+  end
+
   def test_pretty_accessors
     user = User.new
     user.superuser = true
