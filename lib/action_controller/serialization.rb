@@ -40,6 +40,8 @@ module ActionController
     end
 
     def _render_option_json(json, options)
+      options = default_serializer_options.merge(options) if default_serializer_options
+
       serializer = options.delete(:serializer) ||
         (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
 
@@ -59,7 +61,7 @@ module ActionController
       if serializer
         options[:scope] = serialization_scope unless options.has_key?(:scope)
         options[:url_options] = url_options
-        json = serializer.new(json, options.merge(default_serializer_options || {}))
+        json = serializer.new(json, options)
       end
       super
     end
