@@ -483,9 +483,7 @@ module ActiveModel
       _associations.each do |attr, klass|
         opts = { :node => node }
 
-        if options.include?(:include) || options.include?(:exclude)
-          opts[:include] = included_association?(attr)
-        end
+        opts[:include] = included_association?(attr)
 
         include! attr, opts
       end
@@ -502,6 +500,8 @@ module ActiveModel
     end
 
     def include!(name, options={})
+      return unless options[:include]
+
       # Make sure that if a special options[:hash] was passed in, we generate
       # a new unique values hash and don't clobber the original. If the hash
       # passed in is the same as the current options hash, use the current
