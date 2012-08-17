@@ -678,11 +678,13 @@ class SerializerTest < ActiveModel::TestCase
         define_method(:model_class) do model end
       end
 
-      # Computed attribute; not a column.
+      # Computed attributes (not real columns or associations).
       def can_edit; end
+      def drafts; end
 
       attributes :name, :age, :can_edit
       has_many :posts, :serializer => Class.new
+      has_many :drafts, :serializer => Class.new
       has_one :parent, :serializer => Class.new
     end
 
@@ -690,6 +692,7 @@ class SerializerTest < ActiveModel::TestCase
       :attributes => { :name => :string, :age => :integer, :can_edit => nil },
       :associations => {
         :posts => { :has_many => :posts },
+        :drafts => nil,
         :parent => { :belongs_to => :parent }
       }
     }

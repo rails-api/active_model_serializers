@@ -180,11 +180,20 @@ module ActiveModel
           end
         end
 
-        associations = _associations.inject({}) do |hash, (attr,association_class)|
+        associations = {}
+        _associations.each do |attr, association_class|
           association = association_class.new(attr, self)
 
-          model_association = klass.reflect_on_association(association.name)
-          hash.merge association.key => { model_association.macro => model_association.name }
+          if model_association = klass.reflect_on_association(association.name)
+            # Real association.
+            associations[association.key] = { model_association.macro => model_association.name }
+          else
+            # Computed association. We could infer has_many vs. has_one from
+            # the association class, but that would make it different from
+            # real associations, which read has_one vs. belongs_to from the
+            # model.
+            associations[association.key] = nil
+          end
         end
 
         { :attributes => attrs, :associations => associations }
