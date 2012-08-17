@@ -169,9 +169,15 @@ module ActiveModel
         klass = model_class
         columns = klass.columns_hash
 
-        attrs = _attributes.inject({}) do |hash, (name,key)|
-          column = columns[name.to_s]
-          hash.merge key => column.type
+        attrs = {}
+        _attributes.each do |name, key|
+          if column = columns[name.to_s]
+            attrs[key] = column.type
+          else
+            # Computed attribute (method on serializer or model). We cannot
+            # infer the type, so we put nil.
+            attrs[key] = nil
+          end
         end
 
         associations = _associations.inject({}) do |hash, (attr,association_class)|
