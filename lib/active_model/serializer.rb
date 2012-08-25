@@ -267,7 +267,10 @@ module ActiveModel
           object = associated_object
 
           if object && polymorphic?
-            { polymorphic_key => find_serializable(object).serializable_hash }
+            { 
+              :type => polymorphic_key,
+              polymorphic_key => find_serializable(object).serializable_hash
+            }
           elsif object
             find_serializable(object).serializable_hash
           end
@@ -283,7 +286,10 @@ module ActiveModel
           object = associated_object
 
           if object && polymorphic?
-            { polymorphic_key => object.read_attribute_for_serialization(:id) }
+            { 
+              :type => polymorphic_key,
+              :id => object.read_attribute_for_serialization(:id)
+            }
           elsif object
             object.read_attribute_for_serialization(:id)
           else
