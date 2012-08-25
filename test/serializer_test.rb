@@ -1025,6 +1025,7 @@ class SerializerTest < ActiveModel::TestCase
       :name => 'logo.png', 
       :url => 'http://example.com/logo.png',
       :attachable => {
+        :type => :email,
         :email => { :subject => 'foo', :body => 'bar' }
       }
     }, actual)
@@ -1061,7 +1062,8 @@ class SerializerTest < ActiveModel::TestCase
       :name => 'logo.png', 
       :url => 'http://example.com/logo.png',
       :attachable => {
-        :email => 1
+        :type => :email,
+        :id => 1
       }
     }, actual)
   end
@@ -1099,7 +1101,8 @@ class SerializerTest < ActiveModel::TestCase
         :name => 'logo.png', 
         :url => 'http://example.com/logo.png',
         :attachable => {
-          :email => 1
+          :type => :email, 
+          :id => 1
         }},
       :emails => [{
         :id => 1,
@@ -1179,15 +1182,15 @@ class SerializerTest < ActiveModel::TestCase
       :oranges => [{
         :plu => "3027",
         :id => 1,
-        :readable => { :email => 1 }
+        :readable => { :type => :email, :id => 1 }
       }],
 
       :attachment => {
         :name => 'logo.png',
         :url => 'http://example.com/logo.png',
-        :attachable => { :email => 1 },
-        :readable => { :email => 1 },
-        :edible => { :orange => 1 }
+        :attachable => { :type => :email, :id => 1 },
+        :readable => { :type => :email, :id => 1 },
+        :edible => { :type => :orange, :id => 1 }
       }
     }, actual)
   end
