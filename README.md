@@ -330,6 +330,33 @@ Now, any associations will be supplied as an Array of IDs:
 }
 ```
 
+Alternatively, you can choose to embed only the ids or the associated objects per association:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+  
+  has_many :comments, embed: :objects
+  has_many :tags, embed: :ids
+end
+```
+
+The JSON will look like this:
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "body": "A body!",
+    "comments": [
+      { "id": 1, "body": "what a dumb post" }
+    ],
+    "tags": [ 1, 2, 3 ]
+  }
+}
+```
+
 In addition to supplying an Array of IDs, you may want to side-load the data
 alongside the main object. This makes it easier to process the entire package
 of data without having to recursively scan the tree looking for embedded
