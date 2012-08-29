@@ -328,6 +328,8 @@ module ActiveModel
             object.read_attribute_for_serialization(attr.to_sym)
           end
         end
+
+        define_include_method attr
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -341,7 +343,18 @@ module ActiveModel
             end
           end
 
+          define_include_method attr
+
           self._associations[attr] = klass.refine(attr, options)
+        end
+      end
+
+      def define_include_method(name)
+        method = "include_#{name}?".to_sym
+        unless method_defined?(method)
+          define_method method do
+            true
+          end
         end
       end
 
@@ -486,8 +499,12 @@ module ActiveModel
 
     def include_associations!
       _associations.each_key do |name|
-        include! name
+        include!(name) if include?(name)
       end
+    end
+
+    def include?(name)
+      send "include_#{name}?".to_sym
     end
 
     def include!(name, options={})
@@ -569,7 +586,7 @@ module ActiveModel
       hash = {}
 
       _attributes.each do |name,key|
-        hash[key] = read_attribute_for_serialization(name)
+        hash[key] = read_attribute_for_serialization(name) if include?(name)
       end
 
       hash
