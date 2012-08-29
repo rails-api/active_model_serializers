@@ -460,8 +460,7 @@ module ActiveModel
 
     # Returns a json representation of the serializable
     # object including the root.
-    def as_json(options=nil)
-      options ||= {}
+    def as_json(options={})
       if root = options.fetch(:root, @options.fetch(:root, _root))
         @options[:hash] = hash = {}
         @options[:unique_values] = {}
@@ -477,33 +476,17 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       instrument(:serialize, :serializer => self.class.name) do
-        node = attributes
+        @node = attributes
         instrument :associations do
-          include_associations!(node) if _embed
+          include_associations! if _embed
         end
-        node
+        @node
       end
     end
 
-    def include_associations!(node)
-      _associations.each do |attr, klass|
-        opts = { :node => node }
-
-        if options.include?(:include) || options.include?(:exclude)
-          opts[:include] = included_association?(attr)
-        end
-
-        include! attr, opts
-      end
-    end
-
-    def included_association?(name)
-      if options.key?(:include)
-        options[:include].include?(name)
-      elsif options.key?(:exclude)
-        !options[:exclude].include?(name)
-      else
-        true
+    def include_associations!
+      _associations.each_key do |name|
+        include! name
       end
     end
 
@@ -526,8 +509,16 @@ module ActiveModel
           @options[:unique_values] ||= {}
         end
 
-      node = options[:node]
+      node = options[:node] ||= @node
       value = options[:value]
+
+      if options[:include] == nil
+        if @options.key?(:include)
+          options[:include] = @options[:include].include?(name)
+        elsif @options.include?(:exclude)
+          options[:include] = !@options[:exclude].include?(name)
+        end
+      end
 
       association_class =
         if klass = _associations[name]
