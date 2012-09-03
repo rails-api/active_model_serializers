@@ -94,6 +94,11 @@ class SerializerTest < ActiveModel::TestCase
     has_many :comments, :serializer => CommentSerializer
   end
 
+  def test_scope_works_correct
+    serializer = ActiveModel::Serializer.new :foo, :scope => :bar
+    assert_equal serializer.scope, :bar
+  end
+
   def test_attributes
     user = User.new
     user_serializer = DefaultUserSerializer.new(user, {})
@@ -136,6 +141,12 @@ class SerializerTest < ActiveModel::TestCase
     user = User.new
     user_serializer = UserSerializer.new(user, :url_options => { :host => "test.local" })
     assert_equal({ :host => "test.local" }, user_serializer.url_options)
+  end
+
+  def test_serializer_returns_empty_hash_without_url_options
+    user = User.new
+    user_serializer = UserSerializer.new(user)
+    assert_equal({}, user_serializer.url_options)
   end
 
   def test_pretty_accessors
@@ -409,6 +420,40 @@ class SerializerTest < ActiveModel::TestCase
     array = [hash]
     serializer = array.active_model_serializer.new(array, :root => :items)
     assert_equal({ :items => [ hash.as_json ]}, serializer.as_json)
+  end
+
+  class CustomPostSerializer < ActiveModel::Serializer
+    attributes :title
+  end
+
+  def test_array_serializer_with_specified_seriailizer
+    post1 = Post.new(:title => "Post1", :author => "Author1", :id => 1)
+    post2 = Post.new(:title => "Post2", :author => "Author2", :id => 2)
+
+    array = [ post1, post2 ]
+
+    serializer = array.active_model_serializer.new array, :each_serializer => CustomPostSerializer
+
+    assert_equal([
+      { :title => "Post1" },
+      { :title => "Post2" }
+    ], serializer.as_json)
+  end
+
+  def test_sets_can_be_serialized
+    post1 = Post.new(:title => "Post1", :author => "Author1", :id => 1)
+    post2 = Post.new(:title => "Post2", :author => "Author2", :id => 2)
+
+    set = Set.new
+    set << post1
+    set << post2
+
+    serializer = set.active_model_serializer.new set, :each_serializer => CustomPostSerializer
+
+    as_json = serializer.as_json
+    assert_equal 2, as_json.size
+    assert as_json.include?({ :title => "Post1" })
+    assert as_json.include?({ :title => "Post2" })
   end
 
   class CustomBlog < Blog
@@ -889,5 +934,359 @@ class SerializerTest < ActiveModel::TestCase
       loaded = self
     end
     assert_equal ActiveModel::Serializer, loaded
+  end
+
+  def tests_query_attributes_strip_question_mark
+    todo = Class.new do
+      def overdue?
+        true
+      end
+
+      def read_attribute_for_serialization(name)
+        send name
+      end
+    end
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      attribute :overdue?
+    end
+
+    actual = serializer.new(todo.new).as_json
+
+    assert_equal({
+      :overdue => true
+    }, actual)
+  end
+
+  def tests_query_attributes_allow_key_option
+    todo = Class.new do
+      def overdue?
+        true
+      end
+
+      def read_attribute_for_serialization(name)
+        send name
+      end
+    end
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      attribute :overdue?, :key => :foo
+    end
+
+    actual = serializer.new(todo.new).as_json
+
+    assert_equal({
+      :foo => true
+    }, actual)
+  end
+
+  # Set up some classes for polymorphic testing
+  class Attachment < Model
+    def attachable
+      @attributes[:attachable]
+    end
+
+    def readable
+      @attributes[:readable]
+    end
+
+    def edible
+      @attributes[:edible]
+    end
+  end
+
+  def tests_can_handle_polymorphism
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name, :url
+      has_one :attachable, :polymorphic => true
+    end
+
+    email = email_class.new :subject => 'foo', :body => 'bar'
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :attachable => {
+        :type => :email,
+        :email => { :subject => 'foo', :body => 'bar' }
+      }
+    }, actual)
+  end
+
+  def test_can_handle_polymoprhic_ids
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      attributes :name, :url
+      has_one :attachable, :polymorphic => true
+    end
+
+    email = email_class.new :id => 1
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :attachable => {
+        :type => :email,
+        :id => 1
+      }
+    }, actual)
+  end
+
+  def test_polymorphic_associations_are_included_at_root
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body, :id
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      root :attachment
+      embed :ids, :include => true
+      attributes :name, :url
+      has_one :attachable, :polymorphic => true
+    end
+
+    email = email_class.new :id => 1, :subject => "Hello", :body => "World"
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :attachment => {
+        :name => 'logo.png', 
+        :url => 'http://example.com/logo.png',
+        :attachable => {
+          :type => :email, 
+          :id => 1
+        }},
+      :emails => [{
+        :id => 1,
+        :subject => "Hello",
+        :body => "World"
+      }]
+    }, actual)
+  end
+
+  def test_multiple_polymorphic_associations
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body, :id
+    end
+
+    orange_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+
+      attributes :plu, :id
+      has_one :readable, :polymorphic => true
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    orange_class = Class.new(Model) do
+      def self.to_s
+        "Orange"
+      end
+
+      def readable
+        @attributes[:readable]
+      end
+
+      define_method :active_model_serializer do
+        orange_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      root :attachment
+      embed :ids, :include => true
+
+      attributes :name, :url
+
+      has_one :attachable, :polymorphic => true
+      has_one :readable,   :polymorphic => true
+      has_one :edible,     :polymorphic => true
+    end
+
+    email  = email_class.new  :id => 1, :subject => "Hello", :body => "World"
+    orange = orange_class.new :id => 1, :plu => "3027",  :readable => email
+
+    attachment = Attachment.new({
+      :name       => 'logo.png',
+      :url        => 'http://example.com/logo.png',
+      :attachable => email,
+      :readable   => email,
+      :edible     => orange
+    })
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :emails => [{
+        :subject => "Hello",
+        :body => "World",
+        :id => 1
+      }],
+
+      :oranges => [{
+        :plu => "3027",
+        :id => 1,
+        :readable => { :type => :email, :id => 1 }
+      }],
+
+      :attachment => {
+        :name => 'logo.png',
+        :url => 'http://example.com/logo.png',
+        :attachable => { :type => :email, :id => 1 },
+        :readable => { :type => :email, :id => 1 },
+        :edible => { :type => :orange, :id => 1 }
+      }
+    }, actual)
+  end
+
+  def test_raises_an_error_when_a_child_serializer_includes_associations_when_the_source_doesnt
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name
+    end
+
+    fruit_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, :include => true
+      has_one :attachment, :serializer => attachment_serializer
+      attribute :color
+    end
+
+    banana_class = Class.new Model do
+      def self.to_s
+        'banana'
+      end
+
+      def attachment
+        @attributes[:attachment]
+      end
+
+      define_method :active_model_serializer do
+        fruit_serializer
+      end
+    end
+
+    strawberry_class = Class.new Model do
+      def self.to_s
+        'strawberry'
+      end
+
+      def attachment
+        @attributes[:attachment]
+      end
+
+      define_method :active_model_serializer do
+        fruit_serializer
+      end
+    end
+
+    smoothie = Class.new do
+      attr_reader :base, :flavor
+
+      def initialize(base, flavor)
+        @base, @flavor = base, flavor
+      end
+    end
+
+    smoothie_serializer = Class.new(ActiveModel::Serializer) do
+      root false
+      embed :ids, :include => true
+
+      has_one :base, :polymorphic => true
+      has_one :flavor, :polymorphic => true
+    end
+
+    banana_attachment = Attachment.new({
+      :name => 'banana_blending.md',
+      :id => 3,
+    })
+
+    strawberry_attachment = Attachment.new({
+      :name => 'strawberry_cleaning.doc',
+      :id => 4
+    })
+
+    banana = banana_class.new :color => "yellow", :id => 1, :attachment => banana_attachment
+    strawberry = strawberry_class.new :color => "red", :id => 2, :attachment => strawberry_attachment
+
+    smoothie = smoothie_serializer.new(smoothie.new(banana, strawberry))
+
+    assert_raise ActiveModel::Serializer::IncludeError do
+      smoothie.as_json
+    end
+  end
+
+  def tests_includes_does_not_include_nil_polymoprhic_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      root :post
+      embed :ids, :include => true
+      has_one :author, :polymorphic => true
+      attributes :title
+    end
+
+    post = Post.new(:title => 'Foo')
+
+    actual = post_serializer.new(post).as_json
+
+    assert_equal({
+      :post => {
+        :title => 'Foo',
+        :author => nil
+      }
+    }, actual)
   end
 end

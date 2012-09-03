@@ -29,10 +29,17 @@ module ActiveModel
 
   # Active Model Array Serializer
   #
-  # It serializes an array checking if each element that implements
+  # It serializes an Array, checking if each element that implements
   # the +active_model_serializer+ method.
+  #
+  # To disable serialization of root elements:
+  #
+  #     ActiveModel::ArraySerializer.root = false
+  #
   class ArraySerializer
     attr_reader :object, :options
+
+    class_attribute :root
 
     def initialize(object, options={})
       @object, @options = object, options
@@ -40,7 +47,13 @@ module ActiveModel
 
     def serializable_array
       @object.map do |item|
-        if item.respond_to?(:active_model_serializer) && (serializer = item.active_model_serializer)
+        if @options.has_key? :each_serializer
+          serializer = @options[:each_serializer]
+        elsif item.respond_to?(:active_model_serializer)
+          serializer = item.active_model_serializer
+        end
+
+        if serializer
           serializer.new(item, @options)
         else
           item
@@ -72,7 +85,7 @@ module ActiveModel
   #
   # Provides a basic serializer implementation that allows you to easily
   # control how a given object is going to be serialized. On initialization,
-  # it expects to object as arguments, a resource and options. For example,
+  # it expects two objects as arguments, a resource and options. For example,
   # one may do in a controller:
   #
   #     PostSerializer.new(@post, :scope => current_user).to_json
@@ -81,7 +94,7 @@ module ActiveModel
   # in for authorization purposes.
   #
   # We use the scope to check if a given attribute should be serialized or not.
-  # For example, some attributes maybe only be returned if +current_user+ is the
+  # For example, some attributes may only be returned if +current_user+ is the
   # author of the post:
   #
   #     class PostSerializer < ActiveModel::Serializer
@@ -97,11 +110,23 @@ module ActiveModel
   #       end
   #
   #       def author?
-  #         post.author == options[:scope]
+  #         post.author == scope
   #       end
   #     end
   #
   class Serializer
+    class IncludeError < StandardError
+      attr_reader :source, :association
+
+      def initialize(source, association)
+        @source, @association = source, association
+      end
+
+      def to_s
+        "Cannot serialize #{association} when #{source} does not have a root!"
+      end
+    end
+
     module Associations #:nodoc:
       class Config #:nodoc:
         class_attribute :options
@@ -176,6 +201,10 @@ module ActiveModel
           option(:include, source_serializer._root_embed)
         end
 
+        def embeddable?
+          !associated_object.nil?
+        end
+
       protected
 
         def find_serializable(object)
@@ -210,13 +239,41 @@ module ActiveModel
       end
 
       class HasOne < Config #:nodoc:
+        def embeddable?
+          if polymorphic? && associated_object.nil?
+            false
+          else
+            true
+          end
+        end
+
+        def polymorphic?
+          option :polymorphic
+        end
+
+        def polymorphic_key
+          associated_object.class.to_s.demodulize.underscore.to_sym
+        end
+
         def plural_key
-          key.to_s.pluralize.to_sym
+          if polymorphic?
+            associated_object.class.to_s.pluralize.demodulize.underscore.to_sym
+          else
+            key.to_s.pluralize.to_sym
+          end
         end
 
         def serialize
           object = associated_object
-          object && find_serializable(object).serializable_hash
+
+          if object && polymorphic?
+            { 
+              :type => polymorphic_key,
+              polymorphic_key => find_serializable(object).serializable_hash
+            }
+          elsif object
+            find_serializable(object).serializable_hash
+          end
         end
 
         def serialize_many
@@ -226,7 +283,14 @@ module ActiveModel
         end
 
         def serialize_ids
-          if object = associated_object
+          object = associated_object
+
+          if object && polymorphic?
+            { 
+              :type => polymorphic_key,
+              :id => object.read_attribute_for_serialization(:id)
+            }
+          elsif object
             object.read_attribute_for_serialization(:id)
           else
             nil
@@ -257,10 +321,12 @@ module ActiveModel
       end
 
       def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr)
+        self._attributes = _attributes.merge(attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym)
 
         unless method_defined?(attr)
-          class_eval "def #{attr}() object.read_attribute_for_serialization(:#{attr}) end", __FILE__, __LINE__
+          define_method attr do
+            object.read_attribute_for_serialization(attr.to_sym)
+          end
         end
       end
 
@@ -270,7 +336,9 @@ module ActiveModel
 
         attrs.each do |attr|
           unless method_defined?(attr)
-            class_eval "def #{attr}() object.#{attr} end", __FILE__, __LINE__
+            define_method attr do
+              object.send attr
+            end
           end
 
           self._associations[attr] = klass.refine(attr, options)
@@ -387,7 +455,7 @@ module ActiveModel
     end
 
     def url_options
-      @options[:url_options]
+      @options[:url_options] || {}
     end
 
     # Returns a json representation of the serializable
@@ -475,7 +543,9 @@ module ActiveModel
       if association.embed_ids?
         node[association.key] = association.serialize_ids
 
-        if association.embed_in_root?
+        if association.embed_in_root? && hash.nil?
+          raise IncludeError.new(self.class, association.name)
+        elsif association.embed_in_root? && association.embeddable?
           merge_association hash, association.root, association.serialize_many, unique_values
         end
       elsif association.embed_objects?
@@ -514,6 +584,11 @@ module ActiveModel
       hash
     end
 
+    # Returns options[:scope]
+    def scope
+      @options[:scope]
+    end
+
     alias :read_attribute_for_serialization :send
 
     # Use ActiveSupport::Notifications to send events to external systems.
@@ -521,12 +596,5 @@ module ActiveModel
     def instrument(name, payload = {}, &block)
       ActiveSupport::Notifications.instrument("#{name}.serializer", payload, &block)
     end
-  end
-end
-
-class Array
-  # Array uses ActiveModel::ArraySerializer.
-  def active_model_serializer
-    ActiveModel::ArraySerializer
   end
 end

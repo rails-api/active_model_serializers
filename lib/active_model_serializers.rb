@@ -3,6 +3,7 @@ require "active_support/core_ext/string/inflections"
 require "active_support/notifications"
 require "active_model"
 require "active_model/serializer"
+require "set"
 
 if defined?(Rails)
   module ActiveModel
@@ -55,6 +56,19 @@ end
 
 ActiveSupport.on_load(:active_record) do
   include ActiveModel::SerializerSupport
+end
+
+module ActiveModel::ArraySerializerSupport
+  def active_model_serializer
+    ActiveModel::ArraySerializer
+  end
+end
+
+Array.send(:include, ActiveModel::ArraySerializerSupport)
+Set.send(:include, ActiveModel::ArraySerializerSupport)
+
+ActiveSupport.on_load(:active_record) do
+  ActiveRecord::Relation.send(:include, ActiveModel::ArraySerializerSupport)
 end
 
 begin
