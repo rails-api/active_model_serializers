@@ -187,10 +187,48 @@ end
 
 ## Attributes
 
-For specified attributes, the serializer will look up the attribute on the
+For specified attributes, a serializer will look up the attribute on the
 object you passed to `render :json`. It uses
 `read_attribute_for_serialization`, which `ActiveRecord` objects implement as a
 regular attribute lookup.
+
+Before looking up the attribute on the object, a serializer will check for the
+presence of a method with the name of the attribute. This allows serializers to
+include properties beyond the simple attributes of the model. For example:
+
+```ruby
+class PersonSerializer < ActiveModel::Serializer
+  attributes :first_name, :last_name, :full_name
+
+  def full_name
+    "#{object.first_name} #{object.last_name}"
+  end
+end
+```
+
+Within a serializer's methods, you can access the object being
+serialized as either `object` or the name of the serialized object
+(e.g. `admin_comment` for the `AdminCommentSerializer`).
+
+You can also access the `scope` method, which provides an
+authorization context to your serializer. By default, scope
+is the current user of your application, but this
+[can be customized](#customizing-scope).
+
+Serializers will check for the presence of a method named
+`include_[ATTRIBUTE]?` to determine whether a particular attribute should be
+included in the output. This is typically used to customize output
+based on `scope`. For example:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body, :author
+
+  def include_author?
+    scope.admin?
+  end
+end
+```
 
 If you would like the key in the outputted JSON to be different from its name
 in ActiveRecord, you can use the `:key` option to customize it:
@@ -205,42 +243,21 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-## Custom Attributes
-
-If you would like customize your JSON to include things beyond the simple 
-attributes of the model, you can override its `attributes` method 
-to return anything you need.
-
-The most common scenario to use this feature is when an attribute
-depends on a serialization scope. By default, the current user of your
-application will be available in your serializer under the method
-`scope`. This allows you to check for permissions before adding
-an attribute. For example:
+If you would like direct, low-level control of attribute serialization, you can
+completely override the `attributes` method to return the hash you need:
 
 ```ruby
-class Person < ActiveRecord::Base
-  def full_name
-    "#{first_name} #{last_name}"
-  end
-end
-
 class PersonSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 
   def attributes
     hash = super
-    hash["full_name"] = object.full_name if scope.admin?
+    if scope.admin?
+      hash["ssn"] = object.ssn
+      hash["secret"] = object.mothers_maiden_name
+    end
     hash
   end
-end
-```
-
-The serialization scope can be customized in your controller by
-calling `serialization_scope`:
-
-```ruby
-class ApplicationController < ActionController::Base
-  serialization_scope :current_admin
 end
 ```
 
@@ -268,11 +285,7 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-In a serializer, `scope` is the current authorization scope (usually
-`current_user`), which the controller gives to the serializer when you call
-`render :json`
-
-As with attributes, you can also change the JSON key that the serializer should
+As with attributes, you can change the JSON key that the serializer should
 use for a particular association.
 
 ```ruby
@@ -281,6 +294,37 @@ class PostSerializer < ActiveModel::Serializer
 
   # look up comments, but use +my_comments+ as the key in JSON
   has_many :comments, :key => :my_comments
+end
+```
+
+Also, as with attributes, serializers will check for the presence
+of a method named `include_[ASSOCIATION]?` to determine whether a particular association
+should be included in the output. For example:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+  has_many :comments
+
+  def include_comments?
+    !post.comments_disabled?
+  end
+end
+```
+
+If you would like lower-level control of association serialization, you can
+override `include_associations!` to specify which associations should be included:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+  has_one :author
+  has_many :comments
+
+  def include_associations!
+    include! :author if scope.admin?
+    include! :comments unless object.comments_disabled?
+  end
 end
 ```
 
@@ -405,3 +449,16 @@ data looking for information, is extremely useful.
 
 If you are mostly working with the data in simple scenarios and manually making
 Ajax requests, you probably just want to use the default embedded behavior.
+
+## Customizing Scope
+
+In a serializer, `scope` is the current authorization scope which the controller
+provides to the serializer when you call `render :json`. By default, this is
+`current_user`, but can be customized in your controller by calling
+`serialization_scope`:
+
+```ruby
+class ApplicationController < ActionController::Base
+  serialization_scope :current_admin
+end
+```
