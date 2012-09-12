@@ -61,15 +61,24 @@ module ActiveModel
       end
     end
 
-    def as_json(*args)
+    def as_json(options = nil)
       @options[:hash] = hash = {}
       @options[:unique_values] = {}
 
+      options ||= {}
+      # by default, don't include root values for objects inside the array
+      options[:root] = false if options[:root].nil?
+
       array = serializable_array.map do |item|
-        if item.respond_to?(:serializable_hash)
+        if item.is_a?(::ActiveModel::Serializer) ||
+            item.is_a?(::ActiveModel::ArraySerializer)
+          # serialize AMS using as_json to allow options
+          item.as_json(options)
+        elsif item.respond_to?(:serializable_hash)
+          # otherwise, prefer serializable_hash over as_json if available
           item.serializable_hash
         else
-          item.as_json
+          item.as_json(options)
         end
       end
 
@@ -267,7 +276,7 @@ module ActiveModel
           object = associated_object
 
           if object && polymorphic?
-            { 
+            {
               :type => polymorphic_key,
               polymorphic_key => find_serializable(object).serializable_hash
             }
@@ -286,7 +295,7 @@ module ActiveModel
           object = associated_object
 
           if object && polymorphic?
-            { 
+            {
               :type => polymorphic_key,
               :id => object.read_attribute_for_serialization(:id)
             }
