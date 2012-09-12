@@ -14,6 +14,12 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class JsonOptionRenderable
+    def as_json(options={})
+      options[:test_data]
+    end
+  end
+
   class JsonSerializer
     def initialize(object, options={})
       @object, @options = object, options
@@ -156,6 +162,10 @@ class RenderJsonTest < ActionController::TestCase
       render :json => [Object.new], :serializer => CustomSerializer
     end
 
+    def render_json_array_with_options
+      render :json => [JsonOptionRenderable.new], :test_data => {:hello => true}
+    end
+
     def render_json_with_links
       render :json => HypermediaSerializable.new
     end
@@ -296,6 +306,11 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  def test_render_json_array_with_options
+    get :render_json_array_with_options
+    assert_match '{"test":[{"hello":true}]}', @response.body
+  end
+
   def test_render_json_with_links
     get :render_json_with_links
     assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
@@ -323,5 +338,4 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_array_with_custom_array_serializer
     assert_equal '{"items":[]}', @response.body
   end
-
 end
