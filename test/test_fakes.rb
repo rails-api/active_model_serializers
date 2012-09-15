@@ -136,3 +136,7 @@ class CustomBlogSerializer < ActiveModel::Serializer
   has_many :public_posts, :key => :posts, :serializer => PostSerializer
   has_one :public_user, :key => :user, :serializer => UserSerializer
 end
+
+class CustomPostSerializer < ActiveModel::Serializer
+  attributes :title
+end
