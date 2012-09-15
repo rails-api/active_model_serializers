@@ -2,6 +2,7 @@ require "active_support"
 require "active_support/core_ext/string/inflections"
 require "active_support/notifications"
 require "active_model"
+require "active_model/array_serializer"
 require "active_model/serializer"
 require "set"
 
