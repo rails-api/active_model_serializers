@@ -37,10 +37,11 @@ class SerializerTest < ActiveModel::TestCase
     def initialize(attributes)
       super(attributes)
       self.comments ||= []
+      self.comments_disabled = false
       self.author = nil
     end
 
-    attr_accessor :comments, :author
+    attr_accessor :comments, :comments_disabled, :author
     def active_model_serializer; PostSerializer; end
   end
 
@@ -87,11 +88,6 @@ class SerializerTest < ActiveModel::TestCase
         { :comment => serializable_hash }
       end
     end
-  end
-
-  class PostSerializer < ActiveModel::Serializer
-    attributes :title, :body
-    has_many :comments, :serializer => CommentSerializer
   end
 
   def test_scope_works_correct
@@ -163,6 +159,11 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
+  class PostSerializer < ActiveModel::Serializer
+    attributes :title, :body
+    has_many :comments, :serializer => CommentSerializer
+  end
+
   def test_has_many
     user = User.new
 
@@ -180,6 +181,104 @@ class SerializerTest < ActiveModel::TestCase
           { :title => "Comment1" },
           { :title => "Comment2" }
         ]
+      }
+    }, post_serializer.as_json)
+  end
+
+  class PostWithConditionalCommentsSerializer < ActiveModel::Serializer
+    root :post
+    attributes :title, :body
+    has_many :comments, :serializer => CommentSerializer
+
+    def include_associations!
+      include! :comments unless object.comments_disabled
+    end
+  end
+
+  def test_conditionally_included_associations
+    user = User.new
+
+    post = Post.new(:title => "New Post", :body => "Body of new post", :email => "tenderlove@tenderlove.com")
+    comments = [Comment.new(:title => "Comment1"), Comment.new(:title => "Comment2")]
+    post.comments = comments
+
+    post_serializer = PostWithConditionalCommentsSerializer.new(post, :scope => user)
+
+    # comments enabled
+    post.comments_disabled = false
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "Body of new post",
+        :comments => [
+          { :title => "Comment1" },
+          { :title => "Comment2" }
+        ]
+      }
+    }, post_serializer.as_json)
+
+    # comments disabled
+    post.comments_disabled = true
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "Body of new post"
+      }
+    }, post_serializer.as_json)
+  end
+
+  class PostWithMultipleConditionalsSerializer < ActiveModel::Serializer
+    root :post
+    attributes :title, :body, :author
+    has_many :comments, :serializer => CommentSerializer
+
+    def include_comments?
+      !object.comments_disabled
+    end
+
+    def include_author?
+      scope.super_user?
+    end
+  end
+
+  def test_conditionally_included_associations_and_attributes
+    user = User.new
+
+    post = Post.new(:title => "New Post", :body => "Body of new post", :author => 'Sausage King', :email => "tenderlove@tenderlove.com")
+    comments = [Comment.new(:title => "Comment1"), Comment.new(:title => "Comment2")]
+    post.comments = comments
+
+    post_serializer = PostWithMultipleConditionalsSerializer.new(post, :scope => user)
+
+    # comments enabled
+    post.comments_disabled = false
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "Body of new post",
+        :comments => [
+          { :title => "Comment1" },
+          { :title => "Comment2" }
+        ]
+      }
+    }, post_serializer.as_json)
+
+    # comments disabled
+    post.comments_disabled = true
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "Body of new post"
+      }
+    }, post_serializer.as_json)
+
+    # superuser - should see author
+    user.superuser = true
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => "Body of new post",
+        :author => "Sausage King"
       }
     }, post_serializer.as_json)
   end

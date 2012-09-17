@@ -328,6 +328,8 @@ module ActiveModel
             object.read_attribute_for_serialization(attr.to_sym)
           end
         end
+
+        define_include_method attr
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -341,7 +343,18 @@ module ActiveModel
             end
           end
 
+          define_include_method attr
+
           self._associations[attr] = klass.refine(attr, options)
+        end
+      end
+
+      def define_include_method(name)
+        method = "include_#{name}?".to_sym
+        unless method_defined?(method)
+          define_method method do
+            true
+          end
         end
       end
 
@@ -460,8 +473,7 @@ module ActiveModel
 
     # Returns a json representation of the serializable
     # object including the root.
-    def as_json(options=nil)
-      options ||= {}
+    def as_json(options={})
       if root = options.fetch(:root, @options.fetch(:root, _root))
         @options[:hash] = hash = {}
         @options[:unique_values] = {}
@@ -477,34 +489,22 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       instrument(:serialize, :serializer => self.class.name) do
-        node = attributes
+        @node = attributes
         instrument :associations do
-          include_associations!(node) if _embed
+          include_associations! if _embed
         end
-        node
+        @node
       end
     end
 
-    def include_associations!(node)
-      _associations.each do |attr, klass|
-        opts = { :node => node }
-
-        if options.include?(:include) || options.include?(:exclude)
-          opts[:include] = included_association?(attr)
-        end
-
-        include! attr, opts
+    def include_associations!
+      _associations.each_key do |name|
+        include!(name) if include?(name)
       end
     end
 
-    def included_association?(name)
-      if options.key?(:include)
-        options[:include].include?(name)
-      elsif options.key?(:exclude)
-        !options[:exclude].include?(name)
-      else
-        true
-      end
+    def include?(name)
+      send "include_#{name}?".to_sym
     end
 
     def include!(name, options={})
@@ -526,8 +526,16 @@ module ActiveModel
           @options[:unique_values] ||= {}
         end
 
-      node = options[:node]
+      node = options[:node] ||= @node
       value = options[:value]
+
+      if options[:include] == nil
+        if @options.key?(:include)
+          options[:include] = @options[:include].include?(name)
+        elsif @options.include?(:exclude)
+          options[:include] = !@options[:exclude].include?(name)
+        end
+      end
 
       association_class =
         if klass = _associations[name]
@@ -578,7 +586,7 @@ module ActiveModel
       hash = {}
 
       _attributes.each do |name,key|
-        hash[key] = read_attribute_for_serialization(name)
+        hash[key] = read_attribute_for_serialization(name) if include?(name)
       end
 
       hash
