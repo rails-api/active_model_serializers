@@ -115,6 +115,8 @@ module ActiveModel
   #     end
   #
   class Serializer
+    INCLUDE_METHODS = {}
+
     class IncludeError < StandardError
       attr_reader :source, :association
 
@@ -351,6 +353,9 @@ module ActiveModel
 
       def define_include_method(name)
         method = "include_#{name}?".to_sym
+
+        INCLUDE_METHODS[name] = method
+
         unless method_defined?(method)
           define_method method do
             true
@@ -504,7 +509,7 @@ module ActiveModel
     end
 
     def include?(name)
-      send "include_#{name}?".to_sym
+      send INCLUDE_METHODS[name]
     end
 
     def include!(name, options={})
