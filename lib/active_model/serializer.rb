@@ -116,6 +116,7 @@ module ActiveModel
   #
   class Serializer
     INCLUDE_METHODS = {}
+    INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
 
     class IncludeError < StandardError
       attr_reader :source, :association
@@ -607,7 +608,8 @@ module ActiveModel
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
     def instrument(name, payload = {}, &block)
-      ActiveSupport::Notifications.instrument("#{name}.serializer", payload, &block)
+      event_name = INSTRUMENT[name]
+      ActiveSupport::Notifications.instrument(event_name, payload, &block)
     end
   end
 end
