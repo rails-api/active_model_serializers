@@ -21,8 +21,8 @@ module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
     resource :hypermedia
-    match ':controller(/:action(/:id))'
-    match ':controller(/:action)'
+    get ':controller(/:action(/:id))'
+    get ':controller(/:action)'
   end
 
   ActionController::Base.send :include, Routes.url_helpers
