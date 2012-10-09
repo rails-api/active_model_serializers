@@ -328,6 +328,13 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+You may also use the `:serializer` option to specify a custom serializer class and the `:polymorphic` option to specify an association that is polymorphic (STI), e.g.:
+
+```ruby
+  has_many :comments, :serializer => CommentShortSerializer
+  has_one :reviewer, :polymorphic => true
+```
+
 ## Embedding Associations
 
 By default, associations will be embedded inside the serialized object. So if
