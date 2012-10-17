@@ -57,7 +57,7 @@ module ActiveModel::SerializerSupport
 end
 
 ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Base.send(:include, ActiveModel::SerializerSupport)
+  include ActiveModel::SerializerSupport
 end
 
 module ActiveModel::ArraySerializerSupport
@@ -78,7 +78,7 @@ begin
   require 'action_controller/serialization'
 
   ActiveSupport.on_load(:action_controller) do
-    ActionController::Base.send(:include, ActionController::Serialization)
+    include ::ActionController::Serialization
   end
 rescue LoadError => ex
   # rails on installed, continuing
