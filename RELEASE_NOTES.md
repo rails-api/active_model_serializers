@@ -1,4 +1,4 @@
-# VERSION 0.6 (to be released)
+# VERSION 0.6 (Oct 22, 2012)
 
 * Serialize sets properly
 * Add root option to ArraySerializer
