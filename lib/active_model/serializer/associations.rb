@@ -99,7 +99,12 @@ module ActiveModel
             find_serializable(item).serializable_hash
           end
         end
-        alias serialize_many serialize
+
+        def serializables
+          associated_object.map do |item|
+            find_serializable(item)
+          end
+        end
 
         def serialize_ids
           # Use pluck or select_columns if available
@@ -149,9 +154,9 @@ module ActiveModel
           end
         end
 
-        def serialize_many
+        def serializables
           object = associated_object
-          value = object && find_serializable(object).serializable_hash
+          value = object && find_serializable(object)
           value ? [value] : []
         end
 

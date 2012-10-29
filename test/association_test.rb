@@ -284,6 +284,29 @@ class AssociationTest < ActiveModel::TestCase
         ]
       }, @root_hash)
     end
+
+    def test_embed_ids_include_true_does_not_serialize_multiple_times
+      @post.recent_comment = @comment
+
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => :ids, :include => true
+        has_one :recent_comment, :embed => :ids, :include => true, :root => :comments
+      end
+
+      # Count how often the @comment record is serialized.
+      serialized_times = 0
+      @comment.class_eval do
+        define_method :read_attribute_for_serialization, lambda { |name|
+          serialized_times += 1 if name == :body
+          super(name)
+        }
+      end
+
+      include_bare! :comment
+      include_bare! :recent_comment
+
+      assert_equal 1, serialized_times
+    end
   end
 
   class InclusionTest < AssociationTest
