@@ -1,6 +1,5 @@
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
-require "set"
 
 module ActiveModel
   # Active Model Serializer
