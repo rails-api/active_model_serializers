@@ -30,6 +30,9 @@ class AssociationTest < ActiveModel::TestCase
   end
 
   def setup
+    @hash = {}
+    @root_hash = {}
+
     @post = Model.new(:title => "New Post", :body => "Body")
     @comment = Model.new(:id => 1, :body => "ZOMG A COMMENT")
     @post.comments = [ @comment ]
@@ -43,17 +46,13 @@ class AssociationTest < ActiveModel::TestCase
       attributes :title, :body
     end
 
-    @post_serializer = @post_serializer_class.new(@post)
-
-    @hash = {}
-    @root_hash = {}
+    @post_serializer = @post_serializer_class.new(@post, :hash => @root_hash)
   end
 
   def include!(key, options={})
     @post_serializer.include! key, {
       :embed => :ids,
       :include => true,
-      :hash => @root_hash,
       :node => @hash,
       :serializer => @comment_serializer_class
     }.merge(options)
@@ -61,7 +60,6 @@ class AssociationTest < ActiveModel::TestCase
 
   def include_bare!(key, options={})
     @post_serializer.include! key, {
-      :hash => @root_hash,
       :node => @hash,
       :serializer => @comment_serializer_class
     }.merge(options)
