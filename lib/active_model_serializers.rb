@@ -5,6 +5,7 @@ require "active_model"
 require "active_model/ordered_set"
 require "active_model/array_serializer"
 require "active_model/serializer"
+require "active_model/serializer/associations"
 require "set"
 
 if defined?(Rails)
