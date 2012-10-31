@@ -73,11 +73,13 @@ class SerializerTest < ActiveModel::TestCase
 
   class CommentSerializer
     def initialize(comment, options={})
-      @comment = comment
+      @object = comment
     end
 
+    attr_reader :object
+
     def serializable_hash
-      { :title => @comment.read_attribute_for_serialization(:title) }
+      { :title => @object.read_attribute_for_serialization(:title) }
     end
 
     def as_json(options=nil)

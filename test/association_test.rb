@@ -30,6 +30,9 @@ class AssociationTest < ActiveModel::TestCase
   end
 
   def setup
+    @hash = {}
+    @root_hash = {}
+
     @post = Model.new(:title => "New Post", :body => "Body")
     @comment = Model.new(:id => 1, :body => "ZOMG A COMMENT")
     @post.comments = [ @comment ]
@@ -43,17 +46,13 @@ class AssociationTest < ActiveModel::TestCase
       attributes :title, :body
     end
 
-    @post_serializer = @post_serializer_class.new(@post)
-
-    @hash = {}
-    @root_hash = {}
+    @post_serializer = @post_serializer_class.new(@post, :hash => @root_hash)
   end
 
   def include!(key, options={})
     @post_serializer.include! key, {
       :embed => :ids,
       :include => true,
-      :hash => @root_hash,
       :node => @hash,
       :serializer => @comment_serializer_class
     }.merge(options)
@@ -61,7 +60,6 @@ class AssociationTest < ActiveModel::TestCase
 
   def include_bare!(key, options={})
     @post_serializer.include! key, {
-      :hash => @root_hash,
       :node => @hash,
       :serializer => @comment_serializer_class
     }.merge(options)
@@ -285,6 +283,29 @@ class AssociationTest < ActiveModel::TestCase
           { :id => 1, :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
+    end
+
+    def test_embed_ids_include_true_does_not_serialize_multiple_times
+      @post.recent_comment = @comment
+
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => :ids, :include => true
+        has_one :recent_comment, :embed => :ids, :include => true, :root => :comments
+      end
+
+      # Count how often the @comment record is serialized.
+      serialized_times = 0
+      @comment.class_eval do
+        define_method :read_attribute_for_serialization, lambda { |name|
+          serialized_times += 1 if name == :body
+          super(name)
+        }
+      end
+
+      include_bare! :comment
+      include_bare! :recent_comment
+
+      assert_equal 1, serialized_times
     end
   end
 
