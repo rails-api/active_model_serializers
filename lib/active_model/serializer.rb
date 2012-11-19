@@ -204,6 +204,7 @@ module ActiveModel
       def root(name)
         self._root = name
       end
+      alias_method :root=, :root
 
       def inherited(klass) #:nodoc:
         return if klass.anonymous?
