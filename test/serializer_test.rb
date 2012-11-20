@@ -382,7 +382,12 @@ class SerializerTest < ActiveModel::TestCase
       root false
     end
 
+    another_serializer = Class.new(BlogSerializer) do
+      self.root = false
+    end
+
     assert_equal({ :author => nil }, serializer.new(blog, :scope => user).as_json)
+    assert_equal({ :author => nil }, another_serializer.new(blog, :scope => user).as_json)
 
     # test inherited false root
     serializer = Class.new(serializer)
