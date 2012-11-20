@@ -1,97 +1,7 @@
 require "test_helper"
+require "test_fakes"
 
 class SerializerTest < ActiveModel::TestCase
-  class Model
-    def initialize(hash={})
-      @attributes = hash
-    end
-
-    def read_attribute_for_serialization(name)
-      @attributes[name]
-    end
-
-    def as_json(*)
-      { :model => "Model" }
-    end
-  end
-
-  class User
-    include ActiveModel::SerializerSupport
-
-    attr_accessor :superuser
-
-    def initialize(hash={})
-      @attributes = hash.merge(:first_name => "Jose", :last_name => "Valim", :password => "oh noes yugive my password")
-    end
-
-    def read_attribute_for_serialization(name)
-      @attributes[name]
-    end
-
-    def super_user?
-      @superuser
-    end
-  end
-
-  class Post < Model
-    def initialize(attributes)
-      super(attributes)
-      self.comments ||= []
-      self.comments_disabled = false
-      self.author = nil
-    end
-
-    attr_accessor :comments, :comments_disabled, :author
-    def active_model_serializer; PostSerializer; end
-  end
-
-  class Comment < Model
-    def active_model_serializer; CommentSerializer; end
-  end
-
-  class UserSerializer < ActiveModel::Serializer
-    attributes :first_name, :last_name
-
-    def serializable_hash
-      attributes.merge(:ok => true).merge(options[:scope])
-    end
-  end
-
-  class DefaultUserSerializer < ActiveModel::Serializer
-    attributes :first_name, :last_name
-  end
-
-  class MyUserSerializer < ActiveModel::Serializer
-    attributes :first_name, :last_name
-
-    def serializable_hash
-      hash = attributes
-      hash = hash.merge(:super_user => true) if my_user.super_user?
-      hash
-    end
-  end
-
-  class CommentSerializer
-    def initialize(comment, options={})
-      @object = comment
-    end
-
-    attr_reader :object
-
-    def serializable_hash
-      { :title => @object.read_attribute_for_serialization(:title) }
-    end
-
-    def as_json(options=nil)
-      options ||= {}
-      if options[:root] == false
-        serializable_hash
-      else
-        { :comment => serializable_hash }
-      end
-    end
-  end
-
   def test_scope_works_correct
     serializer = ActiveModel::Serializer.new :foo, :scope => :bar
     assert_equal serializer.scope, :bar
@@ -161,11 +71,6 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
-  class PostSerializer < ActiveModel::Serializer
-    attributes :title, :body
-    has_many :comments, :serializer => CommentSerializer
-  end
-
   def test_has_many
     user = User.new
 
@@ -185,16 +90,6 @@ class SerializerTest < ActiveModel::TestCase
         ]
       }
     }, post_serializer.as_json)
-  end
-
-  class PostWithConditionalCommentsSerializer < ActiveModel::Serializer
-    root :post
-    attributes :title, :body
-    has_many :comments, :serializer => CommentSerializer
-
-    def include_associations!
-      include! :comments unless object.comments_disabled
-    end
   end
 
   def test_conditionally_included_associations
@@ -227,20 +122,6 @@ class SerializerTest < ActiveModel::TestCase
         :body => "Body of new post"
       }
     }, post_serializer.as_json)
-  end
-
-  class PostWithMultipleConditionalsSerializer < ActiveModel::Serializer
-    root :post
-    attributes :title, :body, :author
-    has_many :comments, :serializer => CommentSerializer
-
-    def include_comments?
-      !object.comments_disabled
-    end
-
-    def include_author?
-      scope.super_user?
-    end
   end
 
   def test_conditionally_included_associations_and_attributes
@@ -283,18 +164,6 @@ class SerializerTest < ActiveModel::TestCase
         :author => "Sausage King"
       }
     }, post_serializer.as_json)
-  end
-
-  class Blog < Model
-    attr_accessor :author
-  end
-
-  class AuthorSerializer < ActiveModel::Serializer
-    attributes :first_name, :last_name
-  end
-
-  class BlogSerializer < ActiveModel::Serializer
-    has_one :author, :serializer => AuthorSerializer
   end
 
   def test_has_one
@@ -528,10 +397,6 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :items => [ hash.as_json ]}, serializer.as_json)
   end
 
-  class CustomPostSerializer < ActiveModel::Serializer
-    attributes :title
-  end
-
   def test_array_serializer_with_specified_seriailizer
     post1 = Post.new(:title => "Post1", :author => "Author1", :id => 1)
     post2 = Post.new(:title => "Post2", :author => "Author2", :id => 2)
@@ -560,15 +425,6 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal 2, as_json.size
     assert as_json.include?({ :title => "Post1" })
     assert as_json.include?({ :title => "Post2" })
-  end
-
-  class CustomBlog < Blog
-    attr_accessor :public_posts, :public_user
-  end
-
-  class CustomBlogSerializer < ActiveModel::Serializer
-    has_many :public_posts, :key => :posts, :serializer => PostSerializer
-    has_one :public_user, :key => :user, :serializer => UserSerializer
   end
 
   def test_associations_with_as
@@ -1084,21 +940,6 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({
       :foo => true
     }, actual)
-  end
-
-  # Set up some classes for polymorphic testing
-  class Attachment < Model
-    def attachable
-      @attributes[:attachable]
-    end
-
-    def readable
-      @attributes[:readable]
-    end
-
-    def edible
-      @attributes[:edible]
-    end
   end
 
   def tests_can_handle_polymorphism
