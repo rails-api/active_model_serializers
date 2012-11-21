@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/josevalim/active_model_serializers.png)](http://travis-ci.org/josevalim/active_model_serializers)
+[![Build Status](https://secure.travis-ci.org/rails-api/active_model_serializers.png)](http://travis-ci.org/rails-api/active_model_serializers)
 
 # Purpose
 
@@ -34,7 +34,7 @@ The easiest way to create a new serializer is to generate a new resource, which
 will generate a serializer at the same time:
 
 ```
-$ rails g resource post title:string body:string 
+$ rails g resource post title:string body:string
 ```
 
 This will generate a serializer in `app/serializers/post_serializer.rb` for
@@ -64,7 +64,7 @@ end
 ```
 
 In this case, Rails will look for a serializer named `PostSerializer`, and if
-it exists, use it to serialize the `Post`. 
+it exists, use it to serialize the `Post`.
 
 This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
@@ -386,7 +386,7 @@ Alternatively, you can choose to embed only the ids or the associated objects pe
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
-  
+
   has_many :comments, embed: :objects
   has_many :tags, embed: :ids
 end
