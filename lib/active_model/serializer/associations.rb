@@ -62,6 +62,10 @@ module ActiveModel
           option(:value) || source_serializer.send(name)
         end
 
+        def embed_key?
+          option(:key) != false
+        end
+
         def embed_ids?
           option(:embed, source_serializer._embed) == :ids
         end

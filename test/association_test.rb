@@ -242,6 +242,22 @@ class AssociationTest < ActiveModel::TestCase
       }, @root_hash)
     end
 
+    def test_embed_ids_include_true_key_false_for_has_many_associations
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :ids, :include => true, :key => false
+      end
+
+      include_bare! :comments
+
+      assert_equal({}, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
     def test_embed_ids_for_has_one_associations
       @post_serializer_class.class_eval do
         has_one :comment, :embed => :ids
@@ -277,6 +293,22 @@ class AssociationTest < ActiveModel::TestCase
       assert_equal({
         :comment => 1
       }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_embed_ids_include_true_key_false_for_has_one_associations
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => :ids, :include => true, :key => false
+      end
+
+      include_bare! :comment
+
+      assert_equal({}, @hash)
 
       assert_equal({
         :comments => [
