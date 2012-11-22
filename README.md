@@ -496,3 +496,13 @@ class ApplicationController < ActionController::Base
   serialization_scope :current_admin
 end
 ```
+
+## Serializing collections in view
+
+If you want to output JSON in view:
+
+```
+window.posts = <%= ActiveModel::ArraySerializer.new(@posts).to_json %>
+```
+
+`@posts` should be a collection fetch from AR. This trick may be useful for Backbone.js or Knockout.js collections.
