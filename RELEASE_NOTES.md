@@ -5,7 +5,7 @@
 * Support polymorphic associations
 * Support :each_serializer in ArraySerializer
 * Add `scope` method to easily access the scope in the serializer
-* Fix regression with Rails 3.2.6
+* Fix regression with Rails 3.2.6; add Rails 4 support
 * Allow serialization_scope to be disabled with serialization_scope nil
 * Array serializer should support pure ruby objects besides serializers
 

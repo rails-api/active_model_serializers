@@ -14,12 +14,6 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
-  class JsonOptionRenderable
-    def as_json(options={})
-      options[:test_data]
-    end
-  end
-
   class JsonSerializer
     def initialize(object, options={})
       @object, @options = object, options
@@ -48,6 +42,12 @@ class RenderJsonTest < ActionController::TestCase
 
     def as_json(*)
       { :serializable_object => true }
+    end
+  end
+
+  class JsonOptionRenderable
+    def as_json(options={})
+      options[:test_data]
     end
   end
 
@@ -158,8 +158,8 @@ class RenderJsonTest < ActionController::TestCase
       render :json => [Object.new], :each_serializer => CustomSerializer
     end
 
-    def render_json_array_with_options
-      render :json => [JsonOptionRenderable.new], :test_data => {:hello => true}
+    def render_json_array_with_wrong_option
+      render :json => [Object.new], :serializer => CustomSerializer
     end
 
     def render_json_with_links
@@ -178,6 +178,9 @@ class RenderJsonTest < ActionController::TestCase
       render :json => [], :serializer => CustomArraySerializer
     end
 
+    def render_json_array_with_options
+      render :json => [JsonOptionRenderable.new], :test_data => {:hello => true}
+    end
 
   private
     def default_serializer_options
@@ -224,7 +227,8 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_with_callback
     get :render_json_hello_world_with_callback
     assert_equal 'alert({"hello":"world"})', @response.body
-    assert_equal 'application/json', @response.content_type
+    # For JSONP, Rails 3 uses application/json, but Rails 4 uses text/javascript
+    assert_match %r(application/json|text/javascript), @response.content_type.to_s
   end
 
   def test_render_json_with_custom_content_type
@@ -295,9 +299,10 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '{"test":[{"hello":true}]}', @response.body
   end
 
-  def test_render_json_array_with_options
-    get :render_json_array_with_options
-    assert_match '{"test":[{"hello":true}]}', @response.body
+  def test_render_json_array_with_wrong_option
+    assert_raise ArgumentError do
+      get :render_json_array_with_wrong_option
+    end
   end
 
   def test_render_json_with_links
@@ -327,4 +332,9 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_array_with_custom_array_serializer
     assert_equal '{"items":[]}', @response.body
   end
+
+ def test_render_json_array_with_options
+   get :render_json_array_with_options
+   assert_match '{"test":[{"hello":true}]}', @response.body
+ end
 end

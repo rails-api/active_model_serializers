@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/josevalim/active_model_serializers.png)](http://travis-ci.org/josevalim/active_model_serializers)
+[![Build Status](https://secure.travis-ci.org/rails-api/active_model_serializers.png)](http://travis-ci.org/rails-api/active_model_serializers)
 
 # Purpose
 
@@ -19,7 +19,7 @@ For now, the easiest way to install `ActiveModel::Serializers` is to add this
 to your `Gemfile`:
 
 ```ruby
-gem "active_model_serializers", :git => "git://github.com/josevalim/active_model_serializers.git"
+gem "active_model_serializers", :git => "git://github.com/rails-api/active_model_serializers.git"
 ```
 
 Then, install it on the command line:
@@ -34,7 +34,7 @@ The easiest way to create a new serializer is to generate a new resource, which
 will generate a serializer at the same time:
 
 ```
-$ rails g resource post title:string body:string 
+$ rails g resource post title:string body:string
 ```
 
 This will generate a serializer in `app/serializers/post_serializer.rb` for
@@ -64,7 +64,7 @@ end
 ```
 
 In this case, Rails will look for a serializer named `PostSerializer`, and if
-it exists, use it to serialize the `Post`. 
+it exists, use it to serialize the `Post`.
 
 This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
@@ -328,6 +328,13 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+You may also use the `:serializer` option to specify a custom serializer class and the `:polymorphic` option to specify an association that is polymorphic (STI), e.g.:
+
+```ruby
+  has_many :comments, :serializer => CommentShortSerializer
+  has_one :reviewer, :polymorphic => true
+```
+
 ## Embedding Associations
 
 By default, associations will be embedded inside the serialized object. So if
@@ -370,6 +377,33 @@ Now, any associations will be supplied as an Array of IDs:
     "title": "New post",
     "body": "A body!",
     "comments": [ 1, 2, 3 ]
+  }
+}
+```
+
+Alternatively, you can choose to embed only the ids or the associated objects per association:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+
+  has_many :comments, embed: :objects
+  has_many :tags, embed: :ids
+end
+```
+
+The JSON will look like this:
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "body": "A body!",
+    "comments": [
+      { "id": 1, "body": "what a dumb post" }
+    ],
+    "tags": [ 1, 2, 3 ]
   }
 }
 ```

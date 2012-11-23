@@ -2,7 +2,9 @@ require "active_support"
 require "active_support/core_ext/string/inflections"
 require "active_support/notifications"
 require "active_model"
+require "active_model/array_serializer"
 require "active_model/serializer"
+require "active_model/serializer/associations"
 require "set"
 
 if defined?(Rails)
@@ -12,6 +14,7 @@ if defined?(Rails)
         app ||= Rails.application # Rails 3.0.x does not yield `app`
 
         Rails::Generators.configure!(app.config.generators)
+        Rails::Generators.hidden_namespaces.uniq!
         require "generators/resource_override"
       end
 

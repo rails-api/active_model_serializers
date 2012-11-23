@@ -1,7 +1,32 @@
+language: ruby
+before_install:
+  - gem install bundler
 rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
   - ree
   - jruby
-  - rbx
+  - rbx-18mode
+  - rbx-19mode
+gemfile:
+  - Gemfile
+  - gemfiles/Gemfile.edge-rails
+matrix:
+  exclude:
+    # Edge Rails is only compatible with 1.9.3
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: 1.8.7
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: 1.9.2
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: ree
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: jruby
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: rbx-18mode
+  allow_failures:
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: 1.9.3
+    - gemfile: gemfiles/Gemfile.edge-rails
+      rvm: rbx-19mode
