@@ -38,7 +38,7 @@ class ArraySerializerTest < ActiveModel::TestCase
     assert_equal({ :items => [ hash.as_json ]}, serializer.as_json)
   end
 
-  def test_array_serializer_with_specified_seriailizer
+  def test_array_serializer_with_specified_serializer
     post1 = Post.new(:title => "Post1", :author => "Author1", :id => 1)
     post2 = Post.new(:title => "Post2", :author => "Author2", :id => 2)
 

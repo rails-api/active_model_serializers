@@ -35,15 +35,20 @@ module ActiveModel
       end
     end
 
-    def as_json(*args)
+    def as_json(options = {}, *args)
       @options[:hash] = hash = {}
       @options[:unique_values] = {}
 
       array = serializable_array.map do |item|
-        if item.respond_to?(:serializable_hash)
+        if item.is_a?(::ActiveModel::Serializer) ||
+           item.is_a?(::ActiveModel::ArraySerializer)
+          # serialize AMS using as_json to allow options
+          # only include the root if it's explicitly desired
+          item.as_json(options.merge(:root => !!@options[:entry_root]))
+        elsif item.respond_to?(:serializable_hash)
           item.serializable_hash
         else
-          item.as_json
+          item.as_json(options)
         end
       end
 
