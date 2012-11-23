@@ -44,6 +44,11 @@ module ActionController
         (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
 
       if json.respond_to?(:to_ary)
+        unless serializer <= ActiveModel::ArraySerializer
+          raise ArgumentError.new("#{serializer.name} is not an ArraySerializer. " +
+             "You may want to use the :each_serializer option instead.")
+        end
+
         if options[:root] != false && serializer.root != false
           # default root element for arrays is serializer's root or the controller name
           # the serializer for an Array is ActiveModel::ArraySerializer
