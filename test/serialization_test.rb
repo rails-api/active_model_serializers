@@ -152,6 +152,10 @@ class RenderJsonTest < ActionController::TestCase
       render :json => [Object.new], :each_serializer => CustomSerializer
     end
 
+    def render_json_array_with_wrong_option
+      render :json => [Object.new], :serializer => CustomSerializer
+    end
+
     def render_json_with_links
       render :json => HypermediaSerializable.new
     end
@@ -284,6 +288,12 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_array_with_custom_serializer
     get :render_json_array_with_custom_serializer
     assert_match '{"test":[{"hello":true}]}', @response.body
+  end
+
+  def test_render_json_array_with_wrong_option
+    assert_raise ArgumentError do
+      get :render_json_array_with_wrong_option
+    end
   end
 
   def test_render_json_with_links
