@@ -1004,7 +1004,7 @@ class SerializerTest < ActiveModel::TestCase
         :name => 'logo.png',
         :url => 'http://example.com/logo.png',
         :attachable => {
-          :type => :email, 
+          :type => :email,
           :id => 1
         }},
       :emails => [{
