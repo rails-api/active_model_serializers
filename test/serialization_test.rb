@@ -333,8 +333,8 @@ class RenderJsonTest < ActionController::TestCase
     assert_equal '{"items":[]}', @response.body
   end
 
- def test_render_json_array_with_options
-   get :render_json_array_with_options
-   assert_match '{"test":[{"hello":true}]}', @response.body
- end
+  def test_render_json_array_with_options
+    get :render_json_array_with_options
+    assert_match '{"test":[{"hello":true}]}', @response.body
+  end
 end
