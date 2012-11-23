@@ -31,6 +31,25 @@ class ArraySerializerTest < ActiveModel::TestCase
     ]}, serializer.as_json)
   end
 
+  def test_array_serializer_with_entry_roots
+    model = Model.new(:data => "datum")
+    user = User.new({})
+
+    array = [ model, user ]
+
+    serializer = array.active_model_serializer.new(array,
+                                                   :scope => {:scope => user},
+                                                   :entry_roots => true,
+                                                   :root => false
+                                                  )
+
+    json = serializer.as_json
+    assert_equal([
+      { :model => { :model => "Model" } },
+      { :user => { :first_name => "Jose", :last_name => "Valim", :password => "oh noes yugive my password" } }
+    ], json)
+  end
+
   def test_array_serializer_with_hash
     hash = {:value => "something"}
     array = [hash]
@@ -51,5 +70,4 @@ class ArraySerializerTest < ActiveModel::TestCase
       { :title => "Post2" }
     ], serializer.as_json)
   end
-
 end

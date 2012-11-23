@@ -43,8 +43,12 @@ module ActiveModel
         if item.is_a?(::ActiveModel::Serializer) ||
            item.is_a?(::ActiveModel::ArraySerializer)
           # serialize AMS using as_json to allow options
-          # only include the root if it's explicitly desired
-          item.as_json(options.merge(:root => !!@options[:entry_root]))
+
+          # only include the root for the array entries if explicitly desired
+          entry_roots = options[:entry_roots] || @options[:entry_roots]
+          options = options.dup.delete_if {|k, v| k == :root}
+          options[:root] = false unless entry_roots
+          item.as_json(options.merge(:root => entry_roots ? nil : false))
         elsif item.respond_to?(:serializable_hash)
           item.serializable_hash
         else
