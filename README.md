@@ -162,18 +162,6 @@ will produce
 ]
 ```
 
-Root elements inside the array are disabled by default; however, you can enable
-them by passing `:entry_roots => true` as a serializer option.  This might be
-useful if your application makes use of mixed arrays composed of objects of
-different classess.  Enabling this option will produce
-
-```json
-[
-  { "post": { "title": "Post 1", "body": "Hello!" } },
-  { "user": { "first_name": "Jose", "body": "Valim" } }
-]
-```
-
 To specify a custom serializer for the items within an array:
 
 ```ruby
