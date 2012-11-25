@@ -25,8 +25,3 @@ matrix:
       rvm: jruby
     - gemfile: Gemfile.edge
       rvm: rbx-18mode
-  allow_failures:
-    - gemfile: Gemfile.edge
-      rvm: 1.9.3
-    - gemfile: Gemfile.edge
-      rvm: rbx-19mode
