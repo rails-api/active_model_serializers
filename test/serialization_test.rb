@@ -54,6 +54,15 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class AnotherCustomSerializer
+    def initialize(*)
+    end
+
+    def as_json(*)
+      { :rails => 'rocks' }
+    end
+  end
+
   class HypermediaSerializable
     def active_model_serializer
       HypermediaSerializer
@@ -175,9 +184,13 @@ class RenderJsonTest < ActionController::TestCase
 
   private
     def default_serializer_options
-      if params[:check_defaults]
-        { :check_defaults => true }
-      end
+      defaults = {}
+      defaults.merge!(:check_defaults => true) if params[:check_defaults]
+      defaults.merge!(:root => :awesome) if params[:check_default_root]
+      defaults.merge!(:scope => :current_admin) if params[:check_default_scope]
+      defaults.merge!(:serializer => AnotherCustomSerializer) if params[:check_default_serializer]
+      defaults.merge!(:each_serializer => AnotherCustomSerializer) if params[:check_default_each_serializer]
+      defaults
     end
   end
 
@@ -258,9 +271,24 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '"check_defaults":true', @response.body
   end
 
+  def test_render_json_with_serializer_checking_default_serailizer
+    get :render_json_with_serializer, :check_default_serializer => true
+    assert_match '{"rails":"rocks"}', @response.body
+  end
+
+  def test_render_json_with_serializer_checking_default_scope
+    get :render_json_with_serializer, :check_default_scope => true
+    assert_match '"scope":"current_admin"', @response.body
+  end
+
   def test_render_json_with_serializer_and_implicit_root
     get :render_json_with_serializer_and_implicit_root
     assert_match '"test":[{"serializable_object":true}]', @response.body
+  end
+
+  def test_render_json_with_serializer_and_implicit_root_checking_default_each_serailizer
+    get :render_json_with_serializer_and_implicit_root, :check_default_each_serializer => true
+    assert_match '"test":[{"rails":"rocks"}]', @response.body
   end
 
   def test_render_json_with_serializer_and_options
@@ -275,6 +303,11 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '"scope":{"current_user":false}', @response.body
   end
 
+  def test_render_json_with_serializer_and_scope_option_checking_default_scope
+    get :render_json_with_serializer_and_scope_option, :check_default_scope => true
+    assert_match '"scope":{"current_user":false}', @response.body
+  end
+
   def test_render_json_with_serializer_api_but_without_serializer
     get :render_json_with_serializer_api_but_without_serializer
     assert_match '{"serializable_object":true}', @response.body
@@ -282,6 +315,11 @@ class RenderJsonTest < ActionController::TestCase
 
   def test_render_json_with_custom_serializer
     get :render_json_with_custom_serializer
+    assert_match '{"hello":true}', @response.body
+  end
+
+  def test_render_json_with_custom_serializer_checking_default_serailizer
+    get :render_json_with_custom_serializer, :check_default_serializer => true
     assert_match '{"hello":true}', @response.body
   end
 
@@ -296,6 +334,11 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  def test_render_json_array_with_custom_serializer_checking_default_each_serailizer
+    get :render_json_array_with_custom_serializer, :check_default_each_serializer => true
+    assert_match '{"test":[{"hello":true}]}', @response.body
+  end
+
   def test_render_json_with_links
     get :render_json_with_links
     assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
@@ -306,9 +349,19 @@ class RenderJsonTest < ActionController::TestCase
     assert_equal '[]', @response.body
   end
 
+  def test_render_json_array_with_no_root_checking_default_root
+    get :render_json_array_with_no_root, :check_default_root => true
+    assert_equal '[]', @response.body
+  end
+
   def test_render_json_empty_array
     get :render_json_empty_array
     assert_equal '{"test":[]}', @response.body
+  end
+
+  def test_render_json_empty_array_checking_default_root
+    get :render_json_empty_array, :check_default_root => true
+    assert_equal '{"awesome":[]}', @response.body
   end
 
   def test_render_json_empty_arry_with_array_serializer_root_false
