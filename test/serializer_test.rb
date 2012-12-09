@@ -281,8 +281,8 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "Body of new post",
-        :comments => [1, 2],
-        :author => nil
+        :comment_ids => [1, 2],
+        :author_id => nil
       }
     }, serializer.as_json)
   end
@@ -305,8 +305,8 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "Body of new post",
-        :comments => [1, 2],
-        :author => nil
+        :comment_ids => [1, 2],
+        :author_id => nil
       },
       :comments => [
         { :title => "Comment1" },
@@ -323,8 +323,8 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "Body of new post",
-        :comments => [1, 2],
-        :author => 1
+        :comment_ids => [1, 2],
+        :author_id => 1
       },
       :comments => [
         { :title => "Comment1" },
@@ -558,7 +558,7 @@ class SerializerTest < ActiveModel::TestCase
       :post => {
         :title => "New Post",
         :body => "It's a new post!",
-        :author => 5
+        :author_id => 5
       }
     }, hash.as_json)
   end
@@ -776,12 +776,12 @@ class SerializerTest < ActiveModel::TestCase
     actual = ActiveModel::ArraySerializer.new([post], :root => :posts).as_json
     assert_equal({
       :posts => [
-        { :title => "New Post", :body => "NEW POST", :id => 1, :comments => [1,2] }
+        { :title => "New Post", :body => "NEW POST", :id => 1, :comment_ids => [1,2] }
       ],
 
       :comments => [
-        { :body => "EWOT", :id => 1, :tags => [1,3] },
-        { :body => "YARLY", :id => 2, :tags => [1,2] }
+        { :body => "EWOT", :id => 1, :tag_ids => [1,3] },
+        { :body => "YARLY", :id => 2, :tag_ids => [1,2] }
       ],
 
       :tags => [

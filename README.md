@@ -386,7 +386,7 @@ Now, any associations will be supplied as an Array of IDs:
     "id": 1,
     "title": "New post",
     "body": "A body!",
-    "comments": [ 1, 2, 3 ]
+    "comment_ids": [ 1, 2, 3 ]
   }
 }
 ```
@@ -413,7 +413,7 @@ The JSON will look like this:
     "comments": [
       { "id": 1, "body": "what a dumb post" }
     ],
-    "tags": [ 1, 2, 3 ]
+    "tag_ids": [ 1, 2, 3 ]
   }
 }
 ```
@@ -444,11 +444,11 @@ this:
     "id": 1,
     "title": "New post",
     "body": "A body!",
-    "comments": [ 1, 2 ]
+    "comment_ids": [ 1, 2 ]
   },
   "comments": [
-    { "id": 1, "body": "what a dumb post", "tags": [ 1, 2 ] },
-    { "id": 2, "body": "i liked it", "tags": [ 1, 3 ] },
+    { "id": 1, "body": "what a dumb post", "tag_ids": [ 1, 2 ] },
+    { "id": 2, "body": "i liked it", "tag_ids": [ 1, 3 ] },
   ],
   "tags": [
     { "id": 1, "name": "short" },
