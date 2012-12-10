@@ -35,6 +35,14 @@ module ActiveModel
       end
     end
 
+    def meta_key
+      @options[:meta_key].try(:to_sym) || :meta
+    end
+
+    def include_meta(hash)
+      hash[meta_key] = @options[:meta] if @options.has_key?(:meta)
+    end
+
     def as_json(*args)
       @options[:hash] = hash = {}
       @options[:unique_values] = {}
@@ -49,6 +57,8 @@ module ActiveModel
 
       if root = @options[:root]
         hash.merge!(root => array)
+        include_meta hash
+        hash
       else
         array
       end

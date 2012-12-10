@@ -242,6 +242,14 @@ module ActiveModel
       @options[:url_options] || {}
     end
 
+    def meta_key
+      @options[:meta_key].try(:to_sym) || :meta
+    end
+
+    def include_meta(hash)
+      hash[meta_key] = @options[:meta] if @options.has_key?(:meta)
+    end
+
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(options={})
@@ -250,6 +258,7 @@ module ActiveModel
         @options[:unique_values] = {}
 
         hash.merge!(root => serializable_hash)
+        include_meta hash
         hash
       else
         serializable_hash

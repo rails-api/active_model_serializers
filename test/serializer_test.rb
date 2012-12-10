@@ -1192,4 +1192,50 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, actual)
   end
+
+  def test_meta_key_serialization
+    tag_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name
+    end
+
+    tag_class = Class.new(Model) do
+      def name
+        @attributes[:name]
+      end
+
+      define_method :active_model_serializer do
+        tag_serializer
+      end
+    end
+
+    serializable_array = Class.new(Array)
+
+    array = serializable_array.new
+    array << tag_class.new(:name => 'Rails')
+    array << tag_class.new(:name => 'Sinatra')
+
+    actual = array.active_model_serializer.new(array, :root => :tags, :meta => {:total => 10}).as_json
+
+    assert_equal({
+      :meta => {
+        :total => 10,
+      },
+      :tags => [
+        { :name => "Rails" },
+        { :name => "Sinatra" },
+      ]
+    }, actual)
+
+    actual = array.active_model_serializer.new(array, :root => :tags, :meta => {:total => 10}, :meta_key => 'meta_object').as_json
+
+    assert_equal({
+      :meta_object => {
+        :total => 10,
+      },
+      :tags => [
+        { :name => "Rails" },
+        { :name => "Sinatra" },
+      ]
+    }, actual)
+  end
 end
