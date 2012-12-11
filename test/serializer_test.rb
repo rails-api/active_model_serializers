@@ -493,14 +493,14 @@ class SerializerTest < ActiveModel::TestCase
       def can_edit; end
       def drafts; end
 
-      attributes :name, :age, :can_edit
+      attributes :name, :age, :can_edit => :boolean
       has_many :posts, :serializer => Class.new
       has_many :drafts, :serializer => Class.new
       has_one :parent, :serializer => Class.new
     end
 
     assert_equal serializer.schema, {
-      :attributes => { :name => :string, :age => :integer, :can_edit => nil },
+      :attributes => { :name => :string, :age => :integer, :can_edit => :boolean },
       :associations => {
         :posts => { :has_many => :posts },
         :drafts => nil,
@@ -1004,7 +1004,7 @@ class SerializerTest < ActiveModel::TestCase
         :name => 'logo.png',
         :url => 'http://example.com/logo.png',
         :attachable => {
-          :type => :email, 
+          :type => :email,
           :id => 1
         }},
       :emails => [{

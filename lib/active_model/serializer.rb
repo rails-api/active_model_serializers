@@ -73,7 +73,9 @@ module ActiveModel
       end
 
       def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym)
+        self._attributes = _attributes.merge(attr.is_a?(Hash) ? attr : {attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym})
+
+        attr = attr.keys[0] if attr.is_a? Hash
 
         unless method_defined?(attr)
           define_method attr do
@@ -175,8 +177,12 @@ module ActiveModel
             attrs[key] = column.type
           else
             # Computed attribute (method on serializer or model). We cannot
-            # infer the type, so we put nil.
-            attrs[key] = nil
+            # infer the type, so we put nil, unless specified in the attribute declaration
+            if name != key
+              attrs[name] = key
+            else
+              attrs[key] = nil
+            end
           end
         end
 
