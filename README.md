@@ -232,6 +232,20 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+The type of a computed attribute (like :full_name above) is not easily
+calculated without some sophisticated static code analysis. To specify the
+type of a computed attribute:
+
+```ruby
+class PersonSerializer < ActiveModel::Serializer
+  attributes :first_name, :last_name, {:full_name => :string}
+
+  def full_name
+    "#{object.first_name} #{object.last_name}"
+  end
+end
+```
+
 If you would like the key in the outputted JSON to be different from its name
 in ActiveRecord, you can use the `:key` option to customize it:
 
