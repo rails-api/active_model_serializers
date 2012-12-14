@@ -169,6 +169,18 @@ To specify a custom serializer for the items within an array:
 ```ruby
 render :json => @posts, :each_serializer => FancyPostSerializer
 ```
+#### 4. Define default_serializer_options in your controller
+If you define `default_serializer_options` method in your controller,
+all serializers in actions of this controller and it's shildren will use them.
+One of options may be `root: false`
+
+```ruby
+def default_serializer_options
+  {
+    root: false
+  }
+end
+```
 
 ## Getting the old version
 
