@@ -45,6 +45,14 @@ the serializer generator:
 $ rails g serializer post
 ```
 
+### Support for PORO's and other ORM's.
+
+Currently `ActiveModel::Serializers` adds serialization support to all models
+that descend from `ActiveRecord`. If you are using another ORM or if you are
+using objects that are `ActiveModel` compliant, but do not descend from
+`ActiveRecord`. You must add an include statement for
+`ActiveModel::SerializerSupport`.
+
 # ActiveModel::Serializer
 
 All new serializers descend from ActiveModel::Serializer
