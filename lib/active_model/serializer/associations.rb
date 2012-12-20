@@ -109,9 +109,12 @@ module ActiveModel
         def serialize_ids
           # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
-
-          associated_object.map do |item|
-            item.read_attribute_for_serialization(:id)
+          if !option(:include) && associated_object.respond_to?(:pluck)
+            associated_object.pluck(:id)
+          else
+            associated_object.map do |item|
+              item.read_attribute_for_serialization(:id)
+            end
           end
         end
       end
@@ -161,15 +164,19 @@ module ActiveModel
         end
 
         def serialize_ids
-          object = associated_object
-
-          if object && polymorphic?
-            {
-              :type => polymorphic_key,
-              :id => object.read_attribute_for_serialization(:id)
-            }
-          elsif object
-            object.read_attribute_for_serialization(:id)
+          if polymorphic?
+            if associated_object
+              {
+                :type => polymorphic_key,
+                :id => associated_object.read_attribute_for_serialization(:id)
+              }
+            else
+              nil
+            end
+          elsif source_serializer.object.respond_to?("#{name}_id")
+            source_serializer.object.send("#{name}_id")
+          elsif associated_object
+            associated_object.read_attribute_for_serialization(:id)
           else
             nil
           end
