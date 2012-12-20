@@ -66,6 +66,8 @@ end
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
 
+If you want to use a non `ActiveRecord::Base` model/class, you just need to `include ActiveModel::SerializerSupport` in it.
+
 This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
 serializer and available as `@options` inside.
