@@ -355,6 +355,9 @@ module ActiveModel
       serializable_hashes = (hash[key] ||= [])
 
       serializables.each do |serializable|
+        puts key
+        puts serializable.inspect
+
         unless already_serialized.include? serializable.object
           already_serialized[serializable.object] = true
           serializable_hashes << serializable.serializable_hash
