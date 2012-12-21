@@ -109,8 +109,10 @@ module ActiveModel
         def serialize_ids
           # Use pluck or select_columns if available
           # return collection.ids if collection.respond_to?(:ids)
-          if !option(:include) && associated_object.respond_to?(:pluck)
-            associated_object.pluck(:id)
+          ids_key = "#{key.to_s.singularize}_ids"
+
+          if !option(:include) && source_serializer.object.respond_to?(ids_key)
+            source_serializer.object.send(ids_key)
           else
             associated_object.map do |item|
               item.read_attribute_for_serialization(:id)
