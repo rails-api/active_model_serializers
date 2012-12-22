@@ -51,7 +51,7 @@ module ActiveModel
         end
 
         def root
-          option(:root) || plural_key
+          option(:root) || @name
         end
 
         def name
@@ -92,7 +92,15 @@ module ActiveModel
       end
 
       class HasMany < Config #:nodoc:
-        alias plural_key key
+        def key
+          if key = option(:key)
+            key
+          elsif embed_ids?
+            "#{@name.to_s.singularize}_ids".to_sym
+          else
+            @name
+          end
+        end
 
         def serialize
           associated_object.map do |item|
@@ -134,16 +142,28 @@ module ActiveModel
           option :polymorphic
         end
 
-        def polymorphic_key
-          associated_object.class.to_s.demodulize.underscore.to_sym
-        end
-
-        def plural_key
-          if polymorphic?
+        def root
+          if root = option(:root)
+            root
+          elsif polymorphic?
             associated_object.class.to_s.pluralize.demodulize.underscore.to_sym
           else
-            key.to_s.pluralize.to_sym
+            @name.to_s.pluralize.to_sym
           end
+        end
+
+        def key
+          if key = option(:key)
+            key
+          elsif embed_ids? && !polymorphic?
+            "#{@name}_id".to_sym
+          else
+            @name
+          end
+        end
+
+        def polymorphic_key
+          associated_object.class.to_s.demodulize.underscore.to_sym
         end
 
         def serialize

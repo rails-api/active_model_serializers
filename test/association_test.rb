@@ -70,7 +70,7 @@ class AssociationTest < ActiveModel::TestCase
       include! :comments, :value => @post.comments
 
       assert_equal({
-        :comments => [ 1 ]
+        :comment_ids => [ 1 ]
       }, @hash)
 
       assert_equal({
@@ -91,7 +91,7 @@ class AssociationTest < ActiveModel::TestCase
       include! :comments, :value => @post.comments, :embed => :ids, :include => false
 
       assert_equal({
-        :comments => [ 1 ]
+        :comment_ids => [ 1 ]
       }, @hash)
 
       assert_equal({}, @root_hash)
@@ -101,7 +101,7 @@ class AssociationTest < ActiveModel::TestCase
       include! :comment, :value => @post.comment
 
       assert_equal({
-        :comment => 1
+        :comment_id => 1
       }, @hash)
 
       assert_equal({
@@ -119,7 +119,7 @@ class AssociationTest < ActiveModel::TestCase
       include! :comments
 
       assert_equal({
-        :comments => [ 1 ]
+        :comment_ids => [ 1 ]
       }, @hash)
 
       assert_equal({
@@ -137,7 +137,7 @@ class AssociationTest < ActiveModel::TestCase
       include! :comment
 
       assert_equal({
-        :comment => 1
+        :comment_id => 1
       }, @hash)
 
       assert_equal({
@@ -159,7 +159,7 @@ class AssociationTest < ActiveModel::TestCase
       }, @hash)
 
       assert_equal({
-        :custom_comments => [
+        :comments => [
           { :id => 1, :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
@@ -167,17 +167,17 @@ class AssociationTest < ActiveModel::TestCase
 
     def test_with_default_has_one_with_custom_key
       @post_serializer_class.class_eval do
-        has_one :comment, :key => :custom_comment
+        has_one :comment, :key => :custom_comment_id
       end
 
       include! :comment
 
       assert_equal({
-        :custom_comment => 1
+        :custom_comment_id => 1
       }, @hash)
 
       assert_equal({
-        :custom_comments => [
+        :comments => [
           { :id => 1, :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
@@ -207,7 +207,7 @@ class AssociationTest < ActiveModel::TestCase
       include_bare! :comments
 
       assert_equal({
-        :comments => [ 1 ]
+        :comment_ids => [ 1 ]
       }, @hash)
 
       assert_equal({}, @root_hash)
@@ -232,7 +232,7 @@ class AssociationTest < ActiveModel::TestCase
       include_bare! :comments
 
       assert_equal({
-        :comments => [ 1 ]
+        :comment_ids => [ 1 ]
       }, @hash)
 
       assert_equal({
@@ -250,7 +250,7 @@ class AssociationTest < ActiveModel::TestCase
       include_bare! :comment
 
       assert_equal({
-        :comment => 1
+        :comment_id => 1
       }, @hash)
 
       assert_equal({}, @root_hash)
@@ -275,7 +275,7 @@ class AssociationTest < ActiveModel::TestCase
       include_bare! :comment
 
       assert_equal({
-        :comment => 1
+        :comment_id => 1
       }, @hash)
 
       assert_equal({
@@ -333,7 +333,7 @@ class AssociationTest < ActiveModel::TestCase
         :post => {
           :title => "New Post",
           :body => "Body",
-          :comments => [ 1 ]
+          :comment_ids => [ 1 ]
         },
         :comments => [
           { :id => 1, :body => "ZOMG A COMMENT" }
@@ -352,7 +352,7 @@ class AssociationTest < ActiveModel::TestCase
         :post => {
           :title => "New Post",
           :body => "Body",
-          :comments => [ 1 ]
+          :comment_ids => [ 1 ]
         }
       }, json)
     end
@@ -368,7 +368,7 @@ class AssociationTest < ActiveModel::TestCase
         :post => {
           :title => "New Post",
           :body => "Body",
-          :comments => [ 1 ]
+          :comment_ids => [ 1 ]
         }
       }, json)
     end
@@ -384,7 +384,7 @@ class AssociationTest < ActiveModel::TestCase
         :post => {
           :title => "New Post",
           :body => "Body",
-          :comments => [ 1 ]
+          :comment_ids => [ 1 ]
         },
         :comments => [
           { :id => 1, :body => "ZOMG A COMMENT" }
