@@ -506,3 +506,33 @@ class ApplicationController < ActionController::Base
   serialization_scope :current_admin
 end
 ```
+
+## Serializing collections in Rails views
+
+If you want to output JSON in view:
+
+in controller:
+
+```
+@posts = ActiveModel::ArraySerializer.new(Post.all)
+```
+
+in view:
+
+```
+<script type="text/json" id="bootstrap">
+  { "posts": <%= @posts.to_json %> }
+</script>
+
+<script type="text/javascript">
+  $(function() {
+    div = $('<div></div>')
+    div.html($('#bootstrap').text())
+    data = JSON.parse(div.text())
+
+    window.posts = data['posts']
+  })
+</script>
+```
+
+This trick may be useful for Backbone.js or Knockout.js collections.
