@@ -220,21 +220,19 @@ module ActiveModel
         self._root = name
       end
       alias_method :root=, :root
-
-      def inherited(klass) #:nodoc:
-        return if klass.anonymous?
-        name = klass.name.demodulize.underscore.sub(/_serializer$/, '')
-
-        klass.class_eval do
-          root name.to_sym unless self._root == false
-        end
-      end
     end
 
     attr_reader :object, :options
 
     def initialize(object, options={})
       @object, @options = object, options
+    end
+
+    def root_name
+      return false if self._root == false
+      
+      class_name = self.class.name.demodulize.underscore.sub(/_serializer$/, '').to_sym unless self.class.name.blank?
+      self._root || class_name
     end
 
     def url_options
@@ -252,7 +250,7 @@ module ActiveModel
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(options={})
-      if root = options.fetch(:root, @options.fetch(:root, _root))
+      if root = options.fetch(:root, @options.fetch(:root, root_name))
         @options[:hash] = hash = {}
         @options[:unique_values] = {}
 
