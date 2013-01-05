@@ -63,7 +63,7 @@ class MyUserSerializer < ActiveModel::Serializer
 
   def serializable_hash
     hash = attributes
-    hash = hash.merge(:super_user => true) if my_user.super_user?
+    hash = hash.merge(:super_user => true) if object.super_user?
     hash
   end
 end
@@ -141,6 +141,13 @@ end
 class CustomBlogSerializer < ActiveModel::Serializer
   has_many :public_posts, :key => :posts, :serializer => PostSerializer
   has_one :public_user, :key => :user, :serializer => UserSerializer
+end
+
+class SomeSerializer < ActiveModel::Serializer
+  attributes :some
+end
+
+class SomeObject < Struct.new(:some)
 end
 
 # Set up some classes for polymorphic testing

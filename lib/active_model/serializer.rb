@@ -226,7 +226,6 @@ module ActiveModel
         name = klass.name.demodulize.underscore.sub(/_serializer$/, '')
 
         klass.class_eval do
-          alias_method name.to_sym, :object
           root name.to_sym unless self._root == false
         end
       end
