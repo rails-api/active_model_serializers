@@ -29,6 +29,17 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
+  def test_attribute_method_with_name_as_serializer_prefix
+    object = SomeObject.new("something")
+    object_serializer = SomeSerializer.new(object, {})
+
+    hash = object_serializer.as_json
+
+    assert_equal({
+      :some => { :some => "something" }
+    }, hash)
+  end
+
   def test_serializer_receives_scope
     user = User.new
     user_serializer = UserSerializer.new(user, :scope => {:scope => true})
