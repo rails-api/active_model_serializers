@@ -280,7 +280,7 @@ class PostSerializer < ActiveModel::Serializer
 
   # only let the user see comments he created.
   def comments
-    post.comments.where(:created_by => scope)
+    object.comments.where(:created_by => scope)
   end
 end
 ```
@@ -307,7 +307,7 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 
   def include_comments?
-    !post.comments_disabled?
+    !object.comments_disabled?
   end
 end
 ```
