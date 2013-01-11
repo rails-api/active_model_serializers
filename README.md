@@ -253,6 +253,46 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+If you would like to add meta information to the outputted JSON, use the `:meta`
+option:
+
+```
+render :json => @posts, :serializer => CustomArraySerializer,
+:meta => {:total => 10}
+```
+
+The above usage of `:meta` will produce the following:
+
+```
+{
+  meta: { total: 10
+  },
+  posts: [
+    { "title": "Post 1", "body": "Hello!" },
+    { "title": "Post 2", "body": "Goodbye!" }
+  ]
+}
+```
+
+If you would like to to change the attribute name you can use the `meta_key` option:
+
+```
+render :json => @posts, :serializer => CustomArraySerializer, :meta => {:total => 10}, :meta_key => 'meta_object'
+```
+
+The above usage of `:meta_key` will produce the following:
+
+```
+{
+  meta_object: { total: 10
+  },
+  posts: [
+    { "title": "Post 1", "body": "Hello!" },
+    { "title": "Post 2", "body": "Goodbye!" }
+  ]
+}
+```
+
 If you would like direct, low-level control of attribute serialization, you can
 completely override the `attributes` method to return the hash you need:
 
