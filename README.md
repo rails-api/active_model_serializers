@@ -207,8 +207,7 @@ end
 ```
 
 Within a serializer's methods, you can access the object being
-serialized as either `object` or the name of the serialized object
-(e.g. `admin_comment` for the `AdminCommentSerializer`).
+serialized as `object`.
 
 You can also access the `scope` method, which provides an
 authorization context to your serializer. By default, scope
