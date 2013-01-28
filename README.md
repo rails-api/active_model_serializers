@@ -535,6 +535,34 @@ This would generate JSON that would look like this:
 }
 ```
 
+You can also specify a different attribute to use rather than the ID of the
+objects:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  embed :ids, :include => true
+
+  attributes :id, :title, :body
+  has_many :comments, :embed_key => :external_id
+end
+```
+
+This would generate JSON that would look like this:
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "body": "A body!",
+    "comment_ids": [ "COMM001" ]
+  },
+  "comments": [
+    { "id": 1, "external_id": "COMM001", "body": "what a dumb post" }
+  ]
+}
+```
+
 **NOTE**: The `embed :ids` mechanism is primary useful for clients that process
 data in bulk and load it into a local store. For these clients, the ability to
 easily see all of the data per type, rather than having to recursively scan the
