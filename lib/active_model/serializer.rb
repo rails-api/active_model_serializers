@@ -302,8 +302,6 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-<<<<<<< HEAD
-=======
       if perform_caching?
         cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-hash']) do
           _serializable_hash
@@ -455,7 +453,7 @@ module ActiveModel
       ActiveSupport::Notifications.instrument(event_name, payload, &block)
     end
   end
-  
+
   # DefaultSerializer
   #
   # Provides a constant interface for all items, particularly
