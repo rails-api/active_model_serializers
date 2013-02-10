@@ -68,7 +68,7 @@ class MyUserSerializer < ActiveModel::Serializer
   end
 end
 
-class CommentSerializer < ActiveModel::Serializer
+class CommentSerializer
   def initialize(comment, options={})
     @object = comment
   end

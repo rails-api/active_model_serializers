@@ -1,15 +1,6 @@
 require "active_support/core_ext/class/attribute"
 
 module ActiveModel
-  class DefaultSerializer
-    attr_reader :object
-    def initialize(object)
-      @object = object
-    end
-    def serializable_hash
-      @object.as_json
-    end
-  end
   # Active Model Array Serializer
   #
   # It serializes an Array, checking if each element that implements
