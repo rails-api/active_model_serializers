@@ -12,7 +12,7 @@ class ArraySerializerTest < ActiveModel::TestCase
     serializer = array.active_model_serializer.new(array, :scope => {:scope => true})
     assert_equal([
       { :model => "Model" },
-      { :first_name => "Jose", :last_name => "Valim", :ok => true, :scope => true },
+      { :last_name => "Valim", :ok => true, :first_name => "Jose", :scope => true },
       { :title => "Comment1" }
     ], serializer.as_json)
   end
