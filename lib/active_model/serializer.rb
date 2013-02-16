@@ -69,10 +69,15 @@ module ActiveModel
     class << self
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
+
         self._attributes = _attributes.dup
 
         attrs.each do |attr|
-          attribute attr
+          if Hash === attr
+            attr.each {|attr_real, key| attribute attr_real, :key => key }
+          else
+            attribute attr
+          end
         end
       end
 
