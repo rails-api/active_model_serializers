@@ -27,10 +27,12 @@ module ActiveModel
           serializer = item.active_model_serializer
         end
 
-        if serializer
-          serializer.new(item, @options)
+        serializable = serializer ? serializer.new(item, @options) : item
+
+        if serializable.respond_to?(:serializable_hash)
+          serializable.serializable_hash
         else
-          item
+          serializable.as_json
         end
       end
     end
@@ -47,20 +49,12 @@ module ActiveModel
       @options[:hash] = hash = {}
       @options[:unique_values] = {}
 
-      array = serializable_array.map do |item|
-        if item.respond_to?(:serializable_hash)
-          item.serializable_hash
-        else
-          item.as_json
-        end
-      end
-
       if root = @options[:root]
-        hash.merge!(root => array)
+        hash.merge!(root => serializable_array)
         include_meta hash
         hash
       else
-        array
+        serializable_array
       end
     end
   end
