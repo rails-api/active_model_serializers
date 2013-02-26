@@ -227,7 +227,7 @@ class RenderJsonTest < ActionController::TestCase
 
   def test_render_json_nil_with_custom_serializer
     get :render_json_nil_with_custom_serializer
-    assert_equal 'null', @response.body
+    assert_equal "{\"dummy_custom\":null}", @response.body
   end
 
   def test_render_json
