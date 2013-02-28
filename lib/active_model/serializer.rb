@@ -1,5 +1,7 @@
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
+require 'active_support/dependencies'
+require 'active_support/descendants_tracker'
 
 module ActiveModel
   # Active Model Serializer
@@ -36,6 +38,8 @@ module ActiveModel
   #     end
   #
   class Serializer
+    extend ActiveSupport::DescendantsTracker
+
     INCLUDE_METHODS = {}
     INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
 
