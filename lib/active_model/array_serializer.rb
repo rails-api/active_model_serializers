@@ -1,4 +1,6 @@
 require "active_support/core_ext/class/attribute"
+require 'active_support/dependencies'
+require 'active_support/descendants_tracker'
 
 module ActiveModel
   # Active Model Array Serializer
@@ -11,6 +13,8 @@ module ActiveModel
   #     ActiveModel::ArraySerializer.root = false
   #
   class ArraySerializer
+    extend ActiveSupport::DescendantsTracker
+
     attr_reader :object, :options
 
     class_attribute :root
