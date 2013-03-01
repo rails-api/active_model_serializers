@@ -141,7 +141,7 @@ more concise json. To disable the root element for arrays, you have 3 options:
 
 ```ruby
 ActiveSupport.on_load(:active_model_serializers) do
-  self.root = false
+  ActiveModel::ArraySerializer.root = false
 end
 ```
 
