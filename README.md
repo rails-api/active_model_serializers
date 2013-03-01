@@ -155,7 +155,7 @@ render :json => @posts, :root => false
 
 ```ruby
 class CustomArraySerializer < ActiveModel::ArraySerializer
-  self.root = false
+  root false
 end
 
 # controller:
