@@ -63,6 +63,10 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
+  class DummyCustomSerializer < ActiveModel::Serializer
+    attributes :id
+  end
+
   class HypermediaSerializable
     def active_model_serializer
       HypermediaSerializer
@@ -116,6 +120,11 @@ class RenderJsonTest < ActionController::TestCase
     def render_symbol_json
       render :json => ActiveSupport::JSON.encode(:hello => 'world')
     end
+
+    def render_json_nil_with_custom_serializer
+      render :json => nil, :serializer => DummyCustomSerializer
+    end
+
 
     def render_json_with_extra_options
       render :json => JsonRenderable.new, :except => [:c, :e]
@@ -214,6 +223,11 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_render_to_string
     get :render_json_render_to_string
     assert_equal '[]', @response.body
+  end
+
+  def test_render_json_nil_with_custom_serializer
+    get :render_json_nil_with_custom_serializer
+    assert_equal "{\"dummy_custom\":null}", @response.body
   end
 
   def test_render_json
