@@ -103,6 +103,14 @@ module ActiveModel
           end
         end
 
+        def embed_key
+          if key = option(:embed_key)
+            key
+          else
+            :id
+          end
+        end
+
         def serialize
           associated_object.map do |item|
             find_serializable(item).serializable_hash
@@ -120,11 +128,11 @@ module ActiveModel
           # return collection.ids if collection.respond_to?(:ids)
           ids_key = "#{key.to_s.singularize}_ids"
 
-          if !option(:include) && source_serializer.object.respond_to?(ids_key)
+          if !option(:include) && !option(:embed_key) && source_serializer.object.respond_to?(ids_key)
             source_serializer.object.send(ids_key)
           else
             associated_object.map do |item|
-              item.read_attribute_for_serialization(:id)
+              item.read_attribute_for_serialization(embed_key)
             end
           end
         end
@@ -163,6 +171,14 @@ module ActiveModel
           end
         end
 
+        def embed_key
+          if key = option(:embed_key)
+            key
+          else
+            :id
+          end
+        end
+
         def polymorphic_key
           associated_object.class.to_s.demodulize.underscore.to_sym
         end
@@ -191,15 +207,15 @@ module ActiveModel
             if associated_object
               {
                 :type => polymorphic_key,
-                :id => associated_object.read_attribute_for_serialization(:id)
+                :id => associated_object.read_attribute_for_serialization(embed_key)
               }
             else
               nil
             end
-          elsif source_serializer.object.respond_to?("#{name}_id")
+          elsif !option(:embed_key) && source_serializer.object.respond_to?("#{name}_id")
             source_serializer.object.send("#{name}_id")
           elsif associated_object
-            associated_object.read_attribute_for_serialization(:id)
+            associated_object.read_attribute_for_serialization(embed_key)
           else
             nil
           end
