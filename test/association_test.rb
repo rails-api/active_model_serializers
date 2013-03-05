@@ -34,12 +34,12 @@ class AssociationTest < ActiveModel::TestCase
     @root_hash = {}
 
     @post = Model.new(:title => "New Post", :body => "Body")
-    @comment = Model.new(:id => 1, :body => "ZOMG A COMMENT")
+    @comment = Model.new(:id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT")
     @post.comments = [ @comment ]
     @post.comment = @comment
 
     @comment_serializer_class = def_serializer do
-      attributes :id, :body
+      attributes :id, :external_id, :body
     end
 
     @post_serializer_class = def_serializer do
@@ -75,7 +75,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -105,7 +105,7 @@ class AssociationTest < ActiveModel::TestCase
       }, @hash)
 
       assert_equal({
-        :comments => [{ :id => 1, :body => "ZOMG A COMMENT" }]
+        :comments => [{ :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }]
       }, @root_hash)
     end
   end
@@ -124,7 +124,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -142,7 +142,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -160,7 +160,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -178,7 +178,79 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_many_with_custom_embed_key
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed_key => :external_id
+      end
+
+      include! :comments
+
+      assert_equal({
+        :comment_ids => [ "COMM001" ]
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_one_with_custom_embed_key
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed_key => :external_id
+      end
+
+      include! :comment
+
+      assert_equal({
+        :comment_id => "COMM001"
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_many_with_custom_key_and_custom_embed_key
+      @post_serializer_class.class_eval do
+        has_many :comments, :key => :custom_comments, :embed_key => :external_id
+      end
+
+      include! :comments
+
+      assert_equal({
+        :custom_comments => [ "COMM001" ]
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
+        ]
+      }, @root_hash)
+    end
+
+    def test_with_default_has_one_with_custom_key_and_custom_embed_key
+      @post_serializer_class.class_eval do
+        has_one :comment, :key => :custom_comment, :embed_key => :external_id
+      end
+
+      include! :comment
+
+      assert_equal({
+        :custom_comment => "COMM001"
+      }, @hash)
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -192,7 +264,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @hash)
 
@@ -237,7 +309,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -280,7 +352,7 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal({
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, @root_hash)
     end
@@ -336,7 +408,7 @@ class AssociationTest < ActiveModel::TestCase
           :comment_ids => [ 1 ]
         },
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, json)
     end
@@ -387,7 +459,7 @@ class AssociationTest < ActiveModel::TestCase
           :comment_ids => [ 1 ]
         },
         :comments => [
-          { :id => 1, :body => "ZOMG A COMMENT" }
+          { :id => 1, :external_id => "COMM001", :body => "ZOMG A COMMENT" }
         ]
       }, json)
     end
