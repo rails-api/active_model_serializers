@@ -274,6 +274,7 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
+      return nil if @object.nil?
       instrument(:serialize, :serializer => self.class.name) do
         @node = attributes
         instrument :associations do

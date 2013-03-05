@@ -276,6 +276,28 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :my_blog => { :author => nil } }, serializer.new(blog, :scope => user).as_json)
   end
 
+  def test_nil_root_object
+    user = User.new
+    blog = nil
+
+    serializer = Class.new(BlogSerializer) do
+      root false
+    end
+
+    assert_equal(nil, serializer.new(blog, :scope => user).as_json)
+  end
+
+  def test_custom_root_with_nil_root_object
+    user = User.new
+    blog = nil
+
+    serializer = Class.new(BlogSerializer) do
+      root :my_blog
+    end
+
+    assert_equal({ :my_blog => nil }, serializer.new(blog, :scope => user).as_json)
+  end
+
   def test_false_root
     user = User.new
     blog = Blog.new
