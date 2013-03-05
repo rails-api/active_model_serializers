@@ -141,7 +141,7 @@ more concise json. To disable the root element for arrays, you have 3 options:
 
 ```ruby
 ActiveSupport.on_load(:active_model_serializers) do
-  self.root = false
+  ActiveModel::ArraySerializer.root = false
 end
 ```
 
@@ -542,3 +542,41 @@ class ApplicationController < ActionController::Base
   serialization_scope :current_admin
 end
 ```
+
+Please note that, until now, `serialization_scope` doesn't accept a second
+object with options for specifying which actions should or should not take a
+given scope in consideration.
+
+To be clear, it's not possible, yet, to do something like this:
+
+```ruby
+class SomeController < ApplicationController
+  serialization_scope :current_admin, :except => [:index, :show]
+end
+```
+
+So, in order to have a fine grained control of what each action should take in
+consideration for its scope, you may use something like this:
+
+```ruby
+class CitiesController < ApplicationController
+  serialization_scope nil
+
+  def index
+    @cities = City.all
+
+    render :json => @cities, :each_serializer => CitySerializer
+  end
+
+  def show
+    @city = City.find(params[:id])
+
+    render :json => @city, :scope => current_admin?
+  end
+end
+```
+
+Assuming that the `current_admin?` method needs to make a query in the database
+for the current user, the advantage of this approach is that, by setting
+`serialization_scope` to `nil`, the `index` action no longer will need to make
+that query, only the `show` action will.
