@@ -392,4 +392,26 @@ class AssociationTest < ActiveModel::TestCase
       }, json)
     end
   end
+
+  class StringSerializerOption < AssociationTest
+    class StringSerializer < ActiveModel::Serializer
+      attributes :id, :body
+    end
+
+    def test_specifying_serializer_class_as_string
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :objects
+      end
+
+      include_bare! :comments, :serializer => "AssociationTest::StringSerializerOption::StringSerializer"
+
+      assert_equal({
+        :comments => [
+          { :id => 1, :body => "ZOMG A COMMENT" }
+        ]
+      }, @hash)
+
+      assert_equal({}, @root_hash)
+    end
+  end
 end
