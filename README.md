@@ -15,11 +15,11 @@ development.**
 
 # Installing Serializers
 
-For now, the easiest way to install `ActiveModel::Serializers` is to add this
+For now, the easiest way to install `ActiveModel::Serializers` is to add it
 to your `Gemfile`:
 
 ```ruby
-gem "active_model_serializers", :github => "rails-api/active_model_serializers"
+gem "active_model_serializers", "~> 0.6.0"
 ```
 
 Then, install it on the command line:
