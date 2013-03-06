@@ -51,5 +51,4 @@ class ArraySerializerTest < ActiveModel::TestCase
       { :title => "Post2" }
     ], serializer.as_json)
   end
-
 end
