@@ -31,8 +31,7 @@ module ActiveModel
           serializer = item.active_model_serializer
         end
 
-        serializable = serializer ? serializer.new(item, @options)
-          : DefaultSerializer.new(item)
+        serializable = serializer ? serializer.new(item, @options) : DefaultSerializer.new(item)
 
         if serializable.respond_to?(:serializable_hash)
           serializable.serializable_hash
