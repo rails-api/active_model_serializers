@@ -379,6 +379,56 @@ class AssociationTest < ActiveModel::TestCase
 
       assert_equal 1, serialized_times
     end
+
+    def test_include_with_read_association_id_for_serialization_hook
+      @post_serializer_class.class_eval do
+        has_one :comment, :embed => :ids, :include => true
+      end
+
+      association_name = nil
+      @post.class_eval do
+        define_method :read_attribute_for_serialization, lambda { |name|
+          association_name = name
+          send(name)
+        }
+        define_method :comment_id, lambda {
+          @attributes[:comment].id
+        }
+      end
+
+      include_bare! :comment
+
+      assert_equal :comment_id, association_name
+
+      assert_equal({
+        :comment_id => 1
+      }, @hash)
+    end
+
+    def test_include_with_read_association_ids_for_serialization_hook
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :ids, :include => false
+      end
+
+      association_name = nil
+      @post.class_eval do
+        define_method :read_attribute_for_serialization, lambda { |name|
+          association_name = name
+          send(name)
+        }
+        define_method :comment_ids, lambda {
+          @attributes[:comments].map(&:id)
+        }
+      end
+
+      include_bare! :comments
+
+      assert_equal :comment_ids, association_name
+
+      assert_equal({
+        :comment_ids => [1]
+      }, @hash)
+    end
   end
 
   class InclusionTest < AssociationTest
