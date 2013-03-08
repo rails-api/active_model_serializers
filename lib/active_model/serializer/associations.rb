@@ -124,16 +124,8 @@ module ActiveModel
         end
 
         def serialize_ids
-          # Use pluck or select_columns if available
-          # return collection.ids if collection.respond_to?(:ids)
-          ids_key = "#{key.to_s.singularize}_ids"
-
-          if !option(:include) && !option(:embed_key) && source_serializer.object.respond_to?(ids_key)
-            source_serializer.object.send(ids_key)
-          else
-            associated_object.map do |item|
-              item.read_attribute_for_serialization(embed_key)
-            end
+          associated_object.map do |item|
+            item.read_attribute_for_serialization(embed_key)
           end
         end
       end
@@ -212,8 +204,6 @@ module ActiveModel
             else
               nil
             end
-          elsif !option(:embed_key) && source_serializer.object.respond_to?("#{name}_id")
-            source_serializer.object.send("#{name}_id")
           elsif associated_object
             associated_object.read_attribute_for_serialization(embed_key)
           else
