@@ -563,16 +563,17 @@ class SerializerTest < ActiveModel::TestCase
 
       # Computed attributes (not real columns or associations).
       def can_edit; end
+      def can_view; end
       def drafts; end
 
-      attributes :name, :age, :can_edit
+      attributes :name, :age, {:can_edit => :boolean}, :can_view
       has_many :posts, :serializer => Class.new
       has_many :drafts, :serializer => Class.new
       has_one :parent, :serializer => Class.new
     end
 
     assert_equal serializer.schema, {
-      :attributes => { :name => :string, :age => :integer, :can_edit => nil },
+      :attributes => { :name => :string, :age => :integer, :can_edit => :boolean, :can_view => nil },
       :associations => {
         :posts => { :has_many => :posts },
         :drafts => nil,
@@ -1076,7 +1077,7 @@ class SerializerTest < ActiveModel::TestCase
         :name => 'logo.png',
         :url => 'http://example.com/logo.png',
         :attachable => {
-          :type => :email, 
+          :type => :email,
           :id => 1
         }},
       :emails => [{
