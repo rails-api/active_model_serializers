@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'pathname'
 
-class RenderJsonTest < ActionController::TestCase
+class ResponderTest < ActionController::TestCase
   class JsonRenderable
     def as_json(options={})
       hash = { :a => :b, :c => :d, :e => :f }
@@ -63,10 +63,6 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
-  class DummyCustomSerializer < ActiveModel::Serializer
-    attributes :id
-  end
-
   class HypermediaSerializable
     def active_model_serializer
       HypermediaSerializer
@@ -84,111 +80,108 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class TestController < ActionController::Base
-    include ::ActionController::Serialization::RenderJsonOverride
     protect_from_forgery
 
     serialization_scope :current_user
     attr_reader :current_user
+    before_filter do
+      request.format = :json
+    end
 
     def self.controller_path
       'test'
     end
 
     def render_json_nil
-      render :json => nil
+      respond_with(nil)
     end
 
     def render_json_render_to_string
-      render :text => render_to_string(:json => '[]')
+      respond_with render_to_string(:json => '[]')
     end
 
     def render_json_hello_world
-      render :json => ActiveSupport::JSON.encode(:hello => 'world')
+      respond_with ActiveSupport::JSON.encode(:hello => 'world')
     end
 
     def render_json_hello_world_with_status
-      render :json => ActiveSupport::JSON.encode(:hello => 'world'), :status => 401
+      respond_with ActiveSupport::JSON.encode(:hello => 'world'), :status => 401
     end
 
     def render_json_hello_world_with_callback
-      render :json => ActiveSupport::JSON.encode(:hello => 'world'), :callback => 'alert'
+      respond_with ActiveSupport::JSON.encode(:hello => 'world'), :callback => 'alert'
     end
 
     def render_json_with_custom_content_type
-      render :json => ActiveSupport::JSON.encode(:hello => 'world'), :content_type => 'text/javascript'
+      respond_with ActiveSupport::JSON.encode(:hello => 'world'), :content_type => 'text/javascript'
     end
 
     def render_symbol_json
-      render :json => ActiveSupport::JSON.encode(:hello => 'world')
+      respond_with ActiveSupport::JSON.encode(:hello => 'world')
     end
-
-    def render_json_nil_with_custom_serializer
-      render :json => nil, :serializer => DummyCustomSerializer
-    end
-
 
     def render_json_with_extra_options
-      render :json => JsonRenderable.new, :except => [:c, :e]
+      respond_with JsonRenderable.new, :except => [:c, :e]
     end
 
     def render_json_without_options
-      render :json => JsonRenderable.new
+      respond_with JsonRenderable.new
     end
 
     def render_json_with_serializer
       @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => JsonSerializable.new
+      respond_with JsonSerializable.new
     end
 
     def render_json_with_serializer_and_implicit_root
       @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => [JsonSerializable.new]
+      respond_with [JsonSerializable.new]
     end
 
     def render_json_with_serializer_and_options
       @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => JsonSerializable.new, :options => true
+      respond_with JsonSerializable.new, :options => true
     end
 
     def render_json_with_serializer_and_scope_option
       @current_user = Struct.new(:as_json).new(:current_user => true)
       scope = Struct.new(:as_json).new(:current_user => false)
-      render :json => JsonSerializable.new, :scope => scope
+      respond_with JsonSerializable.new, :scope => scope
     end
 
     def render_json_with_serializer_api_but_without_serializer
       @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => JsonSerializable.new(true)
+      respond_with JsonSerializable.new(true)
     end
 
     # To specify a custom serializer for an object, use :serializer.
     def render_json_with_custom_serializer
-      render :json => Object.new, :serializer => CustomSerializer
+      respond_with Object.new, :serializer => CustomSerializer
     end
 
     # To specify a custom serializer for each item in the Array, use :each_serializer.
     def render_json_array_with_custom_serializer
-      render :json => [Object.new], :each_serializer => CustomSerializer
+      respond_with [Object.new], :each_serializer => CustomSerializer
     end
 
     def render_json_array_with_wrong_option
-      render :json => [Object.new], :serializer => CustomSerializer
+      respond_with [Object.new], :serializer => CustomSerializer
     end
 
     def render_json_with_links
-      render :json => HypermediaSerializable.new
+      respond_with HypermediaSerializable.new
     end
 
     def render_json_array_with_no_root
-      render :json => [], :root => false
+      respond_with [], :root => false
     end
 
     def render_json_empty_array
-      render :json => []
+      respond_with []
     end
 
     def render_json_array_with_custom_array_serializer
-      render :json => [], :serializer => CustomArraySerializer
+      respond_with [], :serializer => CustomArraySerializer
     end
 
 
@@ -224,11 +217,6 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_render_to_string
     get :render_json_render_to_string
     assert_equal '[]', @response.body
-  end
-
-  def test_render_json_nil_with_custom_serializer
-    get :render_json_nil_with_custom_serializer
-    assert_equal "{\"dummy_custom\":null}", @response.body
   end
 
   def test_render_json

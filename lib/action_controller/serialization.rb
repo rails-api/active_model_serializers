@@ -30,6 +30,12 @@ module ActionController
     included do
       class_attribute :_serialization_scope
       self._serialization_scope = :current_user
+      self.responder = ActiveModel::Serializer::Responder
+      self.respond_to :json
+
+      unless ActiveModel::Serializer.use_default_render_json
+        self.send(:include, RenderJsonOverride)
+      end
     end
 
     def serialization_scope
@@ -39,31 +45,33 @@ module ActionController
     def default_serializer_options
     end
 
-    def _render_option_json(json, options)
-      options = default_serializer_options.merge(options) if default_serializer_options
+    module RenderJsonOverride
+      def _render_option_json(json, options)
+        options = default_serializer_options.merge(options) if default_serializer_options
 
-      serializer = options.delete(:serializer) ||
-        (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
+        serializer = options.delete(:serializer) ||
+          (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
 
-      if json.respond_to?(:to_ary)
-        unless serializer <= ActiveModel::ArraySerializer
-          raise ArgumentError.new("#{serializer.name} is not an ArraySerializer. " +
-             "You may want to use the :each_serializer option instead.")
+        if json.respond_to?(:to_ary)
+          unless serializer <= ActiveModel::ArraySerializer
+            raise ArgumentError.new("#{serializer.name} is not an ArraySerializer. " +
+               "You may want to use the :each_serializer option instead.")
+          end
+
+          if options[:root] != false && serializer.root != false
+            # default root element for arrays is serializer's root or the controller name
+            # the serializer for an Array is ActiveModel::ArraySerializer
+            options[:root] ||= serializer.root || controller_name
+          end
         end
 
-        if options[:root] != false && serializer.root != false
-          # default root element for arrays is serializer's root or the controller name
-          # the serializer for an Array is ActiveModel::ArraySerializer
-          options[:root] ||= serializer.root || controller_name
+        if serializer
+          options[:scope] = serialization_scope unless options.has_key?(:scope)
+          options[:url_options] = url_options
+          json = serializer.new(json, options)
         end
+        super
       end
-
-      if serializer
-        options[:scope] = serialization_scope unless options.has_key?(:scope)
-        options[:url_options] = url_options
-        json = serializer.new(json, options)
-      end
-      super
     end
 
     module ClassMethods
