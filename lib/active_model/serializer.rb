@@ -93,6 +93,11 @@ module ActiveModel
         end
 
         define_include_method attr
+
+        if self.method_defined? :_fast_attributes
+          undef :_fast_attributes
+        end
+
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -279,19 +284,13 @@ module ActiveModel
 
     # Returns a hash representation of the serializable
     # object without the root.
-    def serializable_hash
+    def serializable_hash_without_instrumentation
       return nil if @object.nil?
       @node = attributes
       include_associations! if _embed
       @node
     end
-    
-    def fast_serializable_hash
-      return nil if @object.nil?
-      @node = fast_attributes
-      include_associations! if _embed
-      @node
-    end
+
 
     def serializable_hash_with_instrumentation
       return nil if @object.nil?
@@ -303,6 +302,18 @@ module ActiveModel
         @node
       end
     end
+
+    # disable all instrumentation on serializable_hash (performance will be better)
+    def self.disable_instrumentation!
+      alias_method :serializable_hash, :serializable_hash_without_instrumentation
+    end
+
+    # enable instrumentation for serializable_hash (performance may be impacted)
+    def self.enable_instrumentation!
+      alias_method :serializable_hash, :serializable_hash_with_instrumentation
+    end
+
+    disable_instrumentation!
 
     def include_associations!
       _associations.each_key do |name|
@@ -392,30 +403,19 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object attributes.
     def attributes
-      hash = {}
-
-      _attributes.each do |name,key|
-        hash[key] = read_attribute_for_serialization(name) if include?(name)
-      end
-
-      hash
-    end
-
-
-    def fast_attributes
       _fast_attributes
       rescue NameError
         method = "def _fast_attributes\n"
 
-        method << "h = {}\n"
+        method << "  h = {}\n"
 
-        INCLUDE_METHODS.each do |k,v|
-          method << "h[:#{k}] = read_attribute_for_serialization(:#{k}) if #{v}\n"
+        _attributes.each do |name,key|
+          method << "  h[:#{key}] = read_attribute_for_serialization(:#{name}) if send #{INCLUDE_METHODS[name].inspect}\n"
         end
-        method << "h\nend"
+        method << "  h\nend"
 
         self.class.class_eval method
-        fast_attributes
+        _fast_attributes
     end
 
     # Returns options[:scope]

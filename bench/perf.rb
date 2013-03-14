@@ -34,10 +34,8 @@ s = UserSerializer.new(u)
 u2 = User.new(2, "sam", 20, "about")
 s2 = UserSerializer.new(u2)
 
-p s2.fast_attributes
 p s2.attributes
 
-p s.fast_attributes
 p s.attributes
 
 
@@ -46,8 +44,6 @@ n = 100000
 Benchmark.bmbm {|x| 
   x.report("init") { n.times { UserSerializer.new(u) } }
   x.report("fast_hash") { n.times { u.fast_hash } }
-  x.report("fast_attributes") { n.times { UserSerializer.new(u).fast_attributes } } 
-  x.report("fast_serializable_hash") { n.times { UserSerializer.new(u).fast_serializable_hash } }
   x.report("attributes") { n.times { UserSerializer.new(u).attributes } } 
   x.report("serializable_hash") { n.times { UserSerializer.new(u).serializable_hash } }
   x.report("serializable_hash_with_instrumentation") { n.times { UserSerializer.new(u).serializable_hash_with_instrumentation } }
