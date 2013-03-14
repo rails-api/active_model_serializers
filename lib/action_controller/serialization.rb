@@ -30,6 +30,11 @@ module ActionController
     included do
       class_attribute :_serialization_scope
       self._serialization_scope = :current_user
+
+      unless self.respond_to?(:responder=)
+        include ActionController::MimeResponds
+      end
+
       self.responder = ActiveModel::Serializer::Responder
       self.respond_to :json
 
