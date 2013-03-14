@@ -90,6 +90,8 @@ class RenderJsonTest < ActionController::TestCase
     serialization_scope :current_user
     attr_reader :current_user
 
+    respond_to :json
+
     def self.controller_path
       'test'
     end
@@ -189,6 +191,18 @@ class RenderJsonTest < ActionController::TestCase
 
     def render_json_array_with_custom_array_serializer
       render :json => [], :serializer => CustomArraySerializer
+    end
+
+    def respond_with_json_empty_array
+      render :json => []
+    end
+
+    def respond_with_json_array_with_custom_serializer
+      respond_with [Object.new], :each_serializer => CustomSerializer
+    end
+
+    def respond_with_json_array_with_custom_array_serializer
+      respond_with [], :serializer => CustomArraySerializer
     end
 
 
@@ -389,6 +403,21 @@ class RenderJsonTest < ActionController::TestCase
 
   def test_render_json_array_with_custom_array_serializer
     get :render_json_array_with_custom_array_serializer
+    assert_equal '{"items":[]}', @response.body
+  end
+
+  def test_respond_with_json_empty_array
+    get :respond_with_json_empty_array
+    assert_equal '{"test":[]}', @response.body
+  end
+
+  def test_respond_with_json_array_with_custom_serializer
+    get :respond_with_json_array_with_custom_serializer
+    assert_match '{"test":[{"hello":true}]}', @response.body
+  end
+
+  def test_respond_with_json_array_with_custom_array_serializer
+    get :respond_with_json_array_with_custom_array_serializer
     assert_equal '{"items":[]}', @response.body
   end
 
