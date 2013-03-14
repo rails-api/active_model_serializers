@@ -121,4 +121,26 @@ class CachingTest < ActiveModel::TestCase
     assert serializer.cache.read('serializer/custom-key/to-json')
     assert serializer.cache.read('serializer/custom-key/serializable-hash')
   end
+
+  def test_array_serializer_uses_cache
+    serializer = Class.new(ActiveModel::ArraySerializer) do
+      cached true
+
+      def self.to_s
+        'array_serializer'
+      end
+
+      def cache_key
+        'cache-key'
+      end
+    end
+
+    serializer.cache = NullStore.new
+    instance = serializer.new [Programmer.new]
+
+    instance.to_json
+
+    assert serializer.cache.read('array_serializer/cache-key/serializable-array')
+    assert serializer.cache.read('array_serializer/cache-key/to-json')
+  end
 end
