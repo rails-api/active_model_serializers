@@ -281,6 +281,20 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       return nil if @object.nil?
+      @node = attributes
+      include_associations! if _embed
+      @node
+    end
+    
+    def fast_serializable_hash
+      return nil if @object.nil?
+      @node = fast_attributes
+      include_associations! if _embed
+      @node
+    end
+
+    def serializable_hash_with_instrumentation
+      return nil if @object.nil?
       instrument(:serialize, :serializer => self.class.name) do
         @node = attributes
         instrument :associations do
@@ -385,6 +399,23 @@ module ActiveModel
       end
 
       hash
+    end
+
+
+    def fast_attributes
+      _fast_attributes
+      rescue NameError
+        method = "def _fast_attributes\n"
+
+        method << "h = {}\n"
+
+        INCLUDE_METHODS.each do |k,v|
+          method << "h[:#{k}] = read_attribute_for_serialization(:#{k}) if #{v}\n"
+        end
+        method << "h\nend"
+
+        self.class.class_eval method
+        fast_attributes
     end
 
     # Returns options[:scope]
