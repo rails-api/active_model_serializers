@@ -66,6 +66,9 @@ module ActiveModel
     self._embed = :objects
     class_attribute :_root_embed
 
+    class_attribute :use_default_render_json
+    self.use_default_render_json = false
+
     class << self
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
