@@ -10,4 +10,9 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
+desc 'Benchmark'
+task :bench do
+  load 'bench/perf.rb' 
+end
+
 task :default => :test
