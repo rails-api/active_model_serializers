@@ -41,7 +41,7 @@ p s.fast_attributes
 p s.attributes
 
 
-n = 10000
+n = 100000
 
 Benchmark.bmbm {|x| 
   x.report("init") { n.times { UserSerializer.new(u) } }
