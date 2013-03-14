@@ -181,7 +181,7 @@ render :json => @posts, :each_serializer => FancyPostSerializer
 
 If you define `default_serializer_options` method in your controller,
 all serializers in actions of this controller and it's children will use them.
-One of options may be `root: false`
+One of the options may be `root: false`
 
 ```ruby
 def default_serializer_options
