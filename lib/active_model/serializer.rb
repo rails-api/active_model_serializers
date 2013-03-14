@@ -96,6 +96,7 @@ module ActiveModel
         end
 
         define_include_method attr
+
       end
 
       def associate(klass, attrs) #:nodoc:
@@ -284,13 +285,9 @@ module ActiveModel
     # object without the root.
     def serializable_hash
       return nil if @object.nil?
-      instrument(:serialize, :serializer => self.class.name) do
-        @node = attributes
-        instrument :associations do
-          include_associations! if _embed
-        end
-        @node
-      end
+      @node = attributes
+      include_associations! if _embed
+      @node
     end
 
     def include_associations!
@@ -381,13 +378,19 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object attributes.
     def attributes
-      hash = {}
+      _fast_attributes
+      rescue NameError
+        method = "def _fast_attributes\n"
 
-      _attributes.each do |name,key|
-        hash[key] = read_attribute_for_serialization(name) if include?(name)
-      end
+        method << "  h = {}\n"
 
-      hash
+        _attributes.each do |name,key|
+          method << "  h[:#{key}] = read_attribute_for_serialization(:#{name}) if send #{INCLUDE_METHODS[name].inspect}\n"
+        end
+        method << "  h\nend"
+
+        self.class.class_eval method
+        _fast_attributes
     end
 
     # Returns options[:scope]
