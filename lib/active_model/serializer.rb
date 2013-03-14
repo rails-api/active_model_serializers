@@ -94,10 +94,6 @@ module ActiveModel
 
         define_include_method attr
 
-        if self.method_defined? :_fast_attributes
-          undef :_fast_attributes
-        end
-
       end
 
       def associate(klass, attrs) #:nodoc:
