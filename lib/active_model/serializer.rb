@@ -421,16 +421,6 @@ module ActiveModel
 
     alias :read_attribute_for_serialization :send
 
-    # def _serializable_hash
-    #   instrument(:serialize, :serializer => self.class.name) do
-    #     node = attributes
-    #     instrument :associations do
-    #       include_associations!(node) if _embed
-    #     end
-    #     node
-    #   end
-    # end
-
     def _serializable_hash
       return nil if @object.nil?
       @node = attributes
