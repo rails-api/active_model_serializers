@@ -284,36 +284,12 @@ module ActiveModel
 
     # Returns a hash representation of the serializable
     # object without the root.
-    def serializable_hash_without_instrumentation
+    def serializable_hash
       return nil if @object.nil?
       @node = attributes
       include_associations! if _embed
       @node
     end
-
-
-    def serializable_hash_with_instrumentation
-      return nil if @object.nil?
-      instrument(:serialize, :serializer => self.class.name) do
-        @node = attributes
-        instrument :associations do
-          include_associations! if _embed
-        end
-        @node
-      end
-    end
-
-    # disable all instrumentation on serializable_hash (performance will be better)
-    def self.disable_instrumentation!
-      alias_method :serializable_hash, :serializable_hash_without_instrumentation
-    end
-
-    # enable instrumentation for serializable_hash (performance may be impacted)
-    def self.enable_instrumentation!
-      alias_method :serializable_hash, :serializable_hash_with_instrumentation
-    end
-
-    disable_instrumentation!
 
     def include_associations!
       _associations.each_key do |name|
