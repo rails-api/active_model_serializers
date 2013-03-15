@@ -49,7 +49,7 @@ class CachingTest < ActiveModel::TestCase
     assert serializer.perform_caching
   end
 
-  def test_serializers_cache_serializable_hash
+  def test_serializers_use_cache
     serializer = Class.new(ActiveModel::Serializer) do
       cached true
       attributes :name, :skills
@@ -68,58 +68,8 @@ class CachingTest < ActiveModel::TestCase
 
     instance.to_json
 
-    assert_equal({
-      :name => 'Adam',
-      :skills => ['ruby'],
-    }, serializer.cache.read('serializer/Adam/serializable-hash'))
-  end
-
-  def test_serializers_cache_to_json
-    serializer = Class.new(ActiveModel::Serializer) do
-      cached true
-      attributes :name, :skills
-
-      def self.to_s
-        'serializer'
-      end
-
-      def cache_key
-        object.name
-      end
-    end
-
-    serializer.cache = NullStore.new
-    instance = serializer.new Programmer.new
-
-    instance.to_json
-
-    assert_equal({
-      :name => 'Adam',
-      :skills => ['ruby'],
-    }.to_json, serializer.cache.read('serializer/Adam/to-json'))
-  end
-
-  def test_can_use_defined_cache_key
-    serializer = Class.new(ActiveModel::Serializer) do
-      cached true
-      attributes :name, :skills
-
-      def self.to_s
-        'serializer'
-      end
-
-      def cache_key
-        'custom-key'
-      end
-    end
-
-    serializer.cache = NullStore.new
-    instance = serializer.new Programmer.new
-
-    instance.to_json
-
-    assert serializer.cache.read('serializer/custom-key/to-json')
-    assert serializer.cache.read('serializer/custom-key/serializable-hash')
+    assert_equal(instance.serializable_hash, serializer.cache.read('serializer/Adam/serializable-hash'))
+    assert_equal(instance.to_json, serializer.cache.read('serializer/Adam/to-json'))
   end
 
   def test_array_serializer_uses_cache
@@ -140,7 +90,7 @@ class CachingTest < ActiveModel::TestCase
 
     instance.to_json
 
-    assert serializer.cache.read('array_serializer/cache-key/serializable-array')
-    assert serializer.cache.read('array_serializer/cache-key/to-json')
+    assert_equal instance.serializable_array, serializer.cache.read('array_serializer/cache-key/serializable-array')
+    assert_equal instance.to_json, serializer.cache.read('array_serializer/cache-key/to-json')
   end
 end
