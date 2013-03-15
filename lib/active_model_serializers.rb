@@ -23,6 +23,14 @@ if defined?(Rails)
           include app.routes.url_helpers
         end
       end
+
+      initializer "caching.active_model_serializer" do |app|
+        ActiveModel::Serializer.perform_caching = app.config.action_controller.perform_caching
+        ActiveModel::ArraySerializer.perform_caching = app.config.action_controller.perform_caching
+
+        ActiveModel::Serializer.cache = Rails.cache
+        ActiveModel::ArraySerializer.cache = Rails.cache
+      end
     end
   end
 end
