@@ -431,6 +431,63 @@ class AssociationTest < ActiveModel::TestCase
     end
   end
 
+  class RecursiveTest < AssociationTest
+    class BarSerializer < ActiveModel::Serializer; end
+
+    class FooSerializer < ActiveModel::Serializer
+      root :foos
+      attributes :id
+      has_many :bars, :serializer => BarSerializer, :root => :bars, :embed => :ids, :include => true
+    end
+
+    class BarSerializer < ActiveModel::Serializer
+      root :bars
+      attributes :id
+      has_many :foos, :serializer => FooSerializer, :root => :foos, :embed => :ids, :include => true
+    end
+
+    class Foo < Model
+      def active_model_serializer; FooSerializer; end
+    end
+
+    class Bar < Model
+      def active_model_serializer; BarSerializer; end
+    end
+
+    def setup
+      super
+
+      foo = Foo.new(:id => 1)
+      bar = Bar.new(:id => 2)
+
+      foo.bars = [ bar ]
+      bar.foos = [ foo ]
+
+      collection = [ foo ]
+
+      @serializer = collection.active_model_serializer.new(collection, :root => :foos)
+    end
+
+    def test_mutual_relation_result
+      assert_equal({
+        :foos => [{
+          :bar_ids => [ 2 ],
+          :id => 1
+        }],
+        :bars => [{
+          :foo_ids => [ 1 ],
+          :id => 2
+        }]
+      }, @serializer.as_json)
+    end
+
+    def test_mutual_relation_does_not_raise_error
+      assert_nothing_raised SystemStackError, 'stack level too deep' do
+        @serializer.as_json
+      end
+    end
+  end
+
   class InclusionTest < AssociationTest
     def setup
       super
