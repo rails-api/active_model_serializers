@@ -1311,4 +1311,32 @@ class SerializerTest < ActiveModel::TestCase
       ]
     }, actual)
   end
+  
+  def test_inheritance_does_not_used_cached_attributes
+    parent = Class.new(ActiveModel::Serializer) do
+      attributes :title
+    end
+
+    child = Class.new(parent) do
+      attributes :body
+    end
+
+    data_class = Class.new do 
+      attr_accessor :title, :body
+    end
+
+    item = data_class.new 
+    item.title = "title"
+    item.body = "body"
+
+    2.times do
+      assert_equal({:title => "title"}, 
+                   parent.new(item).attributes)
+      assert_equal({:body => "body", :title => "title"}, 
+                   child.new(item).attributes)
+    end
+
+  end
+
+
 end
