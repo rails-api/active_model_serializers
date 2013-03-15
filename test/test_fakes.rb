@@ -180,3 +180,41 @@ class Attachment < Model
     @attributes[:edible]
   end
 end
+
+class UserCamelcaseSerializer < ActiveModel::Serializer
+  include ActiveModel::Serializer::CamelizeKeys
+
+  attributes :first_name, :last_name
+
+  def serializable_hash
+    attributes.merge(:ok => true).merge(options[:scope])
+  end
+end
+
+class DefaultUserCamelcaseSerializer < ActiveModel::Serializer
+  include ActiveModel::Serializer::CamelizeKeys
+
+  attributes :first_name, :last_name
+end
+
+class UserAttributesWithSomeKeyCamelizeSerializer < ActiveModel::Serializer
+  include ActiveModel::Serializer::CamelizeKeys
+
+  attributes :first_name, :last_name => :l_name
+
+  def serializable_hash
+    attributes.merge(:ok => true).merge(options[:scope])
+  end
+end
+
+class MyUserCamelizeSerializer < ActiveModel::Serializer
+  include ActiveModel::Serializer::CamelizeKeys
+
+  attributes :first_name, :last_name
+
+  def serializable_hash
+    hash = attributes
+    hash = hash.merge(:superUser => true) if object.super_user?
+    hash
+  end
+end

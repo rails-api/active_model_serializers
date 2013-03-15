@@ -1311,4 +1311,52 @@ class SerializerTest < ActiveModel::TestCase
       ]
     }, actual)
   end
+
+  def test_camelcase_attributes
+    user = User.new
+    user_serializer = DefaultUserCamelcaseSerializer.new(user)
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      :defaultUserCamelcase => { :firstName => "Jose", :lastName => "Valim" }
+    }, hash)
+  end
+
+  def test_camelcase_attributes_method
+    user = User.new
+    user_serializer = UserCamelcaseSerializer.new(user, :scope => {})
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      :userCamelcase => { :firstName => "Jose", :lastName => "Valim", :ok => true}
+    }, hash)
+  end
+
+  def test_camelcase_attributes_method_specifying_some_keys
+    user = User.new
+    user_serializer = UserAttributesWithSomeKeyCamelizeSerializer.new(user, :scope => {})
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      :userAttributesWithSomeKeyCamelize => { :firstName => "Jose", :l_name => "Valim", :ok => true }
+    }, hash)
+  end
+
+  def test_camelcase_pretty_accessors
+    user = User.new
+    user.superuser = true
+    user_serializer = MyUserCamelizeSerializer.new(user)
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      :myUserCamelize => {
+        :firstName => "Jose", :lastName => "Valim", :superUser => true
+      }
+    }, hash)
+  end
+
 end
