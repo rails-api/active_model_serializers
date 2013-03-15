@@ -143,6 +143,10 @@ class ResponderTest < ActionController::TestCase
       respond_with JsonSerializable.new, :options => true
     end
 
+    def render_json_with_serializer_but_without_location
+      respond_with JsonSerializable.new, :location => nil
+    end
+
     def render_json_with_serializer_and_scope_option
       @current_user = Struct.new(:as_json).new(:current_user => true)
       scope = Struct.new(:as_json).new(:current_user => false)
@@ -299,6 +303,11 @@ class ResponderTest < ActionController::TestCase
     assert_match '"scope":{"current_user":true}', @response.body
     assert_match '"object":{"serializable_object":true}', @response.body
     assert_match '"options":true', @response.body
+  end
+
+  def test_render_json_with_serializer_but_without_location
+    post :render_json_with_serializer_but_without_location
+    assert_equal nil, @response.location
   end
 
   def test_render_json_with_serializer_and_scope_option
