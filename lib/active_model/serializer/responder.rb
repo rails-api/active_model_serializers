@@ -32,7 +32,7 @@ module ActiveModel
             serialization_scope = controller.send(:serialization_scope)
             options[:scope] = serialization_scope unless options.has_key?(:scope)
             options[:url_options] = controller.send(:url_options)
-            render(given_options.merge(:json => serializer.new(resource, options)))
+            render(given_options.merge(self.options).merge(:json => serializer.new(resource, options)))
           else
             super
           end
