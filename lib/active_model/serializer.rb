@@ -105,6 +105,14 @@ module ActiveModel
 
         define_include_method attr
 
+        # protect inheritance chains and open classes
+        # if a serializer inherits from another OR 
+        #  attributes are added later in a classes lifecycle
+        # poison the cache
+        define_method :_fast_attributes do 
+          raise NameError
+        end
+
       end
 
       def associate(klass, attrs) #:nodoc:
