@@ -51,31 +51,14 @@ module ActionController
     end
 
     module RenderJsonOverride
-      def _render_option_json(json, options)
-        options = default_serializer_options.merge(options) if default_serializer_options
+      def _render_option_json(resource, options)
+        json = ActiveModel::Serializer.build_json(self, resource, options)
 
-        serializer = options.delete(:serializer) ||
-          (json.respond_to?(:active_model_serializer) && json.active_model_serializer)
-
-        if json.respond_to?(:to_ary)
-          unless serializer <= ActiveModel::ArraySerializer
-            raise ArgumentError.new("#{serializer.name} is not an ArraySerializer. " +
-               "You may want to use the :each_serializer option instead.")
-          end
-
-          if options[:root] != false && serializer.root != false
-            # default root element for arrays is serializer's root or the controller name
-            # the serializer for an Array is ActiveModel::ArraySerializer
-            options[:root] ||= serializer.root || controller_name
-          end
+        if json
+          super(json, options)
+        else
+          super
         end
-
-        if serializer
-          options[:scope] = serialization_scope unless options.has_key?(:scope)
-          options[:url_options] = url_options
-          json = serializer.new(json, options)
-        end
-        super
       end
     end
 
