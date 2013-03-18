@@ -17,6 +17,14 @@ module ActiveModel
             end
 
             self.options = class_options
+
+            # cache the root so we can reuse it without falling back on a per-instance basis
+            begin
+              self.options[:root] ||= self.new(name, nil).root
+            rescue
+              # this could fail if it needs a valid source, for example a polymorphic association
+            end
+
           end
         end
 
