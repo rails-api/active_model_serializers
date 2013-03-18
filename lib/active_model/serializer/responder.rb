@@ -11,7 +11,10 @@ module ActiveModel
           default_options = controller.send(:default_serializer_options)
           options = self.options.reverse_merge(default_options || {})
 
-          serializer = options[:serializer] ||
+          # ensure downstream hooks don't try and serialize
+          self.options.delete(:serializer)
+
+          serializer = options.delete(:serializer) ||
             (resource.respond_to?(:active_model_serializer) &&
              resource.active_model_serializer)
 
