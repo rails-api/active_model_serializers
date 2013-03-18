@@ -232,22 +232,22 @@ end
 Within a serializer's methods, you can access the object being
 serialized as `object`.
 
-You can also access the `scope` method, which provides an
-authorization context to your serializer. By default, scope
+You can also access the `current_user` method, which provides an
+authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
 
 Serializers will check for the presence of a method named
 `include_[ATTRIBUTE]?` to determine whether a particular attribute should be
 included in the output. This is typically used to customize output
-based on `scope`. For example:
+based on `current_user`. For example:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body, :author
 
   def include_author?
-    scope.admin?
+    current_user.admin?
   end
 end
 ```
@@ -325,7 +325,7 @@ class PersonSerializer < ActiveModel::Serializer
 
   def attributes
     hash = super
-    if scope.admin?
+    if current_user.admin?
       hash["ssn"] = object.ssn
       hash["secret"] = object.mothers_maiden_name
     end
@@ -353,7 +353,7 @@ class PostSerializer < ActiveModel::Serializer
 
   # only let the user see comments he created.
   def comments
-    object.comments.where(:created_by => scope)
+    object.comments.where(:created_by => current_user)
   end
 end
 ```
@@ -395,7 +395,7 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 
   def include_associations!
-    include! :author if scope.admin?
+    include! :author if current_user.admin?
     include! :comments unless object.comments_disabled?
   end
 end
@@ -587,7 +587,7 @@ Ajax requests, you probably just want to use the default embedded behavior.
 
 ## Customizing Scope
 
-In a serializer, `scope` is the current authorization scope which the controller
+In a serializer, `current_user` is the current authorization scope which the controller
 provides to the serializer when you call `render :json`. By default, this is
 `current_user`, but can be customized in your controller by calling
 `serialization_scope`:
@@ -597,6 +597,9 @@ class ApplicationController < ActionController::Base
   serialization_scope :current_admin
 end
 ```
+
+The above example will also change the scope name from `current_user` to
+`current_admin`.
 
 Please note that, until now, `serialization_scope` doesn't accept a second
 object with options for specifying which actions should or should not take a
@@ -626,12 +629,12 @@ class CitiesController < ApplicationController
   def show
     @city = City.find(params[:id])
 
-    render :json => @city, :scope => current_admin?
+    render :json => @city, :scope => current_admin, :scope_name => :current_admin
   end
 end
 ```
 
-Assuming that the `current_admin?` method needs to make a query in the database
+Assuming that the `current_admin` method needs to make a query in the database
 for the current user, the advantage of this approach is that, by setting
 `serialization_scope` to `nil`, the `index` action no longer will need to make
 that query, only the `show` action will.

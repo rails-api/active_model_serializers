@@ -1,5 +1,9 @@
 # unreleased
 
+* Add an alias for `scope` method to be the name of the context. By default
+  this is `current_user`. The name is automatically set when using
+  `serialization_scope` in the controller.
+
 # VERSION 0.7
 
 
