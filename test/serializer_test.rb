@@ -1338,5 +1338,18 @@ class SerializerTest < ActiveModel::TestCase
 
   end
 
+  def test_scope_name_method
+    serializer = Class.new(ActiveModel::Serializer) do
+      def has_permission?
+        current_user.super_user?
+      end
+    end
 
+    user = User.new
+    user.superuser = true
+    post = Post.new(:title => 'Foo')
+
+    a_serializer = serializer.new(post, :scope => user, :scope_name => :current_user)
+    assert a_serializer.has_permission?
+  end
 end

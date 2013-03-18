@@ -261,6 +261,13 @@ module ActiveModel
 
     def initialize(object, options={})
       @object, @options = object, options
+
+      scope_name = @options[:scope_name]
+      if scope_name && !respond_to?(scope_name)
+        self.class.class_eval do
+          define_method scope_name, lambda { scope }
+        end
+      end
     end
 
     def root_name
