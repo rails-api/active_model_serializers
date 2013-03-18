@@ -1,4 +1,10 @@
-# VERSION 0.6 (to be released)
+# unreleased
+
+# VERSION 0.7
+
+
+
+# VERSION 0.6
 
 * Serialize sets properly
 * Add root option to ArraySerializer
