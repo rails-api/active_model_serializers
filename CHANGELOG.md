@@ -1,5 +1,8 @@
 # unreleased
 
+* On Ruby 1.8, we now generate an `id` method that properly serializes `id`
+  columns. See issue #127 for more.
+
 * Add an alias for `scope` method to be the name of the context. By default
   this is `current_user`. The name is automatically set when using
   `serialization_scope` in the controller.

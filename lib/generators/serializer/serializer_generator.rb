@@ -12,9 +12,10 @@ module Rails
         template 'serializer.rb', File.join('app/serializers', class_path, "#{file_name}_serializer.rb")
       end
 
-      # hook_for :test_framework
-
       private
+      def generate_id_method
+        RUBY_VERSION =~ /1\.8/
+      end
 
       def attributes_names
         [:id] + attributes.select { |attr| !attr.reference? }.map { |a| a.name.to_sym }
