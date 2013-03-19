@@ -20,7 +20,9 @@ if defined?(Rails)
 
       initializer "include_routes.active_model_serializer" do |app|
         ActiveSupport.on_load(:active_model_serializers) do
-          include app.routes.url_helpers
+          include AbstractController::UrlFor
+          extend ::AbstractController::Railties::RoutesHelpers.with(app.routes)
+          include app.routes.mounted_helpers
         end
       end
 
