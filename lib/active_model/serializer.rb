@@ -255,6 +255,39 @@ module ActiveModel
         self._root = name
       end
       alias_method :root=, :root
+
+      # Used internally to create a new serializer object based on controller
+      # settings and options for a given resource. These settings are typically
+      # set during the request lifecycle or by the controller class, and should
+      # not be manually defined for this method.
+      def build_json(controller, resource, options)
+        default_options = controller.send(:default_serializer_options) || {}
+        options = default_options.merge(options || {})
+
+        serializer = options.delete(:serializer) ||
+          (resource.respond_to?(:active_model_serializer) &&
+           resource.active_model_serializer)
+
+        return serializer unless serializer
+
+        if resource.respond_to?(:to_ary)
+          unless serializer <= ActiveModel::ArraySerializer
+            raise ArgumentError.new("#{serializer.name} is not an ArraySerializer. " +
+                                    "You may want to use the :each_serializer option instead.")
+          end
+
+          if options[:root] != false && serializer.root != false
+            # the serializer for an Array is ActiveModel::ArraySerializer
+            options[:root] ||= serializer.root || controller.controller_name
+          end
+        end
+
+        options[:scope] = controller.serialization_scope unless options.has_key?(:scope)
+        options[:scope_name] = controller._serialization_scope
+        options[:url_options] = controller.url_options
+
+        serializer.new(resource, options)
+      end
     end
 
     attr_reader :object, :options
