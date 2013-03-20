@@ -256,6 +256,10 @@ module ActiveModel
       end
       alias_method :root=, :root
 
+      # Used internally to create a new serializer object based on controller
+      # settings and options for a given resource. These settings are typically
+      # set during the request lifecycle or by the controller class, and should
+      # not be manually defined for this method.
       def build_json(controller, resource, options)
         default_options = controller.send(:default_serializer_options) || {}
         options = default_options.merge(options || {})
