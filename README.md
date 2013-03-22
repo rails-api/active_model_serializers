@@ -10,7 +10,7 @@ Serializers know about both a model and the `current_user`, so you can
 customize serialization based upon whether a user is authorized to see the
 content.
 
-In short, **serializers replaces hash-driven development with object-oriented
+In short, **serializers replace hash-driven development with object-oriented
 development.**
 
 # Installing Serializers
@@ -48,9 +48,9 @@ $ rails g serializer post
 ### Support for PORO's and other ORM's.
 
 Currently `ActiveModel::Serializers` adds serialization support to all models
-that descend from `ActiveRecord`. If you are using another ORM or if you are
-using objects that are `ActiveModel` compliant, but do not descend from
-`ActiveRecord`. You must add an include statement for
+that descend from `ActiveRecord`. If you are using another ORM, or if you are
+using objects that are `ActiveModel` compliant but do not descend from
+`ActiveRecord`, you must add an include statement for
 `ActiveModel::SerializerSupport`.
 
 # ActiveModel::Serializer
