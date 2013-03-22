@@ -504,7 +504,7 @@ module ActiveModel
     end
 
     def serializable_hash
-      @object.as_json
+      @object.as_json(@options)
     end
   end
 end
