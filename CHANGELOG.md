@@ -7,6 +7,9 @@
   this is `current_user`. The name is automatically set when using
   `serialization_scope` in the controller.
 
+* Pass through serialization options (such as `:include`) when a model
+  has no serializer defined.
+
 # VERSION 0.7
 
 
