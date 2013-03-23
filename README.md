@@ -15,7 +15,7 @@ development.**
 
 # Installing Serializers
 
-The easiest way to install `ActiveModel::Serializers` is to add it to your 
+The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
 
 ```ruby
@@ -407,6 +407,8 @@ You may also use the `:serializer` option to specify a custom serializer class a
   has_many :comments, :serializer => CommentShortSerializer
   has_one :reviewer, :polymorphic => true
 ```
+
+Serializers are only concerned with multiplicity, and not ownership. `belongs_to` ActiveRecord associations can be included using `has_one` in your serializer.
 
 ## Embedding Associations
 
