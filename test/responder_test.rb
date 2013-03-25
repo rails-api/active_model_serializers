@@ -46,11 +46,12 @@ class ResponderTest < ActionController::TestCase
   end
 
   class CustomSerializer
-    def initialize(*)
+    def initialize(object, options={})
+      @object, @options = object, options
     end
 
     def as_json(*)
-      { :hello => true }
+      { :hello => true, :full_name => @object.name }
     end
   end
 
@@ -158,18 +159,22 @@ class ResponderTest < ActionController::TestCase
       respond_with JsonSerializable.new(true)
     end
 
+    def build_object
+      Struct.new(:name).new(:bruce)
+    end
+
     # To specify a custom serializer for an object, use :serializer.
     def render_json_with_custom_serializer
-      respond_with Object.new, :serializer => CustomSerializer
+      respond_with build_object, :serializer => CustomSerializer
     end
 
     # To specify a custom serializer for each item in the Array, use :each_serializer.
     def render_json_array_with_custom_serializer
-      respond_with [Object.new], :each_serializer => CustomSerializer
+      respond_with [build_object], :each_serializer => CustomSerializer
     end
 
     def render_json_array_with_wrong_option
-      respond_with [Object.new], :serializer => CustomSerializer
+      respond_with [build_object], :serializer => CustomSerializer
     end
 
     def render_json_with_links
@@ -278,7 +283,7 @@ class ResponderTest < ActionController::TestCase
     assert_match '"check_defaults":true', @response.body
   end
 
-  def test_render_json_with_serializer_checking_default_serailizer
+  def test_render_json_with_serializer_checking_default_serializer
     get :render_json_with_serializer, :check_default_serializer => true
     assert_match '{"rails":"rocks"}', @response.body
   end
@@ -293,7 +298,7 @@ class ResponderTest < ActionController::TestCase
     assert_match '"test":[{"serializable_object":true}]', @response.body
   end
 
-  def test_render_json_with_serializer_and_implicit_root_checking_default_each_serailizer
+  def test_render_json_with_serializer_and_implicit_root_checking_default_each_serializer
     get :render_json_with_serializer_and_implicit_root, :check_default_each_serializer => true
     assert_match '"test":[{"rails":"rocks"}]', @response.body
   end
@@ -327,17 +332,17 @@ class ResponderTest < ActionController::TestCase
 
   def test_render_json_with_custom_serializer
     get :render_json_with_custom_serializer
-    assert_match '{"hello":true}', @response.body
+    assert_match '{"hello":true,"full_name":"bruce"}', @response.body
   end
 
-  def test_render_json_with_custom_serializer_checking_default_serailizer
+  def test_render_json_with_custom_serializer_checking_default_serializer
     get :render_json_with_custom_serializer, :check_default_serializer => true
-    assert_match '{"hello":true}', @response.body
+    assert_match '{"hello":true,"full_name":"bruce"}', @response.body
   end
 
   def test_render_json_array_with_custom_serializer
     get :render_json_array_with_custom_serializer
-    assert_match '{"test":[{"hello":true}]}', @response.body
+    assert_match '{"test":[{"hello":true,"full_name":"bruce"}]}', @response.body
   end
 
   def test_render_json_array_with_wrong_option
@@ -348,7 +353,7 @@ class ResponderTest < ActionController::TestCase
 
   def test_render_json_array_with_custom_serializer_checking_default_each_serailizer
     get :render_json_array_with_custom_serializer, :check_default_each_serializer => true
-    assert_match '{"test":[{"hello":true}]}', @response.body
+    assert_match '{"test":[{"hello":true,"full_name":"bruce"}]}', @response.body
   end
 
   def test_render_json_with_links
