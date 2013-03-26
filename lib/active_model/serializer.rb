@@ -73,7 +73,7 @@ module ActiveModel
     class_attribute :perform_caching
 
     class << self
-      # set peform caching like root
+      # set perform caching like root
       def cached(value = true)
         self.perform_caching = value
       end

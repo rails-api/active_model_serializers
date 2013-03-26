@@ -379,7 +379,7 @@ class RenderJsonTest < ActionController::TestCase
     assert_equal '{"awesome":[]}', @response.body
   end
 
-  def test_render_json_empty_arry_with_array_serializer_root_false
+  def test_render_json_empty_array_with_array_serializer_root_false
     ActiveModel::ArraySerializer.root = false
     get :render_json_empty_array
     assert_equal '[]', @response.body
