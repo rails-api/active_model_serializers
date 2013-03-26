@@ -217,7 +217,7 @@ First, we specified the list of included attributes at the top of the class. Thi
 
 NOTE: Internally, +ActiveModel::Serializer+ uses +read_attribute_for_serialization+, which defaults to +read_attribute+, which defaults to +send+. So if you're rolling your own models for use with the serializer, you can use simple Ruby accessors for your attributes if you like.
 
-Next, we use the attributes methood in our +serializable_hash+ method, which allowed us to eliminate the +post+ method we hand-rolled
+Next, we use the attributes method in our +serializable_hash+ method, which allowed us to eliminate the +post+ method we hand-rolled
 earlier. We could also eliminate the +as_json+ method, as +ActiveModel::Serializer+ provides a default +as_json+ method for
 us that calls our +serializable_hash+ method and inserts a root. But we can go a step further!
 
@@ -354,7 +354,7 @@ h4. Modifying Associations
 You can also rename associations if required. Say for example you have an association that
 makes sense to be named one thing in your code, but another when data is serialized.
 You can use the <code:key</code> option to specify a different name for an association.
-Here is an exmaple:
+Here is an example:
 
 <pre lang="ruby">
 class UserSerializer < ActiveModel::Serializer
