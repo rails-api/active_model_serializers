@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Foo < Rails::Application
-  if Rails.version.start_with? '4'
+  if Rails.version.to_s.start_with? '4'
     config.eager_load = false
     config.secret_key_base = 'abc123'
   end
