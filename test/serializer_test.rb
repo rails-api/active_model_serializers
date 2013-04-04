@@ -318,6 +318,16 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :author => nil }, serializer.new(blog, :scope => user).as_json)
   end
 
+  def test_true_root
+    blog = Blog.new
+
+    assert_equal({
+      :blog_with_root => {
+        :author => nil,
+      }
+    }, BlogWithRootSerializer.new(blog).as_json)
+  end
+
   def test_root_false_on_load_active_model_serializers
     begin
       ActiveSupport.on_load(:active_model_serializers) do

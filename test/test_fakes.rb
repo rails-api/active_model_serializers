@@ -146,6 +146,10 @@ class BlogSerializer < ActiveModel::Serializer
   has_one :author, :serializer => AuthorSerializer
 end
 
+class BlogWithRootSerializer < BlogSerializer
+  root true
+end
+
 class CustomPostSerializer < ActiveModel::Serializer
   attributes :title
 end
