@@ -15,9 +15,6 @@ require "active_model_serializers"
 require "active_support/json"
 require "test/unit"
 
-# Manually include RenderJsonOverride where needed
-ActiveModel::Serializer.use_default_render_json = true
-
 require 'rails'
 
 module TestHelper

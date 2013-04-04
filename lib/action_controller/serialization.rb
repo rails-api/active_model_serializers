@@ -30,17 +30,6 @@ module ActionController
     included do
       class_attribute :_serialization_scope
       self._serialization_scope = :current_user
-
-      unless self.respond_to?(:responder=)
-        include ActionController::MimeResponds
-      end
-
-      self.responder = ActiveModel::Serializer::Responder
-      self.respond_to :json
-
-      unless ActiveModel::Serializer.use_default_render_json
-        self.send(:include, RenderJsonOverride)
-      end
     end
 
     def serialization_scope
@@ -50,15 +39,13 @@ module ActionController
     def default_serializer_options
     end
 
-    module RenderJsonOverride
-      def _render_option_json(resource, options)
-        json = ActiveModel::Serializer.build_json(self, resource, options)
+    def _render_option_json(resource, options)
+      json = ActiveModel::Serializer.build_json(self, resource, options)
 
-        if json
-          super(json, options)
-        else
-          super
-        end
+      if json
+        super(json, options)
+      else
+        super
       end
     end
 

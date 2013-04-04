@@ -86,7 +86,6 @@ begin
   require 'action_controller/serialization'
 
   ActiveSupport.on_load(:action_controller) do
-    require 'active_model/serializer/responder'
     include ::ActionController::Serialization
   end
 rescue LoadError => ex

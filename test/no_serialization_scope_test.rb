@@ -21,7 +21,7 @@ class NoSerializationScopeTest < ActionController::TestCase
     serialization_scope nil
 
     def index
-      respond_with(ScopeSerializable.new)
+      render :json => ScopeSerializable.new
     end
   end
 
