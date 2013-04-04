@@ -21,7 +21,7 @@ class DefaultScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      respond_with TestUser.new('pete', false), :serializer => UserSerializer
+      render :json => TestUser.new('pete', false), :serializer => UserSerializer
     end
   end
 
@@ -54,7 +54,7 @@ class SerializationScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      respond_with TestUser.new('pete', false), :serializer => AdminUserSerializer
+      render :json => TestUser.new('pete', false), :serializer => AdminUserSerializer
     end
   end
 

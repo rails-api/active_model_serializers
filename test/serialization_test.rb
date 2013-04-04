@@ -84,7 +84,6 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class TestController < ActionController::Base
-    include ::ActionController::Serialization::RenderJsonOverride
     protect_from_forgery
 
     serialization_scope :current_user
