@@ -15,7 +15,7 @@ if defined?(Rails)
 
         Rails::Generators.configure!(app.config.generators)
         Rails::Generators.hidden_namespaces.uniq!
-        require "generators/resource_override"
+        require_relative "generators/resource_override"
       end
 
       initializer "include_routes.active_model_serializer" do |app|
