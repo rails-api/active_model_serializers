@@ -406,6 +406,33 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
+  def test_methods_take_priority_over_associations
+    post_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :title
+      has_many :comments
+      embed :ids
+
+      def comments
+        object.comments[0,1]
+      end
+    end
+
+    post = Post.new(title: "My Post")
+    comments = [Comment.new(:title => "Comment1", :id => 1), Comment.new(:title => "Comment2", :id => 2)]
+    post.comments = comments
+
+    post.class_eval do
+      define_method :comment_ids, lambda {
+        self.comments.map { |c| c.read_attribute_for_serialization(:id) }
+      }
+    end
+    json = post_serializer.new(post).as_json
+    assert_equal({
+      title: "My Post",
+      comment_ids: [1]
+    }, json)
+  end
+
   def test_embed_objects
     serializer = post_serializer
 
