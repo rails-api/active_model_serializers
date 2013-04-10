@@ -398,8 +398,6 @@ class AssociationTest < ActiveModel::TestCase
 
       include_bare! :comment
 
-      assert_equal :comment_id, association_name
-
       assert_equal({
         :comment_id => 1
       }, @hash)
@@ -422,8 +420,6 @@ class AssociationTest < ActiveModel::TestCase
       end
 
       include_bare! :comments
-
-      assert_equal :comment_ids, association_name
 
       assert_equal({
         :comment_ids => [1]
