@@ -1171,6 +1171,50 @@ class SerializerTest < ActiveModel::TestCase
     }, actual)
   end
 
+  def test_polymorphic_associations_are_included_at_root_for_has_many
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body, :id
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      root :attachment
+      embed :ids, :include => true
+      attributes :name, :url
+      has_many :attachables, :polymorphic => true
+    end
+
+    email = email_class.new :id => 1, :subject => "Hello", :body => "World"
+
+    attachment = AttachmentWithMany.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachables => [ email ]
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :attachment => {
+        :name => 'logo.png',
+        :url => 'http://example.com/logo.png',
+        :attachables => [{
+          :type => :email,
+          :id => 1
+        }]},
+      :emails => [{
+        :id => 1,
+        :subject => "Hello",
+        :body => "World"
+      }]
+    }, actual)
+  end
+
   def test_raises_an_error_when_a_child_serializer_includes_associations_when_the_source_doesnt
     attachment_serializer = Class.new(ActiveModel::Serializer) do
       attributes :name
@@ -1311,7 +1355,7 @@ class SerializerTest < ActiveModel::TestCase
       ]
     }, actual)
   end
-  
+
   def test_inheritance_does_not_used_cached_attributes
     parent = Class.new(ActiveModel::Serializer) do
       attributes :title
@@ -1321,18 +1365,18 @@ class SerializerTest < ActiveModel::TestCase
       attributes :body
     end
 
-    data_class = Class.new do 
+    data_class = Class.new do
       attr_accessor :title, :body
     end
 
-    item = data_class.new 
+    item = data_class.new
     item.title = "title"
     item.body = "body"
 
     2.times do
-      assert_equal({:title => "title"}, 
+      assert_equal({:title => "title"},
                    parent.new(item).attributes)
-      assert_equal({:body => "body", :title => "title"}, 
+      assert_equal({:body => "body", :title => "title"},
                    child.new(item).attributes)
     end
 
