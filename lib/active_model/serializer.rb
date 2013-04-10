@@ -103,10 +103,10 @@ module ActiveModel
         define_include_method attr
 
         # protect inheritance chains and open classes
-        # if a serializer inherits from another OR 
+        # if a serializer inherits from another OR
         #  attributes are added later in a classes lifecycle
         # poison the cache
-        define_method :_fast_attributes do 
+        define_method :_fast_attributes do
           raise NameError
         end
 
@@ -302,7 +302,7 @@ module ActiveModel
 
     def root_name
       return false if self._root == false
-      
+
       class_name = self.class.name.demodulize.underscore.sub(/_serializer$/, '').to_sym unless self.class.name.blank?
       self._root || class_name
     end
@@ -413,7 +413,13 @@ module ActiveModel
         if association.embed_in_root? && hash.nil?
           raise IncludeError.new(self.class, association.name)
         elsif association.embed_in_root? && association.embeddable?
-          merge_association hash, association.root, association.serializables, unique_values
+            if association.polymorphic? and association.multiple_roots?
+                association.root.each do |root|
+                  merge_association hash, root, association.serializables_with_root(root), unique_values
+                end
+            else
+              merge_association hash, association.root, association.serializables, unique_values
+            end
         end
       elsif association.embed_objects?
         node[association.key] = association.serialize

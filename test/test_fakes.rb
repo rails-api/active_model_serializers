@@ -180,3 +180,17 @@ class Attachment < Model
     @attributes[:edible]
   end
 end
+
+class AttachmentWithMany < Model
+  def attachables
+    @attributes[:attachables]
+  end
+
+  def readable
+    @attributes[:readable]
+  end
+
+  def edible
+    @attributes[:edible]
+  end
+end

@@ -63,6 +63,10 @@ module ActiveModel
           option(:root) || @name
         end
 
+        def multiple_roots?
+            root.kind_of?(Array)
+        end
+
         def name
           option(:name) || @name
         end
@@ -104,11 +108,15 @@ module ActiveModel
         def key
           if key = option(:key)
             key
-          elsif embed_ids?
+          elsif embed_ids? && !polymorphic?
             "#{@name.to_s.singularize}_ids".to_sym
           else
             @name
           end
+        end
+
+        def polymorphic?
+            option :polymorphic
         end
 
         def embed_key
@@ -120,8 +128,41 @@ module ActiveModel
         end
 
         def serialize
-          associated_object.map do |item|
-            find_serializable(item).serializable_hash
+          if polymorphic?
+              associated_object.map do |item|
+                  polymorphic_key = item.class.to_s.demodulize.underscore.to_sym
+
+                  {
+                    :type => polymorphic_key,
+                    polymorphic_key => find_serializable(item).serializable_hash
+                  }
+              end
+          else
+              associated_object.map do |item|
+                find_serializable(item).serializable_hash
+              end
+          end
+        end
+
+        def root
+            if root = option(:root)
+                root
+            elsif polymorphic?
+                associated_object.map do |item|
+                    item.class.to_s.pluralize.demodulize.underscore.to_sym
+                end
+            else
+                @name.to_s.pluralize.to_sym
+            end
+        end
+
+        def serializables_with_root(root)
+          selected_objects = associated_object.select do |item|
+              item.class.to_s.pluralize.demodulize.underscore.to_sym == root
+          end
+
+          selected_objects.map do |item|
+            find_serializable(item)
           end
         end
 
@@ -133,7 +174,17 @@ module ActiveModel
 
         def serialize_ids
           ids_key = "#{@name.to_s.singularize}_ids".to_sym
-          if !option(:embed_key) && source_serializer.object.respond_to?(ids_key)
+
+          if polymorphic?
+            associated_object.map do |item|
+                polymorphic_key = item.class.to_s.demodulize.underscore.to_sym
+
+                {
+                    :type => polymorphic_key,
+                    :id => item.read_attribute_for_serialization(embed_key)
+                }
+            end
+          elsif !option(:embed_key) && source_serializer.object.respond_to?(ids_key)
             source_serializer.object.read_attribute_for_serialization(ids_key)
           else
             associated_object.map do |item|
