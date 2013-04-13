@@ -33,7 +33,7 @@ module ActionController
     end
 
     def serialization_scope
-      send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope)
+      send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
     end
 
     def default_serializer_options
