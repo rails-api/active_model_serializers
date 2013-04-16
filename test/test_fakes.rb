@@ -70,6 +70,14 @@ class UserAttributesWithSomeKeySerializer < ActiveModel::Serializer
   end
 end
 
+class UserAttributesWithUnsymbolizableKeySerializer < ActiveModel::Serializer
+  attributes :first_name, :last_name => :"last-name"
+
+  def serializable_hash
+    attributes.merge(:ok => true).merge(options[:scope])
+  end
+end
+
 class DefaultUserSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 end

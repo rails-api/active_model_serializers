@@ -451,7 +451,7 @@ module ActiveModel
         method << "  h = {}\n"
 
         _attributes.each do |name,key|
-          method << "  h[:#{key}] = read_attribute_for_serialization(:#{name}) if send #{INCLUDE_METHODS[name].inspect}\n"
+          method << "  h[:\"#{key}\"] = read_attribute_for_serialization(:\"#{name}\") if send #{INCLUDE_METHODS[name].inspect}\n"
         end
         method << "  h\nend"
 
