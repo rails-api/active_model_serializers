@@ -13,6 +13,8 @@ gemfile:
   - Gemfile
   - Gemfile.edge
 matrix:
+  allow_failures:
+    - gemfile: Gemfile.edge
   exclude:
     # Edge Rails is only compatible with 1.9.3
     - gemfile: Gemfile.edge
