@@ -428,7 +428,7 @@ class SerializerTest < ActiveModel::TestCase
       end
     end
 
-    post = Post.new(title: "My Post")
+    post = Post.new(:title => "My Post")
     comments = [Comment.new(:title => "Comment1", :id => 1), Comment.new(:title => "Comment2", :id => 2)]
     post.comments = comments
 
@@ -439,8 +439,8 @@ class SerializerTest < ActiveModel::TestCase
     end
     json = post_serializer.new(post).as_json
     assert_equal({
-      title: "My Post",
-      comment_ids: [1]
+      :title => "My Post",
+      :comment_ids => [1]
     }, json)
   end
 
