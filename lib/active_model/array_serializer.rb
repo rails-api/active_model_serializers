@@ -5,7 +5,7 @@ require 'active_support/descendants_tracker'
 module ActiveModel
   # Active Model Array Serializer
   #
-  # It serializes an Array, checking if each element that implements
+  # Serializes an Array, checking if each element implements
   # the +active_model_serializer+ method.
   #
   # To disable serialization of root elements:

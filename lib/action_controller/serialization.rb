@@ -2,7 +2,7 @@ module ActionController
   # Action Controller Serialization
   #
   # Overrides render :json to check if the given object implements +active_model_serializer+
-  # as a method. If so, use the returned serializer instead of calling +to_json+ in the object.
+  # as a method. If so, use the returned serializer instead of calling +to_json+ on the object.
   #
   # This module also provides a serialization_scope method that allows you to configure the
   # +serialization_scope+ of the serializer. Most apps will likely set the +serialization_scope+
