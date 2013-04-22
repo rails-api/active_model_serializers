@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["jose.valim@gmail.com", "wycats@gmail.com"]
   gem.description   = %q{Making it easy to serialize models for client-side use}
   gem.summary       = %q{Bringing consistency and object orientation to model serialization. Works great for client-side MVC frameworks!}
-  gem.homepage      = "https://github.com/josevalim/active_model_serializers"
+  gem.homepage      = "https://github.com/rails-api/active_model_serializers"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
