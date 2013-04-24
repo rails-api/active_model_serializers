@@ -43,12 +43,12 @@ module ActiveModel::SerializerSupport
   module ClassMethods #:nodoc:
     if "".respond_to?(:safe_constantize)
       def active_model_serializer
-        "#{self.name}Serializer".safe_constantize
+        "#{self.name}Serializer".safe_constantize || (self != Object && self.superclass.respond_to?(:active_model_serializer) ? self.superclass.try(:active_model_serializer) : nil)
       end
     else
       def active_model_serializer
         begin
-          "#{self.name}Serializer".constantize
+          "#{self.name}Serializer".constantize || (self != Object && self.superclass.respond_to?(:active_model_serializer) ? self.superclass.try(:active_model_serializer) : nil)
         rescue NameError => e
           raise unless e.message =~ /uninitialized constant/
         end
