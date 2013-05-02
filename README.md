@@ -135,7 +135,7 @@ render :json => @posts, :root => "some_posts"
 ```
 
 You may disable the root element for arrays at the top level, which will result in
-more concise json. To disable the root element for arrays, you have 3 options:
+more concise json. To disable the root element for arrays, you have 4 options:
 
 #### 1. Disable root globally for in `ArraySerializer`. In an initializer:
 
