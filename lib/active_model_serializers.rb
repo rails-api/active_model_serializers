@@ -64,8 +64,10 @@ module ActiveModel::SerializerSupport
   alias :read_attribute_for_serialization :send
 end
 
-ActiveSupport.on_load(:active_record) do
-  include ActiveModel::SerializerSupport
+[:active_record, :mongoid].each do |orm|
+  ActiveSupport.on_load(orm) do
+    include ActiveModel::SerializerSupport
+  end
 end
 
 module ActiveModel::ArraySerializerSupport
