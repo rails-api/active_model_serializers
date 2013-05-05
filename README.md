@@ -48,10 +48,14 @@ $ rails g serializer post
 ### Support for PORO's and other ORM's.
 
 Currently `ActiveModel::Serializers` adds serialization support to all models
-that descend from `ActiveRecord`. If you are using another ORM, or if you are
-using objects that are `ActiveModel` compliant but do not descend from
-`ActiveRecord`, you must add an include statement for
-`ActiveModel::SerializerSupport`.
+that descend from `ActiveRecord` or include `Mongoid::Document`. If you are
+using another ORM, or if you are using objects that are `ActiveModel`
+compliant but do not descend from `ActiveRecord` or include
+`Mongoid::Document`, you must add an include statement for
+`ActiveModel::SerializerSupport` to make models serializable. If you
+also want to make collections serializable, you should include
+`ActiveModel::ArraySerializationSupport` into your ORM's
+relation/criteria class.
 
 # ActiveModel::Serializer
 
