@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers)
 
 # Purpose
 
