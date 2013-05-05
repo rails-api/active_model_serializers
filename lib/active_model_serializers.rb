@@ -64,12 +64,6 @@ module ActiveModel::SerializerSupport
   alias :read_attribute_for_serialization :send
 end
 
-[:active_record, :mongoid].each do |orm|
-  ActiveSupport.on_load(orm) do
-    include ActiveModel::SerializerSupport
-  end
-end
-
 module ActiveModel::ArraySerializerSupport
   def active_model_serializer
     ActiveModel::ArraySerializer
@@ -79,8 +73,14 @@ end
 Array.send(:include, ActiveModel::ArraySerializerSupport)
 Set.send(:include, ActiveModel::ArraySerializerSupport)
 
-ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Relation.send(:include, ActiveModel::ArraySerializerSupport)
+{
+  :active_record => 'ActiveRecord::Relation',
+  :mongoid => 'Mongoid::Criteria'
+}.each do |orm, rel_class|
+  ActiveSupport.on_load(orm) do
+    include ActiveModel::SerializerSupport
+    rel_class.constantize.send(:include, ActiveModel::ArraySerializerSupport)
+  end
 end
 
 begin
