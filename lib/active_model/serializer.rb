@@ -304,7 +304,12 @@ module ActiveModel
       return false if self._root == false
 
       class_name = self.class.name.demodulize.underscore.sub(/_serializer$/, '').to_sym unless self.class.name.blank?
-      self._root || class_name
+
+      if self._root == true
+        class_name
+      else
+        self._root || class_name
+      end
     end
 
     def url_options
