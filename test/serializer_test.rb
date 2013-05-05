@@ -1349,7 +1349,7 @@ class SerializerTest < ActiveModel::TestCase
       ]
     }, actual)
   end
-  
+
   def test_inheritance_does_not_used_cached_attributes
     parent = Class.new(ActiveModel::Serializer) do
       attributes :title
@@ -1359,18 +1359,18 @@ class SerializerTest < ActiveModel::TestCase
       attributes :body
     end
 
-    data_class = Class.new do 
+    data_class = Class.new do
       attr_accessor :title, :body
     end
 
-    item = data_class.new 
+    item = data_class.new
     item.title = "title"
     item.body = "body"
 
     2.times do
-      assert_equal({:title => "title"}, 
+      assert_equal({:title => "title"},
                    parent.new(item).attributes)
-      assert_equal({:body => "body", :title => "title"}, 
+      assert_equal({:body => "body", :title => "title"},
                    child.new(item).attributes)
     end
 
@@ -1389,5 +1389,54 @@ class SerializerTest < ActiveModel::TestCase
 
     a_serializer = serializer.new(post, :scope => user, :scope_name => :current_user)
     assert a_serializer.has_permission?
+  end
+
+  def test_only_option_filters_attributes_and_associations
+    post = Post.new(:title => "New Post", :body => "Body of new post")
+    comments = [Comment.new(:title => "Comment1")]
+    post.comments = comments
+
+    post_serializer = PostSerializer.new(post, :only => :title)
+
+    assert_equal({
+      :post => {
+        :title => "New Post"
+      }
+    }, post_serializer.as_json)
+  end
+
+  def test_except_option_filters_attributes_and_associations
+    post = Post.new(:title => "New Post", :body => "Body of new post")
+    comments = [Comment.new(:title => "Comment1")]
+    post.comments = comments
+
+    post_serializer = PostSerializer.new(post, :except => [:body, :comments])
+
+    assert_equal({
+      :post => {
+        :title => "New Post"
+      }
+    }, post_serializer.as_json)
+  end
+
+  def test_only_option_takes_precedence_over_custom_defined_include_methods
+    user = User.new
+
+    post = Post.new(:title => "New Post", :body => "Body of new post", :author => "Sausage King")
+    comments = [Comment.new(:title => "Comment")]
+    post.comments = comments
+
+    post_serializer = PostWithMultipleConditionalsSerializer.new(post, :scope => user, :only => :title)
+
+    # comments enabled
+    post.comments_disabled = false
+    # superuser - should see author
+    user.superuser = true
+
+    assert_equal({
+      :post => {
+        :title => "New Post"
+      }
+    }, post_serializer.as_json)
   end
 end
