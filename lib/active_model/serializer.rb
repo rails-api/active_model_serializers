@@ -368,8 +368,8 @@ module ActiveModel
     end
 
     def include?(name)
-      return false if options.key?(:only) && !Array(options[:only]).include?(name)
-      return false if options.key?(:except) && Array(options[:except]).include?(name)
+      return false if @options.key?(:only) && !Array(@options[:only]).include?(name)
+      return false if @options.key?(:except) && Array(@options[:except]).include?(name)
       send INCLUDE_METHODS[name]
     end
 
