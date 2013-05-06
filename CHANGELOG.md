@@ -1,5 +1,9 @@
 # UNRELEASED
 
+# VERSION 0.8.1
+
+* Fix bug whereby a serializer using 'options' would blow up.
+
 # VERSION 0.8.0
 
 * Attributes can now have optional types.
