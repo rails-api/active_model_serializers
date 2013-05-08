@@ -8,11 +8,11 @@ module ActiveModel
       hash[meta_key] = options[:meta] if options.has_key?(:meta)
     end
 
-    def as_json(*args)
-      options[:hash] = hash = {}
-      options[:unique_values] = {}
+    def as_json(args={})
+      if root = args[:root] || options[:root]
+        options[:hash] = hash = {}
+        options[:unique_values] = {}
 
-      if root = options[:root]
         hash.merge!(root => serialize)
         include_meta hash
         hash

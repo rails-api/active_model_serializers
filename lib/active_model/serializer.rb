@@ -1,3 +1,4 @@
+require 'active_model/serializable'
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
 require 'active_support/dependencies'
@@ -39,6 +40,8 @@ module ActiveModel
   #
   class Serializer
     extend ActiveSupport::DescendantsTracker
+
+    include ActiveModel::Serializable
 
     INCLUDE_METHODS = {}
     INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
@@ -316,37 +319,14 @@ module ActiveModel
       @options[:url_options] || {}
     end
 
-    def meta_key
-      @options[:meta_key].try(:to_sym) || :meta
-    end
-
-    def include_meta(hash)
-      hash[meta_key] = @options[:meta] if @options.has_key?(:meta)
-    end
-
-    def to_json(*args)
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'to-json']) do
-          super
-        end
-      else
-        super
-      end
-    end
-
     # Returns a json representation of the serializable
     # object including the root.
-    def as_json(options={})
-      if root = options.fetch(:root, @options.fetch(:root, root_name))
-        @options[:hash] = hash = {}
-        @options[:unique_values] = {}
+    def as_json(args={})
+      super(root: args.fetch(:root, options.fetch(:root, root_name)))
+    end
 
-        hash.merge!(root => serializable_hash)
-        include_meta hash
-        hash
-      else
-        serializable_hash
-      end
+    def serialize
+      serializable_hash
     end
 
     # Returns a hash representation of the serializable
