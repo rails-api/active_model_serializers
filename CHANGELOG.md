@@ -22,9 +22,11 @@
 * URL helpers used inside of Engines now work properly.
 
 * Serializers now can filter attributes with `only` and `except`:
-  
+
+  ```
   UserSerializer.new(user, only: [:first_name, :last_name])
   UserSerializer.new(user, except: :first_name)
+  ```
 
 * Basic Mongoid support. We now include our mixins in the right place.
 
