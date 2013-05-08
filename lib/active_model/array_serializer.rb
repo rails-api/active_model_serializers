@@ -1,3 +1,4 @@
+require 'active_model/serializable'
 require "active_support/core_ext/class/attribute"
 require 'active_support/dependencies'
 require 'active_support/descendants_tracker'
@@ -14,6 +15,8 @@ module ActiveModel
   #
   class ArraySerializer
     extend ActiveSupport::DescendantsTracker
+
+    include ActiveModel::Serializable
 
     attr_reader :object, :options
 
@@ -33,35 +36,8 @@ module ActiveModel
       @object, @options = object, options
     end
 
-    def meta_key
-      @options[:meta_key].try(:to_sym) || :meta
-    end
-
-    def include_meta(hash)
-      hash[meta_key] = @options[:meta] if @options.has_key?(:meta)
-    end
-
-    def as_json(*args)
-      @options[:hash] = hash = {}
-      @options[:unique_values] = {}
-
-      if root = @options[:root]
-        hash.merge!(root => serializable_array)
-        include_meta hash
-        hash
-      else
-        serializable_array
-      end
-    end
-
-    def to_json(*args)
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'to-json']) do
-          super
-        end
-      else
-        super
-      end
+    def serialize
+      serializable_array
     end
 
     def serializable_array
