@@ -1,4 +1,5 @@
 require 'active_model/serializable'
+require 'active_model/serializer/caching'
 require "active_support/core_ext/class/attribute"
 require 'active_support/dependencies'
 require 'active_support/descendants_tracker'
@@ -17,6 +18,7 @@ module ActiveModel
     extend ActiveSupport::DescendantsTracker
 
     include ActiveModel::Serializable
+    include ActiveModel::Serializer::Caching
 
     attr_reader :object, :options
 
@@ -36,22 +38,11 @@ module ActiveModel
       @object, @options = object, options
     end
 
-    def serialize
+    def serialize_object
       serializable_array
     end
 
     def serializable_array
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-array']) do
-          _serializable_array
-        end
-      else
-        _serializable_array
-      end
-    end
-
-    private
-    def _serializable_array
       @object.map do |item|
         if @options.has_key? :each_serializer
           serializer = @options[:each_serializer]
@@ -69,14 +60,6 @@ module ActiveModel
           serializable.as_json
         end
       end
-    end
-
-    def expand_cache_key(*args)
-      ActiveSupport::Cache.expand_cache_key(args)
-    end
-
-    def perform_caching?
-      perform_caching && cache && respond_to?(:cache_key)
     end
   end
 end

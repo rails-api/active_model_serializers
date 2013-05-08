@@ -68,7 +68,7 @@ class CachingTest < ActiveModel::TestCase
 
     instance.to_json
 
-    assert_equal(instance.serializable_hash, serializer.cache.read('serializer/Adam/serializable-hash'))
+    assert_equal(instance.serializable_hash, serializer.cache.read('serializer/Adam/serialize'))
     assert_equal(instance.to_json, serializer.cache.read('serializer/Adam/to-json'))
   end
 
@@ -90,7 +90,7 @@ class CachingTest < ActiveModel::TestCase
 
     instance.to_json
 
-    assert_equal instance.serializable_array, serializer.cache.read('array_serializer/cache-key/serializable-array')
+    assert_equal instance.serializable_array, serializer.cache.read('array_serializer/cache-key/serialize')
     assert_equal instance.to_json, serializer.cache.read('array_serializer/cache-key/to-json')
   end
 end

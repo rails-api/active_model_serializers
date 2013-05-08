@@ -1,4 +1,5 @@
 require 'active_model/serializable'
+require 'active_model/serializer/caching'
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
 require 'active_support/dependencies'
@@ -42,6 +43,7 @@ module ActiveModel
     extend ActiveSupport::DescendantsTracker
 
     include ActiveModel::Serializable
+    include ActiveModel::Serializer::Caching
 
     INCLUDE_METHODS = {}
     INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
@@ -73,7 +75,6 @@ module ActiveModel
     class_attribute :perform_caching
 
     class << self
-      # set perform caching like root
       def cached(value = true)
         self.perform_caching = value
       end
@@ -325,20 +326,17 @@ module ActiveModel
       super(root: args.fetch(:root, options.fetch(:root, root_name)))
     end
 
-    def serialize
+    def serialize_object
       serializable_hash
     end
 
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-hash']) do
-          _serializable_hash
-        end
-      else
-        _serializable_hash
-      end
+      return nil if @object.nil?
+      @node = attributes
+      include_associations! if _embed
+      @node
     end
 
     def include_associations!
@@ -452,21 +450,6 @@ module ActiveModel
     end
 
     alias :read_attribute_for_serialization :send
-
-    def _serializable_hash
-      return nil if @object.nil?
-      @node = attributes
-      include_associations! if _embed
-      @node
-    end
-
-    def perform_caching?
-      perform_caching && cache && respond_to?(:cache_key)
-    end
-
-    def expand_cache_key(*args)
-      ActiveSupport::Cache.expand_cache_key(args)
-    end
 
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
