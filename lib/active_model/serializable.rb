@@ -1,13 +1,5 @@
 module ActiveModel
   module Serializable
-    def meta_key
-      options[:meta_key].try(:to_sym) || :meta
-    end
-
-    def include_meta(hash)
-      hash[meta_key] = options[:meta] if options.has_key?(:meta)
-    end
-
     def as_json(args={})
       if root = args[:root] || options[:root]
         options[:hash] = hash = {}
@@ -29,6 +21,16 @@ module ActiveModel
       else
         super
       end
+    end
+
+    private
+
+    def include_meta(hash)
+      hash[meta_key] = options[:meta] if options.has_key?(:meta)
+    end
+
+    def meta_key
+      options[:meta_key].try(:to_sym) || :meta
     end
   end
 end
