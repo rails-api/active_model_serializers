@@ -19,7 +19,7 @@ The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
 
 ```ruby
-gem "active_model_serializers", "~> 0.7.0"
+gem "active_model_serializers", "~> 0.8.0"
 ```
 
 Then, install it on the command line:
