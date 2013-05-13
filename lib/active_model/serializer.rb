@@ -129,7 +129,7 @@ module ActiveModel
 
           define_include_method attr
 
-          self._associations[attr] = klass.refine(attr, options)
+          self._associations[attr] = [klass, options]
         end
       end
 
@@ -217,8 +217,8 @@ module ActiveModel
         end
 
         associations = {}
-        _associations.each do |attr, association_class|
-          association = association_class.new(attr, self)
+        _associations.each do |attr, (association_class, options)|
+          association = association_class.new(attr, self, options)
 
           if model_association = klass.reflect_on_association(association.name)
             # Real association.
@@ -381,8 +381,10 @@ module ActiveModel
         end
       end
 
+      klass, opts = _associations[name]
       association_class =
-        if klass = _associations[name]
+        if klass
+          options = opts.merge options
           klass
         elsif value.respond_to?(:to_ary)
           Associations::HasMany

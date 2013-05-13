@@ -2,34 +2,6 @@ module ActiveModel
   class Serializer
     module Associations #:nodoc:
       class Config #:nodoc:
-        class_attribute :options
-
-        def self.refine(name, class_options)
-          current_class = self
-
-          Class.new(self) do
-            singleton_class.class_eval do
-              define_method(:to_s) do
-                "(subclass of #{current_class.name})"
-              end
-
-              alias inspect to_s
-            end
-
-            self.options = class_options
-
-            # cache the root so we can reuse it without falling back on a per-instance basis
-            begin
-              self.options[:root] ||= self.new(name, nil).root
-            rescue
-              # this could fail if it needs a valid source, for example a polymorphic association
-            end
-
-          end
-        end
-
-        self.options = {}
-
         def initialize(name, source, options={})
           @name = name
           @source = source
@@ -39,8 +11,6 @@ module ActiveModel
         def option(key, default=nil)
           if @options.key?(key)
             @options[key]
-          elsif self.class.options.key?(key)
-            self.class.options[key]
           else
             default
           end
