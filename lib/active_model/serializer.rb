@@ -392,6 +392,10 @@ module ActiveModel
           Associations::HasOne
         end
 
+      options[:value] ||= send(name)
+      options[:embed] = _embed unless options.key?(:embed)
+      options[:include] = _root_embed unless options.key?(:include)
+      options[:serializer_options] = self.options
       association = association_class.new(name, self, options)
 
       if association.embed_ids?

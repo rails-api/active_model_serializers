@@ -38,19 +38,19 @@ module ActiveModel
         end
 
         def associated_object
-          option(:value) || source_serializer.send(name)
+          option(:value)
         end
 
         def embed_ids?
-          [:id, :ids].include? option(:embed, source_serializer._embed)
+          [:id, :ids].include? option(:embed)
         end
 
         def embed_objects?
-          [:object, :objects].include? option(:embed, source_serializer._embed)
+          [:object, :objects].include? option(:embed)
         end
 
         def embed_in_root?
-          option(:include, source_serializer._root_embed)
+          option(:include)
         end
 
         def embeddable?
@@ -61,9 +61,9 @@ module ActiveModel
 
         def find_serializable(object)
           if target_serializer
-            target_serializer.new(object, source_serializer.options)
+            target_serializer.new(object, option(:serializer_options))
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, source_serializer.options)
+            ams.new(object, option(:serializer_options))
           else
             object
           end
