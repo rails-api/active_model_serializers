@@ -195,6 +195,18 @@ def default_serializer_options
 end
 ```
 
+## Disabling root globally
+
+If you want to disable the ```root```-node for all serializers, not just when
+they are used in ```respond_with```, you can set the ```root``` option for the
+main class in an initializer just like with Arrays:
+
+```ruby
+ActiveSupport.on_load(:active_model_serializers) do
+  ActiveModel::Serializer.root = false
+end
+```
+
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
