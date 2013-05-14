@@ -177,8 +177,10 @@ module ActiveModel
         end
 
         def serialize_ids
-          if associated_object
-            id = associated_object.read_attribute_for_serialization(embed_key)
+          object = associated_object
+
+          if object
+            id = object.read_attribute_for_serialization(embed_key)
             if polymorphic?
               {
                 :type => polymorphic_key,
