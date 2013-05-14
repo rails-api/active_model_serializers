@@ -69,7 +69,7 @@ module ActiveModel
           if key = options[:key]
             key
           elsif embed_ids?
-            "#{@name.to_s.singularize}_ids".to_sym
+            id_key
           else
             @name
           end
@@ -81,6 +81,10 @@ module ActiveModel
           else
             :id
           end
+        end
+
+        def id_key
+          "#{@name.to_s.singularize}_ids".to_sym
         end
 
         def serialize
@@ -96,9 +100,8 @@ module ActiveModel
         end
 
         def serialize_ids
-          ids_key = "#{@name.to_s.singularize}_ids".to_sym
-          if !options[:embed_key] && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(ids_key)
-            source_serializer.object.read_attribute_for_serialization(ids_key)
+          if !options[:embed_key] && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(id_key)
+            source_serializer.object.read_attribute_for_serialization(id_key)
           else
             associated_object.map do |item|
               item.read_attribute_for_serialization(embed_key)
@@ -134,7 +137,7 @@ module ActiveModel
           if key = options[:key]
             key
           elsif embed_ids? && !polymorphic?
-            "#{@name}_id".to_sym
+            id_key
           else
             @name
           end
@@ -146,6 +149,10 @@ module ActiveModel
           else
             :id
           end
+        end
+
+        def id_key
+          "#{@name}_id".to_sym
         end
 
         def polymorphic_key
@@ -172,8 +179,6 @@ module ActiveModel
         end
 
         def serialize_ids
-          id_key = "#{@name}_id".to_sym
-
           if polymorphic?
             if associated_object
               {
