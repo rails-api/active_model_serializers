@@ -100,12 +100,8 @@ module ActiveModel
         end
 
         def serialize_ids
-          if !options[:embed_key] && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(id_key)
-            source_serializer.object.read_attribute_for_serialization(id_key)
-          else
-            associated_object.map do |item|
-              item.read_attribute_for_serialization(embed_key)
-            end
+          associated_object.map do |item|
+            item.read_attribute_for_serialization(embed_key)
           end
         end
       end
@@ -179,21 +175,16 @@ module ActiveModel
         end
 
         def serialize_ids
-          if polymorphic?
-            if associated_object
+          if associated_object
+            id = associated_object.read_attribute_for_serialization(embed_key)
+            if polymorphic?
               {
                 :type => polymorphic_key,
-                :id => associated_object.read_attribute_for_serialization(embed_key)
+                :id => id
               }
             else
-              nil
+              id
             end
-          elsif !options[:embed_key] && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(id_key)
-            source_serializer.object.read_attribute_for_serialization(id_key)
-          elsif associated_object
-            associated_object.read_attribute_for_serialization(embed_key)
-          else
-            nil
           end
         end
       end
