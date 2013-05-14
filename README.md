@@ -141,10 +141,14 @@ render :json => @posts, :root => "some_posts"
 You may disable the root element for arrays at the top level, which will result in
 more concise json. To disable the root element for arrays, you have 4 options:
 
-#### 1. Disable root globally for in `ArraySerializer`. In an initializer:
+#### 1. Disable root globally for `ArraySerializer`. In an initializer:
 
 ```ruby
 ActiveSupport.on_load(:active_model_serializers) do
+  # Disabled for all serializers
+  # ActiveModel::Serializer.root = false
+  
+  # Or just for the ArraySerializer
   ActiveModel::ArraySerializer.root = false
 end
 ```
@@ -192,18 +196,6 @@ def default_serializer_options
   {
     root: false
   }
-end
-```
-
-## Disabling root globally
-
-If you want to disable the ```root```-node for all serializers, not just when
-they are used in ```respond_with```, you can set the ```root``` option for the
-main class in an initializer just like with Arrays:
-
-```ruby
-ActiveSupport.on_load(:active_model_serializers) do
-  ActiveModel::Serializer.root = false
 end
 ```
 
