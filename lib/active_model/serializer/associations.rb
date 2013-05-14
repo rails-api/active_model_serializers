@@ -158,13 +158,15 @@ module ActiveModel
         def serialize
           object = associated_object
 
-          if object && polymorphic?
-            {
-              :type => polymorphic_key,
-              polymorphic_key => find_serializable(object).serializable_hash
-            }
-          elsif object
-            find_serializable(object).serializable_hash
+          if object
+            if polymorphic?
+              {
+                :type => polymorphic_key,
+                polymorphic_key => find_serializable(object).serializable_hash
+              }
+            else
+              find_serializable(object).serializable_hash
+            end
           end
         end
 
