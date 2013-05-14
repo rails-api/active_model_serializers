@@ -352,23 +352,8 @@ module ActiveModel
     end
 
     def include!(name, options={})
-      # Make sure that if a special options[:hash] was passed in, we generate
-      # a new unique values hash and don't clobber the original. If the hash
-      # passed in is the same as the current options hash, use the current
-      # unique values.
-      #
-      # TODO: Should passing in a Hash even be public API here?
-      unique_values =
-        if hash = options[:hash]
-          if @options[:hash] == hash
-            @options[:unique_values] ||= {}
-          else
-            {}
-          end
-        else
-          hash = @options[:hash]
-          @options[:unique_values] ||= {}
-        end
+      hash = @options[:hash]
+      unique_values = @options[:unique_values] ||= {}
 
       node = options[:node] ||= @node
       value = options[:value]
