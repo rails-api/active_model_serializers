@@ -139,35 +139,8 @@ render :json => @posts, :root => "some_posts"
 ```
 
 You may disable the root element for arrays at the top level, which will result in
-more concise json. To disable the root element for arrays, you have 4 options:
-
-#### 1. Disable root globally for in `ArraySerializer`. In an initializer:
-
-```ruby
-ActiveSupport.on_load(:active_model_serializers) do
-  ActiveModel::ArraySerializer.root = false
-end
-```
-
-#### 2. Disable root per render call in your controller:
-
-```ruby
-render :json => @posts, :root => false
-```
-
-#### 3. Create a custom `ArraySerializer` and render arrays with it:
-
-```ruby
-class CustomArraySerializer < ActiveModel::ArraySerializer
-  self.root = false
-end
-
-# controller:
-render :json => @posts, :serializer => CustomArraySerializer
-```
-
-Disabling the root element of the array with any of the above 3 methods
-will produce
+more concise json. See the next section for ways on how to do this. Disabling the
+root element of the array with any of those methods will produce
 
 ```json
 [
@@ -181,6 +154,42 @@ To specify a custom serializer for the items within an array:
 ```ruby
 render :json => @posts, :each_serializer => FancyPostSerializer
 ```
+
+## Disabling the root element
+
+You have 4 options to disable the root element, each with a slightly different scope:
+
+#### 1. Disable root globally for all, or per class
+
+In an initializer:
+
+```ruby
+ActiveSupport.on_load(:active_model_serializers) do
+  # Disabled for all serializers
+  ActiveModel::Serializer.root = false
+  
+  # Or just for the ArraySerializer
+  # ActiveModel::ArraySerializer.root = false
+end
+```
+
+#### 2. Disable root per render call in your controller
+
+```ruby
+render :json => @posts, :root => false
+```
+
+#### 3. Subclass the serializer, and specify using it
+
+```ruby
+class CustomArraySerializer < ActiveModel::ArraySerializer
+  self.root = false
+end
+
+# controller:
+render :json => @posts, :serializer => CustomArraySerializer
+```
+
 #### 4. Define default_serializer_options in your controller
 
 If you define `default_serializer_options` method in your controller,
