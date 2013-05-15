@@ -366,10 +366,10 @@ module ActiveModel
         end
       end
 
-      klass, opts = _associations[name]
+      klass, klass_options = _associations[name]
       association_class =
         if klass
-          options = opts.merge options
+          options = klass_options.merge options
           klass
         elsif value.respond_to?(:to_ary)
           Associations::HasMany
