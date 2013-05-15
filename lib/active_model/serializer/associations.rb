@@ -3,29 +3,26 @@ module ActiveModel
     module Associations #:nodoc:
       class Base #:nodoc:
         def initialize(name, options={}, serializer_options={})
-          @name = name
+          @name          = name
+          @object        = options[:value]
+
+          @embed         = options[:embed]
+          @embed_key     = options[:embed_key] || :id
+          @embed_in_root = options[:include]
+
           @options = options
           @serializer_options = serializer_options
         end
 
-        def name
-          options[:name] || @name
-        end
-
-        def root
-          options[:root] || @name
-        end
+        attr_reader :root, :name, :embed_in_root
+        alias :embed_in_root? :embed_in_root
 
         def embed_ids?
-          [:id, :ids].include? options[:embed]
+          [:id, :ids].include? embed
         end
 
         def embed_objects?
-          [:object, :objects].include? options[:embed]
-        end
-
-        def embed_in_root?
-          options[:include]
+          [:object, :objects].include? embed
         end
 
         def embeddable?
@@ -34,17 +31,7 @@ module ActiveModel
 
         private
 
-        def object
-          options[:value]
-        end
-
-        def embed_key
-          if key = options[:embed_key]
-            key
-          else
-            :id
-          end
-        end
+        attr_reader :object, :embed, :embed_key
 
         def target_serializer
           serializer = options[:serializer]
@@ -73,6 +60,10 @@ module ActiveModel
           else
             @name
           end
+        end
+
+        def root
+          options[:root] || name
         end
 
         def id_key
