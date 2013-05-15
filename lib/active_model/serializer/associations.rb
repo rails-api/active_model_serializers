@@ -12,10 +12,6 @@ module ActiveModel
           options[:name] || @name
         end
 
-        def key
-          options[:key] || @name
-        end
-
         def root
           options[:root] || @name
         end
