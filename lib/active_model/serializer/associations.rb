@@ -8,9 +8,8 @@ module ActiveModel
           @serializer_options = serializer_options
         end
 
-        def target_serializer
-          serializer = options[:serializer]
-          serializer.is_a?(String) ? serializer.constantize : serializer
+        def name
+          options[:name] || @name
         end
 
         def key
@@ -19,14 +18,6 @@ module ActiveModel
 
         def root
           options[:root] || @name
-        end
-
-        def name
-          options[:name] || @name
-        end
-
-        def object
-          options[:value]
         end
 
         def embed_ids?
@@ -45,6 +36,12 @@ module ActiveModel
           !object.nil?
         end
 
+        private
+
+        def object
+          options[:value]
+        end
+
         def embed_key
           if key = options[:embed_key]
             key
@@ -53,7 +50,10 @@ module ActiveModel
           end
         end
 
-        private
+        def target_serializer
+          serializer = options[:serializer]
+          serializer.is_a?(String) ? serializer.constantize : serializer
+        end
 
         def find_serializable(object)
           if target_serializer
@@ -83,15 +83,15 @@ module ActiveModel
           "#{@name.to_s.singularize}_ids".to_sym
         end
 
-        def serialize
-          object.map do |item|
-            find_serializable(item).serializable_hash
-          end
-        end
-
         def serializables
           object.map do |item|
             find_serializable(item)
+          end
+        end
+
+        def serialize
+          object.map do |item|
+            find_serializable(item).serializable_hash
           end
         end
 
@@ -103,16 +103,14 @@ module ActiveModel
       end
 
       class HasOne < Base #:nodoc:
-        def embeddable?
-          if polymorphic? && object.nil?
-            false
+        def key
+          if key = options[:key]
+            key
+          elsif embed_ids? && !polymorphic?
+            id_key
           else
-            true
+            @name
           end
-        end
-
-        def polymorphic?
-          options[:polymorphic]
         end
 
         def root
@@ -125,22 +123,21 @@ module ActiveModel
           end
         end
 
-        def key
-          if key = options[:key]
-            key
-          elsif embed_ids? && !polymorphic?
-            id_key
-          else
-            @name
-          end
-        end
-
         def id_key
           "#{@name}_id".to_sym
         end
 
-        def polymorphic_key
-          object.class.to_s.demodulize.underscore.to_sym
+        def embeddable?
+          if polymorphic? && object.nil?
+            false
+          else
+            true
+          end
+        end
+
+        def serializables
+          value = object && find_serializable(object)
+          value ? [value] : []
         end
 
         def serialize
@@ -156,11 +153,6 @@ module ActiveModel
           end
         end
 
-        def serializables
-          value = object && find_serializable(object)
-          value ? [value] : []
-        end
-
         def serialize_ids
           if object
             id = object.read_attribute_for_serialization(embed_key)
@@ -173,6 +165,16 @@ module ActiveModel
               id
             end
           end
+        end
+
+        private
+
+        def polymorphic?
+          options[:polymorphic]
+        end
+
+        def polymorphic_key
+          object.class.to_s.demodulize.underscore.to_sym
         end
       end
     end
