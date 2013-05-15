@@ -45,6 +45,14 @@ module ActiveModel
           !associated_object.nil?
         end
 
+        def embed_key
+          if key = options[:embed_key]
+            key
+          else
+            :id
+          end
+        end
+
       protected
 
         def find_serializable(object)
@@ -68,14 +76,6 @@ module ActiveModel
             id_key
           else
             @name
-          end
-        end
-
-        def embed_key
-          if key = options[:embed_key]
-            key
-          else
-            :id
           end
         end
 
@@ -132,14 +132,6 @@ module ActiveModel
             id_key
           else
             @name
-          end
-        end
-
-        def embed_key
-          if key = options[:embed_key]
-            key
-          else
-            :id
           end
         end
 
