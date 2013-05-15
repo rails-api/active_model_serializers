@@ -10,6 +10,9 @@ module ActiveModel
           @embed_key     = options[:embed_key] || :id
           @embed_in_root = options[:include]
 
+          serializer = options[:serializer]
+          @serializer = serializer.is_a?(String) ? serializer.constantize : serializer
+
           @options = options
           @serializer_options = serializer_options
         end
@@ -42,16 +45,11 @@ module ActiveModel
 
         private
 
-        attr_reader :object, :embed, :embed_key
-
-        def target_serializer
-          serializer = options[:serializer]
-          serializer.is_a?(String) ? serializer.constantize : serializer
-        end
+        attr_reader :object, :embed, :embed_key, :serializer
 
         def find_serializable(object)
-          if target_serializer
-            target_serializer.new(object, serializer_options)
+          if serializer
+            serializer.new(object, serializer_options)
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
             ams.new(object, serializer_options)
           else
