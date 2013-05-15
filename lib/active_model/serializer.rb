@@ -377,9 +377,8 @@ module ActiveModel
           Associations::HasOne
         end
 
+      options = default_embed_options.merge!(options)
       options[:value] ||= send(name)
-      options[:embed] = _embed unless options.key?(:embed)
-      options[:include] = _root_embed unless options.key?(:include)
       association = association_class.new(name, options, self.options)
 
       if association.embed_ids?
@@ -451,6 +450,15 @@ module ActiveModel
     def instrument(name, payload = {}, &block)
       event_name = INSTRUMENT[name]
       ActiveSupport::Notifications.instrument(event_name, payload, &block)
+    end
+
+    private
+
+    def default_embed_options
+      {
+        :embed   => _embed,
+        :include => _root_embed
+      }
     end
   end
 
