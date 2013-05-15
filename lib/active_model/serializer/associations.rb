@@ -18,11 +18,11 @@ module ActiveModel
         alias :embed_in_root? :embed_in_root
 
         def embed_ids?
-          [:id, :ids].include? embed
+          embed == :id || embed == :ids
         end
 
         def embed_objects?
-          [:object, :objects].include? embed
+          embed == :object || embed == :objects
         end
 
         def embeddable?
