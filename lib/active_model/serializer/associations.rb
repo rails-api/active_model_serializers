@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
     module Associations #:nodoc:
-      class Config #:nodoc:
+      class Base #:nodoc:
         def initialize(name, options={}, serializer_options={})
           @name = name
           @options = options
@@ -60,7 +60,7 @@ module ActiveModel
         attr_reader :options, :serializer_options
       end
 
-      class HasMany < Config #:nodoc:
+      class HasMany < Base #:nodoc:
         def key
           if key = options[:key]
             key
@@ -102,7 +102,7 @@ module ActiveModel
         end
       end
 
-      class HasOne < Config #:nodoc:
+      class HasOne < Base #:nodoc:
         def embeddable?
           if polymorphic? && associated_object.nil?
             false
