@@ -25,7 +25,7 @@ module ActiveModel
           options[:name] || @name
         end
 
-        def associated_object
+        def object
           options[:value]
         end
 
@@ -42,7 +42,7 @@ module ActiveModel
         end
 
         def embeddable?
-          !associated_object.nil?
+          !object.nil?
         end
 
         def embed_key
@@ -84,19 +84,19 @@ module ActiveModel
         end
 
         def serialize
-          associated_object.map do |item|
+          object.map do |item|
             find_serializable(item).serializable_hash
           end
         end
 
         def serializables
-          associated_object.map do |item|
+          object.map do |item|
             find_serializable(item)
           end
         end
 
         def serialize_ids
-          associated_object.map do |item|
+          object.map do |item|
             item.read_attribute_for_serialization(embed_key)
           end
         end
@@ -104,7 +104,7 @@ module ActiveModel
 
       class HasOne < Base #:nodoc:
         def embeddable?
-          if polymorphic? && associated_object.nil?
+          if polymorphic? && object.nil?
             false
           else
             true
@@ -119,7 +119,7 @@ module ActiveModel
           if root = options[:root]
             root
           elsif polymorphic?
-            associated_object.class.to_s.pluralize.demodulize.underscore.to_sym
+            object.class.to_s.pluralize.demodulize.underscore.to_sym
           else
             @name.to_s.pluralize.to_sym
           end
@@ -140,12 +140,10 @@ module ActiveModel
         end
 
         def polymorphic_key
-          associated_object.class.to_s.demodulize.underscore.to_sym
+          object.class.to_s.demodulize.underscore.to_sym
         end
 
         def serialize
-          object = associated_object
-
           if object
             if polymorphic?
               {
@@ -159,14 +157,11 @@ module ActiveModel
         end
 
         def serializables
-          object = associated_object
           value = object && find_serializable(object)
           value ? [value] : []
         end
 
         def serialize_ids
-          object = associated_object
-
           if object
             id = object.read_attribute_for_serialization(embed_key)
             if polymorphic?
