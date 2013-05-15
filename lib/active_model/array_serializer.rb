@@ -35,7 +35,8 @@ module ActiveModel
     end
 
     def initialize(object, options={})
-      @object, @options = object, options
+      @object  = object
+      @options = options
     end
 
     def serialize_object
@@ -43,16 +44,16 @@ module ActiveModel
     end
 
     def serializable_array
-      @object.map do |item|
-        if @options.has_key? :each_serializer
-          serializer = @options[:each_serializer]
+      object.map do |item|
+        if options.has_key? :each_serializer
+          serializer = options[:each_serializer]
         elsif item.respond_to?(:active_model_serializer)
           serializer = item.active_model_serializer
         else
           serializer = DefaultSerializer
         end
 
-        serializable = serializer.new(item, @options)
+        serializable = serializer.new(item, options)
 
         if serializable.respond_to?(:serializable_hash)
           serializable.serializable_hash
