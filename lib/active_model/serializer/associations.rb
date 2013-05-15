@@ -53,7 +53,7 @@ module ActiveModel
           end
         end
 
-      protected
+        private
 
         def find_serializable(object)
           if target_serializer
