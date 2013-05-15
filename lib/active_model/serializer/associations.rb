@@ -2,9 +2,10 @@ module ActiveModel
   class Serializer
     module Associations #:nodoc:
       class Config #:nodoc:
-        def initialize(name, options={})
+        def initialize(name, options={}, serializer_options={})
           @name = name
           @options = options
+          @serializer_options = serializer_options
         end
 
         def target_serializer
@@ -48,15 +49,15 @@ module ActiveModel
 
         def find_serializable(object)
           if target_serializer
-            target_serializer.new(object, options[:serializer_options])
+            target_serializer.new(object, serializer_options)
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, options[:serializer_options])
+            ams.new(object, serializer_options)
           else
             object
           end
         end
 
-        attr_reader :options
+        attr_reader :options, :serializer_options
       end
 
       class HasMany < Config #:nodoc:

@@ -380,8 +380,7 @@ module ActiveModel
       options[:value] ||= send(name)
       options[:embed] = _embed unless options.key?(:embed)
       options[:include] = _root_embed unless options.key?(:include)
-      options[:serializer_options] = self.options
-      association = association_class.new(name, options)
+      association = association_class.new(name, options, self.options)
 
       if association.embed_ids?
         node[association.key] =
