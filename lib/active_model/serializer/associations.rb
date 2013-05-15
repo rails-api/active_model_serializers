@@ -23,7 +23,7 @@ module ActiveModel
           elsif use_id_key?
             id_key
           else
-            @name
+            name
           end
         end
 
@@ -68,7 +68,7 @@ module ActiveModel
         end
 
         def id_key
-          "#{@name.to_s.singularize}_ids".to_sym
+          "#{name.to_s.singularize}_ids".to_sym
         end
 
         def serializables
@@ -97,12 +97,12 @@ module ActiveModel
           elsif polymorphic?
             object.class.to_s.pluralize.demodulize.underscore.to_sym
           else
-            @name.to_s.pluralize.to_sym
+            name.to_s.pluralize.to_sym
           end
         end
 
         def id_key
-          "#{@name}_id".to_sym
+          "#{name}_id".to_sym
         end
 
         def embeddable?
