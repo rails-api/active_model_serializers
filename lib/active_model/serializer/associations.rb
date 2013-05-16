@@ -8,16 +8,8 @@ module ActiveModel
           @options = options
         end
 
-        def option(key, default=nil)
-          if @options.key?(key)
-            @options[key]
-          else
-            default
-          end
-        end
-
         def target_serializer
-          serializer = option(:serializer)
+          serializer = options[:serializer]
           serializer.is_a?(String) ? serializer.constantize : serializer
         end
 
@@ -26,31 +18,31 @@ module ActiveModel
         end
 
         def key
-          option(:key) || @name
+          options[:key] || @name
         end
 
         def root
-          option(:root) || @name
+          options[:root] || @name
         end
 
         def name
-          option(:name) || @name
+          options[:name] || @name
         end
 
         def associated_object
-          option(:value)
+          options[:value]
         end
 
         def embed_ids?
-          [:id, :ids].include? option(:embed)
+          [:id, :ids].include? options[:embed]
         end
 
         def embed_objects?
-          [:object, :objects].include? option(:embed)
+          [:object, :objects].include? options[:embed]
         end
 
         def embed_in_root?
-          option(:include)
+          options[:include]
         end
 
         def embeddable?
@@ -61,18 +53,20 @@ module ActiveModel
 
         def find_serializable(object)
           if target_serializer
-            target_serializer.new(object, option(:serializer_options))
+            target_serializer.new(object, options[:serializer_options])
           elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, option(:serializer_options))
+            ams.new(object, options[:serializer_options])
           else
             object
           end
         end
+
+        attr_reader :options
       end
 
       class HasMany < Config #:nodoc:
         def key
-          if key = option(:key)
+          if key = options[:key]
             key
           elsif embed_ids?
             "#{@name.to_s.singularize}_ids".to_sym
@@ -82,7 +76,7 @@ module ActiveModel
         end
 
         def embed_key
-          if key = option(:embed_key)
+          if key = options[:embed_key]
             key
           else
             :id
@@ -103,7 +97,7 @@ module ActiveModel
 
         def serialize_ids
           ids_key = "#{@name.to_s.singularize}_ids".to_sym
-          if !option(:embed_key) && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(ids_key)
+          if !options[:embed_key] && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(ids_key)
             source_serializer.object.read_attribute_for_serialization(ids_key)
           else
             associated_object.map do |item|
@@ -123,11 +117,11 @@ module ActiveModel
         end
 
         def polymorphic?
-          option :polymorphic
+          options[:polymorphic]
         end
 
         def root
-          if root = option(:root)
+          if root = options[:root]
             root
           elsif polymorphic?
             associated_object.class.to_s.pluralize.demodulize.underscore.to_sym
@@ -137,7 +131,7 @@ module ActiveModel
         end
 
         def key
-          if key = option(:key)
+          if key = options[:key]
             key
           elsif embed_ids? && !polymorphic?
             "#{@name}_id".to_sym
@@ -147,7 +141,7 @@ module ActiveModel
         end
 
         def embed_key
-          if key = option(:embed_key)
+          if key = options[:embed_key]
             key
           else
             :id
@@ -189,7 +183,7 @@ module ActiveModel
             else
               nil
             end
-          elsif !option(:embed_key) && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(id_key)
+          elsif !options[:embed_key] && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(id_key)
             source_serializer.object.read_attribute_for_serialization(id_key)
           elsif associated_object
             associated_object.read_attribute_for_serialization(embed_key)
