@@ -95,11 +95,7 @@ module ActiveModel
         end
 
         def embeddable?
-          if polymorphic? && object.nil?
-            false
-          else
-            true
-          end
+          super || !polymorphic?
         end
 
         def serializables
