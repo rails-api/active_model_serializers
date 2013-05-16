@@ -218,7 +218,7 @@ module ActiveModel
 
         associations = {}
         _associations.each do |attr, (association_class, options)|
-          association = association_class.new(attr, self, options)
+          association = association_class.new(attr, options)
 
           if model_association = klass.reflect_on_association(association.name)
             # Real association.
@@ -381,7 +381,7 @@ module ActiveModel
       options[:embed] = _embed unless options.key?(:embed)
       options[:include] = _root_embed unless options.key?(:include)
       options[:serializer_options] = self.options
-      association = association_class.new(name, self, options)
+      association = association_class.new(name, options)
 
       if association.embed_ids?
         node[association.key] =

@@ -2,19 +2,14 @@ module ActiveModel
   class Serializer
     module Associations #:nodoc:
       class Config #:nodoc:
-        def initialize(name, source, options={})
+        def initialize(name, options={})
           @name = name
-          @source = source
           @options = options
         end
 
         def target_serializer
           serializer = options[:serializer]
           serializer.is_a?(String) ? serializer.constantize : serializer
-        end
-
-        def source_serializer
-          @source
         end
 
         def key
