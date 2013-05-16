@@ -2,6 +2,28 @@ module ActiveModel
   class Serializer
     module Associations #:nodoc:
       class Base #:nodoc:
+        # name: The name of the association.
+        #
+        # options: A hash. These keys are accepted:
+        #
+        #   value: The object we're associating with.
+        #
+        #   serializer: The class used to serialize the association.
+        #
+        #   embed: Define how associations should be embedded.
+        #      - :objects                 # Embed associations as full objects.
+        #      - :ids                     # Embed only the association ids.
+        #      - :ids, :include => true   # Embed the association ids and include objects in the root.
+        #
+        #   include: Used in conjunction with embed :ids. Includes the objects in the root.
+        #
+        #   root: Used in conjunction with include: true. Defines the key used to embed the objects.
+        #
+        #   key: Key name used to store the ids in.
+        #
+        #   embed_key: Method used to fetch ids. Defaults to :id.
+        #
+        #   polymorphic: Is the association is polymorphic?. Values: true or false.
         def initialize(name, options={}, serializer_options={})
           @name          = name
           @object        = options[:value]
