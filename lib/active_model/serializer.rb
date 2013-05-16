@@ -152,7 +152,7 @@ module ActiveModel
       # with the association name does not exist, the association name is
       # dispatched to the serialized object.
       def has_many(*attrs)
-        associate(Associations::HasMany, attrs)
+        associate(Association::HasMany, attrs)
       end
 
       # Defines an association in the object should be rendered.
@@ -162,7 +162,7 @@ module ActiveModel
       # with the association name does not exist, the association name is
       # dispatched to the serialized object.
       def has_one(*attrs)
-        associate(Associations::HasOne, attrs)
+        associate(Association::HasOne, attrs)
       end
 
       # Return a schema hash for the current serializer. This information
@@ -372,9 +372,9 @@ module ActiveModel
           options = klass_options.merge options
           klass
         elsif value.respond_to?(:to_ary)
-          Associations::HasMany
+          Association::HasMany
         else
-          Associations::HasOne
+          Association::HasOne
         end
 
       options = default_embed_options.merge!(options)
