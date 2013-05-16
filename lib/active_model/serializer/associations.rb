@@ -80,6 +80,11 @@ module ActiveModel
       end
 
       class HasOne < Base #:nodoc:
+        def initialize(name, options={}, serializer_options={})
+          super
+          @polymorphic = options[:polymorphic]
+        end
+
         def root
           if root = options[:root]
             root
@@ -132,12 +137,11 @@ module ActiveModel
 
         private
 
+        attr_reader :polymorphic
+        alias polymorphic? polymorphic
+
         def use_id_key?
           embed_ids? && !polymorphic?
-        end
-
-        def polymorphic?
-          options[:polymorphic]
         end
 
         def polymorphic_key
