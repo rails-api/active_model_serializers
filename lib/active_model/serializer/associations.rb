@@ -19,7 +19,8 @@ module ActiveModel
           @serializer_options = serializer_options
         end
 
-        attr_reader :root, :name, :embed_ids, :embed_objects, :embed_in_root
+        attr_reader :object, :root, :name, :embed_ids, :embed_objects, :embed_in_root
+        alias embeddable? object
         alias embed_objects? embed_objects
         alias embed_ids? embed_ids
         alias use_id_key? embed_ids?
@@ -35,13 +36,9 @@ module ActiveModel
           end
         end
 
-        def embeddable?
-          !object.nil?
-        end
-
         private
 
-        attr_reader :object, :embed_key, :serializer, :options, :serializer_options
+        attr_reader :embed_key, :serializer, :options, :serializer_options
 
         def find_serializable(object)
           if serializer
