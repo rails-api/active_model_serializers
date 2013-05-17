@@ -17,9 +17,20 @@ module ActiveModel
         attr_reader :root, :name, :embed_in_root
         alias :embed_in_root? :embed_in_root
 
+        def key
+          if key = options[:key]
+            key
+          elsif use_id_key?
+            id_key
+          else
+            @name
+          end
+        end
+
         def embed_ids?
           embed == :id || embed == :ids
         end
+        alias use_id_key? embed_ids?
 
         def embed_objects?
           embed == :object || embed == :objects
@@ -52,16 +63,6 @@ module ActiveModel
       end
 
       class HasMany < Base #:nodoc:
-        def key
-          if key = options[:key]
-            key
-          elsif embed_ids?
-            id_key
-          else
-            @name
-          end
-        end
-
         def root
           options[:root] || name
         end
@@ -90,16 +91,6 @@ module ActiveModel
       end
 
       class HasOne < Base #:nodoc:
-        def key
-          if key = options[:key]
-            key
-          elsif embed_ids? && !polymorphic?
-            id_key
-          else
-            @name
-          end
-        end
-
         def root
           if root = options[:root]
             root
@@ -155,6 +146,10 @@ module ActiveModel
         end
 
         private
+
+        def use_id_key?
+          embed_ids? && !polymorphic?
+        end
 
         def polymorphic?
           options[:polymorphic]
