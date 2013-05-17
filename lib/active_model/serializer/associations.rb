@@ -45,7 +45,7 @@ module ActiveModel
 
         private
 
-        attr_reader :object, :embed, :embed_key, :serializer
+        attr_reader :object, :embed, :embed_key, :serializer, :options, :serializer_options
 
         def find_serializable(object)
           if serializer
@@ -56,8 +56,6 @@ module ActiveModel
             object
           end
         end
-
-        attr_reader :options, :serializer_options
       end
 
       class HasMany < Base #:nodoc:
