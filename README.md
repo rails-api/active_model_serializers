@@ -165,11 +165,11 @@ In an initializer:
 
 ```ruby
 ActiveSupport.on_load(:active_model_serializers) do
-  # Disabled for all serializers
+  # Disable for all serializers (except ArraySerializer)
   ActiveModel::Serializer.root = false
   
-  # Or just for the ArraySerializer
-  # ActiveModel::ArraySerializer.root = false
+  # Disable for ArraySerializer
+  ActiveModel::ArraySerializer.root = false
 end
 ```
 
