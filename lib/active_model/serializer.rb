@@ -352,13 +352,10 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-hash']) do
-          _serializable_hash
-        end
-      else
-        _serializable_hash
-      end
+      return nil if @object.nil?
+      @node = attributes
+      include_associations! if _embed
+      @node
     end
 
     def include_associations!
@@ -451,6 +448,16 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object attributes.
     def attributes
+      if perform_caching?
+        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes']) do
+          _serializable_attributes
+        end
+      else
+        _serializable_attributes
+      end
+    end
+
+    def _serializable_attributes
       _fast_attributes
       rescue NameError
         method = "def _fast_attributes\n"
@@ -472,13 +479,6 @@ module ActiveModel
     end
 
     alias :read_attribute_for_serialization :send
-
-    def _serializable_hash
-      return nil if @object.nil?
-      @node = attributes
-      include_associations! if _embed
-      @node
-    end
 
     def perform_caching?
       perform_caching && cache && respond_to?(:cache_key)
