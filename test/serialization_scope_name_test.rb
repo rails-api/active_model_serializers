@@ -65,3 +65,35 @@ class SerializationScopeNameTest < ActionController::TestCase
     assert_equal '{"admin_user":{"admin":true}}', @response.body
   end
 end
+
+class SerializationActionScopeOverrideTest < ActionController::TestCase
+  TestUser = Struct.new(:name, :admin)
+
+  class AdminUserSerializer < ActiveModel::Serializer
+    attributes :admin?
+    def admin?
+      current_admin.admin
+    end
+  end
+
+  class AdminUserTestController < ActionController::Base
+    protect_from_forgery
+    before_filter { request.format = :json }
+
+    def current_admin
+      TestUser.new('Bob', true)
+    end
+
+    def render_new_user
+      render :json => TestUser.new('pete', false), :serializer => AdminUserSerializer, :scope => current_admin, :scope_name => :current_admin
+    end
+  end
+
+  tests AdminUserTestController
+
+  def test_override_scope_name_with_controller
+    get :render_new_user
+    assert_equal '{"admin_user":{"admin":true}}', @response.body
+  end
+
+end
