@@ -1,231 +1,171 @@
 module ActiveModel
   class Serializer
-    module Associations #:nodoc:
-      class Config #:nodoc:
-        class_attribute :options
+    class Association #:nodoc:
+      # name: The name of the association.
+      #
+      # options: A hash. These keys are accepted:
+      #
+      #   value: The object we're associating with.
+      #
+      #   serializer: The class used to serialize the association.
+      #
+      #   embed: Define how associations should be embedded.
+      #      - :objects                 # Embed associations as full objects.
+      #      - :ids                     # Embed only the association ids.
+      #      - :ids, :include => true   # Embed the association ids and include objects in the root.
+      #
+      #   include: Used in conjunction with embed :ids. Includes the objects in the root.
+      #
+      #   root: Used in conjunction with include: true. Defines the key used to embed the objects.
+      #
+      #   key: Key name used to store the ids in.
+      #
+      #   embed_key: Method used to fetch ids. Defaults to :id.
+      #
+      #   polymorphic: Is the association is polymorphic?. Values: true or false.
+      def initialize(name, options={}, serializer_options={})
+        @name          = name
+        @object        = options[:value]
 
-        def self.refine(name, class_options)
-          current_class = self
+        embed          = options[:embed]
+        @embed_ids     = embed == :id || embed == :ids
+        @embed_objects = embed == :object || embed == :objects
+        @embed_key     = options[:embed_key] || :id
+        @embed_in_root = options[:include]
 
-          Class.new(self) do
-            singleton_class.class_eval do
-              define_method(:to_s) do
-                "(subclass of #{current_class.name})"
-              end
+        serializer = options[:serializer]
+        @serializer = serializer.is_a?(String) ? serializer.constantize : serializer
 
-              alias inspect to_s
-            end
+        @options = options
+        @serializer_options = serializer_options
+      end
 
-            self.options = class_options
+      attr_reader :object, :root, :name, :embed_ids, :embed_objects, :embed_in_root
+      alias embeddable? object
+      alias embed_objects? embed_objects
+      alias embed_ids? embed_ids
+      alias use_id_key? embed_ids?
+      alias embed_in_root? embed_in_root
 
-            # cache the root so we can reuse it without falling back on a per-instance basis
-            begin
-              self.options[:root] ||= self.new(name, nil).root
-            rescue
-              # this could fail if it needs a valid source, for example a polymorphic association
-            end
-
-          end
-        end
-
-        self.options = {}
-
-        def initialize(name, source, options={})
-          @name = name
-          @source = source
-          @options = options
-        end
-
-        def option(key, default=nil)
-          if @options.key?(key)
-            @options[key]
-          elsif self.class.options.key?(key)
-            self.class.options[key]
-          else
-            default
-          end
-        end
-
-        def target_serializer
-          serializer = option(:serializer)
-          serializer.is_a?(String) ? serializer.constantize : serializer
-        end
-
-        def source_serializer
-          @source
-        end
-
-        def key
-          option(:key) || @name
-        end
-
-        def root
-          option(:root) || @name
-        end
-
-        def name
-          option(:name) || @name
-        end
-
-        def associated_object
-          option(:value) || source_serializer.send(name)
-        end
-
-        def embed_ids?
-          [:id, :ids].include? option(:embed, source_serializer._embed)
-        end
-
-        def embed_objects?
-          [:object, :objects].include? option(:embed, source_serializer._embed)
-        end
-
-        def embed_in_root?
-          option(:include, source_serializer._root_embed)
-        end
-
-        def embeddable?
-          !associated_object.nil?
-        end
-
-      protected
-
-        def find_serializable(object)
-          if target_serializer
-            target_serializer.new(object, source_serializer.options)
-          elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
-            ams.new(object, source_serializer.options)
-          else
-            object
-          end
+      def key
+        if key = options[:key]
+          key
+        elsif use_id_key?
+          id_key
+        else
+          name
         end
       end
 
-      class HasMany < Config #:nodoc:
-        def key
-          if key = option(:key)
-            key
-          elsif embed_ids?
-            "#{@name.to_s.singularize}_ids".to_sym
-          else
-            @name
-          end
+      private
+
+      attr_reader :embed_key, :serializer, :options, :serializer_options
+
+      def find_serializable(object)
+        if serializer
+          serializer.new(object, serializer_options)
+        elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
+          ams.new(object, serializer_options)
+        else
+          object
+        end
+      end
+
+      class HasMany < Association #:nodoc:
+        def root
+          options[:root] || name
         end
 
-        def embed_key
-          if key = option(:embed_key)
-            key
-          else
-            :id
-          end
-        end
-
-        def serialize
-          associated_object.map do |item|
-            find_serializable(item).serializable_hash
-          end
+        def id_key
+          "#{name.to_s.singularize}_ids".to_sym
         end
 
         def serializables
-          associated_object.map do |item|
+          object.map do |item|
             find_serializable(item)
           end
         end
 
+        def serialize
+          object.map do |item|
+            find_serializable(item).serializable_hash
+          end
+        end
+
         def serialize_ids
-          ids_key = "#{@name.to_s.singularize}_ids".to_sym
-          if !option(:embed_key) && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(ids_key)
-            source_serializer.object.read_attribute_for_serialization(ids_key)
-          else
-            associated_object.map do |item|
-              item.read_attribute_for_serialization(embed_key)
-            end
+          object.map do |item|
+            item.read_attribute_for_serialization(embed_key)
           end
         end
       end
 
-      class HasOne < Config #:nodoc:
-        def embeddable?
-          if polymorphic? && associated_object.nil?
-            false
-          else
-            true
-          end
-        end
-
-        def polymorphic?
-          option :polymorphic
+      class HasOne < Association #:nodoc:
+        def initialize(name, options={}, serializer_options={})
+          super
+          @polymorphic = options[:polymorphic]
         end
 
         def root
-          if root = option(:root)
+          if root = options[:root]
             root
           elsif polymorphic?
-            associated_object.class.to_s.pluralize.demodulize.underscore.to_sym
+            object.class.to_s.pluralize.demodulize.underscore.to_sym
           else
-            @name.to_s.pluralize.to_sym
+            name.to_s.pluralize.to_sym
           end
         end
 
-        def key
-          if key = option(:key)
-            key
-          elsif embed_ids? && !polymorphic?
-            "#{@name}_id".to_sym
-          else
-            @name
-          end
+        def id_key
+          "#{name}_id".to_sym
         end
 
-        def embed_key
-          if key = option(:embed_key)
-            key
-          else
-            :id
-          end
-        end
-
-        def polymorphic_key
-          associated_object.class.to_s.demodulize.underscore.to_sym
-        end
-
-        def serialize
-          object = associated_object
-
-          if object && polymorphic?
-            {
-              :type => polymorphic_key,
-              polymorphic_key => find_serializable(object).serializable_hash
-            }
-          elsif object
-            find_serializable(object).serializable_hash
-          end
+        def embeddable?
+          super || !polymorphic?
         end
 
         def serializables
-          object = associated_object
           value = object && find_serializable(object)
           value ? [value] : []
         end
 
-        def serialize_ids
-          id_key = "#{@name}_id".to_sym
-
-          if polymorphic?
-            if associated_object
+        def serialize
+          if object
+            if polymorphic?
               {
                 :type => polymorphic_key,
-                :id => associated_object.read_attribute_for_serialization(embed_key)
+                polymorphic_key => find_serializable(object).serializable_hash
               }
             else
-              nil
+              find_serializable(object).serializable_hash
             end
-          elsif !option(:embed_key) && !source_serializer.respond_to?(@name.to_s) && source_serializer.object.respond_to?(id_key)
-            source_serializer.object.read_attribute_for_serialization(id_key)
-          elsif associated_object
-            associated_object.read_attribute_for_serialization(embed_key)
-          else
-            nil
           end
+        end
+
+        def serialize_ids
+          if object
+            id = object.read_attribute_for_serialization(embed_key)
+            if polymorphic?
+              {
+                :type => polymorphic_key,
+                :id => id
+              }
+            else
+              id
+            end
+          end
+        end
+
+        private
+
+        attr_reader :polymorphic
+        alias polymorphic? polymorphic
+
+        def use_id_key?
+          embed_ids? && !polymorphic?
+        end
+
+        def polymorphic_key
+          object.class.to_s.demodulize.underscore.to_sym
         end
       end
     end

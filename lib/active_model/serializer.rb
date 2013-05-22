@@ -1,3 +1,5 @@
+require 'active_model/serializable'
+require 'active_model/serializer/caching'
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
 require 'active_support/dependencies'
@@ -40,6 +42,9 @@ module ActiveModel
   class Serializer
     extend ActiveSupport::DescendantsTracker
 
+    include ActiveModel::Serializable
+    include ActiveModel::Serializer::Caching
+
     INCLUDE_METHODS = {}
     INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
 
@@ -70,7 +75,6 @@ module ActiveModel
     class_attribute :perform_caching
 
     class << self
-      # set perform caching like root
       def cached(value = true)
         self.perform_caching = value
       end
@@ -125,7 +129,7 @@ module ActiveModel
 
           define_include_method attr
 
-          self._associations[attr] = klass.refine(attr, options)
+          self._associations[attr] = [klass, options]
         end
       end
 
@@ -148,7 +152,7 @@ module ActiveModel
       # with the association name does not exist, the association name is
       # dispatched to the serialized object.
       def has_many(*attrs)
-        associate(Associations::HasMany, attrs)
+        associate(Association::HasMany, attrs)
       end
 
       # Defines an association in the object should be rendered.
@@ -158,7 +162,7 @@ module ActiveModel
       # with the association name does not exist, the association name is
       # dispatched to the serialized object.
       def has_one(*attrs)
-        associate(Associations::HasOne, attrs)
+        associate(Association::HasOne, attrs)
       end
 
       # Return a schema hash for the current serializer. This information
@@ -213,8 +217,8 @@ module ActiveModel
         end
 
         associations = {}
-        _associations.each do |attr, association_class|
-          association = association_class.new(attr, self)
+        _associations.each do |attr, (association_class, options)|
+          association = association_class.new(attr, options)
 
           if model_association = klass.reflect_on_association(association.name)
             # Real association.
@@ -316,49 +320,23 @@ module ActiveModel
       @options[:url_options] || {}
     end
 
-    def meta_key
-      @options[:meta_key].try(:to_sym) || :meta
-    end
-
-    def include_meta(hash)
-      hash[meta_key] = @options[:meta] if @options.has_key?(:meta)
-    end
-
-    def to_json(*args)
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'to-json']) do
-          super
-        end
-      else
-        super
-      end
-    end
-
     # Returns a json representation of the serializable
     # object including the root.
-    def as_json(options={})
-      if root = options.fetch(:root, @options.fetch(:root, root_name))
-        @options[:hash] = hash = {}
-        @options[:unique_values] = {}
+    def as_json(args={})
+      super(root: args.fetch(:root, options.fetch(:root, root_name)))
+    end
 
-        hash.merge!(root => serializable_hash)
-        include_meta hash
-        hash
-      else
-        serializable_hash
-      end
+    def serialize_object
+      serializable_hash
     end
 
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      if perform_caching?
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-hash']) do
-          _serializable_hash
-        end
-      else
-        _serializable_hash
-      end
+      return nil if @object.nil?
+      @node = attributes
+      include_associations! if _embed
+      @node
     end
 
     def include_associations!
@@ -374,23 +352,8 @@ module ActiveModel
     end
 
     def include!(name, options={})
-      # Make sure that if a special options[:hash] was passed in, we generate
-      # a new unique values hash and don't clobber the original. If the hash
-      # passed in is the same as the current options hash, use the current
-      # unique values.
-      #
-      # TODO: Should passing in a Hash even be public API here?
-      unique_values =
-        if hash = options[:hash]
-          if @options[:hash] == hash
-            @options[:unique_values] ||= {}
-          else
-            {}
-          end
-        else
-          hash = @options[:hash]
-          @options[:unique_values] ||= {}
-        end
+      hash = @options[:hash]
+      unique_values = @options[:unique_values] ||= {}
 
       node = options[:node] ||= @node
       value = options[:value]
@@ -403,19 +366,28 @@ module ActiveModel
         end
       end
 
+      klass, klass_options = _associations[name]
       association_class =
-        if klass = _associations[name]
+        if klass
+          options = klass_options.merge options
           klass
         elsif value.respond_to?(:to_ary)
-          Associations::HasMany
+          Association::HasMany
         else
-          Associations::HasOne
+          Association::HasOne
         end
 
-      association = association_class.new(name, self, options)
+      options = default_embed_options.merge!(options)
+      options[:value] ||= send(name)
+      association = association_class.new(name, options, self.options)
 
       if association.embed_ids?
-        node[association.key] = association.serialize_ids
+        node[association.key] =
+          if options[:embed_key] || self.respond_to?(name) || !self.object.respond_to?(association.id_key)
+            association.serialize_ids
+          else
+            self.object.read_attribute_for_serialization(association.id_key)
+          end
 
         if association.embed_in_root? && hash.nil?
           raise IncludeError.new(self.class, association.name)
@@ -473,26 +445,20 @@ module ActiveModel
 
     alias :read_attribute_for_serialization :send
 
-    def _serializable_hash
-      return nil if @object.nil?
-      @node = attributes
-      include_associations! if _embed
-      @node
-    end
-
-    def perform_caching?
-      perform_caching && cache && respond_to?(:cache_key)
-    end
-
-    def expand_cache_key(*args)
-      ActiveSupport::Cache.expand_cache_key(args)
-    end
-
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
     def instrument(name, payload = {}, &block)
       event_name = INSTRUMENT[name]
       ActiveSupport::Notifications.instrument(event_name, payload, &block)
+    end
+
+    private
+
+    def default_embed_options
+      {
+        :embed   => _embed,
+        :include => _root_embed
+      }
     end
   end
 
