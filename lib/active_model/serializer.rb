@@ -284,7 +284,7 @@ module ActiveModel
         end
 
         options[:scope] = controller.serialization_scope unless options.has_key?(:scope)
-        options[:scope_name] = controller._serialization_scope
+        options[:scope_name] = controller._serialization_scope unless options.has_key?(:scope_name)
         options[:url_options] = controller.url_options
 
         serializer.new(resource, options)
