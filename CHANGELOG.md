@@ -7,7 +7,7 @@
   be converted to json by the module. This also removes duplicate code.  
   https://github.com/rails-api/active_model_serializers/commit/6c6bc8872d3b0f040a200854fa5530a775824dbf
 
-* ActiveModel::Seriazer::Caching module was created it enables
+* ActiveModel::Serializer::Caching module was created it enables
   Serializers to be able to cache to\_json and serialize calls. This
   also helps removing duplicate code.  
   https://github.com/rails-api/active_model_serializers/commit/3e27110df78696ac48cafd1568f72216f348a188
