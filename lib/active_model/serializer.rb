@@ -348,6 +348,7 @@ module ActiveModel
     def include?(name)
       return false if @options.key?(:only) && !Array(@options[:only]).include?(name)
       return false if @options.key?(:except) && Array(@options[:except]).include?(name)
+      return false if @options.key?(:omit_nil_values) && (@options[:omit_nil_values] == true || Array(@options[:omit_nil_values]).include?(name)) && send(name).nil?
       send INCLUDE_METHODS[name]
     end
 
