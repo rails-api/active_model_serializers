@@ -35,6 +35,13 @@
   https://github.com/rails-api/active_model_serializers/commit/f5de334ddf1f3b9764d914a717311532021785d2  
   https://github.com/rails-api/active_model_serializers/commit/3dd422d99e8c57f113880da34f6abe583c4dadf9
 
+* serialize\_ids call methods on the corresponding serializer if they
+  are defined, instead of talking directly with the serialized object.
+  Serializers are decorators so we shouldn't talk directly with
+  serialized objects.
+
+* Array items are not wrapped anymore in root element.
+
 # VERSION 0.8.1
 
 * Fix bug whereby a serializer using 'options' would blow up.
