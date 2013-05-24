@@ -382,12 +382,7 @@ module ActiveModel
       association = association_class.new(name, options, self.options)
 
       if association.embed_ids?
-        node[association.key] =
-          if options[:embed_key] || self.respond_to?(name) || !self.object.respond_to?(association.id_key)
-            association.serialize_ids
-          else
-            self.object.read_attribute_for_serialization(association.id_key)
-          end
+        node[association.key] = association.serialize_ids
 
         if association.embed_in_root? && hash.nil?
           raise IncludeError.new(self.class, association.name)

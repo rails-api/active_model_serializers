@@ -34,7 +34,7 @@ module ActiveModel
         @embed_in_root = options[:include]
 
         serializer = options[:serializer]
-        @serializer = serializer.is_a?(String) ? serializer.constantize : serializer
+        @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
 
         @options = options
         @serializer_options = serializer_options
@@ -59,11 +59,11 @@ module ActiveModel
 
       private
 
-      attr_reader :embed_key, :serializer, :options, :serializer_options
+      attr_reader :embed_key, :serializer_class, :options, :serializer_options
 
       def find_serializable(object)
-        if serializer
-          serializer.new(object, serializer_options)
+        if serializer_class
+          serializer_class.new(object, serializer_options)
         elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
           ams.new(object, serializer_options)
         else
@@ -94,7 +94,12 @@ module ActiveModel
 
         def serialize_ids
           object.map do |item|
-            item.read_attribute_for_serialization(embed_key)
+            serializer = find_serializable(item)
+            if serializer.respond_to?(embed_key)
+              serializer.send(embed_key)
+            else
+              item.read_attribute_for_serialization(embed_key)
+            end
           end
         end
       end
@@ -143,7 +148,14 @@ module ActiveModel
 
         def serialize_ids
           if object
-            id = object.read_attribute_for_serialization(embed_key)
+            serializer = find_serializable(object)
+            id =
+              if serializer.respond_to?(embed_key)
+                serializer.send(embed_key)
+              else
+                object.read_attribute_for_serialization(embed_key)
+              end
+
             if polymorphic?
               {
                 :type => polymorphic_key,
