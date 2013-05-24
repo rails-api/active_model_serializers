@@ -12,6 +12,14 @@ class Model
   end
 end
 
+class ModelWithActiveModelSerializer < Model
+  include ActiveModel::Serializers::JSON
+  attr_accessor :attributes
+  def read_attribute_for_serialization(name)
+    @attributes[name]
+  end
+end
+
 class User
   include ActiveModel::SerializerSupport
 

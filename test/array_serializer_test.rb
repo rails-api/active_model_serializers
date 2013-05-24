@@ -31,6 +31,20 @@ class ArraySerializerTest < ActiveModel::TestCase
     ]}, serializer.as_json)
   end
 
+  def test_active_model_with_root
+    comment1 = ModelWithActiveModelSerializer.new(:title => "Comment1")
+    comment2 = ModelWithActiveModelSerializer.new(:title => "Comment2")
+
+    array = [ comment1, comment2 ]
+
+    serializer = array.active_model_serializer.new(array, :root => :comments)
+
+    assert_equal({ :comments => [
+      { :title => "Comment1" },
+      { :title => "Comment2" }
+    ]}, serializer.as_json)
+  end
+
   def test_array_serializer_with_hash
     hash = {:value => "something"}
     array = [hash]
