@@ -112,7 +112,7 @@ module ActiveModel
 
         def root
           if root = options[:root]
-            root
+            root.to_sym
           elsif polymorphic?
             object.class.to_s.pluralize.demodulize.underscore.to_sym
           else
