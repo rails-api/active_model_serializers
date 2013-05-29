@@ -49,9 +49,8 @@ module ActiveModel
           serializer = options[:each_serializer]
         elsif item.respond_to?(:active_model_serializer)
           serializer = item.active_model_serializer
-        else
-          serializer = DefaultSerializer
         end
+        serializer ||= DefaultSerializer
 
         serializable = serializer.new(item, options.merge(:root => nil))
 
