@@ -1518,4 +1518,29 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, post_serializer.as_json)
   end
+
+  def test_omit_nil_values_option_set_to_true
+    post = Post.new(:title => "New Post", :body => nil, :author => nil)
+    post_serializer = PostSerializer.new(post, :omit_nil_values => true)
+
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :comments => []
+      }
+    }, post_serializer.as_json)
+  end
+
+  def test_omit_nil_values_option_set_to_an_array
+    post = Post.new(:title => "New Post", :body => nil, :author => nil)
+    post_serializer = PostSerializer.new(post, :omit_nil_values => [:author])
+
+    assert_equal({
+      :post => {
+        :title => "New Post",
+        :body => nil,
+        :comments => []
+      }
+    }, post_serializer.as_json)
+  end
 end
