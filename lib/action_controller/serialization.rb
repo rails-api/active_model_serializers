@@ -40,13 +40,41 @@ module ActionController
     end
 
     def _render_option_json(resource, options)
-      json = ActiveModel::Serializer.build_json(self, resource, options)
+      super _build_serializer(resource, options), options
+    end
 
-      if json
-        super(json, options)
-      else
-        super
+    protected
+
+    # Used internally to create a new serializer object based on controller
+    # settings and options for a given resource. These settings are typically
+    # set during the request lifecycle or by the controller class, and should
+    # not be manually defined for this method.
+    def _build_serializer(resource, options = {})
+      options = (default_serializer_options || {}).merge(options)
+
+      serializer = options.delete(:serializer) ||
+        (resource.respond_to?(:active_model_serializer) &&
+         resource.active_model_serializer)
+
+      return resource unless serializer
+
+      if resource.respond_to?(:to_ary)
+        unless serializer <= ActiveModel::ArraySerializer
+          raise ArgumentError.new("#{serializer.name} is not an ArraySerializer. " +
+                                  "You may want to use the :each_serializer option instead.")
+        end
+
+        if options[:root] != false && serializer.root != false
+          # the serializer for an Array is ActiveModel::ArraySerializer
+          options[:root] ||= serializer.root || controller_name
+        end
       end
+
+      options[:scope] = serialization_scope unless options.has_key?(:scope)
+      options[:scope_name] = _serialization_scope unless options.has_key?(:scope_name)
+      options[:url_options] = url_options
+
+      serializer.new(resource, options)
     end
 
     module ClassMethods
