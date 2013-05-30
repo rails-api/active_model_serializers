@@ -1,7 +1,6 @@
 require 'active_model/serializable'
 require 'active_model/serializer/caching'
 require "active_support/core_ext/class/attribute"
-require "active_support/core_ext/module/anonymous"
 require 'active_support/dependencies'
 require 'active_support/descendants_tracker'
 
@@ -46,7 +45,6 @@ module ActiveModel
     include ActiveModel::Serializer::Caching
 
     INCLUDE_METHODS = {}
-    INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
 
     class IncludeError < StandardError
       attr_reader :source, :association
@@ -439,13 +437,6 @@ module ActiveModel
     end
 
     alias :read_attribute_for_serialization :send
-
-    # Use ActiveSupport::Notifications to send events to external systems.
-    # The event name is: name.class_name.serializer
-    def instrument(name, payload = {}, &block)
-      event_name = INSTRUMENT[name]
-      ActiveSupport::Notifications.instrument(event_name, payload, &block)
-    end
 
     private
 
