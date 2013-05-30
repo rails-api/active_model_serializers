@@ -4,13 +4,13 @@ require 'pathname'
 class RenderJsonTest < ActionController::TestCase
   class JsonRenderable
     def as_json(options={})
-      hash = { :a => :b, :c => :d, :e => :f }
+      hash = { a: :b, c: :d, e: :f }
       hash.except!(*options[:except]) if options[:except]
       hash
     end
 
     def to_json(options = {})
-      super :except => [:c, :e]
+      super except: [:c, :e]
     end
   end
 
@@ -20,9 +20,9 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def as_json(*)
-      hash = { :object => serializable_hash, :scope => @options[:scope].as_json }
-      hash.merge!(:options => true) if @options[:options]
-      hash.merge!(:check_defaults => true) if @options[:check_defaults]
+      hash = { object: serializable_hash, scope: @options[:scope].as_json }
+      hash.merge!(options: true) if @options[:options]
+      hash.merge!(check_defaults: true) if @options[:check_defaults]
       hash
     end
 
@@ -41,7 +41,7 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def as_json(*)
-      { :serializable_object => true }
+      { serializable_object: true }
     end
   end
 
@@ -50,7 +50,7 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def as_json(*)
-      { :hello => true }
+      { hello: true }
     end
   end
 
@@ -59,7 +59,7 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def as_json(*)
-      { :rails => 'rocks' }
+      { rails: 'rocks' }
     end
   end
 
@@ -75,7 +75,7 @@ class RenderJsonTest < ActionController::TestCase
 
   class HypermediaSerializer < ActiveModel::Serializer
     def as_json(*)
-      { :link => hypermedia_url }
+      { link: hypermedia_url }
     end
   end
 
@@ -94,111 +94,111 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def render_json_nil
-      render :json => nil
+      render json: nil
     end
 
     def render_json_render_to_string
-      render :text => render_to_string(:json => '[]')
+      render text: render_to_string(json: '[]')
     end
 
     def render_json_hello_world
-      render :json => ActiveSupport::JSON.encode(:hello => 'world')
+      render json: ActiveSupport::JSON.encode(hello: 'world')
     end
 
     def render_json_hello_world_with_status
-      render :json => ActiveSupport::JSON.encode(:hello => 'world'), :status => 401
+      render json: ActiveSupport::JSON.encode(hello: 'world'), status: 401
     end
 
     def render_json_hello_world_with_callback
-      render :json => ActiveSupport::JSON.encode(:hello => 'world'), :callback => 'alert'
+      render json: ActiveSupport::JSON.encode(hello: 'world'), callback: 'alert'
     end
 
     def render_json_with_custom_content_type
-      render :json => ActiveSupport::JSON.encode(:hello => 'world'), :content_type => 'text/javascript'
+      render json: ActiveSupport::JSON.encode(hello: 'world'), content_type: 'text/javascript'
     end
 
     def render_symbol_json
-      render :json => ActiveSupport::JSON.encode(:hello => 'world')
+      render json: ActiveSupport::JSON.encode(hello: 'world')
     end
 
     def render_json_nil_with_custom_serializer
-      render :json => nil, :serializer => DummyCustomSerializer
+      render json: nil, serializer: DummyCustomSerializer
     end
 
 
     def render_json_with_extra_options
-      render :json => JsonRenderable.new, :except => [:c, :e]
+      render json: JsonRenderable.new, except: [:c, :e]
     end
 
     def render_json_without_options
-      render :json => JsonRenderable.new
+      render json: JsonRenderable.new
     end
 
     def render_json_with_serializer
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => JsonSerializable.new
+      @current_user = Struct.new(:as_json).new(current_user: true)
+      render json: JsonSerializable.new
     end
 
     def render_json_with_serializer_and_implicit_root
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => [JsonSerializable.new]
+      @current_user = Struct.new(:as_json).new(current_user: true)
+      render json: [JsonSerializable.new]
     end
 
     def render_json_with_serializer_and_options
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => JsonSerializable.new, :options => true
+      @current_user = Struct.new(:as_json).new(current_user: true)
+      render json: JsonSerializable.new, options: true
     end
 
     def render_json_with_serializer_and_scope_option
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      scope = Struct.new(:as_json).new(:current_user => false)
-      render :json => JsonSerializable.new, :scope => scope
+      @current_user = Struct.new(:as_json).new(current_user: true)
+      scope = Struct.new(:as_json).new(current_user: false)
+      render json: JsonSerializable.new, scope: scope
     end
 
     def render_json_with_serializer_api_but_without_serializer
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      render :json => JsonSerializable.new(true)
+      @current_user = Struct.new(:as_json).new(current_user: true)
+      render json: JsonSerializable.new(true)
     end
 
     # To specify a custom serializer for an object, use :serializer.
     def render_json_with_custom_serializer
-      render :json => Object.new, :serializer => CustomSerializer
+      render json: Object.new, serializer: CustomSerializer
     end
 
     # To specify a custom serializer for each item in the Array, use :each_serializer.
     def render_json_array_with_custom_serializer
-      render :json => [Object.new], :each_serializer => CustomSerializer
+      render json: [Object.new], each_serializer: CustomSerializer
     end
 
     def render_json_array_with_wrong_option
-      render :json => [Object.new], :serializer => CustomSerializer
+      render json: [Object.new], serializer: CustomSerializer
     end
 
     def render_json_with_links
-      render :json => HypermediaSerializable.new
+      render json: HypermediaSerializable.new
     end
 
     def render_json_array_with_no_root
-      render :json => [], :root => false
+      render json: [], root: false
     end
 
     def render_json_empty_array
-      render :json => []
+      render json: []
     end
 
     def render_json_array_with_custom_array_serializer
-      render :json => [], :serializer => CustomArraySerializer
+      render json: [], serializer: CustomArraySerializer
     end
 
 
   private
     def default_serializer_options
       defaults = {}
-      defaults.merge!(:check_defaults => true) if params[:check_defaults]
-      defaults.merge!(:root => :awesome) if params[:check_default_root]
-      defaults.merge!(:scope => :current_admin) if params[:check_default_scope]
-      defaults.merge!(:serializer => AnotherCustomSerializer) if params[:check_default_serializer]
-      defaults.merge!(:each_serializer => AnotherCustomSerializer) if params[:check_default_each_serializer]
+      defaults.merge!(check_defaults: true) if params[:check_defaults]
+      defaults.merge!(root: :awesome) if params[:check_default_root]
+      defaults.merge!(scope: :current_admin) if params[:check_default_scope]
+      defaults.merge!(serializer: AnotherCustomSerializer) if params[:check_default_serializer]
+      defaults.merge!(each_serializer: AnotherCustomSerializer) if params[:check_default_each_serializer]
       defaults
     end
   end
@@ -279,19 +279,19 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_with_serializer_checking_defaults
-    get :render_json_with_serializer, :check_defaults => true
+    get :render_json_with_serializer, check_defaults: true
     assert_match '"scope":{"current_user":true}', @response.body
     assert_match '"object":{"serializable_object":true}', @response.body
     assert_match '"check_defaults":true', @response.body
   end
 
   def test_render_json_with_serializer_checking_default_serailizer
-    get :render_json_with_serializer, :check_default_serializer => true
+    get :render_json_with_serializer, check_default_serializer: true
     assert_match '{"rails":"rocks"}', @response.body
   end
 
   def test_render_json_with_serializer_checking_default_scope
-    get :render_json_with_serializer, :check_default_scope => true
+    get :render_json_with_serializer, check_default_scope: true
     assert_match '"scope":"current_admin"', @response.body
   end
 
@@ -301,7 +301,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_with_serializer_and_implicit_root_checking_default_each_serailizer
-    get :render_json_with_serializer_and_implicit_root, :check_default_each_serializer => true
+    get :render_json_with_serializer_and_implicit_root, check_default_each_serializer: true
     assert_match '"test":[{"rails":"rocks"}]', @response.body
   end
 
@@ -318,7 +318,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_with_serializer_and_scope_option_checking_default_scope
-    get :render_json_with_serializer_and_scope_option, :check_default_scope => true
+    get :render_json_with_serializer_and_scope_option, check_default_scope: true
     assert_match '"scope":{"current_user":false}', @response.body
   end
 
@@ -333,7 +333,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_with_custom_serializer_checking_default_serailizer
-    get :render_json_with_custom_serializer, :check_default_serializer => true
+    get :render_json_with_custom_serializer, check_default_serializer: true
     assert_match '{"hello":true}', @response.body
   end
 
@@ -349,7 +349,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_array_with_custom_serializer_checking_default_each_serailizer
-    get :render_json_array_with_custom_serializer, :check_default_each_serializer => true
+    get :render_json_array_with_custom_serializer, check_default_each_serializer: true
     assert_match '{"test":[{"hello":true}]}', @response.body
   end
 
@@ -364,7 +364,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_array_with_no_root_checking_default_root
-    get :render_json_array_with_no_root, :check_default_root => true
+    get :render_json_array_with_no_root, check_default_root: true
     assert_equal '[]', @response.body
   end
 
@@ -374,7 +374,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   def test_render_json_empty_array_checking_default_root
-    get :render_json_empty_array, :check_default_root => true
+    get :render_json_empty_array, check_default_root: true
     assert_equal '{"awesome":[]}', @response.body
   end
 

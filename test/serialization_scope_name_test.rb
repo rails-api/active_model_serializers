@@ -21,7 +21,7 @@ class DefaultScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      render :json => TestUser.new('pete', false), :serializer => UserSerializer
+      render json: TestUser.new('pete', false), serializer: UserSerializer
     end
   end
 
@@ -54,7 +54,7 @@ class SerializationScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      render :json => TestUser.new('pete', false), :serializer => AdminUserSerializer
+      render json: TestUser.new('pete', false), serializer: AdminUserSerializer
     end
   end
 
@@ -85,7 +85,7 @@ class SerializationActionScopeOverrideTest < ActionController::TestCase
     end
 
     def render_new_user
-      render :json => TestUser.new('pete', false), :serializer => AdminUserSerializer, :scope => current_admin, :scope_name => :current_admin
+      render json: TestUser.new('pete', false), serializer: AdminUserSerializer, scope: current_admin, scope_name: :current_admin
     end
   end
 
