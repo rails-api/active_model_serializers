@@ -44,6 +44,8 @@
 
 * Remove support for ruby 1.8 versions.
 
+* Require rails >= 3.2.
+
 # VERSION 0.8.1
 
 * Fix bug whereby a serializer using 'options' would blow up.

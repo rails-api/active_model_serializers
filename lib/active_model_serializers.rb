@@ -11,8 +11,6 @@ if defined?(Rails)
   module ActiveModel
     class Railtie < Rails::Railtie
       generators do |app|
-        app ||= Rails.application # Rails 3.0.x does not yield `app`
-
         Rails::Generators.configure!(app.config.generators)
         Rails::Generators.hidden_namespaces.uniq!
         require_relative "generators/resource_override"
