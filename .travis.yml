@@ -28,6 +28,7 @@ matrix:
     - gemfile: Gemfile.edge
       rvm: rbx-18mode
 notifications:
+  email: false
   campfire:
     on_success: change
     rooms:
