@@ -1,6 +1,5 @@
 language: ruby
 rvm:
-  - 1.9.2
   - 1.9.3
   - 2.0.0
   - jruby-19mode
@@ -11,10 +10,6 @@ gemfile:
 matrix:
   allow_failures:
     - gemfile: Gemfile.edge
-  exclude:
-    # Edge Rails is only compatible with 1.9.3
-    - gemfile: Gemfile.edge
-      rvm: 1.9.2
 notifications:
   email: false
   campfire:

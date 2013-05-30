@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = ActiveModel::Serializer::VERSION
 
-  gem.required_ruby_version = ">= 1.9.2"
+  gem.required_ruby_version = ">= 1.9.3"
 
   gem.add_dependency "activemodel", ">= 3.2"
 
