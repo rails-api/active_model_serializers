@@ -13,13 +13,13 @@ content.
 In short, **serializers replace hash-driven development with object-oriented
 development.**
 
-# Installing Serializers
+# Installing 
 
 The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
 
 ```ruby
-gem "active_model_serializers", "~> 0.8.0"
+gem "active_model_serializers"
 ```
 
 Then, install it on the command line:
@@ -27,6 +27,16 @@ Then, install it on the command line:
 ```
 $ bundle install
 ```
+
+#### Ruby 1.8 is no longer supported! 
+
+If you must use a ruby 1.8 version (MRI 1.8.7, REE, Rubinius 1.8, or JRuby 1.8), you need to use version 0.8.x.
+Versions after 0.9.0 do not support ruby 1.8. To specify version 0.8, include this in your Gemfile:
+
+```ruby
+gem "active_model_serializers", "~> 0.8.0"
+```
+
 
 # Creating a Serializer
 

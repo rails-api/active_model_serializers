@@ -12,7 +12,7 @@ module ActiveModel
       #   embed: Define how associations should be embedded.
       #      - :objects                 # Embed associations as full objects.
       #      - :ids                     # Embed only the association ids.
-      #      - :ids, :include => true   # Embed the association ids and include objects in the root.
+      #      - :ids, include: true      # Embed the association ids and include objects in the root.
       #
       #   include: Used in conjunction with embed :ids. Includes the objects in the root.
       #
@@ -158,8 +158,8 @@ module ActiveModel
 
             if polymorphic?
               {
-                :type => polymorphic_key,
-                :id => id
+                type: polymorphic_key,
+                id: id
               }
             else
               id

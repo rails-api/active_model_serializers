@@ -7,7 +7,7 @@ class NoSerializationScopeTest < ActionController::TestCase
     end
 
     def as_json(*)
-      { :scope => @options[:scope].as_json }
+      { scope: @options[:scope].as_json }
     end
   end
 
@@ -21,14 +21,14 @@ class NoSerializationScopeTest < ActionController::TestCase
     serialization_scope nil
 
     def index
-      render :json => ScopeSerializable.new
+      render json: ScopeSerializable.new
     end
   end
 
   tests NoSerializationScopeController
 
   def test_disabled_serialization_scope
-    get :index, :format => :json
+    get :index, format: :json
     assert_equal '{"scope":null}', @response.body
   end
 end
