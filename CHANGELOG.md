@@ -4,26 +4,26 @@
   AM::Serializer and AM::ArraySerializer. Basically enable objects to be
   serializable by implementing an options method to handle the options
   of the serialization and a serialize method that returns an object to
-  be converted to json by the module. This also removes duplicate code.  
+  be converted to json by the module. This also removes duplicate code.
   https://github.com/rails-api/active_model_serializers/commit/6c6bc8872d3b0f040a200854fa5530a775824dbf
 
 * ActiveModel::Serializer::Caching module was created it enables
   Serializers to be able to cache to\_json and serialize calls. This
-  also helps removing duplicate code.  
+  also helps removing duplicate code.
   https://github.com/rails-api/active_model_serializers/commit/3e27110df78696ac48cafd1568f72216f348a188
 
 * We got rid of the Association.refine method which generated
-  subclasses.  
+  subclasses.
   https://github.com/rails-api/active_model_serializers/commit/24923722d4f215c7cfcdf553fd16582e28e3801b
 
 * Associations doesn't know anymore about the source serializer.
-  That didn't make any sense.  
-  https://github.com/rails-api/active_model_serializers/commit/2252e8fe6dbf45660c6a35f35e2423792f2c3abf  
-  https://github.com/rails-api/active_model_serializers/commit/87eadd09b9a988bc1d9b30d9a501ef7e3fc6bb87  
+  That didn't make any sense.
+  https://github.com/rails-api/active_model_serializers/commit/2252e8fe6dbf45660c6a35f35e2423792f2c3abf
+  https://github.com/rails-api/active_model_serializers/commit/87eadd09b9a988bc1d9b30d9a501ef7e3fc6bb87
   https://github.com/rails-api/active_model_serializers/commit/79a6e13e8f7fae2eb4f48e83a9633e74beb6739e
 
 * Passing options[:hash] is not public API of include!. That was
-  removed.  
+  removed.
   https://github.com/rails-api/active_model_serializers/commit/5cbf9317051002a32c90c3f995b8b2f126f70d0c
 
 * ActiveModel::Serializer::Associations::Config is now
@@ -31,8 +31,8 @@
   thing so shouldn't bother.
   ActiveModel::Serializer::Associations::Has\* are now
   ActiveModel::Serializer::Association::Has\* and inherit from
-  ActiveModel::Serializer::Association  
-  https://github.com/rails-api/active_model_serializers/commit/f5de334ddf1f3b9764d914a717311532021785d2  
+  ActiveModel::Serializer::Association
+  https://github.com/rails-api/active_model_serializers/commit/f5de334ddf1f3b9764d914a717311532021785d2
   https://github.com/rails-api/active_model_serializers/commit/3dd422d99e8c57f113880da34f6abe583c4dadf9
 
 * serialize\_ids call methods on the corresponding serializer if they
@@ -41,6 +41,8 @@
   serialized objects.
 
 * Array items are not wrapped anymore in root element.
+
+* Remove support for ruby 1.8 versions.
 
 # VERSION 0.8.1
 
