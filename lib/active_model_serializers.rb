@@ -74,8 +74,8 @@ Array.send(:include, ActiveModel::ArraySerializerSupport)
 Set.send(:include, ActiveModel::ArraySerializerSupport)
 
 {
-  :active_record => 'ActiveRecord::Relation',
-  :mongoid => 'Mongoid::Criteria'
+  active_record: 'ActiveRecord::Relation',
+  mongoid: 'Mongoid::Criteria'
 }.each do |orm, rel_class|
   ActiveSupport.on_load(orm) do
     include ActiveModel::SerializerSupport

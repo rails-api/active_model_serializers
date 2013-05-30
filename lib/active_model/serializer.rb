@@ -13,7 +13,7 @@ module ActiveModel
   # it expects two objects as arguments, a resource and options. For example,
   # one may do in a controller:
   #
-  #     PostSerializer.new(@post, :scope => current_user).to_json
+  #     PostSerializer.new(@post, scope: current_user).to_json
   #
   # The object to be serialized is the +@post+ and the current user is passed
   # in for authorization purposes.
@@ -30,7 +30,7 @@ module ActiveModel
   #
   #       def attributes
   #         hash = super
-  #         hash.merge!(:email => post.email) if author?
+  #         hash.merge!(email: post.email) if author?
   #         hash
   #       end
   #
@@ -46,7 +46,7 @@ module ActiveModel
     include ActiveModel::Serializer::Caching
 
     INCLUDE_METHODS = {}
-    INSTRUMENT = { :serialize => :"serialize.serializer", :associations => :"associations.serializer" }
+    INSTRUMENT = { serialize: :"serialize.serializer", associations: :"associations.serializer" }
 
     class IncludeError < StandardError
       attr_reader :source, :association
@@ -86,7 +86,7 @@ module ActiveModel
 
         attrs.each do |attr|
           if Hash === attr
-            attr.each {|attr_real, key| attribute attr_real, :key => key }
+            attr.each {|attr_real, key| attribute(attr_real, key: key) }
           else
             attribute attr
           end
@@ -172,20 +172,20 @@ module ActiveModel
       #
       # The +attributes+ hash looks like this:
       #
-      #     { :name => :string, :age => :integer }
+      #     { name: :string, age: :integer }
       #
       # The +associations+ hash looks like this:
-      #     { :posts => { :has_many => :posts } }
+      #     { posts: { has_many: :posts } }
       #
       # If :key is used:
       #
       #     class PostsSerializer < ActiveModel::Serializer
-      #       has_many :posts, :key => :my_posts
+      #       has_many :posts, key: :my_posts
       #     end
       #
       # the hash looks like this:
       #
-      #     { :my_posts => { :has_many => :posts }
+      #     { my_posts: { has_many: :posts }
       #
       # This information is extracted from the serializer's model class,
       # which is provided by +SerializerClass.model_class+.
@@ -232,7 +232,7 @@ module ActiveModel
           end
         end
 
-        { :attributes => attrs, :associations => associations }
+        { attributes: attrs, associations: associations }
       end
 
       # The model class associated with this serializer.
@@ -244,7 +244,7 @@ module ActiveModel
       #
       #   embed :objects               # Embed associations as full objects
       #   embed :ids                   # Embed only the association ids
-      #   embed :ids, :include => true # Embed the association ids and include objects in the root
+      #   embed :ids, include: true    # Embed the association ids and include objects in the root
       #
       def embed(type, options={})
         self._embed = type
@@ -323,7 +323,7 @@ module ActiveModel
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(args={})
-      super(:root => args.fetch(:root, options.fetch(:root, root_name)))
+      super(root: args.fetch(:root, options.fetch(:root, root_name)))
     end
 
     def serialize_object
@@ -451,8 +451,8 @@ module ActiveModel
 
     def default_embed_options
       {
-        :embed   => _embed,
-        :include => _root_embed
+        embed: _embed,
+        include: _root_embed
       }
     end
   end
