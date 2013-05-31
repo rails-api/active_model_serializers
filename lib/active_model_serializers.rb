@@ -11,8 +11,6 @@ if defined?(Rails)
   module ActiveModel
     class Railtie < Rails::Railtie
       generators do |app|
-        app ||= Rails.application # Rails 3.0.x does not yield `app`
-
         Rails::Generators.configure!(app.config.generators)
         Rails::Generators.hidden_namespaces.uniq!
         require_relative "generators/resource_override"
@@ -74,8 +72,8 @@ Array.send(:include, ActiveModel::ArraySerializerSupport)
 Set.send(:include, ActiveModel::ArraySerializerSupport)
 
 {
-  :active_record => 'ActiveRecord::Relation',
-  :mongoid => 'Mongoid::Criteria'
+  active_record: 'ActiveRecord::Relation',
+  mongoid: 'Mongoid::Criteria'
 }.each do |orm, rel_class|
   ActiveSupport.on_load(orm) do
     include ActiveModel::SerializerSupport

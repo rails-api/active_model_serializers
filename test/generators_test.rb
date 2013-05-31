@@ -36,18 +36,6 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
     Object.send :remove_const, :ApplicationSerializer
   end
 
-  def test_serializer_gets_id
-    run_generator
-
-    assert_file "app/serializers/account_serializer.rb" do |content|
-      if RUBY_VERSION =~ /1.8/
-        assert_match    /def id/, content
-      else
-        assert_no_match /def id/, content
-      end
-    end
-  end
-
   # def test_uses_namespace_application_serializer_if_one_exists
   #   Object.const_set(:SerializerNamespace, Module.new)
   #   SerializerNamespace.const_set(:ApplicationSerializer, Class.new)

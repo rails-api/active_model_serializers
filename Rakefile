@@ -15,4 +15,4 @@ task :bench do
   load 'bench/perf.rb' 
 end
 
-task :default => :test
+task default: :test
