@@ -14,7 +14,7 @@ require "pry"
 
 require "active_model_serializers"
 require "active_support/json"
-require "test/unit"
+require "minitest/autorun"
 
 require 'rails'
 
