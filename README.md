@@ -255,6 +255,18 @@ end
 Within a serializer's methods, you can access the object being
 serialized as `object`.
 
+Since this shadows any attribute named `object`, you can include them through `object.object`. For example:
+
+```ruby
+class VersionSerializer < ActiveModel::Serializer
+  attribute :version_object, key: :object
+
+  def version_object
+    object.object
+  end
+end
+```
+
 You can also access the `current_user` method, which provides an
 authorization context to your serializer. By default, the context
 is the current user of your application, but this
