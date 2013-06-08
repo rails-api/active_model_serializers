@@ -55,7 +55,7 @@ the serializer generator:
 $ rails g serializer post
 ```
 
-### Support for PORO's and other ORM's.
+### Support for POROs and other ORMs.
 
 Currently `ActiveModel::Serializers` adds serialization support to all models
 that descend from `ActiveRecord` or include `Mongoid::Document`. If you are
