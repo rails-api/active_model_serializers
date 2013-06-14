@@ -22,6 +22,12 @@ if defined?(Rails)
           extend ::AbstractController::Railties::RoutesHelpers.with(app.routes)
           include app.routes.mounted_helpers
         end
+
+        ActiveSupport.on_load(:active_model_array_serializers) do
+          include AbstractController::UrlFor
+          extend ::AbstractController::Railties::RoutesHelpers.with(app.routes)
+          include app.routes.mounted_helpers
+        end
       end
 
       initializer "caching.active_model_serializer" do |app|
@@ -93,3 +99,4 @@ rescue LoadError => ex
 end
 
 ActiveSupport.run_load_hooks(:active_model_serializers, ActiveModel::Serializer)
+ActiveSupport.run_load_hooks(:active_model_array_serializers, ActiveModel::ArraySerializer)

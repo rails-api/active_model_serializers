@@ -39,6 +39,10 @@ module ActiveModel
       @options = options
     end
 
+    def url_options
+      @options[:url_options] || {}
+    end
+
     def serialize_object
       serializable_array
     end
