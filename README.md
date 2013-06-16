@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers)
 
 # Purpose
 
@@ -13,7 +13,7 @@ content.
 In short, **serializers replace hash-driven development with object-oriented
 development.**
 
-# Installing 
+# Installing
 
 The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
@@ -28,7 +28,7 @@ Then, install it on the command line:
 $ bundle install
 ```
 
-#### Ruby 1.8 is no longer supported! 
+#### Ruby 1.8 is no longer supported!
 
 If you must use a ruby 1.8 version (MRI 1.8.7, REE, Rubinius 1.8, or JRuby 1.8), you need to use version 0.8.x.
 Versions after 0.9.0 do not support ruby 1.8. To specify version 0.8, include this in your Gemfile:
@@ -177,7 +177,7 @@ In an initializer:
 ActiveSupport.on_load(:active_model_serializers) do
   # Disable for all serializers (except ArraySerializer)
   ActiveModel::Serializer.root = false
-  
+
   # Disable for ArraySerializer
   ActiveModel::ArraySerializer.root = false
 end
@@ -350,6 +350,9 @@ The above usage of `:meta_key` will produce the following:
   ]
 }
 ```
+
+When using meta information, your serializer cannot have the `{ root: false }` option, as this would lead to
+invalid JSON. If you do not have a root key, the meta information will be ignored.
 
 If you would like direct, low-level control of attribute serialization, you can
 completely override the `attributes` method to return the hash you need:
