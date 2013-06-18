@@ -80,7 +80,7 @@ for a serializer for the object and use it if available.
 class PostsController < ApplicationController
   def show
     @post = Post.find(params[:id])
-    render :json => @post
+    render json: @post
   end
 end
 ```
@@ -107,7 +107,7 @@ end
 #### 2. Specify the serializer when you render the object:
 
 ```ruby
-render :json => @post, :serializer => FancyPostSerializer
+render json: @post, serializer: FancyPostSerializer
 ```
 
 ## Arrays
@@ -124,7 +124,7 @@ end
 class PostsController < ApplicationController
   def index
     @posts = Post.all
-    render :json => @posts
+    render json: @posts
   end
 end
 ```
@@ -145,7 +145,7 @@ By default, the root element is the name of the controller. For example, `PostsC
 generates a root element "posts". To change it:
 
 ```ruby
-render :json => @posts, :root => "some_posts"
+render json: @posts, root: "some_posts"
 ```
 
 You may disable the root element for arrays at the top level, which will result in
@@ -162,7 +162,7 @@ root element of the array with any of those methods will produce
 To specify a custom serializer for the items within an array:
 
 ```ruby
-render :json => @posts, :each_serializer => FancyPostSerializer
+render json: @posts, each_serializer: FancyPostSerializer
 ```
 
 ## Disabling the root element
@@ -186,7 +186,7 @@ end
 #### 2. Disable root per render call in your controller
 
 ```ruby
-render :json => @posts, :root => false
+render json: @posts, root: false
 ```
 
 #### 3. Subclass the serializer, and specify using it
@@ -197,7 +197,7 @@ class CustomArraySerializer < ActiveModel::ArraySerializer
 end
 
 # controller:
-render :json => @posts, :serializer => CustomArraySerializer
+render json: @posts, serializer: CustomArraySerializer
 ```
 
 #### 4. Define default_serializer_options in your controller
