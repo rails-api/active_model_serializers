@@ -358,8 +358,8 @@ Here is an example:
 
 <pre lang="ruby">
 class UserSerializer < ActiveModel::Serializer
-  has_many :followed_posts, :key => :posts
-  has_one :owned_account, :key => :account
+  has_many :followed_posts, key: :posts
+  has_one :owned_account, key: :account
 end
 </pre>
 
@@ -370,8 +370,8 @@ to set it explicitly:
 
 <pre lang="ruby">
 class UserSerializer < ActiveModel::Serializer
-  has_many :followed_posts, :key => :posts, :serializer => CustomPostSerializer
-  has_one :owne_account, :key => :account, :serializer => PrivateAccountSerializer
+  has_many :followed_posts, key: :posts, serializer: CustomPostSerializer
+  has_one :owne_account, key: :account, serializer: PrivateAccountSerializer
 end
 </pre>
 

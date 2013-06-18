@@ -80,7 +80,7 @@ for a serializer for the object and use it if available.
 class PostsController < ApplicationController
   def show
     @post = Post.find(params[:id])
-    render :json => @post
+    render json: @post
   end
 end
 ```
@@ -107,7 +107,7 @@ end
 #### 2. Specify the serializer when you render the object:
 
 ```ruby
-render :json => @post, :serializer => FancyPostSerializer
+render json: @post, serializer: FancyPostSerializer
 ```
 
 ## Arrays
@@ -124,7 +124,7 @@ end
 class PostsController < ApplicationController
   def index
     @posts = Post.all
-    render :json => @posts
+    render json: @posts
   end
 end
 ```
@@ -145,7 +145,7 @@ By default, the root element is the name of the controller. For example, `PostsC
 generates a root element "posts". To change it:
 
 ```ruby
-render :json => @posts, :root => "some_posts"
+render json: @posts, root: "some_posts"
 ```
 
 You may disable the root element for arrays at the top level, which will result in
@@ -162,7 +162,7 @@ root element of the array with any of those methods will produce
 To specify a custom serializer for the items within an array:
 
 ```ruby
-render :json => @posts, :each_serializer => FancyPostSerializer
+render json: @posts, each_serializer: FancyPostSerializer
 ```
 
 ## Disabling the root element
@@ -186,7 +186,7 @@ end
 #### 2. Disable root per render call in your controller
 
 ```ruby
-render :json => @posts, :root => false
+render json: @posts, root: false
 ```
 
 #### 3. Subclass the serializer, and specify using it
@@ -197,7 +197,7 @@ class CustomArraySerializer < ActiveModel::ArraySerializer
 end
 
 # controller:
-render :json => @posts, :serializer => CustomArraySerializer
+render json: @posts, serializer: CustomArraySerializer
 ```
 
 #### 4. Define default_serializer_options in your controller
@@ -217,7 +217,7 @@ end
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
-change `render :json` to `render :json => @your_object.to_json`.
+change `render :json` to `render json: @your_object.to_json`.
 
 # Attributes and Associations
 
@@ -293,7 +293,7 @@ type of a computed attribute:
 
 ```ruby
 class PersonSerializer < ActiveModel::Serializer
-  attributes :first_name, :last_name, {:full_name => :string}
+  attributes :first_name, :last_name, {full_name: :string}
 
   def full_name
     "#{object.first_name} #{object.last_name}"
@@ -309,7 +309,7 @@ class PostSerializer < ActiveModel::Serializer
   attributes :id, :body
 
   # look up :subject on the model, but use +title+ in the JSON
-  attribute :subject, :key => :title
+  attribute :subject, key: :title
   has_many :comments
 end
 ```
@@ -318,7 +318,7 @@ If you would like to add meta information to the outputted JSON, use the `:meta`
 option:
 
 ```ruby
-render :json => @posts, :serializer => CustomArraySerializer, :meta => {:total => 10}
+render json: @posts, serializer: CustomArraySerializer, meta: {total: 10}
 ```
 
 The above usage of `:meta` will produce the following:
@@ -336,7 +336,7 @@ The above usage of `:meta` will produce the following:
 If you would like to change the meta key name you can use the `:meta_key` option:
 
 ```ruby
-render :json => @posts, :serializer => CustomArraySerializer, :meta => {:total => 10}, :meta_key => 'meta_object'
+render json: @posts, serializer: CustomArraySerializer, meta: {total: 10}, meta_key: 'meta_object'
 ```
 
 The above usage of `:meta_key` will produce the following:
@@ -388,7 +388,7 @@ class PostSerializer < ActiveModel::Serializer
 
   # only let the user see comments he created.
   def comments
-    object.comments.where(:created_by => current_user)
+    object.comments.where(created_by: current_user)
   end
 end
 ```
@@ -401,7 +401,7 @@ class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
 
   # look up comments, but use +my_comments+ as the key in JSON
-  has_many :comments, :key => :my_comments
+  has_many :comments, key: :my_comments
 end
 ```
 
@@ -439,8 +439,8 @@ end
 You may also use the `:serializer` option to specify a custom serializer class and the `:polymorphic` option to specify an association that is polymorphic (STI), e.g.:
 
 ```ruby
-  has_many :comments, :serializer => CommentShortSerializer
-  has_one :reviewer, :polymorphic => true
+  has_many :comments, serializer: CommentShortSerializer
+  has_one :reviewer, polymorphic: true
 ```
 
 Serializers are only concerned with multiplicity, and not ownership. `belongs_to` ActiveRecord associations can be included using `has_one` in your serializer.
@@ -528,7 +528,7 @@ You can specify that the data be included like this:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, :include => true
+  embed :ids, include: true
 
   attributes :id, :title, :body
   has_many :comments
@@ -563,10 +563,10 @@ used to reference them:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, :include => true
+  embed :ids, include: true
 
   attributes :id, :title, :body
-  has_many :comments, :key => :comment_ids, :root => :comment_objects
+  has_many :comments, key: :comment_ids, root: :comment_objects
 end
 ```
 
@@ -591,10 +591,10 @@ objects:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, :include => true
+  embed :ids, include: true
 
   attributes :id, :title, :body
-  has_many :comments, :embed_key => :external_id
+  has_many :comments, embed_key: :external_id
 end
 ```
 
@@ -646,7 +646,7 @@ To be clear, it's not possible, yet, to do something like this:
 
 ```ruby
 class SomeController < ApplicationController
-  serialization_scope :current_admin, :except => [:index, :show]
+  serialization_scope :current_admin, except: [:index, :show]
 end
 ```
 
@@ -660,13 +660,13 @@ class CitiesController < ApplicationController
   def index
     @cities = City.all
 
-    render :json => @cities, :each_serializer => CitySerializer
+    render json: @cities, each_serializer: CitySerializer
   end
 
   def show
     @city = City.find(params[:id])
 
-    render :json => @city, :scope => current_admin, :scope_name => :current_admin
+    render json: @city, scope: current_admin, scope_name: :current_admin
   end
 end
 ```
