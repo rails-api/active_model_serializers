@@ -9,8 +9,8 @@ have a constant with a Hash of events:
 
 ```ruby
 INSTRUMENT = {
-  :serialize => :"serialize.serializer",
-  :associations => :"associations.serializer"
+  serialize: :"serialize.serializer",
+  associations: :"associations.serializer"
 }
 ```
 
