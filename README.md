@@ -107,15 +107,34 @@ end
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
 
-This also works with `respond_with`, which uses `to_json` under the hood. Also
-note that any options passed to `render :json` will be passed to your
-serializer and available as `@options` inside.
+This also works with `respond_with`, which uses `to_json` under the hood.
 
 To specify a custom serializer for an object, you can specify the
 serializer when you render the object:
 
 ```ruby
 render json: @post, serializer: FancyPostSerializer
+```
+
+## Options
+
+Any options passed to `render :json` (like `render :json, do_something_special: true`) will be passed to your serializer and available as `options` inside.
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body, :special
+
+  def include_special?
+    options[:do_something_special]
+  end
+end
+
+class PostsController < ApplicationController
+  def index
+    @posts = Post.all
+    render json: @posts, do_something_special: true
+  end
+end
 ```
 
 ## Arrays
