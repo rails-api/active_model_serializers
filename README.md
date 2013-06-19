@@ -116,7 +116,7 @@ serializer when you render the object:
 render json: @post, serializer: FancyPostSerializer
 ```
 
-## Options
+### Options
 
 Any options passed to `render :json` (like `render :json, do_something_special: true`) will be passed to your serializer and available as `options` inside.
 
