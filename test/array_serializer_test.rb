@@ -82,4 +82,27 @@ class ArraySerializerTest < ActiveModel::TestCase
       { "value" => "something" }
     ], serializer.as_json)
   end
+
+  def test_active_support_on_load_hooks_fired
+    loaded = nil
+    ActiveSupport.on_load(:active_model_array_serializers) do
+      loaded = self
+    end
+    assert_equal ActiveModel::ArraySerializer, loaded
+  end
+
+  def test_serializer_receives_url_options
+    array = []
+    options = {url_options: { host: "test.local" }}
+    serializer = array.active_model_serializer.new(array, options)
+
+    assert_equal({ host: "test.local" }, serializer.url_options)
+  end
+
+  def test_serializer_returns_empty_hash_without_url_options
+    array = []
+    serializer = array.active_model_serializer.new array
+
+    assert_equal({}, serializer.url_options)
+  end
 end
