@@ -275,7 +275,7 @@ class VersionSerializer < ActiveModel::Serializer
 end
 ```
 
-You can also access the `scope` method, which provides an
+You can also access the `scope` or `current_user` method, which provides an
 authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
@@ -645,8 +645,9 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-The above example will also change the scope from `current_user` to
-`current_admin`.
+The above example will also change the scope name from `current_user` to
+`current_admin`, the method is an alias for `scope` which will always point to the 
+scope that is passed from the controller.
 
 Please note that, until now, `serialization_scope` doesn't accept a second
 object with options for specifying which actions should or should not take a
