@@ -1,10 +1,15 @@
+require "active_support/core_ext/module/attribute_accessors"
+
 module ActiveModel
   class Serializer
     module Caching
+      mattr_accessor :perform_caching
+      mattr_accessor :cache_store
+
       def to_json(*args)
         if caching_enabled?
           key = expand_cache_key([self.class.to_s.underscore, cache_key, 'to-json'])
-          cache.fetch key do
+          cache_store.fetch key do
             super
           end
         else
@@ -15,7 +20,7 @@ module ActiveModel
       def serialize(*args)
         if caching_enabled?
           key = expand_cache_key([self.class.to_s.underscore, cache_key, 'serialize'])
-          cache.fetch key do
+          cache_store.fetch key do
             serialize_object
           end
         else
@@ -26,7 +31,11 @@ module ActiveModel
       private
 
       def caching_enabled?
-        perform_caching && cache && respond_to?(:cache_key)
+        cache_configured? && cache_enabled && respond_to?(:cache_key)
+      end
+
+      def cache_configured?
+        perform_caching && cache_store
       end
 
       def expand_cache_key(*args)

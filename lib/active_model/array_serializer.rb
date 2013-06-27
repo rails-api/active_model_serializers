@@ -24,13 +24,12 @@ module ActiveModel
 
     class_attribute :root
 
-    class_attribute :cache
-    class_attribute :perform_caching
+    class_attribute :cache_enabled
+    self.cache_enabled = false
 
     class << self
-      # set perform caching like root
       def cached(value = true)
-        self.perform_caching = value
+        self.cache_enabled = value
       end
     end
 
