@@ -675,3 +675,21 @@ Assuming that the `current_admin` method needs to make a query in the database
 for the current user, the advantage of this approach is that, by setting
 `serialization_scope` to `nil`, the `index` action no longer will need to make
 that query, only the `show` action will.
+
+## Caching
+
+To cache a serializer, call `cached` and define a `cache_key` method:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  cached  # enables caching for this serializer
+
+  attributes :title, :body
+
+  def cache_key
+    [object, current_user]
+  end
+end
+```
+
+The caching interface uses `Rails.cache` under the hood.
