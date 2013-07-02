@@ -1,22 +1,22 @@
 require 'newbase/test_helper'
 require 'newbase/active_model/serializer'
 
-module SerializerTest
-  module Scope
-    class Model
-      def initialize(hash={})
-        @attributes = hash
+module ActiveModel
+  class Serializer
+    class ScopeTest < ActiveModel::TestCase
+      class Model
+        def initialize(hash={})
+          @attributes = hash
+        end
+
+        def read_attribute_for_serialization(name)
+          @attributes[name]
+        end
       end
 
-      def read_attribute_for_serialization(name)
-        @attributes[name]
+      class ModelSerializer < ActiveModel::Serializer
       end
-    end
 
-    class ModelSerializer < ActiveModel::Serializer
-    end
-
-    class Test < ActiveModel::TestCase
       def setup
         @serializer = ModelSerializer.new(nil, scope: current_user)
       end
