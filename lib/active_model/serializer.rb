@@ -5,7 +5,16 @@ module ActiveModel
         base._attributes = {}
       end
 
-      attr_accessor :_attributes
+      attr_accessor :_root, :_attributes
+
+      def root(root)
+        @_root = root
+      end
+      alias root= root
+
+      def root_name
+        name.demodulize.underscore.sub(/_serializer$/, '') if name
+      end
 
       def attributes(*attrs)
         @_attributes = attrs.map(&:to_s)
@@ -18,10 +27,12 @@ module ActiveModel
       end
     end
 
-    def initialize(object)
+    def initialize(object, options={})
       @object = object
+      @root   = options[:root] || self.class._root
+      @root   = self.class.root_name if @root == true
     end
-    attr_accessor :object
+    attr_accessor :object, :root
 
     alias read_attribute_for_serialization send
 
@@ -37,7 +48,11 @@ module ActiveModel
     end
 
     def as_json(options={})
-      serializable_hash
+      if root = options[:root] || self.root
+        { root.to_s => serializable_hash }
+      else
+        serializable_hash
+      end
     end
   end
 end
