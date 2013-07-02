@@ -31,8 +31,9 @@ module ActiveModel
       @object = object
       @root   = options[:root] || self.class._root
       @root   = self.class.root_name if @root == true
+      @scope  = options[:scope]
     end
-    attr_accessor :object, :root
+    attr_accessor :object, :root, :scope
 
     alias read_attribute_for_serialization send
 
