@@ -4,24 +4,16 @@ require 'newbase/active_model/serializer'
 module ActiveModel
   class Serializer
     class RootAsOptionTest < ActiveModel::TestCase
-      class Model
-        def initialize(hash={})
-          @attributes = hash
-        end
-
-        def read_attribute_for_serialization(name)
-          @attributes[name]
-        end
-      end
-
-      class ModelSerializer < ActiveModel::Serializer
-        attributes :attr1, :attr2
-      end
-      ModelSerializer.root = true
 
       def setup
+        @old_root = ModelSerializer._root
         @model = Model.new({ :attr1 => 'value1', :attr2 => 'value2', :attr3 => 'value3' })
         @serializer = ModelSerializer.new(@model, root: 'initialize')
+        ModelSerializer._root = true
+      end
+
+      def teardown
+        ModelSerializer._root = @old_root
       end
 
       def test_root_is_not_displayed_using_serializable_hash
