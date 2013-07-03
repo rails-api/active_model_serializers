@@ -4,22 +4,6 @@ require 'newbase/active_model_serializers'
 module ActionController
   module Serialization
     class ImplicitSerializerTest < ActionController::TestCase
-      class Model
-        include ActiveModel::SerializerSupport
-
-        def initialize(hash={})
-          @attributes = hash
-        end
-
-        def read_attribute_for_serialization(name)
-          @attributes[name]
-        end
-      end
-
-      class ModelSerializer < ActiveModel::Serializer
-        attributes :attr1, :attr2
-      end
-
       class MyController < ActionController::Base
         def render_using_implicit_serializer
           render :json => Model.new(attr1: 'value1', attr2: 'value2', attr3: 'value3')
@@ -36,32 +20,12 @@ module ActionController
     end
 
     class ImplicitSerializerScopeTest < ActionController::TestCase
-      class Model
-        include ActiveModel::SerializerSupport
-
-        def initialize(hash={})
-          @attributes = hash
-        end
-
-        def read_attribute_for_serialization(name)
-          @attributes[name]
-        end
-      end
-
-      class ModelSerializer < ActiveModel::Serializer
-        attributes :attr1, :attr2
-
-        def attr2
-          object.read_attribute_for_serialization(:attr2) + '-' + scope
-        end
-      end
-
       class MyController < ActionController::Base
         def render_using_implicit_serializer_and_scope
           render :json => Model.new(attr1: 'value1', attr2: 'value2', attr3: 'value3')
         end
 
-        protected
+        private
 
         def current_user
           'current_user'
@@ -78,26 +42,6 @@ module ActionController
     end
 
     class ExplicitSerializerScopeTest < ActionController::TestCase
-      class Model
-        include ActiveModel::SerializerSupport
-
-        def initialize(hash={})
-          @attributes = hash
-        end
-
-        def read_attribute_for_serialization(name)
-          @attributes[name]
-        end
-      end
-
-      class ModelSerializer < ActiveModel::Serializer
-        attributes :attr1, :attr2
-
-        def attr2
-          object.read_attribute_for_serialization(:attr2) + '-' + scope
-        end
-      end
-
       class MyController < ActionController::Base
         def render_using_implicit_serializer_and_explicit_scope
           render json: Model.new(attr1: 'value1', attr2: 'value2', attr3: 'value3'), scope: current_admin
@@ -124,26 +68,6 @@ module ActionController
     end
 
     class OverridingSerializationScopeTest < ActionController::TestCase
-      class Model
-        include ActiveModel::SerializerSupport
-
-        def initialize(hash={})
-          @attributes = hash
-        end
-
-        def read_attribute_for_serialization(name)
-          @attributes[name]
-        end
-      end
-
-      class ModelSerializer < ActiveModel::Serializer
-        attributes :attr1, :attr2
-
-        def attr2
-          object.read_attribute_for_serialization(:attr2) + '-' + scope
-        end
-      end
-
       class MyController < ActionController::Base
         def render_overriding_serialization_scope
           render json: Model.new(attr1: 'value1', attr2: 'value2', attr3: 'value3')
