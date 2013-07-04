@@ -64,7 +64,7 @@ compliant but do not descend from `ActiveRecord` or include
 `Mongoid::Document`, you must add an include statement for
 `ActiveModel::SerializerSupport` to make models serializable. If you
 also want to make collections serializable, you should include
-`ActiveModel::ArraySerializationSupport` into your ORM's
+`ActiveModel::ArraySerializerSupport` into your ORM's
 relation/criteria class.
 
 # ActiveModel::Serializer
