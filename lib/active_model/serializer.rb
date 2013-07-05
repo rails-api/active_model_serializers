@@ -28,12 +28,14 @@ module ActiveModel
     end
 
     def initialize(object, options={})
-      @object = object
-      @root   = options[:root] || self.class._root
-      @root   = self.class.root_name if @root == true
-      @scope  = options[:scope]
+      @object   = object
+      @root     = options[:root] || self.class._root
+      @root     = self.class.root_name if @root == true
+      @scope    = options[:scope]
+      @meta_key = options[:meta_key] || :meta
+      @meta     = options[@meta_key]
     end
-    attr_accessor :object, :root, :scope
+    attr_accessor :object, :root, :scope, :meta_key, :meta
 
     alias read_attribute_for_serialization send
 
@@ -50,7 +52,9 @@ module ActiveModel
 
     def as_json(options={})
       if root = options[:root] || self.root
-        { root.to_s => serializable_hash }
+        hash = { root.to_s => serializable_hash }
+        hash[meta_key.to_s] = meta if meta
+        hash
       else
         serializable_hash
       end
