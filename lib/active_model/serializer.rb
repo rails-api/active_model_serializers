@@ -29,13 +29,13 @@ module ActiveModel
 
     def initialize(object, options={})
       @object   = object
+      @scope    = options[:scope]
       @root     = options[:root] || self.class._root
       @root     = self.class.root_name if @root == true
-      @scope    = options[:scope]
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
     end
-    attr_accessor :object, :root, :scope, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :meta_key, :meta
 
     alias read_attribute_for_serialization send
 
