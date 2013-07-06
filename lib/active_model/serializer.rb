@@ -20,8 +20,10 @@ module ActiveModel
         @_attributes = attrs.map(&:to_s)
 
         attrs.each do |attr|
-          define_method attr do
-            object.read_attribute_for_serialization(attr)
+          unless method_defined?(attr)
+            define_method attr do
+              object.read_attribute_for_serialization(attr)
+            end
           end
         end
       end

@@ -11,8 +11,6 @@ class Model
 end
 
 class ModelSerializer < ActiveModel::Serializer
-  attributes :attr1, :attr2
-
   def attr2
     attr2 = object.read_attribute_for_serialization(:attr2)
     if scope
@@ -21,4 +19,6 @@ class ModelSerializer < ActiveModel::Serializer
       attr2
     end
   end
+
+  attributes :attr1, :attr2
 end
