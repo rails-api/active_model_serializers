@@ -116,18 +116,19 @@ class CachingTest < ActiveModel::TestCase
 
     serializer.cache = array_serializer.cache = NullStore.new
 
-    model_instance_a = serializer.new(Programmer.new('Yehuda'))
-    model_instance_b = serializer.new(Programmer.new('Jose'))
-    array_instance   = array_serializer.new [model_instance_a, model_instance_b]
+    object_a = Programmer.new('Yehuda')
+    object_b = Programmer.new('Jose')
 
-    array_instance.to_json.tap do |json|
+    instance = array_serializer.new([object_a, object_b], each_serializer: serializer)
+
+    instance.to_json.tap do |json|
       assert_match('Yehuda', json)
       assert_match('Jose',   json)
     end
 
-    assert_equal(model_instance_a.to_json,           serializer.cache.read('serializer/Yehuda/to-json'))
-    assert_equal(model_instance_a.serializable_hash, serializer.cache.read('serializer/Yehuda/serialize'))
-    assert_equal(model_instance_b.to_json,           serializer.cache.read('serializer/Jose/to-json'))
-    assert_equal(model_instance_b.serializable_hash, serializer.cache.read('serializer/Jose/serialize'))
+    assert_equal(serializer.new(object_a).to_json,           serializer.cache.read('serializer/Yehuda/to-json'))
+    assert_equal(serializer.new(object_a).serializable_hash, serializer.cache.read('serializer/Yehuda/serialize'))
+    assert_equal(serializer.new(object_b).to_json,           serializer.cache.read('serializer/Jose/to-json'))
+    assert_equal(serializer.new(object_b).serializable_hash, serializer.cache.read('serializer/Jose/serialize'))
   end
 end

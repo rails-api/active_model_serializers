@@ -3,10 +3,7 @@ module ActiveModel
     module ArrayCaching
       def to_json(*args)
         if caching_enabled?
-          keyed = object.inject({}) do |hash, obj|
-            hash[obj.cache_key] = obj
-            hash
-          end
+          keyed = keyed_hash
 
           cached = cache.fetch_multi keyed.keys do |key|
             keyed[key].to_json
@@ -30,6 +27,13 @@ module ActiveModel
 
       def caching_enabled?
         perform_caching && cache
+      end
+
+      def keyed_hash
+        serializable_array.inject({}) do |hash, obj|
+          hash[obj.cache_key] = obj
+          hash
+        end
       end
 
       def values_to_json(values)
