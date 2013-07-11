@@ -70,6 +70,7 @@ module ActiveModel
     class_attribute :_embed
     self._embed = :objects
     class_attribute :_root_embed
+    class_attribute :_root_only
 
     class_attribute :cache
     class_attribute :perform_caching
@@ -249,6 +250,7 @@ module ActiveModel
       def embed(type, options={})
         self._embed = type
         self._root_embed = true if options[:include]
+        self._root_only = true if options[:root_only]
       end
 
       # Defines the root used on serialization. If false, disables the root.
@@ -379,7 +381,14 @@ module ActiveModel
 
       options = default_embed_options.merge!(options)
       options[:value] ||= send(name)
-      association = association_class.new(name, options, self.options)
+
+      serializer_options = self.options.dup
+
+      if include_root_associations_only?
+        serializer_options[:include_root_only] = !root_serializer?
+      end
+
+      association = association_class.new(name, options, serializer_options)
 
       if association.embed_ids?
         node[association.key] = association.serialize_ids
@@ -387,11 +396,23 @@ module ActiveModel
         if association.embed_in_root? && hash.nil?
           raise IncludeError.new(self.class, association.name)
         elsif association.embed_in_root? && association.embeddable?
-          merge_association hash, association.root, association.serializables, unique_values
+          if include_root_associations_only? && root_serializer?
+            merge_association hash, association.root, association.serializables, unique_values
+          elsif !include_root_associations_only?
+            merge_association hash, association.root, association.serializables, unique_values
+          end
         end
       elsif association.embed_objects?
         node[association.key] = association.serialize
       end
+    end
+
+    def include_root_associations_only?
+      options.key? :include_root_only
+    end
+
+    def root_serializer?
+      options[:include_root_only] == true
     end
 
     # In some cases, an Array of associations is built by merging the associated

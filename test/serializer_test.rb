@@ -1558,14 +1558,11 @@ class SerializerTest < ActiveModel::TestCase
       end
     end
 
-    post_serializer = post_serializer_class.new post1, root: :post
+    post_serializer = post_serializer_class.new post1, root: :post, include_root_only: true
     hash = post_serializer.as_json
 
-    assert_equal 1, hash.fetch(:posts).length
-
     assert_equal({
-      post: { id: 1, title: 'Post1', author_id: 1 },
-      posts: [{ id: 1, title: 'Post1', author_id: 1 }],
+      post: { id: 1, title: 'Post 1', author_id: 1 },
       authors: [{ id: 1, name: 'Adam Hawkins', post_ids: [1,2] }]
     }, hash)
   end
