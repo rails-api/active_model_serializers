@@ -8,6 +8,30 @@ class CachingTest < ActiveModel::TestCase
       store[key] = yield
     end
 
+    def read_multi(*keys)
+      results = {}
+
+      keys.each do |key|
+        if entity = store[key]
+          hash[key] = entity
+        end
+      end
+
+      results
+    end
+
+    def fetch_multi(*keys)
+      results = read_multi(*keys)
+
+      keys.flatten.map do |key|
+        results.fetch(key) do
+          value = yield key
+          store[key] = value
+          value
+        end
+      end
+    end
+
     def clear
       store.clear
     end
@@ -22,17 +46,17 @@ class CachingTest < ActiveModel::TestCase
   end
 
   class Programmer
-    def name
-      'Adam'
-    end
+    attr_reader :name, :skills
 
-    def skills
-      %w(ruby)
+    def initialize(name = 'Adam', skills = %w[ruby])
+      @name   = name
+      @skills = skills
     end
 
     def read_attribute_for_serialization(name)
       send name
     end
+
   end
 
   def test_serializers_have_a_cache_store
@@ -72,25 +96,38 @@ class CachingTest < ActiveModel::TestCase
     assert_equal(instance.to_json, serializer.cache.read('serializer/Adam/to-json'))
   end
 
-  def test_array_serializer_uses_cache
-    serializer = Class.new(ActiveModel::ArraySerializer) do
+  def test_array_serializer_caches_all_contained_objects
+    serializer = Class.new(ActiveModel::Serializer) do
       cached true
+      attributes :name, :skills
 
       def self.to_s
-        'array_serializer'
+        'serializer'
       end
 
       def cache_key
-        'cache-key'
+        object.name
       end
     end
 
-    serializer.cache = NullStore.new
-    instance = serializer.new [Programmer.new]
+    array_serializer = Class.new(ActiveModel::ArraySerializer) do
+      cached true
+    end
 
-    instance.to_json
+    serializer.cache = array_serializer.cache = NullStore.new
 
-    assert_equal instance.serializable_array, serializer.cache.read('array_serializer/cache-key/serialize')
-    assert_equal instance.to_json, serializer.cache.read('array_serializer/cache-key/to-json')
+    model_instance_a = serializer.new(Programmer.new('Yehuda'))
+    model_instance_b = serializer.new(Programmer.new('Jose'))
+    array_instance   = array_serializer.new [model_instance_a, model_instance_b]
+
+    array_instance.to_json.tap do |json|
+      assert_match('Yehuda', json)
+      assert_match('Jose',   json)
+    end
+
+    assert_equal(model_instance_a.to_json,           serializer.cache.read('serializer/Yehuda/to-json'))
+    assert_equal(model_instance_a.serializable_hash, serializer.cache.read('serializer/Yehuda/serialize'))
+    assert_equal(model_instance_b.to_json,           serializer.cache.read('serializer/Jose/to-json'))
+    assert_equal(model_instance_b.serializable_hash, serializer.cache.read('serializer/Jose/serialize'))
   end
 end

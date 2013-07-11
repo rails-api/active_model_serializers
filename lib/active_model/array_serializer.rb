@@ -1,6 +1,6 @@
 require 'active_model/serializable'
-require 'active_model/serializer/caching'
-require "active_support/core_ext/class/attribute"
+require 'active_model/serializer/array_caching'
+require 'active_support/core_ext/class/attribute'
 require 'active_support/dependencies'
 require 'active_support/descendants_tracker'
 
@@ -18,7 +18,7 @@ module ActiveModel
     extend ActiveSupport::DescendantsTracker
 
     include ActiveModel::Serializable
-    include ActiveModel::Serializer::Caching
+    include ActiveModel::Serializer::ArrayCaching
 
     attr_reader :object, :options
 
