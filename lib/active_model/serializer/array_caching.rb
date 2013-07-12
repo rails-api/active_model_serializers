@@ -5,7 +5,7 @@ module ActiveModel
         if caching_enabled?
           keyed = keyed_hash('to-json')
 
-          cached = cache.fetch_multi keyed.keys do |key|
+          cached = cache.fetch_multi *keyed.keys do |key|
             keyed[key].to_json
           end
 
