@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers)
 
 # Purpose
 
@@ -13,7 +13,7 @@ content.
 In short, **serializers replace hash-driven development with object-oriented
 development.**
 
-# Installing 
+# Installing
 
 The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
@@ -28,7 +28,7 @@ Then, install it on the command line:
 $ bundle install
 ```
 
-#### Ruby 1.8 is no longer supported! 
+#### Ruby 1.8 is no longer supported!
 
 If you must use a ruby 1.8 version (MRI 1.8.7, REE, Rubinius 1.8, or JRuby 1.8), you need to use version 0.8.x.
 Versions after 0.9.0 do not support ruby 1.8. To specify version 0.8, include this in your Gemfile:
@@ -177,7 +177,7 @@ In an initializer:
 ActiveSupport.on_load(:active_model_serializers) do
   # Disable for all serializers (except ArraySerializer)
   ActiveModel::Serializer.root = false
-  
+
   # Disable for ArraySerializer
   ActiveModel::ArraySerializer.root = false
 end
@@ -693,3 +693,17 @@ end
 ```
 
 The caching interface uses `Rails.cache` under the hood.
+
+## Caching Arrays
+
+The objects contained in an array can also be cached. However, rather than
+caching the entire array all of the objects within the array will be cached
+individually if they have a `cache_key`. To make an array cacheable you only
+call `cached`, there is no need to define a `cache_key` on the array
+serializer.
+
+```ruby
+class CachedArraySerializer < ActiveModel::ArraySerializer
+  cached true
+end
+```

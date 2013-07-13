@@ -2,7 +2,6 @@ require "test_helper"
 require "test_fakes"
 
 class ArraySerializerTest < ActiveModel::TestCase
-  # serialize different typed objects
   def test_array_serializer
     model    = Model.new
     user     = User.new
