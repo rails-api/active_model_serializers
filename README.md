@@ -65,7 +65,20 @@ compliant but do not descend from `ActiveRecord` or include
 `ActiveModel::SerializerSupport` to make models serializable. If you
 also want to make collections serializable, you should include
 `ActiveModel::ArraySerializerSupport` into your ORM's
-relation/criteria class.
+relation/criteria class. In the latest version of Mongoid
+they changed the output of `id` to be a object instead of a string
+which breaks the json output.
+To fix this add this code into an initializer.
+```ruby
+module Moped
+  module BSON
+    class ObjectId
+      alias :to_json :to_s
+      alias :as_json :to_s
+    end
+  end
+end
+```
 
 # ActiveModel::Serializer
 
