@@ -4,12 +4,13 @@ module ActiveModel
       def to_json(*args)
         if caching_enabled?
           keyed = keyed_hash('to-json')
+          keys  = keyed.keys.map(&:dup)
 
-          cached = cache.fetch_multi *keyed.keys do |key|
+          cached = cache.fetch_multi *keys do |key|
             keyed[key].to_json
           end
 
-          values_to_json(cached)
+          "[#{cached.join(',')}]"
         else
           super
         end
@@ -18,8 +19,9 @@ module ActiveModel
       def serialize(*args)
         if caching_enabled?
           keyed = keyed_hash('serialize')
+          keys  = keyed.keys.map(&:dup)
 
-          cache.fetch_multi keyed.keys do |key|
+          cache.fetch_multi *keys do |key|
             keyed[key].serialize
           end
         else
@@ -39,10 +41,6 @@ module ActiveModel
           obj.perform_caching = false
           hash
         end
-      end
-
-      def values_to_json(values)
-        "[#{values.join(',')}]"
       end
     end
   end
