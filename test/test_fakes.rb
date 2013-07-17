@@ -100,6 +100,22 @@ class MyUserSerializer < ActiveModel::Serializer
   end
 end
 
+class UserWithColumns < User
+  def self.columns_hash
+    { "first_name" => Struct.new(:type).new(:string), "last_name" => Struct.new(:type).new(:string) }
+  end
+end
+
+class UserAttributesWithComputedSerializer < ActiveModel::Serializer
+  attributes :first_name, :last_name, full_name: :string
+
+  def self.model_class; UserWithColumns; end
+
+  def serializable_hash
+    attributes.merge(:full_name => "#{attributes[:first_name]} #{attributes[:last_name]}")
+  end
+end
+
 class CommentSerializer
   def initialize(comment, options={})
     @object = comment
