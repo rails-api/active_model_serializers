@@ -107,7 +107,7 @@ class UserWithColumns < User
 end
 
 class UserAttributesWithComputedSerializer < ActiveModel::Serializer
-  attributes :first_name, :last_name, full_name: :string
+  attributes :first_name, :last_name, full_name: {type: :string}
 
   def self.model_class; UserWithColumns; end
 

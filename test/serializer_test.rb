@@ -664,7 +664,7 @@ class SerializerTest < ActiveModel::TestCase
       def can_view; end
       def drafts; end
 
-      attributes :name, :age, { can_edit: :boolean }, :can_view
+      attributes :name, :age, { can_edit: {type: :boolean} }, :can_view
       has_many :posts, serializer: Class.new
       has_many :drafts, serializer: Class.new
       has_one :parent, serializer: Class.new
