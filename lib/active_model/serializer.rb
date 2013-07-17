@@ -63,6 +63,9 @@ module ActiveModel
     class_attribute :_attributes
     self._attributes = {}
 
+    class_attribute :_attribute_types
+    self._attribute_types = {}
+
     class_attribute :_associations
     self._associations = {}
 
@@ -86,7 +89,9 @@ module ActiveModel
 
         attrs.each do |attr|
           if Hash === attr
-            attr.each {|attr_real, key| attribute(attr_real, key: key) }
+            attr.each do |attr_real, key_or_hash|
+              attribute(attr_real, (key_or_hash.is_a?(Hash) ? key_or_hash : {key: key_or_hash}))
+            end
           else
             attribute attr
           end
@@ -97,6 +102,8 @@ module ActiveModel
         self._attributes = _attributes.merge(attr.is_a?(Hash) ? attr : {attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym})
 
         attr = attr.keys[0] if attr.is_a? Hash
+
+        self._attribute_types.update(attr => options[:type]) if options[:type]
 
         unless method_defined?(attr)
           define_method attr do
@@ -208,11 +215,7 @@ module ActiveModel
           else
             # Computed attribute (method on serializer or model). We cannot
             # infer the type, so we put nil, unless specified in the attribute declaration
-            if name != key
-              attrs[name] = key
-            else
-              attrs[key] = nil
-            end
+            attrs[key] = _attribute_types[name]
           end
         end
 

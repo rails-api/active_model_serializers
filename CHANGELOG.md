@@ -1,5 +1,13 @@
 # UNRELEASED
 
+* attributes initialisation has changed, to provide type for
+  a computed attribute you now need to use a hash -- e.g.
+
+    attributes :attr1 => :key1, :attr2 => {:type => :string},
+               :attr3 => {:key => :key3, :type => :integer}
+    attribute :attr4, :key => :key4
+    attribute :attr5, :key => :key5, :type => :string
+
 * ActiveModel::Serializable was created it has the shared code between
   AM::Serializer and AM::ArraySerializer. Basically enable objects to be
   serializable by implementing an options method to handle the options

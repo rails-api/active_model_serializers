@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers)
 
 # Purpose
 
@@ -13,7 +13,7 @@ content.
 In short, **serializers replace hash-driven development with object-oriented
 development.**
 
-# Installing 
+# Installing
 
 The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
@@ -28,7 +28,7 @@ Then, install it on the command line:
 $ bundle install
 ```
 
-#### Ruby 1.8 is no longer supported! 
+#### Ruby 1.8 is no longer supported!
 
 If you must use a ruby 1.8 version (MRI 1.8.7, REE, Rubinius 1.8, or JRuby 1.8), you need to use version 0.8.x.
 Versions after 0.9.0 do not support ruby 1.8. To specify version 0.8, include this in your Gemfile:
@@ -177,7 +177,7 @@ In an initializer:
 ActiveSupport.on_load(:active_model_serializers) do
   # Disable for all serializers (except ArraySerializer)
   ActiveModel::Serializer.root = false
-  
+
   # Disable for ArraySerializer
   ActiveModel::ArraySerializer.root = false
 end
@@ -287,30 +287,31 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+If you would like the key in the outputted JSON to be different from its name
+in ActiveRecord, you can use the `:key` option to customize it:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  # look up :author_name and :msg_size on the model, but use :author and :size in the JSON
+  attributes :id, :body, {author_name: :author, msg_size: {key: :size}}
+
+  # look up :subject on the model, but use +title+ in the JSON
+  attribute :subject, key: :title
+  has_many :comments
+end
+```
+
 The type of a computed attribute (like :full_name above) is not easily
 calculated without some sophisticated static code analysis. To specify the
 type of a computed attribute:
 
 ```ruby
 class PersonSerializer < ActiveModel::Serializer
-  attributes :first_name, :last_name, {full_name: :string}
+  attributes :first_name, :last_name, {full_name: {type: :string}}
 
   def full_name
     "#{object.first_name} #{object.last_name}"
   end
-end
-```
-
-If you would like the key in the outputted JSON to be different from its name
-in ActiveRecord, you can use the `:key` option to customize it:
-
-```ruby
-class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body
-
-  # look up :subject on the model, but use +title+ in the JSON
-  attribute :subject, key: :title
-  has_many :comments
 end
 ```
 

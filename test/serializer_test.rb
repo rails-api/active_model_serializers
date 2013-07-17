@@ -73,6 +73,23 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
+  def test_attributes_method_with_computed_attribute_with_type
+    user = User.new
+    user_serializer = UserAttributesWithComputedSerializer.new(user, scope: {})
+
+    hash = user_serializer.as_json
+
+    assert_equal UserAttributesWithComputedSerializer.schema, {
+      attributes: { first_name: :string, last_name: :string, full_name: :string },
+      associations: {}
+    }
+
+    assert_equal({
+      user_attributes_with_computed: { first_name: "Jose", last_name: "Valim",
+                                       full_name: "Jose Valim" }
+    }, hash)
+  end
+
   def test_serializer_receives_scope
     user = User.new
     user_serializer = UserSerializer.new(user, scope: { scope: true })
@@ -647,7 +664,7 @@ class SerializerTest < ActiveModel::TestCase
       def can_view; end
       def drafts; end
 
-      attributes :name, :age, { can_edit: :boolean }, :can_view
+      attributes :name, :age, { can_edit: {type: :boolean} }, :can_view
       has_many :posts, serializer: Class.new
       has_many :drafts, serializer: Class.new
       has_one :parent, serializer: Class.new
