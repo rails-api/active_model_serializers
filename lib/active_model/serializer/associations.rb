@@ -108,6 +108,11 @@ module ActiveModel
         def initialize(name, options={}, serializer_options={})
           super
           @polymorphic = options[:polymorphic]
+          @flatten = options[:flatten]
+        end
+
+        def key
+          (flatten? and polymorphic?) ? id_key : super
         end
 
         def root
@@ -122,6 +127,10 @@ module ActiveModel
 
         def id_key
           "#{name}_id".to_sym
+        end
+
+        def type_key
+          "#{name}_type".to_sym
         end
 
         def embeddable?
@@ -156,7 +165,7 @@ module ActiveModel
                 object.read_attribute_for_serialization(embed_key)
               end
 
-            if polymorphic?
+            if polymorphic? and not flatten?
               {
                 type: polymorphic_key,
                 id: id
@@ -169,8 +178,9 @@ module ActiveModel
 
         private
 
-        attr_reader :polymorphic
+        attr_reader :polymorphic, :flatten
         alias polymorphic? polymorphic
+        alias flatten? flatten
 
         def use_id_key?
           embed_ids? && !polymorphic?

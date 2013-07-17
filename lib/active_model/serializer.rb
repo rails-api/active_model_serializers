@@ -389,6 +389,11 @@ module ActiveModel
         elsif association.embed_in_root? && association.embeddable?
           merge_association hash, association.root, association.serializables, unique_values
         end
+
+        if options[:flatten]
+          node[association.type_key] = association.send(:polymorphic_key)
+        end
+
       elsif association.embed_objects?
         node[association.key] = association.serialize
       end
