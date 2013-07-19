@@ -693,3 +693,13 @@ end
 ```
 
 The caching interface uses `Rails.cache` under the hood.
+
+# Design and Implementation
+
+## Keep it Simple
+
+ActiveModel::Serializers is capable of producing complex JSON views/large object trees, and it may be tempting to design in this way so that your client can make fewer requests to get data and so that related querying can be optimized. However, keeping things simple in your serializers and controllers may significantly reduce complexity and maintenance over the long-term development of your application. Please consider reducing the complexity of the JSON views you provide via the serializers as you build out your application, so that controllers/services can be more easily reused without a lot of complexity later.
+
+## Performance
+
+As you develop your controllers or other code that utilizes serializers, try to avoid n+1 queries by ensuring that data loads in an optimal fashion, e.g. if you are using ActiveRecord, you might want to use query includes or joins as needed to make the data available that the serializer(s) need.
