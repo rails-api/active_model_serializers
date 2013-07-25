@@ -1,11 +1,11 @@
-require 'newbase/test_helper'
-require 'newbase/active_model/serializer'
+require 'test_helper'
+require 'active_model/serializer'
 
 module ActiveModel
   class Serializer
     class AttributesTest < ActiveModel::TestCase
       def setup
-        model = Model.new({ :attr1 => 'value1', :attr2 => 'value2', :attr3 => 'value3' })
+        model = ::Model.new({ :attr1 => 'value1', :attr2 => 'value2', :attr3 => 'value3' })
         @model_serializer = ModelSerializer.new(model)
       end
 

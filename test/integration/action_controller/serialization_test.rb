@@ -1,5 +1,5 @@
-require 'newbase/test_helper'
-require 'newbase/active_model_serializers'
+require 'test_helper'
+require 'active_model_serializers'
 
 module ActionController
   module Serialization

@@ -1,6 +1,6 @@
-require 'newbase/test_helper'
-require 'newbase/fixtures/active_record'
-require 'newbase/active_model/serializer_support'
+require 'test_helper'
+require 'fixtures/active_record'
+require 'active_model/serializer_support'
 
 module ActiveModel
   module SerializerSupport

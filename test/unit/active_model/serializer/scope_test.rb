@@ -1,5 +1,5 @@
-require 'newbase/test_helper'
-require 'newbase/active_model/serializer'
+require 'test_helper'
+require 'active_model/serializer'
 
 module ActiveModel
   class Serializer

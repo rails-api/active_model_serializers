@@ -1,5 +1,5 @@
-require 'newbase/test_helper'
-require 'newbase/active_model/serializer'
+require 'test_helper'
+require 'active_model/serializer'
 
 module ActiveModel
   class Serializer
@@ -7,7 +7,7 @@ module ActiveModel
 
       def setup
         @old_root = ModelSerializer._root
-        @model = Model.new({ :attr1 => 'value1', :attr2 => 'value2', :attr3 => 'value3' })
+        @model = ::Model.new({ :attr1 => 'value1', :attr2 => 'value2', :attr3 => 'value3' })
         @serializer = ModelSerializer.new(@model, root: 'initialize')
         ModelSerializer._root = true
       end
@@ -40,7 +40,7 @@ module ActiveModel
         }, @serializer.as_json)
       end
 
-      def test_root_as_argument_takes_presedence
+      def test_root_as_argument_takes_precedence
         assert_equal({
           'argument' => {
             'attr1' => 'value1', 'attr2' => 'value2'

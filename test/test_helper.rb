@@ -1,7 +1,7 @@
 require 'bundler/setup'
-require 'newbase/active_model_serializers'
+require 'active_model_serializers'
 require 'test/unit'
-require 'newbase/fixtures/poro'
+require 'fixtures/poro'
 
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
