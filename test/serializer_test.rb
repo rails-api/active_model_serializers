@@ -1165,7 +1165,45 @@ class SerializerTest < ActiveModel::TestCase
     }, actual)
   end
 
-  def test_can_handle_polymoprhic_ids
+  def test_has_one_can_handle_polymoprhic_ids
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      attributes :subject, :body
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
+      attributes :name, :url
+      has_one :attachable, polymorphic: true
+    end
+
+    email = email_class.new id: 1
+
+    attachment = Attachment.new name: 'logo.png', url: 'http://example.com/logo.png', attachable: email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      name: 'logo.png',
+      url: 'http://example.com/logo.png',
+      attachable: {
+        type: :email,
+        id: 1,
+      }
+    }, actual)
+  end
+
+  def test_has_many_can_handle_polymoprhic_ids
     recipient_serializer = Class.new(ActiveModel::Serializer) do
       attribute :address
     end
@@ -1200,29 +1238,12 @@ class SerializerTest < ActiveModel::TestCase
       end
     end
 
-    attachment_serializer = Class.new(ActiveModel::Serializer) do
-      embed :ids
-      attributes :name, :url
-      has_one :attachable, polymorphic: true
-    end
-
     email = email_class.new id: 1, receivables: [
       recipient_class.new(id: 1, address: 'person@example.com'),
       recipient_class.new(id: 2, address: 'me@0.0.0.0')
     ]
 
-    attachment = Attachment.new name: 'logo.png', url: 'http://example.com/logo.png', attachable: email
-
-    actual = attachment_serializer.new(attachment, {}).as_json
-
-    assert_equal({
-      name: 'logo.png',
-      url: 'http://example.com/logo.png',
-      attachable: {
-        type: :email,
-        id: 1,
-      }
-    }, actual)
+    actual = email_serializer.new(email, {}).as_json
 
     assert_equal({
       subject: nil,
@@ -1237,7 +1258,7 @@ class SerializerTest < ActiveModel::TestCase
           id: 2
         }
       ]
-    }, email_serializer.new(email, {}).as_json)
+    }, actual)
   end
 
   def test_polymorphic_associations_are_included_at_root
