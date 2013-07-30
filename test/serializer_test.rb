@@ -1089,13 +1089,32 @@ class SerializerTest < ActiveModel::TestCase
   end
 
   def tests_can_handle_polymorphism
+    recipient_serializer = Class.new(ActiveModel::Serializer) do
+      attribute :address
+    end
+
+    recipient_class = Class.new(Model) do
+      def self.to_s
+        "Recipient"
+      end
+
+      define_method :active_model_serializer do
+        recipient_serializer
+      end
+    end
+
     email_serializer = Class.new(ActiveModel::Serializer) do
       attributes :subject, :body
+      has_many :recipients, polymorphic: true
     end
 
     email_class = Class.new(Model) do
       def self.to_s
         "Email"
+      end
+
+      define_method :recipients do
+        @attributes[:recipients]
       end
 
       define_method :active_model_serializer do
@@ -1108,7 +1127,10 @@ class SerializerTest < ActiveModel::TestCase
       has_one :attachable, polymorphic: true
     end
 
-    email = email_class.new subject: 'foo', body: 'bar'
+    email = email_class.new subject: 'foo', body: 'bar', recipients: [
+      recipient_class.new(id: 1, address: 'person@example.com'),
+      recipient_class.new(id: 2, address: 'me@0.0.0.0')
+    ]
 
     attachment = Attachment.new name: 'logo.png', url: 'http://example.com/logo.png', attachable: email
 
@@ -1119,19 +1141,58 @@ class SerializerTest < ActiveModel::TestCase
       url: 'http://example.com/logo.png',
       attachable: {
         type: :email,
-        email: { subject: 'foo', body: 'bar' }
+        email: {
+          subject: 'foo',
+          body: 'bar',
+          recipients: [
+            {
+              type: 'recipient',
+              recipient: {
+                id: 1,
+                address: 'person@example.com'
+              }
+            },
+            {
+              type: 'recipient',
+              recipient: {
+                id: 2,
+                address: 'me@0.0.0.0'
+              }
+            }
+          ]
+        }
       }
     }, actual)
   end
 
   def test_can_handle_polymoprhic_ids
+    recipient_serializer = Class.new(ActiveModel::Serializer) do
+      attribute :address
+    end
+
+    recipient_class = Class.new(Model) do
+      def self.to_s
+        "Recipient"
+      end
+
+      define_method :active_model_serializer do
+        recipient_serializer
+      end
+    end
+
     email_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids
       attributes :subject, :body
+      has_many :recipients, polymorphic: true
     end
 
     email_class = Class.new(Model) do
       def self.to_s
         "Email"
+      end
+
+      define_method :recipients do
+        @attributes[:recipients]
       end
 
       define_method :active_model_serializer do
@@ -1145,7 +1206,10 @@ class SerializerTest < ActiveModel::TestCase
       has_one :attachable, polymorphic: true
     end
 
-    email = email_class.new id: 1
+    email = email_class.new id: 1, recipients: [
+      recipient_class.new(id: 1, address: 'person@example.com'),
+      recipient_class.new(id: 2, address: 'me@0.0.0.0')
+    ]
 
     attachment = Attachment.new name: 'logo.png', url: 'http://example.com/logo.png', attachable: email
 
@@ -1156,19 +1220,54 @@ class SerializerTest < ActiveModel::TestCase
       url: 'http://example.com/logo.png',
       attachable: {
         type: :email,
-        id: 1
+        id: 1,
       }
     }, actual)
+
+    assert_equal({
+      subject: nil,
+      body: nil,
+      recipients: [
+        {
+          type: :recipient,
+          id: 1
+        },
+        {
+          type: :recipient,
+          id: 2
+        }
+      ]
+    }, email_serializer.new(email, {}).as_json)
   end
 
   def test_polymorphic_associations_are_included_at_root
+    recipient_serializer = Class.new(ActiveModel::Serializer) do
+      attribute :address
+    end
+
+    recipient_class = Class.new(Model) do
+      def self.to_s
+        "Recipient"
+      end
+
+      define_method :active_model_serializer do
+        recipient_serializer
+      end
+    end
+
     email_serializer = Class.new(ActiveModel::Serializer) do
+      embed :ids, include: true
       attributes :subject, :body, :id
+      has_many :recipients, polymorphic: true
     end
 
     email_class = Class.new(Model) do
       def self.to_s
         "Email"
+      end
+
+      define_method :recipients do
+        @attributes[:recipients]
       end
 
       define_method :active_model_serializer do
@@ -1183,7 +1282,10 @@ class SerializerTest < ActiveModel::TestCase
       has_one :attachable, polymorphic: true
     end
 
-    email = email_class.new id: 1, subject: "Hello", body: "World"
+    email = email_class.new id: 1, subject: "Hello", body: "World", recipients: [
+      recipient_class.new(id: 1, address: 'person@example.com'),
+      recipient_class.new(id: 2, address: 'me@0.0.0.0')
+    ]
 
     attachment = Attachment.new name: 'logo.png', url: 'http://example.com/logo.png', attachable: email
 
@@ -1200,7 +1302,25 @@ class SerializerTest < ActiveModel::TestCase
       emails: [{
         id: 1,
         subject: "Hello",
-        body: "World"
+        body: "World",
+        recipients: [
+          {
+            type: 'recipient',
+            id: 1
+          },
+          {
+            type: 'recipient',
+            id: 2
+          }
+        ]
+      }],
+      recipients: [{
+        id: 1,
+        address: 'person@example.com'
+      },
+      {
+        id: 2,
+        address: 'me@0.0.0.0'
       }]
     }, actual)
   end
