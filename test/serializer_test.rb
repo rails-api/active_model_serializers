@@ -1090,7 +1090,7 @@ class SerializerTest < ActiveModel::TestCase
 
   def tests_can_handle_polymorphism
     recipient_serializer = Class.new(ActiveModel::Serializer) do
-      attribute :address
+      attributes :address, :id
     end
 
     recipient_class = Class.new(Model) do
@@ -1146,14 +1146,14 @@ class SerializerTest < ActiveModel::TestCase
           body: 'bar',
           recipients: [
             {
-              type: 'recipient',
+              type: :recipient,
               recipient: {
                 id: 1,
                 address: 'person@example.com'
               }
             },
             {
-              type: 'recipient',
+              type: :recipient,
               recipient: {
                 id: 2,
                 address: 'me@0.0.0.0'
@@ -1242,7 +1242,7 @@ class SerializerTest < ActiveModel::TestCase
 
   def test_polymorphic_associations_are_included_at_root
     recipient_serializer = Class.new(ActiveModel::Serializer) do
-      attribute :address
+      attributes :address, :id
     end
 
     recipient_class = Class.new(Model) do
@@ -1292,36 +1292,37 @@ class SerializerTest < ActiveModel::TestCase
     actual = attachment_serializer.new(attachment, {}).as_json
 
     assert_equal({
+      emails: [{
+        subject: "Hello",
+        body: "World",
+        id: 1,
+        recipients: [
+          {
+            type: :recipient,
+            id: 1
+          },
+          {
+            type: :recipient,
+            id: 2
+          }
+        ]
+      }],
+      recipients: [{
+        address: 'person@example.com',
+        id: 1
+      },
+      {
+        address: 'me@0.0.0.0',
+        id: 2
+      }],
       attachment: {
         name: 'logo.png',
         url: 'http://example.com/logo.png',
         attachable: {
           type: :email,
           id: 1
-        }},
-      emails: [{
-        id: 1,
-        subject: "Hello",
-        body: "World",
-        recipients: [
-          {
-            type: 'recipient',
-            id: 1
-          },
-          {
-            type: 'recipient',
-            id: 2
-          }
-        ]
-      }],
-      recipients: [{
-        id: 1,
-        address: 'person@example.com'
-      },
-      {
-        id: 2,
-        address: 'me@0.0.0.0'
-      }]
+        }
+      }
     }, actual)
   end
 

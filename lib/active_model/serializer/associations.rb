@@ -72,6 +72,11 @@ module ActiveModel
       end
 
       class HasMany < Association #:nodoc:
+        def initialize(name, options={}, serializer_options={})
+          super
+          @polymorphic = options[:polymorphic]
+        end
+
         def root
           options[:root] || name
         end
@@ -88,19 +93,48 @@ module ActiveModel
 
         def serialize
           object.map do |item|
-            find_serializable(item).serializable_hash
+            if polymorphic?
+              {
+                :type => polymorphic_key_for_item(item),
+                polymorphic_key_for_item(item) => find_serializable(item).serializable_hash
+              }
+            else
+              find_serializable(item).serializable_hash
+            end
           end
         end
 
         def serialize_ids
           object.map do |item|
             serializer = find_serializable(item)
-            if serializer.respond_to?(embed_key)
+            id = if serializer.respond_to?(embed_key)
               serializer.send(embed_key)
             else
               item.read_attribute_for_serialization(embed_key)
             end
+
+            if polymorphic?
+              {
+                type: polymorphic_key_for_item(item),
+                id: id
+              }
+            else
+              id
+            end
           end
+        end
+
+        private
+
+        attr_reader :polymorphic
+        alias polymorphic? polymorphic
+
+        def use_id_key?
+          embed_ids? && !polymorphic?
+        end
+
+        def polymorphic_key_for_item(item)
+          item.class.to_s.demodulize.underscore.to_sym
         end
       end
 
