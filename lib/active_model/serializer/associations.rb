@@ -77,17 +77,31 @@ module ActiveModel
           @polymorphic = options[:polymorphic]
         end
 
-        def root
-          options[:root] || name
+        def roots
+          if polymorphic? && options[:root].nil?
+            object.map do |item|
+              polymorphic_root_for_item(item)
+            end.uniq
+          else
+            [ options[:root] || name ]
+          end
         end
 
         def id_key
           "#{name.to_s.singularize}_ids".to_sym
         end
 
-        def serializables
-          object.map do |item|
-            find_serializable(item)
+        def serializables_for_root(root)
+          if polymorphic? && options[:root].nil?
+            object.select do |item|
+              polymorphic_root_for_item(item) == root
+            end.map do |item|
+              find_serializable(item)
+            end
+          else
+            object.map do |item|
+              find_serializable(item)
+            end
           end
         end
 
@@ -133,6 +147,10 @@ module ActiveModel
           embed_ids? && !polymorphic?
         end
 
+        def polymorphic_root_for_item(item)
+          item.class.to_s.demodulize.pluralize.underscore.to_sym
+        end
+
         def polymorphic_key_for_item(item)
           item.class.to_s.demodulize.underscore.to_sym
         end
@@ -144,13 +162,13 @@ module ActiveModel
           @polymorphic = options[:polymorphic]
         end
 
-        def root
+        def roots
           if root = options[:root]
-            root
+            [root]
           elsif polymorphic?
-            object.class.to_s.pluralize.demodulize.underscore.to_sym
+            [object.class.to_s.pluralize.demodulize.underscore.to_sym]
           else
-            name.to_s.pluralize.to_sym
+            [name.to_s.pluralize.to_sym]
           end
         end
 
@@ -162,7 +180,7 @@ module ActiveModel
           super || !polymorphic?
         end
 
-        def serializables
+        def serializables_for_root(root)
           value = object && find_serializable(object)
           value ? [value] : []
         end

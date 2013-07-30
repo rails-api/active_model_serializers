@@ -1105,7 +1105,7 @@ class SerializerTest < ActiveModel::TestCase
 
     email_serializer = Class.new(ActiveModel::Serializer) do
       attributes :subject, :body
-      has_many :recipients, polymorphic: true
+      has_many :receivables, polymorphic: true
     end
 
     email_class = Class.new(Model) do
@@ -1113,8 +1113,8 @@ class SerializerTest < ActiveModel::TestCase
         "Email"
       end
 
-      define_method :recipients do
-        @attributes[:recipients]
+      define_method :receivables do
+        @attributes[:receivables]
       end
 
       define_method :active_model_serializer do
@@ -1127,7 +1127,7 @@ class SerializerTest < ActiveModel::TestCase
       has_one :attachable, polymorphic: true
     end
 
-    email = email_class.new subject: 'foo', body: 'bar', recipients: [
+    email = email_class.new subject: 'foo', body: 'bar', receivables: [
       recipient_class.new(id: 1, address: 'person@example.com'),
       recipient_class.new(id: 2, address: 'me@0.0.0.0')
     ]
@@ -1144,7 +1144,7 @@ class SerializerTest < ActiveModel::TestCase
         email: {
           subject: 'foo',
           body: 'bar',
-          recipients: [
+          receivables: [
             {
               type: :recipient,
               recipient: {
@@ -1183,7 +1183,7 @@ class SerializerTest < ActiveModel::TestCase
     email_serializer = Class.new(ActiveModel::Serializer) do
       embed :ids
       attributes :subject, :body
-      has_many :recipients, polymorphic: true
+      has_many :receivables, polymorphic: true
     end
 
     email_class = Class.new(Model) do
@@ -1191,8 +1191,8 @@ class SerializerTest < ActiveModel::TestCase
         "Email"
       end
 
-      define_method :recipients do
-        @attributes[:recipients]
+      define_method :receivables do
+        @attributes[:receivables]
       end
 
       define_method :active_model_serializer do
@@ -1206,7 +1206,7 @@ class SerializerTest < ActiveModel::TestCase
       has_one :attachable, polymorphic: true
     end
 
-    email = email_class.new id: 1, recipients: [
+    email = email_class.new id: 1, receivables: [
       recipient_class.new(id: 1, address: 'person@example.com'),
       recipient_class.new(id: 2, address: 'me@0.0.0.0')
     ]
@@ -1227,7 +1227,7 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({
       subject: nil,
       body: nil,
-      recipients: [
+      receivables: [
         {
           type: :recipient,
           id: 1
@@ -1258,7 +1258,7 @@ class SerializerTest < ActiveModel::TestCase
     email_serializer = Class.new(ActiveModel::Serializer) do
       embed :ids, include: true
       attributes :subject, :body, :id
-      has_many :recipients, polymorphic: true
+      has_many :receivables, polymorphic: true
     end
 
     email_class = Class.new(Model) do
@@ -1266,8 +1266,8 @@ class SerializerTest < ActiveModel::TestCase
         "Email"
       end
 
-      define_method :recipients do
-        @attributes[:recipients]
+      define_method :receivables do
+        @attributes[:receivables]
       end
 
       define_method :active_model_serializer do
@@ -1282,7 +1282,7 @@ class SerializerTest < ActiveModel::TestCase
       has_one :attachable, polymorphic: true
     end
 
-    email = email_class.new id: 1, subject: "Hello", body: "World", recipients: [
+    email = email_class.new id: 1, subject: "Hello", body: "World", receivables: [
       recipient_class.new(id: 1, address: 'person@example.com'),
       recipient_class.new(id: 2, address: 'me@0.0.0.0')
     ]
@@ -1296,7 +1296,7 @@ class SerializerTest < ActiveModel::TestCase
         subject: "Hello",
         body: "World",
         id: 1,
-        recipients: [
+        receivables: [
           {
             type: :recipient,
             id: 1
@@ -1307,14 +1307,16 @@ class SerializerTest < ActiveModel::TestCase
           }
         ]
       }],
-      recipients: [{
-        address: 'person@example.com',
-        id: 1
-      },
-      {
-        address: 'me@0.0.0.0',
-        id: 2
-      }],
+      recipients: [
+        {
+          address: 'person@example.com',
+          id: 1
+        },
+        {
+          address: 'me@0.0.0.0',
+          id: 2
+        }
+      ],
       attachment: {
         name: 'logo.png',
         url: 'http://example.com/logo.png',
