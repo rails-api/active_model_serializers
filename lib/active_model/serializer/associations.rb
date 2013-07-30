@@ -32,6 +32,7 @@ module ActiveModel
         @embed_objects = embed == :object || embed == :objects
         @embed_key     = options[:embed_key] || :id
         @embed_in_root = options[:include]
+        @polymorphic   = options[:polymorphic] || false
 
         serializer = options[:serializer]
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
@@ -44,7 +45,6 @@ module ActiveModel
       alias embeddable? object
       alias embed_objects? embed_objects
       alias embed_ids? embed_ids
-      alias use_id_key? embed_ids?
       alias embed_in_root? embed_in_root
 
       def key
@@ -59,7 +59,8 @@ module ActiveModel
 
       private
 
-      attr_reader :embed_key, :serializer_class, :options, :serializer_options
+      attr_reader :embed_key, :serializer_class, :options, :serializer_options, :polymorphic
+      alias polymorphic? polymorphic
 
       def find_serializable(object)
         if serializer_class
@@ -71,19 +72,59 @@ module ActiveModel
         end
       end
 
-      class HasMany < Association #:nodoc:
-        def initialize(name, options={}, serializer_options={})
-          super
-          @polymorphic = options[:polymorphic]
-        end
+      def type_name(object)
+        object.class.to_s.demodulize.underscore.to_sym
+      end
 
+      def serialize_item(object)
+        serializable_hash = find_serializable(object).serializable_hash
+        if polymorphic?
+          type_name = type_name object
+          {
+            :type => type_name,
+            type_name => serializable_hash
+          }
+        else
+          serializable_hash
+        end
+      end
+
+      def serialization_id(object)
+        serializer = find_serializable(object)
+        if serializer.respond_to?(embed_key)
+          serializer.send(embed_key)
+        else
+          object.read_attribute_for_serialization(embed_key)
+        end
+      end
+
+      def serialize_id(object)
+        id = serialization_id object
+
+        if polymorphic?
+          {
+            type: type_name(object),
+            id: id
+          }
+        else
+          id
+        end
+      end
+
+      def use_id_key?
+        embed_ids? && !polymorphic?
+      end
+
+      class HasMany < Association #:nodoc:
         def roots
-          if polymorphic? && options[:root].nil?
+          if options[:root]
+            [options[:root]]
+          elsif polymorphic?
             object.map do |item|
               polymorphic_root_for_item(item)
             end.uniq
           else
-            [ options[:root] || name ]
+            [name.to_s.pluralize.to_sym]
           end
         end
 
@@ -92,14 +133,14 @@ module ActiveModel
         end
 
         def serializables_for_root(root)
-          if polymorphic? && options[:root].nil?
-            object.select do |item|
-              polymorphic_root_for_item(item) == root
-            end.map do |item|
+          if options[:root] || !polymorphic?
+            object.map do |item|
               find_serializable(item)
             end
           else
-            object.map do |item|
+            object.select do |item|
+              polymorphic_root_for_item(item) == root
+            end.map do |item|
               find_serializable(item)
             end
           end
@@ -107,10 +148,12 @@ module ActiveModel
 
         def serialize
           object.map do |item|
+            serialize_item item
             if polymorphic?
+              type_name = type_name item
               {
-                :type => polymorphic_key_for_item(item),
-                polymorphic_key_for_item(item) => find_serializable(item).serializable_hash
+                :type => type_name,
+                type_name => find_serializable(item).serializable_hash
               }
             else
               find_serializable(item).serializable_hash
@@ -120,51 +163,21 @@ module ActiveModel
 
         def serialize_ids
           object.map do |item|
-            serializer = find_serializable(item)
-            id = if serializer.respond_to?(embed_key)
-              serializer.send(embed_key)
-            else
-              item.read_attribute_for_serialization(embed_key)
-            end
-
-            if polymorphic?
-              {
-                type: polymorphic_key_for_item(item),
-                id: id
-              }
-            else
-              id
-            end
+            serialize_id item
           end
         end
 
         private
 
-        attr_reader :polymorphic
-        alias polymorphic? polymorphic
-
-        def use_id_key?
-          embed_ids? && !polymorphic?
-        end
-
         def polymorphic_root_for_item(item)
           item.class.to_s.demodulize.pluralize.underscore.to_sym
-        end
-
-        def polymorphic_key_for_item(item)
-          item.class.to_s.demodulize.underscore.to_sym
         end
       end
 
       class HasOne < Association #:nodoc:
-        def initialize(name, options={}, serializer_options={})
-          super
-          @polymorphic = options[:polymorphic]
-        end
-
         def roots
-          if root = options[:root]
-            [root]
+          if options[:root]
+            [options[:root]]
           elsif polymorphic?
             [object.class.to_s.pluralize.demodulize.underscore.to_sym]
           else
@@ -187,49 +200,14 @@ module ActiveModel
 
         def serialize
           if object
-            if polymorphic?
-              {
-                :type => polymorphic_key,
-                polymorphic_key => find_serializable(object).serializable_hash
-              }
-            else
-              find_serializable(object).serializable_hash
-            end
+            serialize_item object
           end
         end
 
         def serialize_ids
           if object
-            serializer = find_serializable(object)
-            id =
-              if serializer.respond_to?(embed_key)
-                serializer.send(embed_key)
-              else
-                object.read_attribute_for_serialization(embed_key)
-              end
-
-            if polymorphic?
-              {
-                type: polymorphic_key,
-                id: id
-              }
-            else
-              id
-            end
+            serialize_id object
           end
-        end
-
-        private
-
-        attr_reader :polymorphic
-        alias polymorphic? polymorphic
-
-        def use_id_key?
-          embed_ids? && !polymorphic?
-        end
-
-        def polymorphic_key
-          object.class.to_s.demodulize.underscore.to_sym
         end
       end
     end
