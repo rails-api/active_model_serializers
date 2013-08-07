@@ -44,6 +44,16 @@ module ActiveModel
     end
 
     def serializable_array
+      serializers_array.map do |serializable|
+        if serializable.respond_to?(:serializable_hash)
+          serializable.serializable_hash
+        else
+          serializable.as_json
+        end
+      end
+    end
+
+    def serializers_array
       object.map do |item|
         if options.has_key? :each_serializer
           serializer = options[:each_serializer]
@@ -52,13 +62,7 @@ module ActiveModel
         end
         serializer ||= DefaultSerializer
 
-        serializable = serializer.new(item, options.merge(root: nil))
-
-        if serializable.respond_to?(:serializable_hash)
-          serializable.serializable_hash
-        else
-          serializable.as_json
-        end
+        serializer.new(item, options.merge(root: nil))
       end
     end
   end
