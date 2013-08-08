@@ -60,8 +60,7 @@ module ActionController
 
       serializer =
         options.delete(:serializer) ||
-        resource.respond_to?(:active_model_serializer) &&
-        resource.active_model_serializer
+        ActiveModel::Serializer.serializer_for(resource)
 
       options[:scope] = serialization_scope unless options.has_key?(:scope)
 

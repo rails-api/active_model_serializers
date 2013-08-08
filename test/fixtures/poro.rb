@@ -1,6 +1,4 @@
 class Model
-  include ActiveModel::SerializerSupport
-
   def initialize(hash={})
     @attributes = hash
   end
