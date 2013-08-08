@@ -1,6 +1,5 @@
 require 'active_model'
 require 'active_model/serializer'
-require 'active_model/serializer_support'
 
 begin
   require 'action_controller'
@@ -11,10 +10,4 @@ begin
   end
 rescue LoadError
   # rails not installed, continuing
-end
-
-[:active_record, :mongoid].each do |orm|
-  ActiveSupport.on_load(orm) do
-    include ActiveModel::SerializerSupport
-  end
 end

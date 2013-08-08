@@ -5,6 +5,10 @@ module ActiveModel
         base._attributes = {}
       end
 
+      def serializer_for(resource)
+        "#{resource.class.name}Serializer".safe_constantize
+      end
+
       attr_accessor :_root, :_attributes
 
       def root(root)
