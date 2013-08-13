@@ -37,6 +37,10 @@ module ActiveModel
         def key
           "#{name}_id"
         end
+
+        def embedded_key
+          name
+        end
       end
     end
   end

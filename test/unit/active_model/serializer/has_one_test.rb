@@ -17,17 +17,31 @@ module ActiveModel
         assert_equal 'model', associations[0].name
       end
 
-      def test_associations_serialization_using_serializable_hash
+      def test_associations_embedding_ids_serialization_using_serializable_hash
         @model_serializer.class._associations[0].embed = :ids
         assert_equal({
           'attr2' => 'value2', 'attr3' => 'value3', 'model_id' => @model.model.object_id
         }, @model_serializer.serializable_hash)
       end
 
-      def test_associations_serialization_using_as_json
+      def test_associations_embedding_ids_serialization_using_as_json
         @model_serializer.class._associations[0].embed = :ids
         assert_equal({
           'attr2' => 'value2', 'attr3' => 'value3', 'model_id' => @model.model.object_id
+        }, @model_serializer.as_json)
+      end
+
+      def test_associations_embedding_objects_serialization_using_serializable_hash
+        @model_serializer.class._associations[0].embed = :objects
+        assert_equal({
+          'attr2' => 'value2', 'attr3' => 'value3', 'model' => { 'attr1' => 'v1', 'attr2' => 'v2' }
+        }, @model_serializer.serializable_hash)
+      end
+
+      def test_associations_embedding_objects_serialization_using_as_json
+        @model_serializer.class._associations[0].embed = :objects
+        assert_equal({
+          'attr2' => 'value2', 'attr3' => 'value3', 'model' => { 'attr1' => 'v1', 'attr2' => 'v2' }
         }, @model_serializer.as_json)
       end
     end
