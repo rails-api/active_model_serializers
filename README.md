@@ -676,6 +676,17 @@ for the current user, the advantage of this approach is that, by setting
 `serialization_scope` to `nil`, the `index` action no longer will need to make
 that query, only the `show` action will.
 
+## Testing
+
+In order to test a Serializer, you can just call `.new` on it, passing the object to serialize:
+
+```ruby
+post = Post.first
+serializer = PostSerializer.new post
+serializer.to_json
+# => "{\"post\":{\"id\":1...}}"
+```
+
 ## Caching
 
 To cache a serializer, call `cached` and define a `cache_key` method:
