@@ -680,11 +680,28 @@ that query, only the `show` action will.
 
 In order to test a Serializer, you can just call `.new` on it, passing the object to serialize:
 
+### MiniTest
+
 ```ruby
-post = Post.first
-serializer = PostSerializer.new post
-serializer.to_json
-# => "{\"post\":{\"id\":1...}}"
+class TestPostSerializer < Minitest::Test
+  def setup
+    @serializer = PostSerializer.new Post.new(id: 123, title: 'some title', body: 'some text')
+  end
+
+  def test_special_json_for_api
+    assert_equal '{"post":{"id":123,"title":"some title","body":"some text"}}', @serializer.to_json
+  end
+```
+
+### RSpec
+
+```ruby
+describe PostSerializer do
+  it "creates special JSON for the API" do
+    serializer = PostSerializer.new Post.new(id: 123, title: 'some title', body: 'some text')
+    expect(serializer.to_json).to eql('{"post":{"id":123,"title":"some title","body":"some text"}}')
+  end
+end
 ```
 
 ## Caching
