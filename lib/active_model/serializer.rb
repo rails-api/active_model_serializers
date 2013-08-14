@@ -74,7 +74,8 @@ module ActiveModel
       self.class._associations.each_with_object({}) do |association, hash|
         if association.embed_ids?
           hash[association.key] = serialize_ids association
-        elsif association.embed_objects?
+        end
+        if association.embed_objects?
           associated_data = send(association.name)
           hash[association.embedded_key] = association.build_serializer(associated_data).serializable_hash
         end
