@@ -13,7 +13,8 @@ module ActiveModel
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
       end
 
-      attr_reader :name, :embed_ids, :embed_objects, :embed_key, :include
+      attr_reader :name, :embed_ids, :embed_objects, :embed_key
+      attr_accessor :include
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias include? include
@@ -21,6 +22,10 @@ module ActiveModel
       def embed=(embed)
         @embed_ids     = embed == :id || embed == :ids
         @embed_objects = embed == :object || embed == :objects
+      end
+
+      def embed_objects?
+        @embed_objects || @embed_ids && @include
       end
 
       def build_serializer(object)

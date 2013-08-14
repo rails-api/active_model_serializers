@@ -7,6 +7,8 @@ module ActiveModel
       def setup
         @model = ::Model.new({ :attr1 => 'value1', :attr2 => 'value2', :attr3 => 'value3' })
         @model_serializer = AnotherSerializer.new(@model)
+        @model_serializer.class._associations[0].include = false
+        @model_serializer.class._associations[0].embed = :ids
       end
 
       def test_associations_definition
@@ -18,14 +20,12 @@ module ActiveModel
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash
-        @model_serializer.class._associations[0].embed = :ids
         assert_equal({
           'attr2' => 'value2', 'attr3' => 'value3', 'model_id' => @model.model.object_id
         }, @model_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_serialization_using_as_json
-        @model_serializer.class._associations[0].embed = :ids
         assert_equal({
           'attr2' => 'value2', 'attr3' => 'value3', 'model_id' => @model.model.object_id
         }, @model_serializer.as_json)
@@ -42,6 +42,20 @@ module ActiveModel
         @model_serializer.class._associations[0].embed = :objects
         assert_equal({
           'attr2' => 'value2', 'attr3' => 'value3', 'model' => { 'attr1' => 'v1', 'attr2' => 'v2' }
+        }, @model_serializer.as_json)
+      end
+
+      def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
+        @model_serializer.class._associations[0].include = true
+        assert_equal({
+          'attr2' => 'value2', 'attr3' => 'value3', 'model_id' => @model.model.object_id, 'model' => { 'attr1' => 'v1', 'attr2' => 'v2' }
+        }, @model_serializer.serializable_hash)
+      end
+
+      def test_associations_embedding_ids_including_objects_serialization_using_as_json
+        @model_serializer.class._associations[0].include = true
+        assert_equal({
+          'attr2' => 'value2', 'attr3' => 'value3', 'model_id' => @model.model.object_id, 'model' => { 'attr1' => 'v1', 'attr2' => 'v2' }
         }, @model_serializer.as_json)
       end
     end
