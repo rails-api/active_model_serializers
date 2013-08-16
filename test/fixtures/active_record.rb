@@ -6,15 +6,16 @@ ActiveRecord::Base.establish_connection(
 )
 
 ActiveRecord::Schema.define do
-  create_table :ar_models, :force => true do |t|
-    t.string :attr1
-    t.string :attr2
+  create_table :ar_profiles, :force => true do |t|
+    t.string :name
+    t.string :description
+    t.string :comments
   end
 end
 
-class ARModel < ActiveRecord::Base
+class ARProfile < ActiveRecord::Base
 end
 
-class ARModelSerializer < ActiveModel::Serializer
-  attributes :attr1, :attr2
+class ARProfileSerializer < ActiveModel::Serializer
+  attributes :name, :description
 end
