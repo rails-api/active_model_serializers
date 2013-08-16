@@ -7,30 +7,39 @@ class Model
     @attributes[name]
   end
 
-  def model
-    @model ||= Model.new(attr1: 'v1', attr2: 'v2')
-  end
-
   def id
     object_id
   end
 end
 
-class ModelSerializer < ActiveModel::Serializer
-  def attr2
-    attr2 = object.read_attribute_for_serialization(:attr2)
-    if scope
-      attr2 + '-' + scope
-    else
-      attr2
-    end
-  end
 
-  attributes :attr1, :attr2
+###
+## Models
+###
+class User < Model
+  def profile
+    @profile ||= Profile.new(name: 'N1', description: 'D1')
+  end
 end
 
-class AnotherSerializer < ActiveModel::Serializer
-  attributes :attr2, :attr3
+class Profile < Model
+end
 
-  has_one :model
+
+###
+## Serializers
+###
+class UserSerializer < ActiveModel::Serializer
+  attributes :name, :email
+
+  has_one :profile
+end
+
+class ProfileSerializer < ActiveModel::Serializer
+  def description
+    description = object.read_attribute_for_serialization(:description)
+    scope ? "#{description} - #{scope}" : description
+  end
+
+  attributes :name, :description
 end
