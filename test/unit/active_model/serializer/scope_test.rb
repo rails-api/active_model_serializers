@@ -5,7 +5,7 @@ module ActiveModel
   class Serializer
     class ScopeTest < ActiveModel::TestCase
       def setup
-        @serializer = ModelSerializer.new(nil, scope: current_user)
+        @serializer = ProfileSerializer.new(nil, scope: current_user)
       end
 
       def test_scope
