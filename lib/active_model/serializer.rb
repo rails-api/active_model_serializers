@@ -36,6 +36,16 @@ module ActiveModel
       end
 
       def has_one(*attrs)
+        associate(Association::HasOne, *attrs)
+      end
+
+      def has_many(*attrs)
+        associate(Association::HasMany, *attrs)
+      end
+
+      private
+
+      def associate(klass, *attrs)
         options = attrs.extract_options!
 
         attrs.each do |attr|
@@ -47,7 +57,7 @@ module ActiveModel
             end
           end
 
-          @_associations << Association::HasOne.new(attr, options)
+          @_associations << klass.new(attr, options)
         end
       end
     end
@@ -76,9 +86,17 @@ module ActiveModel
           hash[association.key] = serialize_ids association
         end
         if association.embed_objects?
-          associated_data = send(association.name)
-          hash[association.embedded_key] = association.build_serializer(associated_data).serializable_hash
+          hash[association.embedded_key] = serialize association
         end
+      end
+    end
+
+    def serialize(association)
+      associated_data = send(association.name)
+      if associated_data.respond_to?(:to_ary)
+        associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
+      else
+        association.build_serializer(associated_data).serializable_hash
       end
     end
 
