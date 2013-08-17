@@ -25,6 +25,15 @@ end
 class Profile < Model
 end
 
+class Post < Model
+  def comments
+    @comments ||= [Comment.new(content: 'C1'),
+                   Comment.new(content: 'C2')]
+  end
+end
+
+class Comment < Model
+end
 
 ###
 ## Serializers
@@ -42,4 +51,14 @@ class ProfileSerializer < ActiveModel::Serializer
   end
 
   attributes :name, :description
+end
+
+class PostSerializer < ActiveModel::Serializer
+  attributes :title, :body
+
+  has_many :comments
+end
+
+class CommentSerializer < ActiveModel::Serializer
+  attributes :content
 end

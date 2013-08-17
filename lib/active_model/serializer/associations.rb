@@ -47,6 +47,16 @@ module ActiveModel
           name
         end
       end
+
+      class HasMany < Association
+        def key
+          "#{name.singularize}_ids"
+        end
+
+        def embedded_key
+          name
+        end
+      end
     end
   end
 end
