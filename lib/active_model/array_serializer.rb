@@ -7,7 +7,8 @@ module ActiveModel
 
     def serializable_array
       @object.map do |item|
-        if serializer = Serializer.serializer_for(item)
+        serializer = @options[:each_serializer] || Serializer.serializer_for(item)
+        if serializer
           serializer.new(item).serializable_object(@options.merge(root: nil))
         else
           item.as_json
