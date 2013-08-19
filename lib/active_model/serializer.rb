@@ -9,7 +9,11 @@ module ActiveModel
       end
 
       def serializer_for(resource)
-        "#{resource.class.name}Serializer".safe_constantize
+        if resource.respond_to?(:to_ary)
+          ArraySerializer
+        else
+          "#{resource.class.name}Serializer".safe_constantize
+        end
       end
 
       attr_accessor :_root, :_attributes, :_associations
@@ -114,6 +118,7 @@ module ActiveModel
       hash = attributes
       hash.merge! associations
     end
+    alias serializable_object serializable_hash
 
     def as_json(options={})
       if root = options[:root] || self.root
