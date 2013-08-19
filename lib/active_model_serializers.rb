@@ -1,5 +1,6 @@
 require 'active_model'
 require 'active_model/serializer'
+require 'active_model/array_serializer'
 
 begin
   require 'action_controller'
