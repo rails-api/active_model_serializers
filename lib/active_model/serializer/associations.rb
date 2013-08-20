@@ -72,8 +72,19 @@ module ActiveModel
       end
 
       class HasMany < Association #:nodoc:
+        def initialize(name, options={}, serializer_options={})
+          super
+          @polymorphic = options[:polymorphic]
+        end
+
         def root
           options[:root] || name
+        end
+
+        def roots
+          object.map do |item|
+            pluralized_polymorphic_key_for_item(item)
+          end
         end
 
         def id_key
@@ -88,19 +99,52 @@ module ActiveModel
 
         def serialize
           object.map do |item|
-            find_serializable(item).serializable_hash
+            if polymorphic?
+              polymorphic_key = polymorphic_key_for_item(item)
+
+              {
+                :type => polymorphic_key,
+                polymorphic_key => find_serializable(item).serializable_hash
+              }
+            else
+              find_serializable(item).serializable_hash
+            end
           end
         end
 
         def serialize_ids
           object.map do |item|
             serializer = find_serializable(item)
-            if serializer.respond_to?(embed_key)
-              serializer.send(embed_key)
+            id = if serializer.respond_to?(embed_key)
+                  serializer.send(embed_key)
+                else
+                  item.read_attribute_for_serialization(embed_key)
+                end
+
+            if polymorphic?
+              polymorphic_key = polymorphic_key_for_item(item)
+
+              {
+                type: polymorphic_key,
+                id: id
+              }
             else
-              item.read_attribute_for_serialization(embed_key)
+              id
             end
           end
+        end
+
+        attr_reader :polymorphic
+        alias polymorphic? polymorphic
+
+        private
+
+        def polymorphic_key_for_item(item)
+          item.class.to_s.underscore.to_sym
+        end
+
+        def pluralized_polymorphic_key_for_item(item)
+          item.class.to_s.pluralize.underscore.to_sym
         end
       end
 

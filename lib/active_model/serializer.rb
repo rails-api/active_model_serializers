@@ -386,6 +386,10 @@ module ActiveModel
 
         if association.embed_in_root? && hash.nil?
           raise IncludeError.new(self.class, association.name)
+        elsif association.embed_in_root? and association.instance_of? Association::HasMany and association.polymorphic?
+          association.roots.each do |root|
+            merge_association hash, root, association.serializables, unique_values
+          end
         elsif association.embed_in_root? && association.embeddable?
           merge_association hash, association.root, association.serializables, unique_values
         end
