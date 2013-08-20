@@ -7,16 +7,15 @@ module ActiveModel
       def setup
         @user = User.new({ name: 'Name 1', email: 'mail@server.com', gender: 'M' })
         @user_serializer = UserSerializer.new(@user)
-        @user_serializer.class._associations[0].include = false
-        @user_serializer.class._associations[0].embed = :ids
+        @association = UserSerializer._associations[0]
+        @association.include = false
+        @association.embed = :ids
       end
 
       def test_associations_definition
-        associations = @user_serializer.class._associations
-
-        assert_equal 1, associations.length
-        assert_kind_of Association::HasOne, associations[0]
-        assert_equal 'profile', associations[0].name
+        assert_equal 1, UserSerializer._associations.length
+        assert_kind_of Association::HasOne, @association
+        assert_equal 'profile', @association.name
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash
@@ -32,28 +31,28 @@ module ActiveModel
       end
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
-        @user_serializer.class._associations[0].embed = :objects
+        @association.embed = :objects
         assert_equal({
           'name' => 'Name 1', 'email' => 'mail@server.com', 'profile' => { 'name' => 'N1', 'description' => 'D1' }
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_as_json
-        @user_serializer.class._associations[0].embed = :objects
+        @association.embed = :objects
         assert_equal({
           'name' => 'Name 1', 'email' => 'mail@server.com', 'profile' => { 'name' => 'N1', 'description' => 'D1' }
         }, @user_serializer.as_json)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
-        @user_serializer.class._associations[0].include = true
+        @association.include = true
         assert_equal({
           'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'N1', 'description' => 'D1' }
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
-        @user_serializer.class._associations[0].include = true
+        @association.include = true
         assert_equal({
           'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'N1', 'description' => 'D1' }
         }, @user_serializer.as_json)
