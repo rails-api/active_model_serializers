@@ -7,16 +7,15 @@ module ActiveModel
       def setup
         @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
         @post_serializer = PostSerializer.new(@post)
-        @post_serializer.class._associations[0].include = false
-        @post_serializer.class._associations[0].embed = :ids
+        @association = PostSerializer._associations[0]
+        @association.include = false
+        @association.embed = :ids
       end
 
       def test_associations_definition
-        associations = @post_serializer.class._associations
-
-        assert_equal 1, associations.length
-        assert_kind_of Association::HasMany, associations[0]
-        assert_equal 'comments', associations[0].name
+        assert_equal 1, PostSerializer._associations.length
+        assert_kind_of Association::HasMany, @association
+        assert_equal 'comments', @association.name
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash
@@ -32,31 +31,49 @@ module ActiveModel
       end
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
-        @post_serializer.class._associations[0].embed = :objects
+        @association.embed = :objects
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_as_json
-        @post_serializer.class._associations[0].embed = :objects
+        @association.embed = :objects
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.as_json)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
-        @post_serializer.class._associations[0].include = true
+       @association.include = true
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }, 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
-        @post_serializer.class._associations[0].include = true
+        @association.include = true
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }, 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.as_json)
+      end
+
+      def test_associations_using_a_given_serializer
+        @old_serializer = @association.serializer_class
+        @association.include = true
+        @association.serializer_class = Class.new(ActiveModel::Serializer) do
+          def content
+            'fake'
+          end
+
+          attributes :content
+        end
+
+        assert_equal({
+          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }, 'comments' => [{ 'content' => 'fake' }, { 'content' => 'fake' }]
+        }, @post_serializer.as_json)
+      ensure
+        @association.serializer_class = @old_serializer
       end
     end
   end

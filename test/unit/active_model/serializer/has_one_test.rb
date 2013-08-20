@@ -57,6 +57,24 @@ module ActiveModel
           'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'N1', 'description' => 'D1' }
         }, @user_serializer.as_json)
       end
+
+      def test_associations_using_a_given_serializer
+        @old_serializer = @association.serializer_class
+        @association.include = true
+        @association.serializer_class = Class.new(ActiveModel::Serializer) do
+          def name
+            'fake'
+          end
+
+          attributes :name
+        end
+
+        assert_equal({
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'fake' }
+        }, @user_serializer.as_json)
+      ensure
+        @association.serializer_class = @old_serializer
+      end
     end
   end
 end
