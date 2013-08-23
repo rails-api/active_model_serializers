@@ -3,7 +3,7 @@ require 'active_model/serializer'
 
 module ActiveModel
   class ArraySerializer
-    class Test < ActiveModel::TestCase
+    class SerializeTest < ActiveModel::TestCase
       def setup
         array = [1, 2, 3]
         @serializer = ActiveModel::Serializer.serializer_for(array).new(array)
@@ -15,6 +15,7 @@ module ActiveModel
 
       def test_array_serializer_serializes_simple_objects
         assert_equal [1, 2, 3], @serializer.serializable_array
+        assert_equal [1, 2, 3], @serializer.as_json
       end
 
       def test_array_serializer_serializes_models
@@ -26,6 +27,7 @@ module ActiveModel
                     {'name' => 'Name 2', 'description' => 'Description 2'}]
 
         assert_equal expected, serializer.serializable_array
+        assert_equal expected, serializer.as_json
       end
 
       def test_array_serializers_each_serializer
@@ -37,6 +39,7 @@ module ActiveModel
                     {'name' => 'Name 2', 'description' => 'Description 2'}]
 
         assert_equal expected, serializer.serializable_array
+        assert_equal expected, serializer.as_json
       end
     end
   end
