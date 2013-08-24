@@ -1,7 +1,10 @@
+require 'active_model/serializable'
 require 'active_model/serializer'
 
 module ActiveModel
   class ArraySerializer
+    include Serializable
+
     class << self
       attr_accessor :_root
 
@@ -31,15 +34,5 @@ module ActiveModel
       end
     end
     alias serializable_object serializable_array
-
-    def as_json(options={})
-      if root = options[:root] || self.root
-        hash = { root.to_s => serializable_array }
-        hash[meta_key.to_s] = meta if meta
-        hash
-      else
-        serializable_array
-      end
-    end
   end
 end
