@@ -1,3 +1,4 @@
+require 'active_model/array_serializer'
 require 'active_model/serializer/associations'
 
 module ActiveModel

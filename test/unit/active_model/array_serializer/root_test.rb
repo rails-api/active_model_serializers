@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'active_model/serializer'
 
 module ActiveModel
   class ArraySerializer

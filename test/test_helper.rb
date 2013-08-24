@@ -1,6 +1,6 @@
 require 'bundler/setup'
-require 'active_model_serializers'
 require 'test/unit'
+require 'active_model_serializers'
 require 'fixtures/poro'
 
 module TestHelper
