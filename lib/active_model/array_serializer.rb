@@ -7,11 +7,8 @@ module ActiveModel
 
     class << self
       attr_accessor :_root
-
-      def root(root)
-        @_root = root
-      end
-      alias root= root
+      alias root  _root=
+      alias root= _root=
     end
 
     def initialize(object, options={})

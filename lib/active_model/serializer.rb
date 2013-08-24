@@ -21,11 +21,8 @@ module ActiveModel
       end
 
       attr_accessor :_root, :_attributes, :_associations
-
-      def root(root)
-        @_root = root
-      end
-      alias root= root
+      alias root  _root=
+      alias root= _root=
 
       def root_name
         name.demodulize.underscore.sub(/_serializer$/, '') if name
