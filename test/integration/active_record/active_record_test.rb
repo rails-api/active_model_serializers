@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'fixtures/active_record'
-require 'active_model/serializer'
 
 module ActiveModel
   class Serializer

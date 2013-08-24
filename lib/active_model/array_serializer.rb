@@ -1,3 +1,5 @@
+require 'active_model/serializer'
+
 module ActiveModel
   class ArraySerializer
     class << self
