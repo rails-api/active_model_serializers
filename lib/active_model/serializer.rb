@@ -1,8 +1,11 @@
 require 'active_model/array_serializer'
+require 'active_model/serializable'
 require 'active_model/serializer/associations'
 
 module ActiveModel
   class Serializer
+    include Serializable
+
     class << self
       def inherited(base)
         base._attributes = []
@@ -120,15 +123,5 @@ module ActiveModel
       hash.merge! associations
     end
     alias serializable_object serializable_hash
-
-    def as_json(options={})
-      if root = options[:root] || self.root
-        hash = { root.to_s => serializable_hash }
-        hash[meta_key.to_s] = meta if meta
-        hash
-      else
-        serializable_hash
-      end
-    end
   end
 end
