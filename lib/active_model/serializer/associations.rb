@@ -45,7 +45,7 @@ module ActiveModel
 
       class HasOne < Association
         def key
-          "#{name}_id"
+          @options[:key] || "#{name}_id"
         end
 
         def embedded_key
@@ -55,7 +55,7 @@ module ActiveModel
 
       class HasMany < Association
         def key
-          "#{name.singularize}_ids"
+          @options[:key] || "#{name.singularize}_ids"
         end
 
         def embedded_key
