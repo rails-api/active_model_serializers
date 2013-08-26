@@ -9,6 +9,7 @@ module ActiveModel
         @association = UserSerializer._associations[0]
         @association.include = false
         @association.embed = :ids
+        @association.options[:root] = nil
       end
 
       def test_associations_definition
@@ -41,6 +42,14 @@ module ActiveModel
         assert_equal({
           'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
         }, @user_serializer.as_json)
+      end
+
+      def test_associations_embedding_objects_serialization_using_serializable_hash_and_root_from_options
+        @association.embed = :objects
+        @association.options[:root] = 'root'
+        assert_equal({
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'root' => [{ 'name' => 'N1', 'description' => 'D1' }]
+        }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
