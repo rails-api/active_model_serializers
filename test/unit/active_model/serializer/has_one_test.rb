@@ -32,28 +32,28 @@ module ActiveModel
       def test_associations_embedding_objects_serialization_using_serializable_hash
         @association.embed = :objects
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile' => { 'name' => 'N1', 'description' => 'D1' }
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_as_json
         @association.embed = :objects
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile' => { 'name' => 'N1', 'description' => 'D1' }
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
         }, @user_serializer.as_json)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
         @association.include = true
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'N1', 'description' => 'D1' }
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
         @association.include = true
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'N1', 'description' => 'D1' }
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
         }, @user_serializer.as_json)
       end
 
@@ -69,7 +69,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profile' => { 'name' => 'fake' }
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id, 'profiles' => [{ 'name' => 'fake' }]
         }, @user_serializer.as_json)
       ensure
         @association.serializer_class = @old_serializer
