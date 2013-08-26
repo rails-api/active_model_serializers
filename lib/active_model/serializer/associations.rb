@@ -14,7 +14,7 @@ module ActiveModel
         self.serializer_class = @options[:serializer]
       end
 
-      attr_reader :name, :embed_ids, :embed_objects, :embed_key, :serializer_class
+      attr_reader :name, :embed_ids, :embed_objects, :embed_key, :serializer_class, :options
       attr_accessor :include
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
@@ -49,7 +49,7 @@ module ActiveModel
         end
 
         def embedded_key
-          name.pluralize
+          @options[:root] || name.pluralize
         end
       end
 
@@ -59,7 +59,7 @@ module ActiveModel
         end
 
         def embedded_key
-          name
+          @options[:root] || name
         end
       end
     end
