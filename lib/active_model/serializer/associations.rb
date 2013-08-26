@@ -7,15 +7,17 @@ module ActiveModel
         @name          = name
         @options       = options
 
-        self.embed = options[:embed]
-        @embed_key = options[:embed_key] || :id
-        @include   = options[:include]
+        self.embed    = options[:embed]
+        @embed_key    = options[:embed_key] || :id
+        @include      = options[:include]
+        @key          = options[:key]
+        @embedded_key = options[:root]
 
         self.serializer_class = @options[:serializer]
       end
 
       attr_reader :name, :embed_ids, :embed_objects, :embed_key, :serializer_class, :options
-      attr_accessor :include
+      attr_accessor :include, :key, :embedded_key
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias include? include
@@ -44,22 +46,18 @@ module ActiveModel
       end
 
       class HasOne < Association
-        def key
-          @options[:key] || "#{name}_id"
-        end
-
-        def embedded_key
-          @options[:root] || name.pluralize
+        def initialize(*args)
+          super
+          @key  ||= "#{name}_id"
+          @embedded_key ||= name.pluralize
         end
       end
 
       class HasMany < Association
-        def key
-          @options[:key] || "#{name.singularize}_ids"
-        end
-
-        def embedded_key
-          @options[:root] || name
+        def initialize(*args)
+          super
+          @key ||= "#{name.singularize}_ids"
+          @embedded_key ||= name
         end
       end
     end

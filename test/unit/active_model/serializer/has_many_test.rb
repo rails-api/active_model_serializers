@@ -9,8 +9,6 @@ module ActiveModel
         @association = PostSerializer._associations[0]
         @association.include = false
         @association.embed = :ids
-        @association.options[:root] = nil
-        @association.options[:key] = nil
       end
 
       def test_associations_definition
@@ -32,10 +30,13 @@ module ActiveModel
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash_and_key_from_options
-        @association.options[:key] = 'key'
+        old_key = @association.key
+        @association.key = 'key'
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'key' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
+      ensure
+        @association.key = old_key
       end
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
@@ -54,10 +55,13 @@ module ActiveModel
 
       def test_associations_embedding_objects_serialization_using_serializable_hash_and_root_from_options
         @association.embed = :objects
-        @association.options[:root] = 'root'
+        old_embedded_key = @association.embedded_key
+        @association.embedded_key = 'root'
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'root' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.serializable_hash)
+      ensure
+        @association.embedded_key = old_embedded_key
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
