@@ -49,7 +49,7 @@ module ActiveModel
         end
 
         def embedded_key
-          name
+          name.pluralize
         end
       end
 

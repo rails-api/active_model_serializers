@@ -101,7 +101,7 @@ module ActiveModel
       if associated_data.respond_to?(:to_ary)
         associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
       else
-        association.build_serializer(associated_data).serializable_hash
+        [association.build_serializer(associated_data).serializable_hash]
       end
     end
 
