@@ -7,20 +7,20 @@ module ActiveModel
         @name          = name
         @options       = options
 
-        self.embed    = options[:embed]
-        @embed_key    = options[:embed_key] || :id
-        @include      = options[:include]
-        @key          = options[:key]
-        @embedded_key = options[:root]
+        self.embed     = options[:embed]
+        @embed_in_root = @embed_ids && options[:include]
+        @embed_key     = options[:embed_key] || :id
+        @key           = options[:key]
+        @embedded_key  = options[:root]
 
         self.serializer_class = @options[:serializer]
       end
 
-      attr_reader :name, :embed_ids, :embed_objects, :embed_key, :serializer_class, :options
-      attr_accessor :include, :key, :embedded_key
+      attr_reader :name, :embed_ids, :embed_objects, :serializer_class
+      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :options
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
-      alias include? include
+      alias embed_in_root? embed_in_root
 
       def serializer_class=(serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
@@ -29,10 +29,6 @@ module ActiveModel
       def embed=(embed)
         @embed_ids     = embed == :id || embed == :ids
         @embed_objects = embed == :object || embed == :objects
-      end
-
-      def embed_objects?
-        @embed_objects || @embed_ids && @include
       end
 
       def build_serializer(object)
