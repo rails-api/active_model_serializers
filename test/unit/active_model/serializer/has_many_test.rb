@@ -4,11 +4,15 @@ module ActiveModel
   class Serializer
     class HasManyTest < ActiveModel::TestCase
       def setup
+        @association = PostSerializer._associations[0]
+        @old_association = @association.dup
+        @association.embed = :ids
         @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
         @post_serializer = PostSerializer.new(@post)
-        @association = PostSerializer._associations[0]
-        @association.include = false
-        @association.embed = :ids
+      end
+
+      def teardown
+        PostSerializer._associations[0] = @old_association
       end
 
       def test_associations_definition
@@ -30,13 +34,10 @@ module ActiveModel
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash_and_key_from_options
-        old_key = @association.key
         @association.key = 'key'
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'key' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
-      ensure
-        @association.key = old_key
       end
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
@@ -55,32 +56,32 @@ module ActiveModel
 
       def test_associations_embedding_objects_serialization_using_serializable_hash_and_root_from_options
         @association.embed = :objects
-        old_embedded_key = @association.embedded_key
         @association.embedded_key = 'root'
         assert_equal({
           'title' => 'Title 1', 'body' => 'Body 1', 'root' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.serializable_hash)
-      ensure
-        @association.embedded_key = old_embedded_key
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
-       @association.include = true
+        @association.embed_in_root = true
+        @post_serializer.root = nil
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }, 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
+          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
-        @association.include = true
+        @association.embed_in_root = true
+        @post_serializer.root = nil
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }, 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
+          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.as_json)
       end
 
       def test_associations_using_a_given_serializer
-        @old_serializer = @association.serializer_class
-        @association.include = true
+        @association.embed_in_root = true
+        @post_serializer.root = nil
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
           def content
             'fake'
@@ -90,10 +91,9 @@ module ActiveModel
         end
 
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }, 'comments' => [{ 'content' => 'fake' }, { 'content' => 'fake' }]
+          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'comments' => [{ 'content' => 'fake' }, { 'content' => 'fake' }]
         }, @post_serializer.as_json)
-      ensure
-        @association.serializer_class = @old_serializer
       end
     end
   end

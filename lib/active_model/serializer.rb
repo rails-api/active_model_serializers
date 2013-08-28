@@ -70,14 +70,19 @@ module ActiveModel
     def initialize(object, options={})
       @object   = object
       @scope    = options[:scope]
-      @root     = options[:root] || self.class._root
-      @root     = self.class.root_name if @root == true
+      self.root = options[:root]
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :meta_key, :meta
+    attr_reader :root
 
     alias read_attribute_for_serialization send
+
+    def root=(root)
+      @root = root || self.class._root
+      @root = self.class.root_name if auto_assign_root?
+    end
 
     def attributes
       self.class._attributes.each_with_object({}) do |name, hash|
@@ -89,8 +94,19 @@ module ActiveModel
       self.class._associations.each_with_object({}) do |association, hash|
         if association.embed_ids?
           hash[association.key] = serialize_ids association
+        elsif association.embed_objects?
+          hash[association.embedded_key] = serialize association
         end
-        if association.embed_objects?
+      end
+    end
+
+    def serializable_data
+      embedded_in_root_associations.merge!(super)
+    end
+
+    def embedded_in_root_associations
+      self.class._associations.each_with_object({}) do |association, hash|
+        if association.embed_in_root?
           hash[association.embedded_key] = serialize association
         end
       end
@@ -120,5 +136,11 @@ module ActiveModel
       hash.merge! associations
     end
     alias serializable_object serializable_hash
+
+    private
+
+    def auto_assign_root?
+      @root == true || !@root && self.class._associations.any? { |a| a.embed_in_root? }
+    end
   end
 end
