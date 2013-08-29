@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers)
 
 # Purpose
 
@@ -13,7 +13,7 @@ content.
 In short, **serializers replace hash-driven development with object-oriented
 development.**
 
-# Installing 
+# Installing
 
 The easiest way to install `ActiveModel::Serializers` is to add it to your
 `Gemfile`:
@@ -28,7 +28,7 @@ Then, install it on the command line:
 $ bundle install
 ```
 
-#### Ruby 1.8 is no longer supported! 
+#### Ruby 1.8 is no longer supported!
 
 If you must use a ruby 1.8 version (MRI 1.8.7, REE, Rubinius 1.8, or JRuby 1.8), you need to use version 0.8.x.
 Versions after 0.9.0 do not support ruby 1.8. To specify version 0.8, include this in your Gemfile:
@@ -177,7 +177,7 @@ In an initializer:
 ActiveSupport.on_load(:active_model_serializers) do
   # Disable for all serializers (except ArraySerializer)
   ActiveModel::Serializer.root = false
-  
+
   # Disable for ArraySerializer
   ActiveModel::ArraySerializer.root = false
 end
@@ -693,3 +693,24 @@ end
 ```
 
 The caching interface uses `Rails.cache` under the hood.
+
+# Design and Implementation
+
+## Keep it Simple
+
+ActiveModel::Serializers is capable of producing complex JSON views/large object
+trees, and it may be tempting to design in this way so that your client can make
+fewer requests to get data and so that related querying can be optimized.
+However, keeping things simple in your serializers and controllers may
+significantly reduce complexity and maintenance over the long-term development
+of your application. Please consider reducing the complexity of the JSON views
+you provide via the serializers as you build out your application, so that
+controllers/services can be more easily reused without a lot of complexity
+later.
+
+## Performance
+
+As you develop your controllers or other code that utilizes serializers, try to
+avoid n+1 queries by ensuring that data loads in an optimal fashion, e.g. if you
+are using ActiveRecord, you might want to use query includes or joins as needed
+to make the data available that the serializer(s) need.
