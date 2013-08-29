@@ -86,6 +86,10 @@ class UserAttributesWithUnsymbolizableKeySerializer < ActiveModel::Serializer
   end
 end
 
+class UserAttributesDefinedByStringsSerializer < ActiveModel::Serializer
+  attributes 'first_name', 'last_name'
+end
+
 class DefaultUserSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 end
