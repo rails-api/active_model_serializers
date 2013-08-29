@@ -62,6 +62,17 @@ class SerializerTest < ActiveModel::TestCase
     }, hash)
   end
 
+  def test_attributes_method_with_string_args
+    user = User.new
+    user_serializer = UserAttributesDefinedByStringsSerializer.new(user, scope: {})
+
+    hash = user_serializer.as_json
+
+    assert_equal({
+      user_attributes_defined_by_strings: { first_name: "Jose", :last_name => "Valim" }
+    }, hash)
+  end
+
   def test_attribute_method_with_name_as_serializer_prefix
     object = SomeObject.new("something")
     object_serializer = SomeSerializer.new(object, {})
