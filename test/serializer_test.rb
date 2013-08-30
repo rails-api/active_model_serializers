@@ -1518,4 +1518,45 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, post_serializer.as_json)
   end
+
+  def test_root_key_can_be_string
+    company_serializer = Class.new(ActiveModel::Serializer) do
+      root :companies
+
+      embed :ids, :include => true
+
+      has_many :contacts
+      has_one :primary_contact, :root => 'contacts'
+    end
+
+    contact_serializer = Class.new(ActiveModel::Serializer) do
+      root :contacts
+
+      attributes :id, :name
+    end
+
+    company_klass = Struct.new(:contacts, :primary_contact) do
+      define_method :active_model_serializer do
+        company_serializer
+      end
+    end
+
+    contact_klass = Struct.new(:id, :name) do
+      define_method :active_model_serializer do
+        contact_serializer
+      end
+    end
+
+    contacts = [contact_klass.new(1, 'Adam'), contact_klass.new(2, 'Paul')]
+    primary_contact = contact_klass.new(3, 'Sami')
+
+    company = company_klass.new contacts, primary_contact
+    serializer = company_serializer.new company
+
+    hash = serializer.as_json
+
+    refute hash.key?('contacts'), "Key should be used as a symbol"
+    assert hash.key?(:contacts), "Key should be used as a symbol"
+    assert_equal 3, hash[:contacts].size
+  end
 end
