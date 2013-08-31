@@ -1518,4 +1518,52 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, post_serializer.as_json)
   end
+
+  def test_sideloading_can_be_configured_on_only_the_root_object
+    adam = User.new name: 'Adam Hawkins', id: 1
+
+    post1 = Post.new title: "Post 1", id: 1
+    post2 = Post.new title: "Post 2", id: 2
+
+    post1.author = adam 
+    post2.author = adam
+
+    post_serializer_class = Class.new(ActiveModel::Serializer) do
+      embed :id, include: true
+      has_one :author
+      attributes :id, :title
+    end
+
+    user_serializer_class = Class.new(ActiveModel::Serializer) do
+      embed :id, include: true
+      has_many :posts
+      attributes :id, :name
+    end
+
+    adam.class_eval do
+      define_method :active_model_serializer do
+        user_serializer_class
+      end
+
+      define_method :posts do
+        [post1, post2]
+      end
+    end
+
+    [post1, post2].each do |user|
+      user.class_eval do
+        define_method :active_model_serializer do
+          post_serializer_class
+        end
+      end
+    end
+
+    post_serializer = post_serializer_class.new post1, root: :post, include_root_only: true
+    hash = post_serializer.as_json
+
+    assert_equal({
+      post: { id: 1, title: 'Post 1', author_id: 1 },
+      authors: [{ id: 1, name: 'Adam Hawkins', post_ids: [1,2] }]
+    }, hash)
+  end
 end
