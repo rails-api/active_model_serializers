@@ -91,5 +91,29 @@ module ActionController
         assert_equal '{"name":"Name 1","description":"Description 1 - current_admin"}', @response.body
       end
     end
+
+    class CallingSerializationScopeTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_calling_serialization_scope
+          render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+        end
+
+        private
+
+        def current_user
+          'current_user'
+        end
+
+        serialization_scope :current_user
+      end
+
+      tests MyController
+
+      def test_render_calling_serialization_scope
+        get :render_calling_serialization_scope
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"name":"Name 1","description":"Description 1 - current_user"}', @response.body
+      end
+    end
   end
 end

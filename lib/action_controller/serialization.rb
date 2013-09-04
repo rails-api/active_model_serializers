@@ -34,6 +34,12 @@ module ActionController
       self._serialization_scope = :current_user
     end
 
+    module ClassMethods
+      def serialization_scope(scope)
+        self._serialization_scope = scope
+      end
+    end
+
     def _render_option_json(resource, options)
       serializer = build_json_serializer(resource, options)
 
