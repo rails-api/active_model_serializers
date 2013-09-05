@@ -1,6 +1,7 @@
 require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/associations'
+require 'active_model/serializer/settings'
 
 module ActiveModel
   class Serializer
@@ -10,6 +11,10 @@ module ActiveModel
       def inherited(base)
         base._attributes = []
         base._associations = []
+      end
+
+      def setup
+        yield SETTINGS
       end
 
       def serializer_for(resource)
