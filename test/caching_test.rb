@@ -35,10 +35,13 @@ class CachingTest < ActiveModel::TestCase
     end
   end
 
-  def test_serializers_have_a_cache_store
-    ActiveModel::Serializer.cache = NullStore.new
+  def setup
+    ActiveModel::Serializer::Caching.cache_store = NullStore.new
+  end
 
-    assert_kind_of NullStore, ActiveModel::Serializer.cache
+
+  def test_serializers_have_a_cache_store
+    assert_kind_of NullStore, ActiveModel::Serializer::Caching.cache_store
   end
 
   def test_serializers_can_enable_caching
@@ -46,10 +49,12 @@ class CachingTest < ActiveModel::TestCase
       cached true
     end
 
-    assert serializer.perform_caching
+    assert serializer.cache_enabled
   end
 
   def test_serializers_use_cache
+    ActiveModel::Serializer::Caching.perform_caching = true
+
     serializer = Class.new(ActiveModel::Serializer) do
       cached true
       attributes :name, :skills
@@ -63,16 +68,17 @@ class CachingTest < ActiveModel::TestCase
       end
     end
 
-    serializer.cache = NullStore.new
     instance = serializer.new Programmer.new
 
     instance.to_json
 
-    assert_equal(instance.serializable_hash, serializer.cache.read('serializer/Adam/serialize'))
-    assert_equal(instance.to_json, serializer.cache.read('serializer/Adam/to-json'))
+    assert_equal(instance.serializable_hash, ActiveModel::Serializer::Caching.cache_store.read('serializer/Adam/serialize'))
+    assert_equal(instance.to_json, ActiveModel::Serializer::Caching.cache_store.read('serializer/Adam/to-json'))
   end
 
   def test_array_serializer_uses_cache
+    ActiveModel::Serializer::Caching.perform_caching = true
+
     serializer = Class.new(ActiveModel::ArraySerializer) do
       cached true
 
@@ -85,12 +91,58 @@ class CachingTest < ActiveModel::TestCase
       end
     end
 
-    serializer.cache = NullStore.new
     instance = serializer.new [Programmer.new]
 
     instance.to_json
 
-    assert_equal instance.serializable_array, serializer.cache.read('array_serializer/cache-key/serialize')
-    assert_equal instance.to_json, serializer.cache.read('array_serializer/cache-key/to-json')
+    assert_equal instance.serializable_array, ActiveModel::Serializer::Caching.cache_store.read('array_serializer/cache-key/serialize')
+    assert_equal instance.to_json, ActiveModel::Serializer::Caching.cache_store.read('array_serializer/cache-key/to-json')
+  end
+
+  def test_turning_off_all_caching_via_config_disables_serializer_caching
+    ActiveModel::Serializer::Caching.perform_caching = false
+
+    serializer = Class.new(ActiveModel::Serializer) do
+      cached true
+      attributes :name, :skills
+
+      def self.to_s
+        'serializer'
+      end
+
+      def cache_key
+        object.name
+      end
+    end
+
+    instance = serializer.new Programmer.new
+
+    instance.to_json
+
+    assert_nil ActiveModel::Serializer::Caching.cache_store.read('serializer/Adam/serialize')
+    assert_nil ActiveModel::Serializer::Caching.cache_store.read('serializer/Adam/to-json')
+  end
+
+  def test_turning_off_all_caching_via_config_disables_array_serializer_caching
+    ActiveModel::Serializer::Caching.perform_caching = false
+
+    serializer = Class.new(ActiveModel::ArraySerializer) do
+      cached true
+
+      def self.to_s
+        'array_serializer'
+      end
+
+      def cache_key
+        'cache-key'
+      end
+    end
+
+    instance = serializer.new [Programmer.new]
+
+    instance.to_json
+
+    assert_nil ActiveModel::Serializer::Caching.cache_store.read('array_serializer/cache-key/serialize')
+    assert_nil ActiveModel::Serializer::Caching.cache_store.read('array_serializer/cache-key/to-json')
   end
 end

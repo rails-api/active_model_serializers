@@ -71,12 +71,12 @@ module ActiveModel
     self._embed = :objects
     class_attribute :_root_embed
 
-    class_attribute :cache
-    class_attribute :perform_caching
+    class_attribute :cache_enabled
+    self.cache_enabled = false
 
     class << self
       def cached(value = true)
-        self.perform_caching = value
+        self.cache_enabled = value
       end
 
       # Define attributes to be used in the serialization.

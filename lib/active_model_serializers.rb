@@ -25,11 +25,8 @@ if defined?(Rails)
       end
 
       initializer "caching.active_model_serializer" do |app|
-        ActiveModel::Serializer.perform_caching = app.config.action_controller.perform_caching
-        ActiveModel::ArraySerializer.perform_caching = app.config.action_controller.perform_caching
-
-        ActiveModel::Serializer.cache = Rails.cache
-        ActiveModel::ArraySerializer.cache = Rails.cache
+        ActiveModel::Serializer::Caching.perform_caching = app.config.action_controller.perform_caching
+        ActiveModel::Serializer::Caching.cache_store = Rails.cache
       end
     end
   end
