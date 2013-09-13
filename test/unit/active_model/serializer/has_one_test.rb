@@ -54,6 +54,19 @@ module ActiveModel
         }, @user_serializer.as_json)
       end
 
+      def test_associations_embedding_nil_objects_serialization_using_as_json
+        @association.embed = :objects
+        @user.instance_eval do
+          def profile
+            nil
+          end
+        end
+
+        assert_equal({
+          'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [nil]
+        }, @user_serializer.as_json)
+      end
+
       def test_associations_embedding_objects_serialization_using_serializable_hash_and_root_from_options
         @association.embed = :objects
         @association.embedded_key = 'root'

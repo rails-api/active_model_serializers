@@ -1,3 +1,4 @@
+require 'active_model/default_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer'
 
@@ -22,12 +23,8 @@ module ActiveModel
 
     def serializable_array
       @object.map do |item|
-        serializer = @options[:each_serializer] || Serializer.serializer_for(item)
-        if serializer
-          serializer.new(item).serializable_object(@options.merge(root: nil))
-        else
-          item.as_json
-        end
+        serializer = @options[:each_serializer] || Serializer.serializer_for(item) || DefaultSerializer
+        serializer.new(item).serializable_object(@options.merge(root: nil))
       end
     end
     alias serializable_object serializable_array

@@ -1,3 +1,4 @@
+require 'active_model/default_serializer'
 require 'active_model/serializer'
 
 module ActiveModel
@@ -32,13 +33,8 @@ module ActiveModel
       end
 
       def build_serializer(object)
-        @serializer_class ||= Serializer.serializer_for(object)
-
-        if @serializer_class
-          @serializer_class.new(object, @options)
-        else
-          object
-        end
+        @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
+        @serializer_class.new(object, @options)
       end
 
       class HasOne < Association
