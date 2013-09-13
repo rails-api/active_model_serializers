@@ -54,6 +54,19 @@ module ActiveModel
         }, @post_serializer.as_json)
       end
 
+      def test_associations_embedding_nil_objects_serialization_using_as_json
+        @association.embed = :objects
+        @post.instance_eval do
+          def comments
+            [nil]
+          end
+        end
+
+        assert_equal({
+          'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [nil]
+        }, @post_serializer.as_json)
+      end
+
       def test_associations_embedding_objects_serialization_using_serializable_hash_and_root_from_options
         @association.embed = :objects
         @association.embedded_key = 'root'
