@@ -70,7 +70,6 @@ end
 
 Array.send(:include, ActiveModel::ArraySerializerSupport)
 Set.send(:include, ActiveModel::ArraySerializerSupport)
-
 {
   active_record: 'ActiveRecord::Relation',
   mongoid: 'Mongoid::Criteria'

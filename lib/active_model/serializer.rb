@@ -60,6 +60,8 @@ module ActiveModel
       end
     end
 
+    class_attribute :_camelize
+
     class_attribute :_attributes
     self._attributes = {}
 
@@ -94,7 +96,7 @@ module ActiveModel
       end
 
       def attribute(attr, options={})
-        self._attributes = _attributes.merge(attr.is_a?(Hash) ? attr : {attr => options[:key] || attr.to_s.gsub(/\?$/, '').to_sym})
+        self._attributes = _attributes.merge(attr.is_a?(Hash) ? attr : {attr => options[:key] || camelize_value(attr.to_s.gsub(/\?$/, ''))})
 
         attr = attr.keys[0] if attr.is_a? Hash
 
@@ -257,6 +259,17 @@ module ActiveModel
       end
       alias_method :root=, :root
 
+      # Sets camelization for attribute names
+      #
+      #   :lower = camelCaseLikeThis
+      #   true   = CamelCaseLikeThis
+      #   false  = dont_camel_case_anything
+      #
+      def camelize(camelize)
+        self._camelize = camelize
+      end
+      alias_method :camelize=, :camelize
+
       # Used internally to create a new serializer object based on controller
       # settings and options for a given resource. These settings are typically
       # set during the request lifecycle or by the controller class, and should
@@ -289,6 +302,17 @@ module ActiveModel
 
         serializer.new(resource, options)
       end
+
+      def camelize_value(value)
+        return nil unless value
+        if self._camelize.to_s == 'lower'
+          value.to_s.camelize(:lower)
+        elsif self._camelize
+          value.to_s.camelize
+        else
+          value.to_s
+        end.to_sym
+      end
     end
 
     attr_reader :object, :options
@@ -308,12 +332,12 @@ module ActiveModel
       return false if self._root == false
 
       class_name = self.class.name.demodulize.underscore.sub(/_serializer$/, '').to_sym unless self.class.name.blank?
-
-      if self._root == true
+      class_name = if self._root == true
         class_name
       else
         self._root || class_name
       end
+      self.class.camelize_value class_name
     end
 
     def url_options
