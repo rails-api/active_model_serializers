@@ -68,6 +68,8 @@ module ActionController
         options.delete(:serializer) ||
         ActiveModel::Serializer.serializer_for(resource)
 
+      return unless serializer
+
       options[:scope] = serialization_scope unless options.has_key?(:scope)
 
       serializer.new(resource, options)
