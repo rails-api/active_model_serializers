@@ -115,5 +115,21 @@ module ActionController
         assert_equal '{"name":"Name 1","description":"Description 1 - current_user"}', @response.body
       end
     end
+
+    class RailsSerializerTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_using_rails_behavior
+          render json: JSON.dump(hello: 'world')
+        end
+      end
+
+      tests MyController
+
+      def test_render_using_rails_behavior
+        get :render_using_rails_behavior
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"hello":"world"}', @response.body
+      end
+    end
   end
 end
