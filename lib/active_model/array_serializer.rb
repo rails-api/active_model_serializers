@@ -13,19 +13,20 @@ module ActiveModel
     end
 
     def initialize(object, options={})
-      @object   = object
-      @options  = options
-      @root     = options[:root]
-      @root     = self.class._root if @root.nil?
-      @meta_key = options[:meta_key] || :meta
-      @meta     = options[@meta_key]
+      @object          = object
+      @root            = options[:root]
+      @root            = self.class._root if @root.nil?
+      @meta_key        = options[:meta_key] || :meta
+      @meta            = options[@meta_key]
+      @each_serializer = options[:each_serializer]
+      @options         = options.merge(root: nil)
     end
     attr_accessor :object, :root, :meta_key, :meta
 
     def serializable_array
       @object.map do |item|
-        serializer = @options[:each_serializer] || Serializer.serializer_for(item) || DefaultSerializer
-        serializer.new(item, @options.merge(root: nil)).serializable_object
+        serializer = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
+        serializer.new(item, @options).serializable_object
       end
     end
     alias serializable_object serializable_array
