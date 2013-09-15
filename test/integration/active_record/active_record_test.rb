@@ -22,7 +22,7 @@ module ActiveModel
 
       def test_attributes_serialization_using_as_json
         assert_equal({
-          'name' => 'Name 1', 'description' => 'Description 1'
+          'ar_profile' => { 'name' => 'Name 1', 'description' => 'Description 1' }
         }, @profile_serializer.as_json)
       end
     end

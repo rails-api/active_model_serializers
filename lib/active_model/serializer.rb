@@ -87,7 +87,7 @@ module ActiveModel
     def root=(root)
       @root = root
       @root = self.class._root if @root.nil?
-      @root = self.class.root_name if auto_assign_root?
+      @root = self.class.root_name if @root == true || @root.nil?
     end
 
     def attributes
@@ -142,11 +142,5 @@ module ActiveModel
       hash.merge! associations
     end
     alias serializable_object serializable_hash
-
-    private
-
-    def auto_assign_root?
-      @root == true || !@root && self.class._associations.any? { |a| a.embed_in_root? }
-    end
   end
 end
