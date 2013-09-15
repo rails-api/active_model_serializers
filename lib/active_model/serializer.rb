@@ -85,7 +85,8 @@ module ActiveModel
     alias read_attribute_for_serialization send
 
     def root=(root)
-      @root = root || self.class._root
+      @root = root
+      @root = self.class._root if @root.nil?
       @root = self.class.root_name if auto_assign_root?
     end
 

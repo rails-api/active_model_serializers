@@ -38,6 +38,16 @@ module ActiveModel
           ]
         }, @serializer.as_json(root: 'argument'))
       end
+
+      def test_using_false_root_in_initialize_takes_precedence
+        ArraySerializer._root = 'root'
+        @serializer = ArraySerializer.new([@profile1, @profile2], root: false)
+
+        assert_equal([
+          { 'name' => 'Name 1', 'description' => 'Description 1' },
+          { 'name' => 'Name 2', 'description' => 'Description 2' }
+        ], @serializer.as_json)
+      end
     end
 
     class RootInSerializerTest < ActiveModel::TestCase

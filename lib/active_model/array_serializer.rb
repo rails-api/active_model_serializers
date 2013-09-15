@@ -15,7 +15,8 @@ module ActiveModel
     def initialize(object, options={})
       @object   = object
       @options  = options
-      @root     = options[:root] || self.class._root
+      @root     = options[:root]
+      @root     = self.class._root if @root.nil?
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
     end
