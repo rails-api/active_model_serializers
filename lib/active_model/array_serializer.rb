@@ -25,7 +25,7 @@ module ActiveModel
     def serializable_array
       @object.map do |item|
         serializer = @options[:each_serializer] || Serializer.serializer_for(item) || DefaultSerializer
-        serializer.new(item).serializable_object(@options.merge(root: nil))
+        serializer.new(item, @options.merge(root: nil)).serializable_object
       end
     end
     alias serializable_object serializable_array
