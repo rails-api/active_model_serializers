@@ -100,6 +100,15 @@ class MyUserSerializer < ActiveModel::Serializer
   end
 end
 
+class HalUserSerializer < ActiveModel::HalSerializer
+  attributes :first_name, :last_name
+end
+
+class HalUserSerializerWithLink < ActiveModel::HalSerializer
+  attributes :first_name
+  link :foo, href: '/bar'
+end
+
 class CommentSerializer
   def initialize(comment, options={})
     @object = comment
