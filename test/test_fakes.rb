@@ -26,7 +26,7 @@ class User
   attr_accessor :superuser
 
   def initialize(hash={})
-    @attributes = hash.merge(first_name: "Jose", last_name: "Valim", password: "oh noes yugive my password")
+    @attributes = {first_name: "Jose", last_name: "Valim", password: "oh noes yugive my password"}.merge(hash)
   end
 
   def read_attribute_for_serialization(name)
@@ -36,6 +36,9 @@ class User
   def super_user?
     @superuser
   end
+end
+
+class HalUser < User
 end
 
 class Post < Model
@@ -106,6 +109,13 @@ end
 
 class HalUserSerializerWithLink < ActiveModel::HalSerializer
   attributes :first_name
+  link :foo, href: '/bar'
+end
+
+class HalUsersSerializer < ActiveModel::HalArraySerializer
+end
+
+class HalUsersSerializerWithLink < ActiveModel::HalArraySerializer
   link :foo, href: '/bar'
 end
 
