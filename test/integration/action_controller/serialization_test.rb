@@ -131,5 +131,21 @@ module ActionController
         assert_equal '{"hello":"world"}', @response.body
       end
     end
+
+    class ArraySerializerTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_array
+          render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })]
+        end
+      end
+
+      tests MyController
+
+      def test_render_array
+        get :render_array
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"my":[{"name":"Name 1","description":"Description 1"}]}', @response.body
+      end
+    end
   end
 end

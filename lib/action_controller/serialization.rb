@@ -71,6 +71,7 @@ module ActionController
       return unless serializer
 
       options[:scope] = serialization_scope unless options.has_key?(:scope)
+      options[:resource_name] = self.controller_name if resource.respond_to?(:to_ary)
 
       serializer.new(resource, options)
     end

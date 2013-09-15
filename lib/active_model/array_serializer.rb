@@ -16,6 +16,7 @@ module ActiveModel
       @object          = object
       @root            = options[:root]
       @root            = self.class._root if @root.nil?
+      @root            = options[:resource_name] if @root.nil?
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
