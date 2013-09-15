@@ -17,6 +17,11 @@ module ActiveModel
         yield SETTINGS
       end
 
+      def embed(type, options={})
+        SETTINGS[:embed] = type
+        SETTINGS[:include] = true if options[:include]
+      end
+
       def serializer_for(resource)
         if resource.respond_to?(:to_ary)
           ArraySerializer

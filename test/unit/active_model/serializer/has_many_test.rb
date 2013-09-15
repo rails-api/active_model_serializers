@@ -84,12 +84,16 @@ module ActiveModel
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
-        @association.embed_in_root = true
+        PostSerializer.embed :ids, include: true
+        PostSerializer._associations[0].send :initialize, @association.name, @association.options
+
         @post_serializer.root = nil
         assert_equal({
           'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
           'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
         }, @post_serializer.as_json)
+      ensure
+        SETTINGS.clear
       end
 
       def test_associations_using_a_given_serializer
