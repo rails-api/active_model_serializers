@@ -29,7 +29,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_serialization_using_as_json
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
+          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } }
         }, @post_serializer.as_json)
       end
 
@@ -50,7 +50,7 @@ module ActiveModel
       def test_associations_embedding_objects_serialization_using_as_json
         @association.embed = :objects
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
+          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }] }
         }, @post_serializer.as_json)
       end
 
@@ -63,7 +63,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [nil]
+          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [nil] }
         }, @post_serializer.as_json)
       end
 

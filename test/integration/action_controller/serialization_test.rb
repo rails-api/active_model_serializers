@@ -14,7 +14,7 @@ module ActionController
       def test_render_using_implicit_serializer
         get :render_using_implicit_serializer
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"name":"Name 1","description":"Description 1"}', @response.body
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
     end
 
@@ -36,7 +36,7 @@ module ActionController
       def test_render_using_implicit_serializer_and_scope
         get :render_using_implicit_serializer_and_scope
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"name":"Name 1","description":"Description 1 - current_user"}', @response.body
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_user"}}', @response.body
       end
     end
 
@@ -62,7 +62,7 @@ module ActionController
       def test_render_using_implicit_serializer_and_explicit_scope
         get :render_using_implicit_serializer_and_explicit_scope
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"name":"Name 1","description":"Description 1 - current_admin"}', @response.body
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
     end
 
@@ -88,7 +88,7 @@ module ActionController
       def test_render_overriding_serialization_scope
         get :render_overriding_serialization_scope
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"name":"Name 1","description":"Description 1 - current_admin"}', @response.body
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
     end
 
@@ -112,7 +112,7 @@ module ActionController
       def test_render_calling_serialization_scope
         get :render_calling_serialization_scope
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"name":"Name 1","description":"Description 1 - current_user"}', @response.body
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_user"}}', @response.body
       end
     end
 

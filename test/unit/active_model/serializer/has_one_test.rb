@@ -29,7 +29,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_serialization_using_as_json
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id
+          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id }
         }, @user_serializer.as_json)
       end
 
@@ -50,7 +50,7 @@ module ActiveModel
       def test_associations_embedding_objects_serialization_using_as_json
         @association.embed = :objects
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
+          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }] }
         }, @user_serializer.as_json)
       end
 
@@ -63,7 +63,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [nil]
+          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [nil] }
         }, @user_serializer.as_json)
       end
 
