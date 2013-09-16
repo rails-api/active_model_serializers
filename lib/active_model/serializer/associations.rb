@@ -5,7 +5,7 @@ module ActiveModel
   class Serializer
     class Association
       def initialize(name, options={})
-        @name          = name
+        @name          = name.to_s
         @options       = options
 
         self.embed     = options[:embed] || SETTINGS[:embed]
