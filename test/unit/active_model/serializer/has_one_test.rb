@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     class HasOneTest < ActiveModel::TestCase
       def setup
-        @association = UserSerializer._associations[0]
+        @association = UserSerializer._associations[:profile]
         @old_association = @association.dup
         @association.embed = :ids
         @user = User.new({ name: 'Name 1', email: 'mail@server.com', gender: 'M' })
@@ -12,7 +12,7 @@ module ActiveModel
       end
 
       def teardown
-        UserSerializer._associations[0] = @old_association
+        UserSerializer._associations[:profile] = @old_association
       end
 
       def test_associations_definition
