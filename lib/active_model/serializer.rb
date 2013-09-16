@@ -10,7 +10,7 @@ module ActiveModel
     class << self
       def inherited(base)
         base._attributes = []
-        base._associations = []
+        base._associations = {}
       end
 
       def setup
@@ -70,7 +70,7 @@ module ActiveModel
             end
           end
 
-          @_associations << klass.new(attr, options)
+          @_associations[attr] = klass.new(attr, options)
         end
       end
     end
@@ -94,19 +94,27 @@ module ActiveModel
     end
 
     def attributes
-      self.class._attributes.each_with_object({}) do |name, hash|
+      filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
         hash[name] = send(name)
       end
     end
 
     def associations
-      self.class._associations.each_with_object({}) do |association, hash|
-        if association.embed_ids?
-          hash[association.key] = serialize_ids association
-        elsif association.embed_objects?
-          hash[association.embedded_key] = serialize association
+      associations = self.class._associations
+      included_associations = filter(associations.keys)
+      associations.each_with_object({}) do |(name, association), hash|
+        if included_associations.include? name
+          if association.embed_ids?
+            hash[association.key] = serialize_ids association
+          elsif association.embed_objects?
+            hash[association.embedded_key] = serialize association
+          end
         end
       end
+    end
+
+    def filter(keys)
+      keys
     end
 
     def serializable_data
@@ -114,9 +122,13 @@ module ActiveModel
     end
 
     def embedded_in_root_associations
-      self.class._associations.each_with_object({}) do |association, hash|
-        if association.embed_in_root?
-          hash[association.embedded_key] = serialize association
+      associations = self.class._associations
+      included_associations = filter(associations.keys)
+      associations.each_with_object({}) do |(name, association), hash|
+        if included_associations.include? name
+          if association.embed_in_root?
+            hash[association.embedded_key] = serialize association
+          end
         end
       end
     end

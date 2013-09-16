@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     class HasManyTest < ActiveModel::TestCase
       def setup
-        @association = PostSerializer._associations[0]
+        @association = PostSerializer._associations[:comments]
         @old_association = @association.dup
         @association.embed = :ids
         @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
@@ -12,7 +12,7 @@ module ActiveModel
       end
 
       def teardown
-        PostSerializer._associations[0] = @old_association
+        PostSerializer._associations[:comments] = @old_association
       end
 
       def test_associations_definition
@@ -85,7 +85,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
         PostSerializer.embed :ids, include: true
-        PostSerializer._associations[0].send :initialize, @association.name, @association.options
+        PostSerializer._associations[:comments].send :initialize, @association.name, @association.options
 
         @post_serializer.root = nil
         assert_equal({
