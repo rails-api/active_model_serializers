@@ -64,8 +64,6 @@ module ActiveModel
         options = attrs.extract_options!
 
         attrs.each do |attr|
-          attr = attr.to_s
-
           unless method_defined?(attr)
             define_method attr do
               object.send attr
