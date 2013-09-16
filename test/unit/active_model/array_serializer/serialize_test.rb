@@ -22,8 +22,8 @@ module ActiveModel
                  Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]
         serializer = ArraySerializer.new(array)
 
-        expected = [{'name' => 'Name 1', 'description' => 'Description 1'},
-                    {'name' => 'Name 2', 'description' => 'Description 2'}]
+        expected = [{ name: 'Name 1', description: 'Description 1' },
+                    { name: 'Name 2', description: 'Description 2' }]
 
         assert_equal expected, serializer.serializable_array
         assert_equal expected, serializer.as_json
@@ -34,8 +34,8 @@ module ActiveModel
                  ::Model.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]
         serializer = ArraySerializer.new(array, each_serializer: ProfileSerializer)
 
-        expected = [{'name' => 'Name 1', 'description' => 'Description 1'},
-                    {'name' => 'Name 2', 'description' => 'Description 2'}]
+        expected = [{ name: 'Name 1', description: 'Description 1' },
+                    { name: 'Name 2', description: 'Description 2' }]
 
         assert_equal expected, serializer.serializable_array
         assert_equal expected, serializer.as_json

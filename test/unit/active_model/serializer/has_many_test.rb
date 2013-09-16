@@ -23,34 +23,34 @@ module ActiveModel
 
       def test_associations_embedding_ids_serialization_using_serializable_hash
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
+          title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_serialization_using_as_json
         assert_equal({
-          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } }
+          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } }
         }, @post_serializer.as_json)
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash_and_key_from_options
         @association.key = 'key'
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'key' => @post.comments.map { |c| c.object_id }
+          title: 'Title 1', body: 'Body 1', 'key' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
         @association.embed = :objects
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
+          title: 'Title 1', body: 'Body 1', 'comments' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_as_json
         @association.embed = :objects
         assert_equal({
-          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }] }
+          'post' => { title: 'Title 1', body: 'Body 1', 'comments' => [{ content: 'C1' }, { content: 'C2' }] }
         }, @post_serializer.as_json)
       end
 
@@ -63,7 +63,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comments' => [nil] }
+          'post' => { title: 'Title 1', body: 'Body 1', 'comments' => [nil] }
         }, @post_serializer.as_json)
       end
 
@@ -71,7 +71,7 @@ module ActiveModel
         @association.embed = :objects
         @association.embedded_key = 'root'
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'root' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
+          title: 'Title 1', body: 'Body 1', 'root' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.serializable_hash)
       end
 
@@ -79,7 +79,7 @@ module ActiveModel
         @association.embed_in_root = true
         @post_serializer.root = nil
         assert_equal({
-          'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
+          title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
@@ -89,8 +89,8 @@ module ActiveModel
 
         @post_serializer.root = nil
         assert_equal({
-          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          'comments' => [{ 'content' => 'C1' }, { 'content' => 'C2' }]
+          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'comments' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       ensure
         SETTINGS.clear
@@ -108,8 +108,8 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { 'title' => 'Title 1', 'body' => 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          'comments' => [{ 'content' => 'fake' }, { 'content' => 'fake' }]
+          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'comments' => [{ content: 'fake' }, { content: 'fake' }]
         }, @post_serializer.as_json)
       end
     end

@@ -12,8 +12,8 @@ module ActiveModel
 
         assert_equal({
           'profile' => {
-            'name' => 'Name 1',
-            'description' => 'Description 1'
+            name: 'Name 1',
+            description: 'Description 1'
           },
           'meta' => {
             'total' => 10
@@ -26,8 +26,8 @@ module ActiveModel
 
         assert_equal({
           'profile' => {
-            'name' => 'Name 1',
-            'description' => 'Description 1'
+            name: 'Name 1',
+            description: 'Description 1'
           },
           'my_meta' => {
             'total' => 10
