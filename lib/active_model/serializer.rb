@@ -161,7 +161,7 @@ module ActiveModel
       if associated_data.respond_to?(:to_ary)
         associated_data.map { |elem| elem.send(association.embed_key) }
       else
-        associated_data.send(association.embed_key)
+        associated_data.send(association.embed_key) if associated_data
       end
     end
 
