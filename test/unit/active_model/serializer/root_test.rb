@@ -6,7 +6,7 @@ module ActiveModel
       def setup
         @old_root = ProfileSerializer._root
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-        @serializer = ProfileSerializer.new(@profile, root: 'initialize')
+        @serializer = ProfileSerializer.new(@profile, root: :initialize)
         ProfileSerializer._root = true
       end
 
@@ -22,7 +22,7 @@ module ActiveModel
 
       def test_root_using_as_json
         assert_equal({
-          'initialize' => {
+          initialize: {
             name: 'Name 1', description: 'Description 1'
           }
         }, @serializer.as_json)
@@ -40,10 +40,10 @@ module ActiveModel
 
       def test_root_as_argument_takes_precedence
         assert_equal({
-          'argument' => {
+          argument: {
             name: 'Name 1', description: 'Description 1'
           }
-        }, @serializer.as_json(root: 'argument'))
+        }, @serializer.as_json(root: :argument))
       end
 
       def test_using_false_root_in_initializer_takes_precedence
@@ -59,7 +59,7 @@ module ActiveModel
     class RootInSerializerTest < ActiveModel::TestCase
       def setup
         @old_root = ProfileSerializer._root
-        ProfileSerializer._root = 'in_serializer'
+        ProfileSerializer._root = :in_serializer
         profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @serializer = ProfileSerializer.new(profile)
         @rooted_serializer = ProfileSerializer.new(profile, root: :initialize)
@@ -77,7 +77,7 @@ module ActiveModel
 
       def test_root_using_as_json
         assert_equal({
-          'in_serializer' => {
+          in_serializer: {
             name: 'Name 1', description: 'Description 1'
           }
         }, @serializer.as_json)
@@ -85,7 +85,7 @@ module ActiveModel
 
       def test_root_in_initializer_takes_precedence
         assert_equal({
-          'initialize' => {
+          initialize: {
             name: 'Name 1', description: 'Description 1'
           }
         }, @rooted_serializer.as_json)
@@ -93,7 +93,7 @@ module ActiveModel
 
       def test_root_as_argument_takes_precedence
         assert_equal({
-          'argument' => {
+          argument: {
             name: 'Name 1', description: 'Description 1'
           }
         }, @rooted_serializer.as_json(root: :argument))
