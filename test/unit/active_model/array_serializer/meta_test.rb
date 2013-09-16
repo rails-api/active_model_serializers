@@ -16,11 +16,11 @@ module ActiveModel
         assert_equal({
           'profiles' => [
             {
-              'name' => 'Name 1',
-              'description' => 'Description 1'
+              name: 'Name 1',
+              description: 'Description 1'
             }, {
-              'name' => 'Name 2',
-              'description' => 'Description 2'
+              name: 'Name 2',
+              description: 'Description 2'
             }
           ],
           'meta' => {
@@ -36,11 +36,11 @@ module ActiveModel
         assert_equal({
           'profiles' => [
             {
-              'name' => 'Name 1',
-              'description' => 'Description 1'
+              name: 'Name 1',
+              description: 'Description 1'
             }, {
-              'name' => 'Name 2',
-              'description' => 'Description 2'
+              name: 'Name 2',
+              description: 'Description 2'
             }
           ],
           'my_meta' => {

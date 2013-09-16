@@ -16,16 +16,16 @@ module ActiveModel
 
       def test_root_is_not_displayed_using_serializable_array
         assert_equal([
-          { 'name' => 'Name 1', 'description' => 'Description 1' },
-          { 'name' => 'Name 2', 'description' => 'Description 2' }
+          { name: 'Name 1', description: 'Description 1' },
+          { name: 'Name 2', description: 'Description 2' }
         ], @serializer.serializable_array)
       end
 
       def test_root_using_as_json
         assert_equal({
           'initialize' => [
-            { 'name' => 'Name 1', 'description' => 'Description 1' },
-            { 'name' => 'Name 2', 'description' => 'Description 2' }
+            { name: 'Name 1', description: 'Description 1' },
+            { name: 'Name 2', description: 'Description 2' }
           ]
         }, @serializer.as_json)
       end
@@ -33,8 +33,8 @@ module ActiveModel
       def test_root_as_argument_takes_precedence
         assert_equal({
           'argument' => [
-            { 'name' => 'Name 1', 'description' => 'Description 1' },
-            { 'name' => 'Name 2', 'description' => 'Description 2' }
+            { name: 'Name 1', description: 'Description 1' },
+            { name: 'Name 2', description: 'Description 2' }
           ]
         }, @serializer.as_json(root: 'argument'))
       end
@@ -44,8 +44,8 @@ module ActiveModel
         @serializer = ArraySerializer.new([@profile1, @profile2], root: false)
 
         assert_equal([
-          { 'name' => 'Name 1', 'description' => 'Description 1' },
-          { 'name' => 'Name 2', 'description' => 'Description 2' }
+          { name: 'Name 1', description: 'Description 1' },
+          { name: 'Name 2', description: 'Description 2' }
         ], @serializer.as_json)
       end
     end
@@ -66,16 +66,16 @@ module ActiveModel
 
       def test_root_is_not_displayed_using_serializable_hash
         assert_equal([
-          { 'name' => 'Name 1', 'description' => 'Description 1' },
-          { 'name' => 'Name 2', 'description' => 'Description 2' }
+          { name: 'Name 1', description: 'Description 1' },
+          { name: 'Name 2', description: 'Description 2' }
         ], @serializer.serializable_array)
       end
 
       def test_root_using_as_json
         assert_equal({
           'in_serializer' => [
-            { 'name' => 'Name 1', 'description' => 'Description 1' },
-            { 'name' => 'Name 2', 'description' => 'Description 2' }
+            { name: 'Name 1', description: 'Description 1' },
+            { name: 'Name 2', description: 'Description 2' }
           ]
         }, @serializer.as_json)
       end
@@ -83,8 +83,8 @@ module ActiveModel
       def test_root_in_initializer_takes_precedence
         assert_equal({
           'initialize' => [
-            { 'name' => 'Name 1', 'description' => 'Description 1' },
-            { 'name' => 'Name 2', 'description' => 'Description 2' }
+            { name: 'Name 1', description: 'Description 1' },
+            { name: 'Name 2', description: 'Description 2' }
           ]
         }, @rooted_serializer.as_json)
       end
@@ -92,8 +92,8 @@ module ActiveModel
       def test_root_as_argument_takes_precedence
         assert_equal({
           'argument' => [
-            { 'name' => 'Name 1', 'description' => 'Description 1' },
-            { 'name' => 'Name 2', 'description' => 'Description 2' }
+            { name: 'Name 1', description: 'Description 1' },
+            { name: 'Name 2', description: 'Description 2' }
           ]
         }, @rooted_serializer.as_json(root: :argument))
       end

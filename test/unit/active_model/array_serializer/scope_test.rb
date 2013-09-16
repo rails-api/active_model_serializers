@@ -8,8 +8,8 @@ module ActiveModel
                  Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]
         serializer = ArraySerializer.new(array, scope: current_user)
 
-        expected = [{'name' => 'Name 1', 'description' => 'Description 1 - user'},
-                    {'name' => 'Name 2', 'description' => 'Description 2 - user'}]
+        expected = [{ name: 'Name 1', description: 'Description 1 - user' },
+                    { name: 'Name 2', description: 'Description 2 - user' }]
 
         assert_equal expected, serializer.serializable_array
       end

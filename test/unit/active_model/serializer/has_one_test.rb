@@ -23,34 +23,34 @@ module ActiveModel
 
       def test_associations_embedding_ids_serialization_using_serializable_hash
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id
+          name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_serialization_using_as_json
         assert_equal({
-          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id }
+          'user' => { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id }
         }, @user_serializer.as_json)
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash_and_key_from_options
         @association.key = 'key'
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'key' => @user.profile.object_id
+          name: 'Name 1', email: 'mail@server.com', 'key' => @user.profile.object_id
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
         @association.embed = :objects
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
+          name: 'Name 1', email: 'mail@server.com', 'profiles' => [{ name: 'N1', description: 'D1' }]
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_objects_serialization_using_as_json
         @association.embed = :objects
         assert_equal({
-          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }] }
+          'user' => { name: 'Name 1', email: 'mail@server.com', 'profiles' => [{ name: 'N1', description: 'D1' }] }
         }, @user_serializer.as_json)
       end
 
@@ -63,7 +63,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profiles' => [nil] }
+          'user' => { name: 'Name 1', email: 'mail@server.com', 'profiles' => [nil] }
         }, @user_serializer.as_json)
       end
 
@@ -71,7 +71,7 @@ module ActiveModel
         @association.embed = :objects
         @association.embedded_key = 'root'
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'root' => [{ 'name' => 'N1', 'description' => 'D1' }]
+          name: 'Name 1', email: 'mail@server.com', 'root' => [{ name: 'N1', description: 'D1' }]
         }, @user_serializer.serializable_hash)
       end
 
@@ -79,7 +79,7 @@ module ActiveModel
         @association.embed_in_root = true
         @user_serializer.root = nil
         assert_equal({
-          'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id
+          name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id
         }, @user_serializer.serializable_hash)
       end
 
@@ -87,8 +87,8 @@ module ActiveModel
         @association.embed_in_root = true
         @user_serializer.root = nil
         assert_equal({
-          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id },
-          'profiles' => [{ 'name' => 'N1', 'description' => 'D1' }]
+          'user' => { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id },
+          'profiles' => [{ name: 'N1', description: 'D1' }]
         }, @user_serializer.as_json)
       end
 
@@ -104,8 +104,8 @@ module ActiveModel
         end
 
         assert_equal({
-          'user' => { 'name' => 'Name 1', 'email' => 'mail@server.com', 'profile_id' => @user.profile.object_id },
-          'profiles' => [{ 'name' => 'fake' }]
+          'user' => { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id },
+          'profiles' => [{ name: 'fake' }]
         }, @user_serializer.as_json)
       end
     end

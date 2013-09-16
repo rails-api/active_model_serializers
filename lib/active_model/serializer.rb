@@ -39,7 +39,7 @@ module ActiveModel
       end
 
       def attributes(*attrs)
-        @_attributes.concat attrs.map(&:to_s)
+        @_attributes.concat attrs
 
         attrs.each do |attr|
           unless method_defined?(attr)
