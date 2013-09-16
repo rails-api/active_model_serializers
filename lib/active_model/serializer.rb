@@ -337,7 +337,8 @@ module ActiveModel
       else
         self._root || class_name
       end
-      self.class.camelize_value class_name
+
+      camelize_value class_name
     end
 
     def url_options
@@ -406,7 +407,7 @@ module ActiveModel
       association = association_class.new(name, options, self.options)
 
       if association.embed_ids?
-        node[association.key] = association.serialize_ids
+        node[camelize_value(association.key)] = association.serialize_ids
 
         if association.embed_in_root? && hash.nil?
           raise IncludeError.new(self.class, association.name)
@@ -414,7 +415,7 @@ module ActiveModel
           merge_association hash, association.root, association.serializables, unique_values
         end
       elsif association.embed_objects?
-        node[association.key] = association.serialize
+        node[camelize_value(association.key)] = association.serialize
       end
     end
 
@@ -469,6 +470,10 @@ module ActiveModel
     def instrument(name, payload = {}, &block)
       event_name = INSTRUMENT[name]
       ActiveSupport::Notifications.instrument(event_name, payload, &block)
+    end
+
+    def camelize_value(value)
+      self.class.camelize_value value
     end
 
     private

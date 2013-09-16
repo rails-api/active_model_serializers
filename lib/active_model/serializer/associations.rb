@@ -48,18 +48,29 @@ module ActiveModel
       alias embed_in_root? embed_in_root
 
       def key
-        if key = options[:key]
+
+        key = if key = options[:key]
           key
         elsif use_id_key?
           id_key
         else
           name
         end
+
+        camelize_value key
       end
 
       private
 
       attr_reader :embed_key, :serializer_class, :options, :serializer_options
+
+      def camelize_value(value)
+        if serializer_class && serializer_class.respond_to?(:camelize_value)
+          return serializer_class.camelize_value value
+        end
+
+        ActiveModel::Serializer.camelize_value value
+      end
 
       def find_serializable(object)
         if serializer_class
@@ -73,11 +84,11 @@ module ActiveModel
 
       class HasMany < Association #:nodoc:
         def root
-          options[:root] || name
+          camelize_value options[:root] || name
         end
 
         def id_key
-          "#{name.to_s.singularize}_ids".to_sym
+          camelize_value "#{name.to_s.singularize}_ids".to_sym
         end
 
         def serializables
@@ -111,17 +122,19 @@ module ActiveModel
         end
 
         def root
-          if root = options[:root]
+          rootname = if root = options[:root]
             root
           elsif polymorphic?
             object.class.to_s.pluralize.demodulize.underscore.to_sym
           else
             name.to_s.pluralize.to_sym
           end
+
+          camelize_value rootname
         end
 
         def id_key
-          "#{name}_id".to_sym
+          camelize_value "#{name}_id".to_sym
         end
 
         def embeddable?
@@ -137,7 +150,7 @@ module ActiveModel
           if object
             if polymorphic?
               {
-                :type => polymorphic_key,
+                camelize_value("type").to_sym => polymorphic_key,
                 polymorphic_key => find_serializable(object).serializable_hash
               }
             else
@@ -149,17 +162,16 @@ module ActiveModel
         def serialize_ids
           if object
             serializer = find_serializable(object)
-            id =
-              if serializer.respond_to?(embed_key)
-                serializer.send(embed_key)
-              else
-                object.read_attribute_for_serialization(embed_key)
-              end
+            id = if serializer.respond_to?(embed_key)
+              serializer.send(embed_key)
+            else
+              object.read_attribute_for_serialization(embed_key)
+            end
 
             if polymorphic?
               {
-                type: polymorphic_key,
-                id: id
+                camelize_value("type").to_sym => polymorphic_key,
+                camelize_value("id").to_sym => id
               }
             else
               id
@@ -177,7 +189,7 @@ module ActiveModel
         end
 
         def polymorphic_key
-          object.class.to_s.demodulize.underscore.to_sym
+          camelize_value object.class.to_s.demodulize.underscore.to_sym
         end
       end
     end
