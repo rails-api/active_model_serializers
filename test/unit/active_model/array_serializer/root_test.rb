@@ -7,7 +7,7 @@ module ActiveModel
         @old_root = ArraySerializer._root
         @profile1 = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @profile2 = Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
-        @serializer = ArraySerializer.new([@profile1, @profile2], root: 'initialize')
+        @serializer = ArraySerializer.new([@profile1, @profile2], root: :initialize)
       end
 
       def teardown
@@ -23,7 +23,7 @@ module ActiveModel
 
       def test_root_using_as_json
         assert_equal({
-          'initialize' => [
+          initialize: [
             { name: 'Name 1', description: 'Description 1' },
             { name: 'Name 2', description: 'Description 2' }
           ]
@@ -32,11 +32,11 @@ module ActiveModel
 
       def test_root_as_argument_takes_precedence
         assert_equal({
-          'argument' => [
+          argument: [
             { name: 'Name 1', description: 'Description 1' },
             { name: 'Name 2', description: 'Description 2' }
           ]
-        }, @serializer.as_json(root: 'argument'))
+        }, @serializer.as_json(root: :argument))
       end
 
       def test_using_false_root_in_initialize_takes_precedence
@@ -53,7 +53,7 @@ module ActiveModel
     class RootInSerializerTest < ActiveModel::TestCase
       def setup
         @old_root = ArraySerializer._root
-        ArraySerializer._root = 'in_serializer'
+        ArraySerializer._root = :in_serializer
         @profile1 = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @profile2 = Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
         @serializer = ArraySerializer.new([@profile1, @profile2])
@@ -73,7 +73,7 @@ module ActiveModel
 
       def test_root_using_as_json
         assert_equal({
-          'in_serializer' => [
+          in_serializer: [
             { name: 'Name 1', description: 'Description 1' },
             { name: 'Name 2', description: 'Description 2' }
           ]
@@ -82,7 +82,7 @@ module ActiveModel
 
       def test_root_in_initializer_takes_precedence
         assert_equal({
-          'initialize' => [
+          initialize: [
             { name: 'Name 1', description: 'Description 1' },
             { name: 'Name 2', description: 'Description 2' }
           ]
@@ -91,7 +91,7 @@ module ActiveModel
 
       def test_root_as_argument_takes_precedence
         assert_equal({
-          'argument' => [
+          argument: [
             { name: 'Name 1', description: 'Description 1' },
             { name: 'Name 2', description: 'Description 2' }
           ]
