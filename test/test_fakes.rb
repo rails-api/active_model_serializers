@@ -26,7 +26,7 @@ class User
   attr_accessor :superuser
 
   def initialize(hash={})
-    @attributes = hash.merge(first_name: "Jose", last_name: "Valim", password: "oh noes yugive my password")
+    @attributes = {first_name: "Jose", last_name: "Valim", password: "oh noes yugive my password"}.merge(hash)
   end
 
   def read_attribute_for_serialization(name)
@@ -36,6 +36,9 @@ class User
   def super_user?
     @superuser
   end
+end
+
+class HalUser < User
 end
 
 class Post < Model
@@ -100,6 +103,22 @@ class MyUserSerializer < ActiveModel::Serializer
   end
 end
 
+class HalUserSerializer < ActiveModel::HalSerializer
+  attributes :first_name, :last_name
+end
+
+class HalUserSerializerWithLink < ActiveModel::HalSerializer
+  attributes :first_name
+  link :foo, href: '/bar'
+end
+
+class HalUsersSerializer < ActiveModel::HalArraySerializer
+end
+
+class HalUsersSerializerWithLink < ActiveModel::HalArraySerializer
+  link :foo, href: '/bar'
+end
+
 class CommentSerializer
   def initialize(comment, options={})
     @object = comment
@@ -121,9 +140,18 @@ class CommentSerializer
   end
 end
 
+class HalCommentSerializer < ActiveModel::HalSerializer
+  attribute :title
+end
+
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
   has_many :comments, serializer: CommentSerializer
+end
+
+class HalPostSerializer < ActiveModel::HalSerializer
+  attributes :title, :body
+  has_many :comments, serializer: HalCommentSerializer
 end
 
 class PostWithConditionalCommentsSerializer < ActiveModel::Serializer
@@ -158,8 +186,16 @@ class AuthorSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 end
 
+class HalAuthorSerializer < ActiveModel::HalSerializer
+  attributes :first_name, :last_name
+end
+
 class BlogSerializer < ActiveModel::Serializer
   has_one :author, serializer: AuthorSerializer
+end
+
+class HalBlogSerializer < ActiveModel::HalSerializer
+  has_one :author, serializer: HalAuthorSerializer
 end
 
 class BlogWithRootSerializer < BlogSerializer
