@@ -21,4 +21,23 @@ class HalSerializerTest < ActiveModel::TestCase
 
     assert_equal({ href: '/bar' }, hash[:_links][:foo])
   end
+
+  def test_has_many_method
+    post = Post.new(title: "New Post", body: "Body of new post", email: "tenderlove@tenderlove.com")
+    comments = [Comment.new(title: "Comment1"), Comment.new(title: "Comment2")]
+    post.comments = comments
+
+    post_serializer = HalPostSerializer.new(post)
+
+    assert_equal({
+      title:  'New Post',
+      body:   'Body of new post',
+      _embedded: {
+        comments: [
+          { title: 'Comment1' },
+          { title: 'Comment2' }
+        ]
+      }
+    }, post_serializer.as_json)
+  end
 end

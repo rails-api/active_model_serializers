@@ -140,9 +140,18 @@ class CommentSerializer
   end
 end
 
+class HalCommentSerializer < ActiveModel::HalSerializer
+  attribute :title
+end
+
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
   has_many :comments, serializer: CommentSerializer
+end
+
+class HalPostSerializer < ActiveModel::HalSerializer
+  attributes :title, :body
+  has_many :comments, serializer: HalCommentSerializer
 end
 
 class PostWithConditionalCommentsSerializer < ActiveModel::Serializer
