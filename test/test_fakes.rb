@@ -186,8 +186,16 @@ class AuthorSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 end
 
+class HalAuthorSerializer < ActiveModel::HalSerializer
+  attributes :first_name, :last_name
+end
+
 class BlogSerializer < ActiveModel::Serializer
   has_one :author, serializer: AuthorSerializer
+end
+
+class HalBlogSerializer < ActiveModel::HalSerializer
+  has_one :author, serializer: HalAuthorSerializer
 end
 
 class BlogWithRootSerializer < BlogSerializer

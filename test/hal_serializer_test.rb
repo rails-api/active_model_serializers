@@ -40,4 +40,20 @@ class HalSerializerTest < ActiveModel::TestCase
       }
     }, post_serializer.as_json)
   end
+
+  def test_has_one_method
+    user = User.new
+    blog = Blog.new
+    blog.author = user
+
+    blog_serializer = HalBlogSerializer.new(blog)
+    assert_equal({
+      _embedded: {
+        author: {
+          first_name: 'Jose',
+          last_name: 'Valim'
+        }
+      }
+    }, blog_serializer.as_json)
+  end
 end
