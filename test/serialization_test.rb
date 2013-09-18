@@ -186,6 +186,10 @@ class RenderJsonTest < ActionController::TestCase
       render json: []
     end
 
+    def render_custom_mime_type_empty_array
+      render flergle: []
+    end
+
     def render_json_array_with_custom_array_serializer
       render json: [], serializer: CustomArraySerializer
     end
@@ -371,6 +375,15 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_empty_array
     get :render_json_empty_array
     assert_equal '{"test":[]}', @response.body
+  end
+
+  def test_render_custom_mime_type_empty_array
+    Mime::Type.register('application/flergle+json', :flergle)
+    ActiveModel::Serializer.register_mime_type(Mime::FLERGLE)
+
+    get :render_custom_mime_type_empty_array
+    assert_equal '{"test":[]}', @response.body
+    assert_equal 'application/flergle+json', @response.content_type
   end
 
   def test_render_json_empty_array_checking_default_root
