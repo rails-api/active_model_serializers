@@ -219,6 +219,20 @@ end
 If you find that your project is already relying on the old rails to_json
 change `render :json` to `render json: @your_object.to_json`.
 
+# Custom MIME Types
+
+If you're dealing in a custom MIME Type (say, `application/vnd.api+json` or
+similar) and you want `ActiveModel::Serializers` to respond with the correct
+Content-Type header, just pass the `Mime::Type` object to
+`ActiveModel::Serializer.register_mime_type`. If you're registering custom MIME
+Types in a Rails initializer, you'll want to make sure the type is registered
+first, then send it to `ActiveModel::Serializers`.
+
+```ruby
+Mime::Type.register('application/flergle+json', :flergle)
+ActiveModel::Serializer.register_mime_type(Mime::FLERGLE)
+```
+
 # Attributes and Associations
 
 Once you have a serializer, you can specify which attributes and associations

@@ -289,6 +289,19 @@ module ActiveModel
 
         serializer.new(resource, options)
       end
+
+      def register_mime_type(mime_type)
+        ActionController.add_renderer(mime_type.symbol) do |resource, options|
+          serialized = ActiveModel::Serializer.build_json(self, resource, options)
+
+          if serialized
+            self.content_type ||= mime_type
+            serialized.to_json
+          else
+            _render_option_json(resource, options)
+          end
+        end
+      end
     end
 
     attr_reader :object, :options
