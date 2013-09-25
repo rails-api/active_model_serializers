@@ -54,6 +54,14 @@ class Comment < Model
   def active_model_serializer; CommentSerializer; end
 end
 
+class CommentWithoutExplicitSerializer < Model
+  def as_json(*)
+    @attributes.slice(:title, :id).merge(
+      default_serialization_provided_by_model: true
+    )
+  end
+end
+
 class UserSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 

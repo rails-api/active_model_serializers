@@ -67,7 +67,7 @@ module ActiveModel
         elsif object.respond_to?(:active_model_serializer) && (ams = object.active_model_serializer)
           ams.new(object, serializer_options)
         else
-          object
+          DefaultSerializer.new(object, serializer_options)
         end
       end
 
