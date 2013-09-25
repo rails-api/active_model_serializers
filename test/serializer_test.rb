@@ -919,6 +919,42 @@ class SerializerTest < ActiveModel::TestCase
     }, serializer.as_json)
   end
 
+  def test_embed_ids_include_true_without_explicit_serializer
+    serializer_class = post_serializer
+
+    serializer_class.class_eval do
+      root :post
+      embed :ids, include: true
+      has_many :comments
+    end
+
+    comment_class = CommentWithoutExplicitSerializer
+
+    post = Post.new(title: "Fix ALL the bugs", body: "Body of new post", email: "arne@arnebrasseur.net")
+    comments = [comment_class.new(title: "Comment1", id: 1)]
+    post.comments = comments
+
+    serializer = serializer_class.new(post)
+
+    assert_equal({
+    post: {
+      title: "Fix ALL the bugs",
+      body: "Body of new post",
+      comment_ids: [1],
+      author_id: nil
+    },
+    authors: [],
+    comments: [
+      {
+        id: 1,
+        title: "Comment1",
+        default_serialization_provided_by_model: true
+      }
+    ],
+    }, serializer.as_json)
+
+  end
+
   # the point of this test is to illustrate that deeply nested serializers
   # still side-load at the root.
   def test_embed_with_include_inserts_at_root
