@@ -1427,6 +1427,26 @@ class SerializerTest < ActiveModel::TestCase
         { name: "Sinatra" },
       ]
     }, actual)
+
+    actual = array.active_model_serializer.new(array, root: :tags, meta: {total: 10}, meta_key: false).as_json
+
+    assert_equal({
+      total: 10,
+      tags: [
+        { name: "Rails" },
+        { name: "Sinatra" },
+      ]
+    }, actual)
+
+    actual = array.active_model_serializer.new(array, root: :tags, meta: {total: 10, tags: "should be overridden"}, meta_key: false).as_json
+
+    assert_equal({
+      total: 10,
+      tags: [
+        { name: "Rails" },
+        { name: "Sinatra" },
+      ]
+    }, actual)
   end
 
   def test_inheritance_does_not_used_cached_attributes
