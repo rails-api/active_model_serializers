@@ -28,8 +28,8 @@ module ActiveModel
         options[:hash] = hash = {}
         options[:unique_values] = {}
 
-        hash.merge!(root => serialize)
         include_meta hash
+        hash.merge!(root => serialize)
         hash
       else
         serialize
@@ -39,11 +39,18 @@ module ActiveModel
     private
 
     def include_meta(hash)
-      hash[meta_key] = options[:meta] if options.has_key?(:meta)
+      if options.has_key?(:meta)
+        meta = (meta_key ? hash[meta_key] = {} : hash)
+        meta.merge!(options[:meta])
+      end
     end
 
     def meta_key
-      options[:meta_key].try(:to_sym) || :meta
+      if (not options[:meta_key].nil? and options[:meta_key] == false)
+        false
+      else
+        options[:meta_key].try(:to_sym) || :meta
+      end
     end
   end
 end

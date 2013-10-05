@@ -351,6 +351,27 @@ The above usage of `:meta_key` will produce the following:
 }
 ```
 
+If you would like the meta information to be merged into the root object you can do `:meta_key = false`:
+
+```ruby
+render json: @posts, serializer: CustomArraySerializer, meta: {total: 10}, meta_key: false
+```
+
+The above usage of `:meta_key` will produce the following:
+
+```json
+{
+  "total": 10,
+  "posts": [
+    { "title": "Post 1", "body": "Hello!" },
+    { "title": "Post 2", "body": "Goodbye!" }
+  ]
+}
+```
+
+**NOTE**: If the meta object has a key with the same name as the `root`, the serialized object will take precedence, and the meta value will be silently overridden.
+
+
 If you would like direct, low-level control of attribute serialization, you can
 completely override the `attributes` method to return the hash you need:
 
