@@ -1,5 +1,10 @@
 # UNRELEASED
 
+* If the meta_key option is explicitly false, the meta object will be
+  merged into the root hash. If there is a conflict between a key in 
+  the meta object and the serialized object, the serialized object
+  takes precedence.
+
 * ActiveModel::Serializable was created it has the shared code between
   AM::Serializer and AM::ArraySerializer. Basically enable objects to be
   serializable by implementing an options method to handle the options
