@@ -4,7 +4,7 @@ module ActiveModel
       def to_json(*args)
         if caching_enabled?
           key = expand_cache_key([self.class.to_s.underscore, cache_key, 'to-json'])
-          cache.fetch key do
+          cache.fetch key, cache_fetch_options do
             super
           end
         else
@@ -15,7 +15,7 @@ module ActiveModel
       def serialize(*args)
         if caching_enabled?
           key = expand_cache_key([self.class.to_s.underscore, cache_key, 'serialize'])
-          cache.fetch key do
+          cache.fetch key, cache_fetch_options do
             serialize_object
           end
         else
@@ -31,6 +31,10 @@ module ActiveModel
 
       def expand_cache_key(*args)
         ActiveSupport::Cache.expand_cache_key(args)
+      end
+
+      def cache_fetch_options
+        respond_to?(:cache_options) ? cache_options : {}
       end
     end
   end
