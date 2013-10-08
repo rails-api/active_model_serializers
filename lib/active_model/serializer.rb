@@ -323,7 +323,7 @@ module ActiveModel
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(args={})
-      super(root: args.fetch(:root, options.fetch(:root, root_name)))
+      super(root: args.to_hash.fetch(:root, options.fetch(:root, root_name)))
     end
 
     def serialize_object
