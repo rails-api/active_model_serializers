@@ -241,7 +241,7 @@ class MySerializer < ActiveModel::Serializer
   # OR
   camelize :lower
 end
-
+```
 
 ## Getting the old version
 
