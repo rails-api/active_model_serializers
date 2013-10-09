@@ -166,6 +166,16 @@ class BlogWithRootSerializer < BlogSerializer
   root true
 end
 
+class Camel < Model
+
+  def initialize(attributes = {})
+    attributes.reverse_merge!(first_name: "Camel", last_name: 'Case')
+    super(attributes)
+  end
+
+  attr_accessor :first_name, :last_name
+end
+
 class CustomPostSerializer < ActiveModel::Serializer
   attributes :title
 end

@@ -287,6 +287,63 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ my_blog: { author: nil } }, serializer.new(blog, scope: user).as_json)
   end
 
+  def test_camelization
+    camel = Camel.new
+    serializer = Class.new(ActiveModel::Serializer) do
+      camelize true
+      root :camel_upper
+      attributes :first_name, :last_name
+    end
+
+    assert_equal({
+      CamelUpper: {
+        FirstName: "Camel",
+        LastName:  "Case",
+      }
+    }, serializer.new(camel).as_json)
+  end
+
+  def test_camelization_lower
+    camel = Camel.new
+    serializer = Class.new(ActiveModel::Serializer) do
+      camelize :lower
+      root :camel_lower
+      attributes :first_name, :last_name
+    end
+
+    assert_equal({
+      camelLower: {
+        firstName: "Camel",
+        lastName:  "Case",
+      }
+    }, serializer.new(camel).as_json)
+  end
+
+  def test_camelization_global_config
+    begin
+      ActiveSupport.on_load(:active_model_serializers) do
+        self.camelize = :lower
+      end
+
+      camel = Camel.new
+      serializer = Class.new(ActiveModel::Serializer) do
+        root :not_camel
+        attributes :first_name, :last_name
+      end
+
+      assert_equal({
+        notCamel: {
+          firstName: "Camel",
+          lastName:  "Case"
+        }
+      }, serializer.new(camel).as_json)
+    ensure
+      ActiveSupport.on_load(:active_model_serializers) do
+        self.camelize = false
+      end
+    end
+  end
+
   def test_nil_root_object
     user = User.new
     blog = nil

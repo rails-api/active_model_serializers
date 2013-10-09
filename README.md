@@ -214,6 +214,35 @@ def default_serializer_options
 end
 ```
 
+
+## Camelization
+
+The `camelize` option takes either the value `:lower` which yields `camelCase`
+and `true` that yields `CamelCase` keys and roots.
+
+It is possible to configure camelization of keys and roots in two different ways.
+
+#### 1. Enable camelization globally for all, or per class
+
+In an initializer:
+
+```ruby
+ActiveSupport.on_load(:active_model_serializers) do
+  # Enable camelization
+  ActiveModel::Serializer.camelize = true
+end
+```
+
+#### 2. Subclass the serializer, and specify using it
+
+```ruby
+class MySerializer < ActiveModel::Serializer
+  self.camelize = :lower
+  # OR
+  camelize :lower
+end
+```
+
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
