@@ -558,6 +558,31 @@ this:
 }
 ```
 
+You can sideload the objects without embedding the ids by using the :embed_root option and settings :embed to false.  You may wish to do this if your id references are already custom serialized in another embedded object.
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+
+  attributes :id, :title, :body
+  has_many :comments, embed: false, embed_root: true
+end
+```
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "body": "A body!"
+  },
+  "comments": [
+    { "id": 1, "body": "what a dumb post", "tag_ids": [ 1, 2 ] },
+    { "id": 2, "body": "i liked it", "tag_ids": [ 1, 3 ] },
+  ]
+}
+```
+
+
 You can also specify a different root for the embedded objects than the key
 used to reference them:
 
