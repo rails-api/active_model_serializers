@@ -12,7 +12,7 @@ module ActiveModel
         @embed_in_root = @embed_ids && (options[:include] || SETTINGS[:include])
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
-        @embedded_key  = options[:root]
+        @embedded_key  = options[:root] || name
 
         self.serializer_class = @options[:serializer]
       end
@@ -41,7 +41,6 @@ module ActiveModel
         def initialize(*args)
           super
           @key  ||= "#{name}_id"
-          @embedded_key ||= name.pluralize
         end
       end
 
@@ -49,7 +48,6 @@ module ActiveModel
         def initialize(*args)
           super
           @key ||= "#{name.singularize}_ids"
-          @embedded_key ||= name
         end
       end
     end
