@@ -263,7 +263,13 @@ module ActiveModel
       # not be manually defined for this method.
       def build_json(controller, resource, options)
         default_options = controller.send(:default_serializer_options) || {}
-        options = default_options.merge(options || {})
+        options = default_options.merge(options || {}) do |key, old, new|
+          if old.is_a?(Hash) && new.is_a?(Hash)
+            options[key] = old.merge(new)
+          else
+            options[key] = new
+          end
+        end
 
         serializer = options.delete(:serializer) ||
           (resource.respond_to?(:active_model_serializer) &&
