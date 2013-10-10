@@ -5,25 +5,70 @@ module ActiveModel
   class Serializer
     class ActiveRecordTest < ActiveModel::TestCase
       def setup
-        @profile = ARProfile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-        @profile_serializer = ARProfileSerializer.new(@profile)
+        @post = ARPost.first
       end
 
-      def test_attributes_definition
-        assert_equal([:name, :description],
-                     @profile_serializer.class._attributes)
-      end
+      def test_serialization_embedding_objects
+        post_serializer = ARPostSerializer.new(@post)
 
-      def test_attributes_serialization_using_serializable_hash
         assert_equal({
-          name: 'Name 1', description: 'Description 1'
-        }, @profile_serializer.serializable_hash)
+          'ar_post' => {
+            title: 'New post', body: 'A body!!!',
+            ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'short' }, { name: 'whiny' }] },
+                          { body: 'i liked it', ar_tags: [{:name=>"short"}, {:name=>"happy"}] }],
+            ar_tags: [{ name: 'short' }, { name: 'whiny' }, { name: 'happy' }],
+            ar_section: { name: 'ruby' }
+          }
+        }, post_serializer.as_json)
       end
 
-      def test_attributes_serialization_using_as_json
-        assert_equal({
-          'ar_profile' => { name: 'Name 1', description: 'Description 1' }
-        }, @profile_serializer.as_json)
+      def test_serialization_embedding_ids
+        post_serializer = ARPostSerializer.new(@post)
+
+        embed(ARPostSerializer, embed: :ids) do
+          assert_equal({
+            'ar_post' => {
+              title: 'New post', body: 'A body!!!',
+              'ar_comment_ids' => [1, 2],
+              'ar_tag_ids' => [1, 2, 3],
+              'ar_section_id' => 1
+            }
+          }, post_serializer.as_json)
+        end
+      end
+
+      def test_serialization_embedding_ids_including_in_root
+        post_serializer = ARPostSerializer.new(@post)
+
+        embed(ARPostSerializer, embed: :ids, include: true) do
+          assert_equal({
+            'ar_post' => {
+              title: 'New post', body: 'A body!!!',
+              'ar_comment_ids' => [1, 2],
+              'ar_tag_ids' => [1, 2, 3],
+              'ar_section_id' => 1
+            },
+            ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'short' }, { name: 'whiny' }] },
+                          { body: 'i liked it', ar_tags: [{:name=>"short"}, {:name=>"happy"}] }],
+            ar_tags: [{ name: 'short' }, { name: 'whiny' }, { name: 'happy' }],
+            ar_section: { name: 'ruby' }
+          }, post_serializer.as_json)
+        end
+      end
+
+      private
+
+      def embed(klass, options = {})
+        old_assocs = Hash[ARPostSerializer._associations.to_a.map { |(name, association)| [name, association.dup] }]
+
+        ARPostSerializer._associations.each_value do |association|
+          association.embed = options[:embed]
+          association.embed_in_root = options[:include]
+        end
+
+        yield
+      ensure
+        ARPostSerializer._associations = old_assocs
       end
     end
   end
