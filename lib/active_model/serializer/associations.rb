@@ -31,7 +31,7 @@ module ActiveModel
         @embed_ids     = embed == :id || embed == :ids
         @embed_objects = embed == :object || embed == :objects
         @embed_key     = options[:embed_key] || :id
-        @embed_in_root = options[:include]
+        @embed_in_root = options[:embed_root] || (options[:include] && @embed_ids)
 
         serializer = options[:serializer]
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer

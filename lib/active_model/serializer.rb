@@ -381,14 +381,14 @@ module ActiveModel
       options[:value] ||= send(name)
       association = association_class.new(name, options, self.options)
 
+      if association.embed_in_root? && hash.nil?
+        raise IncludeError.new(self.class, association.name)
+      elsif association.embed_in_root? && association.embeddable?
+        merge_association hash, association.root, association.serializables, unique_values
+      end
+
       if association.embed_ids?
         node[association.key] = association.serialize_ids
-
-        if association.embed_in_root? && hash.nil?
-          raise IncludeError.new(self.class, association.name)
-        elsif association.embed_in_root? && association.embeddable?
-          merge_association hash, association.root, association.serializables, unique_values
-        end
       elsif association.embed_objects?
         node[association.key] = association.serialize
       end

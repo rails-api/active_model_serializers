@@ -97,6 +97,16 @@ class AssociationTest < ActiveModel::TestCase
       assert_equal({}, @root_hash)
     end
 
+    def test_include_bang_with_embed_false_embed_root_true
+      include! :comments, value: @post.comments, embed: false, include: false, embed_root: true
+
+      assert_equal({}, @hash)
+
+      assert_equal({
+        comments: [{ id: 1, external_id: "COMM001", body: "ZOMG A COMMENT" }]
+      }, @root_hash)
+    end
+
     def test_include_bang_has_one_associations
       include! :comment, value: @post.comment
 
