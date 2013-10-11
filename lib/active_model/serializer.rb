@@ -160,9 +160,9 @@ module ActiveModel
     def serialize_ids(association)
       associated_data = send(association.name)
       if associated_data.respond_to?(:to_ary)
-        associated_data.map { |elem| elem.send(association.embed_key) }
+        associated_data.map { |elem| elem.read_attribute_for_serialization(association.embed_key) }
       else
-        associated_data.send(association.embed_key) if associated_data
+        associated_data.read_attribute_for_serialization(association.embed_key) if associated_data
       end
     end
 

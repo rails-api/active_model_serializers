@@ -4,11 +4,11 @@ class Model
   end
 
   def read_attribute_for_serialization(name)
-    @attributes[name]
-  end
-
-  def id
-    object_id
+    if name == :id || name == 'id'
+      object_id
+    else
+      @attributes[name]
+    end
   end
 end
 
