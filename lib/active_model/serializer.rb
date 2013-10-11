@@ -99,8 +99,6 @@ module ActiveModel
     attr_accessor :object, :scope, :meta_key, :meta
     attr_reader :root
 
-    alias read_attribute_for_serialization send
-
     def root=(root)
       @root = root
       @root = self.class._root if @root.nil?
