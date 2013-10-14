@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'coverage_setup'
 require 'test/unit'
 require 'active_model_serializers'
 require 'fixtures/poro'
