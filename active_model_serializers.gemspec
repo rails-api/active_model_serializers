@@ -10,16 +10,15 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Bringing consistency and object orientation to model serialization. Works great for client-side MVC frameworks!}
   gem.homepage      = "https://github.com/rails-api/active_model_serializers"
 
-  gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  gem.files         = `git ls-files`.split("\n")
-  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  gem.files         = Dir['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'DESIGN.textile', 'MIT-LICENSE', 'lib/**/*', 'test/**/*']
+  gem.test_files    = Dir['test/**/*']
+
   gem.name          = "active_model_serializers"
   gem.require_paths = ["lib"]
   gem.version       = ActiveModel::Serializer::VERSION
 
-  gem.add_dependency 'activemodel', '>= 3.0'
-  gem.add_development_dependency "rails", ">= 3.0"
-  gem.add_development_dependency "pry"
-  gem.add_development_dependency "simplecov"
-  gem.add_development_dependency "coveralls"
+  gem.required_ruby_version = ">= 1.9.3"
+
+  gem.add_dependency "activemodel", ">= 3.2"
+  gem.add_development_dependency "rails", ">= 3.2"
 end
