@@ -117,9 +117,9 @@ module ActiveModel
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_ids?
-            hash[association.key] = serialize_ids association
+            hash[association.key] = serialize_ids(association)
           elsif association.embed_objects?
-            hash[association.embedded_key] = serialize association
+            hash[association.embedded_key] = serialize(association)
           end
         end
       end

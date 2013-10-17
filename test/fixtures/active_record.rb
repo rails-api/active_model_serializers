@@ -36,15 +36,27 @@ ActiveRecord::Schema.define do
   end
 end
 
+class ARPostsTag < ActiveRecord::Base
+  belongs_to :ar_post, class_name: "ARPost"
+  belongs_to :ar_tag, class_name: "ARTag"
+end
+
 class ARPost < ActiveRecord::Base
   has_many :ar_comments, class_name: 'ARComment'
-  has_and_belongs_to_many :ar_tags, class_name: 'ARTag', join_table: :ar_posts_tags
+  has_many :ar_post_tags, class_name: 'ARPostsTag'
+  has_many :ar_tags, through: :ar_post_tags
   belongs_to :ar_section, class_name: 'ARSection'
+end
+
+class ARCommentsTag < ActiveRecord::Base
+  belongs_to :ar_comment, class_name: 'ARCommentsTag'
+  belongs_to :ar_tag, class_name: "ARTag"
 end
 
 class ARComment < ActiveRecord::Base
   belongs_to :ar_post, class_name: 'ARPost'
-  has_and_belongs_to_many :ar_tags, class_name: 'ARTag', join_table: :ar_comments_tags
+  has_many :ar_comment_tags, class_name: 'ARCommentsTag'
+  has_many :ar_tags, through: :ar_comment_tags
 end
 
 class ARTag < ActiveRecord::Base
@@ -78,9 +90,11 @@ ARPost.create(title: 'New post',
               body:  'A body!!!',
               ar_section: ARSection.create(name: 'ruby')).tap do |post|
 
-  short_tag = post.ar_tags.create(name: 'short')
-  whiny_tag = post.ar_tags.create(name: 'whiny')
-  happy_tag = post.ar_tags.create(name: 'happy')
+  short_tag = ARTag.create(name: 'short')
+  whiny_tag = ARTag.create(name: 'whiny')
+  happy_tag = ARTag.create(name: 'happy')
+
+  post.ar_tags.concat short_tag, whiny_tag, happy_tag
 
   post.ar_comments.create(body: 'what a dumb post').tap do |comment|
     comment.ar_tags.concat short_tag, whiny_tag
@@ -89,4 +103,6 @@ ARPost.create(title: 'New post',
   post.ar_comments.create(body: 'i liked it').tap do |comment|
     comment.ar_tags.concat short_tag, happy_tag
   end
+
+  post.save
 end
