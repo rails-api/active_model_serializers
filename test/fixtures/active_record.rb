@@ -38,13 +38,13 @@ end
 
 class ARPost < ActiveRecord::Base
   has_many :ar_comments, class_name: 'ARComment'
-  has_and_belongs_to_many :ar_tags, class_name: 'ARTag'
+  has_and_belongs_to_many :ar_tags, class_name: 'ARTag', join_table: :ar_posts_tags
   belongs_to :ar_section, class_name: 'ARSection'
 end
 
 class ARComment < ActiveRecord::Base
   belongs_to :ar_post, class_name: 'ARPost'
-  has_and_belongs_to_many :ar_tags, class_name: 'ARTag'
+  has_and_belongs_to_many :ar_tags, class_name: 'ARTag', join_table: :ar_comments_tags
 end
 
 class ARTag < ActiveRecord::Base
