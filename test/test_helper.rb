@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'coverage_setup'
-require 'test/unit'
+require 'minitest/autorun'
 require 'active_model_serializers'
 require 'fixtures/poro'
 
