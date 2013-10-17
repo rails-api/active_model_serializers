@@ -3,9 +3,9 @@ source 'https://rubygems.org'
 # Specify gem dependencies in active_model_serializers.gemspec
 gemspec
 
-gem 'minitest'
 gem 'sqlite3'
 gem 'coveralls', :require => false
 gem 'simplecov', :require => false
 
-gem 'rails', "~> 3.2"
+gem 'minitest', '~> 4.0'
+gem 'rails', '~> 3.2'
