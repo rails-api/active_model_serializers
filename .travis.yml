@@ -6,6 +6,7 @@ rvm:
   - rbx-19mode
 gemfile:
   - Gemfile
+  - Gemfile.rails3
   - Gemfile.edge
 notifications:
   email: false
