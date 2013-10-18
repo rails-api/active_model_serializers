@@ -3,8 +3,9 @@
 # Purpose
 
 The purpose of `ActiveModel::Serializers` is to provide an object to
-encapsulate serialization of `ActiveModel` objects, including `ActiveRecord`
-objects.
+encapsulate serialization of objects which respond to
+read\_attribute\_for\_serialization like ActiveModel ones and including
+`ActiveRecord` objects.
 
 Serializers know about both a model and the `current_user`, so you can
 customize serialization based upon whether a user is authorized to see the
@@ -55,17 +56,11 @@ the serializer generator:
 $ rails g serializer post
 ```
 
-### Support for POROs and other ORMs.
+### Support for POROs
 
-Currently `ActiveModel::Serializers` adds serialization support to all models
-that descend from `ActiveRecord` or include `Mongoid::Document`. If you are
-using another ORM, or if you are using objects that are `ActiveModel`
-compliant but do not descend from `ActiveRecord` or include
-`Mongoid::Document`, you must add an include statement for
-`ActiveModel::SerializerSupport` to make models serializable. If you
-also want to make collections serializable, you should include
-`ActiveModel::ArraySerializerSupport` into your ORM's
-relation/criteria class.
+Currently `ActiveModel::Serializers` expects objects to implement
+read\_attribute\_for\_serialization. That's all you need to do to have
+your POROs supported. 
 
 # ActiveModel::Serializer
 
@@ -92,19 +87,8 @@ This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
 serializer and available as `@options` inside.
 
-To specify a custom serializer for an object, there are 2 options:
-
-#### 1. Specify the serializer in your model:
-
-```ruby
-class Post < ActiveRecord::Base
-  def active_model_serializer
-    FancyPostSerializer
-  end
-end
-```
-
-#### 2. Specify the serializer when you render the object:
+To specify a custom serializer for an object, you can specify the
+serializer when you render the object:
 
 ```ruby
 render json: @post, serializer: FancyPostSerializer
@@ -267,49 +251,44 @@ class VersionSerializer < ActiveModel::Serializer
 end
 ```
 
-You can also access the `current_user` method, which provides an
+You can also access the `scope` method, which provides an
 authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
 
-Serializers will check for the presence of a method named
-`include_[ATTRIBUTE]?` to determine whether a particular attribute should be
-included in the output. This is typically used to customize output
-based on `current_user`. For example:
+Serializers provides a method named `filter` used to determine what
+attributes and associations should be included in the output. This is
+typically used to customize output based on `current_user`. For example:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body, :author
 
-  def include_author?
-    current_user.admin?
+  def filter(keys)
+    if scope.admin?
+      keys
+    else
+      keys - [:author]
+    end
   end
 end
 ```
 
-The type of a computed attribute (like :full_name above) is not easily
-calculated without some sophisticated static code analysis. To specify the
-type of a computed attribute:
-
-```ruby
-class PersonSerializer < ActiveModel::Serializer
-  attributes :first_name, :last_name, {full_name: :string}
-
-  def full_name
-    "#{object.first_name} #{object.last_name}"
-  end
-end
-```
+And it's also safe to mutate keys argument by doing keys.delete(:author)
+in case you want to avoid creating two extra arrays.
 
 If you would like the key in the outputted JSON to be different from its name
-in ActiveRecord, you can use the `:key` option to customize it:
+in ActiveRecord, you can declare the attribute with the different name
+and redefine that method:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body
+  # look up subject on the model, but use title in the JSON
+  def title
+    object.subject
+  end
 
-  # look up :subject on the model, but use +title+ in the JSON
-  attribute :subject, key: :title
+  attributes :id, :body, :title
   has_many :comments
 end
 ```
@@ -360,7 +339,7 @@ class PersonSerializer < ActiveModel::Serializer
 
   def attributes
     hash = super
-    if current_user.admin?
+    if scope.admin?
       hash["ssn"] = object.ssn
       hash["secret"] = object.mothers_maiden_name
     end
@@ -405,23 +384,23 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-Also, as with attributes, serializers will check for the presence
-of a method named `include_[ASSOCIATION]?` to determine whether a particular association
-should be included in the output. For example:
+Also, as with attributes, serializers will execute a filter method to
+determine which associations should be included in the output. For
+example:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
   has_many :comments
 
-  def include_comments?
-    !object.comments_disabled?
+  def filter(keys)
+    keys.delete :comments if object.comments_disabled?
+    keys
   end
 end
 ```
 
-If you would like lower-level control of association serialization, you can
-override `include_associations!` to specify which associations should be included:
+Or ...
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
@@ -429,9 +408,10 @@ class PostSerializer < ActiveModel::Serializer
   has_one :author
   has_many :comments
 
-  def include_associations!
-    include! :author if current_user.admin?
-    include! :comments unless object.comments_disabled?
+  def filter(keys)
+    keys.delete :author unless current_user.admin?
+    keys.delete :comments if object.comments_disabled?
+    keys
   end
 end
 ```
@@ -444,6 +424,9 @@ You may also use the `:serializer` option to specify a custom serializer class a
 ```
 
 Serializers are only concerned with multiplicity, and not ownership. `belongs_to` ActiveRecord associations can be included using `has_one` in your serializer.
+
+NOTE: polymorphic was removed because was only supported for has\_one
+associations and is in the TODO list of the project.
 
 ## Embedding Associations
 
@@ -635,7 +618,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-The above example will also change the scope name from `current_user` to
+The above example will also change the scope from `current_user` to
 `current_admin`.
 
 Please note that, until now, `serialization_scope` doesn't accept a second
@@ -677,6 +660,10 @@ for the current user, the advantage of this approach is that, by setting
 that query, only the `show` action will.
 
 ## Caching
+
+NOTE: This functionality was removed from AMS and it's in the TODO list.
+We need to re-think and re-design the caching strategy for the next
+version of AMS.
 
 To cache a serializer, call `cached` and define a `cache_key` method:
 

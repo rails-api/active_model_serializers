@@ -6,10 +6,8 @@ rvm:
   - rbx-19mode
 gemfile:
   - Gemfile
+  - Gemfile.rails3
   - Gemfile.edge
-matrix:
-  allow_failures:
-    - gemfile: Gemfile.edge
 notifications:
   email: false
   campfire:

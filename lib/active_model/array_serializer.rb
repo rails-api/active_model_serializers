@@ -1,65 +1,35 @@
+require 'active_model/default_serializer'
 require 'active_model/serializable'
-require 'active_model/serializer/caching'
-require "active_support/core_ext/class/attribute"
-require 'active_support/dependencies'
-require 'active_support/descendants_tracker'
+require 'active_model/serializer'
 
 module ActiveModel
-  # Active Model Array Serializer
-  #
-  # Serializes an Array, checking if each element implements
-  # the +active_model_serializer+ method.
-  #
-  # To disable serialization of root elements:
-  #
-  #     ActiveModel::ArraySerializer.root = false
-  #
   class ArraySerializer
-    extend ActiveSupport::DescendantsTracker
-
-    include ActiveModel::Serializable
-    include ActiveModel::Serializer::Caching
-
-    attr_reader :object, :options
-
-    class_attribute :root
-
-    class_attribute :cache
-    class_attribute :perform_caching
+    include Serializable
 
     class << self
-      # set perform caching like root
-      def cached(value = true)
-        self.perform_caching = value
-      end
+      attr_accessor :_root
+      alias root  _root=
+      alias root= _root=
     end
 
     def initialize(object, options={})
-      @object  = object
-      @options = options
+      @object          = object
+      @root            = options[:root]
+      @root            = self.class._root if @root.nil?
+      @root            = options[:resource_name] if @root.nil?
+      @meta_key        = options[:meta_key] || :meta
+      @meta            = options[@meta_key]
+      @each_serializer = options[:each_serializer]
+      @options         = options.merge(root: nil)
     end
-
-    def serialize_object
-      serializable_array
-    end
+    attr_accessor :object, :root, :meta_key, :meta
 
     def serializable_array
-      object.map do |item|
-        if options.has_key? :each_serializer
-          serializer = options[:each_serializer]
-        elsif item.respond_to?(:active_model_serializer)
-          serializer = item.active_model_serializer
-        end
-        serializer ||= DefaultSerializer
-
-        serializable = serializer.new(item, options.merge(root: nil))
-
-        if serializable.respond_to?(:serializable_hash)
-          serializable.serializable_hash
-        else
-          serializable.as_json
-        end
+      @object.map do |item|
+        serializer = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
+        serializer.new(item, @options).serializable_object
       end
     end
+    alias serializable_object serializable_array
   end
 end

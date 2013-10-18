@@ -1,9 +1,13 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gemspec
 
+gem 'sqlite3'
+gem 'coveralls', :require => false
+gem 'simplecov', :require => false
+
+# Use Rails master
 gem 'rails', github: 'rails/rails'
 
 # Current dependencies of edge rails
-gem 'journey', github: 'rails/journey'
-gem 'activerecord-deprecated_finders' , github: 'rails/activerecord-deprecated_finders'
+gem 'arel', github: 'rails/arel'

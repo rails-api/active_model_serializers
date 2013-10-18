@@ -1,3 +1,5 @@
+require 'active_support/core_ext/class/attribute'
+
 module ActionController
   # Action Controller Serialization
   #
@@ -32,27 +34,46 @@ module ActionController
       self._serialization_scope = :current_user
     end
 
-    def serialization_scope
-      send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
-    end
-
-    def default_serializer_options
+    module ClassMethods
+      def serialization_scope(scope)
+        self._serialization_scope = scope
+      end
     end
 
     def _render_option_json(resource, options)
-      json = ActiveModel::Serializer.build_json(self, resource, options)
+      serializer = build_json_serializer(resource, options)
 
-      if json
-        super(json, options)
+      if serializer
+        super(serializer, options)
       else
         super
       end
     end
 
-    module ClassMethods
-      def serialization_scope(scope)
-        self._serialization_scope = scope
-      end
+    private
+
+    def default_serializer_options
+      {}
+    end
+
+    def serialization_scope
+      _serialization_scope = self.class._serialization_scope
+      send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
+    end
+
+    def build_json_serializer(resource, options)
+      options = default_serializer_options.merge(options || {})
+
+      serializer =
+        options.delete(:serializer) ||
+        ActiveModel::Serializer.serializer_for(resource)
+
+      return unless serializer
+
+      options[:scope] = serialization_scope unless options.has_key?(:scope)
+      options[:resource_name] = self.controller_name if resource.respond_to?(:to_ary)
+
+      serializer.new(resource, options)
     end
   end
 end
