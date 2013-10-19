@@ -1,7 +1,6 @@
 require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/associations'
-require 'active_model/serializer/settings'
 
 module ActiveModel
   class Serializer
@@ -11,15 +10,12 @@ module ActiveModel
       def inherited(base)
         base._attributes = []
         base._associations = {}
-      end
-
-      def setup
-        yield SETTINGS
+        base._serializer_options = {}
       end
 
       def embed(type, options={})
-        SETTINGS[:embed] = type
-        SETTINGS[:include] = true if options[:include]
+        _serializer_options[:embed] = type
+        _serializer_options[:include] = true if options[:include]
       end
 
       if RUBY_VERSION >= '2.0'
@@ -44,7 +40,7 @@ module ActiveModel
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
+      attr_accessor :_root, :_attributes, :_associations, :_serializer_options
       alias root  _root=
       alias root= _root=
 
@@ -84,7 +80,7 @@ module ActiveModel
             end
           end
 
-          @_associations[attr] = klass.new(attr, options)
+          @_associations[attr] = klass.new(attr, _serializer_options.merge(options))
         end
       end
     end

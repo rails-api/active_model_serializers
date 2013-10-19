@@ -8,8 +8,8 @@ module ActiveModel
         @name          = name.to_s
         @options       = options
 
-        self.embed     = options[:embed] || SETTINGS[:embed] || :objects
-        @embed_in_root = @embed_ids && (options[:include] || SETTINGS[:include])
+        self.embed     = options[:embed] || :objects
+        @embed_in_root = @embed_ids && options[:include]
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
         @embedded_key  = options[:root] || name
