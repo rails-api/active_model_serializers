@@ -54,6 +54,34 @@ module ActiveModel
         }, @post_serializer.as_json)
       end
 
+      def test_associations_embedding_objects_serialization_using_as_json_on_class
+        PostSerializer.embed :ids, include: true
+
+        PostSerializer._associations.delete(:comments)
+        PostSerializer.has_many :comments
+        assert_equal({
+          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          comments: [{ content: 'C1' }, { content: 'C2' }]
+        }, @post_serializer.as_json)
+      ensure
+        PostSerializer._serializer_options = {}
+      end
+
+      def test_associations_embedding_objects_when_other_embed_defined
+        PostSerializer.embed :ids, include: true
+        Class.new(ActiveModel::Serializer) do
+          embed :foo
+        end
+        PostSerializer._associations.delete(:comments)
+        PostSerializer.has_many :comments
+        assert_equal({
+          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          comments: [{ content: 'C1' }, { content: 'C2' }]
+        }, @post_serializer.as_json)
+      ensure
+        PostSerializer._serializer_options = {}
+      end
+
       def test_associations_embedding_nil_objects_serialization_using_as_json
         @association.embed = :objects
         @post.instance_eval do
@@ -85,15 +113,16 @@ module ActiveModel
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
         PostSerializer.embed :ids, include: true
-        PostSerializer._associations[:comments].send :initialize, @association.name, @association.options
+        PostSerializer._associations.delete(:comments)
+        PostSerializer.has_many :comments
 
         @post_serializer.root = nil
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          'comments' => [{ content: 'C1' }, { content: 'C2' }]
+          comments: [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       ensure
-        SETTINGS.clear
+        PostSerializer._serializer_options = {}
       end
 
       def test_associations_using_a_given_serializer
