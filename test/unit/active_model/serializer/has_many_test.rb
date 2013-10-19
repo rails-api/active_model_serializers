@@ -54,6 +54,27 @@ module ActiveModel
         }, @post_serializer.as_json)
       end
 
+      def test_associations_embedding_objects_serialization_using_as_json_on_class
+        PostSerializer.embed :objects
+        PostSerializer._associations[:comments].send :initialize, :comments, {}
+        assert_equal({
+          'post' => { title: 'Title 1', body: 'Body 1', comments: [{ content: 'C1' }, { content: 'C2' }] }
+        }, @post_serializer.as_json)
+      end
+
+      def test_associations_embedding_objects_when_other_embed_defined
+        skip("SETTINGS cannot be global")
+        PostSerializer.embed :objects
+        Class.new(ActiveModel::Serializer) do
+          embed :foo
+        end
+
+        PostSerializer._associations[:comments].send :initialize, :comments, {}
+        assert_equal({
+          'post' => { title: 'Title 1', body: 'Body 1', comments: [{ content: 'C1' }, { content: 'C2' }] }
+        }, @post_serializer.as_json)
+      end
+
       def test_associations_embedding_nil_objects_serialization_using_as_json
         @association.embed = :objects
         @post.instance_eval do
