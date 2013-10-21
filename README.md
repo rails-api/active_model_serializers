@@ -330,6 +330,9 @@ The above usage of `:meta_key` will produce the following:
 }
 ```
 
+When using meta information, your serializer cannot have the `{ root: false }` option, as this would lead to
+invalid JSON. If you do not have a root key, the meta information will be ignored.
+
 If you would like direct, low-level control of attribute serialization, you can
 completely override the `attributes` method to return the hash you need:
 
