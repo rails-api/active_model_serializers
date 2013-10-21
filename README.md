@@ -358,7 +358,7 @@ and use it to serialize the comment.
 By default, serializers simply look up the association on the original object.
 You can customize this behavior by implementing a method with the name of the
 association and returning a different Array. Often, you will do this to
-customize the objects returned based on the current user.
+customize the objects returned based on the current user (scope).
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
@@ -367,7 +367,7 @@ class PostSerializer < ActiveModel::Serializer
 
   # only let the user see comments he created.
   def comments
-    object.comments.where(created_by: current_user)
+    object.comments.where(created_by: scope)
   end
 end
 ```
@@ -409,7 +409,7 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 
   def filter(keys)
-    keys.delete :author unless current_user.admin?
+    keys.delete :author unless scope.admin?
     keys.delete :comments if object.comments_disabled?
     keys
   end
@@ -649,7 +649,7 @@ class CitiesController < ApplicationController
   def show
     @city = City.find(params[:id])
 
-    render json: @city, scope: current_admin, scope_name: :current_admin
+    render json: @city, scope: current_admin
   end
 end
 ```
@@ -674,7 +674,7 @@ class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
   def cache_key
-    [object, current_user]
+    [object, scope]
   end
 end
 ```
