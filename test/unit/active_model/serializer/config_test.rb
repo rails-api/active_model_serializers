@@ -58,7 +58,7 @@ module ActiveModel
         def test_setup_acessor_when_nil
           assert_nil CONFIG.foo
           CONFIG.foo = 1
-          assert 1, CONFIG.foo
+          assert_equal 1, CONFIG.foo
           assert_nil CONFIG.bar
         end
       end

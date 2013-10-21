@@ -11,6 +11,7 @@ gemfile:
 matrix:
   allow_failures:
     - gemfile: Gemfile.edge
+    - rvm: jruby-19mode
 notifications:
   email: false
   campfire:
