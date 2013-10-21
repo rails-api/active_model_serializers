@@ -62,7 +62,13 @@ module ActionController
     end
 
     def build_json_serializer(resource, options)
-      options = default_serializer_options.merge(options || {})
+      options = default_serializer_options.merge(options || {}) do |key, old, new|
+        if old.is_a?(Hash) && new.is_a?(Hash)
+          options[key] = old.merge(new)
+        else
+          options[key] = new
+        end
+      end
 
       serializer =
         options.delete(:serializer) ||

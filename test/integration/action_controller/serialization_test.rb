@@ -43,11 +43,11 @@ module ActionController
     class DefaultOptionsForSerializerScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
         def default_serializer_options
-          { scope: current_admin }
+          { scope: current_admin, meta: { version: 1 } }
         end
 
         def render_using_scope_set_in_default_serializer_options
-          render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }), meta: { page: 2 }
         end
 
         private
@@ -66,7 +66,7 @@ module ActionController
       def test_render_using_scope_set_in_default_serializer_options
         get :render_using_scope_set_in_default_serializer_options
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"},"meta":{"version":1,"page":2}}', @response.body
       end
     end
 
