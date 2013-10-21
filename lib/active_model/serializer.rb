@@ -20,7 +20,7 @@ module ActiveModel
       def embed(type, options={})
         CONFIG.embed = type
         CONFIG.include = true if options[:include]
-        warn <<-WARN
+        ActiveSupport::Deprecation.warn <<-WARN
 ** Notice: embed is deprecated. **
 The use of .embed method on a Serializer will be soon removed, as this should have a global scope and not a class scope.
 Please use the global .setup method instead:
