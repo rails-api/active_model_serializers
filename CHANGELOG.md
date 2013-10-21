@@ -14,7 +14,7 @@
 
 * The following things were added
   - Serializer#filter method
-  - SETTINGS object
+  - CONFIG object
 
 * Remove support for ruby 1.8 versions.
 

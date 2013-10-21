@@ -1,18 +1,16 @@
-require 'active_support/hash_with_indifferent_access'
-
 module ActiveModel
   class Serializer
-    class Settings
+    class Config
       def initialize
-        @data = ActiveSupport::HashWithIndifferentAccess.new
+        @data = {}
       end
 
       def [](key)
-        @data[key]
+        @data[key.to_s]
       end
 
       def []=(key, value)
-        @data[key] = value
+        @data[key.to_s] = value
       end
 
       def each(&block)
@@ -24,8 +22,9 @@ module ActiveModel
       end
 
       def method_missing(name, *args)
+        name = name.to_s
         return @data[name] if @data.include?(name)
-        match = name.to_s.match(/(.*?)([?=]?)$/)
+        match = name.match(/\A(.*?)([?=]?)\Z/)
         case match[2]
         when "="
           @data[match[1]] = args.first
@@ -35,6 +34,6 @@ module ActiveModel
       end
     end
 
-    SETTINGS = Settings.new
+    CONFIG = Config.new
   end
 end

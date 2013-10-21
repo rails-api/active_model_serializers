@@ -93,7 +93,7 @@ module ActiveModel
           'comments' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       ensure
-        SETTINGS.clear
+        CONFIG.clear
       end
 
       def test_associations_using_a_given_serializer
