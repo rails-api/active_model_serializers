@@ -43,6 +43,25 @@ module ActiveModel
         ensure
           SETTINGS.clear
         end
+
+        def test_setup_config_accessors
+          ActiveModel::Serializer.setup do |config|
+            config.foo = 'v1'
+            config.bar = 'v2'
+          end
+
+          assert_equal 'v1', SETTINGS.foo
+          assert_equal 'v2', SETTINGS.bar
+        ensure
+          SETTINGS.clear
+        end
+
+        def test_setup_acessor_when_nil
+          assert_nil SETTINGS.foo
+          SETTINGS.foo = 1
+          assert 1, SETTINGS.foo
+          assert_nil SETTINGS.bar
+        end
       end
     end
   end
