@@ -84,7 +84,9 @@ module ActiveModel
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
-        PostSerializer.embed :ids, include: true
+        CONFIG.embed = :ids
+        CONFIG.include = true
+
         PostSerializer._associations[:comments].send :initialize, @association.name, @association.options
 
         @post_serializer.root = nil
