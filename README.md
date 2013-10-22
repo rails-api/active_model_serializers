@@ -97,6 +97,56 @@ serializer when you render the object:
 render json: @post, serializer: FancyPostSerializer
 ```
 
+To render an object embedded in a hash, you can simply render the hash, and
+Rails will search for a serializer for the embedded object and use it if available.
+
+```ruby
+render json: {data: @post, platform: 'mobile', format: 'json'}
+```
+
+Given the example above, the output is as follows
+
+```json
+{
+  "data":{"id":1,"title":"post1","body":"body1"},
+  "platform": "mobile",
+  "format": "json"
+}
+```
+
+This will work even if the hash contains multiple objects with serializers.
+
+```ruby
+render json: {post: @post, related_post: @related_post}
+```
+
+This yields the following output
+
+```json
+{
+  "post":{"id":1,"title":"post1","body":"body1"},
+  "related_post":{"id":2,"title":"post2","body":"body2"}
+}
+```
+
+A root may be added to the rendered hash
+
+```ruby
+render json: {post: @post, related_post: @related_post}, root: "some_posts"
+```
+
+Here is the output with a root specified
+
+```json
+{
+  "some_posts":
+    {
+      "post":{"id":1,"title":"post1","body":"body1"},
+      "related_post":{"id":2,"title":"post2","body":"body2"}
+    }
+}
+```
+
 ## Arrays
 
 In your controllers, when you use `render :json` for an array of objects, AMS will

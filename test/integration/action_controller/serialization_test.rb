@@ -193,5 +193,21 @@ module ActionController
         assert_equal '{"my":[{"name":"Name 1","description":"Description 1"}]}', @response.body
       end
     end
+
+    class HashSerializerTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_hash
+          render json: {data: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }), platform: 'mobile', format: 'json'}
+        end
+      end
+
+      tests MyController
+
+      def test_render_array
+        get :render_hash
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"data":{"name":"Name 1","description":"Description 1"},"platform":"mobile","format":"json"}', @response.body
+      end
+    end
   end
 end

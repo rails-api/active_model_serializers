@@ -1,4 +1,5 @@
 require 'active_model/array_serializer'
+require 'active_model/hash_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/config'
@@ -41,6 +42,8 @@ end
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
             ArraySerializer
+          elsif resource.respond_to?(:has_key?)
+            HashSerializer
           else
             begin
               Object.const_get "#{resource.class.name}Serializer"
@@ -53,6 +56,8 @@ end
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
             ArraySerializer
+          elsif resource.respond_to?(:has_key?)
+            HashSerializer
           else
             "#{resource.class.name}Serializer".safe_constantize
           end
