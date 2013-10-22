@@ -71,7 +71,7 @@ class ARTagSerializer < ActiveModel::Serializer
 end
 
 class ARSectionSerializer < ActiveModel::Serializer
-  attributes :name
+  attributes 'name'
 end
 
 ARPost.create(title: 'New post',
