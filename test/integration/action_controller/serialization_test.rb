@@ -146,10 +146,26 @@ module ActionController
       end
     end
 
+    class JSONDumpSerializerTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_using_json_dump
+          render json: JSON.dump(hello: 'world')
+        end
+      end
+
+      tests MyController
+
+      def test_render_using_json_dump
+        get :render_using_json_dump
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"hello":"world"}', @response.body
+      end
+    end
+
     class RailsSerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
         def render_using_rails_behavior
-          render json: JSON.dump(hello: 'world')
+          render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })], serializer: false
         end
       end
 
@@ -158,7 +174,7 @@ module ActionController
       def test_render_using_rails_behavior
         get :render_using_rails_behavior
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"hello":"world"}', @response.body
+        assert_equal '[{"attributes":{"name":"Name 1","description":"Description 1","comments":"Comments 1"}}]', @response.body
       end
     end
 

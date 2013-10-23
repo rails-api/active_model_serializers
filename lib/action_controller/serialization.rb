@@ -64,9 +64,8 @@ module ActionController
     def build_json_serializer(resource, options)
       options = default_serializer_options.merge(options || {})
 
-      serializer =
-        options.delete(:serializer) ||
-        ActiveModel::Serializer.serializer_for(resource)
+      serializer = options.delete(:serializer)
+      serializer = ActiveModel::Serializer.serializer_for(resource) if serializer.nil?
 
       return unless serializer
 
