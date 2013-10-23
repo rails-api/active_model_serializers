@@ -36,7 +36,7 @@
 
 * Fixed a bug where ActionController wouldn't always have MimeResponds.
 
-* An optinal caching feature allows you to cache JSON & hashes that AMS uses.
+* An optional caching feature allows you to cache JSON & hashes that AMS uses.
   Adding 'cached true' to your Serializers will turn on this cache.
 
 * URL helpers used inside of Engines now work properly.
