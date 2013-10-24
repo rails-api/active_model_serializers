@@ -6,7 +6,7 @@ module ActiveModel
       def setup
         @association = UserSerializer._associations[:profile]
         @old_association = @association.dup
-        @association.embed = :ids
+
         @user = User.new({ name: 'Name 1', email: 'mail@server.com', gender: 'M' })
         @user_serializer = UserSerializer.new(@user)
       end
@@ -22,19 +22,25 @@ module ActiveModel
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash
+        @association.embed = :ids
+
         assert_equal({
           name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_serialization_using_as_json
+        @association.embed = :ids
+
         assert_equal({
           'user' => { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id }
         }, @user_serializer.as_json)
       end
 
       def test_associations_embedding_ids_serialization_using_serializable_hash_and_key_from_options
+        @association.embed = :ids
         @association.key = 'key'
+
         assert_equal({
           name: 'Name 1', email: 'mail@server.com', 'key' => @user.profile.object_id
         }, @user_serializer.serializable_hash)
@@ -42,6 +48,7 @@ module ActiveModel
 
       def test_associations_embedding_objects_serialization_using_serializable_hash
         @association.embed = :objects
+
         assert_equal({
           name: 'Name 1', email: 'mail@server.com', profile: { name: 'N1', description: 'D1' }
         }, @user_serializer.serializable_hash)
@@ -49,12 +56,14 @@ module ActiveModel
 
       def test_associations_embedding_objects_serialization_using_as_json
         @association.embed = :objects
+
         assert_equal({
           'user' => { name: 'Name 1', email: 'mail@server.com', profile: { name: 'N1', description: 'D1' } }
         }, @user_serializer.as_json)
       end
 
       def test_associations_embedding_nil_ids_serialization_using_as_json
+        @association.embed = :ids
         @user.instance_eval do
           def profile
             nil
@@ -82,22 +91,25 @@ module ActiveModel
       def test_associations_embedding_objects_serialization_using_serializable_hash_and_root_from_options
         @association.embed = :objects
         @association.embedded_key = 'root'
+
         assert_equal({
           name: 'Name 1', email: 'mail@server.com', 'root' => { name: 'N1', description: 'D1' }
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
+        @association.embed = :ids
         @association.embed_in_root = true
-        @user_serializer.root = nil
+
         assert_equal({
           name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id
         }, @user_serializer.serializable_hash)
       end
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
+        @association.embed = :ids
         @association.embed_in_root = true
-        @user_serializer.root = nil
+
         assert_equal({
           'user' => { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id },
           profile: { name: 'N1', description: 'D1' }
@@ -105,8 +117,8 @@ module ActiveModel
       end
 
       def test_associations_using_a_given_serializer
+        @association.embed = :ids
         @association.embed_in_root = true
-        @user_serializer.root = nil
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
           def name
             'fake'
