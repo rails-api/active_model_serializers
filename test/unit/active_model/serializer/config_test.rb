@@ -62,6 +62,25 @@ module ActiveModel
           assert_nil CONFIG.bar
         end
       end
+
+      class ApplyConfigTest < ActiveModel::TestCase
+        def test_apply_config_to_associations
+          CONFIG.embed   = :ids
+          CONFIG.include = true
+
+          association = PostSerializer._associations[:comments]
+          old_association = association.dup
+
+          association.send :initialize, association.name, association.options
+
+          assert association.embed_ids?
+          assert !association.embed_objects?
+          assert association.embed_in_root
+        ensure
+          PostSerializer._associations[:comments] = old_association
+          CONFIG.clear
+        end
+      end
     end
   end
 end
