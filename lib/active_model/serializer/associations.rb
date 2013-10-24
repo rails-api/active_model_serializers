@@ -11,13 +11,13 @@ module ActiveModel
           WARN
         end
 
-        @name         = name.to_s
-        @options      = options
-        self.embed    = options.fetch(:embed)   { CONFIG.embed }
-        @embed_in_root    = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
-        @embed_key    = options[:embed_key] || :id
-        @key          = options[:key]
-        @embedded_key = options[:root] || name
+        @name          = name.to_s
+        @options       = options
+        self.embed     = options.fetch(:embed)   { CONFIG.embed }
+        @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
+        @embed_key     = options[:embed_key] || :id
+        @key           = options[:key]
+        @embedded_key  = options[:root] || name
 
         self.serializer_class = @options[:serializer]
       end
