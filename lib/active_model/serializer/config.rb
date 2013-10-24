@@ -8,18 +8,6 @@ module ActiveModel
         @mutex = Mutex.new
       end
 
-      def [](key)
-        @mutex.synchronize do
-          @data[key.to_s]
-        end
-      end
-
-      def []=(key, value)
-        @mutex.synchronize do
-          @data[key.to_s] = value
-        end
-      end
-
       def each(&block)
         @mutex.synchronize do
           @data.each(&block)
