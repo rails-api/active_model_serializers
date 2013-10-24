@@ -19,14 +19,14 @@ module ActiveModel
 
       def embed(type, options={})
         CONFIG.embed = type
-        CONFIG.side_load = true if options[:side_load] || options[:include]
+        CONFIG.embed_in_root = true if options[:embed_in_root] || options[:include]
         ActiveSupport::Deprecation.warn <<-WARN
 ** Notice: embed is deprecated. **
 The use of .embed method on a Serializer will be soon removed, as this should have a global scope and not a class scope.
 Please use the global .setup method instead:
 ActiveModel::Serializer.setup do |config|
   config.embed = :#{type}
-  config.side_load = #{CONFIG.side_load || false}
+  config.embed_in_root = #{CONFIG.embed_in_root || false}
 end
         WARN
       end
@@ -147,7 +147,7 @@ end
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
-          if association.side_load?
+          if association.embed_in_root?
             hash[association.embedded_key] = serialize association
           end
         end

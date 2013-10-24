@@ -66,7 +66,7 @@ module ActiveModel
       class ApplyConfigTest < ActiveModel::TestCase
         def test_apply_config_to_associations
           CONFIG.embed     = :ids
-          CONFIG.side_load = true
+          CONFIG.embed_in_root = true
 
           association = PostSerializer._associations[:comments]
           old_association = association.dup
@@ -75,7 +75,7 @@ module ActiveModel
 
           assert association.embed_ids?
           assert !association.embed_objects?
-          assert association.side_load
+          assert association.embed_in_root
         ensure
           PostSerializer._associations[:comments] = old_association
           CONFIG.clear

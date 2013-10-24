@@ -99,7 +99,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
         @association.embed = :ids
-        @association.side_load = true
+        @association.embed_in_root = true
 
         assert_equal({
           name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id
@@ -108,7 +108,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
         @association.embed = :ids
-        @association.side_load = true
+        @association.embed_in_root = true
 
         assert_equal({
           'user' => { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id },
@@ -118,7 +118,7 @@ module ActiveModel
 
       def test_associations_using_a_given_serializer
         @association.embed = :ids
-        @association.side_load = true
+        @association.embed_in_root = true
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
           def name
             'fake'

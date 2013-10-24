@@ -25,7 +25,7 @@ module ActiveModel
         @association = PostSerializer._associations[:comments]
         @old_association = @association.dup
         @association.embed = :ids
-        @association.side_load = true
+        @association.embed_in_root = true
         @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
         @post_serializer = PostSerializer.new(@post)
         @post_serializer.instance_eval do
