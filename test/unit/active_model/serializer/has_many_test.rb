@@ -86,7 +86,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_including_objects_serialization_using_serializable_hash
         @association.embed = :ids
-        @association.embed_in_root = true
+        @association.side_load = true
 
         assert_equal({
           title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
@@ -95,7 +95,7 @@ module ActiveModel
 
       def test_associations_embedding_ids_including_objects_serialization_using_as_json
         @association.embed = :ids
-        @association.embed_in_root = true
+        @association.side_load = true
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
@@ -105,7 +105,7 @@ module ActiveModel
 
       def test_associations_embedding_nothing_including_objects_serialization_using_as_json
         @association.embed = nil
-        @association.embed_in_root = true
+        @association.side_load = true
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1' },
@@ -115,7 +115,7 @@ module ActiveModel
 
       def test_associations_using_a_given_serializer
         @association.embed = :ids
-        @association.embed_in_root = true
+        @association.side_load = true
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
           def content
             'fake'

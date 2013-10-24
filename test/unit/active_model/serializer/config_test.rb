@@ -75,7 +75,7 @@ module ActiveModel
 
           assert association.embed_ids?
           assert !association.embed_objects?
-          assert association.embed_in_root
+          assert association.side_load
         ensure
           PostSerializer._associations[:comments] = old_association
           CONFIG.clear

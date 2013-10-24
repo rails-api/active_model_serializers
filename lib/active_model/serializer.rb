@@ -147,7 +147,7 @@ end
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
-          if association.embed_in_root?
+          if association.side_load?
             hash[association.embedded_key] = serialize association
           end
         end

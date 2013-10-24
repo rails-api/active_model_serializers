@@ -63,7 +63,7 @@ module ActiveModel
 
         ARPostSerializer._associations.each_value do |association|
           association.embed = options[:embed]
-          association.embed_in_root = options[:include]
+          association.side_load = options[:include]
         end
 
         yield
