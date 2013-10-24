@@ -7,9 +7,8 @@ module ActiveModel
       def initialize(name, options={})
         @name          = name.to_s
         @options       = options
-
-        self.embed     = options[:embed] || CONFIG.embed || :objects
-        @embed_in_root = @embed_ids && (options[:include] || CONFIG.include)
+        self.embed     = options.fetch(:embed)   { CONFIG.embed }
+        @embed_in_root = options.fetch(:include) { CONFIG.include }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
         @embedded_key  = options[:root] || name

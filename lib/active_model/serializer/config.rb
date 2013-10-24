@@ -48,5 +48,6 @@ module ActiveModel
     end
 
     CONFIG = Config.new
+    CONFIG.embed = :objects
   end
 end

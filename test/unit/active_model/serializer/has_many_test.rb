@@ -98,6 +98,20 @@ module ActiveModel
         CONFIG.clear
       end
 
+      def test_associations_embedding_nothing_including_objects_serialization_using_as_json
+        CONFIG.embed = nil
+        CONFIG.include = true
+
+        PostSerializer._associations[:comments].send :initialize, @association.name, @association.options
+
+        assert_equal({
+          'post' => { title: 'Title 1', body: 'Body 1' },
+          'comments' => [{ content: 'C1' }, { content: 'C2' }]
+        }, @post_serializer.as_json)
+      ensure
+        CONFIG.clear
+      end
+
       def test_associations_using_a_given_serializer
         @association.embed_in_root = true
         @post_serializer.root = nil
