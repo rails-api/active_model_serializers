@@ -30,7 +30,7 @@ module ActiveModel
         end
       end
 
-      class SetupTest < ActiveModel::TestCase
+      class ConfigTest < ActiveModel::TestCase
         def test_setup
           ActiveModel::Serializer.setup do |config|
             config.a = 'v1'
@@ -43,7 +43,7 @@ module ActiveModel
           CONFIG.clear
         end
 
-        def test_setup_config_accessors
+        def test_config_accessors
           ActiveModel::Serializer.setup do |config|
             config.foo = 'v1'
             config.bar = 'v2'
@@ -55,7 +55,7 @@ module ActiveModel
           CONFIG.clear
         end
 
-        def test_setup_acessor_when_nil
+        def test_acessor_when_nil
           assert_nil CONFIG.foo
           CONFIG.foo = 1
           assert_equal 1, CONFIG.foo
