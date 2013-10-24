@@ -9,6 +9,8 @@ module ActiveModel
   class Serializer
     include Serializable
 
+    @mutex = Mutex.new
+
     class << self
       def inherited(base)
         base._attributes = []
@@ -16,7 +18,7 @@ module ActiveModel
       end
 
       def setup
-        Mutex.new.synchronize do
+        @mutex.synchronize do
           yield CONFIG
         end
       end
