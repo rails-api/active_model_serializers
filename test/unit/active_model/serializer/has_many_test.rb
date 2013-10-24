@@ -86,7 +86,7 @@ module ActiveModel
         CONFIG.embed = :ids
         CONFIG.include = true
 
-        PostSerializer._associations[:comments].send :initialize, @association.name, @association.options
+        @association.send :initialize, @association.name, @association.options
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
@@ -100,7 +100,7 @@ module ActiveModel
         CONFIG.embed = nil
         CONFIG.include = true
 
-        PostSerializer._associations[:comments].send :initialize, @association.name, @association.options
+        @association.send :initialize, @association.name, @association.options
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1' },
