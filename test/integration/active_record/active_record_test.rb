@@ -40,7 +40,7 @@ module ActiveModel
       def test_serialization_embedding_ids_including_in_root
         post_serializer = ARPostSerializer.new(@post)
 
-        embed(ARPostSerializer, embed: :ids, include: true) do
+        embed(ARPostSerializer, embed: :ids, side_load: true) do
           assert_equal({
             'ar_post' => {
               title: 'New post', body: 'A body!!!',
@@ -63,7 +63,7 @@ module ActiveModel
 
         ARPostSerializer._associations.each_value do |association|
           association.embed = options[:embed]
-          association.side_load = options[:include]
+          association.side_load = options[:side_load]
         end
 
         yield

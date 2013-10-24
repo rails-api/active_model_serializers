@@ -5,10 +5,16 @@ module ActiveModel
   class Serializer
     class Association
       def initialize(name, options={})
+        if options.has_key?(:include)
+          ActiveSupport::Deprecation.warn <<-WARN
+** Notice: include was renamed to side_load. **
+          WARN
+        end
+
         @name         = name.to_s
         @options      = options
         self.embed    = options.fetch(:embed)   { CONFIG.embed }
-        @side_load    = options.fetch(:include) { CONFIG.include }
+        @side_load    = options.fetch(:side_load) { options.fetch(:include) { CONFIG.side_load } }
         @embed_key    = options[:embed_key] || :id
         @key          = options[:key]
         @embedded_key = options[:root] || name

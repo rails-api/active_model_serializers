@@ -65,8 +65,8 @@ module ActiveModel
 
       class ApplyConfigTest < ActiveModel::TestCase
         def test_apply_config_to_associations
-          CONFIG.embed   = :ids
-          CONFIG.include = true
+          CONFIG.embed     = :ids
+          CONFIG.side_load = true
 
           association = PostSerializer._associations[:comments]
           old_association = association.dup
