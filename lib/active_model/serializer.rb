@@ -3,6 +3,8 @@ require 'active_model/serializable'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/config'
 
+require 'thread'
+
 module ActiveModel
   class Serializer
     include Serializable
@@ -14,7 +16,9 @@ module ActiveModel
       end
 
       def setup
-        yield CONFIG
+        Mutex.new.synchronize do
+          yield CONFIG
+        end
       end
 
       def embed(type, options={})
