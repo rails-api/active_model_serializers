@@ -82,7 +82,9 @@ end
       end
 
       def has_many(*attrs)
-        associate(Association::HasMany, *attrs)
+        polymorphic = attrs.extract_options![:polymorphic]
+        association_klass = polymorphic ? Association::HasManyPolymorphic : Association::HasMany
+        associate(association_klass, *attrs)
       end
 
       private

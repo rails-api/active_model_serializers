@@ -14,7 +14,6 @@ module ActiveModel
         @name          = name.to_s
         @options       = options
         self.embed     = options.fetch(:embed)   { CONFIG.embed }
-        @polymorphic   = options.fetch(:polymorphic, false)
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
@@ -23,16 +22,11 @@ module ActiveModel
         self.serializer_class = @options[:serializer]
       end
 
-      attr_reader :name, :embed_ids, :embed_objects, :serializer_class, :polymorphic
+      attr_reader :name, :embed_ids, :embed_objects, :serializer_class
       attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :options
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root
-      alias polymorphic? polymorphic
-
-      def type_name(object)
-        object.class.to_s.demodulize.underscore.to_sym
-      end
 
       def serializer_class=(serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
@@ -44,44 +38,26 @@ module ActiveModel
       end
 
       def build_serializer(object)
-        if polymorphic? || !@serializer_class
-          serializer_class = Serializer.serializer_for(object) || DefaultSerializer
-        end
-        @serializer_class ||= serializer_class unless polymorphic
-        (@serializer_class || serializer_class).new(object, @options)
+        @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
+        @serializer_class.new(object, @options)
       end
 
-      def serialize(associated_data)
-        if associated_data.respond_to?(:to_ary)
-          associated_data.map do |elem|
-            result = build_serializer(elem).serializable_hash
-            result.merge!(type: type_name(elem)) if polymorphic? && result
-            result
-          end
-        else
-          result = build_serializer(associated_data).serializable_hash
-          result.merge!(type: type_name(elem)) if polymorphic?
-          is_a?(Association::HasMany) ? [result] : result
-        end
+      def serialize(object)
+        serialize_single(object)
       end
 
-      def serialize_ids(associated_data)
-        if associated_data.respond_to?(:to_ary)
-          associated_data.map { |elem| serialize_id(elem) }
-        elsif associated_data
-          associated_data.read_attribute_for_serialization(embed_key)
-        end
+      def serialize_ids(object)
+        serialize_id(object)
       end
 
-      private
+      protected
 
-      def serialize_id(elem)
-        id = elem.read_attribute_for_serialization(embed_key)
-        if polymorphic?
-          { id: id, type: type_name(elem) }
-        else
-          id
-        end
+      def serialize_single(object)
+        object ? build_serializer(object).serializable_hash : nil
+      end
+
+      def serialize_id(object)
+        object ? object.read_attribute_for_serialization(embed_key) : nil
       end
 
       class HasOne < Association
@@ -96,7 +72,39 @@ module ActiveModel
           super
           @key ||= "#{name.singularize}_ids"
         end
+
+        def serialize(objects)
+          objects.map { |object| serialize_single(object) }
+        end
+
+        def serialize_ids(objects)
+          objects.map { |object| serialize_id(object) }
+        end
       end
+
+      class HasManyPolymorphic < HasMany
+        def build_serializer(object)
+          serializer = @serializer_class || Serializer.serializer_for(object) || DefaultSerializer
+          serializer.new(object, @options)
+        end
+
+        def type_name(object)
+          object.class.to_s.demodulize.underscore.to_sym
+        end
+
+        def serialize(objects)
+          objects.map do |object|
+            object ? serialize_single(object).merge!(type: type_name(object)) : nil
+          end
+        end
+
+        protected
+
+        def serialize_id(elem)
+          elem ? { id: super, type: type_name(elem) } : nil
+        end
+      end
+
     end
   end
 end
