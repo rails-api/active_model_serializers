@@ -1,5 +1,6 @@
 require 'active_model/default_serializer'
 require 'active_model/serializer'
+require 'active_model/serializer/association/is_polymorphic'
 require 'active_model/serializer/association/has_one'
 require 'active_model/serializer/association/has_many'
 require 'active_model/serializer/association/has_many_polymorphic'
