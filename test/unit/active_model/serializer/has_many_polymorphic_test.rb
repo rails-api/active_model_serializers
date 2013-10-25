@@ -138,11 +138,11 @@ module ActiveModel
             'attachment_ids' => @mail.attachments.map do |c|
               { id: c.object_id, type: model_name(c) }
             end,
-            attachments: [
-              { type: :image, url: 'U1' },
-              { type: :video, html: 'H1' }
-            ]
-          }
+          },
+          attachments: [
+            { type: :image, url: 'U1' },
+            { type: :video, html: 'H1' }
+          ]
         }, @mail_serializer.as_json)
       end
 
@@ -163,15 +163,11 @@ module ActiveModel
         @association.embed = :ids
         @association.embed_in_root = true
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
-          def url
-            'fake 1'
+          def fake
+            'fake'
           end
 
-          def html
-            'fake 2'
-          end
-
-          attributes :content
+          attributes :fake
         end
 
         assert_equal({
@@ -179,12 +175,12 @@ module ActiveModel
             body: 'Body 1',
             'attachment_ids' => @mail.attachments.map do |c|
               { id: c.object_id, type: model_name(c) }
-            end,
-            attachments: [
-              { type: :image, url: 'fake 1' },
-              { type: :video, html: 'fake 2' }
-            ]
-          }
+            end
+          },
+          attachments: [
+            { type: :image, fake: 'fake' },
+            { type: :video, fake: 'fake' }
+          ]
         }, @mail_serializer.as_json)
       end
     end
