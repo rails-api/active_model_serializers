@@ -105,19 +105,38 @@ end
     end
 
     def initialize(object, options={})
-      @object   = object
-      @scope    = options[:scope]
-      self.root = options[:root]
-      @meta_key = options[:meta_key] || :meta
-      @meta     = options[@meta_key]
+      @object      = object
+      @scope       = options[:scope]
+      @root_config = options[:root]
+      @root        = determine_root
+      @meta_key    = options[:meta_key] || :meta
+      @meta        = options[@meta_key]
     end
     attr_accessor :object, :scope, :meta_key, :meta
     attr_reader :root
 
-    def root=(root)
-      @root = root
-      @root = self.class._root if @root.nil?
-      @root = self.class.root_name if @root == true || @root.nil?
+    def determine_root
+      if is_root?
+        self.class.root_name
+      else
+        root_with_inheritance
+      end
+    end
+
+    def is_root?
+      root_with_inheritance == true || root_with_inheritance.nil?
+    end
+
+    def root_with_inheritance
+      @root_with_inheritance ||= if root_specified?
+        @root_config
+      else
+        self.class._root
+      end
+    end
+
+    def root_specified?
+      !@root_config.nil?
     end
 
     def attributes
