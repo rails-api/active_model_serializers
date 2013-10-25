@@ -1,13 +1,13 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) 
-[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers)
 [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers)
 
 # ActiveModel::Serializers
 
 ## Purpose
 
-`ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
-Objects that respond to read\_attribute\_for\_serialization 
+`ActiveModel::Serializers` encapsulates the JSON serialization of objects.
+Objects that respond to read\_attribute\_for\_serialization
 (including `ActiveModel` and `ActiveRecord` objects) are supported.
 
 Serializers know about both a model and the `current_user`, so you can
@@ -63,7 +63,7 @@ $ rails g serializer post
 
 Currently `ActiveModel::Serializers` expects objects to implement
 read\_attribute\_for\_serialization. That's all you need to do to have
-your POROs supported. 
+your POROs supported.
 
 # ActiveModel::Serializer
 
@@ -424,13 +424,11 @@ You may also use the `:serializer` option to specify a custom serializer class a
 
 ```ruby
   has_many :comments, serializer: CommentShortSerializer
+  has_many :attachments, polymorphic: true
   has_one :reviewer, polymorphic: true
 ```
 
 Serializers are only concerned with multiplicity, and not ownership. `belongs_to` ActiveRecord associations can be included using `has_one` in your serializer.
-
-NOTE: polymorphic was removed because was only supported for has\_one
-associations and is in the TODO list of the project.
 
 ## Embedding Associations
 
@@ -612,6 +610,78 @@ data looking for information, is extremely useful.
 
 If you are mostly working with the data in simple scenarios and manually making
 Ajax requests, you probably just want to use the default embedded behavior.
+
+
+## Embedding Polymorphic Associations
+
+
+Because we need both the id and the type to be able to identify a polymorphic associated model, polymorphic associations are serialized in a slightly different format than common ones.
+
+When embedding entire objects:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title
+  has_many :attachments, polymorphic: true
+end
+```
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "attachments": [
+      {
+        "type": "image"
+        "image": {
+          "id": 3
+          "name": "logo"
+          "url": "http://images.com/logo.jpg"
+        }
+      },
+      {
+        "type": "video"
+        "video": {
+          "id": 12
+          "uid": "XCSSMDFWW"
+          "source": "youtube"
+        }
+      }
+    ]
+  }
+}
+```
+
+When embedding ids:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  embed :ids
+
+  attributes :id, :title
+  has_many :attachments, polymorphic: true
+end
+```
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "attachment_ids": [
+      {
+        "type": "image"
+        "id": 12
+      },
+      {
+        "type": "video"
+        "id": 3
+      }
+    ]
+  }
+}
+```
 
 ## Customizing Scope
 
