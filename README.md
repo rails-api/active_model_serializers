@@ -6,10 +6,9 @@
 
 ## Purpose
 
-The purpose of `ActiveModel::Serializers` is to provide an object to
-encapsulate serialization of objects which respond to
-read\_attribute\_for\_serialization like ActiveModel ones and including
-`ActiveRecord` objects.
+`ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
+Objects that respond to read\_attribute\_for\_serialization 
+(including `ActiveModel` and `ActiveRecord` objects) are supported.
 
 Serializers know about both a model and the `current_user`, so you can
 customize serialization based upon whether a user is authorized to see the
@@ -18,12 +17,11 @@ content.
 In short, **serializers replace hash-driven development with object-oriented
 development.**
 
-
 # Design and Implementation
 
 ## Keep it Simple
 
-ActiveModel::Serializers is capable of producing complex JSON views/large object
+`ActiveModel::Serializers` is capable of producing complex JSON views/large object
 trees, and it may be tempting to design in this way so that your client can make
 fewer requests to get data and so that related querying can be optimized.
 However, keeping things simple in your serializers and controllers may
