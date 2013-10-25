@@ -547,6 +547,10 @@ this:
 }
 ```
 
+When side-loading data, your serializer cannot have the `{ root: false }` option, 
+as this would lead to invalid JSON. If you do not have a root key, the `include` 
+instruction will be ignored
+
 You can also specify a different root for the embedded objects than the key
 used to reference them:
 
