@@ -69,14 +69,7 @@ end
 
       def attributes(*attrs)
         @_attributes.concat attrs
-
-        attrs.each do |attr|
-          unless method_defined?(attr)
-            define_method attr do
-              object.read_attribute_for_serialization(attr)
-            end
-          end
-        end
+        attrs.each{|attr| define_attribute_accessor(attr)}
       end
 
       def has_one(*attrs)
@@ -93,13 +86,25 @@ end
         options = attrs.extract_options!
 
         attrs.each do |attr|
-          unless method_defined?(attr)
-            define_method attr do
-              object.send attr
-            end
-          end
-
+          define_association_accessor(attr)
           @_associations[attr] = klass.new(attr, options)
+        end
+      end
+
+      def define_accessor_unless_defined(attr, &block)
+        return if method_defined?(attr)
+        define_method(attr, &block)
+      end
+
+      def define_attribute_accessor(attr)
+        define_accessor_unless_defined attr do
+          object.read_attribute_for_serialization(attr)
+        end
+      end
+
+      def define_association_accessor(attr)
+        define_accessor_unless_defined attr do
+          object.send attr
         end
       end
     end
