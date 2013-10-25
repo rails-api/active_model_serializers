@@ -97,14 +97,14 @@ end
       end
 
       def define_attribute_accessor(attr)
-        define_accessor_unless_defined attr do
+        define_accessor_unless_defined(attr) do
           object.read_attribute_for_serialization(attr)
         end
       end
 
       def define_association_accessor(attr)
-        define_accessor_unless_defined attr do
-          object.send attr
+        define_accessor_unless_defined(attr) do
+          object.__send__(attr)
         end
       end
     end
