@@ -35,6 +35,19 @@ end
 class Comment < Model
 end
 
+class Mail < Model
+  def attachments
+    @attachments ||= [Image.new(url: 'U1'),
+                      Video.new(html: 'H1')]
+  end
+end
+
+class Image < Model
+end
+
+class Video < Model
+end
+
 ###
 ## Serializers
 ###
@@ -61,4 +74,18 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class MailSerializer < ActiveModel::Serializer
+  attributes :body
+
+  has_many :attachments, polymorphic: true
+end
+
+class ImageSerializer < ActiveModel::Serializer
+  attributes :url
+end
+
+class VideoSerializer < ActiveModel::Serializer
+  attributes :html
 end
