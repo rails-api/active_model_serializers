@@ -1,5 +1,8 @@
 require 'active_model/default_serializer'
 require 'active_model/serializer'
+require 'active_model/serializer/association/has_one'
+require 'active_model/serializer/association/has_many'
+require 'active_model/serializer/association/has_many_polymorphic'
 
 module ActiveModel
   class Serializer
@@ -59,52 +62,6 @@ module ActiveModel
       def serialize_id(object)
         object ? object.read_attribute_for_serialization(embed_key) : nil
       end
-
-      class HasOne < Association
-        def initialize(*args)
-          super
-          @key  ||= "#{name}_id"
-        end
-      end
-
-      class HasMany < Association
-        def initialize(*args)
-          super
-          @key ||= "#{name.singularize}_ids"
-        end
-
-        def serialize(objects)
-          objects.map { |object| serialize_single(object) }
-        end
-
-        def serialize_ids(objects)
-          objects.map { |object| serialize_id(object) }
-        end
-      end
-
-      class HasManyPolymorphic < HasMany
-        def build_serializer(object)
-          serializer = @serializer_class || Serializer.serializer_for(object) || DefaultSerializer
-          serializer.new(object, @options)
-        end
-
-        def type_name(object)
-          object.class.to_s.demodulize.underscore.to_sym
-        end
-
-        def serialize(objects)
-          objects.map do |object|
-            object ? serialize_single(object).merge!(type: type_name(object)) : nil
-          end
-        end
-
-        protected
-
-        def serialize_id(elem)
-          elem ? { id: super, type: type_name(elem) } : nil
-        end
-      end
-
     end
   end
 end

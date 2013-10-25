@@ -1,6 +1,6 @@
 require 'active_model/array_serializer'
 require 'active_model/serializable'
-require 'active_model/serializer/associations'
+require 'active_model/serializer/association'
 require 'active_model/serializer/config'
 
 require 'thread'
@@ -156,26 +156,6 @@ end
             hash[association.embedded_key] = association.serialize(send(association.name))
           end
         end
-      end
-    end
-
-    def serialize(association)
-      associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary) &&
-         !(association.serializer_class &&
-           association.serializer_class <= ArraySerializer)
-        associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
-      else
-        association.build_serializer(associated_data).serializable_object
-      end
-    end
-
-    def serialize_ids(association)
-      associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary)
-        associated_data.map { |elem| elem.read_attribute_for_serialization(association.embed_key) }
-      else
-        associated_data.read_attribute_for_serialization(association.embed_key) if associated_data
       end
     end
 

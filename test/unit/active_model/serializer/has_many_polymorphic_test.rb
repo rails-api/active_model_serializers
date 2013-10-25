@@ -67,8 +67,8 @@ module ActiveModel
         assert_equal({
           body: 'Body 1',
           :attachments => [
-            { type: :image, url: 'U1' },
-            { type: :video, html: 'H1' }
+            { type: :image, image: { url: 'U1' }},
+            { type: :video, video: { html: 'H1' }}
           ]
         }, @mail_serializer.serializable_hash)
       end
@@ -80,8 +80,8 @@ module ActiveModel
           'mail' => {
             body: 'Body 1',
             attachments: [
-              { type: :image, url: 'U1' },
-              { type: :video, html: 'H1' }
+              { type: :image, image: { url: 'U1' }},
+              { type: :video, video: { html: 'H1' }}
             ]
           }
         }, @mail_serializer.as_json)
@@ -110,8 +110,8 @@ module ActiveModel
         assert_equal({
           body: 'Body 1',
           'root' => [
-            { type: :image, url: 'U1' },
-            { type: :video, html: 'H1' }
+            { type: :image, image: { url: 'U1' }},
+            { type: :video, video: { html: 'H1' }}
           ]
         }, @mail_serializer.serializable_hash)
       end
@@ -140,8 +140,8 @@ module ActiveModel
             end,
           },
           attachments: [
-            { type: :image, url: 'U1' },
-            { type: :video, html: 'H1' }
+            { type: :image, image: { url: 'U1' }},
+            { type: :video, video: { html: 'H1' }}
           ]
         }, @mail_serializer.as_json)
       end
@@ -153,8 +153,8 @@ module ActiveModel
         assert_equal({
           'mail' => { body: 'Body 1' },
           attachments: [
-            { type: :image, url: 'U1' },
-            { type: :video, html: 'H1' }
+            { type: :image, image: { url: 'U1' }},
+            { type: :video, video: { html: 'H1' }}
           ]
         }, @mail_serializer.as_json)
       end
@@ -178,8 +178,8 @@ module ActiveModel
             end
           },
           attachments: [
-            { type: :image, fake: 'fake' },
-            { type: :video, fake: 'fake' }
+            { type: :image, image: { fake: 'fake' }},
+            { type: :video, video: { fake: 'fake' }}
           ]
         }, @mail_serializer.as_json)
       end
