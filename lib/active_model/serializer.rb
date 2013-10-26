@@ -161,8 +161,7 @@ end
       if associated_data.respond_to?(:to_ary)
         associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
       else
-        result = association.build_serializer(associated_data).serializable_hash
-        association.is_a?(Association::HasMany) ? [result] : result
+        association.build_serializer(associated_data).serializable_hash
       end
     end
 
