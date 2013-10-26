@@ -161,13 +161,11 @@ You have 4 options to disable the root element, each with a slightly different s
 In an initializer:
 
 ```ruby
-ActiveSupport.on_load(:active_model_serializers) do
-  # Disable for all serializers (except ArraySerializer)
-  ActiveModel::Serializer.root = false
+# Disable for all serializers (except ArraySerializer)
+ActiveModel::Serializer.root = false
 
-  # Disable for ArraySerializer
-  ActiveModel::ArraySerializer.root = false
-end
+# Disable for ArraySerializer
+ActiveModel::ArraySerializer.root = false
 ```
 
 #### 2. Disable root per render call in your controller
