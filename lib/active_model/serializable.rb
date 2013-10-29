@@ -1,7 +1,7 @@
 module ActiveModel
   module Serializable
     def as_json(options={})
-      if root = options[:root] || self.root
+      if root = options.fetch(:root, json_key)
         hash = { root => serializable_object }
         hash.merge!(serializable_data)
         hash

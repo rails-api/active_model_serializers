@@ -14,15 +14,21 @@ module ActiveModel
 
     def initialize(object, options={})
       @object          = object
-      @root            = options[:root]
-      @root            = self.class._root if @root.nil?
-      @root            = options[:resource_name] if @root.nil?
+      @root            = options.fetch(:root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
       @options         = options.merge(root: nil)
     end
     attr_accessor :object, :root, :meta_key, :meta
+
+    def json_key
+      if root.nil?
+        @options[:resource_name]
+      else
+        root
+      end
+    end
 
     def serializable_array
       @object.map do |item|

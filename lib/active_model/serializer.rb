@@ -103,17 +103,18 @@ end
     def initialize(object, options={})
       @object   = object
       @scope    = options[:scope]
-      self.root = options[:root]
+      @root     = options.fetch(:root, self.class._root)
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
     end
-    attr_accessor :object, :scope, :meta_key, :meta
-    attr_reader :root
+    attr_accessor :object, :scope, :meta_key, :meta, :root
 
-    def root=(root)
-      @root = root
-      @root = self.class._root if @root.nil?
-      @root = self.class.root_name if @root == true || @root.nil?
+    def json_key
+      if root == true || root.nil?
+        self.class.root_name
+      else
+        root
+      end
     end
 
     def attributes
