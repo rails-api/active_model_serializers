@@ -30,6 +30,6 @@ module ActiveModel
         serializer.new(item, @options).serializable_object
       end
     end
-    alias serializable_object serializable_array
+    alias_method :serializable_object, :serializable_array
   end
 end

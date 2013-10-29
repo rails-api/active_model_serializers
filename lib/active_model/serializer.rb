@@ -158,10 +158,12 @@ end
 
     def serialize(association)
       associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary)
+      if associated_data.respond_to?(:to_ary) &&
+         !(association.serializer_class &&
+           association.serializer_class <= ArraySerializer)
         associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
       else
-        association.build_serializer(associated_data).serializable_hash
+        association.build_serializer(associated_data).serializable_object
       end
     end
 
@@ -179,6 +181,6 @@ end
       hash = attributes
       hash.merge! associations
     end
-    alias serializable_object serializable_hash
+    alias_method :serializable_object, :serializable_hash
   end
 end
