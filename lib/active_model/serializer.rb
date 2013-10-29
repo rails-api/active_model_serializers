@@ -113,7 +113,7 @@ end
     def root=(root)
       @root = root
       @root = self.class._root if @root.nil?
-      @root = self.class.root_name if @root == true || @root.nil?
+      @root = _convert_root(self.class.root_name) if @root == true || @root.nil?
     end
 
     def attributes
@@ -180,6 +180,7 @@ end
       return nil if object.nil?
       hash = attributes
       hash.merge! associations
+      _convert_keys(hash)
     end
     alias_method :serializable_object, :serializable_hash
   end

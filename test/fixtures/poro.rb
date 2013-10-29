@@ -25,6 +25,9 @@ end
 class Profile < Model
 end
 
+class CamelCase < Model
+end
+
 class Post < Model
   def comments
     @comments ||= [Comment.new(content: 'C1'),
@@ -61,4 +64,9 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class CamelCaseSerializer < ActiveModel::Serializer
+  attributes :key_one, :key_two
+  camelize_keys!
 end
