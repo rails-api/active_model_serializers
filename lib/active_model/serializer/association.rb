@@ -1,5 +1,10 @@
 require 'active_model/default_serializer'
 require 'active_model/serializer'
+require 'active_model/serializer/association/is_polymorphic'
+require 'active_model/serializer/association/has_one'
+require 'active_model/serializer/association/has_many'
+require 'active_model/serializer/association/has_one_polymorphic'
+require 'active_model/serializer/association/has_many_polymorphic'
 
 module ActiveModel
   class Serializer
@@ -42,18 +47,22 @@ module ActiveModel
         @serializer_class.new(object, @options)
       end
 
-      class HasOne < Association
-        def initialize(*args)
-          super
-          @key  ||= "#{name}_id"
-        end
+      def serialize(object)
+        serialize_single(object)
       end
 
-      class HasMany < Association
-        def initialize(*args)
-          super
-          @key ||= "#{name.singularize}_ids"
-        end
+      def serialize_ids(object)
+        serialize_id(object)
+      end
+
+      protected
+
+      def serialize_single(object)
+        object ? build_serializer(object).serializable_hash : nil
+      end
+
+      def serialize_id(object)
+        object ? object.read_attribute_for_serialization(embed_key) : nil
       end
     end
   end

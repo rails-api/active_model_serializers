@@ -1,6 +1,6 @@
 require 'active_model/array_serializer'
 require 'active_model/serializable'
-require 'active_model/serializer/associations'
+require 'active_model/serializer/association'
 require 'active_model/serializer/config'
 
 require 'thread'
@@ -78,11 +78,15 @@ end
       end
 
       def has_one(*attrs)
-        associate(Association::HasOne, *attrs)
+        polymorphic = attrs.extract_options![:polymorphic]
+        association_klass = polymorphic ? Association::HasOnePolymorphic : Association::HasOne
+        associate(association_klass, *attrs)
       end
 
       def has_many(*attrs)
-        associate(Association::HasMany, *attrs)
+        polymorphic = attrs.extract_options![:polymorphic]
+        association_klass = polymorphic ? Association::HasManyPolymorphic : Association::HasMany
+        associate(association_klass, *attrs)
       end
 
       private
@@ -129,9 +133,9 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_ids?
-            hash[association.key] = serialize_ids association
+            hash[association.key] = association.serialize_ids(send(association.name))
           elsif association.embed_objects?
-            hash[association.embedded_key] = serialize association
+            hash[association.embedded_key] = association.serialize(send(association.name))
           end
         end
       end
@@ -151,29 +155,9 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_in_root?
-            hash[association.embedded_key] = serialize association
+            hash[association.embedded_key] = association.serialize(send(association.name))
           end
         end
-      end
-    end
-
-    def serialize(association)
-      associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary) &&
-         !(association.serializer_class &&
-           association.serializer_class <= ArraySerializer)
-        associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
-      else
-        association.build_serializer(associated_data).serializable_object
-      end
-    end
-
-    def serialize_ids(association)
-      associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary)
-        associated_data.map { |elem| elem.read_attribute_for_serialization(association.embed_key) }
-      else
-        associated_data.read_attribute_for_serialization(association.embed_key) if associated_data
       end
     end
 
