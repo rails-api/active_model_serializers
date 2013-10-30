@@ -164,7 +164,12 @@ end
            association.serializer_class <= ArraySerializer)
         associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
       else
-        association.build_serializer(associated_data).serializable_object
+        serializable_obj = association.build_serializer(associated_data).serializable_object
+        if !(association.serializer_class && association.serializer_class <= ArraySerializer)
+          serializable_obj = [serializable_obj]
+          serializable_obj.compact!
+        end
+        serializable_obj
       end
     end
 
