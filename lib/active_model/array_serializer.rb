@@ -30,12 +30,25 @@ module ActiveModel
       end
     end
 
+    def serializer_for(item)
+      serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
+      serializer_class.new(item, @options)
+    end
+
     def serializable_array
       @object.map do |item|
-        serializer = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
-        serializer.new(item, @options).serializable_object
+        serializer_for(item).serializable_object
       end
     end
     alias_method :serializable_object, :serializable_array
+
+    def embedded_in_root_associations
+      @object.each_with_object({}) do |item, hash|
+        serializer = serializer_for(item)
+        if serializer.respond_to?(:embedded_in_root_associations)
+          hash.merge!(serializer.embedded_in_root_associations)
+        end
+      end
+    end
   end
 end

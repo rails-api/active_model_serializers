@@ -11,11 +11,15 @@ module ActiveModel
     end
 
     def serializable_data
-      if respond_to?(:meta) && meta
-        { meta_key => meta }
-      else
-        {}
+      embedded_in_root_associations.tap do |hash|
+        if respond_to?(:meta) && meta
+          hash[meta_key] = meta
+        end
       end
+    end
+
+    def embedded_in_root_associations
+      {}
     end
   end
 end

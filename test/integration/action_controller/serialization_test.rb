@@ -193,5 +193,42 @@ module ActionController
         assert_equal '{"my":[{"name":"Name 1","description":"Description 1"}]}', @response.body
       end
     end
+
+    class ArrayEmbedingSerializerTest < ActionController::TestCase
+      def setup
+        super
+        @association = UserSerializer._associations[:profile]
+        @old_association = @association.dup
+      end
+
+      def teardown
+        super
+        UserSerializer._associations[:profile] = @old_association
+      end
+
+      class MyController < ActionController::Base
+        def initialize(*)
+          super
+          @user = User.new({ name: 'Name 1', email: 'mail@server.com', gender: 'M' })
+        end
+        attr_reader :user
+
+        def render_array_embeding_in_root
+          render json: [@user]
+        end
+      end
+
+      tests MyController
+
+      def test_render_array_embeding_in_root
+        @association.embed = :ids
+        @association.embed_in_root = true
+
+        get :render_array_embeding_in_root
+        assert_equal 'application/json', @response.content_type
+
+        assert_equal("{\"my\":[{\"name\":\"Name 1\",\"email\":\"mail@server.com\",\"profile_id\":#{@controller.user.profile.object_id}}],\"profiles\":[{\"name\":\"N1\",\"description\":\"D1\"}]}", @response.body)
+      end
+    end
   end
 end
