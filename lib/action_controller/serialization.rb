@@ -64,15 +64,12 @@ module ActionController
     def build_json_serializer(resource, options)
       options = default_serializer_options.merge(options || {})
 
-      serializer = options.delete(:serializer)
-      serializer = ActiveModel::Serializer.serializer_for(resource) if serializer.nil?
+      if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
+        options[:scope] = serialization_scope unless options.has_key?(:scope)
+        options[:resource_name] = self.controller_name if resource.respond_to?(:to_ary)
 
-      return unless serializer
-
-      options[:scope] = serialization_scope unless options.has_key?(:scope)
-      options[:resource_name] = self.controller_name if resource.respond_to?(:to_ary)
-
-      serializer.new(resource, options)
+        serializer.new(resource, options)
+      end
     end
   end
 end
