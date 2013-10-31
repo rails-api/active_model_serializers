@@ -17,7 +17,6 @@ module ActiveModel
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
-        @embedded_key  = options[:root] || name
 
         self.serializer_class = @options[:serializer]
       end
@@ -30,6 +29,13 @@ module ActiveModel
 
       def serializer_class=(serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
+
+        if @serializer_class && !(@serializer_class <= ArraySerializer)
+          @options.merge!(each_serializer: @serializer_class)
+          @serializer_class = ArraySerializer
+        else
+          @serializer_class ||= ArraySerializer
+        end
       end
 
       def embed=(embed)
@@ -38,21 +44,22 @@ module ActiveModel
       end
 
       def build_serializer(object)
-        @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
-        @serializer_class.new(object, @options)
+        @serializer_class.new(Array(object), @options)
       end
 
       class HasOne < Association
-        def initialize(*args)
+        def initialize(name, *args)
           super
-          @key  ||= "#{name}_id"
+          @embedded_key = "#{@options[:root] || name}".pluralize
+          @key ||= "#{name}_id"
         end
       end
 
       class HasMany < Association
-        def initialize(*args)
+        def initialize(name, *args)
           super
-          @key ||= "#{name.singularize}_ids"
+          @embedded_key = @options[:root] || name
+          @key ||= "#{name.to_s.singularize}_ids"
         end
       end
     end

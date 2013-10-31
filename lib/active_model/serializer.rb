@@ -159,13 +159,7 @@ end
 
     def serialize(association)
       associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary) &&
-         !(association.serializer_class &&
-           association.serializer_class <= ArraySerializer)
-        associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
-      else
-        association.build_serializer(associated_data).serializable_object
-      end
+      association.build_serializer(associated_data).serializable_object
     end
 
     def serialize_ids(association)
