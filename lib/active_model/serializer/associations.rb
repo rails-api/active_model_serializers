@@ -29,6 +29,13 @@ module ActiveModel
 
       def serializer_class=(serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
+
+        if @serializer_class && !(@serializer_class <= ArraySerializer)
+          @options.merge!(each_serializer: @serializer_class)
+          @serializer_class = ArraySerializer
+        else
+          @serializer_class ||= ArraySerializer
+        end
       end
 
       def embed=(embed)
@@ -37,8 +44,7 @@ module ActiveModel
       end
 
       def build_serializer(object)
-        @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
-        @serializer_class.new(object, @options)
+        @serializer_class.new(Array(object), @options)
       end
 
       class HasOne < Association
