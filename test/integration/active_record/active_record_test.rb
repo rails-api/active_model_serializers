@@ -17,7 +17,7 @@ module ActiveModel
             ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'short' }, { name: 'whiny' }] },
                           { body: 'i liked it', ar_tags: [{:name=>"short"}, {:name=>"happy"}] }],
             ar_tags: [{ name: 'short' }, { name: 'whiny' }, { name: 'happy' }],
-            'ar_sections' => [{ 'name' => 'ruby' }]
+            ar_sections: [{ 'name' => 'ruby' }]
           }
         }, post_serializer.as_json)
       end
@@ -51,7 +51,7 @@ module ActiveModel
             ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'short' }, { name: 'whiny' }] },
                           { body: 'i liked it', ar_tags: [{:name=>"short"}, {:name=>"happy"}] }],
             ar_tags: [{ name: 'short' }, { name: 'whiny' }, { name: 'happy' }],
-            'ar_sections' => [{ 'name' => 'ruby' }]
+            ar_sections: [{ 'name' => 'ruby' }]
           }, post_serializer.as_json)
         end
       end
