@@ -107,7 +107,7 @@ end
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
     end
-    attr_accessor :object, :scope, :meta_key, :meta, :root
+    attr_accessor :object, :scope, :meta_key, :meta, :root, :convert_type
 
     def json_key
       if root == true || root.nil?
@@ -180,8 +180,26 @@ end
     def serializable_hash(options={})
       return nil if object.nil?
       hash = attributes
-      hash.merge! associations
+      convert_keys hash.merge!(associations)
     end
     alias_method :serializable_object, :serializable_hash
+
+    def convert_keys(hash)
+      hash.inject({}) { |h, (k, v)| h[apply_conversion(k)] = v; h }
+    end
+
+    def apply_conversion(key)
+      return key.to_s.camelize(:lower).to_sym if convert_type == 'camelcase'
+      return key.to_s.upcase.to_sym           if convert_type == 'upcase'
+      key
+    end
+
+    def camelize_keys!
+      @convert_type = "camelcase"
+    end
+
+    def upcase_keys!
+      @convert_type = "upcase"
+    end
   end
 end
