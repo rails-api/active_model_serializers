@@ -44,10 +44,7 @@ module ActiveModel
 
     def embedded_in_root_associations
       @object.each_with_object({}) do |item, hash|
-        serializer = serializer_for(item)
-        if serializer.respond_to?(:embedded_in_root_associations)
-          hash.merge!(serializer.embedded_in_root_associations)
-        end
+        hash.merge!(serializer_for(item).embedded_in_root_associations)
       end
     end
   end
