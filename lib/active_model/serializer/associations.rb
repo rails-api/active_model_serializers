@@ -50,7 +50,7 @@ module ActiveModel
       class HasOne < Association
         def initialize(name, *args)
           super
-          @embedded_key = "#{@options[:root] || name}".pluralize
+          @embedded_key = "#{@options[:root] || name}".pluralize.to_sym
           @key ||= "#{name}_id"
         end
       end
