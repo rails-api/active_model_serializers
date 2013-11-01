@@ -4,6 +4,12 @@
 
 # ActiveModel::Serializers
 
+## Master - 0.9.0
+
+**master is under development, there are some incompatible changes with the current stable release.**
+
+If you want to read the stable documentation visit [0.8 README](https://github.com/rails-api/active_model_serializers/blob/0-8-stable/README.md)
+
 ## Purpose
 
 `ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
