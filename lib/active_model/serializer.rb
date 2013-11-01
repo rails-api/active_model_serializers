@@ -131,7 +131,8 @@ end
           if association.embed_ids?
             hash[association.key] = serialize_ids association
           elsif association.embed_objects?
-            hash[association.embedded_key] = serialize association
+            associated_data = send(association.name)
+            hash[association.embedded_key] = serialize(association, associated_data)
           end
         end
       end
@@ -147,15 +148,15 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_in_root?
-            hash[association.embedded_key] = serialize association
+            associated_data = Array(send(association.name))
+            hash[association.root_key] = serialize(association, associated_data)
           end
         end
       end
     end
 
-    def serialize(association)
-      associated_data = send(association.name)
-      association.build_serializer(associated_data).serializable_object
+    def serialize(association, object)
+      association.build_serializer(object).serializable_object
     end
 
     def serialize_ids(association)

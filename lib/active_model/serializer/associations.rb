@@ -17,24 +17,22 @@ module ActiveModel
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
+        @embedded_key  = options[:root] || name
 
         self.serializer_class = @options[:serializer]
       end
 
       attr_reader :name, :embed_ids, :embed_objects, :serializer_class
-      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :options
+      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :options
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root
 
       def serializer_class=(serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
-
         if @serializer_class && !(@serializer_class <= ArraySerializer)
           @options.merge!(each_serializer: @serializer_class)
           @serializer_class = ArraySerializer
-        else
-          @serializer_class ||= ArraySerializer
         end
       end
 
@@ -43,23 +41,29 @@ module ActiveModel
         @embed_objects = embed == :object || embed == :objects
       end
 
-      def build_serializer(object)
-        @serializer_class.new(Array(object), @options)
-      end
-
       class HasOne < Association
         def initialize(name, *args)
           super
-          @embedded_key = "#{@options[:root] || name}".pluralize
+          @root_key = @embedded_key.to_s.pluralize
           @key ||= "#{name}_id"
+        end
+
+        def build_serializer(object)
+          @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
+          @serializer_class.new(object, @options)
         end
       end
 
       class HasMany < Association
         def initialize(name, *args)
           super
-          @embedded_key = @options[:root] || name
+          @root_key = @embedded_key
           @key ||= "#{name.to_s.singularize}_ids"
+        end
+
+        def build_serializer(object)
+          @serializer_class ||= ArraySerializer
+          @serializer_class.new(object, @options)
         end
       end
     end
