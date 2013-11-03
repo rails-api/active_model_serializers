@@ -58,17 +58,17 @@ module ActiveModel
 
       private
 
-      def embed(klass, options = {})
-        old_assocs = Hash[ARPostSerializer._associations.to_a.map { |(name, association)| [name, association.dup] }]
+      def embed(serializer_class, options = {})
+        old_assocs = Hash[serializer_class._associations.to_a.map { |(name, association)| [name, association.dup] }]
 
-        ARPostSerializer._associations.each_value do |association|
+        serializer_class._associations.each_value do |association|
           association.embed = options[:embed]
           association.embed_in_root = options[:embed_in_root]
         end
 
         yield
       ensure
-        ARPostSerializer._associations = old_assocs
+        serializer_class._associations = old_assocs
       end
     end
   end
