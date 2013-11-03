@@ -3,7 +3,15 @@ source 'https://rubygems.org'
 # Specify gem dependencies in active_model_serializers.gemspec
 gemspec
 
-gem 'sqlite3'
+
+platforms :ruby do
+  gem 'sqlite3'
+end
+
+platforms :jruby do
+  gem 'activerecord-jdbcsqlite3-adapter'
+end
+
 gem 'coveralls', :require => false
 gem 'simplecov', :require => false
 
