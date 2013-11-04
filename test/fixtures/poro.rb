@@ -53,6 +53,14 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 end
 
+class AdminProfileSerializer < ActiveModel::Serializer
+  def admin_info
+    'A1'
+  end
+
+  attributes :name, :description, :admin_info
+end
+
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
