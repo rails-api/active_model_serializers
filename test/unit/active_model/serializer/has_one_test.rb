@@ -21,6 +21,14 @@ module ActiveModel
         assert_equal 'profile', @association.name
       end
 
+      def test_association_serializer_using_serializable_hash
+        @association.serializer_class = AdminProfileSerializer
+
+        assert_equal({
+          name: 'Name 1', email: 'mail@server.com', profile: { name: 'N1', description: 'D1', admin_info: 'A1' }
+        }, @user_serializer.serializable_hash)
+      end
+
       def test_associations_embedding_ids_serialization_using_serializable_hash
         @association.embed = :ids
 

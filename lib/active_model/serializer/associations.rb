@@ -30,7 +30,7 @@ module ActiveModel
 
       def serializer_class=(serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
-        if @serializer_class && !(@serializer_class <= ArraySerializer)
+        if @serializer_class && !(@serializer_class <= ArraySerializer) && embed_ids
           @options.merge!(each_serializer: @serializer_class)
           @serializer_class = ArraySerializer
         end
