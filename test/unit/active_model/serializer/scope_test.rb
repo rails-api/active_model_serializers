@@ -17,5 +17,33 @@ module ActiveModel
         'user'
       end
     end
+
+    class NestedScopeTest < ActiveModel::TestCase
+      def setup
+        @association = UserSerializer._associations[:profile]
+        @old_association = @association.dup
+        @user = User.new({ name: 'Name 1', email: 'mail@server.com', gender: 'M' })
+        @user_serializer = UserSerializer.new(@user, scope: 'user')
+      end
+
+      def teardown
+        UserSerializer._associations[:profile] = @old_association
+      end
+
+      def test_scope_passed_through
+        @association.serializer_class = Class.new(ActiveModel::Serializer) do
+          def name
+            scope
+          end
+
+          attributes :name
+        end
+
+        assert_equal({
+          name: 'Name 1', email: 'mail@server.com', profile: { name: 'user' }
+        }, @user_serializer.serializable_hash)
+      end
+    end
+
   end
 end
