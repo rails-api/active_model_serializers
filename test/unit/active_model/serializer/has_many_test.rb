@@ -130,7 +130,7 @@ module ActiveModel
         }, @post_serializer.as_json)
       end
 
-      def test_associations_using_a_given_array_serializer
+      def test_associations_embedding_ids_using_a_given_array_serializer
         @association.embed = :ids
         @association.embed_in_root = true
         @association.serializer_class = Class.new(ActiveModel::ArraySerializer) do
@@ -142,6 +142,18 @@ module ActiveModel
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
           comments: { my_content: ['fake'] }
+        }, @post_serializer.as_json)
+      end
+
+      def test_associations_embedding_objects_using_a_given_array_serializer
+        @association.serializer_class = Class.new(ActiveModel::ArraySerializer) do
+          def serializable_object
+            { my_content: ['fake'] }
+          end
+        end
+
+        assert_equal({
+          'post' => { title: 'Title 1', body: 'Body 1', comments: { my_content: ['fake'] } }
         }, @post_serializer.as_json)
       end
     end
