@@ -41,6 +41,10 @@ module ActiveModel
         @embed_objects = embed == :object || embed == :objects
       end
 
+      def build_serializer(object, parent_options={})
+        @serializer_class.new(object, parent_options.merge(@options))
+      end
+
       class HasOne < Association
         def initialize(name, *args)
           super
@@ -48,9 +52,9 @@ module ActiveModel
           @key ||= "#{name}_id"
         end
 
-        def build_serializer(object)
+        def build_serializer(object, parent_options={})
           @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
-          @serializer_class.new(object, @options)
+          super
         end
       end
 
@@ -61,9 +65,9 @@ module ActiveModel
           @key ||= "#{name.to_s.singularize}_ids"
         end
 
-        def build_serializer(object)
+        def build_serializer(object, parent_options={})
           @serializer_class ||= ArraySerializer
-          @serializer_class.new(object, @options)
+          super
         end
       end
     end
