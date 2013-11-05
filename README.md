@@ -676,6 +676,72 @@ for the current user, the advantage of this approach is that, by setting
 `serialization_scope` to `nil`, the `index` action no longer will need to make
 that query, only the `show` action will.
 
+## HAL
+
+There are a pair of serializers included that help generate
+`application/hal+json`. They work pretty much exactly like the generic
+serializers, but have some settings preconfigured to better-suit HAL. Just
+inherit from `ActiveModel::HalSerializer` or `ActiveModel::HalArraySerializer`
+as appropriate and it does most of the work for you. There are two major
+differences, though: The `link` and `self` helper methods.
+
+The link helper can take a rel and a hash of options:
+
+```ruby
+class PostSerializer < ActiveModel::HalSerializer
+  attributes :title, :body
+
+  link :home, href: '/home'
+  link :search, href: '/search{?q}', templated: true
+end
+```
+
+Or, if you need to do some run-time interpolation, a block that's yielded the
+object to be serialized and should return a hash like above:
+
+```ruby
+class PostSerializer < ActiveModel::HalSerializer
+  attributes :title, :body
+
+  link :comments do |post|
+    { href: "/posts/#{post.id}/comments" }
+  end
+end
+```
+
+The self helper works the same way, but doesn't take a rel (it's always 'self'):
+
+```ruby
+class PostSerializer < ActiveModel::HalSerializer
+  attributes :title, :body
+
+  self do |post|
+    { href: "/posts/#{post.id}" }
+  end
+end
+```
+
+Another note on `self`. You can override it at run-time by passing in a key to
+`render`. This way, in a Rails action, you can use the actual path sent in the
+request. Imagine a resource that allows filtering with query parameters:
+
+```ruby
+class PostsController < ApplicationController
+  def index
+    @posts = Post.published
+
+    @posts = @posts.where(author: params[:author]) if params[:author]
+    @posts = @posts.where(published: (Time.at(params[:published_since])..Time.now))
+
+    render hal: @posts, self: request.path
+  end
+end
+```
+
+Now you don't have to jump through any hoops rebuilding query parameters which
+may or may not have been sent by the user.
+
+
 ## Caching
 
 To cache a serializer, call `cached` and define a `cache_key` method:
