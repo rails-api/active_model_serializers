@@ -11,6 +11,8 @@ class ScaffoldControllerGeneratorTest < Rails::Generators::TestCase
   arguments %w(account name:string description:text business:references)
 
   def test_generated_controller
+    return true if Rails::VERSION::MAJOR < 4
+
     run_generator
 
     assert_file 'app/controllers/accounts_controller.rb' do |content|
