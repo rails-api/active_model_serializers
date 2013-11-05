@@ -22,6 +22,15 @@ class HalSerializerTest < ActiveModel::TestCase
     assert_equal({ href: '/bar' }, hash[:_links][:foo])
   end
 
+  def test_link_method_with_block
+    user = User.new
+    user_serializer = HalUserSerializerWithLinkBlock.new(user)
+
+    hash = user_serializer.as_json
+
+    assert_equal({ href: '/names/Jose' }, hash[:_links][:name])
+  end
+
   def test_has_many_method
     post = Post.new(title: "New Post", body: "Body of new post", email: "tenderlove@tenderlove.com")
     comments = [Comment.new(title: "Comment1"), Comment.new(title: "Comment2")]

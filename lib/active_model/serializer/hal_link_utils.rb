@@ -10,6 +10,12 @@ module ActiveModel
 
       module ClassMethods #:nodoc:
         def link(rel, options={})
+          if block_given?
+            define_method("_generate_#{rel}_link") do
+              yield self
+            end
+          end
+
           self._links = _links.merge(rel => options)
 
           # protect inheritance chains and open classes
@@ -32,10 +38,14 @@ module ActiveModel
         method << "  h = {}\n"
 
         _links.each do |rel, options|
-          method << "  h[:\"#{rel}\"] = {\n"
-          method << "    href: \"#{options[:href]}\",\n"
-          method << "    templated: #{!!options[:templated]}\n" if options[:templated]
-          method << "  }\n"
+          if respond_to?("_generate_#{rel}_link")
+            method << "  h[:\"#{rel}\"] = _generate_#{rel}_link\n"
+          else
+            method << "  h[:\"#{rel}\"] = {\n"
+            method << "    href: \"#{options[:href]}\",\n"
+            method << "    templated: #{!!options[:templated]}\n" if options[:templated]
+            method << "  }\n"
+          end
         end
         method << "  h\nend"
 

@@ -112,6 +112,14 @@ class HalUserSerializerWithLink < ActiveModel::HalSerializer
   link :foo, href: '/bar'
 end
 
+class HalUserSerializerWithLinkBlock < ActiveModel::HalSerializer
+  attributes :first_name
+
+  link :name do |user|
+    { href: "/names/#{user.first_name}" }
+  end
+end
+
 class HalUsersSerializer < ActiveModel::HalArraySerializer
 end
 
