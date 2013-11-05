@@ -703,27 +703,15 @@ object to be serialized and should return a hash like above:
 class PostSerializer < ActiveModel::HalSerializer
   attributes :title, :body
 
-  link :comments do |post|
-    { href: "/posts/#{post.id}/comments" }
-  end
-end
-```
-
-The self helper works the same way, but doesn't take a rel (it's always 'self'):
-
-```ruby
-class PostSerializer < ActiveModel::HalSerializer
-  attributes :title, :body
-
-  self do |post|
+  link :self do |post|
     { href: "/posts/#{post.id}" }
   end
 end
 ```
 
-Another note on `self`. You can override it at run-time by passing in a key to
-`render`. This way, in a Rails action, you can use the actual path sent in the
-request. Imagine a resource that allows filtering with query parameters:
+Also, a note about `'self'` links. You can override it at run-time by passing in
+a key to `render`. This way, in a Rails action, you can use the actual path sent
+in the request. Imagine a resource that allows filtering with query parameters:
 
 ```ruby
 class PostsController < ApplicationController
