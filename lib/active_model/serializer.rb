@@ -111,7 +111,7 @@ end
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta
 
-    def json_key
+    def root_key
       if root == true || root.nil?
         self.class.root_name
       else

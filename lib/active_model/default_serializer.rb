@@ -18,5 +18,9 @@ module ActiveModel
     end
     alias serializable_hash as_json
     alias serializable_object as_json
+
+    def as_xml(options={})
+      @object.as_xml
+    end
   end
 end

@@ -23,7 +23,7 @@ module ActiveModel
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta
 
-    def json_key
+    def root_key
       if root.nil?
         @resource_name
       else

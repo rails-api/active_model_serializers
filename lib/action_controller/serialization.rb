@@ -41,8 +41,20 @@ module ActionController
     end
 
     def _render_option_json(resource, options)
-      serializer = build_json_serializer(resource, options)
+      serializer = build_serializer(resource, options)
 
+      # debugger
+      if serializer
+        super(serializer, options)
+      else
+        super
+      end
+    end
+
+    def _render_option_xml(resource, options)
+      serializer = build_serializer(resource, options)
+
+      # debugger
       if serializer
         super(serializer, options)
       else
@@ -61,7 +73,7 @@ module ActionController
       send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
     end
 
-    def build_json_serializer(resource, options = {})
+    def build_serializer(resource, options = {})
       options = default_serializer_options.merge(options)
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
@@ -71,5 +83,6 @@ module ActionController
         serializer.new(resource, options)
       end
     end
+
   end
 end
