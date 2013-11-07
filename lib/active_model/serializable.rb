@@ -9,13 +9,13 @@ module ActiveModel
         serializable_object
       end
     end
-    alias serializable_hash as_json
+    alias_method :serializable_hash, :as_json
 
     def as_xml(options={})
       root = options.fetch(:root, root_key)
       serializable_hash.to_xml(root: root)
     end
-    alias to_xml as_xml
+    alias_method :to_xml, :as_xml
 
     def serializable_data
       embedded_in_root_associations.tap do |hash|

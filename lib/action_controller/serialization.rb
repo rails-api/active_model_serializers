@@ -40,25 +40,15 @@ module ActionController
       end
     end
 
-    def _render_option_json(resource, options)
-      serializer = build_serializer(resource, options)
+    [:json, :xml].each do |format|
+      define_method("_render_option_#{format}") do |resource, options|
+        serializer = build_serializer(resource, options)
 
-      # debugger
-      if serializer
-        super(serializer, options)
-      else
-        super
-      end
-    end
-
-    def _render_option_xml(resource, options)
-      serializer = build_serializer(resource, options)
-
-      # debugger
-      if serializer
-        super(serializer, options)
-      else
-        super
+        if serializer
+          super(serializer, options)
+        else
+          super(resource, options)
+        end
       end
     end
 
