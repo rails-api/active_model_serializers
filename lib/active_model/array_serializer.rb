@@ -20,7 +20,7 @@ module ActiveModel
       @each_serializer = options[:each_serializer]
       @options         = options.merge(root: nil)
     end
-    attr_accessor :object, :root, :meta_key, :meta
+    attr_accessor :object, :root, :meta_key, :meta, :options
 
     def json_key
       if root.nil?
