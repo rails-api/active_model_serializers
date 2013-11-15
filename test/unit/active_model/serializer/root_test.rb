@@ -6,7 +6,7 @@ module ActiveModel
       def setup
         @old_root = ProfileSerializer._root
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-        @serializer = ProfileSerializer.new(@profile, root: :initialize)
+        @serializer = ProfileSerializer.new(@profile, root: :new_posts)
         ProfileSerializer._root = true
       end
 
@@ -22,8 +22,17 @@ module ActiveModel
 
       def test_root_using_as_json
         assert_equal({
-          initialize: {
+          new_posts: {
             name: 'Name 1', description: 'Description 1'
+          }
+        }, @serializer.as_json)
+      end
+
+      def test_root_applied_conversion_using_as_json
+				@serializer.camelize_keys!
+        assert_equal({
+          'newPosts' => {
+            'name' => 'Name 1', 'description' => 'Description 1'
           }
         }, @serializer.as_json)
       end
