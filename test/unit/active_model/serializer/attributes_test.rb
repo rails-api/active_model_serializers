@@ -42,7 +42,7 @@ module ActiveModel
       def test_attributes_serialization_using_upcase_key_conversion
         @post_serializer.convert_type = 'upcase'
         assert_match({
-          TITLE: 'test', BODY: 'lorem ipsum', CREATED_AT: Time.now, UPDATED_AT: Time.now, :COMMENTS=>[{:content=>"C1"}, {:content=>"C2"}]
+          TITLE: 'test', BODY: 'lorem ipsum', CREATED_AT: Time.now, UPDATED_AT: Time.now, :COMMENTS=>[{:CONTENT=>"C1"}, {:CONTENT=>"C2"}]
         }.to_s, @post_serializer.serializable_hash.to_s)
       end
     end

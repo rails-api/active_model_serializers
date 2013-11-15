@@ -101,11 +101,12 @@ end
     end
 
     def initialize(object, options={})
-      @object   = object
-      @scope    = options[:scope]
-      @root     = options.fetch(:root, self.class._root)
-      @meta_key = options[:meta_key] || :meta
-      @meta     = options[@meta_key]
+      @object       = object
+      @scope        = options[:scope]
+      @root         = options.fetch(:root, self.class._root)
+      @meta_key     = options[:meta_key] || :meta
+      @meta         = options[@meta_key]
+      @convert_type = options[:convert_type]
     end
     attr_accessor :object, :scope, :meta_key, :meta, :root, :convert_type
 
@@ -162,7 +163,7 @@ end
       if associated_data.respond_to?(:to_ary) &&
          !(association.serializer_class &&
            association.serializer_class <= ArraySerializer)
-        associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
+        associated_data.map { |elem| association.build_serializer(elem, @convert_type).serializable_hash }
       else
         association.build_serializer(associated_data).serializable_object
       end
