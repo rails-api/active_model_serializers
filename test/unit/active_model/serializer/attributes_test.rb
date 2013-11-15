@@ -35,14 +35,14 @@ module ActiveModel
       def test_attributes_serialization_using_camelcase_key_conversion
         @post_serializer.convert_type = 'camelcase'
         assert_match({
-          title: 'test', body: 'lorem ipsum', createdAt: Time.now, updatedAt: Time.now, :comments=>[{:content=>"C1"}, {:content=>"C2"}]
+          'title' => 'test', 'body' => 'lorem ipsum', 'createdAt' => Time.now, 'updatedAt' => Time.now, 'comments' => [{ 'content' => 'C1'}, { 'content' => 'C2'}]
         }.to_s, @post_serializer.serializable_hash.to_s)
       end
 
       def test_attributes_serialization_using_upcase_key_conversion
         @post_serializer.convert_type = 'upcase'
         assert_match({
-          TITLE: 'test', BODY: 'lorem ipsum', CREATED_AT: Time.now, UPDATED_AT: Time.now, :COMMENTS=>[{:CONTENT=>"C1"}, {:CONTENT=>"C2"}]
+          'TITLE' => 'test', 'BODY' => 'lorem ipsum', 'CREATED_AT' => Time.now, 'UPDATED_AT' => Time.now, 'COMMENTS' => [{'CONTENT' => 'C1'}, { 'CONTENT' => 'C2'}]
         }.to_s, @post_serializer.serializable_hash.to_s)
       end
     end

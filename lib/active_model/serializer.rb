@@ -190,8 +190,8 @@ end
     end
 
     def apply_conversion(key)
-      return key.to_s.camelize(:lower).to_sym if convert_type == 'camelcase'
-      return key.to_s.upcase.to_sym           if convert_type == 'upcase'
+      return key.to_s.camelize(:lower) if convert_type == 'camelcase'
+      return key.to_s.upcase           if convert_type == 'upcase'
       key
     end
 
