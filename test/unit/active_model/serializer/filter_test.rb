@@ -41,7 +41,7 @@ module ActiveModel
 
       def test_filtered_associations_serialization
         assert_equal({
-          'post' => { title: 'Title 1' }
+          'post' => { title: 'Title 1', created_at: nil, updated_at: nil }
         }, @post_serializer.as_json)
       end
     end
