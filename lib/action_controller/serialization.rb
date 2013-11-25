@@ -30,13 +30,17 @@ module ActionController
     include ActionController::Renderers
 
     included do
-      class_attribute :_serialization_scope
+      class_attribute :_serialization_scope, :should_serialize
       self._serialization_scope = :current_user
+      self.should_serialize = true
     end
 
     module ClassMethods
       def serialization_scope(scope)
         self._serialization_scope = scope
+      end
+      def disable_serialization
+        self.should_serialize = false
       end
     end
 
@@ -62,6 +66,7 @@ module ActionController
     end
 
     def build_json_serializer(resource, options)
+      return if !self.class.should_serialize
       options = default_serializer_options.merge(options || {})
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
