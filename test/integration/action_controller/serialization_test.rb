@@ -231,4 +231,30 @@ module ActionController
       end
     end
   end
+
+  class DisableSerializationForSingleController < ActionController::TestCase
+    class UserController < ActionController::Base
+      disable_serialization
+
+      def initialize(*)
+        super
+        @user = User.new({name: 'John Smith', email: 'john.smith@example.com', gender: 'male', username: 'jsmith'}).instance_variable_get(:@attributes)
+        # See /test/fixtures/poro.rb Model class.
+      end
+      attr_reader :user
+
+      def show
+        render json: @user
+      end
+      
+    end
+
+    tests UserController
+
+    def test_no_user_serialization
+      get :show
+      
+      assert_equal('{"name":"John Smith","email":"john.smith@example.com","gender":"male","username":"jsmith"}', @response.body)
+    end
+  end
 end
