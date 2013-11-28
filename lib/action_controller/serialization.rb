@@ -24,19 +24,35 @@ module ActionController
   #      end
   #    end
   #
+  # If you need to disable serialization on a specific controller, place "disable_controller" in 
+  # your controller to disable any serialization from ActiveModel::Serializer. Note that this will
+  # disable serialization even if you have a serializer present.
+  #
+  #    class UserController < ApplicationController
+  #      disable_serialization
+  #
+  #      def show
+  #        render json: User.find(params[:id)
+  #      end
+  #    end
+  
   module Serialization
     extend ActiveSupport::Concern
 
     include ActionController::Renderers
 
     included do
-      class_attribute :_serialization_scope
+      class_attribute :_serialization_scope, :should_serialize
       self._serialization_scope = :current_user
+      self.should_serialize = true
     end
 
     module ClassMethods
       def serialization_scope(scope)
         self._serialization_scope = scope
+      end
+      def disable_serialization
+        self.should_serialize = false
       end
     end
 
@@ -62,6 +78,7 @@ module ActionController
     end
 
     def build_json_serializer(resource, options)
+      return if !self.class.should_serialize
       options = default_serializer_options.merge(options || {})
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))

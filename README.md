@@ -10,6 +10,10 @@
 
 If you want to read the stable documentation visit [0.8 README](https://github.com/rails-api/active_model_serializers/blob/0-8-stable/README.md)
 
+## Note for this fork
+
+This fork adds the ability to disable serializations for specific controllers using the "disable_serialization" method. This can be useful if you are creating an API method or controller that should not use a serializer, or if you are implementing an application that serves information from non-ActiveRecord models such as an external API.
+
 ## Purpose
 
 `ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
