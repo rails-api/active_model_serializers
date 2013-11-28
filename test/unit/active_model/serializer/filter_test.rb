@@ -30,7 +30,7 @@ module ActiveModel
         @post_serializer = PostSerializer.new(@post)
         @post_serializer.instance_eval do
           def filter(keys)
-            keys - [:body, :comments]
+            keys & [:title]
           end
         end
       end
@@ -44,6 +44,20 @@ module ActiveModel
           'post' => { title: 'Title 1' }
         }, @post_serializer.as_json)
       end
+
+      def test_filter_only_called_once
+        @post_serializer.instance_eval do
+          def filter(keys)
+            @_keys ||= keys & [:title, :comments]
+          end
+        end
+
+        assert_equal({
+          title: 'Title 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
+        }, @post_serializer.serializable_hash)
+
+      end
     end
+
   end
 end
