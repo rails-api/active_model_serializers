@@ -106,8 +106,9 @@ end
       @root     = options.fetch(:root, self.class._root)
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
+      @options  = options.reject{|k,v| [:scope, :root, :meta_key, :meta].include?(k) }
     end
-    attr_accessor :object, :scope, :meta_key, :meta, :root
+    attr_accessor :object, :scope, :meta_key, :meta, :root, :options
 
     def json_key
       if root == true || root.nil?
