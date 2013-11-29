@@ -12,8 +12,14 @@ module ActiveModel
     alias_method :serializable_hash, :as_json
 
     def as_xml(options={})
-      root = options.fetch(:root, root_key)
-      serializable_hash.to_xml(root: root)
+      # XML must have one and only one root
+      if as_json.size > 1 || !as_json.is_a?(Hash)
+        root = options.fetch(:xml_root, xml_root_key)
+        as_json.to_xml(root: root)
+      else
+        root = as_json.keys.first
+        as_json[root].to_xml(root: root)
+      end
     end
     alias_method :to_xml, :as_xml
 

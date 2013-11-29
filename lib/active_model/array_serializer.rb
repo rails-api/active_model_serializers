@@ -16,16 +16,25 @@ module ActiveModel
       @object          = object
       @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
+      @xml_root        = options.fetch(:xml_root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scopem :root, :xml_root, :meta_key, :meta
 
     def root_key
       if root.nil?
         @resource_name
+      else
+        root
+      end
+    end
+
+    def xml_root_key
+      if xml_root.nil?
+        @options[:resource_name]
       else
         root
       end
