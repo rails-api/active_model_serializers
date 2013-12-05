@@ -263,7 +263,7 @@ authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
 
-Serializers provides a method named `filter` used to determine what
+Serializers provides a method named `filter_attributes` and `filter_associations` used to determine what
 attributes and associations should be included in the output. This is
 typically used to customize output based on `current_user`. For example:
 
@@ -271,7 +271,7 @@ typically used to customize output based on `current_user`. For example:
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body, :author
 
-  def filter(keys)
+  def filter_attributes(keys)
     if scope.admin?
       keys
     else
