@@ -2,15 +2,19 @@ language: ruby
 rvm:
   - 1.9.3
   - 2.0.0
+  - ruby-head
   - jruby-19mode
-  - rbx-19mode
+  - rbx-2.2.1
 gemfile:
   - Gemfile
   - Gemfile.rails3
   - Gemfile.edge
 matrix:
   allow_failures:
+    - rvm: rbx-2.2.1
+    - rvm: ruby-head
     - gemfile: Gemfile.edge
+  fast_finish: true
 notifications:
   email: false
   campfire:
