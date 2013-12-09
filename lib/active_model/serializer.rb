@@ -150,7 +150,7 @@ end
         if included_associations.include? name
           if association.embed_in_root?
             associated_data = Array(send(association.name))
-            hash[association.root_key] = serialize(association, associated_data)
+            hash[association.root_key] = serialize(association.dup, associated_data)
           end
         end
       end

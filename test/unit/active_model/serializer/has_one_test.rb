@@ -133,6 +133,16 @@ module ActiveModel
         }, @user_serializer.as_json)
       end
 
+      def test_associations_embedding_in_root_does_not_polute_association
+        @association.embed_in_root = true
+
+        serializer_class = @association.serializer_class
+
+        @user_serializer.embedded_in_root_associations
+
+        assert_equal(@association.serializer_class, serializer_class)
+      end
+
       def test_associations_embedding_objects_using_a_given_serializer
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
           def name
