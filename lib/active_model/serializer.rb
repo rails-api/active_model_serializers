@@ -109,7 +109,7 @@ end
       @convert_type = options[:convert_type]
       @options  = options.reject{|k,v| [:scope, :root, :meta_key, :meta].include?(k) }
     end
-    attr_accessor :object, :scope, :meta_key, :meta, :root, :convert_type, : options
+    attr_accessor :object, :scope, :meta_key, :meta, :root, :convert_type, :options
 
     def json_key
       if root == true || root.nil?

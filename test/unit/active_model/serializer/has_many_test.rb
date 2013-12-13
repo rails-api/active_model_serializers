@@ -153,7 +153,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', comments: { my_content: ['fake'] } }
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, comments: { my_content: ['fake'] } }
         }, @post_serializer.as_json)
       end
     end
