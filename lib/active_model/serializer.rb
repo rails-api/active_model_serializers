@@ -101,14 +101,15 @@ end
     end
 
     def initialize(object, options={})
-      @object   = object
-      @scope    = options[:scope]
-      @root     = options.fetch(:root, self.class._root)
-      @meta_key = options[:meta_key] || :meta
-      @meta     = options[@meta_key]
+      @object       = object
+      @scope        = options[:scope]
+      @root         = options.fetch(:root, self.class._root)
+      @meta_key     = options[:meta_key] || :meta
+      @meta         = options[@meta_key]
+      @convert_type = options[:convert_type]
       @options  = options.reject{|k,v| [:scope, :root, :meta_key, :meta].include?(k) }
     end
-    attr_accessor :object, :scope, :meta_key, :meta, :root, :options
+    attr_accessor :object, :scope, :meta_key, :meta, :root, :convert_type, : options
 
     def json_key
       if root == true || root.nil?
@@ -172,8 +173,26 @@ end
     def serializable_hash(options={})
       return nil if object.nil?
       hash = attributes
-      hash.merge! associations
+      convert_keys hash.merge!(associations)
     end
     alias_method :serializable_object, :serializable_hash
+
+    def convert_keys(hash)
+      hash.inject({}) { |h, (k, v)| h[apply_conversion(k)] = v; h }
+    end
+
+    def apply_conversion(key)
+      return key.to_s.camelize(:lower) if convert_type == 'camelcase'
+      return key.to_s.upcase           if convert_type == 'upcase'
+      key
+    end
+
+    def camelize_keys!
+      @convert_type = "camelcase"
+    end
+
+    def upcase_keys!
+      @convert_type = "upcase"
+    end
   end
 end

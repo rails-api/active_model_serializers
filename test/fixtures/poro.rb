@@ -54,7 +54,7 @@ class ProfileSerializer < ActiveModel::Serializer
 end
 
 class PostSerializer < ActiveModel::Serializer
-  attributes :title, :body
+  attributes :title, :body, :created_at, :updated_at
 
   has_many :comments
 end
