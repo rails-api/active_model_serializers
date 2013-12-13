@@ -8,7 +8,7 @@ require 'thread'
 module ActiveModel
   class Serializer
     include Serializable
-
+    class_attribute :_root
     @mutex = Mutex.new
 
     class << self
@@ -59,7 +59,7 @@ end
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
+      attr_accessor :_attributes, :_associations
       alias root  _root=
       alias root= _root=
 
