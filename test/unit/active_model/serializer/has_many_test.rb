@@ -21,6 +21,18 @@ module ActiveModel
         assert_equal 'comments', @association.name
       end
 
+      def test_associations_inheritance
+        inherited_serializer_klass = Class.new(PostSerializer) do
+          has_many :some_associations
+        end
+        another_inherited_serializer_klass = Class.new(PostSerializer)
+
+        assert_equal(PostSerializer._associations.length + 1,
+          inherited_serializer_klass._associations.length)
+        assert_equal(PostSerializer._associations.length,
+          another_inherited_serializer_klass._associations.length)
+      end
+
       def test_associations_embedding_ids_serialization_using_serializable_hash
         @association.embed = :ids
 
