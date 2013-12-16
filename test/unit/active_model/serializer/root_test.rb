@@ -54,6 +54,20 @@ module ActiveModel
           name: 'Name 1', description: 'Description 1'
         }, @serializer.as_json)
       end
+
+      def test_root_inheritance
+        ProfileSerializer._root = 'profile'
+
+        inherited_serializer_klass = Class.new(ProfileSerializer)
+        inherited_serializer_klass._root = 'inherited_profile'
+
+        another_inherited_serializer_klass = Class.new(ProfileSerializer)
+
+        assert_equal('inherited_profile',
+                     inherited_serializer_klass._root)
+        assert_equal('profile',
+                     another_inherited_serializer_klass._root)
+      end
     end
 
     class RootInSerializerTest < ActiveModel::TestCase

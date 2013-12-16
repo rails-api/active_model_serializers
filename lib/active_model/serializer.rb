@@ -13,6 +13,7 @@ module ActiveModel
 
     class << self
       def inherited(base)
+        base._root = _root
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
       end
