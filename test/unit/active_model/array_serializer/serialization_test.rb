@@ -53,6 +53,10 @@ module ActiveModel
         @post1 = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
         @post2 = Post.new({ title: 'Title 2', body: 'Body 2', date: '1/1/2000' })
 
+        class << @post2
+          attr_writer :comments
+        end
+
         @post2.comments = [
           Comment.new(content: 'C3'),
           Comment.new(content: 'C4')

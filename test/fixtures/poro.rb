@@ -26,8 +26,6 @@ class Profile < Model
 end
 
 class Post < Model
-  attr_writer :comments
-
   def comments
     @comments ||= [Comment.new(content: 'C1'),
                    Comment.new(content: 'C2')]
