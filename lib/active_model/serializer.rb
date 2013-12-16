@@ -13,8 +13,8 @@ module ActiveModel
 
     class << self
       def inherited(base)
-        base._attributes = (self._attributes || []).dup
-        base._associations = (self._associations || {}).dup
+        base._attributes = (_attributes || []).dup
+        base._associations = (_associations || {}).dup
       end
 
       def setup
