@@ -37,7 +37,7 @@ module ActiveModel
         @association.embed = :ids
 
         assert_equal({
-          title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
+          title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'comment_ids' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
@@ -45,7 +45,7 @@ module ActiveModel
         @association.embed = :ids
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } }
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'comment_ids' => @post.comments.map { |c| c.object_id } }
         }, @post_serializer.as_json)
       end
 
@@ -54,7 +54,7 @@ module ActiveModel
         @association.key = 'key'
 
         assert_equal({
-          title: 'Title 1', body: 'Body 1', 'key' => @post.comments.map { |c| c.object_id }
+          title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'key' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
@@ -62,7 +62,7 @@ module ActiveModel
         @association.embed = :objects
 
         assert_equal({
-          title: 'Title 1', body: 'Body 1', comments: [{ content: 'C1' }, { content: 'C2' }]
+          title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, comments: [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.serializable_hash)
       end
 
@@ -70,7 +70,7 @@ module ActiveModel
         @association.embed = :objects
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', comments: [{ content: 'C1' }, { content: 'C2' }] }
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, comments: [{ content: 'C1' }, { content: 'C2' }] }
         }, @post_serializer.as_json)
       end
 
@@ -83,7 +83,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', comments: [nil] }
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, comments: [nil] }
         }, @post_serializer.as_json)
       end
 
@@ -92,7 +92,7 @@ module ActiveModel
         @association.embedded_key = 'root'
 
         assert_equal({
-          title: 'Title 1', body: 'Body 1', 'root' => [{ content: 'C1' }, { content: 'C2' }]
+          title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'root' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.serializable_hash)
       end
 
@@ -101,7 +101,7 @@ module ActiveModel
         @association.embed_in_root = true
 
         assert_equal({
-          title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id }
+          title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'comment_ids' => @post.comments.map { |c| c.object_id }
         }, @post_serializer.serializable_hash)
       end
 
@@ -110,7 +110,7 @@ module ActiveModel
         @association.embed_in_root = true
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'comment_ids' => @post.comments.map { |c| c.object_id } },
           comments: [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       end
@@ -120,7 +120,7 @@ module ActiveModel
         @association.embed_in_root = true
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1' },
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil },
           comments: [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       end
@@ -137,7 +137,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'comment_ids' => @post.comments.map { |c| c.object_id } },
           comments: [{ content: 'fake' }, { content: 'fake' }]
         }, @post_serializer.as_json)
       end
@@ -152,7 +152,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, 'comment_ids' => @post.comments.map { |c| c.object_id } },
           comments: { my_content: ['fake'] }
         }, @post_serializer.as_json)
       end
@@ -165,7 +165,7 @@ module ActiveModel
         end
 
         assert_equal({
-          'post' => { title: 'Title 1', body: 'Body 1', comments: { my_content: ['fake'] } }
+          'post' => { title: 'Title 1', body: 'Body 1', created_at: nil, updated_at: nil, comments: { my_content: ['fake'] } }
         }, @post_serializer.as_json)
       end
     end
