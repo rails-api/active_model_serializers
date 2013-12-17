@@ -133,8 +133,7 @@ end
           if association.embed_ids?
             hash[association.key] = serialize_ids association
           elsif association.embed_objects?
-            associated_data = send(association.name)
-            hash[association.embedded_key] = serialize(association, associated_data)
+            hash[association.embedded_key] = serialize association
           end
         end
       end
@@ -150,14 +149,14 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_in_root?
-            associated_data = Array(send(association.name))
-            hash[association.root_key] = serialize(association, associated_data)
+            hash[association.root_key] = serialize association
           end
         end
       end
     end
 
-    def serialize(association, object)
+    def serialize(association)
+      object = send(association.name)
       association.build_serializer(object, scope: scope).serializable_object
     end
 
@@ -174,6 +173,7 @@ end
       return nil if object.nil?
       hash = attributes
       hash.merge! associations
+      @options[:_wrap_in_array] ? [hash] : hash
     end
     alias_method :serializable_object, :serializable_hash
   end

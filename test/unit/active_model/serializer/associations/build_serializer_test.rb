@@ -11,11 +11,8 @@ module ActiveModel
 
         def test_build_serializer_for_array_called_twice
           2.times do
-            serializer      = @association.build_serializer([@post])
-            each_serializer = serializer.serializer_for(@post)
-
-            assert_instance_of(ArraySerializer, serializer)
-            assert_instance_of(PostSerializer,  each_serializer)
+            serializer = @association.build_serializer(@post)
+            assert_instance_of(PostSerializer, serializer)
           end
         end
       end

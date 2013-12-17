@@ -38,13 +38,6 @@ module ActiveModel
         @serializer_class.new(object, options.merge(@options))
       end
 
-      private
-
-      def use_array_serializer!
-        @options.merge!(each_serializer: @serializer_class)
-        @serializer_class = ArraySerializer
-      end
-
       class HasOne < Association
         def initialize(name, *args)
           super
@@ -53,12 +46,8 @@ module ActiveModel
         end
 
         def build_serializer(object, options = {})
-          if object.respond_to?(:to_ary) && !(@serializer_class && @serializer_class <= ArraySerializer)
-            use_array_serializer!
-          else
-            @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
-          end
-
+          @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
+          options[:_wrap_in_array] = embed_in_root?
           super
         end
       end
@@ -72,7 +61,8 @@ module ActiveModel
 
         def build_serializer(object, options = {})
           if @serializer_class && !(@serializer_class <= ArraySerializer)
-            use_array_serializer!
+            @options[:each_serializer] = @serializer_class
+            @serializer_class = ArraySerializer
           else
             @serializer_class ||= ArraySerializer
           end
