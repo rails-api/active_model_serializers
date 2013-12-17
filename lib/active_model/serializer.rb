@@ -169,12 +169,12 @@ end
       end
     end
 
-    def serializable_hash(options={})
+    def serializable_object(options={})
       return nil if object.nil?
       hash = attributes
       hash.merge! associations
       @options[:_wrap_in_array] ? [hash] : hash
     end
-    alias_method :serializable_object, :serializable_hash
+    alias_method :serializable_hash, :serializable_object
   end
 end

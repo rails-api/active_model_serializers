@@ -35,12 +35,12 @@ module ActiveModel
       serializer_class.new(item, @options)
     end
 
-    def serializable_array
+    def serializable_object
       @object.map do |item|
         serializer_for(item).serializable_object
       end
     end
-    alias_method :serializable_object, :serializable_array
+    alias_method :serializable_array, :serializable_object
 
     def embedded_in_root_associations
       @object.each_with_object({}) do |item, hash|
