@@ -45,8 +45,11 @@ module ActiveModel
     def embedded_in_root_associations
       @object.each_with_object({}) do |item, hash|
         serializer_for(item).embedded_in_root_associations.each_pair do |type, objects|
-          hash[type] = hash.fetch(type, []).concat(objects)
-          hash[type].uniq!
+          if hash.has_key?(type)
+            hash[type].concat(objects).uniq!
+          else
+            hash[type] = objects
+          end
         end
       end
     end
