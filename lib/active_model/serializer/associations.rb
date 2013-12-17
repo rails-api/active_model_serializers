@@ -53,7 +53,7 @@ module ActiveModel
         end
 
         def build_serializer(object, options = {})
-          if object.respond_to?(:to_ary)
+          if object.respond_to?(:to_ary) && !(@serializer_class && @serializer_class <= ArraySerializer)
             use_array_serializer!
           else
             @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
