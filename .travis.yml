@@ -13,7 +13,6 @@ matrix:
   allow_failures:
     - rvm: jruby
     - rvm: rbx
-    - gemfile: Gemfile.edge
   fast_finish: true
 notifications:
   email: false
