@@ -7,7 +7,6 @@ module ActiveModel
         assert_equal(nil, DefaultSerializer.new(nil).serializable_object)
         assert_equal(1, DefaultSerializer.new(1).serializable_object)
         assert_equal('hi', DefaultSerializer.new('hi').serializable_object)
-        assert_equal('1..3', DefaultSerializer.new(1..3).serializable_object)
       end
     end
   end
