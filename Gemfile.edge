@@ -6,12 +6,19 @@ platforms :ruby do
   gem 'sqlite3'
 end
 
+platforms :mri do
+  gem 'coveralls', :require => false
+  gem 'simplecov', :require => false
+end
+
 platforms :jruby do
   gem 'activerecord-jdbcsqlite3-adapter'
 end
 
-gem 'coveralls', :require => false
-gem 'simplecov', :require => false
+platforms :rbx do
+  gem 'rubysl', '~> 2.0'
+  gem 'racc', '~> 1.4.10'
+end
 
 # Use Rails master
 gem 'rails', github: 'rails/rails'
