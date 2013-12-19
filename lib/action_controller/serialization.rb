@@ -66,7 +66,7 @@ module ActionController
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
         options[:scope] = serialization_scope unless options.has_key?(:scope)
-        options[:resource_name] = self.controller_name if resource.respond_to?(:to_ary)
+        options[:resource_name] = controller_name if resource.respond_to?(:to_ary)
 
         serializer.new(resource, options)
       end
