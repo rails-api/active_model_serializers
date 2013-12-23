@@ -390,7 +390,7 @@ class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
 
   # look up comments, but use +my_comments+ as the key in JSON
-  has_many :comments, root: :my_comments
+  has_many :comments, key: :my_comments
 end
 ```
 
