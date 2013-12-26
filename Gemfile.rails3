@@ -18,7 +18,9 @@ platforms :jruby do
 end
 
 platforms :rbx do
+  gem 'json'
   gem 'rubysl', '~> 2.0'
+  gem 'rubysl-test-unit', '~> 2.0'
   gem 'racc', '~> 1.4.10'
 end
 

@@ -19,7 +19,6 @@ end
 platforms :rbx do
   gem 'json'
   gem 'rubysl', '~> 2.0'
-  gem 'rubysl-test-unit', '~> 2.0' # Useful for Rails 3.2
   gem 'racc', '~> 1.4.10'
 end
 
