@@ -11,8 +11,6 @@ gemfile:
   - Gemfile.rails3
   - Gemfile.edge
 matrix:
-  allow_failures:
-    - rvm: jruby
   fast_finish: true
 notifications:
   email: false
