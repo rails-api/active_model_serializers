@@ -263,9 +263,9 @@ authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
 
-Serializers provides a method named `filter` used to determine what
-attributes and associations should be included in the output. This is
-typically used to customize output based on `current_user`. For example:
+Serializers provides a method named `filter`, which should return an array
+used to determine what attributes and associations should be included in the output.
+This is typically used to customize output based on `current_user`. For example:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
@@ -282,7 +282,8 @@ end
 ```
 
 And it's also safe to mutate keys argument by doing keys.delete(:author)
-in case you want to avoid creating two extra arrays.
+in case you want to avoid creating two extra arrays. Note that if you do an
+in-place modification, you still need to return the modified array.
 
 If you would like the key in the outputted JSON to be different from its name
 in ActiveRecord, you can declare the attribute with the different name
