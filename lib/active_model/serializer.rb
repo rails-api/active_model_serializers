@@ -120,14 +120,14 @@ end
     end
 
     def attributes
-      filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+      filter_attributes(self.class._attributes.dup).each_with_object({}) do |name, hash|
         hash[name] = send(name)
       end
     end
 
     def associations
       associations = self.class._associations
-      included_associations = filter(associations.keys)
+      included_associations = filter_associations(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_ids?
@@ -139,13 +139,17 @@ end
       end
     end
 
-    def filter(keys)
+    def filter_attributes(keys)
+      keys
+    end
+
+    def filter_associations(keys)
       keys
     end
 
     def embedded_in_root_associations
       associations = self.class._associations
-      included_associations = filter(associations.keys)
+      included_associations = filter_associations(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_in_root?
