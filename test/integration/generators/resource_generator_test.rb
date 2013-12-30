@@ -1,8 +1,7 @@
 require 'test_helper'
 require 'rails'
+require 'active_model/serializer/railtie'
 require 'test_app'
-require 'rails/generators/rails/resource/resource_generator'
-require 'active_model/serializer/generators/resource_override'
 
 class ResourceGeneratorTest < Rails::Generators::TestCase
   destination File.expand_path('../../../tmp', __FILE__)

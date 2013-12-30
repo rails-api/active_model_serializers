@@ -5,4 +5,4 @@ class TestApp < Rails::Application
   end
 end
 
-TestApp.load_generators
+TestApp.initialize!

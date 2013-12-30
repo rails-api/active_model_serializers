@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'rails'
+require 'active_model/serializer/railtie'
 require 'test_app'
-require 'active_model/serializer/generators/serializer/scaffold_controller_generator'
 
 class ScaffoldControllerGeneratorTest < Rails::Generators::TestCase
   destination File.expand_path('../../../tmp', __FILE__)
