@@ -337,6 +337,7 @@ module ActiveModel
     # Returns a json representation of the serializable
     # object including the root.
     def as_json(options={})
+      options ||= {}
       if root = options.fetch(:root, @options.fetch(:root, root_name))
         @options[:hash] = hash = {}
         @options[:unique_values] = {}

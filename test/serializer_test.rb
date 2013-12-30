@@ -1449,4 +1449,17 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, post_serializer.as_json)
   end
+
+  def test_as_json_with_nil_options
+    user = User.new
+    user_serializer = DefaultUserSerializer.new(user, {})
+
+    # ActiveSupport 3.1 Object#to_json generates this downstream call
+    assert_equal({
+      :default_user => {
+        :first_name => "Jose",
+        :last_name => "Valim"
+      }
+    }, user_serializer.as_json(nil))
+  end
 end
