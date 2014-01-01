@@ -35,6 +35,13 @@ end
 class Comment < Model
 end
 
+class Category < Model
+  def posts
+    @posts ||= [Post.new(title: 'First', body: 'Post 1'),
+                Post.new(title: 'Second', body: 'Post 2')]
+  end
+end
+
 class WebLog < Model
 end
 
@@ -62,8 +69,22 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 end
 
+class HypermediaPostSerializer < PostSerializer
+  attributes :title, :body, :link
+
+  def link
+    post_url
+  end
+end
+
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class CategorySerializer < ActiveModel::Serializer
+  attributes :name
+
+  has_many :posts, serializer: HypermediaPostSerializer
 end
 
 class WebLogSerializer < ActiveModel::Serializer

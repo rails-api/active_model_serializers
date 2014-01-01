@@ -112,12 +112,14 @@ end
       @root          = options.fetch(:root, self.class._root)
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
+      @url_options   = options[:url_options]
       @wrap_in_array = options[:_wrap_in_array]
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
       @key_format    = options[:key_format]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
+    attr_reader :url_options
 
     def json_key
       key = if root == true || root.nil?
@@ -182,7 +184,7 @@ end
 
     def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, scope: scope)
+      association.build_serializer(object, scope: scope, url_options: url_options)
     end
 
     def serialize(association)

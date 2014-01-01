@@ -162,6 +162,23 @@ module ActionController
       end
     end
 
+    class HypermediaSerializerTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_with_hypermedia_links
+          render json: Category.new(name: 'Welcome!')
+        end
+      end
+
+      tests MyController
+
+      def test_render_json_with_links
+        get :render_with_hypermedia_links
+        assert_equal 'application/json', @response.content_type
+        assert_match '"name":"Welcome!"', @response.body
+        assert_match '"link":"http://test.host/post"', @response.body
+      end
+    end
+
     class RailsSerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
         def render_using_rails_behavior
