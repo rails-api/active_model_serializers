@@ -14,9 +14,9 @@ module ActiveModel
         assert_equal({
           'ar_post' => {
             title: 'New post', body: 'A body!!!',
-            ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'short' }, { name: 'whiny' }] },
-                          { body: 'i liked it', ar_tags: [{:name=>"short"}, {:name=>"happy"}] }],
-            ar_tags: [{ name: 'short' }, { name: 'whiny' }, { name: 'happy' }],
+            ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'happy' }, { name: 'whiny' }] },
+                          { body: 'i liked it', ar_tags: [{:name=>"happy"}, {:name=>"short"}] }],
+            ar_tags: [{ name: 'short' }, { name: 'whiny' }],
             ar_section: { 'name' => 'ruby' }
           }
         }, post_serializer.as_json)
@@ -30,7 +30,7 @@ module ActiveModel
             'ar_post' => {
               title: 'New post', body: 'A body!!!',
               'ar_comment_ids' => [1, 2],
-              'ar_tag_ids' => [1, 2, 3],
+              'ar_tag_ids' => [1, 2],
               'ar_section_id' => 1
             }
           }, post_serializer.as_json)
@@ -41,18 +41,20 @@ module ActiveModel
         post_serializer = ARPostSerializer.new(@post)
 
         embed(ARPostSerializer, embed: :ids, embed_in_root: true) do
-          assert_equal({
-            'ar_post' => {
-              title: 'New post', body: 'A body!!!',
-              'ar_comment_ids' => [1, 2],
-              'ar_tag_ids' => [1, 2, 3],
-              'ar_section_id' => 1
-            },
-            ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'short' }, { name: 'whiny' }] },
-                          { body: 'i liked it', ar_tags: [{:name=>"short"}, {:name=>"happy"}] }],
-            ar_tags: [{ name: 'short' }, { name: 'whiny' }, { name: 'happy' }],
-            'ar_sections' => [{ 'name' => 'ruby' }]
-          }, post_serializer.as_json)
+          embed(ARCommentSerializer, embed: :ids, embed_in_root: true) do
+            assert_equal({
+              'ar_post' => {
+                title: 'New post', body: 'A body!!!',
+                'ar_comment_ids' => [1, 2],
+                'ar_tag_ids' => [1, 2],
+                'ar_section_id' => 1
+              },
+              ar_comments: [{ body: 'what a dumb post', 'ar_tag_ids' => [3, 2] },
+                            { body: 'i liked it', 'ar_tag_ids' => [3, 1] }],
+              ar_tags: [{ name: 'happy' }, { name: 'whiny' }, { name: 'short' }],
+              'ar_sections' => [{ 'name' => 'ruby' }]
+            }, post_serializer.as_json)
+          end
         end
       end
 

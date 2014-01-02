@@ -80,13 +80,13 @@ ARPost.create(title: 'New post',
 
   short_tag = post.ar_tags.create(name: 'short')
   whiny_tag = post.ar_tags.create(name: 'whiny')
-  happy_tag = post.ar_tags.create(name: 'happy')
+  happy_tag = ARTag.create(name: 'happy')
 
   post.ar_comments.create(body: 'what a dumb post').tap do |comment|
-    comment.ar_tags.concat short_tag, whiny_tag
+    comment.ar_tags.concat happy_tag, whiny_tag
   end
 
   post.ar_comments.create(body: 'i liked it').tap do |comment|
-    comment.ar_tags.concat short_tag, happy_tag
+    comment.ar_tags.concat happy_tag, short_tag
   end
 end

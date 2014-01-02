@@ -149,15 +149,28 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_in_root?
-            hash[association.root_key] = serialize association
+            association_serializer = build_serializer(association)
+            hash.merge! association_serializer.embedded_in_root_associations
+
+            serialized_data = association_serializer.serializable_object
+            key = association.root_key
+            if hash.has_key?(key)
+              hash[key].concat(serialized_data).uniq!
+            else
+              hash[key] = serialized_data
+            end
           end
         end
       end
     end
 
-    def serialize(association)
+    def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, scope: scope).serializable_object
+      association.build_serializer(object, scope: scope)
+    end
+
+    def serialize(association)
+      build_serializer(association).serializable_object
     end
 
     def serialize_ids(association)

@@ -130,7 +130,7 @@ module ActiveModel
         @association.embed_in_root = true
         @association.serializer_class = Class.new(ActiveModel::Serializer) do
           def content
-            'fake'
+            object.read_attribute_for_serialization(:content) + '!'
           end
 
           attributes :content
@@ -138,7 +138,7 @@ module ActiveModel
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          comments: [{ content: 'fake' }, { content: 'fake' }]
+          comments: [{ content: 'C1!' }, { content: 'C2!' }]
         }, @post_serializer.as_json)
       end
 
