@@ -9,7 +9,7 @@ module ActiveModel
 
     initializer 'include_url_helpers' do |app|
       ActiveSupport.on_load(:active_model_serializers) do
-        include app.routes.url_helpers
+        ::ActiveModel::Serializer::UrlGenerator.send :include, app.routes.url_helpers
       end
     end
   end

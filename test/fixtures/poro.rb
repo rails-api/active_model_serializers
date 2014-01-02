@@ -73,7 +73,7 @@ class HypermediaPostSerializer < PostSerializer
   attributes :title, :body, :link
 
   def link
-    post_url
+    urls.post_url
   end
 end
 
