@@ -50,6 +50,11 @@ class ProfileSerializer < ActiveModel::Serializer
     scope ? "#{description} - #{scope}" : description
   end
 
+  def name
+    name = object.read_attribute_for_serialization(:name)
+    options[:custom_name] ? "#{name} - #{options[:custom_name]}" : name
+  end
+
   attributes :name, :description
 end
 
