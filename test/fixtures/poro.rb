@@ -35,6 +35,13 @@ end
 class Comment < Model
 end
 
+class Category < Model
+  def posts
+    @attributes[:posts] ||= [Post.new(title: 'First', body: 'Post 1'),
+                             Post.new(title: 'Second', body: 'Post 2')]
+  end
+end
+
 ###
 ## Serializers
 ###
@@ -66,4 +73,10 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class CategorySerializer < ActiveModel::Serializer
+  attributes :name
+
+  has_many :posts
 end

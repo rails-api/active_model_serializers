@@ -17,7 +17,7 @@ module ActiveModel
       @root            = options.fetch(:root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
-      @each_serializer = options[:each_serializer]
+      @each_serializer = options.delete(:each_serializer)
       @options         = options.merge(root: nil)
     end
     attr_accessor :object, :root, :meta_key, :meta, :options
