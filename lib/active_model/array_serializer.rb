@@ -14,17 +14,18 @@ module ActiveModel
 
     def initialize(object, options={})
       @object          = object
+      @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
-      @options         = options.merge(root: nil)
+      @resource_name   = options[:resource_name]
     end
-    attr_accessor :object, :root, :meta_key, :meta, :options
+    attr_accessor :object, :scope, :root, :meta_key, :meta
 
     def json_key
       if root.nil?
-        @options[:resource_name]
+        @resource_name
       else
         root
       end
@@ -32,7 +33,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
-      serializer_class.new(item, @options)
+      serializer_class.new(item, scope: scope)
     end
 
     def serializable_object

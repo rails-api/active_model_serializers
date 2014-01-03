@@ -102,14 +102,14 @@ end
     end
 
     def initialize(object, options={})
-      @object   = object
-      @scope    = options[:scope]
-      @root     = options.fetch(:root, self.class._root)
-      @meta_key = options[:meta_key] || :meta
-      @meta     = options[@meta_key]
-      @options  = options.reject{|k,v| [:scope, :root, :meta_key, :meta].include?(k) }
+      @object        = object
+      @scope         = options[:scope]
+      @root          = options.fetch(:root, self.class._root)
+      @meta_key      = options[:meta_key] || :meta
+      @meta          = options[@meta_key]
+      @wrap_in_array = options[:_wrap_in_array]
     end
-    attr_accessor :object, :scope, :meta_key, :meta, :root, :options
+    attr_accessor :object, :scope, :root, :meta_key, :meta
 
     def json_key
       if root == true || root.nil?
@@ -186,7 +186,7 @@ end
       return nil if object.nil?
       hash = attributes
       hash.merge! associations
-      @options[:_wrap_in_array] ? [hash] : hash
+      @wrap_in_array ? [hash] : hash
     end
     alias_method :serializable_hash, :serializable_object
   end
