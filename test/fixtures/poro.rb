@@ -27,8 +27,8 @@ end
 
 class Post < Model
   def comments
-    @comments ||= [Comment.new(content: 'C1'),
-                   Comment.new(content: 'C2')]
+    @attributes[:comments] ||=  [Comment.new(content: 'C1'),
+                                 Comment.new(content: 'C2')]
   end
 end
 
