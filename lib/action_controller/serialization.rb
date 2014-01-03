@@ -61,8 +61,8 @@ module ActionController
       send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
     end
 
-    def build_json_serializer(resource, options)
-      options = default_serializer_options.merge(options || {})
+    def build_json_serializer(resource, options = {})
+      options = default_serializer_options.merge(options)
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
         options[:scope] = serialization_scope unless options.has_key?(:scope)
