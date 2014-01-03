@@ -107,7 +107,7 @@ end
       @root     = options.fetch(:root, self.class._root)
       @meta_key = options[:meta_key] || :meta
       @meta     = options[@meta_key]
-      @options  = options.reject{|k,v| [:root, :meta_key, :meta].include?(k) }
+      @options  = options.reject{|k,v| [:scope, :root, :meta_key, :meta].include?(k) }
     end
     attr_accessor :object, :scope, :meta_key, :meta, :root, :options
 
@@ -166,7 +166,7 @@ end
 
     def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, options)
+      association.build_serializer(object, scope: scope)
     end
 
     def serialize(association)

@@ -62,15 +62,6 @@ module ActiveModel
         }, @user_serializer.as_json)
       end
 
-      def test_allow_to_pass_options_to_associations
-        @user_serializer.options.merge!(custom_name: 'custom')
-        @association.embed = :objects
-
-        assert_equal({
-          'user' => { name: 'Name 1', email: 'mail@server.com', profile: { name: 'N1 - custom', description: 'D1' } }
-        }, @user_serializer.as_json)
-      end
-
       def test_associations_embedding_nil_ids_serialization_using_as_json
         @association.embed = :ids
         @user.instance_eval do
