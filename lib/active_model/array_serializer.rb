@@ -14,6 +14,7 @@ module ActiveModel
 
     def initialize(object, options={})
       @object          = object
+      @context         = options[:context]
       @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
@@ -21,7 +22,7 @@ module ActiveModel
       @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :context, :scope, :root, :meta_key, :meta
 
     def json_key
       if root.nil?
@@ -33,7 +34,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
-      serializer_class.new(item, scope: scope)
+      serializer_class.new(item, context: context, scope: scope)
     end
 
     def serializable_object
