@@ -19,7 +19,7 @@ module ActiveModel
         @key           = options[:key]
         @embedded_key  = options[:root] || name
 
-        serializer = @options[:serializer]
+        serializer = @options.delete(:serializer)
         @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
       end
 
