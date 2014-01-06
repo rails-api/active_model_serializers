@@ -103,13 +103,13 @@ end
 
     def initialize(object, options={})
       @object        = object
-      @scope         = options[:scope]
+      @context       = options[:context] || {}
       @root          = options.fetch(:root, self.class._root)
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :context, :root, :meta_key, :meta
 
     def json_key
       if root == true || root.nil?
@@ -166,7 +166,7 @@ end
 
     def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, scope: scope)
+      association.build_serializer(object, context: context)
     end
 
     def serialize(association)
