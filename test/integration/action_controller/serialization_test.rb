@@ -43,7 +43,7 @@ module ActionController
     class DefaultOptionsForSerializerScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
         def default_serializer_options
-          { context: { scope: current_admin } }
+          { scope: current_admin }
         end
 
         def render_using_scope_set_in_default_serializer_options
@@ -73,7 +73,7 @@ module ActionController
     class ExplicitSerializerScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
         def render_using_implicit_serializer_and_explicit_scope
-          render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }), context: { scope: current_admin }
+          render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }), scope: current_admin
         end
 
         private

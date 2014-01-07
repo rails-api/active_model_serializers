@@ -47,7 +47,7 @@ end
 class ProfileSerializer < ActiveModel::Serializer
   def description
     description = object.read_attribute_for_serialization(:description)
-    context[:scope] ? "#{description} - #{context[:scope]}" : description
+    scope ? "#{description} - #{scope}" : description
   end
 
   attributes :name, :description

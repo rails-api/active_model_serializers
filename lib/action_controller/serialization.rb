@@ -65,21 +65,11 @@ module ActionController
       options = default_serializer_options.merge(options)
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
-        options[:context] = build_context_from options[:context]
+        options[:scope] = serialization_scope unless options.has_key?(:scope)
         options[:resource_name] = controller_name if resource.respond_to?(:to_ary)
 
         serializer.new(resource, options)
       end
-    end
-
-    def build_context_from(context_option)
-      default_context.tap do |context|
-        context.merge! context_option if context_option
-      end
-    end
-
-    def default_context
-      { scope: serialization_scope }
     end
   end
 end
