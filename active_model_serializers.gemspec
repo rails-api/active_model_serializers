@@ -9,6 +9,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Making it easy to serialize models for client-side use}
   gem.summary       = %q{Bringing consistency and object orientation to model serialization. Works great for client-side MVC frameworks!}
   gem.homepage      = "https://github.com/rails-api/active_model_serializers"
+  gem.license       = 'MIT'
 
   gem.files         = Dir['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'DESIGN.textile', 'MIT-LICENSE', 'lib/**/*', 'test/**/*']
   gem.test_files    = Dir['test/**/*']
