@@ -240,4 +240,6 @@ end
     end
     alias_method :serializable_hash, :serializable_object
   end
+
+  ActiveSupport.run_load_hooks(:active_model_serializers, ActiveModel::Serializer)
 end
