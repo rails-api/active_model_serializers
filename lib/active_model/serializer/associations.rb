@@ -20,11 +20,11 @@ module ActiveModel
         @embedded_key  = options[:root] || name
 
         serializer = @options[:serializer]
-        @serializer_class = serializer.is_a?(String) ? serializer.constantize : serializer
+        @serializer_from_options = serializer.is_a?(String) ? serializer.constantize : serializer
       end
 
       attr_reader :name, :embed_ids, :embed_objects
-      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_class, :options
+      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root
@@ -34,8 +34,16 @@ module ActiveModel
         @embed_objects = embed == :object || embed == :objects
       end
 
+      def serializer_from_object(object)
+        Serializer.serializer_for(object)
+      end
+
+      def default_serializer
+        DefaultSerializer
+      end
+
       def build_serializer(object, options = {})
-        @serializer_class.new(object, options.merge(@options))
+        serializer_class(object).new(object, options.merge(self.options))
       end
 
       class HasOne < Association
@@ -45,8 +53,11 @@ module ActiveModel
           @key ||= "#{name}_id"
         end
 
+        def serializer_class(object)
+          serializer_from_options || serializer_from_object(object) || default_serializer
+        end
+
         def build_serializer(object, options = {})
-          @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
           options[:_wrap_in_array] = embed_in_root?
           super
         end
@@ -59,15 +70,27 @@ module ActiveModel
           @key ||= "#{name.to_s.singularize}_ids"
         end
 
-        def build_serializer(object, options = {})
-          if @serializer_class && !(@serializer_class <= ArraySerializer)
-            @options[:each_serializer] = @serializer_class
-            @serializer_class = ArraySerializer
+        def serializer_class(object)
+          if use_array_serializer?
+            ArraySerializer
           else
-            @serializer_class ||= ArraySerializer
+            serializer_from_options
           end
+        end
 
-          super
+        def options
+          if use_array_serializer?
+            { each_serializer: serializer_from_options }.merge! super
+          else
+            super
+          end
+        end
+
+        private
+
+        def use_array_serializer?
+          !serializer_from_options ||
+            serializer_from_options && !(serializer_from_options <= ArraySerializer)
         end
       end
     end

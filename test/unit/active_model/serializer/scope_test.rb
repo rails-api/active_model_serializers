@@ -31,7 +31,7 @@ module ActiveModel
       end
 
       def test_scope_passed_through
-        @association.serializer_class = Class.new(ActiveModel::Serializer) do
+        @association.serializer_from_options = Class.new(ActiveModel::Serializer) do
           def name
             scope
           end

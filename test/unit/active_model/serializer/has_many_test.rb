@@ -128,7 +128,7 @@ module ActiveModel
       def test_associations_using_a_given_serializer
         @association.embed = :ids
         @association.embed_in_root = true
-        @association.serializer_class = Class.new(ActiveModel::Serializer) do
+        @association.serializer_from_options = Class.new(ActiveModel::Serializer) do
           def content
             object.read_attribute_for_serialization(:content) + '!'
           end
@@ -145,7 +145,7 @@ module ActiveModel
       def test_associations_embedding_ids_using_a_given_array_serializer
         @association.embed = :ids
         @association.embed_in_root = true
-        @association.serializer_class = Class.new(ActiveModel::ArraySerializer) do
+        @association.serializer_from_options = Class.new(ActiveModel::ArraySerializer) do
           def serializable_object
             { my_content: ['fake'] }
           end
@@ -158,7 +158,7 @@ module ActiveModel
       end
 
       def test_associations_embedding_objects_using_a_given_array_serializer
-        @association.serializer_class = Class.new(ActiveModel::ArraySerializer) do
+        @association.serializer_from_options = Class.new(ActiveModel::ArraySerializer) do
           def serializable_object
             { my_content: ['fake'] }
           end
