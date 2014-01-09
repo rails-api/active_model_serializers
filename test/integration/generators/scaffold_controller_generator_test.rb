@@ -16,7 +16,6 @@ class ScaffoldControllerGeneratorTest < Rails::Generators::TestCase
     run_generator
 
     assert_file 'app/controllers/accounts_controller.rb' do |content|
-      
       assert_instance_method :index, content do |m|
         assert_match /@accounts = Account\.all/, m
         assert_match /format.html/, m
@@ -60,8 +59,6 @@ class ScaffoldControllerGeneratorTest < Rails::Generators::TestCase
 
       assert_match(/def account_params/, content)
       assert_match(/params\.require\(:account\)\.permit\(:name, :description, :business_id\)/, content)
-
     end
-
   end
 end

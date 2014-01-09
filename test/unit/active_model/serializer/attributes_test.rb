@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class AttributesTest < ActiveModel::TestCase
+    class AttributesTest < Minitest::Test
       def setup
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @profile_serializer = ProfileSerializer.new(@profile)

@@ -3,7 +3,7 @@ require 'fixtures/active_record'
 
 module ActiveModel
   class Serializer
-    class ActiveRecordTest < ActiveModel::TestCase
+    class ActiveRecordTest < Minitest::Test
       def setup
         @post = ARPost.first
       end

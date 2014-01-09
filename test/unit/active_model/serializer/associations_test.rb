@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class AssociationsTest < ActiveModel::TestCase
+    class AssociationsTest < Minitest::Test
       def test_associations_inheritance
         inherited_serializer_klass = Class.new(PostSerializer) do
           has_many :users

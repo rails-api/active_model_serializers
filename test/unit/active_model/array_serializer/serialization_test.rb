@@ -2,10 +2,10 @@ require 'test_helper'
 
 module ActiveModel
   class ArraySerializer
-    class BasicObjectsSerializationTest < ActiveModel::TestCase
+    class BasicObjectsSerializationTest < Minitest::Test
       def setup
         array = [1, 2, 3]
-        @serializer = ActiveModel::Serializer.serializer_for(array).new(array)
+        @serializer = Serializer.serializer_for(array).new(array)
       end
 
       def test_serializer_for_array_returns_appropriate_type
@@ -18,7 +18,7 @@ module ActiveModel
       end
     end
 
-    class ModelSerializationTest < ActiveModel::TestCase
+    class ModelSerializationTest < Minitest::Test
       def test_array_serializer_serializes_models
         array = [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
                  Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]

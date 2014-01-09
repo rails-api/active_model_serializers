@@ -22,4 +22,4 @@ platforms :rbx do
   gem 'racc', '~> 1.4.10'
 end
 
-gem 'rails', "~> 4.0.0"
+gem 'rails', '~> 4.0.0'

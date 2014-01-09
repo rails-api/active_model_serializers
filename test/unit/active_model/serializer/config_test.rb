@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Config
-      class Test < ActiveModel::TestCase
+      class Test < Minitest::Test
         def test_config_const_is_an_instance_of_config
           assert_kind_of Config, CONFIG
         end
@@ -30,9 +30,9 @@ module ActiveModel
         end
       end
 
-      class ConfigTest < ActiveModel::TestCase
+      class ConfigTest < Minitest::Test
         def test_setup
-          ActiveModel::Serializer.setup do |config|
+          Serializer.setup do |config|
             config.a = 'v1'
             config.b = 'v2'
           end
@@ -44,7 +44,7 @@ module ActiveModel
         end
 
         def test_config_accessors
-          ActiveModel::Serializer.setup do |config|
+          Serializer.setup do |config|
             config.foo = 'v1'
             config.bar = 'v2'
           end
@@ -63,7 +63,7 @@ module ActiveModel
         end
       end
 
-      class ApplyConfigTest < ActiveModel::TestCase
+      class ApplyConfigTest < Minitest::Test
         def test_apply_config_to_associations
           CONFIG.embed     = :ids
           CONFIG.embed_in_root = true
