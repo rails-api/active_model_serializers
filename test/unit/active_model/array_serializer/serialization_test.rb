@@ -144,6 +144,39 @@ module ActiveModel
       ensure
         UserSerializer._associations[:profile] = @old_association
       end
+
+      def test_embed_object_in_root_for_has_one_association_with_all_nil_values
+        @association = UserSerializer._associations[:profile]
+        @old_association = @association.dup
+
+        @association.embed = :ids
+        @association.embed_in_root = true
+
+        @user1 = User.new({ name: 'User 1', email: 'email1@server.com' })
+        @user2 = User.new({ name: 'User 2', email: 'email2@server.com' })
+
+        class << @user1
+          def profile
+            nil
+          end
+        end
+
+        class << @user2
+          def profile
+            nil
+          end
+        end
+
+        @serializer = ArraySerializer.new([@user1, @user2], root: :users)
+        assert_equal({
+            users: [
+              { name: "User 1", email: "email1@server.com", 'profile_id' => nil },
+              { name: "User 2", email: "email2@server.com", 'profile_id' => nil }
+            ]
+          }, @serializer.as_json)
+      ensure
+        UserSerializer._associations[:profile] = @old_association
+      end
     end
   end
 end
