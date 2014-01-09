@@ -8,6 +8,8 @@
 
 **master is under development, there are some incompatible changes with the current stable release.**
 
+Since `0.8` there is no `options` accessor in the serializers. Some issues and pull-requests are attemps to bring back the ability to use Rails url helpers in the serializers, but nothing is really settled yet.
+
 If you want to read the stable documentation visit [0.8 README](https://github.com/rails-api/active_model_serializers/blob/0-8-stable/README.md)
 
 ## Purpose
