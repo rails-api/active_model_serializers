@@ -1,7 +1,7 @@
 require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/associations'
-require 'active_model/serializer/config'
+require 'active_model/serializer/configuration'
 require 'active_model/serializer/dsl'
 
 require 'thread'
@@ -22,22 +22,13 @@ module ActiveModel
 
       def setup
         @mutex.synchronize do
-          yield CONFIG
+          yield Configuration.global
         end
       end
 
       def embed(type, options={})
-        CONFIG.embed = type
-        CONFIG.embed_in_root = true if options[:embed_in_root] || options[:include]
-        ActiveSupport::Deprecation.warn <<-WARN
-** Notice: embed is deprecated. **
-The use of .embed method on a Serializer will be soon removed, as this should have a global scope and not a class scope.
-Please use the global .setup method instead:
-ActiveModel::Serializer.setup do |config|
-  config.embed = :#{type}
-  config.embed_in_root = #{CONFIG.embed_in_root || false}
-end
-        WARN
+        Configuration.global.embed = type
+        Configuration.global.embed_in_root = true if options[:embed_in_root] || options[:include]
       end
 
       if RUBY_VERSION >= '2.0'
@@ -74,12 +65,18 @@ end
 
       def_delegators :dsl, :attributes, :has_one, :has_many
 
+      def configuration
+        @configuration ||= Configuration.global.build
+      end
+
       private
 
       def dsl
         @dsl ||= DSL.new self
       end
     end
+
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :configuration
 
     def initialize(object, options={})
       @object        = object
@@ -88,8 +85,8 @@ end
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
+      @configuration = self.class.configuration.build options
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
 
     def json_key
       if root == true || root.nil?
