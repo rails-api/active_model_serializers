@@ -12,7 +12,7 @@ platforms :mri do
 end
 
 platforms :jruby do
-  gem 'activerecord-jdbcsqlite3-adapter', github: 'jruby/activerecord-jdbc-adapter'
+  gem 'activerecord-jdbcsqlite3-adapter'
 end
 
 platforms :rbx do
@@ -21,8 +21,6 @@ platforms :rbx do
   gem 'racc', '~> 1.4.10'
 end
 
-# Use Rails master
+# Use Rails master + current dependencies
 gem 'rails', github: 'rails/rails'
-
-# Current dependencies of edge rails
 gem 'arel', github: 'rails/arel'
