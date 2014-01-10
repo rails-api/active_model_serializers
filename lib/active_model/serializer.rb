@@ -2,8 +2,10 @@ require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/config'
+require 'active_model/serializer/dsl'
 
 require 'thread'
+require 'forwardable'
 
 module ActiveModel
   class Serializer
@@ -68,36 +70,14 @@ end
         name.demodulize.underscore.sub(/_serializer$/, '') if name
       end
 
-      def attributes(*attrs)
-        @_attributes.concat attrs
+      extend Forwardable
 
-        attrs.each do |attr|
-          define_method attr do
-            object.read_attribute_for_serialization attr
-          end unless method_defined?(attr)
-        end
-      end
-
-      def has_one(*attrs)
-        associate(Association::HasOne, *attrs)
-      end
-
-      def has_many(*attrs)
-        associate(Association::HasMany, *attrs)
-      end
+      def_delegators :dsl, :attributes, :has_one, :has_many
 
       private
 
-      def associate(klass, *attrs)
-        options = attrs.extract_options!
-
-        attrs.each do |attr|
-          define_method attr do
-            object.send attr
-          end unless method_defined?(attr)
-
-          @_associations[attr] = klass.new(attr, options)
-        end
+      def dsl
+        @dsl ||= DSL.new self
       end
     end
 
