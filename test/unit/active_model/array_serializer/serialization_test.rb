@@ -51,16 +51,8 @@ module ActiveModel
         @association.embed_in_root = true
 
         @post1 = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
-        @post2 = Post.new({ title: 'Title 2', body: 'Body 2', date: '1/1/2000' })
-
-        class << @post2
-          attr_writer :comments
-        end
-
-        @post2.comments = [
-          Comment.new(content: 'C3'),
-          Comment.new(content: 'C4')
-        ]
+        @post2 = Post.new({ title: 'Title 2', body: 'Body 2', date: '1/1/2000',
+                            comments: [Comment.new(content: 'C3')] })
 
         @serializer = ArraySerializer.new([@post1, @post2], root: :posts)
         assert_equal({
@@ -71,8 +63,7 @@ module ActiveModel
             comments: [
               {content: "C1"},
               {content: "C2"},
-              {content: "C3"},
-              {content: "C4"}
+              {content: "C3"}
             ]
           }, @serializer.as_json)
       ensure
