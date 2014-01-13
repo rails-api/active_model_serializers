@@ -4,26 +4,17 @@ require 'active_model/serializer/associations'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/dsl'
 
-require 'thread'
 require 'forwardable'
 
 module ActiveModel
   class Serializer
     include Serializable
 
-    @mutex = Mutex.new
-
     class << self
       def inherited(base)
         base._root = _root
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
-      end
-
-      def setup
-        @mutex.synchronize do
-          yield Configuration.global
-        end
       end
 
       def embed(type, options={})
