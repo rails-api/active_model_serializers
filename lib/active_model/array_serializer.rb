@@ -7,44 +7,49 @@ module ActiveModel
     include Serializable
 
     class << self
-      attr_accessor :_root
-      alias root  _root=
-      alias root= _root=
+      def configuration
+        @configuration ||=
+          if self == ArraySerializer
+            Serializer::Configuration.global
+          else
+            superclass.configuration.build
+          end
+      end
     end
 
-    def initialize(object, options={})
-      @object          = object
-      @scope           = options[:scope]
-      @root            = options.fetch(:root, self.class._root)
-      @meta_key        = options[:meta_key] || :meta
-      @meta            = options[@meta_key]
-      @each_serializer = options[:each_serializer]
-      @resource_name   = options[:resource_name]
+    extend Forwardable
+
+    def_delegators :configuration, :scope, :root, :meta_key, :meta, :each_serializer, :resource_name
+
+    attr_accessor :object, :configuration
+
+    def initialize(object, options = {})
+      @object        = object
+      @configuration = self.class.configuration.build options
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
 
     def json_key
       if root.nil?
-        @resource_name
+        resource_name
       else
         root
       end
     end
 
     def serializer_for(item)
-      serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
+      serializer_class = each_serializer || Serializer.serializer_for(item) || DefaultSerializer
       serializer_class.new(item, scope: scope)
     end
 
     def serializable_object
-      @object.map do |item|
+      object.map do |item|
         serializer_for(item).serializable_object
       end
     end
     alias_method :serializable_array, :serializable_object
 
     def embedded_in_root_associations
-      @object.each_with_object({}) do |item, hash|
+      object.each_with_object({}) do |item, hash|
         serializer_for(item).embedded_in_root_associations.each_pair do |type, objects|
           next if !objects || objects.flatten.empty?
 

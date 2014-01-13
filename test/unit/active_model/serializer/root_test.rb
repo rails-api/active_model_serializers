@@ -4,14 +4,14 @@ module ActiveModel
   class Serializer
     class RootAsOptionTest < Minitest::Test
       def setup
-        @old_root = ProfileSerializer._root
+        @old_root = ProfileSerializer.configuration.root
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @serializer = ProfileSerializer.new(@profile, root: :initialize)
-        ProfileSerializer._root = true
+        ProfileSerializer.root true
       end
 
       def teardown
-        ProfileSerializer._root = @old_root
+        ProfileSerializer.root @old_root
       end
 
       def test_root_is_not_displayed_using_serializable_hash
@@ -47,7 +47,7 @@ module ActiveModel
       end
 
       def test_using_false_root_in_initializer_takes_precedence
-        ProfileSerializer._root = 'root'
+        ProfileSerializer.root 'root'
         @serializer = ProfileSerializer.new(@profile, root: false)
 
         assert_equal({
@@ -56,31 +56,31 @@ module ActiveModel
       end
 
       def test_root_inheritance
-        ProfileSerializer._root = 'profile'
+        ProfileSerializer.root 'profile'
 
         inherited_serializer_klass = Class.new(ProfileSerializer)
-        inherited_serializer_klass._root = 'inherited_profile'
+        inherited_serializer_klass.root 'inherited_profile'
 
         another_inherited_serializer_klass = Class.new(ProfileSerializer)
 
         assert_equal('inherited_profile',
-                     inherited_serializer_klass._root)
+                     inherited_serializer_klass.configuration.root)
         assert_equal('profile',
-                     another_inherited_serializer_klass._root)
+                     another_inherited_serializer_klass.configuration.root)
       end
     end
 
     class RootInSerializerTest < Minitest::Test
       def setup
-        @old_root = ProfileSerializer._root
-        ProfileSerializer._root = :in_serializer
+        @old_root = ProfileSerializer.configuration.root
+        ProfileSerializer.root :in_serializer
         profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @serializer = ProfileSerializer.new(profile)
         @rooted_serializer = ProfileSerializer.new(profile, root: :initialize)
       end
 
       def teardown
-        ProfileSerializer._root = @old_root
+        ProfileSerializer.root @old_root
       end
 
       def test_root_is_not_displayed_using_serializable_hash

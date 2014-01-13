@@ -7,13 +7,14 @@ module ActiveModel
   class DefaultSerializer
     include ActiveModel::Serializable
 
-    attr_reader :object
+    attr_reader :object, :configuration
 
-    def initialize(object, options=nil)
+    def initialize(object, options = nil)
       @object = object
+      @configuration = Serializer::Configuration::Null.instance
     end
 
-    def as_json(options={})
+    def as_json(options = {})
       @object.as_json
     end
     alias serializable_hash as_json

@@ -11,7 +11,7 @@ module ActiveModel
       end
 
       def test_meta
-        @serializer.meta = { total: 10 }
+        @serializer.configuration.meta = { total: 10 }
 
         assert_equal({
           'profiles' => [
@@ -30,8 +30,8 @@ module ActiveModel
       end
 
       def test_meta_using_meta_key
-        @serializer.meta_key = :my_meta
-        @serializer.meta     = { total: 10 }
+        @serializer.configuration.meta_key = :my_meta
+        @serializer.configuration.meta     = { total: 10 }
 
         assert_equal({
           'profiles' => [

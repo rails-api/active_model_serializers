@@ -30,6 +30,10 @@ module ActiveModel
         configuration.embed_in_root = true if options[:embed_in_root] || options[:include]
       end
 
+      def root(value)
+        configuration.root = value
+      end
+
       extend Forwardable
 
       def_delegators :serializer_class, :configuration

@@ -4,14 +4,14 @@ module ActiveModel
   class ArraySerializer
     class RootAsOptionTest < Minitest::Test
       def setup
-        @old_root = ArraySerializer._root
+        @old_root = ArraySerializer.configuration.root
         @profile1 = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @profile2 = Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
         @serializer = ArraySerializer.new([@profile1, @profile2], root: :initialize)
       end
 
       def teardown
-        ArraySerializer._root = @old_root
+        ArraySerializer.configuration.root = @old_root
       end
 
       def test_root_is_not_displayed_using_serializable_array
@@ -40,7 +40,7 @@ module ActiveModel
       end
 
       def test_using_false_root_in_initialize_takes_precedence
-        ArraySerializer._root = 'root'
+        ArraySerializer.configuration.root = 'root'
         @serializer = ArraySerializer.new([@profile1, @profile2], root: false)
 
         assert_equal([
@@ -52,8 +52,8 @@ module ActiveModel
 
     class RootInSerializerTest < Minitest::Test
       def setup
-        @old_root = ArraySerializer._root
-        ArraySerializer._root = :in_serializer
+        @old_root = ArraySerializer.configuration.root
+        ArraySerializer.configuration.root = :in_serializer
         @profile1 = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @profile2 = Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
         @serializer = ArraySerializer.new([@profile1, @profile2])
@@ -61,7 +61,7 @@ module ActiveModel
       end
 
       def teardown
-        ArraySerializer._root = @old_root
+        ArraySerializer.configuration.root = @old_root
       end
 
       def test_root_is_not_displayed_using_serializable_hash

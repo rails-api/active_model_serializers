@@ -58,8 +58,9 @@ module ActiveModel
         end
 
         def build_serializer(object, options = {})
-          options[:_wrap_in_array] = embed_in_root?
-          super
+          super.tap do |instance|
+            instance.configuration.wrap_in_array = embed_in_root?
+          end
         end
       end
 

@@ -12,7 +12,6 @@ module ActiveModel
 
     class << self
       def inherited(base)
-        base._root = _root
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
       end
@@ -39,9 +38,7 @@ module ActiveModel
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
-      alias root  _root=
-      alias root= _root=
+      attr_accessor :_attributes, :_associations
 
       def root_name
         name.demodulize.underscore.sub(/_serializer$/, '') if name
@@ -49,10 +46,15 @@ module ActiveModel
 
       extend Forwardable
 
-      def_delegators :dsl, :attributes, :has_one, :has_many, :embed
+      def_delegators :dsl, :attributes, :has_one, :has_many, :embed, :root
 
       def configuration
-        @configuration ||= Configuration.global.build
+        @configuration ||=
+          if self == Serializer
+            Configuration.global
+          else
+            superclass.configuration.build
+          end
       end
 
       private
@@ -62,15 +64,14 @@ module ActiveModel
       end
     end
 
-    attr_accessor :object, :scope, :root, :meta_key, :meta, :configuration
+    extend Forwardable
 
-    def initialize(object, options={})
+    def_delegators :configuration, :scope, :root, :meta_key, :meta, :wrap_in_array
+
+    attr_accessor :object, :configuration
+
+    def initialize(object, options = {})
       @object        = object
-      @scope         = options[:scope]
-      @root          = options.fetch(:root, self.class._root)
-      @meta_key      = options[:meta_key] || :meta
-      @meta          = options[@meta_key]
-      @wrap_in_array = options[:_wrap_in_array]
       @configuration = self.class.configuration.build options
     end
 
@@ -149,7 +150,7 @@ module ActiveModel
       return nil if object.nil?
       hash = attributes
       hash.merge! associations
-      @wrap_in_array ? [hash] : hash
+      wrap_in_array ? [hash] : hash
     end
     alias_method :serializable_hash, :serializable_object
   end
