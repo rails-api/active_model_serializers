@@ -11,9 +11,10 @@ module ActiveModel
     include Serializable
 
     class << self
-      def inherited(base)
-        base._attributes = (_attributes || []).dup
-        base._associations = (_associations || {}).dup
+      def inherited(subclass)
+        subclass.configuration = ClassConfiguration.new configuration
+        subclass._attributes = (_attributes || []).dup
+        subclass._associations = (_associations || {}).dup
       end
 
       if RUBY_VERSION >= '2.0'
@@ -38,6 +39,12 @@ module ActiveModel
         end
       end
 
+      attr_writer :configuration
+
+      def configuration
+        @configuration ||= ClassConfiguration.new GlobalConfiguration.instance
+      end
+
       attr_accessor :_attributes, :_associations
 
       def root_name
@@ -47,15 +54,6 @@ module ActiveModel
       extend Forwardable
 
       def_delegators :dsl, :attributes, :has_one, :has_many, :embed, :root
-
-      def configuration
-        @configuration ||=
-          if self == Serializer
-            Configuration.global
-          else
-            superclass.configuration.build
-          end
-      end
 
       private
 
@@ -72,7 +70,7 @@ module ActiveModel
 
     def initialize(object, options = {})
       @object        = object
-      @configuration = self.class.configuration.build options
+      @configuration = InstanceConfiguration.new self.class.configuration, options
     end
 
     def json_key

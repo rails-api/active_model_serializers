@@ -58,10 +58,10 @@ module ActiveModel
       def test_root_inheritance
         ProfileSerializer.root 'profile'
 
-        inherited_serializer_klass = Class.new(ProfileSerializer)
+        inherited_serializer_klass = Class.new ProfileSerializer
         inherited_serializer_klass.root 'inherited_profile'
 
-        another_inherited_serializer_klass = Class.new(ProfileSerializer)
+        another_inherited_serializer_klass = Class.new ProfileSerializer
 
         assert_equal('inherited_profile',
                      inherited_serializer_klass.configuration.root)

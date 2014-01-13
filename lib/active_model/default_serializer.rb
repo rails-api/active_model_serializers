@@ -11,7 +11,7 @@ module ActiveModel
 
     def initialize(object, options = nil)
       @object = object
-      @configuration = Serializer::Configuration::Null.instance
+      @configuration = Serializer::InstanceConfiguration.new nil
     end
 
     def as_json(options = {})

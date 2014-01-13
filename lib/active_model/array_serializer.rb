@@ -7,13 +7,14 @@ module ActiveModel
     include Serializable
 
     class << self
+      def inherited(subclass)
+        subclass.configuration = Serializer::ClassConfiguration.new configuration
+      end
+
+      attr_writer :configuration
+
       def configuration
-        @configuration ||=
-          if self == ArraySerializer
-            Serializer::Configuration.global
-          else
-            superclass.configuration.build
-          end
+        @configuration ||= Serializer::ClassConfiguration.new Serializer::GlobalConfiguration.instance
       end
     end
 
@@ -25,7 +26,7 @@ module ActiveModel
 
     def initialize(object, options = {})
       @object        = object
-      @configuration = self.class.configuration.build options
+      @configuration = Serializer::ArrayConfiguration.new self.class.configuration, options
     end
 
     def json_key

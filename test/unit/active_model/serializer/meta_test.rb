@@ -22,7 +22,7 @@ module ActiveModel
       end
 
       def test_meta_using_meta_key
-        profile_serializer = ProfileSerializer.new(@profile, root: 'profile', meta_key: :my_meta, my_meta: { total: 10 })
+        profile_serializer = ProfileSerializer.new(@profile, root: 'profile', meta_key: :my_meta, meta: { total: 10 })
 
         assert_equal({
           'profile' => {

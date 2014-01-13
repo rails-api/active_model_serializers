@@ -3,77 +3,70 @@ require 'singleton'
 module ActiveModel
   class Serializer
     class Configuration
-      class Null
-        include Singleton
+      class << self
+        def options(*names)
+          names.each do |name|
+            attr_writer name
 
-        def method_missing(*)
-          nil
+            define_method name do
+              option name
+            end
+          end
         end
-
-        def respond_to?(*)
-          true
-        end
+        alias option options
       end
 
       attr_accessor :parent
 
-      class << self
-        def global
-          @global ||= new default_options
-        end
+      def initialize(parent, options = {})
+        self.parent = parent
 
-        def default_options
-          { embed: :objects, meta_key: :meta }
+        default_options.merge!(options).each do |name, value|
+          send "#{name}=", value
         end
       end
 
-      def build(options = {})
-        self.class.new options, self
+      def default_options
+        {}
       end
 
-      attr_reader :scope, :each_serializer, :resource_name
-      attr_writer :root, :meta, :meta_key
-      attr_accessor :wrap_in_array
+      private
 
-      def initialize(options = {}, parent = Null.instance)
-        @parent          = parent
-        @root            = read_option options, :root
-        @embed           = read_option options, :embed
-        @embed_in_root   = read_option options, :embed_in_root
-        @scope           = options[:scope]
-        @meta_key        = read_option options, :meta_key
-        @meta            = read_option options, meta_key
-        @wrap_in_array   = options[:_wrap_in_array]
-        @each_serializer = options[:each_serializer]
-        @resource_name   = options[:resource_name]
+      def own_option(name)
+        instance_variable_get "@#{name}"
       end
 
-      def root
-        return_first @root, parent.root
+      def parent_option(name)
+        parent.send name if parent.respond_to? name
       end
 
-      def embed
-        return_first @embed, parent.embed
+      def option(name)
+        value = own_option name
+        value.nil? ? parent_option(name) : value
       end
+    end
 
-      def embed_in_root
-        return_first @embed_in_root, parent.embed_in_root
+    class SerializerConfiguration < Configuration
+      options :root, :embed, :embed_in_root
+
+      def default_options
+        { embed: :objects }
       end
+    end
 
-      def meta_key
-        return_first @meta_key, parent.meta_key
+    class GlobalConfiguration < SerializerConfiguration
+      include Singleton
+
+      def initialize
+        super nil
       end
+    end
 
-      def meta
-        return_first @meta, parent.meta
-      end
-
-      # FIXME: Get rid of this mess.
+    class ClassConfiguration < SerializerConfiguration
       def embed_objects=(value)
         @embed = :objects if value
       end
 
-      # FIXME: Get rid of this mess.
       def embed_ids=(value)
         @embed = :ids if value
       end
@@ -85,16 +78,18 @@ module ActiveModel
       def embed_ids
         [:ids, :id].include? embed
       end
+    end
 
-      private
+    class InstanceConfiguration < ClassConfiguration
+      options :scope, :meta, :meta_key, :wrap_in_array, :serializer, :prefixes, :template, :layout
 
-      def read_option(options, name)
-        options[name] || false if options.has_key? name
+      def default_options
+        super.merge! meta_key: :meta
       end
+    end
 
-      def return_first(*values)
-        values.compact.first
-      end
+    class ArrayConfiguration < InstanceConfiguration
+      options :each_serializer, :resource_name
     end
   end
 end
