@@ -4,7 +4,7 @@ require 'active_model/serializer'
 module ActiveModel
   class Serializer
     class Association
-      def initialize(name, options = {})
+      def initialize(name, options = {}, configuration = nil)
         if options.has_key?(:include)
           ActiveSupport::Deprecation.warn <<-WARN
 ** Notice: include was renamed to embed_in_root. **
@@ -13,8 +13,8 @@ module ActiveModel
 
         @name          = name.to_s
         @options       = options
-        self.embed     = options.fetch(:embed) { Configuration.global.embed }
-        @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { Configuration.global.embed_in_root } }
+        self.embed     = options.fetch(:embed) { configuration.embed }
+        @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { configuration.embed_in_root } }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
         @embedded_key  = options[:root] || name

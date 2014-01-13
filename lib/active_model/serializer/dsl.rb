@@ -26,9 +26,13 @@ module ActiveModel
       end
 
       def embed(type, options = {})
-        Configuration.global.embed = type
-        Configuration.global.embed_in_root = true if options[:embed_in_root] || options[:include]
+        configuration.embed = type
+        configuration.embed_in_root = true if options[:embed_in_root] || options[:include]
       end
+
+      extend Forwardable
+
+      def_delegators :serializer_class, :configuration
 
       private
 
@@ -40,7 +44,7 @@ module ActiveModel
             object.send name
           end unless serializer_class.method_defined? name
 
-          serializer_class._associations[name] = klass.new name, options
+          serializer_class._associations[name] = klass.new name, options, configuration
         end
       end
     end

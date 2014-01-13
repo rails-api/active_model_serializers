@@ -5,7 +5,7 @@ module ActiveModel
     class Association
       class BuildSerializerTest < Minitest::Test
         def setup
-          @association = Association::HasOne.new('post', serializer: PostSerializer)
+          @association = Association::HasOne.new('post', { serializer: PostSerializer }, PostSerializer.configuration)
           @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
         end
 
