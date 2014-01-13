@@ -17,11 +17,6 @@ module ActiveModel
         base._associations = (_associations || {}).dup
       end
 
-      def embed(type, options={})
-        Configuration.global.embed = type
-        Configuration.global.embed_in_root = true if options[:embed_in_root] || options[:include]
-      end
-
       if RUBY_VERSION >= '2.0'
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
@@ -54,7 +49,7 @@ module ActiveModel
 
       extend Forwardable
 
-      def_delegators :dsl, :attributes, :has_one, :has_many
+      def_delegators :dsl, :attributes, :has_one, :has_many, :embed
 
       def configuration
         @configuration ||= Configuration.global.build

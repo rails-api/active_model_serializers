@@ -25,6 +25,11 @@ module ActiveModel
         associate Association::HasMany, *names
       end
 
+      def embed(type, options = {})
+        Configuration.global.embed = type
+        Configuration.global.embed_in_root = true if options[:embed_in_root] || options[:include]
+      end
+
       private
 
       def associate(klass, *names)
