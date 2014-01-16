@@ -4,7 +4,13 @@ module ActiveModel
   class Serializer
     class Configuration
       class << self
+        def valid_options
+          @valid_options ||= []
+        end
+
         def options(*names)
+          valid_options.concat names
+
           names.each do |name|
             attr_writer name
 
@@ -54,15 +60,27 @@ module ActiveModel
       end
     end
 
-    class GlobalConfiguration < SerializerConfiguration
+    class GlobalConfiguration < Configuration
       include Singleton
+
+      options :root, :embed, :embed_in_root
 
       def initialize
         super nil
       end
+
+      def default_options
+        { embed: :objects }
+      end
     end
 
-    class ClassConfiguration < SerializerConfiguration
+    class ClassConfiguration < Configuration
+      options :root, :embed, :embed_in_root
+
+      def default_options
+        { embed: :objects }
+      end
+
       def embed_objects=(value)
         @embed = :objects if value
       end
@@ -80,16 +98,22 @@ module ActiveModel
       end
     end
 
-    class InstanceConfiguration < ClassConfiguration
-      options :scope, :meta, :meta_key, :wrap_in_array, :serializer, :prefixes, :template, :layout
+    class InstanceConfiguration < Configuration
+      options :root, :embed, :embed_in_root, :scope, :meta, :meta_key, :wrap_in_array,
+        :serializer, :prefixes, :template, :layout
 
       def default_options
-        super.merge! meta_key: :meta
+        { embed: :objects, meta_key: :meta }
       end
     end
 
-    class ArrayConfiguration < InstanceConfiguration
-      options :each_serializer, :resource_name
+    class ArrayConfiguration < Configuration
+      options :root, :embed, :embed_in_root, :scope, :meta, :meta_key, :wrap_in_array,
+        :serializer, :prefixes, :template, :layout, :each_serializer, :resource_name
+
+      def default_options
+        { embed: :objects, meta_key: :meta }
+      end
     end
   end
 end

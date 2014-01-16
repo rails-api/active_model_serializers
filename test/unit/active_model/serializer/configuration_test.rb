@@ -116,10 +116,6 @@ module ActiveModel
           @configuration = InstanceConfiguration.new nil, scope: :current_user
         end
 
-        def test_configuration_inherits_from_base_class
-          assert_kind_of ClassConfiguration, @configuration
-        end
-
         def test_configuration_has_root_option
           assert_equal :current_user, @configuration.scope
         end
