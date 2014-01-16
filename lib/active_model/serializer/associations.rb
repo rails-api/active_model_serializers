@@ -9,12 +9,13 @@ module ActiveModel
           ActiveSupport::Deprecation.warn <<-WARN
 ** Notice: include was renamed to embed_in_root. **
           WARN
+          options[:embed_in_root] = options.fetch(:embed_in_root) { options.delete(:include) }
         end
 
         @name          = name.to_s
         @options       = options
         self.embed     = options.fetch(:embed) { configuration.embed }
-        @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { configuration.embed_in_root } }
+        @embed_in_root = options.fetch(:embed_in_root) { configuration.embed_in_root }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
         @embedded_key  = options[:root] || name
