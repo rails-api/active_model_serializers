@@ -115,5 +115,25 @@ module ActiveModel
         { embed: :objects, meta_key: :meta }
       end
     end
+
+    class AssociationConfiguration < Configuration
+      options :embed, :embed_in_root, :embed_key, :key, :root, :serializer
+
+      def default_options
+        { embed_key: :id }
+      end
+
+      def serializer=(value)
+        @serializer = value.is_a?(String) ? value.constantize : value
+      end
+
+      def embed_objects
+        [:objects, :object].include? embed
+      end
+
+      def embed_ids
+        [:ids, :id].include? embed
+      end
+    end
   end
 end

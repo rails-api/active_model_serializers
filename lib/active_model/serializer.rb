@@ -68,9 +68,9 @@ module ActiveModel
 
     attr_accessor :object, :configuration
 
-    def initialize(object, options = {})
+    def initialize(object, options = {}, configuration = nil)
       @object        = object
-      @configuration = InstanceConfiguration.new self.class.configuration, options
+      @configuration = InstanceConfiguration.new(configuration || self.class.configuration, options)
     end
 
     def json_key
@@ -92,9 +92,9 @@ module ActiveModel
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
-          if association.embed_ids?
+          if association.embed_ids
             hash[association.key] = serialize_ids association
-          elsif association.embed_objects?
+          elsif association.embed_objects
             hash[association.embedded_key] = serialize association
           end
         end
@@ -110,7 +110,7 @@ module ActiveModel
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
-          if association.embed_in_root?
+          if association.embed_in_root
             association_serializer = build_serializer(association)
             hash.merge! association_serializer.embedded_in_root_associations
 
