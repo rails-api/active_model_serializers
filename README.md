@@ -1,5 +1,5 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) 
-[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers)
 [![Coverage Status](https://coveralls.io/repos/rails-api/active_model_serializers/badge.png?branch=master)](https://coveralls.io/r/rails-api/active_model_serializers)
 
 # ActiveModel::Serializers
@@ -14,8 +14,8 @@ If you want to read the stable documentation visit [0.8 README](https://github.c
 
 ## Purpose
 
-`ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
-Objects that respond to read\_attribute\_for\_serialization 
+`ActiveModel::Serializers` encapsulates the JSON serialization of objects.
+Objects that respond to read\_attribute\_for\_serialization
 (including `ActiveModel` and `ActiveRecord` objects) are supported.
 
 Serializers know about both a model and the `current_user`, so you can
@@ -71,7 +71,7 @@ $ rails g serializer post
 
 Currently `ActiveModel::Serializers` expects objects to implement
 read\_attribute\_for\_serialization. That's all you need to do to have
-your POROs supported. 
+your POROs supported.
 
 # ActiveModel::Serializer
 
@@ -264,6 +264,10 @@ You can also access the `scope` method, which provides an
 authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
+
+Serializer methods are also aware if they're being invoked
+from another serializer as an association or element of an array
+with `nested?` and `listed?` respectively.
 
 Serializers provides a method named `filter`, which should return an array
 used to determine what attributes and associations should be included in the output.
@@ -554,8 +558,8 @@ this:
 }
 ```
 
-When side-loading data, your serializer cannot have the `{ root: false }` option, 
-as this would lead to invalid JSON. If you do not have a root key, the `include` 
+When side-loading data, your serializer cannot have the `{ root: false }` option,
+as this would lead to invalid JSON. If you do not have a root key, the `include`
 instruction will be ignored
 
 You can also specify a different root for the embedded objects than the key
