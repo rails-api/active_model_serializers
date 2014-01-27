@@ -33,7 +33,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
-      serializer_class.new(item, scope: scope)
+      serializer_class.new(item, scope: scope, listed: true)
     end
 
     def serializable_object
