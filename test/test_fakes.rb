@@ -146,6 +146,11 @@ class Blog < Model
   attr_accessor :author
 end
 
+class BlogWithCustomName < Model
+  attr_accessor :author
+  attr_accessor :name
+end
+
 class AuthorSerializer < ActiveModel::Serializer
   attributes :first_name, :last_name
 end

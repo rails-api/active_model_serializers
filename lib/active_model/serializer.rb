@@ -307,6 +307,8 @@ module ActiveModel
 
       if self._root == true
         class_name
+      elsif self._root.is_a? Proc
+        (self._root.call(self.object) || class_name).to_sym
       else
         self._root || class_name
       end

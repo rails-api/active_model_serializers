@@ -287,6 +287,22 @@ class SerializerTest < ActiveModel::TestCase
     assert_equal({ :my_blog => { :author => nil } }, serializer.new(blog, :scope => user).as_json)
   end
 
+  def test_custom_lambda_root
+    blog = BlogWithCustomName.new
+    blog.name = 'foobar'
+
+    blog_serializer = Class.new(ActiveModel::Serializer) do
+      root -> (o) { o.name }
+      attribute :author
+
+      def author
+        'Jose'
+      end
+    end
+
+    assert_equal({ :foobar => { :author => 'Jose' } }, blog_serializer.new(blog).as_json)
+  end
+
   def test_nil_root_object
     user = User.new
     blog = nil
