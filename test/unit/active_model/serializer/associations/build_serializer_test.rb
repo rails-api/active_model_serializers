@@ -15,6 +15,11 @@ module ActiveModel
             assert_instance_of(PostSerializer, serializer)
           end
         end
+
+        def test_build_serializer_injects_nesting_option
+          serializer = @association.build_serializer(@post)
+          assert(serializer.nested?)
+        end
       end
     end
   end

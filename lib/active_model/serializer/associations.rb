@@ -12,7 +12,7 @@ module ActiveModel
         end
 
         @name          = name.to_s
-        @options       = options
+        @options       = options.merge(nested: true)
         self.embed     = options.fetch(:embed) { CONFIG.embed }
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
         @embed_key     = options[:embed_key] || :id

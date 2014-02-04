@@ -21,5 +21,13 @@ module ActiveModel
     def embedded_in_root_associations
       {}
     end
+
+    def nested?
+      @nested
+    end
+
+    def listed?
+      @listed
+    end
   end
 end

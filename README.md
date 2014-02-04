@@ -275,6 +275,10 @@ authorization context to your serializer. By default, the context
 is the current user of your application, but this
 [can be customized](#customizing-scope).
 
+Serializer methods are also aware if they're being invoked
+from another serializer as an association or element of an array
+with `nested?` and `listed?` respectively.
+
 Serializers provides a method named `filter`, which should return an array
 used to determine what attributes and associations should be included in the output.
 This is typically used to customize output based on `current_user`. For example:

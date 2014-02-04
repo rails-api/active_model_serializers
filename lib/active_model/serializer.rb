@@ -108,6 +108,8 @@ end
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
+      @nested        = options.fetch(:nested, false)
+      @listed        = options.fetch(:listed, false)
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta
 

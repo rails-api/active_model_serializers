@@ -9,8 +9,10 @@ module ActiveModel
 
     attr_reader :object
 
-    def initialize(object, options=nil)
+    def initialize(object, options={})
       @object = object
+      @nested = options.fetch(:nested, false)
+      @listed = options.fetch(:listed, false)
     end
 
     def as_json(options={})
