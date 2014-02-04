@@ -26,7 +26,7 @@ module Rails
         if options[:parent]
           options[:parent]
         elsif (ns = Rails::Generators.namespace) && ns.const_defined?(:ApplicationSerializer) ||
-               defined?(::ApplicationSerializer)
+               (Object.const_get(:ApplicationSerializer) rescue nil)
           'ApplicationSerializer'
         else
           'ActiveModel::Serializer'

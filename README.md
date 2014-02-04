@@ -73,10 +73,6 @@ Currently `ActiveModel::Serializers` expects objects to implement
 read\_attribute\_for\_serialization. That's all you need to do to have
 your POROs supported. 
 
-# ActiveModel::Serializer
-
-All new serializers descend from ActiveModel::Serializer
-
 # render :json
 
 In your controllers, when you use `render :json`, Rails will now first search
@@ -725,6 +721,29 @@ end
 ```
 
 The caching interface uses `Rails.cache` under the hood.
+
+# ApplicationSerializer
+
+By default, new serializers descend from ActiveModel::Serializer. However, if you wish to share behaviour across your serializers you can create an ApplicationSerializer at ```app/serializers/application_serializer.rb```:
+
+```ruby
+class ApplicationSerializer < ActiveModel::Serializer
+end
+```
+
+Any newly generated serializers will automatically descend from ApplicationSerializer.
+
+```
+$ rails g serializer post
+```
+
+now generates:
+
+```ruby
+class PostSerializer < ApplicationSerializer
+  attributes :id
+end
+````
 
 # Design and Implementation Guidelines
 
