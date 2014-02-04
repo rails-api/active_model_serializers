@@ -156,6 +156,20 @@ To specify a custom serializer for the items within an array:
 render json: @posts, each_serializer: FancyPostSerializer
 ```
 
+## Render independently
+
+By default the setting of serializer is in controller as described above which is the
+recommeneded way. However, there may be cases you need to render the json object elsewhere
+say in a helper or a view when controller is only for main object.
+
+Then you can render the serialized JSON independently.
+
+```ruby
+def current_user_as_json_helper
+  CurrentUserSerializer.new(current_user).to_json
+end
+```
+
 ## Disabling the root element
 
 You have 4 options to disable the root element, each with a slightly different scope:
