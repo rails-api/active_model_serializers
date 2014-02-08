@@ -26,6 +26,8 @@ module ActiveModel
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
     attr_reader :url_generator
 
+    alias_method :urls, :url_generator
+
     def json_key
       key = root.nil? ? @resource_name : root
       key_format == :lower_camel ? key.camelize(:lower) : key
