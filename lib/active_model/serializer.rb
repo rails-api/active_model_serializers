@@ -108,6 +108,8 @@ end
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
+      @only          = Array(options[:only]) if options[:only]
+      @except        = Array(options[:except]) if options[:except]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta
 
@@ -140,7 +142,13 @@ end
     end
 
     def filter(keys)
-      keys
+      if @only
+        keys & @only
+      elsif @except
+        keys - @except
+      else
+        keys
+      end
     end
 
     def embedded_in_root_associations
