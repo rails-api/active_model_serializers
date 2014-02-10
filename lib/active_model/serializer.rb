@@ -175,7 +175,9 @@ end
 
     def serialize_ids(association)
       associated_data = send(association.name)
-      if associated_data.respond_to?(:to_ary)
+      if association.embed_key == :id and associated_data.respond_to?(:ids)
+        associated_data.ids
+      elsif associated_data.respond_to?(:to_ary)
         associated_data.map { |elem| elem.read_attribute_for_serialization(association.embed_key) }
       else
         associated_data.read_attribute_for_serialization(association.embed_key) if associated_data
