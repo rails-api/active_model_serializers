@@ -116,8 +116,9 @@ end
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
       @key_format    = options[:key_format]
+      @context       = options[:context]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format, :context
 
     def json_key
       key = if root == true || root.nil?
