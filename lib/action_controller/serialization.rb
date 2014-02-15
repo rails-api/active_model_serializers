@@ -28,6 +28,7 @@ module ActionController
     extend ActiveSupport::Concern
 
     include ActionController::Renderers
+    include ActiveModel::Serializers::Xml
 
     included do
       class_attribute :_serialization_scope
