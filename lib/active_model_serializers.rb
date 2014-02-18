@@ -11,6 +11,10 @@ begin
   ActiveSupport.on_load(:action_controller) do
     include ::ActionController::Serialization
   end
+
+  if defined?(RSpec)
+    require 'active_model/serializer/integrations/rspec'
+  end
 rescue LoadError
   # rails not installed, continuing
 end
