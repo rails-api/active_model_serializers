@@ -251,7 +251,7 @@ module ActionController
 
         get :render_xml_array_embeding_in_root
         assert_equal 'application/xml', @response.content_type
-        assert_match format_xml("<result><my type=\"array\"><my><name>Name 1</name><email>mail@server.com</email><profile-id type=\"integer\">#{@controller.user.profile.object_id}</profile-id></my></my><profiles type=\"array\"><profile><name>N1</name><description>D1</description></profile></profiles></result>"), @response.body
+        assert_match format_xml("<my><my type=\"array\"><my><name>Name 1</name><email>mail@server.com</email><profile-id type=\"integer\">#{@controller.user.profile.object_id}</profile-id></my></my><profiles type=\"array\"><profile><name>N1</name><description>D1</description></profile></profiles></my>"), @response.body
       end
 
       def format_xml(str)
