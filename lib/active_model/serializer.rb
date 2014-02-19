@@ -42,6 +42,8 @@ end
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
             ArraySerializer
+          elsif resource.respond_to?(:serializer_class)
+            resource.serializer_class
           else
             begin
               Object.const_get "#{resource.class.name}Serializer"
