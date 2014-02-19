@@ -74,6 +74,5 @@ module ActionController
         serializer.new(resource, options)
       end
     end
-
   end
 end

@@ -105,22 +105,23 @@ end
       @object        = object
       @scope         = options[:scope]
       @root          = options.fetch(:root, self.class._root)
+      @json_root     = options.fetch(:json_root, @root)
       @xml_root      = options.fetch(:xml_root, @root)
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
     end
-    attr_accessor :object, :scope, :meta_key, :meta, :root, :xml_root
+    attr_accessor :object, :scope, :root, :json_root, :xml_root, :meta_key, :meta
 
-    def root_key
-      if root == true || root.nil?
+    def json_key
+      if json_root == true || json_root.nil?
         self.class.root_name
       else
-        root
+        json_root
       end
     end
 
-    def xml_root_key
+    def xml_key
       if xml_root
         xml_root
       else
