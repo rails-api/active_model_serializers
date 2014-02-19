@@ -1,7 +1,7 @@
 module ActiveModel
   module Serializable
     def as_json(options={})
-      if root = options.fetch(:root, root_key)
+      if root = options.fetch(:root, json_key)
         hash = { root => serializable_object }
         hash.merge!(serializable_data)
         hash
@@ -9,16 +9,24 @@ module ActiveModel
         serializable_object
       end
     end
-    alias_method :serializable_hash, :as_json
+
+    def serializable_hash(options={})
+      root = options.fetch(:root, xml_key)
+      hash = { root => serializable_object }
+      hash.merge!(serializable_data)
+      hash
+    end
 
     def as_xml(options={})
+      hash = as_json
+
       # XML must have one and only one root
-      if as_json.size > 1 || !as_json.is_a?(Hash)
-        root = options.fetch(:xml_root, xml_root_key)
-        as_json.to_xml(root: root)
+      if hash.size > 1 || !hash.is_a?(Hash)
+        root = options.fetch(:root, xml_key)
+        hash.to_xml(root: root)
       else
-        root = as_json.keys.first
-        as_json[root].to_xml(root: root)
+        root = hash.keys.first
+        hash[root].to_xml(root: root)
       end
     end
     alias_method :to_xml, :as_xml

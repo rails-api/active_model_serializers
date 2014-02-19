@@ -45,6 +45,12 @@ module ActiveModel
     end
     alias_method :serializable_array, :serializable_object
 
+    def serializable_hash
+      @object.map do |item|
+        serializer_for(item).serializable_hash
+      end
+    end
+
     def embedded_in_root_associations
       @object.each_with_object({}) do |item, hash|
         serializer_for(item).embedded_in_root_associations.each_pair do |type, objects|
