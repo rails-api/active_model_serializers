@@ -170,6 +170,15 @@ def current_user_as_json_helper
 end
 ```
 
+You can also render an array of objects using ArraySerializer.
+
+```ruby
+def users_array_as_json_helper(users)
+  ActiveModel::ArraySerializer.new(users, each_serializer: UserSerializer).to_json
+end
+```
+
+
 ## Disabling the root element
 
 You have 4 options to disable the root element, each with a slightly different scope:
