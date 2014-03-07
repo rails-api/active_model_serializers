@@ -451,19 +451,23 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object attributes.
     def attributes
-      _fast_attributes
-      rescue NameError
-        method = "def _fast_attributes\n"
-
-        method << "  h = {}\n"
-
-        _attributes.each do |name,key|
-          method << "  h[:\"#{key}\"] = read_attribute_for_serialization(:\"#{name}\") if include?(:\"#{name}\")\n"
-        end
-        method << "  h\nend"
-
-        self.class.class_eval method
-        _fast_attributes
+      _attributes.reduce({}) do |hash, (name, key)|
+        hash[key] = read_attribute_for_serialization(name) if include?(name)
+        hash
+      end
+      #_fast_attributes
+      #rescue NameError
+      #  method = "def _fast_attributes\n"
+      #
+      #  method << "  h = {}\n"
+      #
+      #  _attributes.each do |name,key|
+      #    method << "  h[:\"#{key}\"] = read_attribute_for_serialization(:\"#{name}\") if include?(:\"#{name}\")\n"
+      #  end
+      #  method << "  h\nend"
+      #
+      #  self.class.class_eval method
+      #  _fast_attributes
     end
 
     # Returns options[:scope]
