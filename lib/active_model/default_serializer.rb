@@ -9,12 +9,15 @@ module ActiveModel
 
     attr_reader :object
 
-    def initialize(object, options=nil)
+    def initialize(object, options={})
       @object = object
+      @wrap_in_array = options[:_wrap_in_array]
     end
 
     def as_json(options={})
-      @object.as_json
+      return [] if @object.nil? && @wrap_in_array
+      hash = @object.as_json
+      @wrap_in_array ? [hash] : hash
     end
     alias serializable_hash as_json
     alias serializable_object as_json

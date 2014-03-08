@@ -183,7 +183,7 @@ end
     end
 
     def serializable_object(options={})
-      return nil if object.nil?
+      return @wrap_in_array ? [] : nil if @object.nil?
       hash = attributes
       hash.merge! associations
       @wrap_in_array ? [hash] : hash
