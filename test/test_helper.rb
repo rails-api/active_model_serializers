@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'coverage_setup'
+require 'coverage_setup' if ENV["CI"]
 require 'minitest/autorun'
 require 'active_model_serializers'
 require 'fixtures/poro'
