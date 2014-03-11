@@ -98,5 +98,22 @@ module ActiveModel
         }, @rooted_serializer.as_json(root: :argument))
       end
     end
+
+    class DuplicateRootKeysTest < Minitest::Test
+      def setup
+        @catalog = Catalog.new({ name: 'Catalog root' })
+        @serializer = ArraySerializer.new([@catalog], root: :catalogs)
+      end
+
+      def test_duplicate_root_keys_using_as_json
+        assert_equal({
+          catalogs: [
+            { name: 'Catalog root', 'sub_catalog_ids' => @catalog.sub_catalogs.map(&:object_id) },
+            { name: 'Catalog 1', 'sub_catalog_ids' => [] },
+            { name: 'Catalog 2', 'sub_catalog_ids' => [] },
+          ]
+        }, @serializer.as_json)
+      end
+    end
   end
 end

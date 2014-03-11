@@ -35,6 +35,15 @@ end
 class Comment < Model
 end
 
+class Catalog < Model
+  def sub_catalogs
+    @attributes[:sub_catalogs] ||= [
+      Catalog.new(name: 'Catalog 1', :sub_catalogs => []),
+      Catalog.new(name: 'Catalog 2', :sub_catalogs => [])
+    ]
+  end
+end
+
 ###
 ## Serializers
 ###
@@ -61,4 +70,9 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class CatalogSerializer < ActiveModel::Serializer
+  attributes :name
+  has_many :sub_catalogs, root: :catalogs, embed: :ids, embed_in_root: true #serializer: CatalogSerializer
 end
