@@ -25,3 +25,7 @@ rails = case version
           "~> #{version}"
         end
 gem "rails", rails
+
+if version < "4"
+  gem "minitest", "~> 4.7.5"
+end
