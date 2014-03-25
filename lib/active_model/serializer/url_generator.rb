@@ -8,7 +8,7 @@ module ActiveModel
 
       def url_options
         @url_options ||=
-          Hash(CONFIG.default_url_options).merge(@current_url_options)
+          (CONFIG.default_url_options || {}).merge(@current_url_options)
       end
     end
   end
