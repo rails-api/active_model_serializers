@@ -71,6 +71,10 @@ end
       def attributes(*attrs)
         @_attributes.concat attrs
 
+        if attrs.empty?
+          @_all_attributes = true
+        end
+
         attrs.each do |attr|
           define_method attr do
             object.read_attribute_for_serialization attr
@@ -121,10 +125,11 @@ end
       end
     end
 
-    def attributes
-      filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
-        hash[name] = send(name)
+    def attributes(object)
+      attribute_hash = filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+        hash[name] = object.send(name)
       end
+      @_all_attributes ? object.attributes : attribute_hash
     end
 
     def associations
@@ -192,7 +197,7 @@ end
 
     def serializable_object(options={})
       return @wrap_in_array ? [] : nil if @object.nil?
-      hash = attributes
+      hash = attributes(@object)
       hash.merge! associations
       @wrap_in_array ? [hash] : hash
     end
