@@ -63,6 +63,8 @@ module ActiveModel
         end
       end
 
+      class BelongsTo < HasOne;end
+
       class HasMany < Association
         def initialize(name, *args)
           super
