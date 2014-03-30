@@ -35,6 +35,9 @@ end
 class Comment < Model
 end
 
+class Blog < Model
+end
+
 ###
 ## Serializers
 ###
@@ -61,4 +64,12 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class BlogSerializer < ActiveModel::Serializer
+  attributes :name, :display_name
+end
+
+class BlogLowerCamelSerializer < BlogSerializer
+  format_keys :lower_camel
 end

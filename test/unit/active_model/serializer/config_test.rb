@@ -67,6 +67,7 @@ module ActiveModel
         def test_apply_config_to_associations
           CONFIG.embed     = :ids
           CONFIG.embed_in_root = true
+          CONFIG.key_format = :lower_camel
 
           association = PostSerializer._associations[:comments]
           old_association = association.dup
@@ -76,6 +77,7 @@ module ActiveModel
           assert association.embed_ids?
           assert !association.embed_objects?
           assert association.embed_in_root
+          assert_equal :lower_camel, association.key_format
         ensure
           PostSerializer._associations[:comments] = old_association
           CONFIG.clear
