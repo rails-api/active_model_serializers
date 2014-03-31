@@ -60,7 +60,7 @@ end
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
+      attr_accessor :_root, :_attributes, :_associations, :_serialize_all_attributes
       alias root  _root=
       alias root= _root=
 
@@ -72,7 +72,7 @@ end
         @_attributes.concat attrs
 
         if attrs.empty?
-          @_all_attributes = true
+          @_serialize_all_attributes = true
         end
 
         attrs.each do |attr|
@@ -125,11 +125,11 @@ end
       end
     end
 
-    def attributes(object)
+    def attributes(object=nil)
       attribute_hash = filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
-        hash[name] = object.send(name)
+        hash[name] = send(name)
       end
-      @_all_attributes ? object.attributes : attribute_hash
+      self.class._serialize_all_attributes && object && object.respond_to?(:attributes) ? object.attributes : attribute_hash
     end
 
     def associations
