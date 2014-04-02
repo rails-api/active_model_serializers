@@ -1,3 +1,26 @@
+class BasicActiveModel
+  include ActiveModel::Serializers::JSON
+  def initialize(hash = {})
+    @attributes = hash
+  end
+
+  def serializable_hash(*)
+    @attributes
+  end
+
+  def method_missing(method)
+    if @attributes.key? method
+      @attributes[method]
+    else
+      raise NoMethodError
+    end
+  end
+end
+
+class BasicSerializer < ActiveModel::Serializer
+  attributes :name
+end
+
 class Model
   def initialize(hash={})
     @attributes = hash
