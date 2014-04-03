@@ -58,6 +58,25 @@ module ActiveModel
         end
       end
 
+      def test_serialization_embedding_ids_inside_embed_objects_including_in_root
+        post_serializer = ARPostSerializer.new(@post)
+
+        embed(ARPostSerializer, embed: :objects, embed_in_root: true) do
+          embed(ARCommentSerializer, embed: :ids, embed_in_root: true) do
+            assert_equal({
+              'ar_post' => {
+                title: 'New post', body: 'A body!!!',
+                ar_comments: [{ :body => 'what a dumb post', "ar_tag_ids" => [3, 2] },
+                              { :body => 'i liked it', "ar_tag_ids" => [3, 1] }],
+                ar_tags: [{ name: 'short' }, { name: 'whiny' }],
+                ar_section: { 'name' => 'ruby' }
+              },
+              ar_tags: [{name: 'happy'}, {name: 'whiny'}, {name: 'short'}]
+            }, post_serializer.as_json)
+          end
+        end
+      end
+
       private
 
       def embed(serializer_class, options = {})

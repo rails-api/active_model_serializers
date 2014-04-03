@@ -58,7 +58,7 @@ module ActiveModel
         end
 
         def build_serializer(object, options = {})
-          options[:_wrap_in_array] = embed_in_root?
+          options[:_wrap_in_array] = embed_in_root? && !embed_objects?
           super
         end
       end
