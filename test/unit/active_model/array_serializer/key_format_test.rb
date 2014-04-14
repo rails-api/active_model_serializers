@@ -4,8 +4,8 @@ module ActiveModel
   class ArraySerializer
     class KeyFormatTest < Minitest::Test
       def test_array_serializer_pass_options_to_items_serializers
-        array = [Blog.new({ name: 'Name 1', display_name: 'Display Name 1'}),
-                 Blog.new({ name: 'Name 2', display_name: 'Display Name 2'})]
+        array = [WebLog.new({ name: 'Name 1', display_name: 'Display Name 1'}),
+                 WebLog.new({ name: 'Name 2', display_name: 'Display Name 2'})]
         serializer = ArraySerializer.new(array, key_format: :lower_camel)
 
         expected = [{ name: 'Name 1', displayName: 'Display Name 1' },

@@ -4,8 +4,8 @@ module ActiveModel
   class Serializer
     class KeyFormatTest < Minitest::Test
       def test_lower_camel_format_option
-        object     = Blog.new({ name: 'Name 1', display_name: 'Display Name 1'})
-        serializer = BlogSerializer.new(object, key_format: :lower_camel)
+        object     = WebLog.new({ name: 'Name 1', display_name: 'Display Name 1'})
+        serializer = WebLogSerializer.new(object, key_format: :lower_camel)
 
         expected = { name: 'Name 1', displayName: 'Display Name 1' }
 
@@ -13,8 +13,8 @@ module ActiveModel
       end
 
       def test_lower_camel_format_serializer
-        object     = Blog.new({ name: 'Name 1', display_name: 'Display Name 1'})
-        serializer = BlogLowerCamelSerializer.new(object)
+        object     = WebLog.new({ name: 'Name 1', display_name: 'Display Name 1'})
+        serializer = WebLogLowerCamelSerializer.new(object)
 
         expected = { name: 'Name 1', displayName: 'Display Name 1' }
 

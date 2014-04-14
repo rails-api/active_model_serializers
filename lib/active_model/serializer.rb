@@ -117,14 +117,16 @@ end
       @except        = Array(options[:except]) if options[:except]
       @key_format    = options[:key_format]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
 
     def json_key
-      if root == true || root.nil?
+      key = if root == true || root.nil?
         self.class.root_name
       else
         root
       end
+
+      key_format == :lower_camel ? key.camelize(:lower) : key
     end
 
     def attributes

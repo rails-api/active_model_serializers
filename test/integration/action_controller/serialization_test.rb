@@ -194,6 +194,22 @@ module ActionController
       end
     end
 
+    class LowerCamelArraySerializerTest < ActionController::TestCase
+      class WebLogController < ActionController::Base
+        def render_array
+          render json: [WebLog.new({name: 'Name 1', display_name: 'Display Name 1'}), WebLog.new({name: 'Name 2', display_name: 'Display Name 2'})], each_serializer: WebLogLowerCamelSerializer
+        end
+      end
+
+      tests WebLogController
+
+      def test_render_array
+        get :render_array
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"webLog":[{"name":"Name 1","displayName":"Display Name 1"},{"name":"Name 2","displayName":"Display Name 2"}]}', @response.body
+      end
+    end
+
     class ArrayEmbedingSerializerTest < ActionController::TestCase
       def setup
         super

@@ -35,7 +35,7 @@ end
 class Comment < Model
 end
 
-class Blog < Model
+class WebLog < Model
 end
 
 ###
@@ -66,10 +66,10 @@ class CommentSerializer < ActiveModel::Serializer
   attributes :content
 end
 
-class BlogSerializer < ActiveModel::Serializer
+class WebLogSerializer < ActiveModel::Serializer
   attributes :name, :display_name
 end
 
-class BlogLowerCamelSerializer < BlogSerializer
+class WebLogLowerCamelSerializer < WebLogSerializer
   format_keys :lower_camel
 end
