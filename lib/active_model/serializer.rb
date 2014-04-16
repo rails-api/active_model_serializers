@@ -131,12 +131,10 @@ end
 
     def attributes
       if perform_cached?
-        if cache.read(expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json']))
-          p "Fetch Cache: #{expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json'])}"
-        else
-          p "Write Cache: #{expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json'])}"
-        end
-        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json']) do
+        cache_key = expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json', digest])
+        p "Fetch Cache: #{cache_key}" if cache.read(cache_key)        
+        cache.fetch cache_key do
+          p "Write Cache: #{cache_key}"
           filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
             hash[name] = send(name)
           end
@@ -154,6 +152,21 @@ end
 
     def expand_cache_key(*args)
       ActiveSupport::Cache.expand_cache_key(args)
+    end
+
+    def digest
+      class_source = File.read(default_file_path) rescue File.read(find_file_path)
+      Digest::MD5.hexdigest(class_source)
+    end
+
+    def default_file_path
+      Rails.root.join("app/serializers", "#{self.class.to_s.tableize.singularize}.rb").to_s
+    end
+
+    def find_file_path
+      self.class.instance_methods(false).map { |m|
+        self.class.instance_method(m).source_location.first
+      }.select{|f| f.match(Rails.root.to_s) }.last
     end
 
     def associations
