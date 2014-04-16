@@ -8,7 +8,6 @@ module ActiveModel
     end
 
     initializer "caching.active_model_serializer" do |app|
-      ActiveModel::Serializer.perform_caching = app.config.action_controller.perform_caching
       ActiveModel::Serializer.cache = Rails.cache
     end
   end
