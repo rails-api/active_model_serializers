@@ -9,13 +9,21 @@ module ActiveModel
   class Serializer
     include Serializable
 
+    class_attribute :cache
+    class_attribute :perform_caching
+
     @mutex = Mutex.new
 
     class << self
       def inherited(base)
         base._root = _root
+        base.perform_caching = false
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
+      end
+      
+      def cached(value = true)
+        self.perform_caching = value
       end
 
       def setup
@@ -122,9 +130,30 @@ end
     end
 
     def attributes
-      filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
-        hash[name] = send(name)
+      if perform_cached?
+        if cache.read(expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json']))
+          p "Fetch Cache: #{expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json'])}"
+        else
+          p "Write Cache: #{expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json'])}"
+        end
+        cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json']) do
+          filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+            hash[name] = send(name)
+          end
+        end
+      else
+        filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+          hash[name] = send(name)
+        end
       end
+    end
+
+    def perform_cached?
+      perform_caching && cache && respond_to?(:cache_key)
+    end
+
+    def expand_cache_key(*args)
+      ActiveSupport::Cache.expand_cache_key(args)
     end
 
     def associations
