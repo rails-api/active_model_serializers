@@ -7,7 +7,9 @@ require 'active_model/serializer/railtie' if defined?(Rails)
 begin
   require 'action_controller'
   require 'action_controller/serialization'
-
+  require 'active_support'
+  require 'active_support/core_ext'
+  
   ActiveSupport.on_load(:action_controller) do
     include ::ActionController::Serialization
   end
