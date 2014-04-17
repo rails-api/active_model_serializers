@@ -177,6 +177,40 @@ module ActiveModel
       ensure
         UserSerializer._associations[:profile] = @old_association
       end
+
+
+      def test_embed_object_in_root_for_has_one_association_with_empty_polymorphic_has_one_relationship
+        @association = ARTaskSerializer._associations[:ar_list]
+        @old_association = @association.dup
+
+        @association.embed = :ids
+        @association.embed_in_root = true
+
+        @list_association = ARListSerializer._associations[:ar_items]
+        @old_list_association = @list_association.dup
+
+        @list_association.embed = :ids
+        @list_association.embed_in_root = true
+
+
+        @task1 = ARTask.new({ name: 'Task 1'})
+        @task2 = ARTask.new({ name: 'Task 2'})
+
+        @list = ARList.create(name: 'list', listable: @task1).tap { |l| 
+          l.ar_items.create(description: 'test')
+        }
+
+
+        @serializer = ArraySerializer.new([@task1, @task2], root: :lists)
+        assert_equal({
+            tasks: []
+          }, @serializer.as_json)
+      ensure
+        ARTaskSerializer._associations[:ar_list] = @old_association
+        ARListSerializer._associations[:ar_items] = @old_list_association
+      end
+
+
     end
   end
 end
