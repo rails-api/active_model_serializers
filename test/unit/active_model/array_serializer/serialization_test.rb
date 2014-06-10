@@ -79,6 +79,19 @@ module ActiveModel
         PostSerializer._associations[:comments] = @old_association
       end
 
+      def test_associated_objects_of_multiple_instances_embedded_in_root_nested
+        @response2_1 = Response.new(content: 'r2-1')
+        @response1_1 = Response.new(content: 'r1-1')
+        @response2 = Response.new(content: 'r1')
+        @response1 = Response.new(content: 'r1')
+
+        @response1.responses = [@response1_1]
+        @response2.responses = [@response2_1]
+
+        @serializer = ArraySerializer.new([@response1, @response2], root: :responses) #, root: :activities)
+        assert_equal({}, @serializer.as_json)
+      end
+
       def test_embed_object_for_has_one_association_with_nil_value
         @association = UserSerializer._associations[:profile]
         @old_association = @association.dup
