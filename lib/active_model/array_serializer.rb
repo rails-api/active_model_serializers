@@ -1,6 +1,5 @@
 require 'active_model/default_serializer'
 require 'active_model/serializable'
-require 'active_model/serializer'
 
 module ActiveModel
   class ArraySerializer

@@ -113,8 +113,8 @@ end
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
-      @only          = Array(options[:only]) if options[:only]
-      @except        = Array(options[:except]) if options[:except]
+      @only          = options[:only] ? Array(options[:only]) : nil
+      @except        = options[:except] ? Array(options[:except]) : nil
       @key_format    = options[:key_format]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
