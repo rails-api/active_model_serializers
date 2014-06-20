@@ -16,6 +16,7 @@ module ActiveModel
         base._root = _root
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
+        base._conditions = (@_conditions || {}).dup
       end
 
       def setup
@@ -60,7 +61,7 @@ end
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
+      attr_accessor :_root, :_attributes, :_associations, :_conditions
       alias root  _root=
       alias root= _root=
 
@@ -68,8 +69,19 @@ end
         name.demodulize.underscore.sub(/_serializer$/, '') if name
       end
 
-      def attributes(*attrs)
+      def attributes(*args)
+        attrs, options = if args.last.kind_of? Hash
+                           [args[0, args.size - 1], args.last]
+                         else
+                           [args, {}]
+                         end
+
         @_attributes.concat attrs
+
+        if condition = options[:if]
+          attrs_list = @_conditions[condition]
+          @_conditions[condition] = (attrs_list || []).concat(attrs).compact
+        end
 
         attrs.each do |attr|
           define_method attr do
@@ -110,8 +122,16 @@ end
       @wrap_in_array = options[:_wrap_in_array]
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
+      @conditions_cache = {}
+
+      self.class._conditions.map do |condition, attrs|
+        condition = {resolved: false, method: condition}
+        attrs.each do |attr|
+          conditions_cache[attr] = condition
+        end
+      end
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :conditions_cache
 
     def json_key
       if root == true || root.nil?
@@ -142,9 +162,11 @@ end
     end
 
     def filter(keys)
+      @except = (@except || []).concat check_conditions
+
       if @only
         keys & @only
-      elsif @except
+      elsif @except.any?
         keys - @except
       else
         keys
@@ -197,5 +219,16 @@ end
       @wrap_in_array ? [hash] : hash
     end
     alias_method :serializable_hash, :serializable_object
+
+    def check_conditions
+      conditions_cache.map do |attr, condition|
+        unless condition[:resolved]
+          condition[:resolved] = true
+          condition[:result] = send(condition[:method])
+        end
+
+        attr unless condition[:result]
+      end.compact
+    end
   end
 end

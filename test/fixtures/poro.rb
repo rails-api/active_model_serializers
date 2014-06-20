@@ -50,7 +50,21 @@ class ProfileSerializer < ActiveModel::Serializer
     scope ? "#{description} - #{scope}" : description
   end
 
-  attributes :name, :description
+  def show_me
+    raise "No way!"
+  end
+
+  def should_show_me
+    false
+  end
+
+  def should_show_description
+    true
+  end
+
+  attributes :name
+  attributes :description, :if => :should_show_description
+  attributes :show_me, :if => :should_show_me
 end
 
 class PostSerializer < ActiveModel::Serializer

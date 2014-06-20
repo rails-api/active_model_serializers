@@ -28,7 +28,7 @@ module ActiveModel
         @profile_serializer = ProfileSerializer.new(@profile)
         @profile_serializer.instance_eval do
           def filter(keys)
-            keys - [:description]
+            keys - [:description, :show_me]
           end
         end
       end
