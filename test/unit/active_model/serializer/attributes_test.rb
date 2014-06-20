@@ -9,7 +9,7 @@ module ActiveModel
       end
 
       def test_attributes_definition
-        assert_equal([:name, :description],
+        assert_equal([:name, :description, :show_me],
                      @profile_serializer.class._attributes)
       end
 
@@ -31,9 +31,9 @@ module ActiveModel
         end
         another_inherited_serializer_klass = Class.new(ProfileSerializer)
 
-        assert_equal([:name, :description, :comments],
+        assert_equal([:name, :description, :show_me, :comments],
                      inherited_serializer_klass._attributes)
-        assert_equal([:name, :description],
+        assert_equal([:name, :description, :show_me],
                      another_inherited_serializer_klass._attributes)
       end
     end
