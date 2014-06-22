@@ -38,6 +38,12 @@ end
 class WebLog < Model
 end
 
+class Author < Model
+  def active_model_serializer
+    UserSerializer
+  end
+end
+
 ###
 ## Serializers
 ###
