@@ -110,8 +110,9 @@ end
       @wrap_in_array = options[:_wrap_in_array]
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
+      @context       = options[:context]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :context
 
     def json_key
       if root == true || root.nil?
@@ -174,7 +175,7 @@ end
 
     def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, scope: scope)
+      association.build_serializer(object, scope: scope, context: self)
     end
 
     def serialize(association)

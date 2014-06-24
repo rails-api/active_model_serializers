@@ -177,6 +177,16 @@ module ActiveModel
       ensure
         UserSerializer._associations[:profile] = @old_association
       end
+
+      def test_context_passed_as_option
+        array = [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
+                 Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]
+
+        serializer = ArraySerializer.new(array)
+        object = serializer.serializer_for(array.first)
+
+        assert_equal(object.context, serializer)
+      end
     end
   end
 end
