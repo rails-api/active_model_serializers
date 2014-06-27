@@ -79,17 +79,31 @@ module ActiveModel
         PostSerializer._associations[:comments] = @old_association
       end
 
-      def test_associated_objects_of_multiple_instances_embedded_in_root_nested
-        @response2_1 = Response.new(content: 'r2-1')
-        @response1_1 = Response.new(content: 'r1-1')
-        @response2 = Response.new(content: 'r1')
-        @response1 = Response.new(content: 'r1')
+      def test_associated_objects_of_recursive_instances_embedded_in_root
+        CommentSerializer.has_many :comments
+        @association = CommentSerializer._associations[:comments]
 
-        @response1.responses = [@response1_1]
-        @response2.responses = [@response2_1]
+        @association.embed = :ids
+        @association.embed_in_root = true
 
-        @serializer = ArraySerializer.new([@response1, @response2], root: :responses) #, root: :activities)
-        assert_equal({}, @serializer.as_json)
+        @comment1 = Comment.new(content: 'C1')
+        @comment2 = Comment.new(content: 'C2')
+
+        class << @comment1
+          attr_writer :comments
+        end
+        @comment1.comments = [Comment.new(content: 'C1-1')]
+
+        @serializer = ArraySerializer.new([@comment1, @comment2], root: :comments)
+        assert_equal({
+          comments: [
+            { content: 'C1', 'comment_ids' => @comment1.comments.map(&:object_id) },
+            { content: 'C2', 'comment_ids' => [] },
+            { content: 'C1-1', 'comment_ids' => []}
+          ]
+        }, @serializer.as_json)
+      ensure
+        CommentSerializer._associations = {}
       end
 
       def test_embed_object_for_has_one_association_with_nil_value

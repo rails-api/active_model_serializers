@@ -33,21 +33,8 @@ class Post < Model
 end
 
 class Comment < Model
-end
-
-class Activity < Model
-  attr_writer :responses
-
-  def responses
-    @responses ||= [Response.new(content: 'response')]
-  end
-end
-
-class Response < Model
-  attr_writer :responses
-
-  def responses
-    @responses ||= []
+  def comments
+    @comments ||= []
   end
 end
 
@@ -77,16 +64,4 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
-end
-
-class ActivitySerializer < ActiveModel::Serializer
-  attributes :content
-
-  has_many :responses, embed: :ids, embed_in_root: true
-end
-
-class ResponseSerializer < ActiveModel::Serializer
-  attributes :content
-
-  has_many :responses, embed_in_root: true, embed: :ids
 end
