@@ -128,15 +128,11 @@ end
     end
 
     def associations
-      associations = self.class._associations
-      included_associations = filter(associations.keys)
-      associations.each_with_object({}) do |(name, association), hash|
-        if included_associations.include? name
-          if association.embed_ids?
-            hash[association.key] = serialize_ids association
-          elsif association.embed_objects?
-            hash[association.embedded_key] = serialize association
-          end
+      allowed_associations.each_with_object({}) do |association, hash|
+        if association.embed_ids?
+          hash[association.key] = serialize_ids association
+        elsif association.embed_objects?
+          hash[association.embedded_key] = serialize association
         end
       end
     end
@@ -152,23 +148,8 @@ end
     end
 
     def embedded_in_root_associations
-      associations = self.class._associations
-      included_associations = filter(associations.keys)
-      associations.each_with_object({}) do |(name, association), hash|
-        if included_associations.include? name
-          if association.embed_in_root?
-            association_serializer = build_serializer(association)
-            hash.merge! association_serializer.embedded_in_root_associations
-
-            serialized_data = association_serializer.serializable_object
-            key = association.root_key
-            if hash.has_key?(key)
-              hash[key].concat(serialized_data).uniq!
-            else
-              hash[key] = serialized_data
-            end
-          end
-        end
+      allowed_associations.each_with_object({}) do |association, hash|
+        embed_serialized_assocation(association, hash) if association.embed_in_root?
       end
     end
 
@@ -197,5 +178,42 @@ end
       @wrap_in_array ? [hash] : hash
     end
     alias_method :serializable_hash, :serializable_object
+
+    protected
+
+    def embed_serialized_assocation(association, hash)
+      association_serializer = build_serializer(association)
+      embed_association_root_assocations(association_serializer, hash)
+      embed_data(hash, association.root_key, association_serializer.serializable_object)
+    end
+
+    def embed_association_root_assocations(association_serializer, hash)
+      return if association_serializer.send(:object).nil?
+
+      association_serializer.embedded_in_root_associations.each do |key, value|
+        embed_data(hash, key, value)
+      end
+    end
+
+    def embed_data(hash, key, data)
+      if hash[key].is_a?(Array) && data.is_a?(Array)
+        hash[key].concat(data).uniq!
+      else
+        hash[key] = data
+      end
+      hash
+    end
+
+    def allowed_associations
+      included_associations.values_at(*allowed_association_keys)
+    end
+
+    def allowed_association_keys
+      filter(included_associations.keys)
+    end
+
+    def included_associations
+      self.class._associations
+    end
   end
 end

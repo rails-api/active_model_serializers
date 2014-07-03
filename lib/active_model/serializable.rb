@@ -5,7 +5,7 @@ module ActiveModel
         hash = { root => serializable_object }
 
         serializable_data.each_pair do |key, value|
-          if hash[key].is_a?(Array)
+          if hash[key].is_a?(Array) && value.is_a?(Array)
             hash[key].concat(value)
           else
             hash[key] = value
