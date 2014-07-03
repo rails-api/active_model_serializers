@@ -26,6 +26,10 @@ class Profile < Model
 end
 
 class Post < Model
+  def user
+    @user
+  end
+
   def comments
     @comments ||= [Comment.new(content: 'C1'),
                    Comment.new(content: 'C2')]
@@ -33,6 +37,13 @@ class Post < Model
 end
 
 class Comment < Model
+  def user
+    @user
+  end
+
+  def comments
+    @comments ||= []
+  end
 end
 
 ###

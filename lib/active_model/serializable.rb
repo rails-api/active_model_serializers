@@ -3,7 +3,15 @@ module ActiveModel
     def as_json(options={})
       if root = options.fetch(:root, json_key)
         hash = { root => serializable_object }
-        hash.merge!(serializable_data)
+
+        serializable_data.each_pair do |key, value|
+          if hash[key].is_a?(Array) && value.is_a?(Array)
+            hash[key].concat(value)
+          else
+            hash[key] = value
+          end
+        end
+
         hash
       else
         serializable_object

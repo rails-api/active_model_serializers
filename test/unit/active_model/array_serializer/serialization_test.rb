@@ -79,6 +79,33 @@ module ActiveModel
         PostSerializer._associations[:comments] = @old_association
       end
 
+      def test_associated_objects_of_recursive_instances_embedded_in_root
+        CommentSerializer.has_many :comments
+        @association = CommentSerializer._associations[:comments]
+
+        @association.embed = :ids
+        @association.embed_in_root = true
+
+        @comment1 = Comment.new(content: 'C1')
+        @comment2 = Comment.new(content: 'C2')
+
+        class << @comment1
+          attr_writer :comments
+        end
+        @comment1.comments = [Comment.new(content: 'C1-1')]
+
+        @serializer = ArraySerializer.new([@comment1, @comment2], root: :comments)
+        assert_equal({
+          comments: [
+            { content: 'C1', 'comment_ids' => @comment1.comments.map(&:object_id) },
+            { content: 'C2', 'comment_ids' => [] },
+            { content: 'C1-1', 'comment_ids' => []}
+          ]
+        }, @serializer.as_json)
+      ensure
+        CommentSerializer._associations = {}
+      end
+
       def test_embed_object_for_has_one_association_with_nil_value
         @association = UserSerializer._associations[:profile]
         @old_association = @association.dup
