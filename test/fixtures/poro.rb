@@ -35,6 +35,9 @@ end
 class Comment < Model
 end
 
+class Desk < Model
+end
+
 ###
 ## Serializers
 ###
@@ -61,4 +64,9 @@ end
 
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class DeskSerializer < ActiveModel::Serializer
+  attributes :drawer, :lamp
+  hidden_attributes :secret_document
 end

@@ -5,6 +5,7 @@ module ActiveModel
     class FilterOptionsTest < Minitest::Test
       def setup
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+        @desk = Desk.new({ drawer: 'My drawer', lamp: 'My lamp', secret_document: 'Some secret document' })
       end
 
       def test_only_option
@@ -19,6 +20,20 @@ module ActiveModel
         assert_equal({
           'profile' => { name: 'Name 1', description: 'Description 1' }
         }, @profile_serializer.as_json)
+      end
+
+      def test_not_expose_hidden_attribute
+        desk_serializer = DeskSerializer.new(@desk)
+        assert_equal({
+          'desk' => { drawer: 'My drawer', lamp: 'My lamp' }
+        }, desk_serializer.as_json)
+      end
+
+      def test_expose_hidden_attribute
+        desk_serializer = DeskSerializer.new(@desk, expose: :secret_document)
+        assert_equal({
+          'desk' => { drawer: 'My drawer', lamp: 'My lamp', secret_document: 'Some secret document' }
+        }, desk_serializer.as_json)
       end
     end
 

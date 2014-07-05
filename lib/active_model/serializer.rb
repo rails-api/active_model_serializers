@@ -15,6 +15,7 @@ module ActiveModel
       def inherited(base)
         base._root = _root
         base._attributes = (_attributes || []).dup
+        base._hidden_attributes = (_hidden_attributes || []).dup
         base._associations = (_associations || {}).dup
       end
 
@@ -60,7 +61,7 @@ end
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
+      attr_accessor :_root, :_attributes, :_hidden_attributes, :_associations
       alias root  _root=
       alias root= _root=
 
@@ -84,6 +85,11 @@ end
 
       def has_many(*attrs)
         associate(Association::HasMany, *attrs)
+      end
+
+      def hidden_attributes(*attrs)
+        @_hidden_attributes.concat attrs
+        attributes(*attrs)
       end
 
       private
@@ -110,6 +116,7 @@ end
       @wrap_in_array = options[:_wrap_in_array]
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
+      @expose        = Array(options[:expose]) if options[:expose]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta
 
@@ -127,6 +134,10 @@ end
       end
     end
 
+    def hidden_attributes
+      self.class._hidden_attributes
+    end
+
     def associations
       associations = self.class._associations
       included_associations = filter(associations.keys)
@@ -142,6 +153,8 @@ end
     end
 
     def filter(keys)
+      @expose ||= []
+      hidden_attributes.each { |item| keys.delete(item) unless @expose.include?(item) }
       if @only
         keys & @only
       elsif @except
