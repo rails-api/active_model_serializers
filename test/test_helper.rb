@@ -1,15 +1,6 @@
 require "rubygems"
 require "bundler/setup"
 
-require 'simplecov'
-SimpleCov.start do
-  add_group "lib", "lib"
-  add_group "spec", "spec"
-end
-
-require 'coveralls'
-Coveralls.wear!
-
 require "pry"
 
 require "active_model_serializers"
