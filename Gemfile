@@ -8,11 +8,6 @@ platforms :ruby do
   gem 'sqlite3', '1.3.8'
 end
 
-platforms :mri do
-  gem 'coveralls', require: false
-  gem 'simplecov', require: false
-end
-
 platforms :jruby do
   gem 'activerecord-jdbcsqlite3-adapter'
 end
