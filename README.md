@@ -26,7 +26,7 @@ and
 class CommentSerializer < ActiveModel::Serializer
   attribute :name, :body
   
-  belongs_to :post_id
+  belongs_to :post
   
   url [:post, :comment]
 end
