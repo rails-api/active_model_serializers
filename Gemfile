@@ -10,5 +10,5 @@ version = ENV["RAILS_VERSION"] || "4.0"
 if version == "master"
   gem "rails", github: "rails/rails"
 else
-  gem "rails", "~> #{version}"
+  gem "rails", "~> #{version}.0"
 end
