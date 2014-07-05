@@ -4,3 +4,11 @@ source 'https://rubygems.org'
 gemspec
 
 gem "minitest"
+
+version = ENV["RAILS_VERSION"] || "4.0"
+
+if version == "master"
+  gem "rails", github: "rails/rails"
+else
+  gem "rails", "~> #{version}"
+end
