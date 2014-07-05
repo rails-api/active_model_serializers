@@ -7,8 +7,7 @@ rvm:
   - ree
   - jruby-18mode
   - jruby-19mode
-  - rbx-18mode
-  - rbx-19mode
+  - rbx-2
 gemfile:
   - Gemfile
   - Gemfile.edge
