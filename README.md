@@ -1,5 +1,7 @@
 # ActiveModelSerializers
 
+[![Build Status](https://travis-ci.org/steveklabnik/active_model_serializers.svg?branch=master)](https://travis-ci.org/steveklabnik/active_model_serializers?branch=master)
+
 TODO: Write a gem description
 
 ## Installation
