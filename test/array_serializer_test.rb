@@ -2,6 +2,27 @@ require "test_helper"
 require "test_fakes"
 
 class ArraySerializerTest < ActiveModel::TestCase
+
+  def test_array_items_do_not_have_root
+    array = [
+        BasicActiveModel.new(:name => "First model"),
+        BasicActiveModel.new(:name => "Second model")
+    ]
+    expected = { "root" => [
+        { :name => "First model" },
+        { :name => "Second model" }
+    ] }
+
+    default_serializer = array.active_model_serializer.new(array, :root => "root")
+    each_serializer = array.active_model_serializer.new(array, :root => "root", :each_serializer => BasicSerializer)
+
+    default_json = default_serializer.as_json
+    each_json = each_serializer.as_json
+
+    assert_equal(expected, default_json)
+    assert_equal(expected, each_json)
+  end
+
   # serialize different typed objects
   def test_array_serializer
     model    = Model.new
