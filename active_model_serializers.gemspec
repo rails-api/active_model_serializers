@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = ActiveModelSerializers::VERSION
   spec.authors       = ["Steve Klabnik"]
   spec.email         = ["steve@steveklabnik.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Conventions-based JSON generation for Rails.}
+  spec.description   = %q{ActiveModel::Serializers allows you to generate your JSON in an object-oriented and convention-driven manner.}
+  spec.homepage      = "https://github.com/rails-api/active_model_serializers"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
