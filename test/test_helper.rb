@@ -5,3 +5,4 @@ require "active_support/json"
 
 require 'rails'
 
+require 'minitest/autorun'
