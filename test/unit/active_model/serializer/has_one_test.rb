@@ -161,6 +161,13 @@ module ActiveModel
           'user' => { name: 'Name 1', email: 'mail@server.com', profile: { name: 'fake' } }
         }, @user_serializer.as_json)
       end
+
+      def test_association_context_passed_as_option
+        association = Association::HasOne.new('profile')
+        serializer = @user_serializer.build_serializer(association)
+
+        assert_equal(serializer.context, @user_serializer)
+      end
     end
   end
 end
