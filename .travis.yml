@@ -4,20 +4,14 @@ rvm:
   - 2.0.0
   - 2.1.1
   - ruby-head
-  - jruby
+  - jruby-19mode
   - rbx-2
 env:
   - "RAILS_VERSION=3.2.17"
   - "RAILS_VERSION=4.0.3"
-  - "RAILS_VERSION=4.1.0.rc1"
+  - "RAILS_VERSION=4.1.0"
   - "RAILS_VERSION=master"
 matrix:
   allow_failures:
     - rvm: ruby-head
-  fast_finish: true
-notifications:
-  email: false
-  campfire:
-    on_success: change
-    rooms:
-      - secure: "TP0fJ4aqXCRD7CaAgaYW7Pa22j4/uLChdBb59ob/sJvHtfi4Zx3I54xWApmp\nZl1KItFGCV8oQZhQl5hAmHJfJ+1gCNeBvIKwY6TsIyTmyDg1KcJUcJDrwYxO\ntAeYI2PvU5PtKMmpnfnwFQMxL+2nfWJWNzboBCDr4YvoFI+rN+A="
+
