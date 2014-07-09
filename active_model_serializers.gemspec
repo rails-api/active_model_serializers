@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'active_model_serializers/version'
+require 'active_model/serializer/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "active_model_serializers"
-  spec.version       = ActiveModelSerializers::VERSION
+  spec.version       = ActiveModel::Serializer::VERSION
   spec.authors       = ["Steve Klabnik"]
   spec.email         = ["steve@steveklabnik.com"]
   spec.summary       = %q{Conventions-based JSON generation for Rails.}

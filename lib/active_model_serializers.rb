@@ -1,5 +1,5 @@
-require "active_model_serializers/version"
+require "active_model"
+require "active_model/serializer/version"
 
-module ActiveModelSerializers
-  # Your code goes here...
-end
+require "active_model/serializer"
+
