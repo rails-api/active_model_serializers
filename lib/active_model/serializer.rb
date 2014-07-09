@@ -19,6 +19,28 @@ module ActiveModel
       end
     end
 
+    if RUBY_VERSION >= '2.0'
+      def self.serializer_for(resource)
+        if resource.respond_to?(:to_ary)
+          ArraySerializer
+        else
+          begin
+            Object.const_get "#{resource.class.name}Serializer"
+          rescue NameError
+            nil
+          end
+        end
+      end
+    else
+      def self.serializer_for(resource)
+        if resource.respond_to?(:to_ary)
+          ArraySerializer
+        else
+          "#{resource.class.name}Serializer".safe_constantize
+        end
+      end
+    end
+
     attr_accessor :object
 
     def initialize(object)
