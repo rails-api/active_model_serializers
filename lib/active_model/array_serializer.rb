@@ -16,19 +16,21 @@ module ActiveModel
       @object          = object
       @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
+      @json_root       = options.fetch(:json_root, @root)
+      @xml_root        = options.fetch(:xml_root, @root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :json_root, :xml_root, :meta_key, :meta
 
     def json_key
-      if root.nil?
-        @resource_name
-      else
-        root
-      end
+      json_root || @resource_name
+    end
+
+    def xml_key
+      xml_root || @resource_name || "data"
     end
 
     def serializer_for(item)
@@ -42,6 +44,12 @@ module ActiveModel
       end
     end
     alias_method :serializable_array, :serializable_object
+
+    def serializable_hash
+      @object.map do |item|
+        serializer_for(item).serializable_hash
+      end
+    end
 
     def embedded_in_root_associations
       @object.each_with_object({}) do |item, hash|

@@ -28,6 +28,7 @@ module ActionController
     extend ActiveSupport::Concern
 
     include ActionController::Renderers
+    include ActiveModel::Serializers::Xml
 
     included do
       class_attribute :_serialization_scope
@@ -40,13 +41,15 @@ module ActionController
       end
     end
 
-    def _render_option_json(resource, options)
-      serializer = build_json_serializer(resource, options)
+    [:json, :xml].each do |format|
+      define_method("_render_option_#{format}") do |resource, options|
+        serializer = build_serializer(resource, options)
 
-      if serializer
-        super(serializer, options)
-      else
-        super
+        if serializer
+          super(serializer, options)
+        else
+          super(resource, options)
+        end
       end
     end
 
@@ -61,7 +64,7 @@ module ActionController
       send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
     end
 
-    def build_json_serializer(resource, options = {})
+    def build_serializer(resource, options = {})
       options = default_serializer_options.merge(options)
 
       if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))

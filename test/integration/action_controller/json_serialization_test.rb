@@ -1,18 +1,18 @@
 require 'test_helper'
 
 module ActionController
-  module Serialization
+  module JsonSerialization
     class ImplicitSerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_using_implicit_serializer
+        def render_json_using_implicit_serializer
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         end
       end
 
       tests MyController
 
-      def test_render_using_implicit_serializer
-        get :render_using_implicit_serializer
+      def test_render_json_using_implicit_serializer
+        get :render_json_using_implicit_serializer
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
@@ -20,7 +20,7 @@ module ActionController
 
     class ImplicitSerializerScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_using_implicit_serializer_and_scope
+        def render_json_using_implicit_serializer_and_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         end
 
@@ -33,8 +33,8 @@ module ActionController
 
       tests MyController
 
-      def test_render_using_implicit_serializer_and_scope
-        get :render_using_implicit_serializer_and_scope
+      def test_render_json_using_implicit_serializer_and_scope
+        get :render_json_using_implicit_serializer_and_scope
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_user"}}', @response.body
       end
@@ -46,7 +46,7 @@ module ActionController
           { scope: current_admin }
         end
 
-        def render_using_scope_set_in_default_serializer_options
+        def render_json_using_scope_set_in_default_serializer_options
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         end
 
@@ -63,8 +63,8 @@ module ActionController
 
       tests MyController
 
-      def test_render_using_scope_set_in_default_serializer_options
-        get :render_using_scope_set_in_default_serializer_options
+      def test_render_json_using_scope_set_in_default_serializer_options
+        get :render_json_using_scope_set_in_default_serializer_options
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
@@ -72,7 +72,7 @@ module ActionController
 
     class ExplicitSerializerScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_using_implicit_serializer_and_explicit_scope
+        def render_json_using_implicit_serializer_and_explicit_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }), scope: current_admin
         end
 
@@ -89,8 +89,8 @@ module ActionController
 
       tests MyController
 
-      def test_render_using_implicit_serializer_and_explicit_scope
-        get :render_using_implicit_serializer_and_explicit_scope
+      def test_render_json_using_implicit_serializer_and_explicit_scope
+        get :render_json_using_implicit_serializer_and_explicit_scope
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
@@ -98,7 +98,7 @@ module ActionController
 
     class OverridingSerializationScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_overriding_serialization_scope
+        def render_json_overriding_serialization_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         end
 
@@ -115,8 +115,8 @@ module ActionController
 
       tests MyController
 
-      def test_render_overriding_serialization_scope
-        get :render_overriding_serialization_scope
+      def test_render_json_overriding_serialization_scope
+        get :render_json_overriding_serialization_scope
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
@@ -124,7 +124,7 @@ module ActionController
 
     class CallingSerializationScopeTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_calling_serialization_scope
+        def render_json_calling_serialization_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         end
 
@@ -139,8 +139,8 @@ module ActionController
 
       tests MyController
 
-      def test_render_calling_serialization_scope
-        get :render_calling_serialization_scope
+      def test_render_json_calling_serialization_scope
+        get :render_json_calling_serialization_scope
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_user"}}', @response.body
       end
@@ -164,15 +164,15 @@ module ActionController
 
     class RailsSerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_using_rails_behavior
+        def render_json_using_rails_behavior
           render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })], serializer: false
         end
       end
 
       tests MyController
 
-      def test_render_using_rails_behavior
-        get :render_using_rails_behavior
+      def test_render_json_using_rails_behavior
+        get :render_json_using_rails_behavior
         assert_equal 'application/json', @response.content_type
         assert_equal '[{"attributes":{"name":"Name 1","description":"Description 1","comments":"Comments 1"}}]', @response.body
       end
@@ -180,15 +180,15 @@ module ActionController
 
     class ArraySerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_array
+        def render_json_array
           render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })]
         end
       end
 
       tests MyController
 
-      def test_render_array
-        get :render_array
+      def test_render_json_array
+        get :render_json_array
         assert_equal 'application/json', @response.content_type
         assert_equal '{"my":[{"name":"Name 1","description":"Description 1"}]}', @response.body
       end
@@ -230,5 +230,6 @@ module ActionController
         assert_equal("{\"my\":[{\"name\":\"Name 1\",\"email\":\"mail@server.com\",\"profile_id\":#{@controller.user.profile.object_id}}],\"profiles\":[{\"name\":\"N1\",\"description\":\"D1\"}]}", @response.body)
       end
     end
+
   end
 end

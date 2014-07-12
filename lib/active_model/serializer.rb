@@ -105,19 +105,29 @@ end
       @object        = object
       @scope         = options[:scope]
       @root          = options.fetch(:root, self.class._root)
+      @json_root     = options.fetch(:json_root, @root)
+      @xml_root      = options.fetch(:xml_root, @root)
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :json_root, :xml_root, :meta_key, :meta
 
     def json_key
-      if root == true || root.nil?
+      if json_root == true || json_root.nil?
         self.class.root_name
       else
-        root
+        json_root
+      end
+    end
+
+    def xml_key
+      if xml_root
+        xml_root
+      else
+        self.class.root_name
       end
     end
 
