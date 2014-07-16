@@ -4,13 +4,7 @@ module ActiveModel
       if root = options.fetch(:root, json_key)
         hash = { root => serializable_object }
 
-        serializable_data.each_pair do |key, value|
-          if hash[key].is_a?(Array)
-            hash[key].concat(value)
-          else
-            hash[key] = value
-          end
-        end
+        merge_hash(hash, serializable_data)
 
         hash
       else
@@ -28,6 +22,16 @@ module ActiveModel
 
     def embedded_in_root_associations
       {}
+    end
+
+    def merge_hash(destination, source)
+      source.each_pair do |key, value|
+        if destination[key].is_a?(Array)
+          destination[key].concat(value)
+        else
+          destination[key] = value
+        end
+      end
     end
   end
 end
