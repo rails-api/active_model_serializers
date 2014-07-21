@@ -18,7 +18,7 @@ module ActiveModel
       @root            = options.fetch(:root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
-      @each_serializer = options[:each_serializer]
+      @each_serializer = options[:serializer]
       @resource_name   = options[:resource_name]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta

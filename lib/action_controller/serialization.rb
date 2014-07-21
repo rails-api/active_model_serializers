@@ -41,13 +41,8 @@ module ActionController
     end
 
     def _render_option_json(resource, options)
-      serializer = build_json_serializer(resource, options)
-
-      if serializer
-        super(serializer, options)
-      else
-        super
-      end
+      resource = build_json_serializer(resource, options) || resource
+      super
     end
 
     private
@@ -63,13 +58,13 @@ module ActionController
 
     def build_json_serializer(resource, options = {})
       options = default_serializer_options.merge(options)
+      options[:resource_name] = controller_name
+      options[:scope] ||= serialization_scope
 
-      if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
-        options[:scope] = serialization_scope unless options.has_key?(:scope)
-        options[:resource_name] = controller_name if resource.respond_to?(:to_ary)
+      serializer = resource.respond_to?(:to_ary) ? ActiveModel::ArraySerializer :
+        options[:serializer] || ActiveModel::Serializer.serializer_for(resource)
 
-        serializer.new(resource, options)
-      end
+      serializer.new(resource, options) if serializer
     end
   end
 end
