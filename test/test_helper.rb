@@ -9,7 +9,7 @@ Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
-    resource :post
+    resources :posts
     get ':controller(/:action(/:id))'
     get ':controller(/:action)'
   end

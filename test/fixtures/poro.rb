@@ -4,11 +4,15 @@ class Model
   end
 
   def read_attribute_for_serialization(name)
-    if name == :id || name == 'id'
+    if String(name) == 'id'
       object_id
     else
       @attributes[name]
     end
+  end
+
+  def to_param
+    String(object_id)
   end
 end
 
@@ -37,8 +41,8 @@ end
 
 class Category < Model
   def posts
-    @posts ||= [Post.new(title: 'First', body: 'Post 1'),
-                Post.new(title: 'Second', body: 'Post 2')]
+    @attributes.fetch(:posts, [Post.new(title: 'First', body: 'Post 1'),
+                               Post.new(title: 'Second', body: 'Post 2')])
   end
 end
 
@@ -73,7 +77,7 @@ class HypermediaPostSerializer < PostSerializer
   attributes :title, :body, :link
 
   def link
-    urls.post_url
+    urls.post_url(object)
   end
 end
 

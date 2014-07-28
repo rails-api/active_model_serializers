@@ -175,7 +175,7 @@ module ActionController
         get :render_with_hypermedia_links
         assert_equal 'application/json', @response.content_type
         assert_match '"name":"Welcome!"', @response.body
-        assert_match '"link":"http://test.host/post"', @response.body
+        assert_match /"link":"http:\/\/test\.host\/posts\/\d+"/, @response.body
       end
     end
 

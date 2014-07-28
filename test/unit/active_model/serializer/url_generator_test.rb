@@ -5,6 +5,7 @@ module ActiveModel
     class UrlGeneratorTest < ActiveModel::TestCase
       def setup
         @post = Post.new(title: 'Hi', body: 'How are you?')
+        @post_id = @post.object_id
         @url_generator = UrlGenerator.new(host: 'example.com')
       end
 
@@ -13,7 +14,7 @@ module ActiveModel
         serialized_post = serializer.as_json['hypermedia_post']
 
         assert_equal(@url_generator, serializer.url_generator)
-        assert_equal('http://example.com/post', serialized_post[:link])
+        assert_equal("http://example.com/posts/#{@post_id}", serialized_post[:link])
       end
 
       def test_url_generator_available_in_associations
@@ -21,13 +22,14 @@ module ActiveModel
         serializer = CategorySerializer.new(category, url_generator: @url_generator)
         serialized_post = serializer.associations[:posts].first
 
-        assert_equal('http://example.com/post', serialized_post[:link])
+        assert_equal("http://example.com/posts/#{@post_id}", serialized_post[:link])
       end
     end
 
     class UrlGeneratorDefaultsTest < ActiveModel::TestCase
       def setup
         @post = Post.new(title: 'Hi', body: 'How are you?')
+        @post_id = @post.object_id
         @old_url_options = CONFIG.default_url_options
         @url_generator = UrlGenerator.new
       end
@@ -37,7 +39,7 @@ module ActiveModel
         serializer = HypermediaPostSerializer.new(@post, url_generator: @url_generator)
         serialized_post = serializer.as_json['hypermedia_post']
 
-        assert_equal('http://default.local/post', serialized_post[:link])
+        assert_equal("http://default.local/posts/#{@post_id}", serialized_post[:link])
       end
 
       def teardown
