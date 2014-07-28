@@ -722,6 +722,14 @@ describe PostSerializer do
 end
 ```
 
+#### Rails
+
+You can test your actions that render serializers using a shoulda matcher:
+
+```ruby
+  it { should use_serializer PostSerializer }
+```
+
 ## Caching
 
 NOTE: This functionality was removed from AMS and it's in the TODO list.

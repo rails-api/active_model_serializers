@@ -44,7 +44,9 @@ module ActionController
       serializer = build_json_serializer(resource, options)
 
       if serializer
-        super(serializer, options)
+        ActiveSupport::Notifications.instrument("render_serializer.active_model_serializers", serializer: serializer.class) do
+          super(serializer, options)
+        end
       else
         super
       end
