@@ -38,7 +38,7 @@ end
         WARN
       end
 
-      if RUBY_VERSION >= '2.0'
+      if defined?(Object.const_get)
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
             ArraySerializer
