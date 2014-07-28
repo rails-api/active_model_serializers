@@ -38,6 +38,11 @@ end
         WARN
       end
 
+      def format_keys(format)
+        @key_format = format
+      end
+      attr_reader :key_format
+
       if RUBY_VERSION >= '2.0'
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
@@ -110,15 +115,18 @@ end
       @wrap_in_array = options[:_wrap_in_array]
       @only          = Array(options[:only]) if options[:only]
       @except        = Array(options[:except]) if options[:except]
+      @key_format    = options[:key_format]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
 
     def json_key
-      if root == true || root.nil?
+      key = if root == true || root.nil?
         self.class.root_name
       else
         root
       end
+
+      key_format == :lower_camel ? key.camelize(:lower) : key
     end
 
     def attributes
@@ -190,10 +198,35 @@ end
       end
     end
 
+    def key_format
+      @key_format || self.class.key_format || CONFIG.key_format
+    end
+
+    def format_key(key)
+      if key_format == :lower_camel
+        key.to_s.camelize(:lower)
+      else
+        key
+      end
+    end
+
+    def convert_keys(hash)
+      Hash[hash.map do |k,v|
+        key = if k.is_a?(Symbol)
+          format_key(k).to_sym
+        else
+          format_key(k)
+        end
+
+        [key ,v]
+      end]
+    end
+
     def serializable_object(options={})
       return @wrap_in_array ? [] : nil if @object.nil?
       hash = attributes
       hash.merge! associations
+      hash = convert_keys(hash) if key_format.present?
       @wrap_in_array ? [hash] : hash
     end
     alias_method :serializable_hash, :serializable_object

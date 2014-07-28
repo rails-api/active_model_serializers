@@ -15,6 +15,7 @@ module ActiveModel
         @options       = options
         self.embed     = options.fetch(:embed) { CONFIG.embed }
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
+        @key_format    = options.fetch(:key_format) { CONFIG.key_format }
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
         @embedded_key  = options[:root] || name
@@ -24,7 +25,7 @@ module ActiveModel
       end
 
       attr_reader :name, :embed_ids, :embed_objects
-      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options
+      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options, :key_format
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root

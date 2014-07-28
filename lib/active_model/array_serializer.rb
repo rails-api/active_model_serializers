@@ -20,20 +20,18 @@ module ActiveModel
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
+      @key_format      = options[:key_format] || options[:each_serializer].try(:key_format)
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
 
     def json_key
-      if root.nil?
-        @resource_name
-      else
-        root
-      end
+      key = root.nil? ? @resource_name : root
+      key_format == :lower_camel ? key.camelize(:lower) : key
     end
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
-      serializer_class.new(item, scope: scope)
+      serializer_class.new(item, scope: scope, key_format: key_format)
     end
 
     def serializable_object

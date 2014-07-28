@@ -225,6 +225,23 @@ def default_serializer_options
 end
 ```
 
+## Changing the Key Format
+
+You can specify that serializers use the lower-camel key format at the config, class or instance level.
+
+```ruby
+
+ActiveModel::Serializer.setup do |config|
+  config.key_format = :lower_camel
+end
+
+class BlogLowerCamelSerializer < ActiveModel::Serializer 
+  format_keys :lower_camel
+end
+
+BlogSerializer.new(object, key_format: :lower_camel)
+```
+
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
