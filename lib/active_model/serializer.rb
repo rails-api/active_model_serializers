@@ -9,13 +9,21 @@ module ActiveModel
   class Serializer
     include Serializable
 
+    class_attribute :cache
+    class_attribute :perform_caching
+
     @mutex = Mutex.new
 
     class << self
       def inherited(base)
         base._root = _root
+        base.perform_caching = false
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
+      end
+      
+      def cached(value = true)
+        self.perform_caching = value
       end
 
       def setup
@@ -130,9 +138,43 @@ end
     end
 
     def attributes
-      filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
-        hash[name] = send(name)
+      if perform_cached?
+        cache_key = expand_cache_key([self.class.to_s.underscore, cache_key, 'attributes-json', digest])
+        p "Fetch Cache: #{cache_key}" if cache.read(cache_key)        
+        cache.fetch cache_key do
+          p "Write Cache: #{cache_key}"
+          filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+            hash[name] = send(name)
+          end
+        end
+      else
+        filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+          hash[name] = send(name)
+        end
       end
+    end
+
+    def perform_cached?
+      perform_caching && cache && respond_to?(:cache_key)
+    end
+
+    def expand_cache_key(*args)
+      ActiveSupport::Cache.expand_cache_key(args)
+    end
+
+    def digest
+      class_source = File.read(default_file_path) rescue File.read(find_file_path)
+      Digest::MD5.hexdigest(class_source)
+    end
+
+    def default_file_path
+      Rails.root.join("app/serializers", "#{self.class.to_s.tableize.singularize}.rb").to_s
+    end
+
+    def find_file_path
+      self.class.instance_methods(false).map { |m|
+        self.class.instance_method(m).source_location.first
+      }.select{|f| f.match(Rails.root.to_s) }.last
     end
 
     def associations
