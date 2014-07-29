@@ -109,7 +109,7 @@ end
 #### 2. Specify the serializer when you render the object:
 
 ```ruby
-render :json => @post, :serializer => FancyPostSerializer
+render json: @post, serializer: FancyPostSerializer
 ```
 
 ## Arrays
