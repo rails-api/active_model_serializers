@@ -1,5 +1,4 @@
 require 'active_model/default_serializer'
-require 'active_model/serializer'
 
 module ActiveModel
   class Serializer
