@@ -1,7 +1,6 @@
 # VERSION 0.9.0.pre
 
 * The following methods were removed
-  - Model#active\_model\_serializer
   - Serializer#include!
   - Serializer#include?
   - Serializer#attr\_disabled=

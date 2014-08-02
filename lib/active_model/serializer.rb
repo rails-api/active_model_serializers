@@ -49,6 +49,7 @@ end
             ArraySerializer
           else
             begin
+              return resource.active_model_serializer if resource.respond_to?(:active_model_serializer)
               Object.const_get "#{resource.class.name}Serializer"
             rescue NameError
               nil
@@ -60,6 +61,7 @@ end
           if resource.respond_to?(:to_ary)
             ArraySerializer
           else
+            return resource.active_model_serializer if resource.respond_to?(:active_model_serializer)
             "#{resource.class.name}Serializer".safe_constantize
           end
         end

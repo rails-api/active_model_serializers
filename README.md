@@ -1,5 +1,6 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) 
-[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers)
+
 
 # ActiveModel::Serializers
 
@@ -13,8 +14,8 @@ If you want to read the stable documentation visit [0.8 README](https://github.c
 
 ## Purpose
 
-`ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
-Objects that respond to read\_attribute\_for\_serialization 
+`ActiveModel::Serializers` encapsulates the JSON serialization of objects.
+Objects that respond to read\_attribute\_for\_serialization
 (including `ActiveModel` and `ActiveRecord` objects) are supported.
 
 Serializers know about both a model and the `current_user`, so you can
@@ -70,7 +71,7 @@ $ rails g serializer post
 
 Currently `ActiveModel::Serializers` expects objects to implement
 read\_attribute\_for\_serialization. That's all you need to do to have
-your POROs supported. 
+your POROs supported.
 
 # render :json
 
@@ -93,8 +94,19 @@ This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
 serializer and available as `@options` inside.
 
-To specify a custom serializer for an object, you can specify the
-serializer when you render the object:
+To specify a custom serializer for an object, there are 2 options:
+
+#### 1. Specify the serializer in your model:
+
+```ruby
+class Post < ActiveRecord::Base
+  def active_model_serializer
+    FancyPostSerializer
+  end
+end
+```
+
+#### 2. Specify the serializer when you render the object:
 
 ```ruby
 render json: @post, serializer: FancyPostSerializer
@@ -235,7 +247,7 @@ ActiveModel::Serializer.setup do |config|
   config.key_format = :lower_camel
 end
 
-class BlogLowerCamelSerializer < ActiveModel::Serializer 
+class BlogLowerCamelSerializer < ActiveModel::Serializer
   format_keys :lower_camel
 end
 
@@ -589,8 +601,8 @@ this:
 }
 ```
 
-When side-loading data, your serializer cannot have the `{ root: false }` option, 
-as this would lead to invalid JSON. If you do not have a root key, the `include` 
+When side-loading data, your serializer cannot have the `{ root: false }` option,
+as this would lead to invalid JSON. If you do not have a root key, the `include`
 instruction will be ignored
 
 You can also specify a different root for the embedded objects than the key
