@@ -4,11 +4,15 @@ class Model
   end
 
   def read_attribute_for_serialization(name)
-    if name == :id || name == 'id'
+    if String(name) == 'id'
       object_id
     else
       @attributes[name]
     end
+  end
+
+  def to_param
+    String(object_id)
   end
 end
 
@@ -33,6 +37,13 @@ class Post < Model
 end
 
 class Comment < Model
+end
+
+class Category < Model
+  def posts
+    @attributes.fetch(:posts, [Post.new(title: 'First', body: 'Post 1'),
+                               Post.new(title: 'Second', body: 'Post 2')])
+  end
 end
 
 class WebLog < Model
@@ -62,8 +73,22 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 end
 
+class HypermediaPostSerializer < PostSerializer
+  attributes :title, :body, :link
+
+  def link
+    urls.post_url(object)
+  end
+end
+
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
+end
+
+class CategorySerializer < ActiveModel::Serializer
+  attributes :name
+
+  has_many :posts, serializer: HypermediaPostSerializer
 end
 
 class WebLogSerializer < ActiveModel::Serializer

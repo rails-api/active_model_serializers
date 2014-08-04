@@ -2,6 +2,7 @@ require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/config'
+require 'active_model/serializer/url_generator'
 
 require 'thread'
 
@@ -65,6 +66,10 @@ end
         end
       end
 
+      def url_generator(*args)
+        UrlGenerator.new(*args)
+      end
+
       attr_accessor :_root, :_attributes, :_associations
       alias root  _root=
       alias root= _root=
@@ -112,12 +117,16 @@ end
       @root          = options.fetch(:root, self.class._root)
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
+      @url_generator = options[:url_generator]
       @wrap_in_array = options[:_wrap_in_array]
       @only          = options[:only] ? Array(options[:only]) : nil
       @except        = options[:except] ? Array(options[:except]) : nil
       @key_format    = options[:key_format]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
+    attr_reader :url_generator
+
+    alias_method :urls, :url_generator
 
     def json_key
       key = if root == true || root.nil?
@@ -182,7 +191,7 @@ end
 
     def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, scope: scope)
+      association.build_serializer(object, scope: scope, url_generator: url_generator)
     end
 
     def serialize(association)
@@ -231,4 +240,6 @@ end
     end
     alias_method :serializable_hash, :serializable_object
   end
+
+  ActiveSupport.run_load_hooks(:active_model_serializers, ActiveModel::Serializer)
 end

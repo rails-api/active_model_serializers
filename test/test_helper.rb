@@ -9,11 +9,13 @@ Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
+    resources :posts
     get ':controller(/:action(/:id))'
     get ':controller(/:action)'
   end
 
   ActionController::Base.send :include, Routes.url_helpers
+  ActiveModel::Serializer::UrlGenerator.send :include, Routes.url_helpers
 end
 
 ActionController::TestCase.class_eval do
