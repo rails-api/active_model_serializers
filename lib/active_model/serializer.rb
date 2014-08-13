@@ -24,9 +24,21 @@ module ActiveModel
         end
       end
 
+      EMBED_IN_ROOT_OPTIONS = [
+        :include,
+        :embed_in_root,
+        :embed_in_root_key,
+        :embed_namespace
+      ].freeze
+
       def embed(type, options={})
         CONFIG.embed = type
-        CONFIG.embed_in_root = true if options[:embed_in_root] || options[:include]
+        if EMBED_IN_ROOT_OPTIONS.any? { |opt| options[opt].present? }
+          CONFIG.embed_in_root = true
+        end
+        if options[:embed_in_root_key].present?
+          CONFIG.embed_in_root_key = options[:embed_in_root_key]
+        end
         ActiveSupport::Deprecation.warn <<-WARN
 ** Notice: embed is deprecated. **
 The use of .embed method on a Serializer will be soon removed, as this should have a global scope and not a class scope.
@@ -141,8 +153,17 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_ids?
-            hash[association.key] = serialize_ids association
+            ids = serialize_ids association
+            if association.embed_namespace?
+              hash = hash[association.embed_namespace] ||= {}
+              hash[association.key] = ids
+            else
+              hash[association.key] = ids
+            end
           elsif association.embed_objects?
+            if association.embed_namespace?
+              hash = hash[association.embed_namespace] ||= {}
+            end
             hash[association.embedded_key] = serialize association
           end
         end
@@ -165,6 +186,9 @@ end
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           if association.embed_in_root?
+            if association.embed_in_root_key?
+              hash = hash[association.embed_in_root_key] ||= {}
+            end
             association_serializer = build_serializer(association)
             hash.merge!(association_serializer.embedded_in_root_associations) {|key, oldval, newval| [newval, oldval].flatten }
 
@@ -231,4 +255,5 @@ end
     end
     alias_method :serializable_hash, :serializable_object
   end
+
 end
