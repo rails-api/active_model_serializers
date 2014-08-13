@@ -18,16 +18,20 @@ module ActiveModel
         @embed_key     = options[:embed_key] || :id
         @key           = options[:key]
         @embedded_key  = options[:root] || name
+        @embed_in_root_key = options.fetch(:embed_in_root_key) { CONFIG.embed_in_root_key }
+        @embed_namespace = options.fetch(:embed_namespace) { CONFIG.embed_namespace }
 
         serializer = @options[:serializer]
         @serializer_from_options = serializer.is_a?(String) ? serializer.constantize : serializer
       end
 
       attr_reader :name, :embed_ids, :embed_objects
-      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options, :key_format
+      attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options, :key_format, :embed_in_root_key, :embed_namespace
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root
+      alias embed_in_root_key? embed_in_root_key
+      alias embed_namespace? embed_namespace
 
       def embed=(embed)
         @embed_ids     = embed == :id || embed == :ids

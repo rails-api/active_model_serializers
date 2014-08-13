@@ -522,6 +522,33 @@ Now, any associations will be supplied as an Array of IDs:
 }
 ```
 
+You may also choose to embed the IDs by the association's name underneath an
+`embed_key` for the resource. For example, say we want to change `comment_ids`
+to `comments` underneath a `links` key:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+
+  has_many :comments, embed: ids, embed_namespace: :links
+end
+```
+
+The JSON will look like this:
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "body": "A body!",
+    "links": {
+      "comments": [ 1, 2, 3 ]
+    }
+  }
+}
+```
+
 Alternatively, you can choose to embed only the ids or the associated objects per association:
 
 ```ruby
@@ -586,6 +613,42 @@ this:
     { "id": 2, "name": "whiny" },
     { "id": 3, "name": "happy" }
   ]
+}
+```
+
+If you would like to namespace association JSON underneath a certain key in
+the root document (say, `linked`), you can specify an `embed_in_root_key`:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  embed: ids, include: true, embed_in_root_key: :linked
+
+  attributes: :id, :title, :body
+  has_many :comments, :tags
+end
+```
+
+The above would yield the following JSON document:
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "body": "A body!",
+    "comment_ids": [ 1, 2 ]
+  },
+  "linked": {
+    "comments": [
+      { "id": 1, "body": "what a dumb post", "tag_ids": [ 1, 2 ] },
+      { "id": 2, "body": "i liked it", "tag_ids": [ 1, 3 ] },
+    ],
+    "tags": [
+      { "id": 1, "name": "short" },
+      { "id": 2, "name": "whiny" },
+      { "id": 3, "name": "happy" }
+    ]
+  }
 }
 ```
 
