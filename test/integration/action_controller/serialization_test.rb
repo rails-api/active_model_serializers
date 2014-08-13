@@ -210,6 +210,43 @@ module ActionController
       end
     end
 
+    class LowerCamelWoRootSerializerTest < ActionController::TestCase
+      class WebLogController < ActionController::Base
+        def render_without_root
+          render json: WebLog.new({name: 'Name 1', display_name: 'Display Name 1'}), 
+                 root: false, 
+                 serializer: WebLogLowerCamelSerializer
+        end
+      end
+
+      tests WebLogController
+
+      def test_render_without_root
+        get :render_without_root
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"name":"Name 1","displayName":"Display Name 1"}', @response.body
+      end
+    end
+
+    class LowerCamelArrayWoRootSerializerTest < ActionController::TestCase
+      class WebLogController < ActionController::Base
+        def render_array_without_root
+          render json: [WebLog.new({name: 'Name 1', display_name: 'Display Name 1'}), 
+                        WebLog.new({name: 'Name 2', display_name: 'Display Name 2'})], 
+                 root: false, 
+                 each_serializer: WebLogLowerCamelSerializer
+        end
+      end
+
+      tests WebLogController
+
+      def test_render_array_without_root
+        get :render_array_without_root
+        assert_equal 'application/json', @response.content_type
+        assert_equal '[{"name":"Name 1","displayName":"Display Name 1"},{"name":"Name 2","displayName":"Display Name 2"}]', @response.body
+      end
+    end
+
     class ArrayEmbedingSerializerTest < ActionController::TestCase
       def setup
         super
