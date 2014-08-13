@@ -126,7 +126,7 @@ end
         root
       end
 
-      key_format == :lower_camel ? key.camelize(:lower) : key
+      key_format == :lower_camel && key.present? ? key.camelize(:lower) : key
     end
 
     def attributes
