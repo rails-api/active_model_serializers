@@ -8,8 +8,10 @@ begin
   require 'action_controller'
   require 'action_controller/serialization'
 
-  ActiveSupport.on_load(:action_controller) do
-    include ::ActionController::Serialization
+  ActiveSupport.on_load(:after_initialize) do
+    if ::ActionController::Serialization.enabled
+      ActionController::Base.send(:include, ::ActionController::Serialization)
+    end
   end
 rescue LoadError
   # rails not installed, continuing
