@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class KeyFormatTest < Minitest::Test
+    class KeyFormatTest < TestCase
       def test_lower_camel_format_option
         object     = WebLog.new({ name: 'Name 1', display_name: 'Display Name 1'})
         serializer = WebLogSerializer.new(object, key_format: :lower_camel)

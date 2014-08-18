@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class HasManyTest < Minitest::Test
+    class HasManyTest < TestCase
       def setup
         @association = PostSerializer._associations[:comments]
         @old_association = @association.dup

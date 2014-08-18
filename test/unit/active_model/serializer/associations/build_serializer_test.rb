@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Association
-      class BuildSerializerTest < Minitest::Test
+      class BuildSerializerTest < TestCase
         def setup
           @association = Association::HasOne.new('post', serializer: PostSerializer)
           @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })

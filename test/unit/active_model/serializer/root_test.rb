@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class RootAsOptionTest < Minitest::Test
+    class RootAsOptionTest < TestCase
       def setup
         @old_root = ProfileSerializer._root
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
@@ -70,7 +70,7 @@ module ActiveModel
       end
     end
 
-    class RootInSerializerTest < Minitest::Test
+    class RootInSerializerTest < TestCase
       def setup
         @old_root = ProfileSerializer._root
         ProfileSerializer._root = :in_serializer
