@@ -25,7 +25,8 @@ module ActiveModel
 
     def json_key
       key = root.nil? ? @resource_name : root
-      key_format == :lower_camel ? key.camelize(:lower) : key
+
+      key_format == :lower_camel && key.present? ? key.camelize(:lower) : key
     end
 
     def serializer_for(item)
