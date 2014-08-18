@@ -18,7 +18,7 @@ module TestHelper
   end
 
   ActionController::Base.send :include, Routes.url_helpers
-  ActiveModel::Serializer.send :include, Routes.url_helpers
+  ActionController::Base.send :include, ActionController::Serialization
 end
 
 ActiveSupport::TestCase.class_eval do
