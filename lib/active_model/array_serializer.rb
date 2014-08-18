@@ -19,6 +19,8 @@ module ActiveModel
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
+      @only            = options[:only] ? Array(options[:only]) : nil
+      @except          = options[:except] ? Array(options[:except]) : nil
       @key_format      = options[:key_format] || options[:each_serializer].try(:key_format)
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
@@ -30,7 +32,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item) || DefaultSerializer
-      serializer_class.new(item, scope: scope, key_format: key_format)
+      serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except)
     end
 
     def serializable_object
