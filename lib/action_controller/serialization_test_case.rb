@@ -27,14 +27,17 @@ module ActionController
 
     # Asserts that the request was rendered with the appropriate serializers.
     #
-    #   # assert that the "PostSerializer" serializer was rendered
-    #   assert_serializer "PostSerializer"
+    #  # assert that the "PostSerializer" serializer was rendered
+    #  assert_serializer "PostSerializer"
     #
-    #   # assert that the exact serializer "Post" was rendered
-    #   assert_serializer %r{\APost.+\Z}
+    #  # assert that the "PostSerializer" serializer was rendered
+    #  assert_serializer :post_serializer
     #
-    #   # assert that no serializer was rendered
-    #   assert_serializer nil
+    #  # assert that the rendered serializer starts with "Post"
+    #  assert_serializer %r{\APost.+\Z}
+    #
+    #  # assert that no serializer was rendered
+    #  assert_serializer nil
     #
     def assert_serializer(options = {}, message = nil)
       # Force body to be read in case the template is being streamed.
