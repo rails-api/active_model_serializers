@@ -20,10 +20,10 @@ module ActiveModel
 
     class CustomArraySerializerSupport < Minitest::Test
       def setup
-        Object.const_set(:ArraySerializer, Class.new{ def initialize(*); end })
+        Object.const_set(:ArraySerializer, Class.new)
 
         array = [1, 2, 3]
-        @serializer = Serializer.serializer_for(array).new(array)
+        @serializer_class = Serializer.serializer_for(array)
       end
 
       def teardown
@@ -31,7 +31,7 @@ module ActiveModel
       end
 
       def test_serializer_for_array_returns_appropriate_type
-        assert_kind_of ::ArraySerializer, @serializer
+        assert_equal ::ArraySerializer, @serializer_class
       end
     end
 
