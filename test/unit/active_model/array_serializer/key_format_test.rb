@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class ArraySerializer
-    class KeyFormatTest < Minitest::Test
+    class KeyFormatTest < TestCase
       def test_array_serializer_pass_options_to_items_serializers
         array = [WebLog.new({ name: 'Name 1', display_name: 'Display Name 1'}),
                  WebLog.new({ name: 'Name 2', display_name: 'Display Name 2'})]

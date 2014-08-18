@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class ArraySerializer
-    class BasicObjectsSerializationTest < Minitest::Test
+    class BasicObjectsSerializationTest < TestCase
       def setup
         array = [1, 2, 3]
         @serializer = Serializer.serializer_for(array).new(array)
@@ -18,7 +18,7 @@ module ActiveModel
       end
     end
 
-    class ModelSerializationTest < Minitest::Test
+    class ModelSerializationTest < TestCase
       def test_array_serializer_serializes_models
         array = [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
                  Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]

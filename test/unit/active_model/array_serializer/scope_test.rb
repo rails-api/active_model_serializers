@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class ArraySerializer
-    class ScopeTest < Minitest::Test
+    class ScopeTest < TestCase
       def test_array_serializer_pass_options_to_items_serializers
         array = [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
                  Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]

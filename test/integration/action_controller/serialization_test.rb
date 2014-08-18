@@ -2,7 +2,13 @@ require 'test_helper'
 
 module ActionController
   module Serialization
-    class ImplicitSerializerTest < ActionController::TestCase
+    class SerializerTestCase < ActionController::TestCase
+      setup do
+        @routes = TestHelper::Routes
+      end
+    end
+
+    class ImplicitSerializerTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_using_implicit_serializer
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
@@ -18,7 +24,7 @@ module ActionController
       end
     end
 
-    class ImplicitSerializerScopeTest < ActionController::TestCase
+    class ImplicitSerializerScopeTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_using_implicit_serializer_and_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
@@ -40,7 +46,7 @@ module ActionController
       end
     end
 
-    class DefaultOptionsForSerializerScopeTest < ActionController::TestCase
+    class DefaultOptionsForSerializerScopeTest < SerializerTestCase
       class MyController < ActionController::Base
         def default_serializer_options
           { scope: current_admin }
@@ -70,7 +76,7 @@ module ActionController
       end
     end
 
-    class ExplicitSerializerScopeTest < ActionController::TestCase
+    class ExplicitSerializerScopeTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_using_implicit_serializer_and_explicit_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }), scope: current_admin
@@ -96,7 +102,7 @@ module ActionController
       end
     end
 
-    class OverridingSerializationScopeTest < ActionController::TestCase
+    class OverridingSerializationScopeTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_overriding_serialization_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
@@ -122,7 +128,7 @@ module ActionController
       end
     end
 
-    class CallingSerializationScopeTest < ActionController::TestCase
+    class CallingSerializationScopeTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_calling_serialization_scope
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
@@ -146,7 +152,7 @@ module ActionController
       end
     end
 
-    class JSONDumpSerializerTest < ActionController::TestCase
+    class JSONDumpSerializerTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_using_json_dump
           render json: JSON.dump(hello: 'world')
@@ -162,7 +168,7 @@ module ActionController
       end
     end
 
-    class RailsSerializerTest < ActionController::TestCase
+    class RailsSerializerTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_using_rails_behavior
           render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })], serializer: false
@@ -178,7 +184,7 @@ module ActionController
       end
     end
 
-    class ArraySerializerTest < ActionController::TestCase
+    class ArraySerializerTest < SerializerTestCase
       class MyController < ActionController::Base
         def render_array
           render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })]
@@ -194,7 +200,7 @@ module ActionController
       end
     end
 
-    class LowerCamelArraySerializerTest < ActionController::TestCase
+    class LowerCamelArraySerializerTest < SerializerTestCase
       class WebLogController < ActionController::Base
         def render_array
           render json: [WebLog.new({name: 'Name 1', display_name: 'Display Name 1'}), WebLog.new({name: 'Name 2', display_name: 'Display Name 2'})], each_serializer: WebLogLowerCamelSerializer
@@ -210,7 +216,7 @@ module ActionController
       end
     end
 
-    class ArrayEmbedingSerializerTest < ActionController::TestCase
+    class ArrayEmbedingSerializerTest < SerializerTestCase
       def setup
         super
         @association = UserSerializer._associations[:profile]
