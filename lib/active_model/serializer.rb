@@ -58,7 +58,11 @@ end
       if RUBY_VERSION >= '2.0'
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
-            ArraySerializer
+            if Object.constants.include?(:ArraySerializer)
+              ::ArraySerializer
+            else
+              ArraySerializer
+            end
           else
             begin
               Object.const_get "#{resource.class.name}Serializer"
@@ -70,7 +74,11 @@ end
       else
         def serializer_for(resource)
           if resource.respond_to?(:to_ary)
-            ArraySerializer
+            if Object.constants.include?(:ArraySerializer)
+              ::ArraySerializer
+            else
+              ArraySerializer
+            end
           else
             "#{resource.class.name}Serializer".safe_constantize
           end
