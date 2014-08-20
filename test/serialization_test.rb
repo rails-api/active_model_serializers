@@ -68,12 +68,20 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class HypermediaSerializable
+    def hypermedia_url
+      'hypermedia_url'
+    end
+
     def active_model_serializer
       HypermediaSerializer
     end
   end
 
   class HypermediaSerializer < ActiveModel::Serializer
+    def hypermedia_url
+      object.hypermedia_url
+    end
+
     def as_json(*)
       { :link => hypermedia_url }
     end
@@ -355,7 +363,7 @@ class RenderJsonTest < ActionController::TestCase
 
   def test_render_json_with_links
     get :render_json_with_links
-    assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
+    assert_match '{"link":"hypermedia_url"}', @response.body
   end
 
   def test_render_json_array_with_no_root
