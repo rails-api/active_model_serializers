@@ -15,6 +15,11 @@ module ActionController
 
       tests MyController
 
+      def test_supports_specifying_serializers_with_a_serializer_class
+        get :render_using_serializer
+        assert_serializer ProfileSerializer
+      end
+
       def test_supports_specifying_serializers_with_a_regexp
         get :render_using_serializer
         assert_serializer %r{\AProfile.+\Z}
@@ -43,12 +48,13 @@ module ActionController
         assert_match 'expecting <"PostSerializer"> but rendering with <["ProfileSerializer"]>', e.message
       end
 
+
       def test_raises_argument_error_when_asserting_with_invalid_object
         get :render_using_serializer
         e = assert_raise ArgumentError do
-          assert_serializer OpenStruct.new
+          assert_serializer Hash
         end
-        assert_match 'assert_serializer only accepts a String, Symbol, Regexp, or nil', e.message
+        assert_match 'assert_serializer only accepts a String, Symbol, Regexp, ActiveModel::Serializer, or nil', e.message
       end
     end
   end

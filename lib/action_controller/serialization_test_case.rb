@@ -30,6 +30,9 @@ module ActionController
     #  # assert that the "PostSerializer" serializer was rendered
     #  assert_serializer "PostSerializer"
     #
+    #  # assert that the instance of PostSerializer was rendered
+    #  assert_serializer PostSerializer
+    #
     #  # assert that the "PostSerializer" serializer was rendered
     #  assert_serializer :post_serializer
     #
@@ -39,37 +42,41 @@ module ActionController
     #  # assert that no serializer was rendered
     #  assert_serializer nil
     #
+    #
     def assert_serializer(options = {}, message = nil)
       # Force body to be read in case the template is being streamed.
       response.body
 
-      case options
-      when NilClass, Regexp, String, Symbol
-        rendered = @serializers
-        msg = message || "expecting <#{options.inspect}> but rendering with <#{rendered.keys}>"
+      rendered = @serializers
+      msg = message || "expecting <#{options.inspect}> but rendering with <#{rendered.keys}>"
 
-        matches_serializer =
-          case options
-          when Symbol
-            options = options.to_s.camelize
-            rendered.any? do |serializer, count|
-              serializer == options
-            end
-          when String
-            !options.empty? && rendered.any? do |serializer, count|
-              serializer == options
-            end
-          when Regexp
-            rendered.any? do |serializer, count|
-              serializer.match(options)
-            end
-          when NilClass
-            rendered.blank?
-          end
-        assert matches_serializer, msg
-      else
-        raise ArgumentError, "assert_serializer only accepts a String, Symbol, Regexp, or nil"
-      end
+      matches_serializer = case options
+                           when lambda { |options| options.kind_of?(Class) && options < ActiveModel::Serializer }
+                             rendered.any? do |serializer, count|
+                               options.name == serializer
+                             end
+                           when NilClass, Regexp, String, Symbol
+                             case options
+                             when Symbol
+                               options = options.to_s.camelize
+                               rendered.any? do |serializer, count|
+                                 serializer == options
+                               end
+                             when String
+                               !options.empty? && rendered.any? do |serializer, count|
+                                 serializer == options
+                               end
+                             when Regexp
+                               rendered.any? do |serializer, count|
+                                 serializer.match(options)
+                               end
+                             when NilClass
+                               rendered.blank?
+                             end
+                           else
+                             raise ArgumentError, "assert_serializer only accepts a String, Symbol, Regexp, ActiveModel::Serializer, or nil"
+                           end
+      assert matches_serializer, msg
     end
   end
 end
