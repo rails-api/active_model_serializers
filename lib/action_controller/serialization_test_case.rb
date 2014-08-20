@@ -55,24 +55,21 @@ module ActionController
                              rendered.any? do |serializer, count|
                                options.name == serializer
                              end
-                           when NilClass, Regexp, String, Symbol
-                             case options
-                             when Symbol
-                               options = options.to_s.camelize
-                               rendered.any? do |serializer, count|
-                                 serializer == options
-                               end
-                             when String
-                               !options.empty? && rendered.any? do |serializer, count|
-                                 serializer == options
-                               end
-                             when Regexp
-                               rendered.any? do |serializer, count|
-                                 serializer.match(options)
-                               end
-                             when NilClass
-                               rendered.blank?
+                           when Symbol
+                             options = options.to_s.camelize
+                             rendered.any? do |serializer, count|
+                               serializer == options
                              end
+                           when String
+                             !options.empty? && rendered.any? do |serializer, count|
+                               serializer == options
+                             end
+                           when Regexp
+                             rendered.any? do |serializer, count|
+                               serializer.match(options)
+                             end
+                           when NilClass
+                             rendered.blank?
                            else
                              raise ArgumentError, "assert_serializer only accepts a String, Symbol, Regexp, ActiveModel::Serializer, or nil"
                            end
