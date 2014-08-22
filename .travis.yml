@@ -1,4 +1,5 @@
 language: ruby
+
 rvm:
   - 1.9.3
   - 2.0.0
@@ -6,11 +7,15 @@ rvm:
   - ruby-head
   - jruby-19mode
   - rbx-2
+
+sudo: false
+
 env:
   - "RAILS_VERSION=3.2.17"
   - "RAILS_VERSION=4.0.3"
   - "RAILS_VERSION=4.1.0"
   - "RAILS_VERSION=master"
+
 matrix:
   allow_failures:
     - rvm: ruby-head
