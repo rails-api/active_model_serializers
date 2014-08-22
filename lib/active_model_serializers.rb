@@ -15,6 +15,9 @@ begin
       ActionController::TestCase.send(:include, ::ActionController::SerializationAssertions)
     end
   end
+  ActiveSupport.on_load(:abstract_controller) do
+    include ::ActionController::Serialization
+  end
 rescue LoadError
   # rails not installed, continuing
 end
