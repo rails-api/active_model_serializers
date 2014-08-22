@@ -6,9 +6,28 @@ ActiveModel::Serializers brings convention over configuration to your JSON gener
 
 AMS does this through two components: **serializers** and **adapters**. Serializers describe which attributes and relationships should be serialized. Adapters describe how attributes and relationships should be serialized.
 
+# MAINTENANCE, PLEASE READ
+
+This is the master branch of AMS. It will become the `0.10.0` release when it's
+ready, but it's not. You probably don't want to use it yet.
+
+There are two released versions of AMS that you may want to use: `0.9.x` and
+`0.8.x`. `9` was recently `master`, so if you were using master, you probably want
+to use it. `8` was the version that was on RubyGems, so if you were using that,
+that's probably what you want.
+
+`0.10.x` will be based on the `0.8.0` code, but with a more flexible
+architecture. We'd love your help.
+
+For more, please see [the rails-api-core mailing list](https://groups.google.com/d/msg/rails-api-core/8zu1xjIOTAM/siZ0HySKgaAJ).
+
+Thanks!
+
 ## Example
 
-Given two models, a `Post(title: string, body: text)` and a `Comment(name:string, body:text, post_id:integer)`, you will have two serializers:
+Given two models, a `Post(title: string, body: text)` and a
+`Comment(name:string, body:text, post_id:integer)`, you will have two
+serializers:
 
 ```
 class PostSerializer < ActiveModel::Serializer
@@ -32,13 +51,17 @@ class CommentSerializer < ActiveModel::Serializer
 end
 ```
 
-Generally speaking, you as a user of AMS will write (or generate) these serializer classes. By default, they will use the JsonApiAdapter, implemented by AMS. If you want to use a different adapter, such as a HalAdapter, you can change this in an initializer:
+Generally speaking, you as a user of AMS will write (or generate) these
+serializer classes. By default, they will use the JsonApiAdapter, implemented
+by AMS. If you want to use a different adapter, such as a HalAdapter, you can
+change this in an initializer:
 
 ```
 ActiveModel::Serializer.default_adapter = ActiveModel::Serializer::Adapter::HalAdapter
 ```
 
-You won't need to implement an adapter unless you wish to use a new format or media type with AMS.
+You won't need to implement an adapter unless you wish to use a new format or
+media type with AMS.
 
 In your controllers, when you use `render :json`, Rails will now first search
 for a serializer for the object and use it if available.
@@ -83,8 +106,8 @@ the serializer generator:
 $ rails g serializer post
 ```
 
-The generated seralizer will contain basic `attributes` and `has_many`/`belongs_to` declarations, based on
-the model. For example:
+The generated seralizer will contain basic `attributes` and
+`has_many`/`belongs_to` declarations, based on the model. For example:
 
 ```
 class PostSerializer < ActiveModel::Serializer
@@ -110,10 +133,22 @@ end
 
 The attribute names are a **whitelist** of attributes to be serialized. 
  
-The `has_many` and `belongs_to` declarations describe relationships between resources. By default, when you serialize a `Post`, you will
+The `has_many` and `belongs_to` declarations describe relationships between
+resources. By default, when you serialize a `Post`, you will
 get its `Comment`s as well.
 
-The `url` declaration describes which named routes to use while generating URLs for your JSON. Not every adapter will require URLs.
+The `url` declaration describes which named routes to use while generating URLs
+for your JSON. Not every adapter will require URLs.
+
+## Getting Help
+
+If you find a bug, please report an
+[Issue](https://github.com/rails-api/active_model_serializers/issues/new).
+
+If you have a question, please [post to Stack
+Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
+
+Thanks!
  
 ## Contributing 
  
