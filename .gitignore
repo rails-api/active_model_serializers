@@ -17,3 +17,5 @@ test/version_tmp
 tmp
 *.swp
 .ruby-version
+.ruby-gemset
+.idea

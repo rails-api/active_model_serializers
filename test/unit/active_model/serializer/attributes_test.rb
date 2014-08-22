@@ -13,6 +13,22 @@ module ActiveModel
                      @profile_serializer.class._attributes)
       end
 
+      def test_all_attributes_definition
+        initial_attributes = { name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }
+        @profile_with_attributes = ProfileWithAttributes.new(initial_attributes)
+        @profile_all_attributes_serializer = ProfileAllAttributesSerializer.new(@profile_with_attributes)
+        serialized_attributes = @profile_all_attributes_serializer.as_json
+        assert_equal({"profile_all_attributes" => initial_attributes}, serialized_attributes)
+      end
+
+      def test_no_attributes_definition
+        initial_attributes = { name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }
+        @profile_with_attributes = ProfileWithAttributes.new(initial_attributes)
+        @profile_no_attributes_serializer = ProfileNoAttributesSerializer.new(@profile_with_attributes)
+        serialized_attributes = @profile_no_attributes_serializer.as_json
+        assert_equal({"profile_no_attributes" => {}}, serialized_attributes)
+      end
+
       def test_attributes_serialization_using_serializable_hash
         assert_equal({
           name: 'Name 1', description: 'Description 1'

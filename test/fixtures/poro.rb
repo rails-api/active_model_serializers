@@ -25,6 +25,11 @@ end
 class Profile < Model
 end
 
+# Allows us to test ActiveRecord::Base-like attributes capability
+class ProfileWithAttributes < Profile
+  attr_accessor :attributes
+end
+
 class Post < Model
   def comments
     @comments ||= [Comment.new(content: 'C1'),
@@ -54,6 +59,13 @@ class ProfileSerializer < ActiveModel::Serializer
   end
 
   attributes :name, :description
+end
+
+class ProfileAllAttributesSerializer < ActiveModel::Serializer
+  attributes
+end
+
+class ProfileNoAttributesSerializer < ActiveModel::Serializer
 end
 
 class PostSerializer < ActiveModel::Serializer

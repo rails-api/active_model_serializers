@@ -85,7 +85,7 @@ end
         end
       end
 
-      attr_accessor :_root, :_attributes, :_associations
+      attr_accessor :_root, :_attributes, :_associations, :_serialize_all_attributes
       alias root  _root=
       alias root= _root=
 
@@ -95,6 +95,10 @@ end
 
       def attributes(*attrs)
         @_attributes.concat attrs
+
+        if attrs.empty?
+          @_serialize_all_attributes = true
+        end
 
         attrs.each do |attr|
           define_method attr do
@@ -149,10 +153,11 @@ end
       key_format == :lower_camel && key.present? ? key.camelize(:lower) : key
     end
 
-    def attributes
-      filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
+    def attributes(object=nil)
+      attribute_hash = filter(self.class._attributes.dup).each_with_object({}) do |name, hash|
         hash[name] = send(name)
       end
+      self.class._serialize_all_attributes && object && object.respond_to?(:attributes) ? object.attributes : attribute_hash
     end
 
     def associations
@@ -256,7 +261,7 @@ end
 
     def serializable_object(options={})
       return @wrap_in_array ? [] : nil if @object.nil?
-      hash = attributes
+      hash = attributes(@object)
       hash.merge! associations
       hash = convert_keys(hash) if key_format.present?
       @wrap_in_array ? [hash] : hash
