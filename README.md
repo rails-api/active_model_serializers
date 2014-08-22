@@ -68,9 +68,11 @@ $ rails g serializer post
 
 ### Support for POROs
 
-Currently `ActiveModel::Serializers` expects objects to implement
-read\_attribute\_for\_serialization. That's all you need to do to have
-your POROs supported. 
+The PORO should include ActiveModel::SerializerSupport. That's all you need to
+do to have your POROs supported.
+
+For Rails versions before Rails 4  ActiveModel::Serializers expects objects to
+implement `read_attribute_for_serialization`.
 
 # render :json
 
