@@ -1,15 +1,7 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png)](https://travis-ci.org/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png?branch=0-9-stable)](https://travis-ci.org/rails-api/active_model_serializers) 
 [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) 
 
 # ActiveModel::Serializers
-
-## Master - 0.9.0
-
-**master is under development, there are some incompatible changes with the current stable release.**
-
-Since `0.8` there is no `options` accessor in the serializers. Some issues and pull-requests are attemps to bring back the ability to use Rails url helpers in the serializers, but nothing is really settled yet.
-
-If you want to read the stable documentation visit [0.8 README](https://github.com/rails-api/active_model_serializers/blob/0-8-stable/README.md)
 
 ## Purpose
 
