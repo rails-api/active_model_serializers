@@ -34,6 +34,22 @@ ActiveRecord::Schema.define do
   create_table :ar_comments_tags, force: true do |t|
     t.references :ar_comment, :ar_tag, index: true
   end
+
+  create_table :ar_tasks, force: true do |t|
+    t.string :name
+  end
+
+  create_table :ar_lists, force: true do |t|
+    t.string :name
+    t.string :listable_type
+    t.string :listable_id
+  end
+
+  create_table :ar_items, force: true do |t|
+    t.string :description
+    t.belongs_to :ar_list, index: true
+  end
+
 end
 
 class ARPost < ActiveRecord::Base
@@ -52,6 +68,20 @@ end
 
 class ARSection < ActiveRecord::Base
 end
+
+class ARTask < ActiveRecord::Base
+  has_one :ar_list, as: 'listable', class_name: 'ARList'
+end
+
+class ARList < ActiveRecord::Base
+  belongs_to :listable, polymorphic: true
+  has_many :ar_items, class_name: 'ARItem'
+end
+
+class ARItem < ActiveRecord::Base
+  belongs_to :ar_list, class_name: 'ARList'
+end
+
 
 class ARPostSerializer < ActiveModel::Serializer
   attributes :title, :body
@@ -74,6 +104,22 @@ class ARSectionSerializer < ActiveModel::Serializer
   attributes 'name'
 end
 
+
+class ARItemSerializer < ActiveModel::Serializer
+  attributes :description
+end
+
+class ARListSerializer < ActiveModel::Serializer
+  attributes :name
+  has_many :ar_items, serializer: ARItemSerializer
+end
+
+class ARTaskSerializer < ActiveModel::Serializer
+  attributes :name
+  has_one  :ar_list, serializer: ARListSerializer
+end
+
+
 ARPost.create(title: 'New post',
               body:  'A body!!!',
               ar_section: ARSection.create(name: 'ruby')).tap do |post|
@@ -90,3 +136,14 @@ ARPost.create(title: 'New post',
     comment.ar_tags.concat happy_tag, short_tag
   end
 end
+
+
+ARList.create(
+  name: 'list for task',
+  listable: ARTask.create(name: 'task')
+).tap do |list|
+  list.ar_items.create(description: 'task list item')
+end
+
+
+

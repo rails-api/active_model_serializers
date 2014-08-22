@@ -6,6 +6,9 @@ module ActiveModel
     class ActiveRecordTest < Minitest::Test
       def setup
         @post = ARPost.first
+
+        @task = ARTask.first
+
       end
 
       def test_serialization_embedding_objects
@@ -56,6 +59,22 @@ module ActiveModel
             }, post_serializer.as_json)
           end
         end
+      end
+
+      def test_serialization_polymorphic_has_one_wrapped_in_array
+        task_serializer = ARTaskSerializer.new(@task)
+
+        assert_equal({
+          'ar_task' => {
+            name: 'task',
+            ar_list: [
+              { name: 'list for task', ar_items: [
+                { description: 'task list item'}
+              ]}
+            ]       
+          }
+        }, task_serializer.as_json)
+
       end
 
       private
