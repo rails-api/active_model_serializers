@@ -9,12 +9,29 @@ module ActiveModel
       end
 
       def test_serializer_for_array_returns_appropriate_type
-        assert_kind_of ArraySerializer, @serializer
+        assert_kind_of ActiveModel::ArraySerializer, @serializer
       end
 
       def test_array_serializer_serializes_simple_objects
         assert_equal [1, 2, 3], @serializer.serializable_array
         assert_equal [1, 2, 3], @serializer.as_json
+      end
+    end
+
+    class CustomArraySerializerSupport < Minitest::Test
+      def setup
+        Object.const_set(:ArraySerializer, Class.new)
+
+        array = [1, 2, 3]
+        @serializer_class = Serializer.serializer_for(array)
+      end
+
+      def teardown
+        Object.send(:remove_const, :ArraySerializer)
+      end
+
+      def test_serializer_for_array_returns_appropriate_type
+        assert_equal ::ArraySerializer, @serializer_class
       end
     end
 
