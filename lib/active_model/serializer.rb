@@ -200,12 +200,14 @@ end
             association_serializer = build_serializer(association)
             hash.merge!(association_serializer.embedded_in_root_associations) {|key, oldval, newval| [newval, oldval].flatten }
 
-            serialized_data = association_serializer.serializable_object
-            key = association.root_key
-            if hash.has_key?(key)
-              hash[key].concat(serialized_data).uniq!
-            else
-              hash[key] = serialized_data
+            unless association.embed_objects?
+              serialized_data = association_serializer.serializable_object
+              key = association.root_key
+              if hash.has_key?(key)
+                hash[key].concat(serialized_data).uniq!
+              else
+                hash[key] = serialized_data
+              end
             end
           end
         end
