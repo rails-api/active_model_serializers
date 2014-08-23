@@ -131,6 +131,20 @@ module ActiveModel
         }, @user_serializer.as_json)
       end
 
+      def test_associations_embedding_ids_including_objects_serialization_when_invoked_from_parent_serializer
+        @association.embed = :ids
+        @association.embed_in_root = true
+
+        user_info = UserInfo.new
+        user_info.instance_variable_set(:@user, @user)
+        user_info_serializer = UserInfoSerializer.new(user_info)
+
+        assert_equal({
+          'user_info' => { user: { name: 'Name 1', email: 'mail@server.com', 'profile_id' => @user.profile.object_id } },
+          'profiles' => [{ name: 'N1', description: 'D1' }]
+        }, user_info_serializer.as_json)
+      end
+
       def test_associations_embedding_ids_using_a_given_serializer
         @association.embed = :ids
         @association.embed_in_root = true
