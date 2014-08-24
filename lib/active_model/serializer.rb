@@ -1,6 +1,6 @@
 require 'active_model/array_serializer'
 require 'active_model/serializable'
-require 'active_model/serializer/associations'
+require 'active_model/serializer/association'
 require 'active_model/serializer/config'
 
 require 'thread'
