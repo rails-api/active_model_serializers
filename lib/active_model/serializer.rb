@@ -56,7 +56,7 @@ end
       attr_reader :key_format
 
       if RUBY_VERSION >= '2.0'
-        def serializer_for(resource)
+        def serializer_for(resource, options = {})
           if resource.respond_to?(:to_ary)
             if Object.constants.include?(:ArraySerializer)
               ::ArraySerializer
@@ -65,14 +65,14 @@ end
             end
           else
             begin
-              Object.const_get "#{resource.class.name}Serializer"
+              Object.const_get build_serializer_class(resource, options)
             rescue NameError
               nil
             end
           end
         end
       else
-        def serializer_for(resource)
+        def serializer_for(resource, options = {})
           if resource.respond_to?(:to_ary)
             if Object.constants.include?(:ArraySerializer)
               ::ArraySerializer
@@ -80,7 +80,7 @@ end
               ArraySerializer
             end
           else
-            "#{resource.class.name}Serializer".safe_constantize
+            build_serializer_class(resource, options).safe_constantize
           end
         end
       end
@@ -112,6 +112,14 @@ end
       end
 
       private
+
+      def build_serializer_class(resource, options)
+        "".tap do |klass_name|
+          klass_name << "#{options[:namespace]}::" if options[:namespace]
+          klass_name << prefix.to_s.classify       if options[:prefix]
+          klass_name << "#{resource.class.name}Serializer"
+        end
+      end
 
       def associate(klass, *attrs)
         options = attrs.extract_options!
@@ -215,7 +223,16 @@ end
 
     def build_serializer(association)
       object = send(association.name)
-      association.build_serializer(object, scope: scope)
+      association.build_serializer(object, association_options_for_serializer(association))
+    end
+
+    def association_options_for_serializer(association)
+      prefix = association.options[:prefix]
+
+      { scope: scope }.tap do |opts|
+        opts[:namespace] = namespace if namespace
+        opts[:prefix]    = prefix    if prefix
+      end
     end
 
     def serialize(association)

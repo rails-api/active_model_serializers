@@ -20,11 +20,27 @@ module ActiveModel
       end
     end
 
+    if RUBY_VERSION >= '2.0'
+      def namespace
+        get_namespace && Object.const_get(get_namespace)
+      end
+    else
+      def namespace
+        get_namespace && get_namespace.safe_constantize
+      end
+    end
+
     def embedded_in_root_associations
       {}
     end
 
     private
+
+    def get_namespace
+      modules = self.class.name.split('::')
+      modules[0..-2].join('::') if modules.size > 1
+    end
+
     def instrument(action, &block)
       payload = instrumentation_keys.inject({ serializer: self.class.name }) do |payload, key|
         payload[:payload] = self.instance_variable_get(:"@#{key}")
