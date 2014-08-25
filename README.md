@@ -29,10 +29,10 @@ Given two models, a `Post(title: string, body: text)` and a
 `Comment(name:string, body:text, post_id:integer)`, you will have two
 serializers:
 
-```
+```ruby
 class PostSerializer < ActiveModel::Serializer
   attribute :title, :body
-  
+ 
   has_many :comments
 
   url :post
@@ -41,12 +41,12 @@ end
 
 and
 
-```
+```ruby
 class CommentSerializer < ActiveModel::Serializer
   attribute :name, :body
-  
+
   belongs_to :post
-  
+
   url [:post, :comment]
 end
 ```
@@ -56,7 +56,7 @@ serializer classes. By default, they will use the JsonApiAdapter, implemented
 by AMS. If you want to use a different adapter, such as a HalAdapter, you can
 change this in an initializer:
 
-```
+```ruby
 ActiveModel::Serializer.default_adapter = ActiveModel::Serializer::Adapter::HalAdapter
 ```
 
@@ -82,12 +82,16 @@ it exists, use it to serialize the `Post`.
 ## Installation 
  
 Add this line to your application's Gemfile: 
- 
-    gem 'active_model_serializers' 
+
+``` 
+gem 'active_model_serializers' 
+```
  
 And then execute: 
- 
-    $ bundle 
+
+``` 
+$ bundle 
+```
 
 ## Creating a Serializer
 
@@ -109,10 +113,10 @@ $ rails g serializer post
 The generated seralizer will contain basic `attributes` and
 `has_many`/`belongs_to` declarations, based on the model. For example:
 
-```
+```ruby
 class PostSerializer < ActiveModel::Serializer
   attribute :title, :body
-  
+
   has_many :comments
 
   url :post
@@ -121,12 +125,12 @@ end
 
 and
 
-```
+```ruby
 class CommentSerializer < ActiveModel::Serializer
   attribute :name, :body
-  
+
   belongs_to :post_id
-  
+
   url [:post, :comment]
 end
 ```
