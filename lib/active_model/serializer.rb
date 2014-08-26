@@ -1,5 +1,10 @@
 module ActiveModel
   class Serializer
+    extend ActiveSupport::Autoload
+    autoload :Configuration
+    autoload :ArraySerializer
+    include Configuration
+
     class << self
       attr_accessor :_attributes
       attr_accessor :_associations
@@ -56,24 +61,14 @@ module ActiveModel
       end
     end
 
-    if RUBY_VERSION >= '2.0'
-      def self.serializer_for(resource)
-        if resource.respond_to?(:to_ary)
-          ArraySerializer
-        else
-          begin
-            Object.const_get "#{resource.class.name}Serializer"
-          rescue NameError
-            nil
-          end
-        end
-      end
-    else
-      def self.serializer_for(resource)
-        if resource.respond_to?(:to_ary)
-          ArraySerializer
-        else
-          "#{resource.class.name}Serializer".safe_constantize
+    def self.serializer_for(resource)
+      if resource.respond_to?(:to_ary)
+        config.array_serializer
+      else
+        serializer_name = "#{resource.class.name}Serializer"
+
+        if Object.const_defined?(serializer_name)
+          Object.const_get(serializer_name)
         end
       end
     end
