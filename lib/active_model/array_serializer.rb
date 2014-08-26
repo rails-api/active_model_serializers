@@ -39,7 +39,7 @@ module ActiveModel
 
     def serializable_object
       @object.map do |item|
-        serializer_for(item).serializable_object
+        serializer_for(item).serializable_object_with_notification
       end
     end
     alias_method :serializable_array, :serializable_object
