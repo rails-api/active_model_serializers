@@ -130,6 +130,7 @@ end
       @object        = object
       @scope         = options[:scope]
       @root          = options.fetch(:root, self.class._root)
+      @polymorphic   = options.fetch(:polymorphic, false)
       @meta_key      = options[:meta_key] || :meta
       @meta          = options[@meta_key]
       @wrap_in_array = options[:_wrap_in_array]
@@ -138,7 +139,7 @@ end
       @key_format    = options[:key_format]
       @context       = options[:context]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format, :context
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format, :context, :polymorphic
 
     def json_key
       key = if root == true || root.nil?
@@ -225,9 +226,9 @@ end
     def serialize_ids(association)
       associated_data = send(association.name)
       if associated_data.respond_to?(:to_ary)
-        associated_data.map { |elem| elem.read_attribute_for_serialization(association.embed_key) }
+        associated_data.map { |elem| serialize_id(elem, association) }
       else
-        associated_data.read_attribute_for_serialization(association.embed_key) if associated_data
+        serialize_id(associated_data, association) if associated_data
       end
     end
 
@@ -260,9 +261,19 @@ end
       hash = attributes
       hash.merge! associations
       hash = convert_keys(hash) if key_format.present?
+      hash = { :type => type_name(@object), type_name(@object) => hash } if @polymorphic
       @wrap_in_array ? [hash] : hash
     end
     alias_method :serializable_hash, :serializable_object
+
+    def serialize_id(elem, association)
+      id = elem.read_attribute_for_serialization(association.embed_key)
+      association.polymorphic? ? { id: id, type: type_name(elem) } : id
+    end
+
+    def type_name(elem)
+      elem.class.to_s.demodulize.underscore.to_sym
+    end
   end
 
 end

@@ -15,6 +15,7 @@ module ActiveModel
         @name          = name.to_s
         @options       = options
         self.embed     = options.fetch(:embed) { CONFIG.embed }
+        @polymorphic   = options.fetch(:polymorphic, false)
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
         @key_format    = options.fetch(:key_format) { CONFIG.key_format }
         @embed_key     = options[:embed_key] || :id
@@ -27,13 +28,14 @@ module ActiveModel
         @serializer_from_options = serializer.is_a?(String) ? serializer.constantize : serializer
       end
 
-      attr_reader :name, :embed_ids, :embed_objects
+      attr_reader :name, :embed_ids, :embed_objects, :polymorphic
       attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options, :key_format, :embed_in_root_key, :embed_namespace
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root
       alias embed_in_root_key? embed_in_root_key
       alias embed_namespace? embed_namespace
+      alias polymorphic? polymorphic
 
       def embed=(embed)
         @embed_ids     = embed == :id || embed == :ids
