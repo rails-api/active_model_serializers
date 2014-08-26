@@ -1,12 +1,12 @@
-[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png?branch=0-9-stable)](https://travis-ci.org/rails-api/active_model_serializers) 
-[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers) 
+[![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png?branch=0-9-stable)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers)
 
 # ActiveModel::Serializers
 
 ## Purpose
 
-`ActiveModel::Serializers` encapsulates the JSON serialization of objects. 
-Objects that respond to read\_attribute\_for\_serialization 
+`ActiveModel::Serializers` encapsulates the JSON serialization of objects.
+Objects that respond to read\_attribute\_for\_serialization
 (including `ActiveModel` and `ActiveRecord` objects) are supported.
 
 Serializers know about both a model and the `current_user`, so you can
@@ -229,7 +229,7 @@ ActiveModel::Serializer.setup do |config|
   config.key_format = :lower_camel
 end
 
-class BlogLowerCamelSerializer < ActiveModel::Serializer 
+class BlogLowerCamelSerializer < ActiveModel::Serializer
   format_keys :lower_camel
 end
 
@@ -467,9 +467,6 @@ You may also use the `:serializer` option to specify a custom serializer class a
 
 Serializers are only concerned with multiplicity, and not ownership. `belongs_to` ActiveRecord associations can be included using `has_one` in your serializer.
 
-NOTE: polymorphic was removed because was only supported for has\_one
-associations and is in the TODO list of the project.
-
 ## Embedding Associations
 
 By default, associations will be embedded inside the serialized object. So if
@@ -646,8 +643,8 @@ The above would yield the following JSON document:
 }
 ```
 
-When side-loading data, your serializer cannot have the `{ root: false }` option, 
-as this would lead to invalid JSON. If you do not have a root key, the `include` 
+When side-loading data, your serializer cannot have the `{ root: false }` option,
+as this would lead to invalid JSON. If you do not have a root key, the `include`
 instruction will be ignored
 
 You can also specify a different root for the embedded objects than the key
@@ -713,6 +710,78 @@ data looking for information, is extremely useful.
 
 If you are mostly working with the data in simple scenarios and manually making
 Ajax requests, you probably just want to use the default embedded behavior.
+
+
+## Embedding Polymorphic Associations
+
+Because we need both the id and the type to be able to identify a polymorphic associated model, these are serialized in a slightly different format than common ones.
+
+When embedding entire objects:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title
+  has_many :attachments, polymorphic: true
+end
+```
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "attachments": [
+      {
+        "type": "image"
+        "image": {
+          "id": 3
+          "name": "logo"
+          "url": "http://images.com/logo.jpg"
+        }
+      },
+      {
+        "type": "video"
+        "video": {
+          "id": 12
+          "uid": "XCSSMDFWW"
+          "source": "youtube"
+        }
+      }
+    ]
+  }
+}
+```
+
+When embedding ids:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  embed :ids
+
+  attributes :id, :title
+  has_many :attachments, polymorphic: true
+end
+```
+
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "New post",
+    "attachment_ids": [
+      {
+        "type": "image"
+        "id": 12
+      },
+      {
+        "type": "video"
+        "id": 3
+      }
+    ]
+  }
+}
+```
+
 
 ## Customizing Scope
 

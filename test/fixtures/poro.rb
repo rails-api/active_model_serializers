@@ -38,6 +38,25 @@ end
 class WebLog < Model
 end
 
+class Interview < Model
+  def attachment
+    @attachment ||= Image.new(url: 'U1')
+  end
+end
+
+class Mail < Model
+  def attachments
+    @attachments ||= [Image.new(url: 'U1'),
+                      Video.new(html: 'H1')]
+  end
+end
+
+class Image < Model
+end
+
+class Video < Model
+end
+
 ###
 ## Serializers
 ###
@@ -72,4 +91,24 @@ end
 
 class WebLogLowerCamelSerializer < WebLogSerializer
   format_keys :lower_camel
+end
+
+class InterviewSerializer < ActiveModel::Serializer
+  attributes :text
+
+  has_one :attachment, polymorphic: true
+end
+
+class MailSerializer < ActiveModel::Serializer
+  attributes :body
+
+  has_many :attachments, polymorphic: true
+end
+
+class ImageSerializer < ActiveModel::Serializer
+  attributes :url
+end
+
+class VideoSerializer < ActiveModel::Serializer
+  attributes :html
 end
