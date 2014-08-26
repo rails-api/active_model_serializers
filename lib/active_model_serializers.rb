@@ -9,7 +9,7 @@ begin
   require 'action_controller/serialization'
   require 'action_controller/serialization_test_case'
 
-  ActiveSupport.on_load(:after_initialize) do
+  ActiveSupport.on_load(:action_controller) do
     if ::ActionController::Serialization.enabled
       ActionController::Base.send(:include, ::ActionController::Serialization)
       ActionController::TestCase.send(:include, ::ActionController::SerializationAssertions)
