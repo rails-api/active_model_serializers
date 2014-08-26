@@ -9,11 +9,13 @@ module ActiveModel
     class << self
       attr_accessor :_attributes
       attr_accessor :_associations
+      attr_accessor :_urls
     end
 
     def self.inherited(base)
       base._attributes = []
       base._associations = {}
+      base._urls = []
     end
 
     def self.attributes(*attrs)
@@ -60,6 +62,10 @@ module ActiveModel
 
         self._associations[attr] = {type: type, options: options}
       end
+    end
+
+    def self.urls(*attrs)
+      @_urls.concat attrs
     end
 
     def self.serializer_for(resource)
