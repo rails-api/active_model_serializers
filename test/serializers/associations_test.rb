@@ -60,6 +60,25 @@ module ActiveModel
 
         assert_equal({post: {type: :belongs_to, options: {}}}, @comment_serializer.class._associations)
       end
+
+      def test_associations
+        @comment_serializer_class.class_eval do
+          belongs_to :post
+          has_many :comments
+        end
+
+        expected_associations = {
+          post: {
+            type: :belongs_to,
+            options: {}
+          },
+          comments: {
+            type: :has_many,
+            options: {}
+          },
+        }
+        assert_equal(expected_associations, @comment_serializer.associations)
+      end
     end
   end
 end

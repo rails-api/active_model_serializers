@@ -103,5 +103,9 @@ module ActiveModel
         hash[name] = send(name)
       end
     end
+
+    def associations
+      self.class._associations.dup
+    end
   end
 end
