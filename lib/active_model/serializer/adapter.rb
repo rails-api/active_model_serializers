@@ -15,8 +15,8 @@ module ActiveModel
         raise NotImplementedError, 'This is abstract method. Should be implemented at concrete adapter.'
       end
 
-      def to_json(options = {})
-        raise NotImplementedError, 'This is abstract method. Should be implemented at concrete adapter.'
+      def to_json(options={})
+        serializable_hash(options).to_json
       end
 
       def self.adapter_for(serializer)

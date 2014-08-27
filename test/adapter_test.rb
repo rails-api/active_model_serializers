@@ -15,12 +15,6 @@ module ActiveModel
         end
       end
 
-      def test_to_json_is_abstract_method
-        assert_raises(NotImplementedError) do
-          @adapter.to_json(only: [:name])
-        end
-      end
-
       def test_serializer
         assert_equal @serializer, @adapter.serializer
       end
