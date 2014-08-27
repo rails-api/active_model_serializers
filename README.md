@@ -31,7 +31,7 @@ serializers:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attribute :title, :body
+  attributes :title, :body
  
   has_many :comments
 
@@ -43,7 +43,7 @@ and
 
 ```ruby
 class CommentSerializer < ActiveModel::Serializer
-  attribute :name, :body
+  attributes :name, :body
 
   belongs_to :post
 
@@ -115,7 +115,7 @@ The generated seralizer will contain basic `attributes` and
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attribute :title, :body
+  attributes :title, :body
 
   has_many :comments
 
@@ -127,7 +127,7 @@ and
 
 ```ruby
 class CommentSerializer < ActiveModel::Serializer
-  attribute :name, :body
+  attributes :name, :body
 
   belongs_to :post_id
 
