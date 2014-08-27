@@ -3,6 +3,7 @@ module ActiveModel
     extend ActiveSupport::Autoload
     autoload :Configuration
     autoload :ArraySerializer
+    autoload :Adapter
     include Configuration
 
     class << self

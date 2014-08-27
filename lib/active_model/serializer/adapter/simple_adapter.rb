@@ -1,11 +1,7 @@
 module ActiveModel
   class Serializer
     class Adapter
-      class NullAdapter
-        def initialize(adapter)
-          @attributes = adapter.attributes 
-        end
-
+      class SimpleAdapter < Adapter
         def to_json(options={})
           @attributes.each_with_object({}) do |(attr, value), h|
             h[attr] = value
