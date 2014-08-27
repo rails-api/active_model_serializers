@@ -7,10 +7,6 @@ module ActiveModel
             h[attr] = value
           end
         end
-
-        def to_json(options={})
-          serializable_hash(options).to_json
-        end
       end
     end
   end
