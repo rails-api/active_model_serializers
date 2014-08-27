@@ -2,10 +2,14 @@ module ActiveModel
   class Serializer
     class Adapter
       class SimpleAdapter < Adapter
-        def to_json(options={})
+        def serializable_hash(options = {})
           serializer.attributes.each_with_object({}) do |(attr, value), h|
             h[attr] = value
-          end.to_json # FIXME: why does passing options here cause {}?
+          end
+        end
+
+        def to_json(options={})
+          serializable_hash(options).to_json
         end
       end
     end
