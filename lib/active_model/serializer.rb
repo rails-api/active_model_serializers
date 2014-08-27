@@ -67,8 +67,10 @@ module ActiveModel
       else
         serializer_name = "#{resource.class.name}Serializer"
 
-        if Object.const_defined?(serializer_name)
+        begin
           Object.const_get(serializer_name)
+        rescue NameError
+          nil
         end
       end
     end
