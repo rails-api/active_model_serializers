@@ -11,6 +11,10 @@ module ActiveModel
           @adapter = NullAdapter.new(serializer)
         end
 
+        def test_serializable_hash
+          assert_equal({}, @adapter.serializable_hash)
+        end
+
         def test_it_returns_empty_json
           assert_equal('{}', @adapter.to_json)
         end
