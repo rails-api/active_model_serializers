@@ -74,6 +74,24 @@ module ActiveModel
       end
     end
 
+    def self.adapter
+      adapter_class = case config.adapter
+                      when Symbol
+                        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}Adapter"
+                        if Object.const_defined?(class_name)
+                          Object.const_get(class_name)
+                        end
+                      when Class
+                        config.adapter
+                      end
+      unless adapter_class
+        valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.sub('Adapter', '').downcase}" }
+        raise ArgumentError, "Unknown adapter: #{config.adapter}. Valid adapters are: #{valid_adapters}"
+      end
+
+      adapter_class
+    end
+
     attr_accessor :object
 
     def initialize(object)
