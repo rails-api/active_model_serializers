@@ -12,7 +12,7 @@ module ActionController
       if serializer
         # omg hax
         object = serializer.new(resource)
-        adapter = ActiveModel::Serializer::Adapter::NullAdapter.new(object)
+        adapter = ActiveModel::Serializer::Adapter::SimpleAdapter.new(object)
 
         super(adapter, options)
       else
