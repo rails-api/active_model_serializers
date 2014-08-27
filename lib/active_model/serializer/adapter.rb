@@ -3,6 +3,7 @@ module ActiveModel
     class Adapter
       extend ActiveSupport::Autoload
       autoload :SimpleAdapter
+      autoload :NullAdapter
 
       def initialize(serializer)
         @attributes = serializer.attributes
