@@ -11,6 +11,10 @@ module ActiveModel
           @adapter = SimpleAdapter.new(@profile_serializer)
         end
 
+        def test_serializable_hash
+          assert_equal({name: 'Name 1', description: 'Description 1'}, @adapter.serializable_hash)
+        end
+
         def test_simple_adapter
           assert_equal('{"name":"Name 1","description":"Description 1"}',
                        @adapter.to_json)
