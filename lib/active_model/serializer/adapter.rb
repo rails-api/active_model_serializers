@@ -5,8 +5,10 @@ module ActiveModel
       autoload :SimpleAdapter
       autoload :NullAdapter
 
+      attr_reader :serializer
+
       def initialize(serializer)
-        @attributes = serializer.attributes
+        @serializer = serializer
       end
 
       def serializable_hash(options = {})
