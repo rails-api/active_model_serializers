@@ -26,58 +26,38 @@ module ActiveModel
           end
         end
       end
+      Post = Class.new(Model)
+      Comment = Class.new(Model)
+      PostSerializer = Class.new(ActiveModel::Serializer) do
+        attributes :title, :body
+
+        has_many :comments
+      end
+
+      CommentSerializer = Class.new(ActiveModel::Serializer) do
+        attributes :id, :body
+
+        belongs_to :post
+      end
 
       def setup
-        @post = Model.new({ title: 'New Post', body: 'Body' })
-        @comment = Model.new({ id: 1, body: 'ZOMG A COMMENT' })
+        @post = Post.new({ title: 'New Post', body: 'Body' })
+        @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
         @comment.post = @post
 
-        @post_serializer_class = def_serializer do
-          attributes :title, :body
-        end
-
-        @comment_serializer_class = def_serializer do
-          attributes :id, :body
-        end
-
-        @post_serializer = @post_serializer_class.new(@post)
-        @comment_serializer = @comment_serializer_class.new(@comment)
+        @post_serializer = PostSerializer.new(@post)
+        @comment_serializer = CommentSerializer.new(@comment)
       end
 
       def test_has_many
-        @post_serializer_class.class_eval do
-          has_many :comments
-        end
-
         assert_equal({comments: {type: :has_many, options: {}}}, @post_serializer.class._associations)
+        assert_kind_of(ActiveModel::Serializer::ArraySerializer, @post_serializer.associations[:comments])
       end
 
       def test_has_one
-        @comment_serializer_class.class_eval do
-          belongs_to :post
-        end
-
         assert_equal({post: {type: :belongs_to, options: {}}}, @comment_serializer.class._associations)
-      end
-
-      def test_associations
-        @comment_serializer_class.class_eval do
-          belongs_to :post
-          has_many :comments
-        end
-
-        expected_associations = {
-          post: {
-            type: :belongs_to,
-            options: {}
-          },
-          comments: {
-            type: :has_many,
-            options: {}
-          },
-        }
-        assert_equal(expected_associations, @comment_serializer.associations)
+        assert_kind_of(PostSerializer, @comment_serializer.associations[:post])
       end
     end
   end

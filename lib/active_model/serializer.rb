@@ -100,14 +100,23 @@ module ActiveModel
       @object = object
     end
 
-    def attributes
+    def attributes(options = {})
       self.class._attributes.dup.each_with_object({}) do |name, hash|
         hash[name] = send(name)
       end
     end
 
-    def associations
-      self.class._associations.dup
+    def associations(options = {})
+      self.class._associations.dup.each_with_object({}) do |(name, value), hash|
+        association = object.send(name)
+        serializer_class = ActiveModel::Serializer.serializer_for(association)
+        if serializer_class
+          serializer = serializer_class.new(association)
+          hash[name] = serializer
+        else
+          hash[name] = association
+        end
+      end
     end
   end
 end
