@@ -10,6 +10,16 @@ class Model
       @attributes[name]
     end
   end
+
+  def method_missing(meth, *args)
+    if meth.to_s =~ /^(.*)=$/
+      @attributes[$1.to_sym] = args[0]
+    elsif @attributes.key?(meth)
+      @attributes[meth]
+    else
+      super
+    end
+  end
 end
 
 class Profile < Model
