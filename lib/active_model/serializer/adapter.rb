@@ -4,6 +4,7 @@ module ActiveModel
       extend ActiveSupport::Autoload
       autoload :SimpleAdapter
       autoload :NullAdapter
+      autoload :JsonApiAdapter
 
       attr_reader :serializer
 
