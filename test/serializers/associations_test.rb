@@ -3,10 +3,6 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssocationsTest < Minitest::Test
-      def def_serializer(&block)
-        Class.new(ActiveModel::Serializer, &block)
-      end
-
       class Model
         def initialize(hash={})
           @attributes = hash
@@ -26,19 +22,7 @@ module ActiveModel
           end
         end
       end
-      Post = Class.new(Model)
-      Comment = Class.new(Model)
-      PostSerializer = Class.new(ActiveModel::Serializer) do
-        attributes :title, :body
 
-        has_many :comments
-      end
-
-      CommentSerializer = Class.new(ActiveModel::Serializer) do
-        attributes :id, :body
-
-        belongs_to :post
-      end
 
       def setup
         @post = Post.new({ title: 'New Post', body: 'Body' })
