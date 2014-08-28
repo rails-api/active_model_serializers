@@ -13,7 +13,7 @@ module ActiveModel
       end
 
       def serializable_hash(options = {})
-        raise NotImplementedError, 'This is abstract method. Should be implemented at concrete adapter.'
+        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
       def to_json(options={})
