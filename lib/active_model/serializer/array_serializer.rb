@@ -1,12 +1,11 @@
 module ActiveModel
   class Serializer
     class ArraySerializer < Serializer
-      def initialize(object)
-        @object = object
-      end
+      include Enumerable
+      delegate :each, to: :object
 
-      def attributes(options = {})
-        object.map do |item|
+      def initialize(object)
+        @object = object.map do |item|
           serializer_class = ActiveModel::Serializer.serializer_for(item)
           serializer_class.new(item)
         end
