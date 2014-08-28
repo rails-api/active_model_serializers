@@ -8,9 +8,7 @@ module ActiveModel
           associations = serializer.associations(only: [:id]).each_with_object({}) do |(attr, value), h|
             h[attr] = case value
                        when ActiveModel::Serializer::ArraySerializer
-                         value.attributes(options).map do |item|
-                           item.id
-                         end.to_a
+                         value.map(&:id)
                        when ActiveModel::Serializer
                          # process belongs_to association
                        else
