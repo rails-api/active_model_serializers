@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
     class Adapter
-      class JsonAdapter < Adapter
+      class Json < Adapter
         def serializable_hash(options = {})
           serializer.attributes.each_with_object({}) do |(attr, value), h|
             h[attr] = value

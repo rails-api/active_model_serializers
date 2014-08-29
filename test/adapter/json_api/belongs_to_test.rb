@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Adapter
-      class JsonApiAdapter
+      class JsonApi
         class BelongsToTest < Minitest::Test
           def setup
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
@@ -12,7 +12,7 @@ module ActiveModel
             @comment.post = @post
 
             @serializer = CommentSerializer.new(@comment)
-            @adapter = ActiveModel::Serializer::Adapter::JsonApiAdapter.new(@serializer)
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
           end
 
           def test_includes_post_id
