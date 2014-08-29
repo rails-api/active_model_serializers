@@ -56,6 +56,18 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 end
 
+class RootProfileSerializer < ActiveModel::Serializer
+
+  root :profiles
+
+  def description
+    description = object.read_attribute_for_serialization(:description)
+    scope ? "#{description} - #{scope}" : description
+  end
+
+  attributes :name, :description
+end
+
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 

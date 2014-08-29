@@ -14,10 +14,11 @@ module ActiveModel
     def initialize(object, options={})
       @object          = object
       @scope           = options[:scope]
-      @root            = options.fetch(:root, self.class._root)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
+      @root            = options.fetch(:root, self.class._root)
+      @root            = options[:each_serializer].try(:_root) if @root.nil?
       @resource_name   = options[:resource_name]
       @only            = options[:only] ? Array(options[:only]) : nil
       @except          = options[:except] ? Array(options[:except]) : nil

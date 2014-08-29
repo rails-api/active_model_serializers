@@ -60,6 +60,18 @@ module ActiveModel
         assert_equal expected, serializer.as_json
       end
 
+      def test_array_serializers_each_serializer_root_inheritance
+        array = [::Model.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
+                 ::Model.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })]
+
+        serializer = ArraySerializer.new(array, each_serializer: RootProfileSerializer)
+
+        expected = { profiles: [{ name: 'Name 1', description: 'Description 1' },
+                                { name: 'Name 2', description: 'Description 2' }] }
+
+        assert_equal expected, serializer.as_json
+      end
+
       def test_associated_objects_of_multiple_instances_embedded_in_root
         @association = PostSerializer._associations[:comments]
         @old_association = @association.dup
