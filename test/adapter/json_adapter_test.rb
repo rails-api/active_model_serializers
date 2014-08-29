@@ -3,12 +3,12 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Adapter
-      class SimpleAdapterTest < Minitest::Test
+      class JsonAdapterTest < Minitest::Test
         def setup
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           @profile_serializer = ProfileSerializer.new(@profile)
 
-          @adapter = SimpleAdapter.new(@profile_serializer)
+          @adapter = JsonAdapter.new(@profile_serializer)
         end
 
         def test_serializable_hash
