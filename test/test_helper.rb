@@ -5,6 +5,8 @@ require 'action_controller'
 require 'action_controller/test_case'
 require "active_support/json"
 require 'minitest/autorun'
+# Ensure backward compatibility with Minitest 4
+Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
 require "active_model_serializers"
 
