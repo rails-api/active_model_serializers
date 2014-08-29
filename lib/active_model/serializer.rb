@@ -79,7 +79,7 @@ module ActiveModel
     def self.adapter
       adapter_class = case config.adapter
                       when Symbol
-                        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}Adapter"
+                        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
                         if Object.const_defined?(class_name)
                           Object.const_get(class_name)
                         end

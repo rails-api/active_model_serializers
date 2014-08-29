@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Adapter
-      class JsonApiAdapter
+      class JsonApi
         class HasManyTest < Minitest::Test
           def setup
             @post = Post.new(title: 'New Post', body: 'Body')

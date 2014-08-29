@@ -11,23 +11,23 @@ module ActiveModel
 
       def test_returns_default_adapter
         adapter = ActiveModel::Serializer.adapter
-        assert_equal ActiveModel::Serializer::Adapter::JsonAdapter, adapter
+        assert_equal ActiveModel::Serializer::Adapter::Json, adapter
       end
 
       def test_overwrite_adapter_with_symbol
         ActiveModel::Serializer.config.adapter = :null
 
         adapter = ActiveModel::Serializer.adapter
-        assert_equal ActiveModel::Serializer::Adapter::NullAdapter, adapter
+        assert_equal ActiveModel::Serializer::Adapter::Null, adapter
       ensure
 
       end
 
       def test_overwrite_adapter_with_class
-        ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::NullAdapter
+        ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::Null
 
         adapter = ActiveModel::Serializer.adapter
-        assert_equal ActiveModel::Serializer::Adapter::NullAdapter, adapter
+        assert_equal ActiveModel::Serializer::Adapter::Null, adapter
       end
 
       def test_raises_exception_if_invalid_symbol_given
