@@ -1,4 +1,0 @@
-﻿Merge remote-tracking branch 'origin/ArraySerializer_root_inheritance' into ArraySerializer_root_inheritance
-
-Conflicts:
-	lib/active_model/array_serializer.rb
