@@ -104,6 +104,18 @@ class DifferentProfileSerializer < ActiveModel::Serializer
   attributes :name
 end
 
+class RootProfileSerializer < ActiveModel::Serializer
+
+  root :profiles
+
+  def description
+    description = object.read_attribute_for_serialization(:description)
+    scope ? "#{description} - #{scope}" : description
+  end
+
+  attributes :name, :description
+end
+
 class CategorySerializer < ActiveModel::Serializer
   attributes :name
 
