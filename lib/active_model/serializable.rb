@@ -1,5 +1,11 @@
+require 'active_model/serializable/utils'
+
 module ActiveModel
   module Serializable
+    def self.included(base)
+      base.extend Utils
+    end
+
     def as_json(options={})
       instrument('!serialize') do
         if root = options.fetch(:root, json_key)
@@ -26,14 +32,8 @@ module ActiveModel
       end
     end
 
-    if RUBY_VERSION >= '2.0'
-      def namespace
-        get_namespace && Object.const_get(get_namespace)
-      end
-    else
-      def namespace
-        get_namespace && get_namespace.safe_constantize
-      end
+    def namespace
+      get_namespace && Utils._const_get(get_namespace)
     end
 
     def embedded_in_root_associations

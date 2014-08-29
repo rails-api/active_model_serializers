@@ -55,32 +55,18 @@ end
       end
       attr_reader :key_format
 
-      if RUBY_VERSION >= '2.0'
-        def serializer_for(resource, options = {})
-          if resource.respond_to?(:to_ary)
-            if Object.constants.include?(:ArraySerializer)
-              ::ArraySerializer
-            else
-              ArraySerializer
-            end
+      def serializer_for(resource, options = {})
+        if resource.respond_to?(:to_ary)
+          if Object.constants.include?(:ArraySerializer)
+            ::ArraySerializer
           else
-            begin
-              Object.const_get build_serializer_class(resource, options)
-            rescue NameError
-              nil
-            end
+            ArraySerializer
           end
-        end
-      else
-        def serializer_for(resource, options = {})
-          if resource.respond_to?(:to_ary)
-            if Object.constants.include?(:ArraySerializer)
-              ::ArraySerializer
-            else
-              ArraySerializer
-            end
-          else
-            build_serializer_class(resource, options).safe_constantize
+        else
+          begin
+            _const_get build_serializer_class(resource, options)
+          rescue NameError
+            nil
           end
         end
       end
