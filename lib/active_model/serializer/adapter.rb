@@ -2,7 +2,7 @@ module ActiveModel
   class Serializer
     class Adapter
       extend ActiveSupport::Autoload
-      autoload :SimpleAdapter
+      autoload :JsonAdapter
       autoload :NullAdapter
       autoload :JsonApiAdapter
 

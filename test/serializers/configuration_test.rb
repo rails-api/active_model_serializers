@@ -8,7 +8,7 @@ module ActiveModel
       end
 
       def test_adapter
-        assert_equal :simple, ActiveModel::Serializer.config.adapter
+        assert_equal :json, ActiveModel::Serializer.config.adapter
       end
     end
   end

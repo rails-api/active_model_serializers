@@ -11,7 +11,7 @@ module ActiveModel
 
       def test_returns_default_adapter
         adapter = ActiveModel::Serializer.adapter
-        assert_equal ActiveModel::Serializer::Adapter::SimpleAdapter, adapter
+        assert_equal ActiveModel::Serializer::Adapter::JsonAdapter, adapter
       end
 
       def test_overwrite_adapter_with_symbol
