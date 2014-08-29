@@ -15,6 +15,7 @@ module ActiveModel
       @object          = object
       @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
+      @polymorphic   = options.fetch(:polymorphic, false)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
@@ -34,7 +35,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item, namespace: @namespace) || DefaultSerializer
-      serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except)
+      serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except, polymorphic: @polymorphic)
     end
 
     def serializable_object

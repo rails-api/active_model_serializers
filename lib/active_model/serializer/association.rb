@@ -1,4 +1,6 @@
 require 'active_model/default_serializer'
+require 'active_model/serializer/association/has_one'
+require 'active_model/serializer/association/has_many'
 
 module ActiveModel
   class Serializer
@@ -13,6 +15,7 @@ module ActiveModel
         @name          = name.to_s
         @options       = options
         self.embed     = options.fetch(:embed) { CONFIG.embed }
+        @polymorphic   = options.fetch(:polymorphic, false)
         @embed_in_root = options.fetch(:embed_in_root) { options.fetch(:include) { CONFIG.embed_in_root } }
         @key_format    = options.fetch(:key_format) { CONFIG.key_format }
         @embed_key     = options[:embed_key] || :id
@@ -25,13 +28,14 @@ module ActiveModel
         @serializer_from_options = serializer.is_a?(String) ? serializer.constantize : serializer
       end
 
-      attr_reader :name, :embed_ids, :embed_objects
+      attr_reader :name, :embed_ids, :embed_objects, :polymorphic
       attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options, :key_format, :embed_in_root_key, :embed_namespace
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root
       alias embed_in_root_key? embed_in_root_key
       alias embed_namespace? embed_namespace
+      alias polymorphic? polymorphic
 
       def embed=(embed)
         @embed_ids     = embed == :id || embed == :ids
@@ -48,54 +52,6 @@ module ActiveModel
 
       def build_serializer(object, options = {})
         serializer_class(object, options).new(object, options.merge(self.options))
-      end
-
-      class HasOne < Association
-        def initialize(name, *args)
-          super
-          @root_key = @embedded_key.to_s.pluralize
-          @key ||= "#{name}_id"
-        end
-
-        def serializer_class(object, options = {})
-          serializer_from_options || serializer_from_object(object, options) || default_serializer
-        end
-
-        def build_serializer(object, options = {})
-          options[:_wrap_in_array] = embed_in_root?
-          super
-        end
-      end
-
-      class HasMany < Association
-        def initialize(name, *args)
-          super
-          @root_key = @embedded_key
-          @key ||= "#{name.to_s.singularize}_ids"
-        end
-
-        def serializer_class(object, _ = {})
-          if use_array_serializer?
-            ArraySerializer
-          else
-            serializer_from_options
-          end
-        end
-
-        def options
-          if use_array_serializer?
-            { each_serializer: serializer_from_options }.merge! super
-          else
-            super
-          end
-        end
-
-        private
-
-        def use_array_serializer?
-          !serializer_from_options ||
-            serializer_from_options && !(serializer_from_options <= ArraySerializer)
-        end
       end
     end
   end
