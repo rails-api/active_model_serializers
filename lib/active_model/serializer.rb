@@ -80,7 +80,7 @@ module ActiveModel
                         config.adapter
                       end
       unless adapter_class
-        valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.sub('Adapter', '').downcase}" }
+        valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.downcase}" }
         raise ArgumentError, "Unknown adapter: #{config.adapter}. Valid adapters are: #{valid_adapters}"
       end
 
