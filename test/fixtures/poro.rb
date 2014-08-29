@@ -74,9 +74,7 @@ class WebLogLowerCamelSerializer < WebLogSerializer
   format_keys :lower_camel
 end
 
-class ShortUserSerializer < ActiveModel::Serializer
-  attributes :name
-end
+class ShortProfileSerializer < ::ProfileSerializer; end
 
 module TestNamespace
   class ProfileSerializer < ::ProfileSerializer; end
