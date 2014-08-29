@@ -66,13 +66,8 @@ module ActiveModel
       if resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        serializer_name = "#{resource.class.name}Serializer"
-
-        begin
-          serializer_name.constantize
-        rescue NameError
-          nil
-        end
+        serializer_class = "#{resource.class.name}Serializer"
+        serializer_class.safe_constantize
       end
     end
 
@@ -80,11 +75,7 @@ module ActiveModel
       adapter_class = case config.adapter
                       when Symbol
                         class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
-                        begin
-                          class_name.constantize
-                        rescue NameError
-                          nil
-                        end
+                        class_name.safe_constantize
                       when Class
                         config.adapter
                       end
