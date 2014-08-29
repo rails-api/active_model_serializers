@@ -3,9 +3,16 @@ module ActiveModel
     class Adapter
       class Json < Adapter
         def serializable_hash(options = {})
-          serializer.attributes.each_with_object({}) do |(attr, value), h|
-            h[attr] = value
+          @hash = serializer.attributes
+
+          serializer.associations.each do |name, association|
+            if association.respond_to?(:each)
+              @hash[name] = association.map(&:attributes)
+            else
+              @hash[name] = association.attributes
+            end
           end
+          @hash
         end
       end
     end

@@ -3,23 +3,24 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Adapter
-      class JsonAdapterTest < Minitest::Test
+      class JsonTest < Minitest::Test
         def setup
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          @profile_serializer = ProfileSerializer.new(@profile)
+          @post = Post.new(title: 'New Post', body: 'Body')
+          @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+          @post.comments = [@first_comment, @second_comment]
+          @first_comment.post = @post
+          @second_comment.post = @post
 
-          @adapter = Json.new(@profile_serializer)
+          @serializer = PostSerializer.new(@post)
+          @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
         end
 
-        def test_serializable_hash
-          assert_equal({name: 'Name 1', description: 'Description 1'}, @adapter.serializable_hash)
-        end
-
-        def test_simple_adapter
-          assert_equal('{"name":"Name 1","description":"Description 1"}',
-                       @adapter.to_json)
-
-JSON
+        def test_has_many
+          assert_equal([
+                         {id: 1, body: 'ZOMG A COMMENT'},
+                         {id: 2, body: 'ZOMG ANOTHER COMMENT'}
+                       ], @adapter.serializable_hash[:comments])
         end
       end
     end
