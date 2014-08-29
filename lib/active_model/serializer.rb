@@ -80,8 +80,10 @@ module ActiveModel
       adapter_class = case config.adapter
                       when Symbol
                         class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
-                        if Object.const_defined?(class_name)
+                        begin
                           Object.const_get(class_name)
+                        rescue NameError
+                          nil
                         end
                       when Class
                         config.adapter
