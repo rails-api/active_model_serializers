@@ -36,12 +36,20 @@ module ActiveModel
 
       def test_has_many
         assert_equal({comments: {type: :has_many, options: {}}}, @post_serializer.class._associations)
-        assert_kind_of(ActiveModel::Serializer::ArraySerializer, @post_serializer.associations[:comments])
+        @post_serializer.each_association do |name, serializer, options|
+          assert_equal(:comments, name)
+          assert_equal({}, options)
+          assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
+        end
       end
 
       def test_has_one
         assert_equal({post: {type: :belongs_to, options: {}}}, @comment_serializer.class._associations)
-        assert_kind_of(PostSerializer, @comment_serializer.associations[:post])
+        @comment_serializer.each_association do |name, serializer, options|
+          assert_equal(:post, name)
+          assert_equal({}, options)
+          assert_kind_of(PostSerializer, serializer)
+        end
       end
     end
   end
