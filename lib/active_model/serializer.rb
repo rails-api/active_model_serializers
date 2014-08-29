@@ -69,7 +69,7 @@ module ActiveModel
         serializer_name = "#{resource.class.name}Serializer"
 
         begin
-          Object.const_get(serializer_name)
+          serializer_name.constantize
         rescue NameError
           nil
         end
@@ -81,7 +81,7 @@ module ActiveModel
                       when Symbol
                         class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
                         begin
-                          Object.const_get(class_name)
+                          class_name.constantize
                         rescue NameError
                           nil
                         end
