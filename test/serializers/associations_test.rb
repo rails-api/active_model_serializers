@@ -3,10 +3,6 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssocationsTest < Minitest::Test
-      def def_serializer(&block)
-        Class.new(ActiveModel::Serializer, &block)
-      end
-
       class Model
         def initialize(hash={})
           @attributes = hash
@@ -27,38 +23,33 @@ module ActiveModel
         end
       end
 
+
       def setup
-        @post = Model.new({ title: 'New Post', body: 'Body' })
-        @comment = Model.new({ id: 1, body: 'ZOMG A COMMENT' })
+        @post = Post.new({ title: 'New Post', body: 'Body' })
+        @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
         @comment.post = @post
 
-        @post_serializer_class = def_serializer do
-          attributes :title, :body
-        end
-
-        @comment_serializer_class = def_serializer do
-          attributes :id, :body
-        end
-
-        @post_serializer = @post_serializer_class.new(@post)
-        @comment_serializer = @comment_serializer_class.new(@comment)
+        @post_serializer = PostSerializer.new(@post)
+        @comment_serializer = CommentSerializer.new(@comment)
       end
 
       def test_has_many
-        @post_serializer_class.class_eval do
-          has_many :comments
-        end
-
         assert_equal({comments: {type: :has_many, options: {}}}, @post_serializer.class._associations)
+        @post_serializer.each_association do |name, serializer, options|
+          assert_equal(:comments, name)
+          assert_equal({}, options)
+          assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
+        end
       end
 
       def test_has_one
-        @comment_serializer_class.class_eval do
-          belongs_to :post
-        end
-
         assert_equal({post: {type: :belongs_to, options: {}}}, @comment_serializer.class._associations)
+        @comment_serializer.each_association do |name, serializer, options|
+          assert_equal(:post, name)
+          assert_equal({}, options)
+          assert_kind_of(PostSerializer, serializer)
+        end
       end
     end
   end

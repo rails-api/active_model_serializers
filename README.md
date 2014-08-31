@@ -57,7 +57,13 @@ by AMS. If you want to use a different adapter, such as a HalAdapter, you can
 change this in an initializer:
 
 ```ruby
-ActiveModel::Serializer.default_adapter = ActiveModel::Serializer::Adapter::HalAdapter
+ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::HalAdapter
+```
+
+or
+ 
+```ruby
+ActiveModel::Serializer.config.adapter = :hal
 ```
 
 You won't need to implement an adapter unless you wish to use a new format or

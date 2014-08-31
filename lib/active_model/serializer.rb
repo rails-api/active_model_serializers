@@ -3,6 +3,7 @@ module ActiveModel
     extend ActiveSupport::Autoload
     autoload :Configuration
     autoload :ArraySerializer
+    autoload :Adapter
     include Configuration
 
     class << self
@@ -65,14 +66,25 @@ module ActiveModel
       if resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        serializer_name = "#{resource.class.name}Serializer"
-
-        begin
-          Object.const_get(serializer_name)
-        rescue NameError
-          nil
-        end
+        serializer_class = "#{resource.class.name}Serializer"
+        serializer_class.safe_constantize
       end
+    end
+
+    def self.adapter
+      adapter_class = case config.adapter
+                      when Symbol
+                        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
+                        class_name.safe_constantize
+                      when Class
+                        config.adapter
+                      end
+      unless adapter_class
+        valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.downcase}" }
+        raise ArgumentError, "Unknown adapter: #{config.adapter}. Valid adapters are: #{valid_adapters}"
+      end
+
+      adapter_class
     end
 
     attr_accessor :object
@@ -81,9 +93,21 @@ module ActiveModel
       @object = object
     end
 
-    def attributes
+    def attributes(options = {})
       self.class._attributes.dup.each_with_object({}) do |name, hash|
         hash[name] = send(name)
+      end
+    end
+
+    def each_association(&block)
+      self.class._associations.dup.each do |name, options|
+        association = object.send(name)
+        serializer_class = ActiveModel::Serializer.serializer_for(association)
+        serializer = serializer_class.new(association)
+
+        if block_given?
+          block.call(name, serializer, options[:options])
+        end
       end
     end
   end
