@@ -64,6 +64,10 @@ module ActiveModel
       end
     end
 
+    def self.url(attr)
+      @_urls.push attr
+    end
+
     def self.urls(*attrs)
       @_urls.concat attrs
     end
