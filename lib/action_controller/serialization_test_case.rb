@@ -3,11 +3,11 @@ module ActionController
     extend ActiveSupport::Concern
 
     included do
-      setup :setup_subscriptions
-      teardown :teardown_subscriptions
+      setup :setup_serialization_subscriptions
+      teardown :teardown_serialization_subscriptions
     end
 
-    def setup_subscriptions
+    def setup_serialization_subscriptions
       @serializers = Hash.new(0)
 
       ActiveSupport::Notifications.subscribe("!serialize.active_model_serializers") do |name, start, finish, id, payload|
@@ -16,7 +16,7 @@ module ActionController
       end
     end
 
-    def teardown_subscriptions
+    def teardown_serialization_subscriptions
       ActiveSupport::Notifications.unsubscribe("!serialize.active_model_serializers")
     end
 
