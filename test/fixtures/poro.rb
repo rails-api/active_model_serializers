@@ -31,6 +31,8 @@ end
 
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
+
+  urls :posts, :comments
 end
 
 Post = Class.new(Model)
@@ -40,6 +42,7 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
 
   has_many :comments
+  url :comments
 end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
