@@ -88,9 +88,10 @@ module ActiveModel
     end
 
     attr_accessor :object
+    attr_accessor :options
 
-    def initialize(object)
-      @object = object
+    def initialize(object, options={})
+      @object, @options = object, options
     end
 
     def attributes(options = {})
@@ -109,6 +110,10 @@ module ActiveModel
           block.call(name, serializer, options[:options])
         end
       end
+    end
+
+    def scope
+      @options[:scope]
     end
   end
 end

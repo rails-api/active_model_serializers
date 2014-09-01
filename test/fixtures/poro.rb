@@ -31,6 +31,11 @@ end
 
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
+
+  def description
+    description = object.read_attribute_for_serialization(:description)
+    scope ? "#{description} - #{scope}" : description
+  end
 end
 
 Post = Class.new(Model)
