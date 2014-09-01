@@ -42,8 +42,8 @@ module ActiveModel
         @embed_objects = embed == :object || embed == :objects
       end
 
-      def serializer_from_object(object)
-        Serializer.serializer_for(object)
+      def serializer_from_object(object, options = {})
+        Serializer.serializer_for(object, options)
       end
 
       def default_serializer
@@ -51,7 +51,7 @@ module ActiveModel
       end
 
       def build_serializer(object, options = {})
-        serializer_class(object).new(object, options.merge(self.options))
+        serializer_class(object, options).new(object, options.merge(self.options))
       end
     end
   end

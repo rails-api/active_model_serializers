@@ -8,8 +8,8 @@ module ActiveModel
           @key ||= "#{name}_id"
         end
 
-        def serializer_class(object)
-          serializer_from_options || serializer_from_object(object) || default_serializer
+        def serializer_class(object, options = {})
+          serializer_from_options || serializer_from_object(object, options) || default_serializer
         end
 
         def build_serializer(object, options = {})

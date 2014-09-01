@@ -135,3 +135,10 @@ end
 class VideoSerializer < ActiveModel::Serializer
   attributes :html
 end
+
+class ShortProfileSerializer < ::ProfileSerializer; end
+
+module TestNamespace
+  class ProfileSerializer < ::ProfileSerializer; end
+  class UserSerializer    < ::UserSerializer;    end
+end

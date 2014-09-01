@@ -8,7 +8,7 @@ module ActiveModel
           @key ||= "#{name.to_s.singularize}_ids"
         end
 
-        def serializer_class(object)
+        def serializer_class(object, _)
           if use_array_serializer?
             ArraySerializer
           else

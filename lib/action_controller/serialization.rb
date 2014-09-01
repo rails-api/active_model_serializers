@@ -57,6 +57,18 @@ module ActionController
 
     private
 
+    def namespace_for_serializer
+      @namespace_for_serializer ||= self.class.parent unless self.class.parent == Object
+    end
+
+    def default_serializer(resource)
+      options = {}.tap do |o|
+        o[:namespace] = namespace_for_serializer if namespace_for_serializer
+      end
+
+      ActiveModel::Serializer.serializer_for(resource, options)
+    end
+
     def default_serializer_options
       {}
     end
@@ -69,9 +81,13 @@ module ActionController
     def build_json_serializer(resource, options = {})
       options = default_serializer_options.merge(options)
 
-      if serializer = options.fetch(:serializer, ActiveModel::Serializer.serializer_for(resource))
+      if serializer = options.fetch(:serializer, default_serializer(resource))
         options[:scope] = serialization_scope unless options.has_key?(:scope)
-        options[:resource_name] = controller_name if resource.respond_to?(:to_ary)
+
+        if resource.respond_to?(:to_ary)
+          options[:resource_name] = controller_name 
+          options[:namespace] = namespace_for_serializer if namespace_for_serializer
+        end
 
         serializer.new(resource, options)
       end
