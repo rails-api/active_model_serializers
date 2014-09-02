@@ -5,7 +5,7 @@ require "pry"
 
 require "active_model_serializers"
 require "active_support/json"
-require "test/unit"
+require "minitest/autorun"
 
 require 'rails'
 
@@ -18,7 +18,7 @@ module TestHelper
   end
 
   ActionController::Base.send :include, Routes.url_helpers
-  ActiveModel::Serializer.send :include, Routes.url_helpers
+  ActionController::Base.send :include, ActionController::Serialization
 end
 
 ActiveSupport::TestCase.class_eval do
