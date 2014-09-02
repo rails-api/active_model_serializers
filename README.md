@@ -612,7 +612,7 @@ the root document (say, `linked`), you can specify an `embed_in_root_key`:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed: ids, include: true, embed_in_root_key: :linked
+  embed :ids, include: true, embed_in_root_key: :linked
 
   attributes: :id, :title, :body
   has_many :comments, :tags
