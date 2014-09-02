@@ -521,7 +521,7 @@ to `comments` underneath a `links` key:
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
 
-  has_many :comments, embed: ids, embed_namespace: :links
+  has_many :comments, embed: :ids, embed_namespace: :links
 end
 ```
 
