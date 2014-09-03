@@ -24,6 +24,8 @@
 
 * Added a "prefix" option in case you want to use a different version of serializer.
 
+* Serializers default namespace can be set in `default_serializer_options` and inherited by associations.
+
 # VERSION 0.8.1
 
 * Fix bug whereby a serializer using 'options' would blow up.
