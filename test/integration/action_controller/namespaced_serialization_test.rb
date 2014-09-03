@@ -43,5 +43,54 @@ module ActionController
         assert_serializer CommentSerializer
       end
     end
+
+    class OptionNamespacedSerializationTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def default_serializer_options
+          {
+            namespace: TestNamespace
+          }
+        end
+
+        def render_profile_with_namespace_option
+          render json: Profile.new({ name: 'Name 1', description: 'Description 1'})
+        end
+
+        def render_profiles_with_namespace_option
+          render json: [Profile.new({ name: 'Name 1', description: 'Description 1'})]
+        end
+
+        def render_comment
+          render json: Comment.new(content: 'Comment 1')
+        end
+
+        def render_comments
+          render json: [Comment.new(content: 'Comment 1')]
+        end
+      end
+
+      tests MyController
+
+      def test_render_profile_with_namespace_option
+        get :render_profile_with_namespace_option
+        assert_serializer TestNamespace::ProfileSerializer
+      end
+
+      def test_render_profiles_with_namespace_option
+        get :render_profiles_with_namespace_option
+        assert_serializer TestNamespace::ProfileSerializer
+      end
+
+      def test_fallback_to_a_version_without_namespace
+        get :render_comment
+        assert_serializer CommentSerializer
+      end
+
+      def test_array_fallback_to_a_version_without_namespace
+        get :render_comments
+        assert_serializer CommentSerializer
+      end
+    end
+
   end
 end
