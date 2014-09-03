@@ -354,7 +354,7 @@ The above usage of `:meta` will produce the following:
 If you would like to change the meta key name you can use the `:meta_key` option:
 
 ```ruby
-render json: @posts, serializer: CustomArraySerializer, meta: {total: 10}, meta_key: 'meta_object'
+render json: @posts, serializer: CustomArraySerializer, meta_object: {total: 10}, meta_key: 'meta_object'
 ```
 
 The above usage of `:meta_key` will produce the following:
