@@ -132,6 +132,7 @@ end
       @except        = options[:except] ? Array(options[:except]) : nil
       @key_format    = options[:key_format]
       @context       = options[:context]
+      @namespace     = options[:namespace]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format, :context, :polymorphic
 
@@ -217,7 +218,8 @@ end
     end
 
     def association_options_for_serializer(association)
-      prefix = association.options[:prefix]
+      prefix    = association.options[:prefix]
+      namespace = association.options[:namespace] || @namespace || self.namespace
 
       { scope: scope }.tap do |opts|
         opts[:namespace] = namespace if namespace

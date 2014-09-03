@@ -85,8 +85,8 @@ module ActionController
         options[:scope] = serialization_scope unless options.has_key?(:scope)
 
         if resource.respond_to?(:to_ary)
-          options[:resource_name] = controller_name 
-          options[:namespace] = namespace_for_serializer if namespace_for_serializer
+          options[:resource_name] ||= controller_name 
+          options[:namespace] ||= namespace_for_serializer if namespace_for_serializer
         end
 
         serializer.new(resource, options)
