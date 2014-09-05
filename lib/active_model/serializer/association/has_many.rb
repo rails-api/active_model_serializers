@@ -5,7 +5,11 @@ module ActiveModel
         def initialize(name, *args)
           super
           @root_key = @embedded_key
-          @key ||= "#{name.to_s.singularize}_ids"
+          @key ||= case CONFIG.default_key_type
+            when :name then name.to_s.pluralize
+            else "#{name.to_s.singularize}_ids"
+          end
+
         end
 
         def serializer_class(object, _)
