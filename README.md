@@ -94,6 +94,17 @@ serializer when you render the object:
 render json: @post, serializer: FancyPostSerializer
 ```
 
+### Use serialization outside of ActionController::Base
+
+When controller does not inherit from ActionController::Base,
+include Serialization module manually:
+
+```ruby
+class ApplicationController < ActionController::API
+  include ActionController::Serialization
+end
+```
+
 ## Arrays
 
 In your controllers, when you use `render :json` for an array of objects, AMS will
