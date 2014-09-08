@@ -84,8 +84,6 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class TestController < ActionController::Base
-    protect_from_forgery
-
     serialization_scope :current_user
     attr_reader :current_user
 
