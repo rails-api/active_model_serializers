@@ -63,11 +63,7 @@ end
             ArraySerializer
           end
         else
-          begin
-            _const_get build_serializer_class(resource, options)
-          rescue NameError
-            nil
-          end
+          _const_get build_serializer_class(resource, options)
         end
       end
 
