@@ -72,7 +72,10 @@ end
       alias root= _root=
 
       def root_name
-        name.demodulize.underscore.sub(/_serializer$/, '') if name
+        if name
+          root_name = name.demodulize.underscore.sub(/_serializer$/, '')
+          CONFIG.plural_default_root ? root_name.pluralize : root_name
+        end
       end
 
       def attributes(*attrs)
