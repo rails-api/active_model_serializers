@@ -33,19 +33,22 @@ module ActionController
     end
 
     def serialization_scope
-      send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
+      send(_serialization_scope) if _serialization_scope &&
+        respond_to?(_serialization_scope, true)
     end
 
     def default_serializer_options
     end
 
-    def _render_option_json(resource, options)
-      json = ActiveModel::Serializer.build_json(self, resource, options)
+    [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
+      define_method renderer_method do |resource, options|
+        json = ActiveModel::Serializer.build_json(self, resource, options)
 
-      if json
-        super(json, options)
-      else
-        super
+        if json
+          super(json, options)
+        else
+          super
+        end
       end
     end
 
