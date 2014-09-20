@@ -52,6 +52,16 @@ module ActiveModel
 
         assert_equal({ strip: true }, actual)
       end
+
+      def test_attribute_name_collision_gracefullness
+        p = @profile = Profile.new({name: 'Collider', description: 'D', root: 'Root'})
+        inherited_serializer_klass = Class.new(ProfileSerializer) do
+          attributes :root
+        end
+        assert_equal({
+          name: 'Collider', description: 'D', root: 'Root'
+        }, inherited_serializer_klass.new(p).serializable_hash)
+      end
     end
   end
 end
