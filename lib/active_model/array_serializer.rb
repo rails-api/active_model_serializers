@@ -51,7 +51,11 @@ module ActiveModel
           next if !objects || objects.flatten.empty?
 
           if hash.has_key?(type)
-            hash[type].concat(objects).uniq!
+            case hash[type] when Hash
+              hash[type].deep_merge!(objects){ |key, old, new| (Array(old) + Array(new)).uniq }
+            else
+              hash[type].concat(objects).uniq!
+            end
           else
             hash[type] = objects
           end
