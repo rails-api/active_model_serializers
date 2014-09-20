@@ -78,6 +78,9 @@ module ActiveModel
           assert !association.embed_objects?
           assert association.embed_in_root
           assert_equal :lower_camel, association.key_format
+          assert_equal 'post', PostSerializer.root_name
+          CONFIG.plural_default_root = true
+          assert_equal 'posts', PostSerializer.root_name
         ensure
           PostSerializer._associations[:comments] = old_association
           CONFIG.clear
