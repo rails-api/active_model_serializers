@@ -49,9 +49,9 @@ module ActiveModel
                 'ar_tag_ids' => [1, 2],
                 'ar_section_id' => 1
               },
-              ar_comments: [{ body: 'what a dumb post', 'ar_tag_ids' => [3, 2] },
+              'ar_comments' => [{ body: 'what a dumb post', 'ar_tag_ids' => [3, 2] },
                             { body: 'i liked it', 'ar_tag_ids' => [3, 1] }],
-              ar_tags: [{ name: 'happy' }, { name: 'whiny' }, { name: 'short' }],
+              'ar_tags' => [{ name: 'happy' }, { name: 'whiny' }, { name: 'short' }],
               'ar_sections' => [{ 'name' => 'ruby' }]
             }, post_serializer.as_json)
           end

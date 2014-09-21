@@ -85,7 +85,7 @@ module ActiveModel
               {title: "Title 1", body: "Body 1", "comment_ids" => @post1.comments.map(&:object_id) },
               {title: "Title 2", body: "Body 2", "comment_ids" => @post2.comments.map(&:object_id) }
             ],
-            comments: [
+            'comments' => [
               {content: "C1"},
               {content: "C2"},
               {content: "C3"},

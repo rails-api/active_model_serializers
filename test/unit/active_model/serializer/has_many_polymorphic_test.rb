@@ -140,7 +140,7 @@ module ActiveModel
               { id: c.object_id, type: model_name(c) }
             end,
           },
-          attachments: [
+          'attachments' => [
             { type: :image, image: { url: 'U1' }},
             { type: :video, video: { html: 'H1' }}
           ]
@@ -153,7 +153,7 @@ module ActiveModel
 
         assert_equal({
           'mail' => { body: 'Body 1' },
-          attachments: [
+          'attachments' => [
             { type: :image, image: { url: 'U1' }},
             { type: :video, video: { html: 'H1' }}
           ]
@@ -178,7 +178,7 @@ module ActiveModel
               { id: c.object_id, type: model_name(c) }
             end
           },
-          attachments: [
+          'attachments' => [
             { type: :image, image: { fake: 'fake' }},
             { type: :video, video: { fake: 'fake' }}
           ]

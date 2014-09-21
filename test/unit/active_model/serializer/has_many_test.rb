@@ -111,7 +111,7 @@ module ActiveModel
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          comments: [{ content: 'C1' }, { content: 'C2' }]
+          'comments' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       end
 
@@ -128,7 +128,7 @@ module ActiveModel
             name: 'Name 1',
             posts: [{ title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } }]
           },
-          comments: [{ content: 'C1' }, { content: 'C2' }]
+          "comments" => [{ content: 'C1' }, { content: 'C2' }]
         }, category_serializer.as_json)
       end
 
@@ -138,7 +138,7 @@ module ActiveModel
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1' },
-          comments: [{ content: 'C1' }, { content: 'C2' }]
+          'comments' => [{ content: 'C1' }, { content: 'C2' }]
         }, @post_serializer.as_json)
       end
 
@@ -155,7 +155,7 @@ module ActiveModel
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          comments: [{ content: 'C1!' }, { content: 'C2!' }]
+          'comments' => [{ content: 'C1!' }, { content: 'C2!' }]
         }, @post_serializer.as_json)
       end
 
@@ -170,7 +170,7 @@ module ActiveModel
 
         assert_equal({
           'post' => { title: 'Title 1', body: 'Body 1', 'comment_ids' => @post.comments.map { |c| c.object_id } },
-          comments: { my_content: ['fake'] }
+          'comments' => { my_content: ['fake'] }
         }, @post_serializer.as_json)
       end
 
@@ -191,16 +191,16 @@ module ActiveModel
         @association.embed_in_root_key = :linked
         @association.embed = :ids
         assert_equal({
+          'post' => {
+            title: 'Title 1', body: 'Body 1',
+            'comment_ids' => @post.comments.map(&:object_id)
+          },
           linked: {
-            comments: [
+            'comments' => [
               { content: 'C1' },
               { content: 'C2' }
             ]
           },
-          'post' => {
-            title: 'Title 1', body: 'Body 1',
-            'comment_ids' => @post.comments.map(&:object_id)
-          }
         }, @post_serializer.as_json)
       end
 
@@ -211,18 +211,18 @@ module ActiveModel
         @association.embed_namespace = :links
         @association.key = :comments
         assert_equal({
-          linked: {
-            comments: [
-              { content: 'C1' },
-              { content: 'C2' }
-            ]
-          },
           'post' => {
             title: 'Title 1', body: 'Body 1',
             links: {
               comments: @post.comments.map(&:object_id)
             }
-          }
+          },
+          linked: {
+            'comments' => [
+              { content: 'C1' },
+              { content: 'C2' }
+            ]
+          },
         }, @post_serializer.as_json)
       end
 
