@@ -47,7 +47,7 @@ module ActionController
         if json
           super(json, options)
         else
-          super
+          super(resource, options)
         end
       end
     end
