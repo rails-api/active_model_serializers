@@ -123,7 +123,7 @@ end
 
         attrs.each do |attr|
           define_method registry_name(attr) do
-            object.send attr
+            object && object.send(attr)
           end unless method_defined? registry_name(attr)
 
           @_associations[attr] = klass.new(attr, options)
