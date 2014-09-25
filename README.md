@@ -524,15 +524,15 @@ Now, any associations will be supplied as an Array of IDs:
 }
 ```
 
-You may also choose to embed the IDs by the association's name underneath an
-`embed_key` for the resource. For example, say we want to change `comment_ids`
+You may also choose to embed the IDs by the association's name underneath a
+`key` for the resource. For example, say we want to change `comment_ids`
 to `comments` underneath a `links` key:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :body
 
-  has_many :comments, embed: :ids, embed_namespace: :links
+  has_many :comments, embed: :ids, key: :comments, embed_namespace: :links
 end
 ```
 
@@ -694,7 +694,7 @@ class PostSerializer < ActiveModel::Serializer
   embed :ids, include: true
 
   attributes :id, :title, :body
-  has_many :comments, embed_key: :external_id
+  has_many :comments, key: :external_id
 end
 ```
 
