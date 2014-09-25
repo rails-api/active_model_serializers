@@ -80,6 +80,7 @@ module ActionController
 
     def build_json_serializer(resource, options = {})
       options = default_serializer_options.merge(options)
+      @namespace_for_serializer = options.fetch(:namespace, nil)
 
       if serializer = options.fetch(:serializer, default_serializer(resource))
         options[:scope] = serialization_scope unless options.has_key?(:scope)
