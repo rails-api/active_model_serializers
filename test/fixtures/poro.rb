@@ -92,6 +92,10 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 end
 
+class DifferentProfileSerializer < ActiveModel::Serializer
+  attributes :name
+end
+
 class CategorySerializer < ActiveModel::Serializer
   attributes :name
 
