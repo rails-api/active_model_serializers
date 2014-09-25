@@ -283,5 +283,21 @@ module ActionController
         assert_equal("{\"my\":[{\"name\":\"Name 1\",\"email\":\"mail@server.com\",\"profile_id\":#{@controller.user.profile.object_id}}],\"profiles\":[{\"name\":\"N1\",\"description\":\"D1\"}]}", @response.body)
       end
     end
+  
+    class ExplicitEachSerializerWithEnumarableObjectTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_array
+          render json: [Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })].to_enum, each_serializer: DifferentProfileSerializer
+        end
+      end
+
+      tests MyController
+
+      def test_render_array
+        get :render_array
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"my":[{"name":"Name 1"}]}', @response.body
+      end
+    end
   end
 end
