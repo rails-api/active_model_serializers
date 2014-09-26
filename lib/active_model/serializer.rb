@@ -79,10 +79,12 @@ end
       end
 
       def attributes(*attrs)
-        @_attributes.concat attrs
-
         attrs.each do |attr|
-          define_method attr do
+          striped_attr = strip_attribute attr
+
+          @_attributes << striped_attr
+
+          define_method striped_attr do
             object.read_attribute_for_serialization attr
           end unless method_defined?(attr)
         end
@@ -97,6 +99,14 @@ end
       end
 
       private
+
+      def strip_attribute(attr)
+        symbolized = attr.is_a?(Symbol)
+
+        attr = attr.to_s.gsub(/\?\Z/, '')
+        attr = attr.to_sym if symbolized
+        attr
+      end
 
       def build_serializer_class(resource, options)
         "".tap do |klass_name|
