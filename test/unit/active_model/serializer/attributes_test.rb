@@ -36,6 +36,22 @@ module ActiveModel
         assert_equal([:name, :description],
                      another_inherited_serializer_klass._attributes)
       end
+
+      def tests_query_attributes_strip_question_mark
+        model = Class.new(::Model) do
+          def strip?
+            true
+          end
+        end
+
+        serializer = Class.new(ActiveModel::Serializer) do
+          attributes :strip?
+        end
+
+        actual = serializer.new(model.new).as_json
+
+        assert_equal({ strip: true }, actual)
+      end
     end
   end
 end
