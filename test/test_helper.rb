@@ -20,7 +20,5 @@ end
 ActionController::TestCase.class_eval do
   def setup
     @routes = TestHelper::Routes
-
-    Rails.application.routes.default_url_options[:host] = 'http://example.com' if defined?(Rails)
   end
 end
