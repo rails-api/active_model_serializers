@@ -236,6 +236,18 @@ end
 BlogSerializer.new(object, key_format: :lower_camel)
 ```
 
+## Changing the default association key type
+
+You can specify that serializers use unsuffixed names as association keys by default.
+
+`````ruby
+ActiveModel::Serializer.setup do |config|
+  config.default_key_type = :name
+end
+````
+
+This will build association keys like `comments` or `author` instead of `comment_ids` or `author_id`. 
+
 ## Getting the old version
 
 If you find that your project is already relying on the old rails to_json
