@@ -243,14 +243,6 @@ module ActiveModel
         }, @post_serializer.as_json)
       end
 
-      CONFIG.default_key_type = :name
-      class NameKeyPostSerializer < ActiveModel::Serializer
-        attributes :title, :body
-        
-        has_many :comments
-      end
-      CONFIG.default_key_type = nil
-
       def test_associations_name_key_embedding_ids_serialization_using_serializable_hash
         @association = NameKeyPostSerializer._associations[:comments]
         @association.embed = :ids

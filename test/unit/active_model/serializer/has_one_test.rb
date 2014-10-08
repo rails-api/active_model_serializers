@@ -217,14 +217,6 @@ module ActiveModel
         }, @user_serializer.as_json)
       end
 
-      CONFIG.default_key_type = :name
-      class NameKeyUserSerializer < ActiveModel::Serializer
-        attributes :name, :email
-
-        has_one :profile
-      end
-      CONFIG.default_key_type = nil
-
       def test_associations_name_key_embedding_ids_serialization_using_serializable_hash
         @association = NameKeyUserSerializer._associations[:profile]
         @association.embed = :ids
