@@ -216,6 +216,24 @@ module ActiveModel
           }
         }, @user_serializer.as_json)
       end
+
+      def test_associations_name_key_embedding_ids_serialization_using_serializable_hash
+        @association = NameKeyUserSerializer._associations[:profile]
+        @association.embed = :ids
+
+        assert_equal({
+          name: 'Name 1', email: 'mail@server.com', 'profile' => @user.profile.object_id
+        }, NameKeyUserSerializer.new(@user).serializable_hash)
+      end
+
+      def test_associations_name_key_embedding_ids_serialization_using_as_json
+        @association = NameKeyUserSerializer._associations[:profile]
+        @association.embed = :ids
+
+        assert_equal({
+          'name_key_user' => { name: 'Name 1', email: 'mail@server.com', 'profile' => @user.profile.object_id }
+        }, NameKeyUserSerializer.new(@user).as_json)
+      end
     end
   end
 end

@@ -148,3 +148,25 @@ module TestNamespace
   class ProfileSerializer < ::ProfileSerializer; end
   class UserSerializer    < ::UserSerializer;    end
 end
+
+ActiveModel::Serializer.setup do |config|
+  config.default_key_type = :name
+end
+
+class NameKeyUserSerializer < ActiveModel::Serializer
+  attributes :name, :email
+
+  has_one :profile
+end
+
+class NameKeyPostSerializer < ActiveModel::Serializer
+  attributes :title, :body
+  
+  has_many :comments
+end
+
+ActiveModel::Serializer.setup do |config|
+  config.default_key_type = nil
+end
+
+
