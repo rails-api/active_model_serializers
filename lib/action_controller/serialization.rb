@@ -45,13 +45,15 @@ module ActionController
       end
     end
 
-    def _render_option_json(resource, options)
-      serializer = build_json_serializer(resource, options)
+    [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
+      define_method renderer_method do |resource, options|
+        serializer = build_json_serializer(resource, options)
 
-      if serializer
-        super(serializer, options)
-      else
-        super
+        if serializer
+          super(serializer, options)
+        else
+          super(resource, options)
+        end
       end
     end
 
