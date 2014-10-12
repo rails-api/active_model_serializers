@@ -9,11 +9,11 @@ module ActiveModel
     def as_json(options={})
       instrument('!serialize') do
         if root = options.fetch(:root, json_key)
-          hash = { root => serializable_object }
+          hash = { root => serializable_object(options) }
           hash.merge!(serializable_data)
           hash
         else
-          serializable_object
+          serializable_object(options)
         end
       end
     end
