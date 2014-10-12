@@ -38,7 +38,7 @@ module ActiveModel
       serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace)
     end
 
-    def serializable_object(options)
+    def serializable_object(options={})
       @object.map do |item|
         serializer_for(item).serializable_object_with_notification(options)
       end

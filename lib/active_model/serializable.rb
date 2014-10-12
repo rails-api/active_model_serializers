@@ -18,7 +18,7 @@ module ActiveModel
       end
     end
 
-    def serializable_object_with_notification(options)
+    def serializable_object_with_notification(options={})
       instrument('!serialize') do
         serializable_object(options)
       end
