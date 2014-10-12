@@ -273,7 +273,10 @@ end
       end]
     end
 
-    attr_accessor :serialization_options
+    attr_writer :serialization_options
+    def serialization_options
+      @serialization_options || {}
+    end
 
     def serializable_object(options={})
       self.serialization_options = options
