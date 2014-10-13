@@ -13,6 +13,7 @@ module ActiveModel
               @hash[name] = association.attributes(options)
             end
           end
+
           @hash
         end
       end
