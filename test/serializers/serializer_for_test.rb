@@ -27,8 +27,12 @@ module ActiveModel
       end
 
       class SerializerTest <  Minitest::Test
+        class MyProfile < Profile
+        end
+
         def setup
           @profile = Profile.new
+          @my_profile = MyProfile.new
           @model = ::Model.new
         end
 
@@ -40,6 +44,11 @@ module ActiveModel
         def test_serializer_for_not_existing_serializer
           serializer = ActiveModel::Serializer.serializer_for(@model)
           assert_equal nil, serializer
+        end
+
+        def test_serializer_inherited_serializer
+          serializer = ActiveModel::Serializer.serializer_for(@my_profile)
+          assert_equal ProfileSerializer, serializer
         end
       end
     end

@@ -66,8 +66,7 @@ module ActiveModel
       if resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        serializer_class = "#{resource.class.name}Serializer"
-        serializer_class.safe_constantize
+        get_serializer_for(resource.class)
       end
     end
 
@@ -110,5 +109,19 @@ module ActiveModel
         end
       end
     end
+
+    private
+
+    def self.get_serializer_for(klass)
+      serializer_class_name = "#{klass.name}Serializer"
+      serializer_class = serializer_class_name.safe_constantize
+
+      if serializer_class
+        serializer_class
+      elsif klass.superclass
+        get_serializer_for(klass.superclass)
+      end
+    end
+
   end
 end
