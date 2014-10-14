@@ -73,12 +73,12 @@ module ActiveModel
 
     def self.adapter
       adapter_class = case config.adapter
-                      when Symbol
-                        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
-                        class_name.safe_constantize
-                      when Class
-                        config.adapter
-                      end
+      when Symbol
+        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
+        class_name.safe_constantize
+      when Class
+        config.adapter
+      end
       unless adapter_class
         valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.downcase}" }
         raise ArgumentError, "Unknown adapter: #{config.adapter}. Valid adapters are: #{valid_adapters}"
@@ -87,10 +87,31 @@ module ActiveModel
       adapter_class
     end
 
-    attr_accessor :object
+    def self._root
+      @@root ||= false
+    end
 
-    def initialize(object)
+    def self._root=(root)
+      @@root = root
+    end
+
+    def self.root_name
+      name.demodulize.underscore.sub(/_serializer$/, '') if name
+    end
+
+    attr_accessor :object, :root
+
+    def initialize(object, options = {})
       @object = object
+      @root   = options[:root] || (self.class._root ? self.class.root_name : false)
+    end
+
+    def json_key
+      if root == true || root.nil?
+        self.class.root_name
+      else
+        root
+      end
     end
 
     def attributes(options = {})

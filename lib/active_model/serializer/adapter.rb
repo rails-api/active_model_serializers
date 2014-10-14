@@ -8,7 +8,7 @@ module ActiveModel
 
       attr_reader :serializer
 
-      def initialize(serializer)
+      def initialize(serializer, options = {})
         @serializer = serializer
       end
 
@@ -16,8 +16,14 @@ module ActiveModel
         raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
-      def to_json(options={})
-        serializable_hash(options).to_json
+      def to_json(options = {})
+        result = serializable_hash(options)
+
+        if root = options.fetch(:root, serializer.json_key)
+          result = { root => result }
+        end
+
+        result.to_json
       end
     end
   end
