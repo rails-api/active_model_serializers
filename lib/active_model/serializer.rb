@@ -2,6 +2,7 @@ require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/association'
 require 'active_model/serializer/config'
+require 'rails'
 
 require 'thread'
 
@@ -16,6 +17,9 @@ module ActiveModel
         base._root = _root
         base._attributes = (_attributes || []).dup
         base._associations = (_associations || {}).dup
+        base.include ActionDispatch::Routing::UrlFor
+        url_helpers = ::Rails.application.try(:routes).try(:url_helpers)
+        base.include(url_helpers) unless url_helpers.nil?
       end
 
       def setup
