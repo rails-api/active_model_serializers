@@ -18,7 +18,7 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            assert_equal([1, 2], @adapter.serializable_hash[:links][:posts])
+            assert_equal(["1", "2"], @adapter.serializable_hash[:links][:posts])
           end
 
           def test_no_includes_linked_comments
