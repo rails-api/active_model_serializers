@@ -2,6 +2,11 @@ module ActiveModel
   class Serializer
     class Adapter
       class JsonApi < Adapter
+        def initialize(serializer, options = {})
+          super
+          serializer.root ||= true
+        end
+
         def serializable_hash(opts = {})
           @hash = serializer.attributes
 
