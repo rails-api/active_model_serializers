@@ -13,6 +13,16 @@ module ActionController
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile, root: "custom_root"
         end
+
+        def render_using_default_adapter_root
+          old_adapter = ActiveModel::Serializer.config.adapter
+          # JSON-API adapter sets root by default
+          ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile
+        ensure
+          ActiveModel::Serializer.config.adapter = old_adapter
+        end
       end
 
       tests MyController
@@ -30,6 +40,13 @@ module ActionController
 
         assert_equal 'application/json', @response.content_type
         assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"}}', @response.body
+      end
+
+      def test_render_using_default_root
+        get :render_using_default_adapter_root
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"profile":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
     end
   end
