@@ -2,12 +2,14 @@ module ActiveModel
   class Serializer
     class Adapter
       class JsonApi < Adapter
-        def serializable_hash(options = {})
+        def serializable_hash(opts = {})
           @hash = serializer.attributes
 
           serializer.each_association do |name, association, options|
             @hash[:links] ||= {}
-            @hash[:linked] ||= {}
+            unless options[:embed] == :ids
+              @hash[:linked] ||= {}
+            end
 
             if association.respond_to?(:each)
               add_links(name, association, options)
@@ -21,17 +23,23 @@ module ActiveModel
 
         def add_links(name, serializers, options)
           @hash[:links][name] ||= []
-          @hash[:linked][name] ||= []
           @hash[:links][name] += serializers.map(&:id)
-          @hash[:linked][name] += serializers.map { |item| item.attributes(options) }
+
+          unless options[:embed] == :ids
+            @hash[:linked][name] ||= []
+            @hash[:linked][name] += serializers.map { |item| item.attributes(options) }
+          end
         end
 
         def add_link(name, serializer, options)
-          plural_name = name.to_s.pluralize.to_sym
-          @hash[:linked][plural_name] ||= []
-
           @hash[:links][name] = serializer.id
-          @hash[:linked][plural_name].push serializer.attributes(options)
+
+          unless options[:embed] == :ids
+            plural_name = name.to_s.pluralize.to_sym
+
+            @hash[:linked][plural_name] ||= []
+            @hash[:linked][plural_name].push serializer.attributes(options)
+          end
         end
       end
     end
