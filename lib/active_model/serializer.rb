@@ -273,7 +273,13 @@ end
       end]
     end
 
+    attr_writer :serialization_options
+    def serialization_options
+      @serialization_options || {}
+    end
+
     def serializable_object(options={})
+      self.serialization_options = options
       return @wrap_in_array ? [] : nil if @object.nil?
       hash = attributes
       hash.merge! associations
