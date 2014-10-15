@@ -10,6 +10,14 @@ module ActiveModel
           serializer_class.new(object)
         end
       end
+
+      def json_key
+        @objects.first.json_key if @objects.first
+      end
+
+      def root=(root)
+        @objects.first.root = root if @objects.first
+      end
     end
   end
 end

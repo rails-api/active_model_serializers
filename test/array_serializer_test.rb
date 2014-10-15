@@ -5,7 +5,7 @@ module ActiveModel
     class ArraySerializerTest < Minitest::Test
       def setup
         @comment = Comment.new
-        @post= Post.new
+        @post = Post.new
         @serializer = ArraySerializer.new([@comment, @post])
       end
 
@@ -13,7 +13,7 @@ module ActiveModel
         assert_respond_to @serializer, :each
       end
 
-      def test_each_object_should_be_serializer_with_appropriate_serializer
+      def test_each_object_should_be_serialized_with_appropriate_serializer
         serializers =  @serializer.to_a
 
         assert_kind_of CommentSerializer, serializers.first

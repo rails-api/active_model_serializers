@@ -16,7 +16,7 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            assert_equal(42, @adapter.serializable_hash[:links][:post])
+            assert_equal(42, @adapter.serializable_hash[:comments][:links][:post])
           end
 
           def test_includes_linked_post
