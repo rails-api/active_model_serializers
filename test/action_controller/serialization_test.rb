@@ -23,6 +23,14 @@ module ActionController
         ensure
           ActiveModel::Serializer.config.adapter = old_adapter
         end
+
+        def render_array_using_implicit_serializer
+          array = [
+            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
+            Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
+          ]
+          render json: array
+        end
       end
 
       tests MyController
@@ -46,7 +54,25 @@ module ActionController
         get :render_using_default_adapter_root
 
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"profile":{"name":"Name 1","description":"Description 1"}}', @response.body
+        assert_equal '{"profiles":{"name":"Name 1","description":"Description 1"}}', @response.body
+      end
+
+      def test_render_array_using_implicit_serializer
+        get :render_array_using_implicit_serializer
+        assert_equal 'application/json', @response.content_type
+
+        expected = [
+          {
+            name: 'Name 1',
+            description: 'Description 1',
+          },
+          {
+            name: 'Name 2',
+            description: 'Description 2',
+          }
+        ]
+
+        assert_equal expected.to_json, @response.body
       end
     end
   end

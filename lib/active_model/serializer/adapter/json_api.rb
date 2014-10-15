@@ -4,22 +4,29 @@ module ActiveModel
       class JsonApi < Adapter
         def initialize(serializer, options = {})
           super
-          serializer.root ||= true
+          serializer.root = true
         end
 
-        def serializable_hash(opts = {})
-          @hash = serializer.attributes
+        def serializable_hash(options = {})
+          @root = (options[:root] || serializer.json_key).to_s.pluralize.to_sym
+          @hash = {}
 
-          serializer.each_association do |name, association, options|
-            @hash[:links] ||= {}
-            unless options[:embed] == :ids
-              @hash[:linked] ||= {}
-            end
+          if serializer.respond_to?(:each)
+            @hash[@root] = serializer.map{|s| self.class.new(s).serializable_hash[@root] }
+          else
+            @hash[@root] = serializer.attributes
 
-            if association.respond_to?(:each)
-              add_links(name, association, options)
-            else
-              add_link(name, association, options)
+            serializer.each_association do |name, association, opts|
+              @hash[@root][:links] ||= {}
+              unless options[:embed] == :ids
+                @hash[:linked] ||= {}
+              end
+
+              if association.respond_to?(:each)
+                add_links(name, association, opts)
+              else
+                add_link(name, association, opts)
+              end
             end
           end
 
@@ -27,8 +34,8 @@ module ActiveModel
         end
 
         def add_links(name, serializers, options)
-          @hash[:links][name] ||= []
-          @hash[:links][name] += serializers.map(&:id)
+          @hash[@root][:links][name] ||= []
+          @hash[@root][:links][name] += serializers.map(&:id)
 
           unless options[:embed] == :ids
             @hash[:linked][name] ||= []
@@ -37,7 +44,7 @@ module ActiveModel
         end
 
         def add_link(name, serializer, options)
-          @hash[:links][name] = serializer.id
+          @hash[@root][:links][name] = serializer.id
 
           unless options[:embed] == :ids
             plural_name = name.to_s.pluralize.to_sym

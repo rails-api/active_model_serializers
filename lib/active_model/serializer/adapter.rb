@@ -17,13 +17,7 @@ module ActiveModel
       end
 
       def to_json(options = {})
-        result = serializable_hash(options)
-
-        if root = options.fetch(:root, serializer.json_key)
-          result = { root => result }
-        end
-
-        result.to_json
+        serializable_hash(options).to_json
       end
     end
   end
