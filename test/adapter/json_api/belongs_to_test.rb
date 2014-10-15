@@ -16,11 +16,11 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            assert_equal(42, @adapter.serializable_hash[:comments][:links][:post])
+            assert_equal("42", @adapter.serializable_hash[:comments][:links][:post])
           end
 
           def test_includes_linked_post
-            assert_equal([{id: 42, title: 'New Post', body: 'Body'}], @adapter.serializable_hash[:linked][:posts])
+            assert_equal([{id: "42", title: 'New Post', body: 'Body'}], @adapter.serializable_hash[:linked][:posts])
           end
         end
       end

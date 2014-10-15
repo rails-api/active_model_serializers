@@ -17,8 +17,8 @@ module ActiveModel
 
           def test_include_multiple_posts
             assert_equal([
-                           {title: "Hello!!", body: "Hello, world!!", id: 1, links: {comments: []}},
-                           {title: "New Post", body: "Body", id: 2, links: {comments: []}}
+                           {title: "Hello!!", body: "Hello, world!!", id: "1", links: {comments: []}},
+                           {title: "New Post", body: "Body", id: "2", links: {comments: []}}
                          ], @adapter.serializable_hash[:posts])
           end
         end

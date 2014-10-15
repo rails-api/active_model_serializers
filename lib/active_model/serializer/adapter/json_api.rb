@@ -14,7 +14,7 @@ module ActiveModel
           if serializer.respond_to?(:each)
             @hash[@root] = serializer.map{|s| self.class.new(s).serializable_hash[@root] }
           else
-            @hash[@root] = serializer.attributes
+            @hash[@root] = attributes_for_serializer(serializer, {})
 
             serializer.each_association do |name, association, opts|
               @hash[@root][:links] ||= {}
@@ -35,23 +35,31 @@ module ActiveModel
 
         def add_links(name, serializers, options)
           @hash[@root][:links][name] ||= []
-          @hash[@root][:links][name] += serializers.map(&:id)
+          @hash[@root][:links][name] += serializers.map{|serializer| serializer.id.to_s }
 
           unless options[:embed] == :ids
             @hash[:linked][name] ||= []
-            @hash[:linked][name] += serializers.map { |item| item.attributes(options) }
+            @hash[:linked][name] += serializers.map { |item| attributes_for_serializer(item, options) }
           end
         end
 
         def add_link(name, serializer, options)
-          @hash[@root][:links][name] = serializer.id
+          @hash[@root][:links][name] = serializer.id.to_s
 
           unless options[:embed] == :ids
             plural_name = name.to_s.pluralize.to_sym
 
             @hash[:linked][plural_name] ||= []
-            @hash[:linked][plural_name].push serializer.attributes(options)
+            @hash[:linked][plural_name].push attributes_for_serializer(serializer, options)
           end
+        end
+
+        private
+
+        def attributes_for_serializer(serializer, options)
+          attributes = serializer.attributes(options)
+          attributes[:id] = attributes[:id].to_s if attributes[:id]
+          attributes
         end
       end
     end
