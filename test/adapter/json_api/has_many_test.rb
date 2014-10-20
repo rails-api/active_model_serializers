@@ -18,13 +18,13 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            assert_equal([1, 2], @adapter.serializable_hash[:posts][:links][:comments])
+            assert_equal(["1", "2"], @adapter.serializable_hash[:posts][:links][:comments])
           end
 
           def test_includes_linked_comments
             assert_equal([
-                           {id: 1, body: 'ZOMG A COMMENT'},
-                           {id: 2, body: 'ZOMG ANOTHER COMMENT'}
+                           {id: "1", body: 'ZOMG A COMMENT'},
+                           {id: "2", body: 'ZOMG ANOTHER COMMENT'}
                          ], @adapter.serializable_hash[:linked][:comments])
           end
         end
