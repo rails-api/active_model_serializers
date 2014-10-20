@@ -33,6 +33,7 @@ serializers:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
+  cache key: 'posts', expires_in: 3.hours
   attributes :title, :body
 
   has_many :comments
@@ -245,6 +246,37 @@ You may also use the `:serializer` option to specify a custom serializer class, 
 
 The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
+
+## Caching
+
+To cache a serializer, call ```cache``` and pass its options.
+The options are the same options of ```ActiveSupport::Cache::Store```, plus
+a ```key``` option that will be the prefix of the object cache
+on a pattern ```"#{key}/#{object.id}-#{object.updated_at}"```.
+
+**[NOTE] Every object is individually cached.**
+**[NOTE] The cache is automatically expired after update an object but it's not deleted.**
+
+```ruby
+cache(options = nil) # options: ```{key, expires_in, compress, force, race_condition_ttl}```
+```
+
+Take the example bellow:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  cache key: 'post', expires_in: 3.hours
+  attributes :title, :body
+
+  has_many :comments
+
+  url :post
+end
+```
+
+On this example every ```Post``` object will be cached with
+the key ```"post/#{post.id}-#{post.updated_at}"```. You can use this key to expire it as you want,
+but in this case it will be automatically expired after 3 hours.
 
 ## Getting Help
 

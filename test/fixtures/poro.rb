@@ -3,6 +3,14 @@ class Model
     @attributes = hash
   end
 
+  def cache_key
+    "#{self.class.name.downcase}/#{self.id}-#{self.updated_at}"
+  end
+
+  def updated_at
+    @attributes[:updated_at] ||= DateTime.now.to_time.to_i
+  end
+
   def read_attribute_for_serialization(name)
     if name == :id || name == 'id'
       id
@@ -55,7 +63,8 @@ module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
-  attributes :title, :body, :id
+  cache key:'post', expires_in: 0.05
+  attributes :id, :title, :body
 
   has_many :comments
   belongs_to :blog
@@ -77,6 +86,7 @@ SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
+  cache expires_in: 1.day
   attributes :id, :body
 
   belongs_to :post
@@ -84,6 +94,7 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
+  cache key:'writer'
   attributes :id, :name
 
   has_many :posts, embed: :ids

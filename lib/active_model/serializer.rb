@@ -10,6 +10,9 @@ module ActiveModel
       attr_accessor :_attributes
       attr_accessor :_associations
       attr_accessor :_urls
+      attr_accessor :_cache
+      attr_accessor :_cache_key
+      attr_accessor :_cache_options
     end
 
     def self.inherited(base)
@@ -36,7 +39,14 @@ module ActiveModel
       end unless method_defined?(key)
     end
 
-    # Defines an association in the object that should be rendered.
+    # Enables a serializer to be automatically cached
+    def self.cache(options = {})
+      @_cache = ActionController::Base.cache_store if Rails.configuration.action_controller.perform_caching
+      @_cache_key = options.delete(:key)
+      @_cache_options = (options.empty?) ? nil : options
+    end
+
+    # Defines an association in the object should be rendered.
     #
     # The serializer object should implement the association name
     # as a method which should return an array when invoked. If a method
