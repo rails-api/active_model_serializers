@@ -100,3 +100,26 @@ AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
   attribute :id
   attribute :name, key: :title
 end
+
+CommentPreviewSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  belongs_to :post
+end
+
+AuthorPreviewSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :posts
+end
+
+PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
+  def self.root_name
+    'posts'
+  end
+
+  attributes :title, :body, :id
+
+  has_many :comments, serializer: CommentPreviewSerializer
+  belongs_to :author, serializer: AuthorPreviewSerializer
+end

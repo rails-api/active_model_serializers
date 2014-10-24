@@ -18,7 +18,6 @@ module ActiveModel
             end
           else
             @hash[@root] = attributes_for_serializer(serializer, @options)
-
             add_resource_links(@hash[@root], serializer)
           end
 
@@ -46,7 +45,7 @@ module ActiveModel
           resource[:links] ||= {}
           resource[:links][name] = nil
 
-          if serializer
+          if serializer && serializer.object
             type = serialized_object_type(serializer)
             if name.to_s == type || !type
               resource[:links][name] = serializer.id.to_s

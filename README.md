@@ -189,6 +189,12 @@ The `has_many` and `belongs_to` declarations describe relationships between
 resources. By default, when you serialize a `Post`, you will get its `Comment`s
 as well.
 
+You may also use the `:serializer` option to specify a custom serializer class, for example:
+
+```ruby
+  has_many :comments, serializer: CommentPreviewSerializer
+```
+
 The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
 

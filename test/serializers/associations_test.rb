@@ -42,9 +42,9 @@ module ActiveModel
 
       def test_has_many
         assert_equal(
-          { posts: { type: :has_many, options: { embed: :ids } },
-            roles: { type: :has_many, options: { embed: :ids } },
-            bio: { type: :belongs_to, options: {} } },
+          { posts: { type: :has_many, association_options: { embed: :ids } },
+            roles: { type: :has_many, association_options: { embed: :ids } },
+            bio: { type: :belongs_to, association_options: {} } },
           @author_serializer.class._associations
         )
         @author_serializer.each_association do |name, serializer, options|
@@ -64,7 +64,7 @@ module ActiveModel
       end
 
       def test_has_one
-        assert_equal({post: {type: :belongs_to, options: {}}, :author=>{:type=>:belongs_to, :options=>{}}}, @comment_serializer.class._associations)
+        assert_equal({post: {type: :belongs_to, association_options: {}}, :author=>{:type=>:belongs_to, :association_options=>{}}}, @comment_serializer.class._associations)
         @comment_serializer.each_association do |name, serializer, options|
           if name == :post
             assert_equal({}, options)
