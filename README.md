@@ -492,6 +492,17 @@ Serializers are only concerned with multiplicity, and not ownership. `belongs_to
 
 ## Embedding Associations
 
+### ** Notice: embed is deprecated. **
+The use of .embed method on a Serializer will be soon removed, as this should have a global scope and not a class scope.
+Please use the global .setup method instead:
+
+```ruby
+ActiveModel::Serializer.setup do |config|
+  config.embed = :#{type}
+  config.embed_in_root = #{CONFIG.embed_in_root || false}
+end
+```
+
 By default, associations will be embedded inside the serialized object. So if
 you have a post, the outputted JSON will look like:
 
@@ -600,7 +611,7 @@ You can specify that the data be included like this:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, include: true
+  embed :ids, embed_in_root: true
 
   attributes :id, :title, :body
   has_many :comments
@@ -635,7 +646,7 @@ the root document (say, `linked`), you can specify an `embed_in_root_key`:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, include: true, embed_in_root_key: :linked
+  embed :ids, embed_in_root: true, embed_in_root_key: :linked
 
   attributes: :id, :title, :body
   has_many :comments, :tags
@@ -675,7 +686,7 @@ used to reference them:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, include: true
+  embed :ids, embed_in_root: true
 
   attributes :id, :title, :body
   has_many :comments, key: :comment_ids, root: :comment_objects
@@ -703,7 +714,7 @@ objects:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  embed :ids, include: true
+  embed :ids, embed_in_root: true
 
   attributes :id, :title, :body
   has_many :comments, key: :external_id
