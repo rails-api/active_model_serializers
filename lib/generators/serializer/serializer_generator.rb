@@ -15,11 +15,15 @@ module Rails
       private
 
       def attributes_names
-        [:id] + attributes.select { |attr| !attr.reference? }.map { |a| a.name.to_sym }
+        [:id] + attributes.select { |attr| !attr.reference? }.map { |a| a.name.underscore.to_sym }
       end
 
       def association_names
         attributes.select { |attr| attr.reference? }.map { |a| a.name.to_sym }
+      end
+
+      def attributes_transformation
+        attributes.select { |attr| !attr.reference? }.select { |a| a.name.match(/([A-Z][a-z0-9]+)+/) }.map { |a| a.name.to_s }
       end
 
       def parent_class_name
