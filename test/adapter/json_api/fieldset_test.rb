@@ -7,19 +7,13 @@ module ActiveModel
         class FieldsetTest < Minitest::Test
           def setup
             @post = Post.new(title: 'New Post', body: 'Body')
-            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
-            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
-            @post.comments = [@first_comment, @second_comment]
-            @first_comment.post = @post
-            @second_comment.post = @post
+            comment_1 = Comment.new(id: 1, body: 'comment one')
+            comment_2 = Comment.new(id: 2, body: 'comment two')
+            @post.comments = [comment_1, comment_2]
 
             @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
-          end
 
-          def teardown
-            @serializer = nil
-            @adapter = nil
           end
 
           def test_fieldset_with_fields_array
@@ -44,9 +38,13 @@ module ActiveModel
             fieldset = ActiveModel::Serializer::Fieldset.new(@serializer, {post: [:title], comment: [:body]})
 
             assert_equal(
-              [{:body=>"ZOMG A COMMENT" }, {:body=>"ZOMG ANOTHER COMMENT"}],
+              [{:body=>"comment one" }, {:body=>"comment two"}],
               @adapter.serializable_hash({fieldset: fieldset})[:linked][:comments]
             )
+
+            #don't understand how this is getting set.
+            @serializer.class._associations[:comments][:options] = {}
+
           end
 
         end
