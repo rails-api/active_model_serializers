@@ -1,8 +1,8 @@
-# ActiveModel::Serializers 
- 
+# ActiveModel::Serializers
+
 [![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 
-ActiveModel::Serializers brings convention over configuration to your JSON generation. 
+ActiveModel::Serializers brings convention over configuration to your JSON generation.
 
 AMS does this through two components: **serializers** and **adapters**. Serializers describe which attributes and relationships should be serialized. Adapters describe how attributes and relationships should be serialized.
 
@@ -32,7 +32,7 @@ serializers:
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
- 
+
   has_many :comments
 
   url :post
@@ -61,7 +61,7 @@ ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::HalAd
 ```
 
 or
- 
+
 ```ruby
 ActiveModel::Serializer.config.adapter = :hal
 ```
@@ -85,18 +85,18 @@ end
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
 
-## Installation 
- 
-Add this line to your application's Gemfile: 
+## Installation
 
-``` 
-gem 'active_model_serializers' 
+Add this line to your application's Gemfile:
+
 ```
- 
-And then execute: 
+gem 'active_model_serializers'
+```
 
-``` 
-$ bundle 
+And then execute:
+
+```
+$ bundle
 ```
 
 ## Creating a Serializer
@@ -141,8 +141,26 @@ class CommentSerializer < ActiveModel::Serializer
 end
 ```
 
-The attribute names are a **whitelist** of attributes to be serialized. 
- 
+The attribute names are a **whitelist** of attributes to be serialized.
+
+**CamelCased** attributes will be converted to **snake_case** to ensure a AMS
+approach consistence. It will be done be automaticly creating a method in the
+generated serializer. For example:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :full_title, :body
+
+  has_many :comments
+
+  url :post
+
+  def full_title
+    obejct.fullTitle
+  end
+end
+```
+
 The `has_many` and `belongs_to` declarations describe relationships between
 resources. By default, when you serialize a `Post`, you will
 get its `Comment`s as well.
@@ -159,11 +177,11 @@ If you have a question, please [post to Stack
 Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
 
 Thanks!
- 
-## Contributing 
- 
-1. Fork it ( https://github.com/rails-api/active_model_serializers/fork ) 
-2. Create your feature branch (`git checkout -b my-new-feature`) 
-3. Commit your changes (`git commit -am 'Add some feature'`) 
-4. Push to the branch (`git push origin my-new-feature`) 
-5. Create a new Pull Request 
+
+## Contributing
+
+1. Fork it ( https://github.com/rails-api/active_model_serializers/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
