@@ -124,7 +124,14 @@ module ActiveModel
     end
 
     def attributes(options = {})
-      self.class._attributes.dup.each_with_object({}) do |name, hash|
+      attributes =
+        if options[:fields]
+          self.class._attributes & options[:fields]
+        else
+          self.class._attributes.dup
+        end
+
+      attributes.each_with_object({}) do |name, hash|
         hash[name] = send(name)
       end
     end

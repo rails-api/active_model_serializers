@@ -10,9 +10,12 @@ module ActiveModel
         def serializable_hash(options = {})
           @root = (options[:root] || serializer.json_key).to_s.pluralize.to_sym
           @hash = {}
+          @fieldset = options[:fieldset]
 
           if serializer.respond_to?(:each)
-            @hash[@root] = serializer.map{|s| self.class.new(s).serializable_hash[@root] }
+            opt = @fieldset ? {fieldset: @fieldset} : {}
+        
+            @hash[@root] = serializer.map{|s| self.class.new(s).serializable_hash(opt)[@root] }
           else
             @hash[@root] = attributes_for_serializer(serializer, {})
 
@@ -57,6 +60,11 @@ module ActiveModel
         private
 
         def attributes_for_serializer(serializer, options)
+
+          if fields = @fieldset && @fieldset.fields_for(serializer)
+            options[:fields] = fields
+          end
+
           attributes = serializer.attributes(options)
           attributes[:id] = attributes[:id].to_s if attributes[:id]
           attributes

@@ -17,6 +17,7 @@ module ActiveModel
       end
 
       def to_json(options = {})
+        options[:fieldset] = ActiveModel::Serializer::Fieldset.new(serializer, options[:fields])
         serializable_hash(options).to_json
       end
     end
