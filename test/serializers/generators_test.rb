@@ -14,7 +14,7 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   setup :prepare_destination
 
   tests Rails::Generators::SerializerGenerator
-  arguments %w(account name:string description:text business:references)
+  arguments %w(account account_number:integer fullName:string fullDescription:text business:references)
 
   def test_generates_a_serializer
     run_generator
@@ -45,8 +45,16 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   def test_generates_attributes_and_associations
     run_generator
     assert_file "app/serializers/account_serializer.rb" do |serializer|
-      assert_match(/^  attributes :id, :name, :description$/, serializer)
+      assert_match(/^  attributes :id, :account_number, :full_name, :full_description$/, serializer)
       assert_match(/^  has_one :business$/, serializer)
+    end
+  end
+
+  def test_generates_attributes_transformation_methods
+    run_generator
+    assert_file "app/serializers/account_serializer.rb" do |serializer|
+      assert_match(/^  def full_name\n    object.fullName\n  end\n/, serializer)
+      assert_match(/^  def full_description\n    object.fullDescription\n  end\n/, serializer)
     end
   end
 
