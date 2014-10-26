@@ -55,6 +55,7 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
     assert_file "app/serializers/account_serializer.rb" do |serializer|
       assert_match(/^  def full_name\n    object.fullName\n  end\n/, serializer)
       assert_match(/^  def full_description\n    object.fullDescription\n  end\n/, serializer)
+      refute_match(/^  def account_number/, serializer)
     end
   end
 
