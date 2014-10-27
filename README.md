@@ -94,6 +94,22 @@ member when the resource names are included in the `include` option.
   render @posts, include: 'authors,comments'
 ```
 
+### Specify a serializer
+
+If you wish to use a serializer other than the default, you can explicitly pass it to the renderer.
+
+#### 1. For a resource:
+
+```ruby
+  render json: @post, serializer: PostPreviewSerializer
+```
+
+#### 2. For an array resource:
+
+```ruby
+  render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
