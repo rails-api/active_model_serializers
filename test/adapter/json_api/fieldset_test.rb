@@ -17,7 +17,7 @@ module ActiveModel
           end
 
           def test_fieldset_with_fields_array
-            fieldset = ActiveModel::Serializer::Fieldset.new(@serializer, ['title'])
+            fieldset = ActiveModel::Serializer::Fieldset.new(['title'], 'post')
 
             assert_equal(
               {:title=>"New Post", :links=>{:comments=>["1", "2"]}}, 
@@ -26,7 +26,7 @@ module ActiveModel
           end
 
           def test_fieldset_with_hash
-            fieldset = ActiveModel::Serializer::Fieldset.new(@serializer, {post: [:body]})
+            fieldset = ActiveModel::Serializer::Fieldset.new({post: [:body]})
 
             assert_equal(
               {:body=>"Body", :links=>{:comments=>["1", "2"]}}, 
@@ -35,7 +35,7 @@ module ActiveModel
           end
 
           def test_fieldset_with_multiple_hashes
-            fieldset = ActiveModel::Serializer::Fieldset.new(@serializer, {post: [:title], comment: [:body]})
+            fieldset = ActiveModel::Serializer::Fieldset.new({post: [:title], comment: [:body]})
 
             assert_equal(
               [{:body=>"comment one" }, {:body=>"comment two"}],
