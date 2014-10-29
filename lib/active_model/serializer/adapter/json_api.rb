@@ -18,7 +18,7 @@ module ActiveModel
 
             serializer.each_association do |name, association, opts|
               @hash[@root][:links] ||= {}
-              unless options[:embed] == :ids
+              unless opts[:embed] == :ids
                 @hash[:linked] ||= {}
               end
 
