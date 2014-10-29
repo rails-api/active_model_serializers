@@ -8,7 +8,7 @@ module ActiveModel
         end
 
         def serializable_hash(options = {})
-          @root = (options[:root] || serializer.json_key).to_s.pluralize.to_sym
+          @root = (options[:root] || serializer.json_key.to_s.pluralize).to_sym
           @hash = {}
 
           if serializer.respond_to?(:each)
