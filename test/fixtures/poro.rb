@@ -43,6 +43,7 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
 
   has_many :comments
+  belongs_to :author
   url :comments
 end
 

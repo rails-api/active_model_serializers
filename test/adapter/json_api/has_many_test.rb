@@ -6,12 +6,14 @@ module ActiveModel
       class JsonApi
         class HasManyTest < Minitest::Test
           def setup
+            @author = Author.new(id: 1, name: 'Steve K.')
             @post = Post.new(title: 'New Post', body: 'Body')
             @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
             @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
             @post.comments = [@first_comment, @second_comment]
             @first_comment.post = @post
             @second_comment.post = @post
+            @post.author = @author
 
             @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)

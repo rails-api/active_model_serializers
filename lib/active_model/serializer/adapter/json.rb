@@ -13,7 +13,11 @@ module ActiveModel
                 array_serializer = association
                 @result[name] = array_serializer.map { |item| item.attributes(opts) }
               else
-                @result[name] = association.attributes(options)
+                if association
+                  @result[name] = association.attributes(options)
+                else
+                  @result[name] = nil
+                end
               end
             end
           end
