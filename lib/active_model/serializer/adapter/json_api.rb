@@ -18,9 +18,6 @@ module ActiveModel
 
             serializer.each_association do |name, association, opts|
               @hash[@root][:links] ||= {}
-              unless opts[:embed] == :ids
-                @hash[:linked] ||= {}
-              end
 
               if association.respond_to?(:each)
                 add_links(name, association, opts)
@@ -47,7 +44,8 @@ module ActiveModel
             @hash[@root][:links][name][:ids] += serializers.map{|serializer| serializer.id.to_s }
           end
 
-          unless options[:embed] == :ids
+          unless options[:embed] == :ids || serializers.count == 0
+            @hash[:linked] ||= {}
             @hash[:linked][name] ||= []
             @hash[:linked][name] += serializers.map { |item| attributes_for_serializer(item, options) }
           end
@@ -66,7 +64,7 @@ module ActiveModel
 
             unless options[:embed] == :ids
               plural_name = name.to_s.pluralize.to_sym
-
+              @hash[:linked] ||= {}
               @hash[:linked][plural_name] ||= []
               @hash[:linked][plural_name].push attributes_for_serializer(serializer, options)
             end
