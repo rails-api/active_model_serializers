@@ -44,13 +44,17 @@ module ActiveModel
         end
 
         def add_link(name, serializer, options)
-          @hash[@root][:links][name] = serializer.id.to_s
+          if serializer
+            @hash[@root][:links][name] = serializer.id.to_s
 
-          unless options[:embed] == :ids
-            plural_name = name.to_s.pluralize.to_sym
+            unless options[:embed] == :ids
+              plural_name = name.to_s.pluralize.to_sym
 
-            @hash[:linked][plural_name] ||= []
-            @hash[:linked][plural_name].push attributes_for_serializer(serializer, options)
+              @hash[:linked][plural_name] ||= []
+              @hash[:linked][plural_name].push attributes_for_serializer(serializer, options)
+            end
+          else
+            @hash[@root][:links][name] = nil
           end
         end
 
