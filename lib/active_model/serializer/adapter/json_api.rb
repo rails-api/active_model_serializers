@@ -34,8 +34,18 @@ module ActiveModel
         end
 
         def add_links(name, serializers, options)
-          @hash[@root][:links][name] ||= []
-          @hash[@root][:links][name] += serializers.map{|serializer| serializer.id.to_s }
+          if serializers.first
+            type = serializers.first.object.class.to_s.underscore.pluralize
+          end
+          if name.to_s == type || !type
+            @hash[@root][:links][name] ||= []
+            @hash[@root][:links][name] += serializers.map{|serializer| serializer.id.to_s }
+          else
+            @hash[@root][:links][name] ||= {}
+            @hash[@root][:links][name][:type] = type
+            @hash[@root][:links][name][:ids] ||= []
+            @hash[@root][:links][name][:ids] += serializers.map{|serializer| serializer.id.to_s }
+          end
 
           unless options[:embed] == :ids
             @hash[:linked][name] ||= []
@@ -45,7 +55,14 @@ module ActiveModel
 
         def add_link(name, serializer, options)
           if serializer
-            @hash[@root][:links][name] = serializer.id.to_s
+            type = serializer.object.class.to_s.underscore
+            if name.to_s == type || !type
+              @hash[@root][:links][name] = serializer.id.to_s
+            else
+              @hash[@root][:links][name] ||= {}
+              @hash[@root][:links][name][:type] = type
+              @hash[@root][:links][name][:id] = serializer.id.to_s
+            end
 
             unless options[:embed] == :ids
               plural_name = name.to_s.pluralize.to_sym
