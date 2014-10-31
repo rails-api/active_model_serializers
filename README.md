@@ -52,7 +52,7 @@ end
 ```
 
 Generally speaking, you as a user of AMS will write (or generate) these
-serializer classes. By default, they will use the JsonApiAdapter, implemented
+serializer classes. By default, they will use the JsonAdapter, implemented
 by AMS. If you want to use a different adapter, such as a HalAdapter, you can
 change this in an initializer:
 
@@ -84,6 +84,35 @@ end
 
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
+
+### Built in Adapters
+
+There are two built in adapters - `:json` and `:json_api`. You can choose which you'd
+like to use with the `config.adapter` setting, as above:
+
+```ruby
+ActiveModel::Serializer.config.adapter = :json_api
+```
+
+The main difference between the default `:json` and `:json_api` adapters is that 
+`:json_api` includes a "root" element (usually the class name of the serialized 
+object). This is roughly equivalent to Rails' `include_root_in_json` setting and
+useful for compatibility with frameworks such as Ember.
+
+For example, this is a collection of Person objects serialized using `:json_api`:
+
+```json
+{"people":[{"id":"1","first_name":"Eloy"},{"id":"2","first_name":"Alayna"},{"id":"3","first_name":"Elda"},{"id":"4","first_name":"Clara"}
+```
+
+This is the same collection serialized using `:json`:
+
+```json
+[{"id":1,"first_name":"Eloy"},{"id":2,"first_name":"Alayna"},{"id":3,"first_name":"Elda"},{"id":4,"first_name":"Clara"}]
+```
+
+Additionally, the `:json_api` adapter converts IDs to Strings rather than using
+integers (as JavaScript doesn't deal with large integers well).
 
 ## Installation 
  
