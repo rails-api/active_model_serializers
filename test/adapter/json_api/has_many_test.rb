@@ -8,12 +8,15 @@ module ActiveModel
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
             @post = Post.new(id: 1, title: 'New Post', body: 'Body')
+            @post_without_comments = Post.new(id: 2, title: 'Second Post', body: 'Second')
             @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
             @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
             @post.comments = [@first_comment, @second_comment]
+            @post_without_comments.comments = []
             @first_comment.post = @post
             @second_comment.post = @post
             @post.author = @author
+            @post_without_comments.author = nil
             @blog = Blog.new(id: 1, name: "My Blog!!")
             @blog.writer = @author
             @blog.articles = [@post]
@@ -31,6 +34,13 @@ module ActiveModel
                            {id: "1", body: 'ZOMG A COMMENT'},
                            {id: "2", body: 'ZOMG ANOTHER COMMENT'}
                          ], @adapter.serializable_hash[:linked][:comments])
+          end
+
+          def test_no_include_linked_if_comments_is_empty
+            serializer = PostSerializer.new(@post_without_comments)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+
+            assert_nil adapter.serializable_hash[:linked]
           end
 
           def test_include_type_for_association_when_is_different_than_name
