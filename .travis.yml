@@ -10,6 +10,9 @@ rvm:
   - rbx-2
   - ruby-head
 
+install:
+  - bundle install --retry=3
+
 env:
   - "RAILS_VERSION=3.2"
   - "RAILS_VERSION=4.0"
