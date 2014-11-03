@@ -36,7 +36,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item, namespace: @namespace) || DefaultSerializer
-      serializer_class.new(item, scope: scope, key_format: key_format, context: @context, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace)
+      serializer_class.new(item, scope: scope, key_format: key_format, context: @context, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace, meta: @meta)
     end
 
     def serializable_object(options={})
