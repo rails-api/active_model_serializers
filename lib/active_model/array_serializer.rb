@@ -15,7 +15,7 @@ module ActiveModel
       @object          = object
       @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
-      @polymorphic   = options.fetch(:polymorphic, false)
+      @polymorphic     = options.fetch(:polymorphic, false)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
