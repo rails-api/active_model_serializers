@@ -30,6 +30,7 @@ module ActiveModel
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
         @comment.post = @post
+        @comment.author = nil
         @post.author = @author
         @author.posts = [@post]
 
@@ -47,11 +48,17 @@ module ActiveModel
       end
 
       def test_has_one
-        assert_equal({post: {type: :belongs_to, options: {}}}, @comment_serializer.class._associations)
+        assert_equal({post: {type: :belongs_to, options: {}}, :author=>{:type=>:belongs_to, :options=>{}}}, @comment_serializer.class._associations)
         @comment_serializer.each_association do |name, serializer, options|
-          assert_equal(:post, name)
-          assert_equal({}, options)
-          assert_kind_of(PostSerializer, serializer)
+          if name == :post
+            assert_equal({}, options)
+            assert_kind_of(PostSerializer, serializer)
+          elsif name == :author
+            assert_equal({}, options)
+            assert_nil serializer
+          else
+            flunk "Unknown association: #{name}"
+          end
         end
       end
     end

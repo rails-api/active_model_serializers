@@ -13,11 +13,13 @@ module ActiveModel
             @post.comments = [@comment]
             @anonymous_post.comments = []
             @comment.post = @post
+            @comment.author = nil
             @post.author = @author
             @anonymous_post.author = nil
             @blog = Blog.new(id: 1, name: "My Blog!!")
             @blog.writer = @author
             @blog.articles = [@post, @anonymous_post]
+            @author.posts = []
 
             @serializer = CommentSerializer.new(@comment)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
@@ -28,6 +30,7 @@ module ActiveModel
           end
 
           def test_includes_linked_post
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post')
             assert_equal([{id: "42", title: 'New Post', body: 'Body'}], @adapter.serializable_hash[:linked][:posts])
           end
 
