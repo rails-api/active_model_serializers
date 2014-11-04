@@ -20,6 +20,16 @@ module ActiveModel
       def as_json(options = {})
         serializable_hash(options)
       end
+
+      def self.create(resource, options = {})
+        override = options.delete(:adapter)
+        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
+        klass.new(resource, options)
+      end
+
+      def self.adapter_class(adapter)
+        "ActiveModel::Serializer::Adapter::#{adapter.to_s.classify}".safe_constantize
+      end
     end
   end
 end
