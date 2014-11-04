@@ -5,4 +5,9 @@ end
 <% association_names.each do |attribute| -%>
   has_one :<%= attribute %>
 <% end -%>
+<% attributes_transformation.each do |attribute| -%>
+  def <%= attribute.underscore %>
+    object.<%= attribute %>
+  end
+<% end -%>
 <% end -%>
