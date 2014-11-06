@@ -4,12 +4,11 @@ module ActiveModel
       class HasMany < Association
         def initialize(name, *args)
           super
-          @root_key = @embedded_key
+          @root_key = @embedded_key.to_s
           @key ||= case CONFIG.default_key_type
             when :name then name.to_s.pluralize
             else "#{name.to_s.singularize}_ids"
           end
-
         end
 
         def serializer_class(object, _)
