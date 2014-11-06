@@ -38,11 +38,13 @@ end
 Post = Class.new(Model)
 Comment = Class.new(Model)
 Author = Class.new(Model)
+Blog = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
 
   has_many :comments
+  belongs_to :author
   url :comments
 end
 
@@ -50,10 +52,18 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :body
 
   belongs_to :post
+  belongs_to :author
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :name
 
   has_many :posts, embed: :ids
+end
+
+BlogSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+
+  belongs_to :writer
+  has_many :articles
 end

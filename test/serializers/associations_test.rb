@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class AssocationsTest < Minitest::Test
+    class AssociationsTest < Minitest::Test
       class Model
         def initialize(hash={})
           @attributes = hash
@@ -25,30 +25,40 @@ module ActiveModel
 
 
       def setup
+        @author = Author.new(name: 'Steve K.')
         @post = Post.new({ title: 'New Post', body: 'Body' })
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
         @comment.post = @post
+        @comment.author = nil
+        @post.author = @author
+        @author.posts = [@post]
 
-        @post_serializer = PostSerializer.new(@post)
+        @author_serializer = AuthorSerializer.new(@author)
         @comment_serializer = CommentSerializer.new(@comment)
       end
 
       def test_has_many
-        assert_equal({comments: {type: :has_many, options: {}}}, @post_serializer.class._associations)
-        @post_serializer.each_association do |name, serializer, options|
-          assert_equal(:comments, name)
-          assert_equal({}, options)
+        assert_equal({posts: {type: :has_many, options: {embed: :ids}}}, @author_serializer.class._associations)
+        @author_serializer.each_association do |name, serializer, options|
+          assert_equal(:posts, name)
+          assert_equal({embed: :ids}, options)
           assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
         end
       end
 
       def test_has_one
-        assert_equal({post: {type: :belongs_to, options: {}}}, @comment_serializer.class._associations)
+        assert_equal({post: {type: :belongs_to, options: {}}, :author=>{:type=>:belongs_to, :options=>{}}}, @comment_serializer.class._associations)
         @comment_serializer.each_association do |name, serializer, options|
-          assert_equal(:post, name)
-          assert_equal({}, options)
-          assert_kind_of(PostSerializer, serializer)
+          if name == :post
+            assert_equal({}, options)
+            assert_kind_of(PostSerializer, serializer)
+          elsif name == :author
+            assert_equal({}, options)
+            assert_nil serializer
+          else
+            flunk "Unknown association: #{name}"
+          end
         end
       end
     end

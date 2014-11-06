@@ -10,13 +10,14 @@ module ActiveModel
 
       def initialize(serializer, options = {})
         @serializer = serializer
+        @options = options
       end
 
       def serializable_hash(options = {})
         raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
-      def to_json(options = {})
+      def as_json(options = {})
         if fields = options.delete(:fields)
           options[:fieldset] = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
         end

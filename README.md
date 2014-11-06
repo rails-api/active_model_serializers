@@ -1,8 +1,8 @@
-# ActiveModel::Serializers 
- 
+# ActiveModel::Serializers
+
 [![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 
-ActiveModel::Serializers brings convention over configuration to your JSON generation. 
+ActiveModel::Serializers brings convention over configuration to your JSON generation.
 
 AMS does this through two components: **serializers** and **adapters**. Serializers describe which attributes and relationships should be serialized. Adapters describe how attributes and relationships should be serialized.
 
@@ -32,7 +32,7 @@ serializers:
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
- 
+
   has_many :comments
 
   url :post
@@ -61,7 +61,7 @@ ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::HalAd
 ```
 
 or
- 
+
 ```ruby
 ActiveModel::Serializer.config.adapter = :hal
 ```
@@ -85,18 +85,27 @@ end
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
 
-## Installation 
- 
-Add this line to your application's Gemfile: 
+### Built in Adapters
 
-``` 
-gem 'active_model_serializers' 
+The `:json_api` adapter will include the associated resources in the `"linked"`
+member when the resource names are included in the `include` option.
+
+```ruby
+  render @posts, include: 'authors,comments'
 ```
- 
-And then execute: 
 
-``` 
-$ bundle 
+## Installation
+
+Add this line to your application's Gemfile:
+
+```
+gem 'active_model_serializers'
+```
+
+And then execute:
+
+```
+$ bundle
 ```
 
 ## Creating a Serializer
@@ -141,29 +150,27 @@ class CommentSerializer < ActiveModel::Serializer
 end
 ```
 
-The attribute names are a **whitelist** of attributes to be serialized. 
- 
+The attribute names are a **whitelist** of attributes to be serialized.
+
 The `has_many` and `belongs_to` declarations describe relationships between
-resources. By default, when you serialize a `Post`, you will
-get its `Comment`s as well.
+resources. By default, when you serialize a `Post`, you will get its `Comment`s
+as well.
 
 The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
 
 ## Getting Help
 
-If you find a bug, please report an
-[Issue](https://github.com/rails-api/active_model_serializers/issues/new).
+If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).
 
-If you have a question, please [post to Stack
-Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
+If you have a question, please [post to Stack Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
 
 Thanks!
- 
-## Contributing 
- 
-1. Fork it ( https://github.com/rails-api/active_model_serializers/fork ) 
-2. Create your feature branch (`git checkout -b my-new-feature`) 
-3. Commit your changes (`git commit -am 'Add some feature'`) 
-4. Push to the branch (`git push origin my-new-feature`) 
-5. Create a new Pull Request 
+
+## Contributing
+
+1. Fork it ( https://github.com/rails-api/active_model_serializers/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
