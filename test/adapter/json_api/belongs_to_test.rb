@@ -34,6 +34,11 @@ module ActiveModel
             assert_equal([{id: "42", title: 'New Post', body: 'Body'}], @adapter.serializable_hash[:linked][:posts])
           end
 
+          def test_limiting_linked_post_fields
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: {post: [:title]})
+            assert_equal([{title: 'New Post'}], @adapter.serializable_hash[:linked][:posts])
+          end
+
           def test_include_nil_author
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)

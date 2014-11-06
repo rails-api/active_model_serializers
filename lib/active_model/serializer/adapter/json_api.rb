@@ -7,15 +7,20 @@ module ActiveModel
           serializer.root = true
           @hash = {}
           @top = @options.fetch(:top) { @hash }
+
+          if fields = options.delete(:fields)
+            @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
+          else
+            @fieldset = options[:fieldset]
+          end
         end
 
         def serializable_hash(options = {})
           @root = (@options[:root] || serializer.json_key.to_s.pluralize).to_sym
-          @fieldset = options[:fieldset]
 
           if serializer.respond_to?(:each)
             @hash[@root] = serializer.map do |s|
-              self.class.new(s, @options.merge(top: @top)).serializable_hash[@root]
+              self.class.new(s, @options.merge(top: @top, fieldset: @fieldset)).serializable_hash[@root]
             end
           else
             @hash[@root] = attributes_for_serializer(serializer, @options)
@@ -94,7 +99,6 @@ module ActiveModel
         private
 
         def attributes_for_serializer(serializer, options)
-
           if fields = @fieldset && @fieldset.fields_for(serializer)
             options[:fields] = fields
           end

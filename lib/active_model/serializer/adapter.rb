@@ -18,11 +18,7 @@ module ActiveModel
       end
 
       def as_json(options = {})
-        if fields = options.delete(:fields)
-          options[:fieldset] = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
-        end
-
-        serializable_hash(options).to_json
+        serializable_hash(options)
       end
     end
   end

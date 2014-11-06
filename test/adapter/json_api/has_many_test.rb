@@ -40,6 +40,14 @@ module ActiveModel
                          ], @adapter.serializable_hash[:linked][:comments])
           end
 
+          def test_limit_fields_of_linked_comments
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments', fields: {comment: [:body]})
+            assert_equal([
+                           {body: 'ZOMG A COMMENT'},
+                           {body: 'ZOMG ANOTHER COMMENT'}
+                         ], @adapter.serializable_hash[:linked][:comments])
+          end
+
           def test_no_include_linked_if_comments_is_empty
             serializer = PostSerializer.new(@post_without_comments)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
