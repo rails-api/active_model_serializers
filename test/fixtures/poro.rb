@@ -95,3 +95,8 @@ PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
     'paginated'
   end
 end
+
+AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
+  attribute :id
+  attribute :name, key: :title
+end

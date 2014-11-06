@@ -21,12 +21,19 @@ module ActiveModel
     def self.attributes(*attrs)
       @_attributes.concat attrs
 
-
       attrs.each do |attr|
         define_method attr do
           object.read_attribute_for_serialization(attr)
         end unless method_defined?(attr)
       end
+    end
+
+    def self.attribute(attr, options = {})
+      key = options.fetch(:key, attr)
+      @_attributes.concat [key]
+      define_method key do
+        object.read_attribute_for_serialization(attr)
+      end unless method_defined?(key)
     end
 
     # Defines an association in the object should be rendered.

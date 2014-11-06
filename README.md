@@ -69,6 +69,18 @@ ActiveModel::Serializer.config.adapter = :hal
 You won't need to implement an adapter unless you wish to use a new format or
 media type with AMS.
 
+If you would like the key in the outputted JSON to be different from its name in ActiveRecord, you can use the :key option to customize it:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  # look up :subject on the model, but use +title+ in the JSON
+  attribute :subject, :key => :title
+  has_many :comments
+end
+```
+
 In your controllers, when you use `render :json`, Rails will now first search
 for a serializer for the object and use it if available.
 
