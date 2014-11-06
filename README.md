@@ -224,13 +224,14 @@ $ rails g serializer post
 ```
 
 The generated seralizer will contain basic `attributes` and
-`has_many`/`belongs_to` declarations, based on the model. For example:
+`has_many`/`has_one`/`belongs_to` declarations, based on the model. For example:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
   has_many :comments
+  has_one :author
 
   url :post
 end
@@ -250,7 +251,7 @@ end
 
 The attribute names are a **whitelist** of attributes to be serialized.
 
-The `has_many` and `belongs_to` declarations describe relationships between
+The `has_many`, `has_one`, and `belongs_to` declarations describe relationships between
 resources. By default, when you serialize a `Post`, you will get its `Comment`s
 as well.
 

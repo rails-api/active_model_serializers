@@ -23,7 +23,6 @@ module ActiveModel
         end
       end
 
-
       def setup
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
@@ -43,11 +42,11 @@ module ActiveModel
         @comment_serializer = CommentSerializer.new(@comment)
       end
 
-      def test_has_many
+      def test_has_many_and_has_one
         assert_equal(
           { posts: { type: :has_many, association_options: { embed: :ids } },
             roles: { type: :has_many, association_options: { embed: :ids } },
-            bio: { type: :belongs_to, association_options: {} } },
+            bio: { type: :has_one, association_options: {} } },
           @author_serializer.class._associations
         )
         @author_serializer.each_association do |name, serializer, options|
@@ -67,7 +66,11 @@ module ActiveModel
       end
 
       def test_belongs_to
-        assert_equal({post: {type: :belongs_to, association_options: {}}, :author=>{:type=>:belongs_to, :association_options=>{}}}, @comment_serializer.class._associations)
+        assert_equal(
+          { post: { type: :belongs_to, association_options: {} },
+            author: { type: :belongs_to, association_options: {} } },
+          @comment_serializer.class._associations
+        )
         @comment_serializer.each_association do |name, serializer, options|
           if name == :post
             assert_equal({}, options)
