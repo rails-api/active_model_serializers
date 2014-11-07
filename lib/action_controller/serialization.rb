@@ -9,12 +9,14 @@ module ActionController
     ADAPTER_OPTION_KEYS = [:include, :root]
 
     def get_serializer(resource, options)
-      @_serializer ||= if (serializer = options.delete :serializer)
-        options[:serializer] = options.delete :each_serializer
-        serializer
-      else
-        ActiveModel::Serializer.serializer_for(resource)
+      @_serializer ||= options.delete(:serializer)
+      @_serializer ||= ActiveModel::Serializer.serializer_for(resource)
+
+      if options.key?(:each_serializer)
+        options[:serializer] = options.delete(:each_serializer)
       end
+
+      @_serializer
     end
 
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|

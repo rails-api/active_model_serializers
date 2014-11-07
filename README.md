@@ -107,7 +107,12 @@ If you wish to use a serializer other than the default, you can explicitly pass 
 #### 2. For an array resource:
 
 ```ruby
-  render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
+# Use the default `ArraySerializer`, which will use `each_serializer` to
+# serialize each element
+render json: @posts, each_serializer: PostPreviewSerializer
+
+# Or, you can explicitly provide the collection serializer as well
+render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
 ```
 
 ## Installation
