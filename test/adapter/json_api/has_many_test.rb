@@ -8,6 +8,7 @@ module ActiveModel
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
             @author.posts = []
+            @author.bio = nil
             @post = Post.new(id: 1, title: 'New Post', body: 'Body')
             @post_without_comments = Post.new(id: 2, title: 'Second Post', body: 'Second')
             @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')

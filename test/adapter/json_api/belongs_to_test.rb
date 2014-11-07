@@ -7,6 +7,7 @@ module ActiveModel
         class BelongsToTest < Minitest::Test
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
+            @author.bio = nil
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
             @anonymous_post = Post.new(id: 43, title: 'Hello!!', body: 'Hello, world!!')
             @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')

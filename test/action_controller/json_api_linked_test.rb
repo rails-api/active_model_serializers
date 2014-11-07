@@ -7,8 +7,10 @@ module ActionController
         def setup_post
           @author = Author.new(id: 1, name: 'Steve K.')
           @author.posts = []
+          @author.bio = nil
           @author2 = Author.new(id: 2, name: 'Anonymous')
           @author2.posts = []
+          @author2.bio = nil
           @post = Post.new(id: 1, title: 'New Post', body: 'Body')
           @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
