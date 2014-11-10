@@ -83,11 +83,9 @@ module ActiveModel
             @top[:linked][plural_name].push attrs unless @top[:linked][plural_name].include? attrs
           end
 
-          unless serializer.respond_to?(:each)
-            serializer.each_association do |name, association, opts|
-              add_linked(name, association, resource) if association
-            end
-          end
+          serializer.each_association do |name, association, opts|
+            add_linked(name, association, resource_path) if association
+          end if include_nested_assoc? resource_path
         end
 
         private
@@ -98,8 +96,20 @@ module ActiveModel
           attributes
         end
 
-        def include_assoc? assoc
-          @options[:include] && @options[:include].split(',').include?(assoc.to_s)
+        def include_assoc?(assoc)
+          return false unless @options[:include]
+          check_assoc("#{assoc}$")
+        end
+
+        def include_nested_assoc?(assoc)
+          return false unless @options[:include]
+          check_assoc("#{assoc}.")
+        end
+
+        def check_assoc(assoc)
+          @options[:include].split(',').any? do |s|
+            s.match(/^#{assoc.gsub('.', '\.')}/)
+          end
         end
       end
     end
