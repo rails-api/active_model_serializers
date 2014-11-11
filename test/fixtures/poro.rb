@@ -40,6 +40,7 @@ Comment = Class.new(Model)
 Author = Class.new(Model)
 Bio = Class.new(Model)
 Blog = Class.new(Model)
+Role = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
@@ -60,7 +61,14 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :name
 
   has_many :posts, embed: :ids
+  has_many :roles, embed: :ids
   belongs_to :bio
+end
+
+RoleSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+
+  belongs_to :author
 end
 
 BioSerializer = Class.new(ActiveModel::Serializer) do

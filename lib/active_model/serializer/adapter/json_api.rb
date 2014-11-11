@@ -77,10 +77,13 @@ module ActiveModel
           resource_path = [parent, resource].compact.join('.')
           if include_assoc? resource_path
             plural_name = resource.to_s.pluralize.to_sym
-            attrs = attributes_for_serializer(serializer, @options)
+            attrs = [attributes_for_serializer(serializer, @options)].flatten
             @top[:linked] ||= {}
             @top[:linked][plural_name] ||= []
-            @top[:linked][plural_name].push attrs unless @top[:linked][plural_name].include? attrs
+
+            attrs.each do |attrs|
+              @top[:linked][plural_name].push(attrs) unless @top[:linked][plural_name].include?(attrs)
+            end
           end
 
           serializer.each_association do |name, association, opts|
@@ -91,9 +94,19 @@ module ActiveModel
         private
 
         def attributes_for_serializer(serializer, options)
-          attributes = serializer.attributes(options)
-          attributes[:id] = attributes[:id].to_s if attributes[:id]
-          attributes
+          if serializer.respond_to?(:each)
+            result = []
+            serializer.each do |object|
+              attributes = object.attributes(options)
+              attributes[:id] = attributes[:id].to_s if attributes[:id]
+              result << attributes
+            end
+          else
+            result = serializer.attributes(options)
+            result[:id] = result[:id].to_s if result[:id]
+          end
+
+          result
         end
 
         def include_assoc?(assoc)

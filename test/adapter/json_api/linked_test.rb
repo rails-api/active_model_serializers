@@ -16,6 +16,7 @@ module ActiveModel
             @second_post.author = @author
             @author.posts = [@first_post, @second_post]
             @author.bio = @bio
+            @author.roles = []
             @bio.author = @author
 
             @serializer = ArraySerializer.new([@first_post, @second_post])
