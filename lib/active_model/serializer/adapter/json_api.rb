@@ -62,7 +62,7 @@ module ActiveModel
           resource_path = [parent, resource_name].compact.join('.')
 
           if include_assoc?(resource_path)
-            plural_name = resource_name.to_s.pluralize.to_sym
+            plural_name = serialized_object_type(serializer).pluralize.to_sym
             attrs = [attributes_for_serializer(serializer, @options)].flatten
             @top[:linked] ||= {}
             @top[:linked][plural_name] ||= []
