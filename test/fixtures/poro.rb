@@ -35,6 +35,12 @@ class ProfileSerializer < ActiveModel::Serializer
   urls :posts, :comments
 end
 
+class ProfilePreviewSerializer < ActiveModel::Serializer
+  attributes :name
+
+  urls :posts, :comments
+end
+
 Post = Class.new(Model)
 Comment = Class.new(Model)
 Author = Class.new(Model)
@@ -82,4 +88,10 @@ BlogSerializer = Class.new(ActiveModel::Serializer) do
 
   belongs_to :writer
   has_many :articles
+end
+
+PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
+  def json_key
+    'paginated'
+  end
 end

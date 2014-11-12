@@ -8,16 +8,27 @@ module ActionController
 
     ADAPTER_OPTION_KEYS = [:include, :root]
 
+    def get_serializer(resource, options)
+      @_serializer ||= options.delete(:serializer)
+      @_serializer ||= ActiveModel::Serializer.serializer_for(resource)
+
+      if options.key?(:each_serializer)
+        options[:serializer] = options.delete(:each_serializer)
+      end
+
+      @_serializer
+    end
+
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
-        serializer = ActiveModel::Serializer.serializer_for(resource)
 
-        if serializer
-          adapter_opts, serializer_opts =
-            options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }
+        adapter_opts, serializer_opts =
+          options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
+
+        if (serializer = get_serializer(resource, serializer_opts))
           # omg hax
-          object = serializer.new(resource, Hash[serializer_opts])
-          adapter = ActiveModel::Serializer.adapter.new(object, Hash[adapter_opts])
+          object = serializer.new(resource, serializer_opts)
+          adapter = ActiveModel::Serializer.adapter.new(object, adapter_opts)
           super(adapter, options)
         else
           super(resource, options)
