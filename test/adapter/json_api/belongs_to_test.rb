@@ -32,7 +32,16 @@ module ActiveModel
 
           def test_includes_linked_post
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post')
-            assert_equal([{id: "42", title: 'New Post', body: 'Body'}], @adapter.serializable_hash[:linked][:posts])
+            expected = [{
+              id: "42",
+              title: 'New Post',
+              body: 'Body',
+              links: {
+                comments: ["1"],
+                author: "1"
+              }
+            }]
+            assert_equal expected, @adapter.serializable_hash[:linked][:posts]
           end
 
           def test_include_nil_author

@@ -35,10 +35,22 @@ module ActiveModel
 
           def test_includes_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments')
-            assert_equal([
-                           {id: "1", body: 'ZOMG A COMMENT'},
-                           {id: "2", body: 'ZOMG ANOTHER COMMENT'}
-                         ], @adapter.serializable_hash[:linked][:comments])
+            expected = [{
+              id: "1",
+              body: 'ZOMG A COMMENT',
+              links: {
+                post: "1",
+                author: nil
+              }
+            }, {
+              id: "2",
+              body: 'ZOMG ANOTHER COMMENT',
+              links: {
+                post: "1",
+                author: nil
+              }
+            }]
+            assert_equal expected, @adapter.serializable_hash[:linked][:comments]
           end
 
           def test_no_include_linked_if_comments_is_empty
