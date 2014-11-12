@@ -6,10 +6,13 @@ module ActionController
       class MyController < ActionController::Base
         def setup_post
           @role1 = Role.new(id: 1, name: 'admin')
+          @role2 = Role.new(id: 2, name: 'colab')
           @author = Author.new(id: 1, name: 'Steve K.')
           @author.posts = []
           @author.bio = nil
-          @author.roles = [@role1]
+          @author.roles = [@role1, @role2]
+          @role1.author = @author
+          @role2.author = @author
           @author2 = Author.new(id: 2, name: 'Anonymous')
           @author2.posts = []
           @author2.bio = nil
@@ -98,11 +101,25 @@ module ActionController
         expected_linked = {
           "authors" => [{
             "id" => "1",
-            "name" => "Steve K."
+            "name" => "Steve K.",
+            "links" => {
+              "posts" => [],
+              "roles" => ["1", "2"],
+              "bio" => nil
+            }
           }],
           "roles"=>[{
             "id" => "1",
-            "name" => "admin"
+            "name" => "admin",
+            "links" => {
+              "author" => "1"
+            }
+          }, {
+            "id" => "2",
+            "name" => "colab",
+            "links" => {
+              "author" => "1"
+            }
           }]
         }
         assert_equal expected_linked, response['linked']

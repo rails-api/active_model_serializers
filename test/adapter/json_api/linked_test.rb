@@ -35,10 +35,42 @@ module ActiveModel
                            { title: "Hello!!", body: "Hello, world!!", id: "1", links: { comments: ['1', '2'], author: "1" } },
                            { title: "New Post", body: "Body", id: "2", links: { comments: [], :author => "1" } }
                          ], @adapter.serializable_hash[:posts])
-            assert_equal({ :comments => [{ :id => "1", :body => "ZOMG A COMMENT" },
-                                         { :id => "2", :body => "ZOMG ANOTHER COMMENT" }],
-                           :authors => [{ :id => "1", :name => "Steve K." }],
-                           :bios=>[{:id=>"1", :content=>"AMS Contributor"}] }, @adapter.serializable_hash[:linked])
+
+
+            expected = {
+              comments: [{
+                id: "1",
+                body: "ZOMG A COMMENT",
+                links: {
+                  post: "1",
+                  author: nil
+                }
+              }, {
+                id: "2",
+                body: "ZOMG ANOTHER COMMENT",
+                links: {
+                  post: "1",
+                  author: nil
+                }
+              }],
+              authors: [{
+                id: "1",
+                name: "Steve K.",
+                links: {
+                  posts: ["1", "2"],
+                  roles: [],
+                  bio: "1"
+                }
+              }],
+              bios: [{
+                id: "1",
+                content: "AMS Contributor",
+                links: {
+                  author: "1"
+                }
+              }]
+            }
+            assert_equal expected, @adapter.serializable_hash[:linked]
           end
         end
       end
