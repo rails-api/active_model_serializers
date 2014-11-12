@@ -5,12 +5,15 @@ module ActionController
     class JsonApiLinkedTest < ActionController::TestCase
       class MyController < ActionController::Base
         def setup_post
+          @role1 = Role.new(id: 1, name: 'admin')
           @author = Author.new(id: 1, name: 'Steve K.')
           @author.posts = []
           @author.bio = nil
+          @author.roles = [@role1]
           @author2 = Author.new(id: 2, name: 'Anonymous')
           @author2.posts = []
           @author2.bio = nil
+          @author2.roles = []
           @post = Post.new(id: 1, title: 'New Post', body: 'Body')
           @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
@@ -51,6 +54,13 @@ module ActionController
           end
         end
 
+        def render_resource_with_nested_has_many_include
+          with_json_api_adapter do
+            setup_post
+            render json: @post, include: 'author,author.roles'
+          end
+        end
+
         def render_collection_without_include
           with_json_api_adapter do
             setup_post
@@ -80,6 +90,22 @@ module ActionController
         assert response.key? 'linked'
         assert_equal 1, response['linked']['authors'].size
         assert_equal 'Steve K.', response['linked']['authors'].first['name']
+      end
+
+      def test_render_resource_with_nested_has_many_include
+        get :render_resource_with_nested_has_many_include
+        response = JSON.parse(@response.body)
+        expected_linked = {
+          "authors" => [{
+            "id" => "1",
+            "name" => "Steve K."
+          }],
+          "roles"=>[{
+            "id" => "1",
+            "name" => "admin"
+          }]
+        }
+        assert_equal expected_linked, response['linked']
       end
 
       def test_render_resource_with_nested_include
