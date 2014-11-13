@@ -58,25 +58,30 @@ module ActiveModel
           end
         end
 
-        def add_linked(resource_name, serializer, parent = nil)
+        def add_linked(resource_name, serializers, parent = nil)
+          serializers = Array(serializers) unless serializers.respond_to?(:each)
+
           resource_path = [parent, resource_name].compact.join('.')
 
           if include_assoc?(resource_path)
-            plural_name = serialized_object_type(serializer).pluralize.to_sym
-            attrs = [attributes_for_serializer(serializer, @options)].flatten
+            plural_name = serialized_object_type(serializers).pluralize.to_sym
             @top[:linked] ||= {}
             @top[:linked][plural_name] ||= []
 
-            attrs.each do |attrs|
+            serializers.each do |serializer|
+              attrs = attributes_for_serializer(serializer, @options)
+
               add_resource_links(attrs, serializer, add_linked: false)
 
               @top[:linked][plural_name].push(attrs) unless @top[:linked][plural_name].include?(attrs)
             end
           end
 
-          serializer.each_association do |name, association, opts|
-            add_linked(name, association, resource_path) if association
-          end if include_nested_assoc? resource_path
+          serializers.each do |serializer|
+            serializer.each_association do |name, association, opts|
+              add_linked(name, association, resource_path) if association
+            end if include_nested_assoc? resource_path
+          end
         end
 
         def attributes_for_serializer(serializer, options)
@@ -124,7 +129,7 @@ module ActiveModel
         def add_resource_links(attrs, serializer, options = {})
           options[:add_linked] = options.fetch(:add_linked, true)
 
-          Array(serializer).first.each_association do |name, association, opts|
+          serializer.each_association do |name, association, opts|
             attrs[:links] ||= {}
 
             if association.respond_to?(:each)
