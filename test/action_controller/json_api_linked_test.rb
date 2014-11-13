@@ -28,54 +28,34 @@ module ActionController
           @second_comment.author = nil
         end
 
-        def with_json_api_adapter
-          old_adapter = ActiveModel::Serializer.config.adapter
-          ActiveModel::Serializer.config.adapter = :json_api
-          yield
-        ensure
-          ActiveModel::Serializer.config.adapter = old_adapter
-        end
-
         def render_resource_without_include
-          with_json_api_adapter do
-            setup_post
-            render json: @post
-          end
+          setup_post
+          render json: @post, adapter: :json_api
         end
 
         def render_resource_with_include
-          with_json_api_adapter do
-            setup_post
-            render json: @post, include: 'author'
-          end
+          setup_post
+          render json: @post, include: 'author', adapter: :json_api
         end
 
         def render_resource_with_nested_include
-          with_json_api_adapter do
-            setup_post
-            render json: @post, include: 'comments.author'
-          end
+          setup_post
+          render json: @post, include: 'comments.author', adapter: :json_api
         end
 
         def render_resource_with_nested_has_many_include
-          with_json_api_adapter do
-            setup_post
-            render json: @post, include: 'author,author.roles'
-          end
+          setup_post
+          render json: @post, include: 'author,author.roles', adapter: :json_api
         end
 
         def render_collection_without_include
-          with_json_api_adapter do
-            setup_post
-            render json: [@post]
-          end
+          setup_post
+          render json: [@post], adapter: :json_api
         end
 
         def render_collection_with_include
-          with_json_api_adapter do
-            setup_post
-            render json: [@post], include: 'author,comments'
-          end
+          setup_post
+          render json: [@post], include: 'author,comments', adapter: :json_api
         end
       end
 

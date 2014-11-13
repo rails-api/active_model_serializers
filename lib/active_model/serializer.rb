@@ -90,8 +90,7 @@ module ActiveModel
     def self.adapter
       adapter_class = case config.adapter
       when Symbol
-        class_name = "ActiveModel::Serializer::Adapter::#{config.adapter.to_s.classify}"
-        class_name.safe_constantize
+        ActiveModel::Serializer::Adapter.adapter_class(config.adapter)
       when Class
         config.adapter
       end
