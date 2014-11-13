@@ -8,6 +8,7 @@ module ActiveModel
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
             @author.bio = nil
+            @author.roles = []
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
             @anonymous_post = Post.new(id: 43, title: 'Hello!!', body: 'Hello, world!!')
             @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
@@ -54,7 +55,53 @@ module ActiveModel
           def test_include_type_for_association_when_is_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            assert_equal({type: "author", id: "1"}, adapter.serializable_hash[:blogs][:links][:writer])
+            links = adapter.serializable_hash[:blogs][:links]
+            expected = {
+              writer: {
+                type: "author",
+                id: "1"
+              },
+              articles: {
+                type: "posts",
+                ids: ["42", "43"]
+              }
+            }
+            assert_equal expected, links
+          end
+
+          def test_include_linked_resources_with_type_name
+            serializer = BlogSerializer.new(@blog)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: "writer,articles")
+            linked = adapter.serializable_hash[:linked]
+            expected = {
+              authors: [{
+                id: "1",
+                name: "Steve K.",
+                links: {
+                  posts: [],
+                  roles: [],
+                  bio: nil
+                }
+              }],
+              posts: [{
+                title: "New Post",
+                body: "Body",
+                id: "42",
+                links: {
+                  comments: ["1"],
+                  author: "1"
+                }
+              }, {
+                title: "Hello!!",
+                body: "Hello, world!!",
+                id: "43",
+                links: {
+                  comments: [],
+                  author: nil
+                }
+              }]
+            }
+            assert_equal expected, linked
           end
         end
       end
