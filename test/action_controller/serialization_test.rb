@@ -25,13 +25,9 @@ module ActionController
         end
 
         def render_using_custom_root_in_adapter_with_a_default
-          old_adapter = ActiveModel::Serializer.config.adapter
           # JSON-API adapter sets root by default
-          ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          render json: @profile, root: "profile"
-        ensure
-          ActiveModel::Serializer.config.adapter = old_adapter
+          render json: @profile, root: "profile", adapter: :json_api
         end
 
         def render_array_using_implicit_serializer

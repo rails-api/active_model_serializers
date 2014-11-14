@@ -26,6 +26,8 @@ module ActiveModel
 
       def setup
         @author = Author.new(name: 'Steve K.')
+        @author.bio = nil
+        @author.roles = []
         @post = Post.new({ title: 'New Post', body: 'Body' })
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
@@ -39,11 +41,25 @@ module ActiveModel
       end
 
       def test_has_many
-        assert_equal({posts: {type: :has_many, options: {embed: :ids}}}, @author_serializer.class._associations)
+        assert_equal(
+          { posts: { type: :has_many, options: { embed: :ids } },
+            roles: { type: :has_many, options: { embed: :ids } },
+            bio: { type: :belongs_to, options: {} } },
+          @author_serializer.class._associations
+        )
         @author_serializer.each_association do |name, serializer, options|
-          assert_equal(:posts, name)
-          assert_equal({embed: :ids}, options)
-          assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
+          if name == :posts
+            assert_equal({embed: :ids}, options)
+            assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
+          elsif name == :bio
+            assert_equal({}, options)
+            assert_nil serializer
+          elsif name == :roles
+            assert_equal({embed: :ids}, options)
+            assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
+          else
+            flunk "Unknown association: #{name}"
+          end
         end
       end
 

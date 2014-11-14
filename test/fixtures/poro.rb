@@ -35,10 +35,18 @@ class ProfileSerializer < ActiveModel::Serializer
   urls :posts, :comments
 end
 
+class ProfilePreviewSerializer < ActiveModel::Serializer
+  attributes :name
+
+  urls :posts, :comments
+end
+
 Post = Class.new(Model)
 Comment = Class.new(Model)
 Author = Class.new(Model)
+Bio = Class.new(Model)
 Blog = Class.new(Model)
+Role = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
@@ -59,6 +67,20 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :name
 
   has_many :posts, embed: :ids
+  has_many :roles, embed: :ids
+  belongs_to :bio
+end
+
+RoleSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+
+  belongs_to :author
+end
+
+BioSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :content
+
+  belongs_to :author
 end
 
 BlogSerializer = Class.new(ActiveModel::Serializer) do
@@ -66,4 +88,15 @@ BlogSerializer = Class.new(ActiveModel::Serializer) do
 
   belongs_to :writer
   has_many :articles
+end
+
+PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
+  def json_key
+    'paginated'
+  end
+end
+
+AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
+  attribute :id
+  attribute :name, key: :title
 end

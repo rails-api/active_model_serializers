@@ -7,6 +7,8 @@ module ActiveModel
         class HasManyEmbedIdsTest < Minitest::Test
           def setup
             @author = Author.new(name: 'Steve K.')
+            @author.bio = nil
+            @author.roles = nil
             @first_post = Post.new(id: 1, title: 'Hello!!', body: 'Hello, world!!')
             @second_post = Post.new(id: 2, title: 'New Post', body: 'Body')
             @author.posts = [@first_post, @second_post]

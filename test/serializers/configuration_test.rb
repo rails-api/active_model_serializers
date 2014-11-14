@@ -7,7 +7,7 @@ module ActiveModel
         assert_equal ActiveModel::Serializer::ArraySerializer, ActiveModel::Serializer.config.array_serializer
       end
 
-      def test_adapter
+      def test_default_adapter
         assert_equal :json, ActiveModel::Serializer.config.adapter
       end
     end

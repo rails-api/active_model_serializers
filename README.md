@@ -69,6 +69,18 @@ ActiveModel::Serializer.config.adapter = :hal
 You won't need to implement an adapter unless you wish to use a new format or
 media type with AMS.
 
+If you would like the key in the outputted JSON to be different from its name in ActiveRecord, you can use the :key option to customize it:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  # look up :subject on the model, but use +title+ in the JSON
+  attribute :subject, :key => :title
+  has_many :comments
+end
+```
+
 In your controllers, when you use `render :json`, Rails will now first search
 for a serializer for the object and use it if available.
 
@@ -92,6 +104,27 @@ member when the resource names are included in the `include` option.
 
 ```ruby
   render @posts, include: 'authors,comments'
+```
+
+### Specify a serializer
+
+If you wish to use a serializer other than the default, you can explicitly pass it to the renderer.
+
+#### 1. For a resource:
+
+```ruby
+  render json: @post, serializer: PostPreviewSerializer
+```
+
+#### 2. For an array resource:
+
+```ruby
+# Use the default `ArraySerializer`, which will use `each_serializer` to
+# serialize each element
+render json: @posts, each_serializer: PostPreviewSerializer
+
+# Or, you can explicitly provide the collection serializer as well
+render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
 ```
 
 ## Installation

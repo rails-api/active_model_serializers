@@ -7,6 +7,7 @@ module ActiveModel
         class CollectionTest < Minitest::Test
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
+            @author.bio = nil
             @first_post = Post.new(id: 1, title: 'Hello!!', body: 'Hello, world!!')
             @second_post = Post.new(id: 2, title: 'New Post', body: 'Body')
             @first_post.comments = []
