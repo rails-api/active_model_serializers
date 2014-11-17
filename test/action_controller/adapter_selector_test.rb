@@ -4,6 +4,7 @@ module ActionController
   module Serialization
     class AdapterSelectorTest < ActionController::TestCase
       class MyController < ActionController::Base
+        include ActionController::Serialization
         def render_using_default_adapter
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile

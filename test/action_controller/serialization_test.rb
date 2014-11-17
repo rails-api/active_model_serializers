@@ -4,6 +4,8 @@ module ActionController
   module Serialization
     class ImplicitSerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
+        include ActionController::Serialization
+
         def render_using_implicit_serializer
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile

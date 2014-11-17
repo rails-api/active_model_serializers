@@ -4,6 +4,8 @@ module ActionController
   module Serialization
     class ExplicitSerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
+        include ActionController::Serialization
+
         def render_using_explicit_serializer
           @profile = Profile.new(name: 'Name 1',
                                  description: 'Description 1',
