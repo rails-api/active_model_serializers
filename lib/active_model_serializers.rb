@@ -40,13 +40,13 @@ module ActiveModel::SerializerSupport
 
   module ClassMethods #:nodoc:
     if "".respond_to?(:safe_constantize)
-      def active_model_serializer
-        "#{self.name}Serializer".safe_constantize
+      def active_model_serializer(namespace = nil)
+        "#{namespace}::#{self.name}Serializer".safe_constantize
       end
     else
-      def active_model_serializer
+      def active_model_serializer(namespace = nil)
         begin
-          "#{self.name}Serializer".constantize
+          "#{namespace}::#{self.name}Serializer".constantize
         rescue NameError => e
           raise unless e.message =~ /uninitialized constant/
         end
@@ -55,15 +55,15 @@ module ActiveModel::SerializerSupport
   end
 
   # Returns a model serializer for this object considering its namespace.
-  def active_model_serializer
-    self.class.active_model_serializer
+  def active_model_serializer(namespace = nil)
+    self.class.active_model_serializer(namespace)
   end
 
   alias :read_attribute_for_serialization :send
 end
 
 module ActiveModel::ArraySerializerSupport
-  def active_model_serializer
+  def active_model_serializer(namespace = nil)
     ActiveModel::ArraySerializer
   end
 end

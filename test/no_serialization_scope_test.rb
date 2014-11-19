@@ -12,7 +12,7 @@ class NoSerializationScopeTest < ActionController::TestCase
   end
 
   class ScopeSerializable
-    def active_model_serializer
+    def active_model_serializer(*args)
       ScopeSerializer
     end
   end

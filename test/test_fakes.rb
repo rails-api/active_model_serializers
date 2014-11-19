@@ -66,7 +66,7 @@ class Post < Model
 end
 
 class Comment < Model
-  def active_model_serializer; CommentSerializer; end
+  def active_model_serializer(*args); CommentSerializer; end
 end
 
 class UserSerializer < ActiveModel::Serializer

@@ -80,7 +80,7 @@ module ActiveModel
         if @options.has_key? :each_serializer
           serializer = @options[:each_serializer]
         elsif item.respond_to?(:active_model_serializer)
-          serializer = item.active_model_serializer
+          serializer = item.active_model_serializer(@options[:module_namespace])
         end
 
         serializable = serializer ? serializer.new(item, @options) : DefaultSerializer.new(item, @options.merge(:root => false))

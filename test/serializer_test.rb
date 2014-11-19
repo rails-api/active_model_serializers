@@ -872,7 +872,7 @@ class SerializerTest < ActiveModel::TestCase
     post_class = Class.new(Model) do
       attr_accessor :comments
 
-      define_method :active_model_serializer do
+      define_method :active_model_serializer do |*args|
         post_serializer
       end
     end
@@ -1324,7 +1324,7 @@ class SerializerTest < ActiveModel::TestCase
         @attributes[:name]
       end
 
-      define_method :active_model_serializer do
+      define_method :active_model_serializer do |*args|
         tag_serializer
       end
     end
