@@ -129,6 +129,39 @@ render json: @posts, each_serializer: PostPreviewSerializer
 render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
 ```
 
+### Disabling the root element
+
+If the adapter supports it, you can disable to root element.
+
+#### 1. Disable root per render call in your controller
+
+```ruby
+render :json => @posts, :root => false
+```
+
+#### 2. Subclass the serializer, and specify using it
+
+```ruby
+class CustomArraySerializer < ActiveModel::ArraySerializer
+  self.root = false
+end
+
+# controller:
+render :json => @posts, :serializer => CustomArraySerializer
+```
+
+#### 3. Define default_serializer_options in your controller
+
+If you define `default_serializer_options` method in your controller, all serializers in actions of this controller and it's children will use them. One of the options may be `root: false`
+
+```ruby
+def default_serializer_options
+  {
+    root: false
+  }
+end
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
