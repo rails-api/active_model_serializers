@@ -114,11 +114,14 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
 
-    attr_accessor :object, :root
+    attr_accessor :object, :root, :controller, :options
 
-    def initialize(object, options = {})
+    def initialize(object, options = {}, controller = nil)
+      default_options = controller ? controller.send(:default_serializer_options) || {} : {}
+      @options = default_options.merge(options || {})
+      @controller = controller
       @object = object
-      @root   = options[:root] || (self.class._root ? self.class.root_name : false)
+      @root = @options[:root] || (self.class._root ? self.class.root_name : false)
     end
 
     def json_key

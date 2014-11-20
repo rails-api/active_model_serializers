@@ -47,6 +47,7 @@ Author = Class.new(Model)
 Bio = Class.new(Model)
 Blog = Class.new(Model)
 Role = Class.new(Model)
+InternalsTester = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
@@ -99,4 +100,12 @@ end
 AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
   attribute :id
   attribute :name, key: :title
+end
+
+InternalsTesterSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :serialization_scope
+
+  def serialization_scope
+    controller.serialization_scope.as_json
+  end
 end
