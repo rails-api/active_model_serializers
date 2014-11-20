@@ -9,7 +9,9 @@ AMS does this through two components: **serializers** and **adapters**. Serializ
 # MAINTENANCE, PLEASE READ
 
 This is the master branch of AMS. It will become the `0.10.0` release when it's
-ready, but it's not. You probably don't want to use it yet.
+ready, but it's not. You probably don't want to use it yet. As such, we recommend
+that any new projects you start use the latest `0.8.x` version of this gem. This
+version is the most widely used, and will most closely resemble the forthcoming release.
 
 There are two released versions of AMS that you may want to use: `0.9.x` and
 `0.8.x`. `9` was recently `master`, so if you were using master, you probably want
