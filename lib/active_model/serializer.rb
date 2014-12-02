@@ -121,6 +121,10 @@ module ActiveModel
       @root   = options[:root] || (self.class._root ? self.class.root_name : false)
     end
 
+    def identifier
+      object.id.to_s
+    end
+
     def json_key
       if root == true || root.nil?
         self.class.root_name
@@ -150,8 +154,12 @@ module ActiveModel
     private
 
     def self.get_serializer_for(klass)
-      serializer_class_name = "#{klass.name}Serializer"
-      serializer_class = serializer_class_name.safe_constantize
+      serializer_class = if klass.respond_to?(:serializer_class)
+        klass.serializer_class
+      else
+        serializer_class_name = "#{klass.name}Serializer"
+        serializer_class_name.safe_constantize
+      end
 
       if serializer_class
         serializer_class

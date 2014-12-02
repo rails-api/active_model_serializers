@@ -33,12 +33,12 @@ module ActiveModel
 
           if name.to_s == type || !type
             resource[:links][name] ||= []
-            resource[:links][name] += serializers.map{|serializer| serializer.id.to_s }
+            resource[:links][name] += serializers.map{|serializer| serializer.identifier }
           else
             resource[:links][name] ||= {}
             resource[:links][name][:type] = type
             resource[:links][name][:ids] ||= []
-            resource[:links][name][:ids] += serializers.map{|serializer| serializer.id.to_s }
+            resource[:links][name][:ids] += serializers.map{|serializer| serializer.identifier }
           end
         end
 
@@ -49,11 +49,11 @@ module ActiveModel
           if serializer
             type = serialized_object_type(serializer)
             if name.to_s == type || !type
-              resource[:links][name] = serializer.id.to_s
+              resource[:links][name] = serializer.identifier
             else
               resource[:links][name] ||= {}
               resource[:links][name][:type] = type
-              resource[:links][name][:id] = serializer.id.to_s
+              resource[:links][name][:id] = serializer.identifier
             end
           end
         end
@@ -118,7 +118,13 @@ module ActiveModel
 
         def serialized_object_type(serializer)
           return false unless Array(serializer).first
-          type_name = Array(serializer).first.object.class.to_s.underscore
+          klass = Array(serializer).first.object.class
+          type_name = if klass.respond_to?(:object_type)
+            klass.object_type.to_s.underscore
+          else
+            klass.name.to_s.underscore
+          end
+
           if serializer.respond_to?(:first)
             type_name.pluralize
           else
