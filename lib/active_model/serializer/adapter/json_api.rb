@@ -122,7 +122,7 @@ module ActiveModel
           type_name = if klass.respond_to?(:object_type)
             klass.object_type.to_s.underscore
           else
-            klass.name.to_s.underscore
+            klass.to_s.underscore
           end
 
           if serializer.respond_to?(:first)
