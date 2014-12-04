@@ -36,7 +36,7 @@ module ActiveModel
       end unless method_defined?(key)
     end
 
-    # Defines an association in the object should be rendered.
+    # Defines an association in the object that should be rendered.
     #
     # The serializer object should implement the association name
     # as a method which should return an array when invoked. If a method
@@ -46,7 +46,7 @@ module ActiveModel
       associate(:has_many, attrs)
     end
 
-    # Defines an association in the object should be rendered.
+    # Defines an association in the object that should be rendered.
     #
     # The serializer object should implement the association name
     # as a method which should return an object when invoked. If a method
