@@ -135,7 +135,7 @@ module ActiveModel
 
     def attributes(options = {})
       self.class._attributes.dup.each_with_object({}) do |name, hash|
-        hash[name] = send(name) if options[:include_nil_values] || send(name)
+        hash[name] = send(name) if options[:include_nil_values] || !send(name).nil?
       end
     end
 
