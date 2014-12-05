@@ -82,6 +82,8 @@ module ActiveModel
     def self.serializer_for(resource)
       if resource.respond_to?(:to_ary)
         config.array_serializer
+      elsif resource.respond_to?(:serializer_class)
+        resource.serializer_class
       else
         get_serializer_for(resource.class)
       end
