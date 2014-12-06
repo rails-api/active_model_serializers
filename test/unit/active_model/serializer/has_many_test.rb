@@ -176,7 +176,7 @@ module ActiveModel
 
       def test_associations_embedding_objects_using_a_given_array_serializer
         @association.serializer_from_options = Class.new(ArraySerializer) do
-          def serializable_object
+          def serializable_object(options={})
             { my_content: ['fake'] }
           end
         end
