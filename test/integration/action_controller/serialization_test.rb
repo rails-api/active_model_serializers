@@ -299,5 +299,21 @@ module ActionController
         assert_equal '{"my":[{"name":"Name 1"}]}', @response.body
       end
     end
+
+    class HashSerializationTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_hash
+          h = {a: 'b', c: 'd'}
+          render json: h, root: false
+        end
+      end
+
+      tests MyController
+
+      def test_render_hash
+        get :render_hash
+        assert_equal '{"a":"b","c":"d"}', @response.body
+      end
+    end
   end
 end
