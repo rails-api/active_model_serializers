@@ -755,18 +755,18 @@ end
     "title": "New post",
     "attachments": [
       {
-        "type": "image"
+        "type": "image",
         "image": {
-          "id": 3
-          "name": "logo"
+          "id": 3,
+          "name": "logo",
           "url": "http://images.com/logo.jpg"
         }
       },
       {
-        "type": "video"
+        "type": "video",
         "video": {
-          "id": 12
-          "uid": "XCSSMDFWW"
+          "id": 12,
+          "uid": "XCSSMDFWW",
           "source": "youtube"
         }
       }
@@ -793,11 +793,11 @@ end
     "title": "New post",
     "attachment_ids": [
       {
-        "type": "image"
+        "type": "image",
         "id": 12
       },
       {
-        "type": "video"
+        "type": "video",
         "id": 3
       }
     ]
