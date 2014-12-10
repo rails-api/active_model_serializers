@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in active_model_serializers.gemspec
 gemspec
 
-gem "minitest"
+gem "minitest", "~> 5.1"
 
 version = ENV["RAILS_VERSION"] || "4.1"
 
