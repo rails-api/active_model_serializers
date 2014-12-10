@@ -4,6 +4,8 @@ module ActionController
   module Serialization
     class JsonApiLinkedTest < ActionController::TestCase
       class MyController < ActionController::Base
+        include ActionController::Serialization
+
         def setup_post
           @role1 = Role.new(id: 1, name: 'admin')
           @role2 = Role.new(id: 2, name: 'colab')

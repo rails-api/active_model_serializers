@@ -83,11 +83,12 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-In your controllers, when you use `render :json`, Rails will now first search
-for a serializer for the object and use it if available.
+In your controllers, include the serialization module and when you use `render :json`, Rails will now first search for a serializer for the object and use it if available.
 
 ```ruby
 class PostsController < ApplicationController
+  include ActionController::Serialization
+
   def show
     @post = Post.find(params[:id])
 
