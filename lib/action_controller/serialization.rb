@@ -6,6 +6,18 @@ module ActionController
 
     include ActionController::Renderers
 
+    included do
+      class_attribute :_serialization_scope
+      self._serialization_scope = :current_user
+    end
+
+    def serialization_scope
+      send(_serialization_scope) if _serialization_scope && respond_to?(_serialization_scope, true)
+    end
+
+    def default_serializer_options
+    end
+
     ADAPTER_OPTION_KEYS = [:include, :root, :adapter]
 
     def get_serializer(resource)
@@ -30,12 +42,18 @@ module ActionController
 
         if use_adapter? && (serializer = get_serializer(resource))
           # omg hax
-          object = serializer.new(resource, @_serializer_opts)
+          object = serializer.new(resource, @_serializer_opts, self)
           adapter = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
           super(adapter, options)
         else
           super(resource, options)
         end
+      end
+    end
+
+    module ClassMethods
+      def serialization_scope(scope)
+        self._serialization_scope = scope
       end
     end
   end

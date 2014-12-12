@@ -14,6 +14,11 @@ module ActionController
           render json: @profile, root: "custom_root"
         end
 
+        def render_using_no_root
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile, root: false
+        end
+
         def render_using_default_adapter_root
           old_adapter = ActiveModel::Serializer.config.adapter
           # JSON-API adapter sets root by default
@@ -54,6 +59,13 @@ module ActionController
 
         assert_equal 'application/json', @response.content_type
         assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"}}', @response.body
+      end
+
+      def test_render_using_no_root
+        get :render_using_no_root
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"name":"Name 1","description":"Description 1"}', @response.body
       end
 
       def test_render_using_default_root

@@ -12,6 +12,8 @@ module ActiveModel
       attr_accessor :_urls
     end
 
+    class_attribute :_root
+
     def self.inherited(base)
       base._attributes = []
       base._associations = {}
@@ -102,23 +104,26 @@ module ActiveModel
       adapter_class
     end
 
-    def self._root
-      @@root ||= false
+    # Defines the root used on serialization. If false, disables the root.
+    def self.root(name)
+      self._root = name
     end
-
-    def self._root=(root)
-      @@root = root
+    class << self
+      alias_method :root=, :root
     end
 
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
 
-    attr_accessor :object, :root
+    attr_accessor :object, :root, :controller, :options
 
-    def initialize(object, options = {})
+    def initialize(object, options = {}, controller = nil)
+      default_options = controller ? controller.send(:default_serializer_options) || {} : {}
+      @options = default_options.merge(options || {})
+      @controller = controller
       @object = object
-      @root   = options[:root] || (self.class._root ? self.class.root_name : false)
+      @root = @options[:root] || self.class._root || false
     end
 
     def json_key
