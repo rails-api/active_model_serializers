@@ -18,7 +18,8 @@ module ActiveModel
       end
 
       def as_json(options = {})
-        serializable_hash(options)
+        hash = serializable_hash(options)
+        include_meta(hash)
       end
 
       def self.create(resource, options = {})
@@ -29,6 +30,25 @@ module ActiveModel
 
       def self.adapter_class(adapter)
         "ActiveModel::Serializer::Adapter::#{adapter.to_s.classify}".safe_constantize
+      end
+
+      private
+
+      def meta
+        serializer.meta if serializer.respond_to?(:meta)
+      end
+
+      def meta_key
+        serializer.meta_key || "meta"
+      end
+
+      def root
+        serializer.root
+      end
+
+      def include_meta(json)
+        json[meta_key] = meta if meta && root
+        json
       end
     end
   end
