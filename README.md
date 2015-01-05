@@ -54,18 +54,17 @@ end
 ```
 
 Generally speaking, you as a user of AMS will write (or generate) these
-serializer classes. By default, they will use the JsonApiAdapter, implemented
-by AMS. If you want to use a different adapter, such as a HalAdapter, you can
+serializer classes. If you want to use a different adapter, such as a JsonApi, you can
 change this in an initializer:
 
 ```ruby
-ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::HalAdapter
+ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
 ```
 
 or
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :hal
+ActiveModel::Serializer.config.adapter = :json_api
 ```
 
 You won't need to implement an adapter unless you wish to use a new format or
@@ -99,15 +98,6 @@ end
 In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
 
-### Built in Adapters
-
-The `:json_api` adapter will include the associated resources in the `"linked"`
-member when the resource names are included in the `include` option.
-
-```ruby
-  render @posts, include: 'authors,comments'
-```
-
 ### Specify a serializer
 
 If you wish to use a serializer other than the default, you can explicitly pass it to the renderer.
@@ -127,6 +117,46 @@ render json: @posts, each_serializer: PostPreviewSerializer
 
 # Or, you can explicitly provide the collection serializer as well
 render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
+```
+
+### Meta
+
+If you want a `meta` attribute in your response, specify it in the `render`
+call:
+
+```ruby
+render json: @post, meta: { total: 10 }
+```
+
+The key can be customized using `meta_key` option.
+
+```ruby
+render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
+```
+
+`meta` will only be included in your response if there's a root. For instance,
+it won't be included in array responses.
+
+### Root key
+
+If you want to define a custom root for your response, specify it in the `render`
+call:
+
+```ruby
+render json: @post, root: "articles"
+```
+
+### Built in Adapters
+
+#### JSONAPI
+
+This adapter follows the format specified in
+[jsonapi.org/format](http://jsonapi.org/format). It will include the associated
+resources in the `"linked"` member when the resource names are included in the
+`include` option.
+
+```ruby
+  render @posts, include: 'authors,comments'
 ```
 
 ## Installation

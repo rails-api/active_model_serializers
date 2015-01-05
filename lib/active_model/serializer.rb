@@ -114,11 +114,13 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
 
-    attr_accessor :object, :root
+    attr_accessor :object, :root, :meta, :meta_key
 
     def initialize(object, options = {})
       @object = object
       @root   = options[:root] || (self.class._root ? self.class.root_name : false)
+      @meta   = options[:meta]
+      @meta_key = options[:meta_key]
     end
 
     def json_key
