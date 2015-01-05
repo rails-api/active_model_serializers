@@ -37,6 +37,18 @@ module ActionController
           ]
           render json: array
         end
+
+        def render_array_using_implicit_serializer_and_meta
+          old_adapter = ActiveModel::Serializer.config.adapter
+
+          ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
+          array = [
+            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          ]
+          render json: array, meta: { total: 10 }
+        ensure
+          ActiveModel::Serializer.config.adapter = old_adapter
+        end
       end
 
       tests MyController
@@ -86,6 +98,13 @@ module ActionController
         ]
 
         assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_array_using_implicit_serializer_and_meta
+        get :render_array_using_implicit_serializer_and_meta
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"profiles":[{"name":"Name 1","description":"Description 1"}],"meta":{"total":10}}', @response.body
       end
     end
   end
