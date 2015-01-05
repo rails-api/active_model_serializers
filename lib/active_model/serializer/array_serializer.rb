@@ -4,6 +4,8 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@objects
 
+      attr_reader :meta, :meta_key
+
       def initialize(objects, options = {})
         @objects = objects.map do |object|
           serializer_class = options.fetch(
@@ -12,6 +14,8 @@ module ActiveModel
           )
           serializer_class.new(object)
         end
+        @meta     = options[:meta]
+        @meta_key = options[:meta_key]
       end
 
       def json_key
