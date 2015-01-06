@@ -32,7 +32,7 @@ module ActiveModel
           def test_includes_comment_ids
             assert_equal(["1", "2"], @adapter.serializable_hash[:posts][:links][:comments])
           end
-
+          
           def test_includes_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments')
             expected = [{
@@ -45,6 +45,24 @@ module ActiveModel
             }, {
               id: "2",
               body: 'ZOMG ANOTHER COMMENT',
+              links: {
+                post: "1",
+                author: nil
+              }
+            }]
+            assert_equal expected, @adapter.serializable_hash[:linked][:comments]
+          end
+
+          def test_limit_fields_of_linked_comments
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments', fields: {comment: [:id]})
+            expected = [{
+              id: "1",
+              links: {
+                post: "1",
+                author: nil
+              }
+            }, {
+              id: "2",
               links: {
                 post: "1",
                 author: nil

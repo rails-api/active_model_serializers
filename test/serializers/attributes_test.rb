@@ -12,7 +12,11 @@ module ActiveModel
         assert_equal([:name, :description],
                      @profile_serializer.class._attributes)
       end
+
+      def test_attributes_with_fields_option
+        assert_equal({name: 'Name 1'},
+                     @profile_serializer.attributes( { fields: [:name] } ) )
+      end
     end
   end
 end
-

@@ -6,7 +6,7 @@ module ActionController
 
     include ActionController::Renderers
 
-    ADAPTER_OPTION_KEYS = [:include, :root, :adapter]
+    ADAPTER_OPTION_KEYS = [:include, :fields, :root, :adapter]
 
     def get_serializer(resource)
       @_serializer ||= @_serializer_opts.delete(:serializer)
