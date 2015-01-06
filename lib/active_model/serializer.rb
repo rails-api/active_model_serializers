@@ -23,7 +23,7 @@ module ActiveModel
 
       attrs.each do |attr|
         define_method attr do
-          object.read_attribute_for_serialization(attr)
+          object && object.read_attribute_for_serialization(attr)
         end unless method_defined?(attr)
       end
     end
@@ -67,7 +67,7 @@ module ActiveModel
           end
         end
 
-        self._associations[attr] = {type: type, options: options}
+        self._associations[attr] = {type: type, association_options: options}
       end
     end
 
@@ -79,11 +79,13 @@ module ActiveModel
       @_urls.concat attrs
     end
 
-    def self.serializer_for(resource)
+    def self.serializer_for(resource, options = {})
       if resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        get_serializer_for(resource.class)
+        options
+          .fetch(:association_options, {})
+          .fetch(:serializer, get_serializer_for(resource.class))
       end
     end
 
@@ -146,14 +148,25 @@ module ActiveModel
 
     def each_association(&block)
       self.class._associations.dup.each do |name, options|
+        next unless object
         association = object.send(name)
-        serializer_class = ActiveModel::Serializer.serializer_for(association)
-        serializer = serializer_class.new(association) if serializer_class
+        serializer_class = ActiveModel::Serializer.serializer_for(association, options)
+        serializer = serializer_class.new(
+          association,
+          serializer_from_options(options)
+        ) if serializer_class
 
         if block_given?
-          block.call(name, serializer, options[:options])
+          block.call(name, serializer, options[:association_options])
         end
       end
+    end
+
+    def serializer_from_options(options)
+      opts = {}
+      serializer = options.fetch(:options, {}).fetch(:serializer, nil)
+      opts[:serializer] = serializer if serializer
+      opts
     end
 
     private
