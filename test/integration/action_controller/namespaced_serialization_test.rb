@@ -19,6 +19,10 @@ module ActionController
         def render_comments
           render json: [Comment.new(content: 'Comment 1')]
         end
+
+        def render_hash
+          render json: {message: 'not found'}, status: 404
+        end
       end
 
       tests TestNamespace::MyController
@@ -41,6 +45,11 @@ module ActionController
       def test_array_fallback_to_a_version_without_namespace
         get :render_comments
         assert_serializer CommentSerializer
+      end
+
+      def test_render_hash_regression
+        get :render_hash
+        assert_equal JSON.parse(response.body), {'message' => 'not found'}
       end
     end
 
