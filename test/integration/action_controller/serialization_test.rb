@@ -299,5 +299,21 @@ module ActionController
         assert_equal '{"my":[{"name":"Name 1"}]}', @response.body
       end
     end
+
+    class SimpleHashObjectTest < ActionController::TestCase
+      class MyController < ActionController::Base
+        def render_hash
+          render json: { name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }
+        end
+      end
+
+      tests MyController
+
+      def test_render_hash
+        get :render_hash
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}', @response.body
+      end
+    end
   end
 end

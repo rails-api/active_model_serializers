@@ -87,8 +87,8 @@ module ActionController
       if serializer = options.fetch(:serializer, default_serializer(resource))
         options[:scope] = serialization_scope unless options.has_key?(:scope)
 
-        if resource.respond_to?(:each)
-          options[:resource_name] = controller_name 
+        if resource.respond_to?(:each) && !resource.is_a?(Hash)
+          options[:resource_name] = controller_name
           options[:namespace] = namespace_for_serializer if namespace_for_serializer
         end
 
