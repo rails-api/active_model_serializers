@@ -138,6 +138,21 @@ module ActiveModel
             }
             assert_equal expected, @adapter.serializable_hash[:linked]
           end
+
+          def test_ignore_model_namespace_for_linked_resource_type
+            spammy_post = Post.new(id: 123)
+            spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
+            serializer = SpammyPostSerializer.new(spammy_post)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            links = adapter.serializable_hash[:posts][:links]
+            expected = {
+              related: {
+                type: 'unrelated_links',
+                ids: ['456']
+              }
+            }
+            assert_equal expected, links
+          end
         end
       end
     end
