@@ -86,7 +86,7 @@ module ActiveModel
               type: "posts",
               ids: ["1"]
             }
-            assert_equal(expected, actual)
+            assert_equal expected, actual
           end
         end
       end
