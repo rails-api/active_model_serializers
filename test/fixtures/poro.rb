@@ -47,6 +47,8 @@ Author = Class.new(Model)
 Bio = Class.new(Model)
 Blog = Class.new(Model)
 Role = Class.new(Model)
+module Spam; end
+Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
@@ -54,6 +56,15 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   has_many :comments
   belongs_to :author
   url :comments
+end
+
+SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+  has_many :related
+
+  def self.root_name
+    'posts'
+  end
 end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
@@ -122,4 +133,8 @@ PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
 
   has_many :comments, serializer: CommentPreviewSerializer
   belongs_to :author, serializer: AuthorPreviewSerializer
+end
+
+Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
 end

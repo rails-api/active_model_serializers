@@ -78,10 +78,15 @@ module ActiveModel
             assert_nil adapter.serializable_hash[:linked]
           end
 
-          def test_include_type_for_association_when_is_different_than_name
+          def test_include_type_for_association_when_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            assert_equal({type: "posts", ids: ["1"]}, adapter.serializable_hash[:blogs][:links][:articles])
+            actual = adapter.serializable_hash[:blogs][:links][:articles]
+            expected = {
+              type: "posts",
+              ids: ["1"]
+            }
+            assert_equal(expected, actual)
           end
         end
       end
