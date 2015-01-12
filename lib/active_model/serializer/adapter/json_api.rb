@@ -121,7 +121,9 @@ module ActiveModel
         end
 
         def check_assoc(assoc)
-          @options[:include].split(',').any? do |s|
+          include_opt = @options[:include]
+          include_opt = include_opt.split(',') if include_opt.is_a?(String)
+          include_opt.any? do |s|
             s.match(/^#{assoc.gsub('.', '\.')}/)
           end
         end
