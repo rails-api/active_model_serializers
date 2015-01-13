@@ -26,6 +26,9 @@ module ActionController
           @first_comment.author = @author2
           @second_comment.post = @post
           @second_comment.author = nil
+          @post2 = Post.new(id: 2, title: "Another Post", body: "Body")
+          @post2.author = @author
+          @post2.comments = []
         end
 
         def render_resource_without_include
@@ -46,6 +49,18 @@ module ActionController
         def render_resource_with_nested_has_many_include
           setup_post
           render json: @post, include: 'author,author.roles', adapter: :json_api
+        end
+
+        def render_resource_with_missing_nested_has_many_include
+          setup_post
+          @post.author = @author2 # author2 has no roles.
+          render json: @post, include: 'author,author.roles', adapter: :json_api
+        end
+
+        def render_collection_with_missing_nested_has_many_include
+          setup_post
+          @post.author = @author2
+          render json: [@post, @post2], include: 'author,author.roles', adapter: :json_api
         end
 
         def render_collection_without_include
@@ -123,6 +138,20 @@ module ActionController
         get :render_collection_with_include
         response = JSON.parse(@response.body)
         assert response.key? 'linked'
+      end
+
+      def test_render_resource_with_nested_attributes_even_when_missing_associations
+        get :render_resource_with_missing_nested_has_many_include
+        response = JSON.parse(@response.body)
+        assert response.key? 'linked'
+        refute response['linked'].key? 'roles'
+      end
+
+      def test_render_collection_with_missing_nested_has_many_include
+        get :render_collection_with_missing_nested_has_many_include
+        response = JSON.parse(@response.body)
+        assert response.key? 'linked'
+        assert response['linked'].key? 'roles'
       end
     end
   end
