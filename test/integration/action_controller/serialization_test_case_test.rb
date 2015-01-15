@@ -11,6 +11,11 @@ module ActionController
         def render_text
           render text: 'ok'
         end
+
+        def render_template
+          prepend_view_path "./test/fixtures"
+          render template: "template"
+        end
       end
 
       tests MyController
@@ -55,6 +60,11 @@ module ActionController
           assert_serializer Hash
         end
         assert_match 'assert_serializer only accepts a String, Symbol, Regexp, ActiveModel::Serializer, or nil', e.message
+      end
+
+      def test_does_not_overwrite_notification_subscriptions
+        get :render_template
+        assert_template "template"
       end
     end
   end
