@@ -36,6 +36,10 @@ module ActiveModel
       end unless method_defined?(key)
     end
 
+    def self.column_names
+      to_s.sub("Serializer", "").constantize.column_names
+    end
+
     # Defines an association in the object that should be rendered.
     #
     # The serializer object should implement the association name
@@ -167,10 +171,6 @@ module ActiveModel
       serializer = options.fetch(:options, {}).fetch(:serializer, nil)
       opts[:serializer] = serializer if serializer
       opts
-    end
-
-    def column_names
-      to_s.sub("Serializer", "").constantize.column_names
     end
 
     private
