@@ -169,6 +169,10 @@ module ActiveModel
       opts
     end
 
+    def column_names
+      to_s.sub("Serializer", "").constantize.column_names
+    end
+
     private
 
     def self.get_serializer_for(klass)
