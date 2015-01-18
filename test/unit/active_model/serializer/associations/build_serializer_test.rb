@@ -24,6 +24,13 @@ module ActiveModel
           assert_instance_of(TestNamespace::ProfileSerializer, serializer)
         end
 
+        def test_build_serializer_with_a_namespace
+          assoc      = Association::HasOne.new('profile', namespace: :test_namespace)
+          serializer = UserSerializer.new(@user).build_serializer(assoc)
+
+          assert_instance_of(TestNamespace::ProfileSerializer, serializer)
+        end
+
         def test_build_serializer_with_prefix
           assoc      = Association::HasOne.new('profile', prefix: :short)
           serializer = UserSerializer.new(@user).build_serializer(assoc)
