@@ -56,7 +56,7 @@ end
       attr_reader :key_format
 
       def serializer_for(resource, options = {})
-        if resource.respond_to?(:each)
+        if resource.respond_to?(:to_ary)
           if Object.constants.include?(:ArraySerializer)
             ::ArraySerializer
           else
