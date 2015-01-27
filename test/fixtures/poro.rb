@@ -31,6 +31,10 @@ class UserInfo < Model
 end
 
 class Profile < Model
+  attr_writer :user
+  def user
+    @user ||= User.new(name: 'N1', email: 'E1')
+  end
 end
 
 class Category < Model
@@ -41,6 +45,8 @@ class Category < Model
 end
 
 class Post < Model
+  attr_accessor :category
+
   def comments
     @comments ||= [Comment.new(content: 'C1'),
                    Comment.new(content: 'C2')]
@@ -169,12 +175,66 @@ end
 
 class NameKeyPostSerializer < ActiveModel::Serializer
   attributes :title, :body
-  
+
   has_many :comments
+end
+
+module HasOneCircularReference
+  class ProfileSerializer < ActiveModel::Serializer; end
+
+  class UserSerializer < ActiveModel::Serializer
+    attributes :id, :name
+    has_one :profile, serializer: HasOneCircularReference::ProfileSerializer
+  end
+
+  class ProfileSerializer < ActiveModel::Serializer
+    attributes :id, :name, :description
+    has_one :user, serializer: HasOneCircularReference::UserSerializer
+  end
+
+  module EmbeddedInRoot
+    class ProfileSerializer < ActiveModel::Serializer; end
+
+    class UserSerializer < ActiveModel::Serializer
+      attributes :id, :name
+      has_one :profile, serializer: HasOneCircularReference::EmbeddedInRoot::ProfileSerializer, embed_in_root: true, embed: :ids
+    end
+
+    class ProfileSerializer < ActiveModel::Serializer
+      attributes :id, :name, :description
+      has_one :user, serializer: HasOneCircularReference::EmbeddedInRoot::UserSerializer, embed_in_root: true, embed: :ids
+    end
+  end
+end
+
+module HasManyCircularReference
+  class PostSerializer < ActiveModel::Serializer; end
+
+  class CategorySerializer < ActiveModel::Serializer
+    attributes :id, :name
+    has_many :posts, each_serializer: HasManyCircularReference::PostSerializer
+  end
+
+  class PostSerializer < ActiveModel::Serializer
+    attributes :id, :title, :body
+    has_one :category, serializer: HasManyCircularReference::CategorySerializer
+  end
+
+  module EmbeddedInRoot
+    class PostSerializer < ActiveModel::Serializer; end
+
+    class CategorySerializer < ActiveModel::Serializer
+      attributes :id, :name
+      has_many :posts, each_serializer: HasManyCircularReference::EmbeddedInRoot::PostSerializer, embed_in_root: true, embed: :ids
+    end
+
+    class PostSerializer < ActiveModel::Serializer
+      attributes :id, :title, :body
+      has_one :category, serializer: HasManyCircularReference::EmbeddedInRoot::CategorySerializer, embed_in_root: true, embed: :ids
+    end
+  end
 end
 
 ActiveModel::Serializer.setup do |config|
   config.default_key_type = nil
 end
-
-

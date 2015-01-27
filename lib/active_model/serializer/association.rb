@@ -30,6 +30,7 @@ module ActiveModel
 
       attr_reader :name, :embed_ids, :embed_objects, :polymorphic
       attr_accessor :embed_in_root, :embed_key, :key, :embedded_key, :root_key, :serializer_from_options, :options, :key_format, :embed_in_root_key, :embed_namespace
+      attr_accessor :_on_stack
       alias embed_ids? embed_ids
       alias embed_objects? embed_objects
       alias embed_in_root? embed_in_root

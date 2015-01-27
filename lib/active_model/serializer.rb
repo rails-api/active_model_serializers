@@ -165,20 +165,23 @@ end
       associations = self.class._associations
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
-        if included_associations.include? name
-          if association.embed_ids?
-            ids = serialize_ids association
-            if association.embed_namespace?
-              hash = hash[association.embed_namespace] ||= {}
-              hash[association.key] = ids
-            else
-              hash[association.key] = ids
+        circular_reference_safe(association) do
+          if included_associations.include? name
+            if association.embed_ids?
+              ids = serialize_ids association
+              if association.embed_namespace?
+                hash = hash[association.embed_namespace] ||= {}
+                hash[association.key] = ids
+              else
+                hash[association.key] = ids
+              end
+            elsif association.embed_objects?
+              if association.embed_namespace?
+                hash = hash[association.embed_namespace] ||= {}
+              end
+
+              hash[association.embedded_key] = serialize association
             end
-          elsif association.embed_objects?
-            if association.embed_namespace?
-              hash = hash[association.embed_namespace] ||= {}
-            end
-            hash[association.embedded_key] = serialize association
           end
         end
       end
@@ -198,23 +201,26 @@ end
       associations = self.class._associations
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
-        if included_associations.include? name
-          association_serializer = build_serializer(association)
-          # we must do this always because even if the current association is not
-          # embeded in root, it might have its own associations that are embeded in root
-          hash.merge!(association_serializer.embedded_in_root_associations) {|key, oldval, newval| [newval, oldval].flatten }
+        circular_reference_safe(association) do
+          if included_associations.include? name
+            association_serializer = build_serializer(association)
 
-          if association.embed_in_root?
-            if association.embed_in_root_key?
-              hash = hash[association.embed_in_root_key] ||= {}
-            end
+            # we must do this always because even if the current association is not
+            # embeded in root, it might have its own associations that are embeded in root
+            hash.merge!(association_serializer.embedded_in_root_associations) {|key, oldval, newval| [newval, oldval].flatten }
 
-            serialized_data = association_serializer.serializable_object
-            key = association.root_key
-            if hash.has_key?(key)
-              hash[key].concat(serialized_data).uniq!
-            else
-              hash[key] = serialized_data
+            if association.embed_in_root?
+              if association.embed_in_root_key?
+                hash = hash[association.embed_in_root_key] ||= {}
+              end
+
+              serialized_data = association_serializer.serializable_object
+              key = association.root_key
+              if hash.has_key?(key)
+                hash[key].concat(serialized_data).uniq!
+              else
+                hash[key] = serialized_data
+              end
             end
           end
         end
@@ -297,6 +303,19 @@ end
     def type_name(elem)
       elem.class.to_s.demodulize.underscore.to_sym
     end
-  end
 
+    def circular_reference_safe(association)
+      if association._on_stack
+        association._on_stack = false
+        return
+      end
+
+      association._on_stack = true
+      begin
+        yield
+      ensure
+        association._on_stack = false
+      end
+    end
+  end
 end
