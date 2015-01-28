@@ -69,7 +69,9 @@ module ActiveModel
           resource_path = [parent, resource_name].compact.join('.')
 
           if include_assoc?(resource_path) && resource_type = serialized_object_type(serializers)
-            plural_name = resource_type.pluralize.to_sym
+            object_type = serialized_object_type(serializers)
+            return unless object_type
+            plural_name = object_type.pluralize.to_sym
             @top[:linked] ||= {}
             @top[:linked][plural_name] ||= []
 
