@@ -59,8 +59,7 @@ module ActiveModel
           },
           articles: [{
             id: 3,
-            title: "AMS",
-            body: nil
+            title: "AMS"
           }]
         }]
         assert_equal expected, adapter.as_json

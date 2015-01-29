@@ -142,7 +142,7 @@ module ActiveModel
         end
 
       attributes.each_with_object({}) do |name, hash|
-        hash[name] = send(name)
+        hash[name] = send(name) unless send(name).nil?
       end
     end
 
