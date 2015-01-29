@@ -15,17 +15,18 @@ module ActiveModel
       @object          = object
       @scope           = options[:scope]
       @root            = options.fetch(:root, self.class._root)
-      @polymorphic   = options.fetch(:polymorphic, false)
+      @polymorphic     = options.fetch(:polymorphic, false)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
       @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
       @only            = options[:only] ? Array(options[:only]) : nil
       @except          = options[:except] ? Array(options[:except]) : nil
+      @context         = options[:context]
       @namespace       = options[:namespace]
       @key_format      = options[:key_format] || options[:each_serializer].try(:key_format)
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format, :context
 
     def json_key
       key = root.nil? ? @resource_name : root
@@ -35,7 +36,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer || Serializer.serializer_for(item, namespace: @namespace) || DefaultSerializer
-      serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace)
+      serializer_class.new(item, scope: scope, key_format: key_format, context: @context, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace)
     end
 
     def serializable_object(options={})
@@ -66,7 +67,7 @@ module ActiveModel
     private
 
     def instrumentation_keys
-      [:object, :scope, :root, :meta_key, :meta, :each_serializer, :resource_name, :key_format]
+      [:object, :scope, :root, :meta_key, :meta, :each_serializer, :resource_name, :key_format, :context]
     end
   end
 end
