@@ -28,14 +28,17 @@ module ActiveModel
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
         @author.roles = []
+        @blog = Blog.new({ name: 'AMS Blog' })
         @post = Post.new({ title: 'New Post', body: 'Body' })
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
+        @post.blog = @blog
         @comment.post = @post
         @comment.author = nil
         @post.author = @author
         @author.posts = [@post]
 
+        @post_serializer = PostSerializer.new(@post)
         @author_serializer = AuthorSerializer.new(@author)
         @comment_serializer = CommentSerializer.new(@comment)
       end
@@ -63,7 +66,7 @@ module ActiveModel
         end
       end
 
-      def test_has_one
+      def test_belongs_to
         assert_equal({post: {type: :belongs_to, association_options: {}}, :author=>{:type=>:belongs_to, :association_options=>{}}}, @comment_serializer.class._associations)
         @comment_serializer.each_association do |name, serializer, options|
           if name == :post
@@ -76,6 +79,16 @@ module ActiveModel
             flunk "Unknown association: #{name}"
           end
         end
+      end
+
+      def test_belongs_to_with_custom_method
+        blog_is_present = false
+
+        @post_serializer.each_association do |name, serializer, options|
+          blog_is_present = true if name == :blog
+        end
+
+        assert blog_is_present
       end
     end
   end

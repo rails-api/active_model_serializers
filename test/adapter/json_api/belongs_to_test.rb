@@ -9,11 +9,14 @@ module ActiveModel
             @author = Author.new(id: 1, name: 'Steve K.')
             @author.bio = nil
             @author.roles = []
+            @blog = Blog.new(id: 23, name: 'AMS Blog')
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
             @anonymous_post = Post.new(id: 43, title: 'Hello!!', body: 'Hello, world!!')
             @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
             @post.comments = [@comment]
+            @post.blog = @blog
             @anonymous_post.comments = []
+            @anonymous_post.blog = nil
             @comment.post = @post
             @comment.author = nil
             @post.author = @author
@@ -39,6 +42,7 @@ module ActiveModel
               body: 'Body',
               links: {
                 comments: ["1"],
+                blog: "999",
                 author: "1"
               }
             }]
@@ -51,6 +55,7 @@ module ActiveModel
               title: 'New Post',
               links: {
                 comments: ["1"],
+                blog: "999",
                 author: "1"
               }
             }]
@@ -61,7 +66,7 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: [], author: nil}, adapter.serializable_hash[:posts][:links])
+            assert_equal({comments: [], blog: nil, author: nil}, adapter.serializable_hash[:posts][:links])
           end
 
           def test_include_type_for_association_when_different_than_name
@@ -101,6 +106,7 @@ module ActiveModel
                 id: "42",
                 links: {
                   comments: ["1"],
+                  blog: "999",
                   author: "1"
                 }
               }, {
@@ -109,6 +115,7 @@ module ActiveModel
                 id: "43",
                 links: {
                   comments: [],
+                  blog: nil,
                   author: nil
                 }
               }]

@@ -24,6 +24,8 @@ module ActiveModel
             @blog = Blog.new(id: 1, name: "My Blog!!")
             @blog.writer = @author
             @blog.articles = [@post]
+            @post.blog = @blog
+            @post_without_comments.blog = nil
 
             @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
@@ -32,7 +34,7 @@ module ActiveModel
           def test_includes_comment_ids
             assert_equal(["1", "2"], @adapter.serializable_hash[:posts][:links][:comments])
           end
-          
+
           def test_includes_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments')
             expected = [{

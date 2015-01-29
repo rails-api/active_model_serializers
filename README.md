@@ -146,6 +146,22 @@ call:
 render json: @post, root: "articles"
 ```
 
+### Overriding association methods
+
+If you want to override any association, you can use:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  has_many :comments
+
+  def comments
+    object.comments.active
+  end
+end
+```
+
 ### Built in Adapters
 
 #### JSONAPI

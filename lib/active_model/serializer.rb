@@ -149,10 +149,12 @@ module ActiveModel
     def each_association(&block)
       self.class._associations.dup.each do |name, options|
         next unless object
+
         association = object.send(name)
+        association_value = send(name)
         serializer_class = ActiveModel::Serializer.serializer_for(association, options)
         serializer = serializer_class.new(
-          association,
+          association_value,
           serializer_from_options(options)
         ) if serializer_class
 

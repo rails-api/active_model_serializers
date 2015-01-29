@@ -16,6 +16,9 @@ module ActiveModel
             @second_post.author = @author
             @first_post.comments = []
             @second_post.comments = []
+            @blog = Blog.new(id: 23, name: 'AMS Blog')
+            @first_post.blog = @blog
+            @second_post.blog = nil
 
             @serializer = AuthorSerializer.new(@author)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)

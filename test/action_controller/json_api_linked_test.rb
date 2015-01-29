@@ -29,6 +29,9 @@ module ActionController
           @post2 = Post.new(id: 2, title: "Another Post", body: "Body")
           @post2.author = @author
           @post2.comments = []
+          @blog = Blog.new(id: 1, name: "My Blog!!")
+          @post.blog = @blog
+          @post2.blog = @blog
         end
 
         def render_resource_without_include
