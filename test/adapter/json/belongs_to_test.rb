@@ -15,6 +15,9 @@ module ActiveModel
             @comment.post = @post
             @comment.author = nil
             @anonymous_post.author = nil
+            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @post.blog = @blog
+            @anonymous_post.blog = nil
 
             @serializer = CommentSerializer.new(@comment)
             @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
@@ -28,7 +31,7 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            assert_equal({title: "Hello!!", body: "Hello, world!!", id: 43, comments: [], author: nil}, adapter.serializable_hash)
+            assert_equal({title: "Hello!!", body: "Hello, world!!", id: 43, comments: [], blog: nil, author: nil}, adapter.serializable_hash)
           end
         end
       end

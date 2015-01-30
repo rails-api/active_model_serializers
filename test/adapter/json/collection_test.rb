@@ -13,16 +13,40 @@ module ActiveModel
             @second_post.comments = []
             @first_post.author = @author
             @second_post.author = @author
+            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @first_post.blog = @blog
+            @second_post.blog = nil
 
             @serializer = ArraySerializer.new([@first_post, @second_post])
             @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
           end
 
           def test_include_multiple_posts
-            assert_equal([
-                           {title: "Hello!!", body: "Hello, world!!", id: 1, comments: [], author: {id: 1, name: "Steve K."}},
-                           {title: "New Post", body: "Body", id: 2, comments: [], author: {id: 1, name: "Steve K."}}
-                         ], @adapter.serializable_hash)
+            expected = [{
+              title: "Hello!!",
+              body: "Hello, world!!",
+              id: 1,
+              comments: [],
+              author: {
+                id: 1,
+                name: "Steve K."
+              },
+              blog: {
+                id: 999,
+                name: "Custom blog"
+              }
+            }, {
+              title: "New Post",
+              body: "Body",
+              id: 2,
+              comments: [],
+              author: {
+                id: 1,
+                name: "Steve K."
+              },
+              blog: nil
+            }]
+            assert_equal expected, @adapter.serializable_hash
           end
         end
       end

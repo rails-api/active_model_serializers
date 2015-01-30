@@ -18,6 +18,8 @@ module ActiveModel
             @first_comment.author = nil
             @second_comment.post = @post
             @second_comment.author = nil
+            @blog = Blog.new(id: 23, name: 'AMS Blog')
+            @post.blog = @blog
 
             @serializer = PostPreviewSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(

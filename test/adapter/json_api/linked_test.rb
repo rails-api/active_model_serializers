@@ -13,6 +13,10 @@ module ActiveModel
             @first_post = Post.new(id: 1, title: 'Hello!!', body: 'Hello, world!!')
             @second_post = Post.new(id: 2, title: 'New Post', body: 'Body')
             @third_post = Post.new(id: 3, title: 'Yet Another Post', body: 'Body')
+            @blog = Blog.new({ name: 'AMS Blog' })
+            @first_post.blog = @blog
+            @second_post.blog = @blog
+            @third_post.blog = nil
             @first_post.comments = []
             @second_post.comments = []
             @first_post.author = @author1
@@ -124,6 +128,7 @@ module ActiveModel
                 id: "1",
                 links: {
                   comments: ["1", "2"],
+                  blog: "999",
                   author: "1"
                 }
               }, {
@@ -132,6 +137,7 @@ module ActiveModel
                 id: "3",
                 links: {
                   comments: [],
+                  blog: nil,
                   author: "1"
                 }
               }]

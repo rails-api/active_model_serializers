@@ -58,8 +58,13 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :title, :body, :id
 
   has_many :comments
+  belongs_to :blog
   belongs_to :author
   url :comments
+
+  def blog
+    Blog.new(id: 999, name: "Custom blog")
+  end
 end
 
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do

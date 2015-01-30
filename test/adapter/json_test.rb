@@ -13,6 +13,8 @@ module ActiveModel
           @first_comment.post = @post
           @second_comment.post = @post
           @post.author = @author
+          @blog = Blog.new(id: 1, name: "My Blog!!")
+          @post.blog = @blog
 
           @serializer = PostSerializer.new(@post)
           @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
