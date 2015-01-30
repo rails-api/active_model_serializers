@@ -12,7 +12,7 @@ module ActiveModel
         end
 
         def serializer_class(object, options = {})
-          serializer_from_options || serializer_from_object(object, options) || default_serializer
+          (serializer_from_options unless object.nil?) || serializer_from_object(object, options) || default_serializer
         end
 
         def build_serializer(object, options = {})

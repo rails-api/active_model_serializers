@@ -88,7 +88,7 @@ class UserSerializer < ActiveModel::Serializer
 end
 
 class UserInfoSerializer < ActiveModel::Serializer
-  has_one :user
+  has_one :user, serializer: UserSerializer
 end
 
 class ProfileSerializer < ActiveModel::Serializer

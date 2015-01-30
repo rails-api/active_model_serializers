@@ -176,6 +176,20 @@ module ActiveModel
         }, @user_serializer.as_json)
       end
 
+      def test_associations_embedding_objects_with_nil_values
+        user_info = UserInfo.new
+        user_info.instance_eval do
+          def user
+            nil
+          end
+        end
+        user_info_serializer = UserInfoSerializer.new(user_info)
+
+        assert_equal({
+          'user_info' => { user: nil }
+        }, user_info_serializer.as_json)
+      end
+
       def test_associations_embedding_ids_using_embed_namespace
         @association.embed_namespace = :links
         @association.embed = :ids
