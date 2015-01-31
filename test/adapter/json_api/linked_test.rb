@@ -44,8 +44,8 @@ module ActiveModel
             @second_comment.post = @first_post
             @second_comment.author = nil
             assert_equal([
-                           { title: "Hello!!", body: "Hello, world!!", id: "1", links: { comments: ['1', '2'], author: "1" } },
-                           { title: "New Post", body: "Body", id: "2", links: { comments: [], :author => "2" } }
+                           { title: "Hello!!", body: "Hello, world!!", id: "1", links: { comments: ['1', '2'], blog: "999", author: "1" } },
+                           { title: "New Post", body: "Body", id: "2", links: { comments: [], blog: "999", author: "2" } }
                          ], @adapter.serializable_hash[:posts])
 
 
@@ -69,7 +69,7 @@ module ActiveModel
                 id: "1",
                 name: "Steve K.",
                 links: {
-                  posts: ["1"],
+                  posts: ["1", "3"],
                   roles: [],
                   bio: "1"
                 }
@@ -99,7 +99,7 @@ module ActiveModel
             assert_equal expected, @adapter.serializable_hash[:linked]
           end
 
-          def test_include_multiple_posts_and_linked
+          def test_include_bio_and_linked
             @serializer = BioSerializer.new(@bio1)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'author,author.posts')
 
