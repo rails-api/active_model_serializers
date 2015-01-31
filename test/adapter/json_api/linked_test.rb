@@ -99,6 +99,58 @@ module ActiveModel
             assert_equal expected, @adapter.serializable_hash[:linked]
           end
 
+          def test_include_multiple_posts_and_linked_and_fields
+            @serializer = ArraySerializer.new([@first_post, @second_post])
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'author,author.bio,comments', fields: %w(id title blog author))
+
+            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+            @first_post.comments = [@first_comment, @second_comment]
+            @first_comment.post = @first_post
+            @first_comment.author = nil
+            @second_comment.post = @first_post
+            @second_comment.author = nil
+            assert_equal([
+                           { title: "Hello!!", id: "1", links: { blog: "999", author: "1" } },
+                           { title: "New Post", id: "2", links: { blog: "999", author: "2" } }
+                         ], @adapter.serializable_hash[:posts])
+
+
+            expected = {
+              authors: [{
+                id: "1",
+                name: "Steve K.",
+                links: {
+                  posts: ["1", "3"],
+                  roles: [],
+                  bio: "1"
+                }
+              }, {
+                id: "2",
+                name: "Tenderlove",
+                links: {
+                  posts: ["2"],
+                  roles: [],
+                  bio: "2"
+                }
+              }],
+              bios: [{
+                id: "1",
+                content: "AMS Contributor",
+                links: {
+                  author: "1"
+                }
+              }, {
+                id: "2",
+                content: "Rails Contributor",
+                links: {
+                  author: "2"
+                }
+              }]
+            }
+            assert_equal expected, @adapter.serializable_hash[:linked]
+          end
+
           def test_include_bio_and_linked
             @serializer = BioSerializer.new(@bio1)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'author,author.posts')
@@ -120,6 +172,49 @@ module ActiveModel
                   posts: ["1", "3"],
                   roles: [],
                   bio: "1"
+                }
+              }],
+              posts: [{
+                title: "Hello!!",
+                body: "Hello, world!!",
+                id: "1",
+                links: {
+                  comments: ["1", "2"],
+                  blog: "999",
+                  author: "1"
+                }
+              }, {
+                title: "Yet Another Post",
+                body: "Body",
+                id: "3",
+                links: {
+                  comments: [],
+                  blog: nil,
+                  author: "1"
+                }
+              }]
+            }
+            assert_equal expected, @adapter.serializable_hash[:linked]
+          end
+
+          def test_include_bio_and_linked_and_fields
+            @serializer = BioSerializer.new(@bio1)
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'author,author.posts', fields: { author: %w(name posts) })
+
+            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+            @first_post.comments = [@first_comment, @second_comment]
+            @third_post.comments = []
+            @first_comment.post = @first_post
+            @first_comment.author = nil
+            @second_comment.post = @first_post
+            @second_comment.author = nil
+
+            expected = {
+              authors: [{
+                name: "Steve K.",
+                links: {
+                  posts: ["1", "3"],
                 }
               }],
               posts: [{
