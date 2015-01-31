@@ -34,8 +34,8 @@ module ActiveModel
           def test_limiting_fields
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, fields: ['title'])
             assert_equal([
-              { title: "Hello!!", links: { comments: [], blog: "999", author: "1" } },
-              { title: "New Post", links: { comments: [], blog: nil, author: "1" } }
+              { title: "Hello!!" },
+              { title: "New Post" }
             ], @adapter.serializable_hash[:posts])
           end
 

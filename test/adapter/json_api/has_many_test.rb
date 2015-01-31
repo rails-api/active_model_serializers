@@ -59,17 +59,9 @@ module ActiveModel
           def test_limit_fields_of_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments', fields: {comment: [:id]})
             expected = [{
-              id: "1",
-              links: {
-                post: "1",
-                author: nil
-              }
+              id: "1"
             }, {
-              id: "2",
-              links: {
-                post: "1",
-                author: nil
-              }
+              id: "2"
             }]
             assert_equal expected, @adapter.serializable_hash[:linked][:comments]
           end

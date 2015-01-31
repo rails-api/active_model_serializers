@@ -53,12 +53,7 @@ module ActiveModel
           def test_limiting_linked_post_fields
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: {post: [:title]})
             expected = [{
-              title: 'New Post',
-              links: {
-                comments: ["1"],
-                blog: "999",
-                author: "1"
-              }
+              title: 'New Post'
             }]
             assert_equal expected, @adapter.serializable_hash[:linked][:posts]
           end
