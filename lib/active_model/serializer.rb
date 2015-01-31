@@ -156,8 +156,16 @@ module ActiveModel
       end
     end
 
-    def each_association(&block)
-      self.class._associations.dup.each do |name, options|
+    def associations(options = {})
+      if options[:fields]
+        self.class._associations.slice(*options[:fields])
+      else
+        self.class._associations.dup
+      end
+    end
+
+    def each_association(options = {}, &block)
+      self.associations(options).each do |name, options|
         next unless object
 
         association = object.send(name)
