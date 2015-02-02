@@ -7,6 +7,7 @@ module ActiveModel
       autoload :Json
       autoload :Null
       autoload :JsonApi
+      autoload :CollectionJson
 
       attr_reader :serializer
 
