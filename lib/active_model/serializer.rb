@@ -36,6 +36,10 @@ module ActiveModel
       end unless method_defined?(key)
     end
 
+    def self.column_names
+      to_s.sub("Serializer", "").constantize.column_names
+    end
+
     # Defines an association in the object that should be rendered.
     #
     # The serializer object should implement the association name
