@@ -126,13 +126,21 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
 
-    attr_accessor :object, :root, :meta, :meta_key
+    attr_accessor :object, :root, :meta, :meta_key, :scope
 
     def initialize(object, options = {})
-      @object = object
-      @root   = options[:root] || (self.class._root ? self.class.root_name : false)
-      @meta   = options[:meta]
+      @object   = object
+      @root     = options[:root] || (self.class._root ? self.class.root_name : false)
+      @meta     = options[:meta]
       @meta_key = options[:meta_key]
+      @scope    = options[:scope]
+
+      scope_name = options[:scope_name]
+      if scope_name && !respond_to?(scope_name)
+        self.class.class_eval do
+          define_method scope_name, lambda { scope }
+        end
+      end
     end
 
     def json_key
