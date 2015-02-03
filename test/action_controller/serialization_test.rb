@@ -38,6 +38,13 @@ module ActionController
           render json: array
         end
 
+        def render_array_using_generic_array_serializer
+          array = [
+          'No session found for the current user.'
+          ]
+          render json: array
+        end
+
         def render_array_using_implicit_serializer_and_meta
           old_adapter = ActiveModel::Serializer.config.adapter
 
@@ -95,6 +102,17 @@ module ActionController
             name: 'Name 2',
             description: 'Description 2',
           }
+        ]
+
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_array_using_generic_array_serializer
+        get :render_array_using_generic_array_serializer
+        assert_equal 'application/json', @response.content_type
+
+        expected = [
+          'No session found for the current user.'
         ]
 
         assert_equal expected.to_json, @response.body
