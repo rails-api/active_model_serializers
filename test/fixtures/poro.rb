@@ -57,18 +57,22 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   urls :posts, :comments
 end
 
-Post = Class.new(Model)
-Comment = Class.new(Model)
-Author = Class.new(Model)
-Bio = Class.new(Model)
-Blog = Class.new(Model)
-Role = Class.new(Model)
+Post     = Class.new(Model)
+Like     = Class.new(Model)
+Comment  = Class.new(Model)
+Author   = Class.new(Model)
+Bio      = Class.new(Model)
+Blog     = Class.new(Model)
+Role     = Class.new(Model)
 User = Class.new(Model)
+Location = Class.new(Model)
+Place    = Class.new(Model)
+
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'post', expires_in: 0.05
+  cache key:'post', expires_in: 0.1
   attributes :id, :title, :body
 
   has_many :comments
@@ -116,13 +120,42 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 RoleSerializer = Class.new(ActiveModel::Serializer) do
-  attributes :id, :name
+  cache only: [:name]
+  attributes :id, :name, :description, :slug
+
+  def slug
+    "#{name}-#{id}"
+  end
 
   belongs_to :author
 end
 
+LikeSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :time
+
+  belongs_to :post
+end
+
+LocationSerializer = Class.new(ActiveModel::Serializer) do
+  cache only: [:place]
+  attributes :id, :lat, :lng
+
+  belongs_to :place
+
+  def place
+    'Nowhere'
+  end
+end
+
+PlaceSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+
+  has_many :locations
+end
+
 BioSerializer = Class.new(ActiveModel::Serializer) do
-  attributes :id, :content
+  cache except: [:content]
+  attributes :id, :content, :rating
 
   belongs_to :author
 end

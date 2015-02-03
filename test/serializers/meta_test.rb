@@ -4,6 +4,7 @@ module ActiveModel
   class Serializer
     class MetaTest < Minitest::Test
       def setup
+        ActionController::Base.cache_store.clear
         @blog = Blog.new(id: 1,
                          name: 'AMS Hints',
                          writer: Author.new(id: 2, name: "Steve"),

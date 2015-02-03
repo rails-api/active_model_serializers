@@ -1,11 +1,11 @@
 require 'test_helper'
-
 module ActiveModel
   class Serializer
     class Adapter
       class JsonApi
         class LinkedTest < Minitest::Test
           def setup
+            ActionController::Base.cache_store.clear
             @author1 = Author.new(id: 1, name: 'Steve K.')
             @author2 = Author.new(id: 2, name: 'Tenderlove')
             @bio1 = Bio.new(id: 1, content: 'AMS Contributor')
@@ -103,8 +103,9 @@ module ActiveModel
                   }
                 }, {
                   id: "1",
-                  content: "AMS Contributor",
+                  rating: nil,
                   type: "bios",
+                  content: "AMS Contributor",
                   links: {
                     author: { linkage: { type: "authors", id: "1" } }
                   }
@@ -119,8 +120,9 @@ module ActiveModel
                   }
                 }, {
                   id: "2",
-                  content: "Rails Contributor",
+                  rating: nil,
                   type: "bios",
+                  content: "Rails Contributor",
                   links: {
                     author: { linkage: { type: "authors", id: "2" } }
                   }
