@@ -50,6 +50,20 @@ module ActiveModel
         json[meta_key] = meta if meta && root
         json
       end
+
+      private
+
+      def cached_object
+        klass = serializer.class
+        if klass._cache
+          _cache_key = (klass._cache_key) ? "#{klass._cache_key}/#{serializer.object.id}-#{serializer.object.updated_at}" : serializer.object.cache_key
+          klass._cache.fetch(_cache_key, klass._cache_options) do
+            yield
+          end
+        else
+          yield
+        end
+      end
     end
   end
 end

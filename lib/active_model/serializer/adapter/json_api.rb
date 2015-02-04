@@ -23,10 +23,12 @@ module ActiveModel
               self.class.new(s, @options.merge(top: @top, fieldset: @fieldset)).serializable_hash[@root]
             end
           else
-            @hash[@root] = attributes_for_serializer(serializer, @options)
-            add_resource_links(@hash[@root], serializer)
+            @hash = cached_object do
+              @hash[@root] = attributes_for_serializer(serializer, @options)
+              add_resource_links(@hash[@root], serializer)
+              @hash
+            end
           end
-
           @hash
         end
 

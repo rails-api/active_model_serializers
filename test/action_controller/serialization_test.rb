@@ -46,8 +46,47 @@ module ActionController
             Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           ]
           render json: array, meta: { total: 10 }
-        ensure
+          ensure
           ActiveModel::Serializer.config.adapter = old_adapter
+        end
+
+        def render_object_with_cache_enabled
+          comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          author = Author.new(id: 1, name: 'Joao Moura.')
+          post = Post.new({ id: 1, title: 'New Post', blog:nil, body: 'Body', comments: [comment], author: author })
+
+          generate_cached_serializer(post)
+
+          post.title = 'ZOMG a New Post'
+          render json: post
+        end
+
+        def render_object_expired_with_cache_enabled
+          comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          author = Author.new(id: 1, name: 'Joao Moura.')
+          post = Post.new({ id: 1, title: 'New Post', blog:nil, body: 'Body', comments: [comment], author: author })
+
+          generate_cached_serializer(post)
+
+          post.title = 'ZOMG a New Post'
+          sleep 0.05
+          render json: post
+        end
+
+        def render_changed_object_with_cache_enabled
+          comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          author = Author.new(id: 1, name: 'Joao Moura.')
+          post = Post.new({ id: 1, title: 'ZOMG a New Post', blog:nil, body: 'Body', comments: [comment], author: author })
+
+          render json: post
+        end
+
+        private
+        def generate_cached_serializer(obj)
+          serializer_class = ActiveModel::Serializer.serializer_for(obj)
+          serializer = serializer_class.new(obj)
+          adapter = ActiveModel::Serializer.adapter.new(serializer)
+          adapter.to_json
         end
       end
 
@@ -105,6 +144,61 @@ module ActionController
 
         assert_equal 'application/json', @response.content_type
         assert_equal '{"profiles":[{"name":"Name 1","description":"Description 1"}],"meta":{"total":10}}', @response.body
+      end
+
+      def test_render_with_cache_enable
+        ActionController::Base.cache_store.clear
+        get :render_object_with_cache_enabled
+
+        expected = {
+          id: 1,
+          title: 'New Post',
+          body: 'Body',
+          comments: [
+            {
+              id: 1,
+              body: 'ZOMG A COMMENT' }
+          ],
+          blog: nil,
+          author: {
+            id: 1,
+            name: 'Joao Moura.'
+          }
+        }
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+
+        get :render_changed_object_with_cache_enabled
+        assert_equal expected.to_json, @response.body
+
+        ActionController::Base.cache_store.clear
+        get :render_changed_object_with_cache_enabled
+        assert_not_equal expected.to_json, @response.body
+      end
+
+      def test_render_with_cache_enable_and_expired
+        ActionController::Base.cache_store.clear
+        get :render_object_expired_with_cache_enabled
+
+        expected = {
+          id: 1,
+          title: 'ZOMG a New Post',
+          body: 'Body',
+          comments: [
+            {
+              id: 1,
+              body: 'ZOMG A COMMENT' }
+          ],
+          blog: nil,
+          author: {
+            id: 1,
+            name: 'Joao Moura.'
+          }
+        }
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
       end
     end
   end
