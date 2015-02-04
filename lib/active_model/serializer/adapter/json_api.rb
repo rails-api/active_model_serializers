@@ -27,11 +27,11 @@ module ActiveModel
 
         private
 
-        def add_links(resource, name, serializers)
+        def add_links(resource, name, serializers, opts = {})
           type = serialized_object_type(serializers)
           resource[:links] ||= {}
 
-          if name.to_s == type || !type
+          if opts[:skip_type_check] || name.to_s == type || !type
             resource[:links][name] ||= []
             resource[:links][name] += serializers.map{|serializer| serializer.identifier }
           else
@@ -42,13 +42,13 @@ module ActiveModel
           end
         end
 
-        def add_link(resource, name, serializer)
+        def add_link(resource, name, serializer, opts = {})
           resource[:links] ||= {}
           resource[:links][name] = nil
 
           if serializer
             type = serialized_object_type(serializer)
-            if name.to_s == type || !type
+            if opts[:skip_type_check] || name.to_s == type || !type
               resource[:links][name] = serializer.identifier
             else
               resource[:links][name] ||= {}
@@ -58,7 +58,7 @@ module ActiveModel
           end
         end
 
-        def add_linked(resource_name, serializers, parent = nil)
+        def add_linked(resource_name, serializers, parent = nil, opts = {})
           serializers = Array(serializers) unless serializers.respond_to?(:each)
 
           resource_path = [parent, resource_name].compact.join('.')
@@ -79,7 +79,7 @@ module ActiveModel
 
           serializers.each do |serializer|
             serializer.each_association do |name, association, opts|
-              add_linked(name, association, resource_path) if association
+              add_linked(name, association, resource_path, opts) if association
             end if include_nested_assoc? resource_path
           end
         end
@@ -139,14 +139,14 @@ module ActiveModel
             attrs[:links] ||= {}
 
             if association.respond_to?(:each)
-              add_links(attrs, name, association)
+              add_links(attrs, name, association, opts)
             else
-              add_link(attrs, name, association)
+              add_link(attrs, name, association, opts)
             end
 
             if @options[:embed] != :ids && options[:add_linked]
               Array(association).each do |association|
-                add_linked(name, association)
+                add_linked(name, association, nil, opts)
               end
             end
           end
