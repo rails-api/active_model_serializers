@@ -29,13 +29,15 @@ module ActiveModel
 
         def add_links(resource, name, serializers, opts = {})
           type = serialized_object_type(serializers)
+          href = serialized_object_href(serializers)  
           resource[:links] ||= {}
 
-          if opts[:skip_type_check] || name.to_s == type || !type
+          if opts[:skip_type_check] || ((name.to_s == type || !type) && !href )
             resource[:links][name] ||= []
             resource[:links][name] += serializers.map{|serializer| serializer.identifier }
           else
             resource[:links][name] ||= {}
+            resource[:links][name][:href] = href if href
             resource[:links][name][:type] = type
             resource[:links][name][:ids] ||= []
             resource[:links][name][:ids] += serializers.map{|serializer| serializer.identifier }
@@ -114,6 +116,11 @@ module ActiveModel
           @options[:include].split(',').any? do |s|
             s.match(/^#{assoc.gsub('.', '\.')}/)
           end
+        end
+
+        def serialized_object_href(serializer)
+          return false unless Array(serializer).first                 
+          Array(serializer).first.object.href 
         end
 
         def serialized_object_type(serializer)
