@@ -120,7 +120,8 @@ module ActiveModel
 
         def serialized_object_href(serializer)
           return false unless Array(serializer).first                 
-          Array(serializer).first.object.href 
+          obj = Array(serializer).first.object 
+          obj.respond_to?(:href) ? obj.href : nil 
         end
 
         def serialized_object_type(serializer)
