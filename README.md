@@ -163,6 +163,22 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+### Overriding attribute methods
+
+If you want to override any attribute, you can use:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  has_many :comments
+
+  def body
+    object.body.downcase
+  end
+end
+```
+
 ### Built in Adapters
 
 #### JSONAPI
