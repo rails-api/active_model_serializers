@@ -8,6 +8,7 @@ module ActiveModel
           @association = Association::HasOne.new('post', serializer: PostSerializer)
           @post = Post.new({ title: 'Title 1', body: 'Body 1', date: '1/1/2000' })
           @user = User.new
+          @nil_profile_user = NilProfileUser.new
         end
 
         def test_build_serializer_for_array_called_twice
@@ -29,6 +30,13 @@ module ActiveModel
           serializer = UserSerializer.new(@user).build_serializer(assoc)
 
           assert_instance_of(ShortProfileSerializer, serializer)
+        end
+        
+        def test_build_serializer_when_association_nil
+          assoc      = Association::HasOne.new('profile')
+          serializer = UserSerializer.new(@nil_profile_user).build_serializer(assoc)
+          
+          assert_instance_of(DefaultSerializer, serializer)
         end
       end
     end

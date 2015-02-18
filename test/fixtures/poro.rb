@@ -24,6 +24,11 @@ class User < Model
   end
 end
 
+class NilProfileUser < User
+  def profile
+  end
+end
+
 class UserInfo < Model
   def user
     @user ||= User.new(name: 'N1', email: 'E1')
