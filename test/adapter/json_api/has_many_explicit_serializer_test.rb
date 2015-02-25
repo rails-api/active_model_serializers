@@ -34,8 +34,9 @@ module ActiveModel
           end
 
           def test_includes_linked_comments
-            assert_equal([{ id: '1', body: "ZOMG A COMMENT", links: { post: @post.id.to_s, author: nil }},
-                          { id: '2', body: "ZOMG ANOTHER COMMENT", links: { post: @post.id.to_s, author: nil }}],
+            # If CommentPreviewSerializer is applied correctly the body text will not be present in the output
+            assert_equal([{ id: '1', links: { post: @post.id.to_s}},
+                          { id: '2', links: { post: @post.id.to_s}}],
                          @adapter.serializable_hash[:linked][:comments])
           end
 
