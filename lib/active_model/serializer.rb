@@ -176,7 +176,7 @@ module ActiveModel
 
     def serializer_from_options(options)
       opts = {}
-      serializer = options.fetch(:options, {}).fetch(:serializer, nil)
+      serializer = options.fetch(:association_options, {}).fetch(:serializer, nil)
       opts[:serializer] = serializer if serializer
       opts
     end
