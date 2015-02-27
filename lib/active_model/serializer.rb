@@ -156,11 +156,21 @@ module ActiveModel
     private
 
     def self.get_serializer_for(klass)
+#      serializer_class = if klass.respond_to?(:serializer_class)
+#        klass.serializer_class
+#      else
+#        serializer_class_name = "#{klass.name}Serializer"
+#        serializer_class_name.safe_constantize
+#      end
+      #serializer_class = if klass.to_s.starts_with?("Samples") #.split("::").first == "Samples" # klass != NilClass && klass != Object && klass != BasicObject
+      #  klass.serializer_class
+      #else
+      #  serializer_class_name = "#{klass.name}Serializer"
+      #  serializer_class_name.safe_constantize
+      #end
+
       serializer_class = if klass.respond_to?(:serializer_class)
         klass.serializer_class
-      else
-        serializer_class_name = "#{klass.name}Serializer"
-        serializer_class_name.safe_constantize
       end
 
       if serializer_class
