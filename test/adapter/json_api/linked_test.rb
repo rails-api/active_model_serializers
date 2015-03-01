@@ -10,9 +10,9 @@ module ActiveModel
             @author2 = Author.new(id: 2, name: 'Tenderlove')
             @bio1 = Bio.new(id: 1, content: 'AMS Contributor')
             @bio2 = Bio.new(id: 2, content: 'Rails Contributor')
-            @first_post = Post.new(id: 1, title: 'Hello!!', body: 'Hello, world!!')
-            @second_post = Post.new(id: 2, title: 'New Post', body: 'Body')
-            @third_post = Post.new(id: 3, title: 'Yet Another Post', body: 'Body')
+            @first_post = Post.new(id: 10, title: 'Hello!!', body: 'Hello, world!!')
+            @second_post = Post.new(id: 20, title: 'New Post', body: 'Body')
+            @third_post = Post.new(id: 30, title: 'Yet Another Post', body: 'Body')
             @blog = Blog.new({ name: 'AMS Blog' })
             @first_post.blog = @blog
             @second_post.blog = @blog
@@ -44,8 +44,8 @@ module ActiveModel
             @second_comment.post = @first_post
             @second_comment.author = nil
             assert_equal([
-                           { title: "Hello!!", body: "Hello, world!!", id: "1", links: { comments: ['1', '2'], blog: "999", author: "1" } },
-                           { title: "New Post", body: "Body", id: "2", links: { comments: [], blog: "999", author: "2" } }
+                           { title: "Hello!!", body: "Hello, world!!", id: "10", links: { comments: ['1', '2'], blog: "999", author: "1" } },
+                           { title: "New Post", body: "Body", id: "20", links: { comments: [], blog: "999", author: "2" } }
                          ], @adapter.serializable_hash[:posts])
 
 
@@ -54,14 +54,14 @@ module ActiveModel
                 id: "1",
                 body: "ZOMG A COMMENT",
                 links: {
-                  post: "1",
+                  post: "10",
                   author: nil
                 }
               }, {
                 id: "2",
                 body: "ZOMG ANOTHER COMMENT",
                 links: {
-                  post: "1",
+                  post: "10",
                   author: nil
                 }
               }],
@@ -69,7 +69,7 @@ module ActiveModel
                 id: "1",
                 name: "Steve K.",
                 links: {
-                  posts: ["1", "3"],
+                  posts: ["10", "30"],
                   roles: [],
                   bio: "1"
                 }
@@ -77,7 +77,7 @@ module ActiveModel
                 id: "2",
                 name: "Tenderlove",
                 links: {
-                  posts: ["2"],
+                  posts: ["20"],
                   roles: [],
                   bio: "2"
                 }
@@ -117,7 +117,7 @@ module ActiveModel
                 id: "1",
                 name: "Steve K.",
                 links: {
-                  posts: ["1", "3"],
+                  posts: ["10", "30"],
                   roles: [],
                   bio: "1"
                 }
@@ -125,7 +125,7 @@ module ActiveModel
               posts: [{
                 title: "Hello!!",
                 body: "Hello, world!!",
-                id: "1",
+                id: "10",
                 links: {
                   comments: ["1", "2"],
                   blog: "999",
@@ -134,7 +134,7 @@ module ActiveModel
               }, {
                 title: "Yet Another Post",
                 body: "Body",
-                id: "3",
+                id: "30",
                 links: {
                   comments: [],
                   blog: nil,
