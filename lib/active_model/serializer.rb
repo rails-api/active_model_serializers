@@ -66,6 +66,16 @@ module ActiveModel
       associate(:belongs_to, attrs)
     end
 
+    # Defines an association in the object should be rendered.
+    #
+    # The serializer object should implement the association name
+    # as a method which should return an object when invoked. If a method
+    # with the association name does not exist, the association name is
+    # dispatched to the serialized object.
+    def self.has_one(*attrs)
+      associate(:has_one, attrs)
+    end
+
     def self.associate(type, attrs) #:nodoc:
       options = attrs.extract_options!
       self._associations = _associations.dup

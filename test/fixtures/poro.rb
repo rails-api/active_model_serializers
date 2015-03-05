@@ -99,7 +99,7 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
 
   has_many :posts, embed: :ids
   has_many :roles, embed: :ids
-  belongs_to :bio
+  has_one :bio
 end
 
 RoleSerializer = Class.new(ActiveModel::Serializer) do
