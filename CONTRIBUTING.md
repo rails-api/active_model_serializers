@@ -1,6 +1,6 @@
 # Issue Labeling
 
-AMS uses [StandardIssueLabels](https://github.com/wagenet/StandardIssueLabels) for Github Issues.
+AMS uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIssueLabels) for Github Issues. You can [see our labels here](https://github.com/rails-api/active_model_serializers/labels).
 
 ## Contributing
 
