@@ -138,8 +138,9 @@ module ActiveModel
 
         def add_resource_links(attrs, serializer, options = {})
           options[:add_linked] = options.fetch(:add_linked, true)
+          options[:fields] = @fieldset && @fieldset.fields_for(serializer) 
 
-          serializer.each_association do |name, association, opts|
+          serializer.each_association(options) do |name, association, opts|
             attrs[:links] ||= {}
 
             if association.respond_to?(:each)
