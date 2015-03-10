@@ -140,10 +140,8 @@ module ActiveModel
               { id: c.object_id, type: model_name(c) }
             end,
           },
-          'attachments' => [
-            { type: :image, image: { url: 'U1' }},
-            { type: :video, video: { html: 'H1' }}
-          ]
+          'images' => [{ url: 'U1' }],
+          'videos' => [{ html: 'H1' }]
         }, @mail_serializer.as_json)
       end
 
@@ -153,10 +151,8 @@ module ActiveModel
 
         assert_equal({
           'mail' => { body: 'Body 1' },
-          'attachments' => [
-            { type: :image, image: { url: 'U1' }},
-            { type: :video, video: { html: 'H1' }}
-          ]
+          'images' => [{ url: 'U1' }],
+          'videos' => [{ html: 'H1' }]
         }, @mail_serializer.as_json)
       end
 
@@ -178,10 +174,8 @@ module ActiveModel
               { id: c.object_id, type: model_name(c) }
             end
           },
-          'attachments' => [
-            { type: :image, image: { fake: 'fake' }},
-            { type: :video, video: { fake: 'fake' }}
-          ]
+          'images' => [{ fake: 'fake' }],
+          'videos' => [{ fake: 'fake' }]
         }, @mail_serializer.as_json)
       end
     end

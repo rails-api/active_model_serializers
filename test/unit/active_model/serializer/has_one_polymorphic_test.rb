@@ -155,12 +155,7 @@ module ActiveModel
               id: @interview.attachment.object_id
             }
           },
-          "attachments" => [{
-            type: model_name(@interview.attachment),
-            model_name(@interview.attachment) => {
-              url: 'U1'
-            }
-          }]
+          model_name(@interview.attachment).to_s.pluralize => [{url: 'U1'}]
         }, @interview_serializer.as_json)
       end
 
@@ -183,12 +178,7 @@ module ActiveModel
               id: @interview.attachment.object_id
             }
           },
-          "attachments" => [{
-            type: model_name(@interview.attachment),
-            model_name(@interview.attachment) => {
-              name: 'fake'
-            }
-          }]
+          model_name(@interview.attachment).to_s.pluralize => [{name: 'fake'}]
         }, @interview_serializer.as_json)
       end
     end
