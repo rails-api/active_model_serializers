@@ -8,6 +8,16 @@ module ActionController
 
     ADAPTER_OPTION_KEYS = [:include, :fields, :root, :adapter]
 
+    included do
+      class_attribute :_serialization_scope
+      self._serialization_scope = :current_user
+    end
+
+    def serialization_scope
+      send(_serialization_scope) if _serialization_scope &&
+        respond_to?(_serialization_scope, true)
+    end
+
     def get_serializer(resource)
       @_serializer ||= @_serializer_opts.delete(:serializer)
       @_serializer ||= ActiveModel::Serializer.serializer_for(resource)
@@ -29,6 +39,10 @@ module ActionController
           options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
 
         if use_adapter? && (serializer = get_serializer(resource))
+
+          @_serializer_opts[:scope] ||= serialization_scope
+          @_serializer_opts[:scope_name] = _serialization_scope
+
           # omg hax
           object = serializer.new(resource, @_serializer_opts)
           adapter = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
@@ -36,6 +50,12 @@ module ActionController
         else
           super(resource, options)
         end
+      end
+    end
+
+    module ClassMethods
+      def serialization_scope(scope)
+        self._serialization_scope = scope
       end
     end
   end
