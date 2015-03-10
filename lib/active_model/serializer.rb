@@ -201,14 +201,20 @@ module ActiveModel
 
     private
 
-    def self.get_serializer_for(klass)
-      serializer_class_name = "#{klass.name}Serializer"
-      serializer_class = serializer_class_name.safe_constantize
+    def self.serializers_cache
+      @serializers_cache ||= Threadsafe::Cache.new
+    end
 
-      if serializer_class
-        serializer_class
-      elsif klass.superclass
-        get_serializer_for(klass.superclass)
+    def self.get_serializer_for(klass)
+      serializers_cache.fetch_or_store(klass) do
+        serializer_class_name = "#{klass.name}Serializer"
+        serializer_class = serializer_class_name.safe_constantize
+
+        if serializer_class
+          serializer_class
+        elsif klass.superclass
+          get_serializer_for(klass.superclass)
+        end
       end
     end
 
