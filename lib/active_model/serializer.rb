@@ -199,11 +199,11 @@ module ActiveModel
       opts
     end
 
-    private
-
     def self.serializers_cache
-      @serializers_cache ||= Threadsafe::Cache.new
+      @serializers_cache ||= ThreadSafe::Cache.new
     end
+
+    private
 
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
