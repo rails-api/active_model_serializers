@@ -6,7 +6,7 @@ module ActiveModel
       def setup
         @comment = Comment.new
         @post = Post.new
-        @serializer = ArraySerializer.new([@comment, @post])
+        @serializer = ArraySerializer.new([@comment, @post], {some: :options})
       end
 
       def test_respond_to_each
@@ -21,6 +21,8 @@ module ActiveModel
 
         assert_kind_of PostSerializer, serializers.last
         assert_kind_of Post, serializers.last.object
+
+        assert_equal serializers.last.custom_options[:some], :options
       end
     end
   end

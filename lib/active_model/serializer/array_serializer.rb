@@ -7,12 +7,14 @@ module ActiveModel
       attr_reader :meta, :meta_key
 
       def initialize(objects, options = {})
+        options.merge!(root: nil)
+
         @objects = objects.map do |object|
           serializer_class = options.fetch(
             :serializer,
             ActiveModel::Serializer.serializer_for(object)
           )
-          serializer_class.new(object)
+          serializer_class.new(object, options)
         end
         @meta     = options[:meta]
         @meta_key = options[:meta_key]
