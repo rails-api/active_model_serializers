@@ -1,3 +1,5 @@
+require 'thread_safe'
+
 module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
