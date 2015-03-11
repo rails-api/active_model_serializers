@@ -78,6 +78,10 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   def blog
     Blog.new(id: 999, name: "Custom blog")
   end
+
+  def custom_options
+    options
+  end
 end
 
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
@@ -95,6 +99,10 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
 
   belongs_to :post
   belongs_to :author
+
+  def custom_options
+    options
+  end
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do

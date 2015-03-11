@@ -176,19 +176,20 @@ module ActiveModel
     end
 
     def each_association(&block)
-      self.class._associations.dup.each do |name, options|
+      self.class._associations.dup.each do |name, association_options|
         next unless object
 
         association = object.send(name)
         association_value = send(name)
-        serializer_class = ActiveModel::Serializer.serializer_for(association, options)
+        serializer_class = ActiveModel::Serializer.serializer_for(association, association_options)
+
         serializer = serializer_class.new(
           association_value,
-          serializer_from_options(options)
+          serializer_from_options(association_options).merge(options)
         ) if serializer_class
 
         if block_given?
-          block.call(name, serializer, options[:association_options])
+          block.call(name, serializer, association_options[:association_options])
         end
       end
     end
