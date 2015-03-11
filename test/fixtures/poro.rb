@@ -45,6 +45,10 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 
   urls :posts, :comments
+
+  def arguments_passed_in?
+    options[:my_options] == :accessible
+  end
 end
 
 class ProfilePreviewSerializer < ActiveModel::Serializer

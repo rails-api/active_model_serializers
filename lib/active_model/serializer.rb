@@ -140,6 +140,7 @@ module ActiveModel
 
     def initialize(object, options = {})
       @object   = object
+      @options  = options
       @root     = options[:root] || (self.class._root ? self.class.root_name : false)
       @meta     = options[:meta]
       @meta_key = options[:meta_key]
@@ -200,6 +201,8 @@ module ActiveModel
     end
 
     private
+
+    attr_reader :options
 
     def self.get_serializer_for(klass)
       serializer_class_name = "#{klass.name}Serializer"
