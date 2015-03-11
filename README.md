@@ -189,6 +189,8 @@ resources in the `"linked"` member when the resource names are included in the
 `include` option.
 
 ```ruby
+  render @posts, include: ['authors', 'comments']
+  # or
   render @posts, include: 'authors,comments'
 ```
 

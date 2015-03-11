@@ -89,7 +89,7 @@ module ActiveModel
 
           def test_include_linked_resources_with_type_name
             serializer = BlogSerializer.new(@blog)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: "writer,articles")
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: ['writer', 'articles'])
             linked = adapter.serializable_hash[:linked]
             expected = {
               authors: [{

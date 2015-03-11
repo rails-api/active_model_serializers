@@ -52,7 +52,7 @@ module ActionController
 
         def render_resource_with_nested_has_many_include
           setup_post
-          render json: @post, include: 'author,author.roles', adapter: :json_api
+          render json: @post, include: ['author', 'author.roles'], adapter: :json_api
         end
 
         def render_resource_with_missing_nested_has_many_include
@@ -74,7 +74,7 @@ module ActionController
 
         def render_collection_with_include
           setup_post
-          render json: [@post], include: 'author,comments', adapter: :json_api
+          render json: [@post], include: ['author', 'comments'], adapter: :json_api
         end
       end
 
