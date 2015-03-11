@@ -99,6 +99,10 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
 
   belongs_to :post
   belongs_to :author
+
+  def custom_options
+    options
+  end
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do

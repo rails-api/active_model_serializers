@@ -37,7 +37,7 @@ module ActiveModel
         @post.author = @author
         @author.posts = [@post]
 
-        @post_serializer = PostSerializer.new(@post)
+        @post_serializer = PostSerializer.new(@post, {custom_options: true})
         @author_serializer = AuthorSerializer.new(@author)
         @comment_serializer = CommentSerializer.new(@comment)
       end
@@ -61,6 +61,14 @@ module ActiveModel
             assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
           else
             flunk "Unknown association: #{name}"
+          end
+        end
+      end
+
+      def test_serializer_options_are_passed_into_associations_serializers
+        @post_serializer.each_association do |name, association|
+          if name == :comments
+            assert association.first.custom_options[:custom_options]
           end
         end
       end
