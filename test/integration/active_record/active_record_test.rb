@@ -58,6 +58,22 @@ module ActiveModel
         end
       end
 
+      def test_serialization_embedding_ids_in_common_root_key
+        post_serializer = AREmbeddedSerializer.new(@post)
+
+        embed(AREmbeddedSerializer, embed: :ids, embed_in_root: true, embed_in_root_key: :linked) do
+          embed(ARCommentSerializer, embed: :ids, embed_in_root: true, embed_in_root_key: :linked) do
+            assert_equal({
+              'ar_tags' => [{ name: 'short' },
+                            { name: 'whiny' },
+                            { name: 'happy' }],
+              'ar_comments' => [{ body: 'what a dumb post', 'ar_tag_ids' => [3, 2] },
+                                { body: 'i liked it', 'ar_tag_ids' => [3, 1] }]
+            }, post_serializer.as_json[:linked])
+          end
+        end
+      end
+
       private
 
       def embed(serializer_class, options = {})
@@ -66,6 +82,7 @@ module ActiveModel
         serializer_class._associations.each_value do |association|
           association.embed = options[:embed]
           association.embed_in_root = options[:embed_in_root]
+          association.embed_in_root_key = options[:embed_in_root_key]
         end
 
         yield

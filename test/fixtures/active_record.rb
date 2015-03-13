@@ -74,6 +74,10 @@ class ARSectionSerializer < ActiveModel::Serializer
   attributes 'name'
 end
 
+class AREmbeddedSerializer < ActiveModel::Serializer
+  has_many :ar_tags, :ar_comments
+end
+
 ARPost.create(title: 'New post',
               body:  'A body!!!',
               ar_section: ARSection.create(name: 'ruby')).tap do |post|
