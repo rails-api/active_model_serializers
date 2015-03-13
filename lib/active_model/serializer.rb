@@ -1,3 +1,5 @@
+require 'thread_safe'
+
 module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
@@ -201,18 +203,24 @@ module ActiveModel
       opts
     end
 
+    def self.serializers_cache
+      @serializers_cache ||= ThreadSafe::Cache.new
+    end
+
     private
 
     attr_reader :options
 
     def self.get_serializer_for(klass)
-      serializer_class_name = "#{klass.name}Serializer"
-      serializer_class = serializer_class_name.safe_constantize
+      serializers_cache.fetch_or_store(klass) do
+        serializer_class_name = "#{klass.name}Serializer"
+        serializer_class = serializer_class_name.safe_constantize
 
-      if serializer_class
-        serializer_class
-      elsif klass.superclass
-        get_serializer_for(klass.superclass)
+        if serializer_class
+          serializer_class
+        elsif klass.superclass
+          get_serializer_for(klass.superclass)
+        end
       end
     end
 
