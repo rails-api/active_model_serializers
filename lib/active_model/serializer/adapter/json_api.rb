@@ -6,6 +6,7 @@ module ActiveModel
           super
           serializer.root = true
           @hash = {}
+          @url_helper = options.delete(:url_helper)
           @top = @options.fetch(:top) { @hash }
 
           if fields = options.delete(:fields)
@@ -138,21 +139,27 @@ module ActiveModel
           end
         end
 
+        attr_reader :url_helper
+
         def add_resource_links(attrs, serializer, options = {})
           options[:add_linked] = options.fetch(:add_linked, true)
 
           serializer.each_association do |name, association, opts|
             attrs[:links] ||= {}
 
-            if association.respond_to?(:each)
-              add_links(attrs, name, association)
+            if opts[:url]
+              attrs[:links][name] = url_helper.url_for([serializer.object, name])
             else
-              add_link(attrs, name, association)
-            end
+              if association.respond_to?(:each)
+                add_links(attrs, name, association)
+              else
+                add_link(attrs, name, association)
+              end
 
-            if @options[:embed] != :ids && options[:add_linked]
-              Array(association).each do |association|
-                add_linked(name, association)
+              if @options[:embed] != :ids && options[:add_linked]
+                Array(association).each do |association|
+                  add_linked(name, association)
+                end
               end
             end
           end
