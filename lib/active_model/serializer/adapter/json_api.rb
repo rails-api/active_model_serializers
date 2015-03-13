@@ -6,7 +6,7 @@ module ActiveModel
           super
           serializer.root = true
           @hash = {}
-          @url_helper = options.delete(:url_helper)
+          @url_helper = options[:url_helper]
           @top = @options.fetch(:top) { @hash }
 
           if fields = options.delete(:fields)
