@@ -1,5 +1,7 @@
 ## How can I help?
 
+Everyone is encouraged to open issues that are affecting you: bugs, ideas, performance problems – everything helps!
+
 The first place to start is by looking at our [GitHub Issues](https://github.com/rails-api/active_model_serializers/issues).
 
 The vast majority of development is happening under the `master` branch, currently slated for release as `0.10.x`. This is where we would suggest you start.
@@ -20,6 +22,10 @@ AMS uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIs
 
 1. Fork it ( https://github.com/rails-api/active_model_serializers/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+3. Write tests for your feature, or regression tests highlighting a bug
+4. Write the feature itself, or fix your bug
+5. Commit your changes (`git commit -am 'Add some feature'`)
+6. Push to the branch (`git push origin my-new-feature`)
+7. Create a new Pull Request
+
+Remember to squash your commits and rebase off `master`.
