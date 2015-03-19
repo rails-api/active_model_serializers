@@ -6,10 +6,11 @@ module ActiveModel
     autoload :Configuration
     autoload :ArraySerializer
     autoload :Adapter
+    autoload :AttributeMethods
     include Configuration
+    include Serializer::AttributeMethods
 
     class << self
-      attr_accessor :_attributes
       attr_accessor :_associations
       attr_accessor :_urls
       attr_accessor :_cache
@@ -18,27 +19,9 @@ module ActiveModel
     end
 
     def self.inherited(base)
-      base._attributes = []
       base._associations = {}
       base._urls = []
-    end
-
-    def self.attributes(*attrs)
-      @_attributes.concat attrs
-
-      attrs.each do |attr|
-        define_method attr do
-          object && object.read_attribute_for_serialization(attr)
-        end unless method_defined?(attr)
-      end
-    end
-
-    def self.attribute(attr, options = {})
-      key = options.fetch(:key, attr)
-      @_attributes.concat [key]
-      define_method key do
-        object.read_attribute_for_serialization(attr)
-      end unless method_defined?(key)
+      super
     end
 
     # Enables a serializer to be automatically cached
