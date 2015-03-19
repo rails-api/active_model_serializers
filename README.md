@@ -19,9 +19,7 @@ to use it. `8` was the version that was on RubyGems, so if you were using that,
 that's probably what you want.
 
 `0.10.x` will be based on the `0.8.0` code, but with a more flexible
-architecture. We'd love your help.
-
-For more, please see [the rails-api-core mailing list](https://groups.google.com/d/msg/rails-api-core/8zu1xjIOTAM/siZ0HySKgaAJ).
+architecture. We'd love your help. [Learn how you can help here.](https://github.com/rails-api/active_model_serializers/blob/master/CONTRIBUTING.md)
 
 Thanks!
 
