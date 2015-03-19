@@ -30,7 +30,7 @@ module ActiveModel
 
           def test_includes_comment_ids
             assert_equal(['1', '2'],
-                         @adapter.serializable_hash[:posts][:links][:comments])
+                         @adapter.serializable_hash[:data][:links][:comments])
           end
 
           def test_includes_linked_comments
@@ -42,7 +42,7 @@ module ActiveModel
 
           def test_includes_author_id
             assert_equal(@author.id.to_s,
-                         @adapter.serializable_hash[:posts][:links][:author])
+                         @adapter.serializable_hash[:data][:links][:author])
           end
 
           def test_includes_linked_authors
@@ -53,13 +53,13 @@ module ActiveModel
           def test_explicit_serializer_with_null_resource
             @post.author = nil
             assert_equal(nil,
-                         @adapter.serializable_hash[:posts][:links][:author])
+                         @adapter.serializable_hash[:data][:links][:author])
           end
 
           def test_explicit_serializer_with_null_collection
             @post.comments = []
             assert_equal([],
-                         @adapter.serializable_hash[:posts][:links][:comments])
+                         @adapter.serializable_hash[:data][:links][:comments])
           end
         end
       end

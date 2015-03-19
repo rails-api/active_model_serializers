@@ -16,7 +16,7 @@ module ActiveModel
         end
 
         def serializable_hash(options = {})
-          @root = 'data'
+          @root = :data
 
           if serializer.respond_to?(:each)
             @hash[@root] = serializer.map do |s|

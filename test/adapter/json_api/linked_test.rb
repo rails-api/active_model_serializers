@@ -185,7 +185,7 @@ module ActiveModel
             spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
             serializer = SpammyPostSerializer.new(spammy_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            links = adapter.serializable_hash[:posts][:links]
+            links = adapter.serializable_hash[:data][:links]
             expected = {
               related: {
                 type: 'unrelated_links',

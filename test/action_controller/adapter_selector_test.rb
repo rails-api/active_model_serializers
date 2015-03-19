@@ -29,7 +29,7 @@ module ActionController
 
       def test_render_using_adapter_override
         get :render_using_adapter_override
-        assert_equal '{"profiles":{"name":"Name 1","description":"Description 1"}}', response.body
+        assert_equal '{"data":{"name":"Name 1","description":"Description 1"}}', response.body
       end
 
       def test_render_skipping_adapter

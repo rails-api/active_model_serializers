@@ -111,14 +111,14 @@ module ActionController
         get :render_using_default_adapter_root
 
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"profiles":{"name":"Name 1","description":"Description 1"}}', @response.body
+        assert_equal '{"data":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
 
       def test_render_using_custom_root_in_adapter_with_a_default
         get :render_using_custom_root_in_adapter_with_a_default
 
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"profile":{"name":"Name 1","description":"Description 1"}}', @response.body
+        assert_equal '{"data":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
 
       def test_render_array_using_implicit_serializer
@@ -143,7 +143,7 @@ module ActionController
         get :render_array_using_implicit_serializer_and_meta
 
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"profiles":[{"name":"Name 1","description":"Description 1"}],"meta":{"total":10}}', @response.body
+        assert_equal '{"data":[{"name":"Name 1","description":"Description 1"}],"meta":{"total":10}}', @response.body
       end
 
       def test_render_with_cache_enable

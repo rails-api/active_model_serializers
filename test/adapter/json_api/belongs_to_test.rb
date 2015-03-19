@@ -32,7 +32,7 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            assert_equal("42", @adapter.serializable_hash[:comments][:links][:post])
+            assert_equal("42", @adapter.serializable_hash[:data][:links][:post])
           end
 
           def test_includes_linked_post
@@ -67,13 +67,13 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: [], blog: "999", author: nil}, adapter.serializable_hash[:posts][:links])
+            assert_equal({comments: [], blog: "999", author: nil}, adapter.serializable_hash[:data][:links])
           end
 
           def test_include_type_for_association_when_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            links = adapter.serializable_hash[:blogs][:links]
+            links = adapter.serializable_hash[:data][:links]
             expected = {
               writer: {
                 type: "author",

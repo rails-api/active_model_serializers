@@ -30,7 +30,7 @@ module ActiveModel
           end
 
           def test_includes_bio_id
-            assert_equal("43", @adapter.serializable_hash[:authors][:links][:bio])
+            assert_equal("43", @adapter.serializable_hash[:data][:links][:bio])
           end
 
           def test_includes_linked_bio

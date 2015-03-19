@@ -33,7 +33,7 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            assert_equal(["1", "2"], @adapter.serializable_hash[:posts][:links][:comments])
+            assert_equal(["1", "2"], @adapter.serializable_hash[:data][:links][:comments])
           end
 
           def test_includes_linked_comments
@@ -84,7 +84,7 @@ module ActiveModel
           def test_include_type_for_association_when_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            actual = adapter.serializable_hash[:blogs][:links][:articles]
+            actual = adapter.serializable_hash[:data][:links][:articles]
             expected = {
               type: "posts",
               ids: ["1"]
