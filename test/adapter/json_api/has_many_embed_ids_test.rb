@@ -25,7 +25,12 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            expected = {:linkage=>[{:type=>"posts", :id=>"1"}, {:type=>"posts", :id=>"2"}]}
+            expected = {
+              linkage: [
+                { type: "posts", id: "1"},
+                { type: "posts", id: "2"}
+              ]
+            }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:links][:posts])
           end

@@ -45,13 +45,13 @@ module ActiveModel
               {
                 id: '1',
                 links: {
-                  post: { linkage: { type: 'post', id: @post.id.to_s } }
+                  post: { linkage: { type: 'posts', id: @post.id.to_s } }
                 }
               },
               {
                 id: '2',
                 links: {
-                  post: { linkage: { type: 'post', id: @post.id.to_s } }
+                  post: { linkage: { type: 'posts', id: @post.id.to_s } }
                 }
               }
             ]
@@ -62,7 +62,7 @@ module ActiveModel
 
           def test_includes_author_id
             expected = {
-              linkage: { type: "author", id: @author.id.to_s }
+              linkage: { type: "authors", id: @author.id.to_s }
             }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:links][:author])

@@ -118,12 +118,7 @@ module ActiveModel
 
         def serialized_object_type(serializer)
           return false unless Array(serializer).first
-          type_name = Array(serializer).first.object.class.to_s.demodulize.underscore
-          if serializer.respond_to?(:first)
-            type_name.pluralize
-          else
-            type_name
-          end
+          Array(serializer).first.object.class.to_s.demodulize.underscore.pluralize
         end
 
         def add_resource_links(attrs, serializer, options = {})

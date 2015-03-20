@@ -32,7 +32,7 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            expected = { linkage: { type: "post", id: "42" } }
+            expected = { linkage: { type: "posts", id: "42" } }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:links][:post])
           end
@@ -45,8 +45,8 @@ module ActiveModel
               body: 'Body',
               links: {
                 comments: { linkage: [ { type: "comments", id: "1" } ] },
-                blog: { linkage: { type: "blog", id: "999" } },
-                author: { linkage: { type: "author", id: "1" } }
+                blog: { linkage: { type: "blogs", id: "999" } },
+                author: { linkage: { type: "authors", id: "1" } }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:linked][:posts]
@@ -58,8 +58,8 @@ module ActiveModel
               title: 'New Post',
               links: {
                 comments: { linkage: [ { type: "comments", id: "1" } ] },
-                blog: { linkage: { type: "blog", id: "999" } },
-                author: { linkage: { type: "author", id: "1" } }
+                blog: { linkage: { type: "blogs", id: "999" } },
+                author: { linkage: { type: "authors", id: "1" } }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:linked][:posts]
@@ -69,7 +69,7 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: { linkage: [] }, blog: { linkage: { type: "blog", id: "999" } }, author: { linkage: nil }}, adapter.serializable_hash[:data][:links])
+            assert_equal({comments: { linkage: [] }, blog: { linkage: { type: "blogs", id: "999" } }, author: { linkage: nil }}, adapter.serializable_hash[:data][:links])
           end
 
           def test_include_type_for_association_when_different_than_name
@@ -79,7 +79,7 @@ module ActiveModel
             expected = {
               writer: {
                 linkage: {
-                  type: "author",
+                  type: "authors",
                   id: "1"
                 }
               },
@@ -119,8 +119,8 @@ module ActiveModel
                 id: "42",
                 links: {
                   comments: { linkage: [ { type: "comments", id: "1" } ] },
-                  blog: { linkage: { type: "blog", id: "999" } },
-                  author: { linkage: { type: "author", id: "1" } }
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               }, {
                 title: "Hello!!",
@@ -128,7 +128,7 @@ module ActiveModel
                 id: "43",
                 links: {
                   comments: { linkage: [] },
-                  blog: { linkage: { type: "blog", id: "999" } },
+                  blog: { linkage: { type: "blogs", id: "999" } },
                   author: { linkage: nil }
                 }
               }]

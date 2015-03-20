@@ -111,13 +111,13 @@ module ActionController
             "id" => "1",
             "name" => "admin",
             "links" => {
-              "author" => { "linkage" => { "type" =>"author", "id" => "1" } }
+              "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
           }, {
             "id" => "2",
             "name" => "colab",
             "links" => {
-              "author" => { "linkage" => { "type" =>"author", "id" => "1" } }
+              "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
           }]
         }

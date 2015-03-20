@@ -57,14 +57,14 @@ module ActiveModel
                     id: "1",
                     body: "ZOMG A COMMENT",
                     links: {
-                      post: { linkage: { type: "post", id: "1" } },
+                      post: { linkage: { type: "posts", id: "1" } },
                       author: { linkage: nil }
                     }
                   }, {
                     id: "2",
                     body: "ZOMG ANOTHER COMMENT",
                     links: {
-                      post: { linkage: { type: "post", id: "1" } },
+                      post: { linkage: { type: "posts", id: "1" } },
                       author: { linkage: nil }
                     }
                   }
@@ -76,7 +76,7 @@ module ActiveModel
                     links: {
                       posts: { linkage: [ { type: "posts", id: "1" }, { type: "posts", id: "3" } ] },
                       roles: { linkage: [] },
-                      bio: { linkage: { type: "bio", id: "1" } }
+                      bio: { linkage: { type: "bios", id: "1" } }
                     }
                   }, {
                     id: "2",
@@ -84,7 +84,7 @@ module ActiveModel
                     links: {
                       posts: { linkage: [ { type: "posts", id:"2" } ] },
                       roles: { linkage: [] },
-                      bio: { linkage: { type: "bio", id: "2" } }
+                      bio: { linkage: { type: "bios", id: "2" } }
                     }
                   }
                 ],
@@ -93,13 +93,13 @@ module ActiveModel
                     id: "1",
                     content: "AMS Contributor",
                     links: {
-                      author: { linkage: { type: "author", id: "1" } }
+                      author: { linkage: { type: "authors", id: "1" } }
                     }
                   }, {
                     id: "2",
                     content: "Rails Contributor",
                     links: {
-                      author: { linkage: { type: "author", id: "2" } }
+                      author: { linkage: { type: "authors", id: "2" } }
                     }
                   }
                 ]
@@ -111,8 +111,8 @@ module ActiveModel
                   body: "Hello, world!!",
                   links: {
                     comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
-                    blog: { linkage: { type: "blog", id: "999" } },
-                    author: { linkage: { type: "author", id: "1" } }
+                    blog: { linkage: { type: "blogs", id: "999" } },
+                    author: { linkage: { type: "authors", id: "1" } }
                   }
                 },
                 {
@@ -121,8 +121,8 @@ module ActiveModel
                   body: "Body",
                   links: {
                     comments: { linkage: [] },
-                    blog: { linkage: { type: "blog", id: "999" } },
-                    author: { linkage: { type: "author", id: "2" } }
+                    blog: { linkage: { type: "blogs", id: "999" } },
+                    author: { linkage: { type: "authors", id: "2" } }
                   }
                 }
               ]
@@ -150,7 +150,7 @@ module ActiveModel
                   links: {
                     posts: { linkage: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
                     roles: { linkage: [] },
-                    bio: { linkage: { type: "bio", id: "1" }}
+                    bio: { linkage: { type: "bios", id: "1" }}
                   }
                 }
               ],
@@ -161,8 +161,8 @@ module ActiveModel
                   body: "Hello, world!!",
                   links: {
                     comments: { linkage: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
-                    blog: { linkage: { type: "blog", id: "999" } },
-                    author: { linkage: { type: "author", id: "1" } }
+                    blog: { linkage: { type: "blogs", id: "999" } },
+                    author: { linkage: { type: "authors", id: "1" } }
                   }
                 }, {
                   id: "30",
@@ -170,8 +170,8 @@ module ActiveModel
                   body: "Body",
                   links: {
                     comments: { linkage: [] },
-                    blog: { linkage: { type: "blog", id: "999" } },
-                    author: { linkage: { type: "author", id: "1" } }
+                    blog: { linkage: { type: "blogs", id: "999" } },
+                    author: { linkage: { type: "authors", id: "1" } }
                   }
                 }
               ]

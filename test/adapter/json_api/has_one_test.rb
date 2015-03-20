@@ -30,7 +30,7 @@ module ActiveModel
           end
 
           def test_includes_bio_id
-            expected = { linkage: { type: "bio", id: "43" } }
+            expected = { linkage: { type: "bios", id: "43" } }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:links][:bio])
           end
@@ -43,7 +43,7 @@ module ActiveModel
                 id: "43",
                 content:"AMS Contributor",
                 links: {
-                  author: { linkage: { type: "author", id: "1" } }
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               }
             ]

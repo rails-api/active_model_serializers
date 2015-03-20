@@ -44,14 +44,14 @@ module ActiveModel
               id: "1",
               body: 'ZOMG A COMMENT',
               links: {
-                post: { linkage: { type: "post", id: "1" } },
+                post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }, {
               id: "2",
               body: 'ZOMG ANOTHER COMMENT',
               links: {
-                post: { linkage: { type: "post", id: "1" } },
+                post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }]
@@ -63,13 +63,13 @@ module ActiveModel
             expected = [{
               id: "1",
               links: {
-                post: { linkage: { type: "post", id: "1" } },
+                post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }, {
               id: "2",
               links: {
-                post: { linkage: { type: "post", id: "1" } },
+                post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }]

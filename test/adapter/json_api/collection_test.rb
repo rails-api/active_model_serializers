@@ -32,8 +32,8 @@ module ActiveModel
                 id: "1",
                 links: {
                   comments: { linkage: [] },
-                  blog: { linkage: { type: "blog", id: "999" } },
-                  author: { linkage: { type: "author", id: "1" } }
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               },
               {
@@ -42,8 +42,8 @@ module ActiveModel
                 id: "2",
                 links: {
                   comments: { linkage: [] },
-                  blog: { linkage: { type: "blog", id: "999" } },
-                  author: { linkage: { type: "author", id: "1" } }
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               }
             ]
@@ -59,16 +59,16 @@ module ActiveModel
                 title: "Hello!!",
                 links: {
                   comments: { linkage: [] },
-                  blog: { linkage: { type: "blog", id: "999" } },
-                  author: { linkage: { type: "author", id: "1" } }
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               },
               {
                 title: "New Post",
                 links: {
                   comments: { linkage: [] },
-                  blog: { linkage: { type: "blog", id: "999" } },
-                  author: { linkage: { type: "author", id: "1" } }
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               }
             ]
