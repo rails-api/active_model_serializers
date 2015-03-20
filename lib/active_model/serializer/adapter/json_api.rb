@@ -65,7 +65,7 @@ module ActiveModel
           end
         end
 
-        def add_linked(resource_name, serializers, parent = nil)
+        def add_included(resource_name, serializers, parent = nil)
           serializers = Array(serializers) unless serializers.respond_to?(:each)
 
           resource_path = [parent, resource_name].compact.join('.')
@@ -78,7 +78,7 @@ module ActiveModel
             serializers.each do |serializer|
               attrs = attributes_for_serializer(serializer, @options)
 
-              add_resource_links(attrs, serializer, add_linked: false)
+              add_resource_links(attrs, serializer, add_included: false)
 
               @top[:linked][plural_name].push(attrs) unless @top[:linked][plural_name].include?(attrs)
             end
@@ -86,7 +86,7 @@ module ActiveModel
 
           serializers.each do |serializer|
             serializer.each_association do |name, association, opts|
-              add_linked(name, association, resource_path) if association
+              add_included(name, association, resource_path) if association
             end if include_nested_assoc? resource_path
           end
         end
@@ -139,7 +139,7 @@ module ActiveModel
         end
 
         def add_resource_links(attrs, serializer, options = {})
-          options[:add_linked] = options.fetch(:add_linked, true)
+          options[:add_included] = options.fetch(:add_included, true)
 
           serializer.each_association do |name, association, opts|
             attrs[:links] ||= {}
@@ -150,9 +150,9 @@ module ActiveModel
               add_link(attrs, name, association)
             end
 
-            if @options[:embed] != :ids && options[:add_linked]
+            if @options[:embed] != :ids && options[:add_included]
               Array(association).each do |association|
-                add_linked(name, association)
+                add_included(name, association)
               end
             end
           end
