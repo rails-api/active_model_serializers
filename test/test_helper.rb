@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'pp'
+
 require 'rails'
 require 'action_controller'
 require 'action_controller/test_case'
