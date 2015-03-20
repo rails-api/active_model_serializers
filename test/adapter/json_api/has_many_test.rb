@@ -42,6 +42,7 @@ module ActiveModel
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments')
             expected = [{
               id: "1",
+              type: "comments",
               body: 'ZOMG A COMMENT',
               links: {
                 post: { linkage: { type: "posts", id: "1" } },
@@ -49,31 +50,34 @@ module ActiveModel
               }
             }, {
               id: "2",
+              type: "comments",
               body: 'ZOMG ANOTHER COMMENT',
               links: {
                 post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:linked][:comments]
+            assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_limit_fields_of_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments', fields: {comment: [:id]})
             expected = [{
               id: "1",
+              type: "comments",
               links: {
                 post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }, {
               id: "2",
+              type: "comments",
               links: {
                 post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:linked][:comments]
+            assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_no_include_linked_if_comments_is_empty

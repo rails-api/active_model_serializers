@@ -164,6 +164,14 @@ module ActiveModel
       end
     end
 
+    def id
+      object.id if object
+    end
+
+    def type
+      object.class.to_s.demodulize.underscore.pluralize
+    end
+
     def attributes(options = {})
       attributes =
         if options[:fields]
@@ -171,6 +179,8 @@ module ActiveModel
         else
           self.class._attributes.dup
         end
+
+      attributes += options[:required_fields] if options[:required_fields]
 
       attributes.each_with_object({}) do |name, hash|
         hash[name] = send(name)

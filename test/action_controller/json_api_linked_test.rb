@@ -83,80 +83,87 @@ module ActionController
       def test_render_resource_without_include
         get :render_resource_without_include
         response = JSON.parse(@response.body)
-        refute response.key? 'linked'
+        refute response.key? 'included'
       end
 
       def test_render_resource_with_include
         get :render_resource_with_include
         response = JSON.parse(@response.body)
-        assert response.key? 'linked'
-        assert_equal 1, response['linked']['authors'].size
-        assert_equal 'Steve K.', response['linked']['authors'].first['name']
+        assert response.key? 'included'
+        assert_equal 1, response['included'].size
+        assert_equal 'Steve K.', response['included'].first['name']
       end
 
       def test_render_resource_with_nested_has_many_include
         get :render_resource_with_nested_has_many_include
         response = JSON.parse(@response.body)
-        expected_linked = {
-          "authors" => [{
+        expected_linked = [
+          {
             "id" => "1",
+            "type" => "authors",
             "name" => "Steve K.",
             "links" => {
               "posts" => { "linkage" => [] },
               "roles" => { "linkage" => [{ "type" =>"roles", "id" => "1" }, { "type" =>"roles", "id" => "2" }] },
               "bio" => { "linkage" => nil }
             }
-          }],
-          "roles"=>[{
+          }, {
             "id" => "1",
+            "type" => "roles",
             "name" => "admin",
             "links" => {
               "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
           }, {
             "id" => "2",
+            "type" => "roles",
             "name" => "colab",
             "links" => {
               "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
-          }]
-        }
-        assert_equal expected_linked, response['linked']
+          }
+        ]
+        assert_equal expected_linked, response['included']
       end
 
       def test_render_resource_with_nested_include
         get :render_resource_with_nested_include
         response = JSON.parse(@response.body)
-        assert response.key? 'linked'
-        assert_equal 1, response['linked']['authors'].size
-        assert_equal 'Anonymous', response['linked']['authors'].first['name']
+        assert response.key? 'included'
+        assert_equal 1, response['included'].size
+        assert_equal 'Anonymous', response['included'].first['name']
       end
 
       def test_render_collection_without_include
         get :render_collection_without_include
         response = JSON.parse(@response.body)
-        refute response.key? 'linked'
+        refute response.key? 'included'
       end
 
       def test_render_collection_with_include
         get :render_collection_with_include
         response = JSON.parse(@response.body)
-        assert response.key? 'linked'
+        assert response.key? 'included'
       end
 
       def test_render_resource_with_nested_attributes_even_when_missing_associations
         get :render_resource_with_missing_nested_has_many_include
         response = JSON.parse(@response.body)
-        assert response.key? 'linked'
-        refute response['linked'].key? 'roles'
+        assert response.key? 'included'
+        refute has_type?(response['included'], 'roles')
       end
 
       def test_render_collection_with_missing_nested_has_many_include
         get :render_collection_with_missing_nested_has_many_include
         response = JSON.parse(@response.body)
-        assert response.key? 'linked'
-        assert response['linked'].key? 'roles'
+        assert response.key? 'included'
+        assert has_type?(response['included'], 'roles')
       end
+
+      def has_type?(collection, value)
+        collection.detect { |i| i['type'] == value}
+      end
+
     end
   end
 end

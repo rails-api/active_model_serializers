@@ -41,6 +41,7 @@ module ActiveModel
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post')
             expected = [{
               id: "42",
+              type: "posts",
               title: 'New Post',
               body: 'Body',
               links: {
@@ -49,12 +50,14 @@ module ActiveModel
                 author: { linkage: { type: "authors", id: "1" } }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:linked][:posts]
+            assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_limiting_linked_post_fields
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: {post: [:title]})
             expected = [{
+              id: "42",
+              type: "posts",
               title: 'New Post',
               links: {
                 comments: { linkage: [ { type: "comments", id: "1" } ] },
@@ -62,7 +65,7 @@ module ActiveModel
                 author: { linkage: { type: "authors", id: "1" } }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:linked][:posts]
+            assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_include_nil_author
@@ -102,37 +105,39 @@ module ActiveModel
           def test_include_linked_resources_with_type_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: ['writer', 'articles'])
-            linked = adapter.serializable_hash[:linked]
-            expected = {
-              authors: [{
+            linked = adapter.serializable_hash[:included]
+            expected = [
+              {
                 id: "1",
+                type: "authors",
                 name: "Steve K.",
                 links: {
                   posts: { linkage: [] },
                   roles: { linkage: [] },
                   bio: { linkage: nil }
                 }
-              }],
-              posts: [{
+              },{
+                id: "42",
+                type: "posts",
                 title: "New Post",
                 body: "Body",
-                id: "42",
                 links: {
                   comments: { linkage: [ { type: "comments", id: "1" } ] },
                   blog: { linkage: { type: "blogs", id: "999" } },
                   author: { linkage: { type: "authors", id: "1" } }
                 }
               }, {
+                id: "43",
+                type: "posts",
                 title: "Hello!!",
                 body: "Hello, world!!",
-                id: "43",
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
                   author: { linkage: nil }
                 }
-              }]
-            }
+              }
+            ]
             assert_equal expected, linked
           end
         end

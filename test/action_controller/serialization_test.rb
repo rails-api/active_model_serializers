@@ -15,13 +15,11 @@ module ActionController
         end
 
         def render_using_default_adapter_root
-          old_adapter = ActiveModel::Serializer.config.adapter
-          # JSON-API adapter sets root by default
-          ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          render json: @profile
-        ensure
-          ActiveModel::Serializer.config.adapter = old_adapter
+          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
+            # JSON-API adapter sets root by default
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: @profile
+          end
         end
 
         def render_using_custom_root_in_adapter_with_a_default
@@ -39,15 +37,14 @@ module ActionController
         end
 
         def render_array_using_implicit_serializer_and_meta
-          old_adapter = ActiveModel::Serializer.config.adapter
+          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
 
-          ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
-          array = [
-            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          ]
-          render json: array, meta: { total: 10 }
-          ensure
-          ActiveModel::Serializer.config.adapter = old_adapter
+            @profiles = [
+              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            ]
+
+            render json: @profiles, meta: { total: 10 }
+          end
         end
 
         def render_object_with_cache_enabled
@@ -88,6 +85,15 @@ module ActionController
           adapter = ActiveModel::Serializer.adapter.new(serializer)
           adapter.to_json
         end
+
+        def with_adapter(adapter)
+          old_adapter = ActiveModel::Serializer.config.adapter
+          # JSON-API adapter sets root by default
+          ActiveModel::Serializer.config.adapter = adapter
+          yield
+        ensure
+          ActiveModel::Serializer.config.adapter = old_adapter
+        end
       end
 
       tests MyController
@@ -96,8 +102,13 @@ module ActionController
       def test_render_using_implicit_serializer
         get :render_using_implicit_serializer
 
+        expected = {
+          name: "Name 1",
+          description: "Description 1"
+        }
+
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"name":"Name 1","description":"Description 1"}', @response.body
+        assert_equal expected.to_json, @response.body
       end
 
       def test_render_using_custom_root
@@ -110,15 +121,33 @@ module ActionController
       def test_render_using_default_root
         get :render_using_default_adapter_root
 
+        expected = {
+          data: {
+            name: "Name 1",
+            description: "Description 1",
+            id: assigns(:profile).id.to_s,
+            type: "profiles"
+          }
+        }
+
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"data":{"name":"Name 1","description":"Description 1"}}', @response.body
+        assert_equal expected.to_json, @response.body
       end
 
       def test_render_using_custom_root_in_adapter_with_a_default
         get :render_using_custom_root_in_adapter_with_a_default
 
+        expected = {
+          data: {
+            name: "Name 1",
+            description: "Description 1",
+            id: assigns(:profile).id.to_s,
+            type: "profiles"
+          }
+        }
+
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"data":{"name":"Name 1","description":"Description 1"}}', @response.body
+        assert_equal expected.to_json, @response.body
       end
 
       def test_render_array_using_implicit_serializer
@@ -142,8 +171,22 @@ module ActionController
       def test_render_array_using_implicit_serializer_and_meta
         get :render_array_using_implicit_serializer_and_meta
 
+        expected = {
+          data: [
+            {
+              name: "Name 1",
+              description: "Description 1",
+              id: assigns(:profiles).first.id.to_s,
+              type: "profiles"
+            }
+          ],
+          meta: {
+            total: 10
+          }
+        }
+
         assert_equal 'application/json', @response.content_type
-        assert_equal '{"data":[{"name":"Name 1","description":"Description 1"}],"meta":{"total":10}}', @response.body
+        assert_equal expected.to_json, @response.body
       end
 
       def test_render_with_cache_enable

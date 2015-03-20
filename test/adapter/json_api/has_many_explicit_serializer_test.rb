@@ -39,25 +39,33 @@ module ActiveModel
             assert_equal(expected, @adapter.serializable_hash[:data][:links][:comments])
           end
 
-          def test_includes_linked_comments
+          def test_includes_linked_data
             # If CommentPreviewSerializer is applied correctly the body text will not be present in the output
             expected = [
               {
                 id: '1',
+                type: 'comments',
                 links: {
                   post: { linkage: { type: 'posts', id: @post.id.to_s } }
                 }
               },
               {
                 id: '2',
+                type: 'comments',
                 links: {
                   post: { linkage: { type: 'posts', id: @post.id.to_s } }
+                }
+              },
+              {
+                id: @author.id.to_s,
+                type: "authors",
+                links: {
+                  posts: { linkage: [ {type: "posts", id: @post.id.to_s } ] }
                 }
               }
             ]
 
-            assert_equal(expected,
-                         @adapter.serializable_hash[:linked][:comments])
+            assert_equal(expected, @adapter.serializable_hash[:included])
           end
 
           def test_includes_author_id
@@ -66,17 +74,6 @@ module ActiveModel
             }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:links][:author])
-          end
-
-          def test_includes_linked_authors
-            expected = [{
-              id: @author.id.to_s,
-              links: {
-                posts: { linkage: [ { type: "posts", id: @post.id.to_s } ] }
-              }
-            }]
-
-            assert_equal(expected, @adapter.serializable_hash[:linked][:authors])
           end
 
           def test_explicit_serializer_with_null_resource

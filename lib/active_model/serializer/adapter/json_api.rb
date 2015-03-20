@@ -35,11 +35,9 @@ module ActiveModel
         private
 
         def add_links(resource, name, serializers)
-          type = serialized_object_type(serializers)
           resource[:links] ||= {}
-
           resource[:links][name] ||= { linkage: [] }
-          resource[:links][name][:linkage] += serializers.map { |serializer| { type: type, id: serializer.id.to_s } }
+          resource[:links][name][:linkage] += serializers.map { |serializer| { type: serializer.type, id: serializer.id.to_s } }
         end
 
         def add_link(resource, name, serializer)
@@ -47,9 +45,7 @@ module ActiveModel
           resource[:links][name] = { linkage: nil }
 
           if serializer && serializer.object
-            type = serialized_object_type(serializer)
-
-            resource[:links][name][:linkage] = { type: type, id: serializer.id.to_s }
+            resource[:links][name][:linkage] = { type: serializer.type, id: serializer.id.to_s }
           end
         end
 
@@ -58,17 +54,15 @@ module ActiveModel
 
           resource_path = [parent, resource_name].compact.join('.')
 
-          if include_assoc?(resource_path) && resource_type = serialized_object_type(serializers)
-            plural_name = resource_type.pluralize.to_sym
-            @top[:linked] ||= {}
-            @top[:linked][plural_name] ||= []
+          if include_assoc?(resource_path)
+            @top[:included] ||= []
 
             serializers.each do |serializer|
               attrs = attributes_for_serializer(serializer, @options)
 
               add_resource_links(attrs, serializer, add_included: false)
 
-              @top[:linked][plural_name].push(attrs) unless @top[:linked][plural_name].include?(attrs)
+              @top[:included].push(attrs) unless @top[:included].include?(attrs)
             end
           end
 
@@ -85,14 +79,16 @@ module ActiveModel
             result = []
             serializer.each do |object|
               options[:fields] = @fieldset && @fieldset.fields_for(serializer)
+              options[:required_fields] = [:id, :type]
               attributes = object.attributes(options)
-              attributes[:id] = attributes[:id].to_s if attributes[:id]
+              attributes[:id] = attributes[:id].to_s
               result << attributes
             end
           else
             options[:fields] = @fieldset && @fieldset.fields_for(serializer)
+            options[:required_fields] = [:id, :type]
             result = serializer.attributes(options)
-            result[:id] = result[:id].to_s if result[:id]
+            result[:id] = result[:id].to_s
           end
 
           result
@@ -114,11 +110,6 @@ module ActiveModel
           include_opt.any? do |s|
             s.match(/^#{assoc.gsub('.', '\.')}/)
           end
-        end
-
-        def serialized_object_type(serializer)
-          return false unless Array(serializer).first
-          Array(serializer).first.object.class.to_s.demodulize.underscore.pluralize
         end
 
         def add_resource_links(attrs, serializer, options = {})

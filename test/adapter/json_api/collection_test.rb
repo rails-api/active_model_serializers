@@ -27,9 +27,10 @@ module ActiveModel
           def test_include_multiple_posts
             expected = [
               {
+                id: "1",
+                type: "posts",
                 title: "Hello!!",
                 body: "Hello, world!!",
-                id: "1",
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -37,9 +38,10 @@ module ActiveModel
                 }
               },
               {
+                id: "2",
+                type: "posts",
                 title: "New Post",
                 body: "Body",
-                id: "2",
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -56,6 +58,8 @@ module ActiveModel
 
             expected = [
               {
+                id: "1",
+                type: "posts",
                 title: "Hello!!",
                 links: {
                   comments: { linkage: [] },
@@ -64,6 +68,8 @@ module ActiveModel
                 }
               },
               {
+                id: "2",
+                type: "posts",
                 title: "New Post",
                 links: {
                   comments: { linkage: [] },

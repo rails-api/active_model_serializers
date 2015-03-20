@@ -2,7 +2,7 @@ require 'test_helper'
 require 'pathname'
 
 class DefaultScopeNameTest < ActionController::TestCase
-  TestUser = Struct.new(:name, :admin)
+  TestUser = Struct.new(:id, :name, :admin)
 
   class UserSerializer < ActiveModel::Serializer
     attributes :admin?
@@ -17,11 +17,11 @@ class DefaultScopeNameTest < ActionController::TestCase
     before_filter { request.format = :json }
 
     def current_user
-      TestUser.new('Pete', false)
+      TestUser.new(1, 'Pete', false)
     end
 
     def render_new_user
-      render json: TestUser.new('pete', false), serializer: UserSerializer, adapter: :json_api
+      render json: TestUser.new(1, 'pete', false), serializer: UserSerializer, adapter: :json_api
     end
   end
 
@@ -29,12 +29,12 @@ class DefaultScopeNameTest < ActionController::TestCase
 
   def test_default_scope_name
     get :render_new_user
-    assert_equal '{"data":{"admin?":false}}', @response.body
+    assert_equal '{"data":{"admin?":false,"id":"1","type":"test_users"}}', @response.body
   end
 end
 
 class SerializationScopeNameTest < ActionController::TestCase
-  TestUser = Struct.new(:name, :admin)
+  TestUser = Struct.new(:id, :name, :admin)
 
   class AdminUserSerializer < ActiveModel::Serializer
     attributes :admin?
@@ -50,11 +50,11 @@ class SerializationScopeNameTest < ActionController::TestCase
     before_filter { request.format = :json }
 
     def current_admin
-      TestUser.new('Bob', true)
+      TestUser.new(1, 'Bob', true)
     end
 
     def render_new_user
-      render json: TestUser.new('pete', false), serializer: AdminUserSerializer, adapter: :json_api
+      render json: TestUser.new(1, 'pete', false), serializer: AdminUserSerializer, adapter: :json_api
     end
   end
 
@@ -62,6 +62,6 @@ class SerializationScopeNameTest < ActionController::TestCase
 
   def test_override_scope_name_with_controller
     get :render_new_user
-    assert_equal '{"data":{"admin?":true}}', @response.body
+    assert_equal '{"data":{"admin?":true,"id":"1","type":"test_users"}}', @response.body
   end
 end

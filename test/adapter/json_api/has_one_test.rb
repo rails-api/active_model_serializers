@@ -41,6 +41,7 @@ module ActiveModel
             expected = [
               {
                 id: "43",
+                type: "bios",
                 content:"AMS Contributor",
                 links: {
                   author: { linkage: { type: "authors", id: "1" } }
@@ -48,7 +49,7 @@ module ActiveModel
               }
             ]
 
-            assert_equal(expected, @adapter.serializable_hash[:linked][:bios])
+            assert_equal(expected, @adapter.serializable_hash[:included])
           end
         end
       end

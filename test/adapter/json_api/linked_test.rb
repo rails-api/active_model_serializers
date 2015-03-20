@@ -142,42 +142,41 @@ module ActiveModel
               include: 'author,author.posts'
             )
 
-            expected = {
-              authors: [
-                {
-                  id: "1",
-                  name: "Steve K.",
-                  links: {
-                    posts: { linkage: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
-                    roles: { linkage: [] },
-                    bio: { linkage: { type: "bios", id: "1" }}
-                  }
+            expected = [
+              {
+                id: "1",
+                type: "authors",
+                name: "Steve K.",
+                links: {
+                  posts: { linkage: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
+                  roles: { linkage: [] },
+                  bio: { linkage: { type: "bios", id: "1" }}
                 }
-              ],
-              posts: [
-                {
-                  id: "10",
-                  title: "Hello!!",
-                  body: "Hello, world!!",
-                  links: {
-                    comments: { linkage: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
-                    blog: { linkage: { type: "blogs", id: "999" } },
-                    author: { linkage: { type: "authors", id: "1" } }
-                  }
-                }, {
-                  id: "30",
-                  title: "Yet Another Post",
-                  body: "Body",
-                  links: {
-                    comments: { linkage: [] },
-                    blog: { linkage: { type: "blogs", id: "999" } },
-                    author: { linkage: { type: "authors", id: "1" } }
-                  }
+              }, {
+                id: "10",
+                type: "posts",
+                title: "Hello!!",
+                body: "Hello, world!!",
+                links: {
+                  comments: { linkage: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
-              ]
-            }
-            assert_equal expected, adapter.serializable_hash[:linked]
-            assert_equal expected, alt_adapter.serializable_hash[:linked]
+              }, {
+                id: "30",
+                type: "posts",
+                title: "Yet Another Post",
+                body: "Body",
+                links: {
+                  comments: { linkage: [] },
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
+                }
+              }
+            ]
+
+            assert_equal expected, adapter.serializable_hash[:included]
+            assert_equal expected, alt_adapter.serializable_hash[:included]
           end
 
           def test_ignore_model_namespace_for_linked_resource_type
