@@ -124,7 +124,7 @@ module ActiveModel
               add_link(attrs, name, association)
             end
 
-            if @options[:embed] != :ids && options[:add_included]
+            if options[:add_included]
               Array(association).each do |association|
                 add_included(name, association)
               end
