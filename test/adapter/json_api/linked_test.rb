@@ -170,7 +170,7 @@ module ActiveModel
                   body: "Body",
                   links: {
                     comments: [],
-                    blog: nil,
+                    blog: "999",
                     author: "1"
                   }
                 }

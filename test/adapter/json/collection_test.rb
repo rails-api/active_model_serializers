@@ -45,7 +45,10 @@ module ActiveModel
                 id: 1,
                 name: "Steve K."
               },
-              blog: nil
+              blog: {
+                id: 999,
+                name: "Custom blog"
+              }
             }]
             assert_equal expected, @adapter.serializable_hash
           end

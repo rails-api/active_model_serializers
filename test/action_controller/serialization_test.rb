@@ -159,7 +159,10 @@ module ActionController
               id: 1,
               body: 'ZOMG A COMMENT' }
           ],
-          blog: nil,
+          blog: {
+            id: 999,
+            name: 'Custom blog'
+          },
           author: {
             id: 1,
             name: 'Joao Moura.'
@@ -190,7 +193,10 @@ module ActionController
               id: 1,
               body: 'ZOMG A COMMENT' }
           ],
-          blog: nil,
+          blog: {
+            id: 999,
+            name: 'Custom blog'
+          },
           author: {
             id: 1,
             name: 'Joao Moura.'

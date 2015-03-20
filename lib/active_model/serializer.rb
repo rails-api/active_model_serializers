@@ -181,9 +181,9 @@ module ActiveModel
       self.class._associations.dup.each do |name, association_options|
         next unless object
 
-        association = object.send(name)
         association_value = send(name)
-        serializer_class = ActiveModel::Serializer.serializer_for(association, association_options)
+
+        serializer_class = ActiveModel::Serializer.serializer_for(association_value, association_options)
 
         serializer = serializer_class.new(
           association_value,
