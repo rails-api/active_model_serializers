@@ -187,7 +187,7 @@ module ActiveModel
 
         serializer = serializer_class.new(
           association_value,
-          serializer_from_options(association_options).merge(options)
+          options.merge(serializer_from_options(association_options))
         ) if serializer_class
 
         if block_given?
