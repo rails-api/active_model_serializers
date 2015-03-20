@@ -38,30 +38,18 @@ module ActiveModel
           type = serialized_object_type(serializers)
           resource[:links] ||= {}
 
-          if name.to_s == type || !type
-            resource[:links][name] ||= []
-            resource[:links][name] += serializers.map{|serializer| serializer.id.to_s }
-          else
-            resource[:links][name] ||= {}
-            resource[:links][name][:type] = type
-            resource[:links][name][:ids] ||= []
-            resource[:links][name][:ids] += serializers.map{|serializer| serializer.id.to_s }
-          end
+          resource[:links][name] ||= { linkage: [] }
+          resource[:links][name][:linkage] += serializers.map { |serializer| { type: type, id: serializer.id.to_s } }
         end
 
         def add_link(resource, name, serializer)
           resource[:links] ||= {}
-          resource[:links][name] = nil
+          resource[:links][name] = { linkage: nil }
 
           if serializer && serializer.object
             type = serialized_object_type(serializer)
-            if name.to_s == type || !type
-              resource[:links][name] = serializer.id.to_s
-            else
-              resource[:links][name] ||= {}
-              resource[:links][name][:type] = type
-              resource[:links][name][:id] = serializer.id.to_s
-            end
+
+            resource[:links][name][:linkage] = { type: type, id: serializer.id.to_s }
           end
         end
 

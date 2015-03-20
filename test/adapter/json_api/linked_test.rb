@@ -57,15 +57,15 @@ module ActiveModel
                     id: "1",
                     body: "ZOMG A COMMENT",
                     links: {
-                      post: "1",
-                      author: nil
+                      post: { linkage: { type: "post", id: "1" } },
+                      author: { linkage: nil }
                     }
                   }, {
                     id: "2",
                     body: "ZOMG ANOTHER COMMENT",
                     links: {
-                      post: "1",
-                      author: nil
+                      post: { linkage: { type: "post", id: "1" } },
+                      author: { linkage: nil }
                     }
                   }
                 ],
@@ -74,17 +74,17 @@ module ActiveModel
                     id: "1",
                     name: "Steve K.",
                     links: {
-                      posts: ["1", "3"],
-                      roles: [],
-                      bio: "1"
+                      posts: { linkage: [ { type: "posts", id: "1" }, { type: "posts", id: "3" } ] },
+                      roles: { linkage: [] },
+                      bio: { linkage: { type: "bio", id: "1" } }
                     }
                   }, {
                     id: "2",
                     name: "Tenderlove",
                     links: {
-                      posts: ["2"],
-                      roles: [],
-                      bio: "2"
+                      posts: { linkage: [ { type: "posts", id:"2" } ] },
+                      roles: { linkage: [] },
+                      bio: { linkage: { type: "bio", id: "2" } }
                     }
                   }
                 ],
@@ -93,13 +93,13 @@ module ActiveModel
                     id: "1",
                     content: "AMS Contributor",
                     links: {
-                      author: "1"
+                      author: { linkage: { type: "author", id: "1" } }
                     }
                   }, {
                     id: "2",
                     content: "Rails Contributor",
                     links: {
-                      author: "2"
+                      author: { linkage: { type: "author", id: "2" } }
                     }
                   }
                 ]
@@ -110,9 +110,9 @@ module ActiveModel
                   title: "Hello!!",
                   body: "Hello, world!!",
                   links: {
-                    comments: ['1', '2'],
-                    blog: "999",
-                    author: "1"
+                    comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
+                    blog: { linkage: { type: "blog", id: "999" } },
+                    author: { linkage: { type: "author", id: "1" } }
                   }
                 },
                 {
@@ -120,9 +120,9 @@ module ActiveModel
                   title: "New Post",
                   body: "Body",
                   links: {
-                    comments: [],
-                    blog: "999",
-                    author: "2"
+                    comments: { linkage: [] },
+                    blog: { linkage: { type: "blog", id: "999" } },
+                    author: { linkage: { type: "author", id: "2" } }
                   }
                 }
               ]
@@ -148,9 +148,9 @@ module ActiveModel
                   id: "1",
                   name: "Steve K.",
                   links: {
-                    posts: ["10", "30"],
-                    roles: [],
-                    bio: "1"
+                    posts: { linkage: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
+                    roles: { linkage: [] },
+                    bio: { linkage: { type: "bio", id: "1" }}
                   }
                 }
               ],
@@ -160,18 +160,18 @@ module ActiveModel
                   title: "Hello!!",
                   body: "Hello, world!!",
                   links: {
-                    comments: ["1", "2"],
-                    blog: "999",
-                    author: "1"
+                    comments: { linkage: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
+                    blog: { linkage: { type: "blog", id: "999" } },
+                    author: { linkage: { type: "author", id: "1" } }
                   }
                 }, {
                   id: "30",
                   title: "Yet Another Post",
                   body: "Body",
                   links: {
-                    comments: [],
-                    blog: "999",
-                    author: "1"
+                    comments: { linkage: [] },
+                    blog: { linkage: { type: "blog", id: "999" } },
+                    author: { linkage: { type: "author", id: "1" } }
                   }
                 }
               ]
@@ -188,8 +188,10 @@ module ActiveModel
             links = adapter.serializable_hash[:data][:links]
             expected = {
               related: {
-                type: 'unrelated_links',
-                ids: ['456']
+                linkage: [{
+                  type: 'unrelated_links',
+                  id: '456'
+                }]
               }
             }
             assert_equal expected, links

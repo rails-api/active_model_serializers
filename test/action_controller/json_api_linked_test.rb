@@ -102,22 +102,22 @@ module ActionController
             "id" => "1",
             "name" => "Steve K.",
             "links" => {
-              "posts" => [],
-              "roles" => ["1", "2"],
-              "bio" => nil
+              "posts" => { "linkage" => [] },
+              "roles" => { "linkage" => [{ "type" =>"roles", "id" => "1" }, { "type" =>"roles", "id" => "2" }] },
+              "bio" => { "linkage" => nil }
             }
           }],
           "roles"=>[{
             "id" => "1",
             "name" => "admin",
             "links" => {
-              "author" => "1"
+              "author" => { "linkage" => { "type" =>"author", "id" => "1" } }
             }
           }, {
             "id" => "2",
             "name" => "colab",
             "links" => {
-              "author" => "1"
+              "author" => { "linkage" => { "type" =>"author", "id" => "1" } }
             }
           }]
         }

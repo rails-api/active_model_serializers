@@ -33,7 +33,9 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            assert_equal(["1", "2"], @adapter.serializable_hash[:data][:links][:comments])
+            expected = { linkage: [ { type: "comments", id: "1" }, { type: "comments", id: "2" } ] }
+
+            assert_equal(expected, @adapter.serializable_hash[:data][:links][:comments])
           end
 
           def test_includes_linked_comments
@@ -42,15 +44,15 @@ module ActiveModel
               id: "1",
               body: 'ZOMG A COMMENT',
               links: {
-                post: "1",
-                author: nil
+                post: { linkage: { type: "post", id: "1" } },
+                author: { linkage: nil }
               }
             }, {
               id: "2",
               body: 'ZOMG ANOTHER COMMENT',
               links: {
-                post: "1",
-                author: nil
+                post: { linkage: { type: "post", id: "1" } },
+                author: { linkage: nil }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:linked][:comments]
@@ -61,14 +63,14 @@ module ActiveModel
             expected = [{
               id: "1",
               links: {
-                post: "1",
-                author: nil
+                post: { linkage: { type: "post", id: "1" } },
+                author: { linkage: nil }
               }
             }, {
               id: "2",
               links: {
-                post: "1",
-                author: nil
+                post: { linkage: { type: "post", id: "1" } },
+                author: { linkage: nil }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:linked][:comments]
@@ -86,8 +88,10 @@ module ActiveModel
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
             actual = adapter.serializable_hash[:data][:links][:articles]
             expected = {
-              type: "posts",
-              ids: ["1"]
+              linkage: [{
+                type: "posts",
+                id: "1"
+              }]
             }
             assert_equal expected, actual
           end
