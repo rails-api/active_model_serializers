@@ -67,7 +67,7 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: [], blog: nil, author: nil}, adapter.serializable_hash[:posts][:links])
+            assert_equal({comments: [], blog: "999", author: nil}, adapter.serializable_hash[:posts][:links])
           end
 
           def test_include_type_for_association_when_different_than_name
@@ -116,7 +116,7 @@ module ActiveModel
                 id: "43",
                 links: {
                   comments: [],
-                  blog: nil,
+                  blog: "999",
                   author: nil
                 }
               }]
