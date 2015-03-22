@@ -37,6 +37,24 @@ module ActionController
           render json: array,
                  each_serializer: ProfilePreviewSerializer
         end
+
+        def render_array_using_explicit_serializer_and_custom_serializers
+          @post = Post.new(title: 'New Post', body: 'Body')
+          @author = Author.new(name: 'Jane Blogger')
+          @author.posts = [@post]
+          @post.author = @author
+          @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+          @post.comments = [@first_comment, @second_comment]
+          @first_comment.post = @post
+          @first_comment.author = nil
+          @second_comment.post = @post
+          @second_comment.author = nil
+          @blog = Blog.new(id: 23, name: 'AMS Blog')
+          @post.blog = @blog
+
+          render json: [@post], each_serializer: PostPreviewSerializer
+        end
       end
 
       tests MyController
@@ -73,6 +91,20 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
+      def test_render_array_using_explicit_serializer_and_custom_serializers
+        get :render_array_using_explicit_serializer_and_custom_serializers
+
+        expected = [
+          { "title" => "New Post",
+            "body" => "Body",
+            "id" => assigns(:post).id,
+            "comments" => [{"id" => 1}, {"id" => 2}],
+            "author" => { "id" => assigns(:author).id }
+          }
+        ]
+
+        assert_equal expected.to_json, @response.body
+      end
     end
   end
 end
