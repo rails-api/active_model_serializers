@@ -2,8 +2,6 @@ require 'test_helper'
 require 'pathname'
 
 class DefaultScopeNameTest < ActionController::TestCase
-  TestUser = Struct.new(:id, :name, :admin)
-
   class UserSerializer < ActiveModel::Serializer
     attributes :admin?
     def admin?
@@ -17,11 +15,11 @@ class DefaultScopeNameTest < ActionController::TestCase
     before_filter { request.format = :json }
 
     def current_user
-      TestUser.new(1, 'Pete', false)
+      User.new(id: 1, name: 'Pete', admin: false)
     end
 
     def render_new_user
-      render json: TestUser.new(1, 'pete', false), serializer: UserSerializer, adapter: :json_api
+      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: UserSerializer, adapter: :json_api
     end
   end
 
@@ -29,13 +27,11 @@ class DefaultScopeNameTest < ActionController::TestCase
 
   def test_default_scope_name
     get :render_new_user
-    assert_equal '{"data":{"admin?":false,"id":"1","type":"test_users"}}', @response.body
+    assert_equal '{"data":{"admin?":false,"id":"1","type":"users"}}', @response.body
   end
 end
 
 class SerializationScopeNameTest < ActionController::TestCase
-  TestUser = Struct.new(:id, :name, :admin)
-
   class AdminUserSerializer < ActiveModel::Serializer
     attributes :admin?
     def admin?
@@ -50,11 +46,11 @@ class SerializationScopeNameTest < ActionController::TestCase
     before_filter { request.format = :json }
 
     def current_admin
-      TestUser.new(1, 'Bob', true)
+      User.new(id: 2, name: 'Bob', admin: true)
     end
 
     def render_new_user
-      render json: TestUser.new(1, 'pete', false), serializer: AdminUserSerializer, adapter: :json_api
+      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: AdminUserSerializer, adapter: :json_api
     end
   end
 
@@ -62,6 +58,6 @@ class SerializationScopeNameTest < ActionController::TestCase
 
   def test_override_scope_name_with_controller
     get :render_new_user
-    assert_equal '{"data":{"admin?":true,"id":"1","type":"test_users"}}', @response.body
+    assert_equal '{"data":{"admin?":true,"id":"1","type":"users"}}', @response.body
   end
 end
