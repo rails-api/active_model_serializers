@@ -16,16 +16,14 @@ module ActiveModel
         end
 
         def serializable_hash(options = {})
-          @root = :data
-
           if serializer.respond_to?(:each)
-            @hash[@root] = serializer.map do |s|
-              self.class.new(s, @options.merge(top: @top, fieldset: @fieldset)).serializable_hash[@root]
+            @hash[:data] = serializer.map do |s|
+              self.class.new(s, @options.merge(top: @top, fieldset: @fieldset)).serializable_hash[:data]
             end
           else
             @hash = cached_object do
-              @hash[@root] = attributes_for_serializer(serializer, @options)
-              add_resource_links(@hash[@root], serializer)
+              @hash[:data] = attributes_for_serializer(serializer, @options)
+              add_resource_links(@hash[:data], serializer)
               @hash
             end
           end
