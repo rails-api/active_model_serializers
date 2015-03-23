@@ -42,7 +42,7 @@ module ActionController
 
           @_serializer_opts[:scope] ||= serialization_scope
           @_serializer_opts[:scope_name] = _serialization_scope
-
+          @_adapter_opts[:url_helper] = self
           # omg hax
           object = serializer.new(resource, @_serializer_opts)
           adapter = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
