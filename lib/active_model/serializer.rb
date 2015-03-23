@@ -199,6 +199,7 @@ end
     def embedded_in_root_associations
       associations = self.class._associations
       included_associations = filter(associations.keys)
+      options = Array.wrap(serialization_options.presence)
       associations.each_with_object({}) do |(name, association), hash|
         if included_associations.include? name
           association_serializer = build_serializer(association)
@@ -213,7 +214,7 @@ end
               hash = hash[association.embed_in_root_key] ||= {}
             end
 
-            serialized_data = association_serializer.serializable_object
+            serialized_data = association_serializer.serializable_object(*options) # always sending options may break some tests/serializers
             key = association.root_key
             if hash.has_key?(key)
               hash[key].concat(serialized_data).uniq!
@@ -241,7 +242,8 @@ end
     end
 
     def serialize(association)
-      build_serializer(association).serializable_object
+      options = Array.wrap(serialization_options.presence)
+      build_serializer(association).serializable_object(*options) # always sending options may break some tests/serializers
     end
 
     def serialize_ids(association)

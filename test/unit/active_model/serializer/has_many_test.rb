@@ -260,6 +260,35 @@ module ActiveModel
           'name_key_post' => { title: 'Title 1', body: 'Body 1', 'comments' => @post.comments.map { |c| c.object_id } }
         }, NameKeyPostSerializer.new(@post).as_json)
       end
+
+      def test_associations_serialization_options
+        serializer = define_test_serializer_class do
+          has_many :comments, each_serializer: PrefixCommentSerializer, embed: :objects
+        end
+
+        assert_equal({
+          'post' => {
+            comments: @post.comments.map do |c|
+              { comment: 'PREFIX:' + c.read_attribute_for_serialization(:content) }
+            end
+          }
+        }, serializer.new(@post, root: 'post').as_json(prefix: 'PREFIX:'))
+      end
+
+      def test_associations_serialization_options_with_embed_in_root
+        serializer = define_test_serializer_class do
+          has_many :comments, each_serializer: PrefixCommentSerializer, embed: :ids, embed_in_root: true
+        end
+
+        assert_equal({
+          'post' => {
+            'comment_ids' => @post.comments.map { |c| c.read_attribute_for_serialization(:id)}
+          },
+          'comments' => @post.comments.map do |c|
+            { comment: 'PREFIX:' + c.read_attribute_for_serialization(:content) }
+          end
+        }, serializer.new(@post, root: 'post').as_json(prefix: 'PREFIX:'))
+      end
     end
   end
 end

@@ -248,6 +248,30 @@ module ActiveModel
           'name_key_user' => { name: 'Name 1', email: 'mail@server.com', 'profile' => @user.profile.object_id }
         }, NameKeyUserSerializer.new(@user).as_json)
       end
+
+      def test_associations_serialization_options
+        serializer = define_test_serializer_class do
+          has_one :profile, serializer: PrefixUserProfileSerializer, embed: :object
+        end
+        assert_equal({
+         'user' => {
+           profile: { description: "PREFIX:#{@user.profile.read_attribute_for_serialization(:description)}" }
+         }
+       }, serializer.new(@user, root: 'user').as_json(prefix: 'PREFIX:'))
+      end
+
+      def test_associations_serialization_options_with_embed_in_root
+        serializer = define_test_serializer_class do
+          has_one :profile, serializer: PrefixUserProfileSerializer, embed: :id, embed_in_root: true
+        end
+
+        assert_equal({
+          'user' => {
+            'profile_id' => @user.profile.read_attribute_for_serialization(:id)
+          },
+          'profiles' => [{ description: "PREFIX:#{@user.profile.read_attribute_for_serialization(:description)}" }]
+        }, serializer.new(@user, root: 'user').as_json(prefix: 'PREFIX:'))
+      end
     end
   end
 end

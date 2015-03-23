@@ -177,4 +177,19 @@ ActiveModel::Serializer.setup do |config|
   config.default_key_type = nil
 end
 
+class PrefixCommentSerializer < ActiveModel::Serializer
+  attributes :comment
+
+  def comment
+    "#{serialization_options[:prefix]}#{object.read_attribute_for_serialization(:content)}"
+  end
+end
+
+class PrefixUserProfileSerializer < ActiveModel::Serializer
+  attributes :description
+
+  def description
+    "#{serialization_options[:prefix]}#{object.read_attribute_for_serialization(:description)}"
+  end
+end
 
