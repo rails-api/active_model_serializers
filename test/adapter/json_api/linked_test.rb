@@ -39,7 +39,7 @@ module ActiveModel
             @bio2.author = @author2
           end
 
-          def test_include_multiple_posts_and_linked
+          def test_include_multiple_posts_and_linked_array
             serializer = ArraySerializer.new([@first_post, @second_post])
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
@@ -51,64 +51,12 @@ module ActiveModel
             )
 
             expected = {
-              linked: {
-                comments: [
-                  {
-                    id: "1",
-                    body: "ZOMG A COMMENT",
-                    links: {
-                      post: { linkage: { type: "posts", id: "1" } },
-                      author: { linkage: nil }
-                    }
-                  }, {
-                    id: "2",
-                    body: "ZOMG ANOTHER COMMENT",
-                    links: {
-                      post: { linkage: { type: "posts", id: "1" } },
-                      author: { linkage: nil }
-                    }
-                  }
-                ],
-                authors: [
-                  {
-                    id: "1",
-                    name: "Steve K.",
-                    links: {
-                      posts: { linkage: [ { type: "posts", id: "1" }, { type: "posts", id: "3" } ] },
-                      roles: { linkage: [] },
-                      bio: { linkage: { type: "bios", id: "1" } }
-                    }
-                  }, {
-                    id: "2",
-                    name: "Tenderlove",
-                    links: {
-                      posts: { linkage: [ { type: "posts", id:"2" } ] },
-                      roles: { linkage: [] },
-                      bio: { linkage: { type: "bios", id: "2" } }
-                    }
-                  }
-                ],
-                bios: [
-                  {
-                    id: "1",
-                    content: "AMS Contributor",
-                    links: {
-                      author: { linkage: { type: "authors", id: "1" } }
-                    }
-                  }, {
-                    id: "2",
-                    content: "Rails Contributor",
-                    links: {
-                      author: { linkage: { type: "authors", id: "2" } }
-                    }
-                  }
-                ]
-              },
-              posts: [
+              data: [
                 {
                   id: "10",
                   title: "Hello!!",
                   body: "Hello, world!!",
+                  type: "posts",
                   links: {
                     comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
                     blog: { linkage: { type: "blogs", id: "999" } },
@@ -116,12 +64,64 @@ module ActiveModel
                   }
                 },
                 {
-                  id: "2",
+                  id: "20",
                   title: "New Post",
                   body: "Body",
+                  type: "posts",
                   links: {
                     comments: { linkage: [] },
                     blog: { linkage: { type: "blogs", id: "999" } },
+                    author: { linkage: { type: "authors", id: "2" } }
+                  }
+                }
+              ],
+              included: [
+                {
+                  id: "1",
+                  body: "ZOMG A COMMENT",
+                  type: "comments",
+                  links: {
+                    post: { linkage: { type: "posts", id: "10" } },
+                    author: { linkage: nil }
+                  }
+                }, {
+                  id: "2",
+                  body: "ZOMG ANOTHER COMMENT",
+                  type: "comments",
+                  links: {
+                    post: { linkage: { type: "posts", id: "10" } },
+                    author: { linkage: nil }
+                  }
+                }, {
+                  id: "1",
+                  name: "Steve K.",
+                  type: "authors",
+                  links: {
+                    posts: { linkage: [ { type: "posts", id: "10" }, { type: "posts", id: "30" } ] },
+                    roles: { linkage: [] },
+                    bio: { linkage: { type: "bios", id: "1" } }
+                  }
+                }, {
+                  id: "1",
+                  content: "AMS Contributor",
+                  type: "bios",
+                  links: {
+                    author: { linkage: { type: "authors", id: "1" } }
+                  }
+                }, {
+                  id: "2",
+                  name: "Tenderlove",
+                  type: "authors",
+                  links: {
+                    posts: { linkage: [ { type: "posts", id:"20" } ] },
+                    roles: { linkage: [] },
+                    bio: { linkage: { type: "bios", id: "2" } }
+                  }
+                }, {
+                  id: "2",
+                  content: "Rails Contributor",
+                  type: "bios",
+                  links: {
                     author: { linkage: { type: "authors", id: "2" } }
                   }
                 }
@@ -194,6 +194,36 @@ module ActiveModel
               }
             }
             assert_equal expected, links
+          end
+
+          def test_multiple_references_to_same_resource
+            serializer = ArraySerializer.new([@first_comment, @second_comment])
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+              serializer,
+              include: ['post']
+            )
+
+            expected = [
+              {
+                id: "10",
+                title: "Hello!!",
+                body: "Hello, world!!",
+                type: "posts",
+                links: {
+                  comments: {
+                    linkage: [{type: "comments", id: "1"}, {type: "comments", id: "2"}]
+                  },
+                  blog: {
+                    linkage: {type: "blogs", id: "999"}
+                  },
+                  author: {
+                    linkage: {type: "authors", id: "1"}
+                  }
+                }
+              }
+            ]
+
+            assert_equal expected, adapter.serializable_hash[:included]
           end
         end
       end
