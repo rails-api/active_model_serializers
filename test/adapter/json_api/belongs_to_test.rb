@@ -32,56 +32,71 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            assert_equal("42", @adapter.serializable_hash[:comments][:links][:post])
+            expected = { linkage: { type: "posts", id: "42" } }
+
+            assert_equal(expected, @adapter.serializable_hash[:data][:links][:post])
           end
 
           def test_includes_linked_post
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post')
             expected = [{
               id: "42",
+              type: "posts",
               title: 'New Post',
               body: 'Body',
               links: {
-                comments: ["1"],
-                blog: "999",
-                author: "1"
+                comments: { linkage: [ { type: "comments", id: "1" } ] },
+                blog: { linkage: { type: "blogs", id: "999" } },
+                author: { linkage: { type: "authors", id: "1" } }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:linked][:posts]
+            assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_limiting_linked_post_fields
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: {post: [:title]})
             expected = [{
+              id: "42",
+              type: "posts",
               title: 'New Post',
               links: {
-                comments: ["1"],
-                blog: "999",
-                author: "1"
+                comments: { linkage: [ { type: "comments", id: "1" } ] },
+                blog: { linkage: { type: "blogs", id: "999" } },
+                author: { linkage: { type: "authors", id: "1" } }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:linked][:posts]
+            assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_include_nil_author
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: [], blog: "999", author: nil}, adapter.serializable_hash[:posts][:links])
+            assert_equal({comments: { linkage: [] }, blog: { linkage: { type: "blogs", id: "999" } }, author: { linkage: nil }}, adapter.serializable_hash[:data][:links])
           end
 
           def test_include_type_for_association_when_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            links = adapter.serializable_hash[:blogs][:links]
+            links = adapter.serializable_hash[:data][:links]
             expected = {
               writer: {
-                type: "author",
-                id: "1"
+                linkage: {
+                  type: "authors",
+                  id: "1"
+                }
               },
               articles: {
-                type: "posts",
-                ids: ["42", "43"]
+                linkage: [
+                  {
+                    type: "posts",
+                    id: "42"
+                  },
+                  {
+                    type: "posts",
+                    id: "43"
+                  }
+                ]
               }
             }
             assert_equal expected, links
@@ -90,37 +105,39 @@ module ActiveModel
           def test_include_linked_resources_with_type_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: ['writer', 'articles'])
-            linked = adapter.serializable_hash[:linked]
-            expected = {
-              authors: [{
+            linked = adapter.serializable_hash[:included]
+            expected = [
+              {
                 id: "1",
+                type: "authors",
                 name: "Steve K.",
                 links: {
-                  posts: [],
-                  roles: [],
-                  bio: nil
+                  posts: { linkage: [] },
+                  roles: { linkage: [] },
+                  bio: { linkage: nil }
                 }
-              }],
-              posts: [{
+              },{
+                id: "42",
+                type: "posts",
                 title: "New Post",
                 body: "Body",
-                id: "42",
                 links: {
-                  comments: ["1"],
-                  blog: "999",
-                  author: "1"
+                  comments: { linkage: [ { type: "comments", id: "1" } ] },
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: { type: "authors", id: "1" } }
                 }
               }, {
+                id: "43",
+                type: "posts",
                 title: "Hello!!",
                 body: "Hello, world!!",
-                id: "43",
                 links: {
-                  comments: [],
-                  blog: "999",
-                  author: nil
+                  comments: { linkage: [] },
+                  blog: { linkage: { type: "blogs", id: "999" } },
+                  author: { linkage: nil }
                 }
-              }]
-            }
+              }
+            ]
             assert_equal expected, linked
           end
         end

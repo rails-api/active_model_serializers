@@ -181,9 +181,9 @@ end
 
 #### JSONAPI
 
-This adapter follows the format specified in
+This adapter follows RC3 of the format specified in
 [jsonapi.org/format](http://jsonapi.org/format). It will include the associated
-resources in the `"linked"` member when the resource names are included in the
+resources in the `"included"` member when the resource names are included in the
 `include` option.
 
 ```ruby

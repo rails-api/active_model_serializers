@@ -30,12 +30,26 @@ module ActiveModel
           end
 
           def test_includes_bio_id
-            assert_equal("43", @adapter.serializable_hash[:authors][:links][:bio])
+            expected = { linkage: { type: "bios", id: "43" } }
+
+            assert_equal(expected, @adapter.serializable_hash[:data][:links][:bio])
           end
 
           def test_includes_linked_bio
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'bio')
-            assert_equal([{id: "43", :content=>"AMS Contributor", :links=>{:author=>"1"}}], @adapter.serializable_hash[:linked][:bios])
+
+            expected = [
+              {
+                id: "43",
+                type: "bios",
+                content:"AMS Contributor",
+                links: {
+                  author: { linkage: { type: "authors", id: "1" } }
+                }
+              }
+            ]
+
+            assert_equal(expected, @adapter.serializable_hash[:included])
           end
         end
       end

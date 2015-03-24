@@ -15,7 +15,13 @@ module ActiveModel
 
       def test_attributes_with_fields_option
         assert_equal({name: 'Name 1'},
-                     @profile_serializer.attributes( { fields: [:name] } ) )
+                     @profile_serializer.attributes(fields: [:name]))
+      end
+
+      def test_required_fields
+        assert_equal({name: 'Name 1', description: 'Description 1'},
+                     @profile_serializer.attributes(fields: [:name, :description], required_fields: [:name]))
+
       end
     end
   end
