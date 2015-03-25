@@ -5,8 +5,7 @@ module ActiveModel
         def initialize(serializer, options = {})
           super
           serializer.root = true
-          @hash = {}
-          @top = @options.fetch(:top) { @hash }
+          @hash = { data: [] }
 
           if fields = options.delete(:fields)
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
@@ -17,8 +16,14 @@ module ActiveModel
 
         def serializable_hash(options = {})
           if serializer.respond_to?(:each)
-            @hash[:data] = serializer.map do |s|
-              self.class.new(s, @options.merge(top: @top, fieldset: @fieldset)).serializable_hash[:data]
+            serializer.each do |s|
+              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash
+              @hash[:data] << result[:data]
+
+              if result[:included]
+                @hash[:included] ||= []
+                @hash[:included] |= result[:included]
+              end
             end
           else
             @hash = cached_object do
@@ -53,14 +58,14 @@ module ActiveModel
           resource_path = [parent, resource_name].compact.join('.')
 
           if include_assoc?(resource_path)
-            @top[:included] ||= []
+            @hash[:included] ||= []
 
             serializers.each do |serializer|
               attrs = attributes_for_serializer(serializer, @options)
 
               add_resource_links(attrs, serializer, add_included: false)
 
-              @top[:included].push(attrs) unless @top[:included].include?(attrs)
+              @hash[:included].push(attrs) unless @hash[:included].include?(attrs)
             end
           end
 
