@@ -51,6 +51,15 @@ module ActiveModel
           assert_equal ProfileSerializer, serializer
         end
       end
+
+      class PrimitiveSerializerTest < Minitest::Test
+        def test_serializer_for_primitives
+          ['hi', 1, {}, :symbol].each do |primitive|
+            serializer = ActiveModel::Serializer.serializer_for(primitive)
+            assert_equal PrimitiveSerializer, serializer
+          end
+        end
+      end
     end
   end
 end

@@ -5,6 +5,7 @@ module ActiveModel
     extend ActiveSupport::Autoload
     autoload :Configuration
     autoload :ArraySerializer
+    autoload :PrimitiveSerializer
     autoload :Adapter
     include Configuration
 
@@ -107,7 +108,7 @@ module ActiveModel
       else
         options
           .fetch(:association_options, {})
-          .fetch(:serializer, get_serializer_for(resource.class))
+          .fetch(:serializer, get_serializer_for(resource))
       end
     end
 
@@ -221,7 +222,11 @@ module ActiveModel
 
     attr_reader :options
 
-    def self.get_serializer_for(klass)
+    def self.get_serializer_for(resource)
+      klass_serializer(resource.class) || primitive_serializer(resource)
+    end
+
+    def self.klass_serializer(klass)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
         serializer_class = serializer_class_name.safe_constantize
@@ -229,10 +234,15 @@ module ActiveModel
         if serializer_class
           serializer_class
         elsif klass.superclass
-          get_serializer_for(klass.superclass)
+          klass_serializer(klass.superclass)
         end
       end
     end
 
+    def self.primitive_serializer(resource)
+      if PrimitiveSerializer.can_serialize?(resource)
+        PrimitiveSerializer
+      end
+    end
   end
 end
