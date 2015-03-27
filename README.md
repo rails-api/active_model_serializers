@@ -4,7 +4,7 @@
 
 ActiveModel::Serializers brings convention over configuration to your JSON generation.
 
-AMS does this through two components: **serializers** and **adapters**. Serializers describe which attributes and relationships should be serialized. Adapters describe how attributes and relationships should be serialized.
+AMS does this through two components: **serializers** and **adapters**. Serializers describe _which_ attributes and relationships should be serialized. Adapters describe _how_ attributes and relationships should be serialized.
 
 # MAINTENANCE, PLEASE READ
 
