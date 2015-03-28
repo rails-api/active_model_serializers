@@ -1,6 +1,6 @@
 # ActiveModel::Serializers
 
-[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers) [![Issue Stats](http://issuestats.com/github/rails-api/active_model_serializers/badge/pr)](http://issuestats.com/github/rails-api/active_model_serializers) [![Issue Stats](http://issuestats.com/github/rails-api/active_model_serializers/badge/issue)](http://issuestats.com/github/rails-api/active_model_serializers)
 
 ActiveModel::Serializers brings convention over configuration to your JSON generation.
 
