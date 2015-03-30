@@ -163,7 +163,7 @@ end
       end
     end
 
-    def associations
+    def associations(options={})
       associations = self.class._associations
       included_associations = filter(associations.keys)
       associations.each_with_object({}) do |(name, association), hash|
@@ -180,7 +180,7 @@ end
             if association.embed_namespace?
               hash = hash[association.embed_namespace] ||= {}
             end
-            hash[association.embedded_key] = serialize association
+            hash[association.embedded_key] = serialize association, options
           end
         end
       end
@@ -240,8 +240,8 @@ end
       end
     end
 
-    def serialize(association)
-      build_serializer(association).serializable_object
+    def serialize(association,options={})
+      build_serializer(association).serializable_object(options)
     end
 
     def serialize_ids(association)
@@ -286,7 +286,7 @@ end
       self.serialization_options = options
       return @wrap_in_array ? [] : nil if @object.nil?
       hash = attributes
-      hash.merge! associations
+      hash.merge! associations(options)
       hash = convert_keys(hash) if key_format.present?
       hash = { :type => type_name(@object), type_name(@object) => hash } if @polymorphic
       @wrap_in_array ? [hash] : hash
