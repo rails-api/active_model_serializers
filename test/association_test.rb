@@ -589,4 +589,30 @@ class AssociationTest < ActiveModel::TestCase
       assert_equal({}, @root_hash)
     end
   end
+
+  class SymbolSerializerOption < AssociationTest
+    class SymbolSerializer < ActiveModel::Serializer
+      attributes :id
+    end
+
+    def test_specifying_serializer_class_as_a_symbol
+      @post_serializer_class.class_eval do
+        has_many :comments, :embed => :objects
+
+        def conditional_searializer
+          AssociationTest::SymbolSerializerOption::SymbolSerializer
+        end
+      end
+
+      include_bare! :comments, :serializer => :conditional_searializer
+
+      assert_equal({
+        :comments => [
+          { :id => 1 }
+        ]
+      }, @hash)
+
+      assert_equal({}, @root_hash)
+    end
+  end
 end
