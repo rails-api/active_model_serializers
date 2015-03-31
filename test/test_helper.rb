@@ -14,6 +14,8 @@ class Foo < Rails::Application
     config.action_controller.perform_caching = true
     config.active_support.test_order         = :random
     ActionController::Base.cache_store       = :memory_store
+    config.eager_load = false
+    config.secret_key_base = 'abc123'
   end
 end
 
