@@ -45,4 +45,5 @@ end
 
 group :development, :test do
   gem 'rubocop', '~> 0.36', require: false
+  gem 'git'
 end
