@@ -23,8 +23,14 @@ module ActiveModel
                      @profile_serializer.attributes(fields: [:name, :description], required_fields: [:name]))
 
       end
+      
+      def test_include_nil_false
+        assert_equal({name: 'Name 1', description: 'Description 1'},
+                     @profile_serializer.attributes(include_nil: false))
 
-      def test_include_nil
+      end
+
+      def test_include_nil_true
         assert_equal({name: 'Name 1', description: 'Description 1', nothing: nil},
                      @profile_serializer.attributes(include_nil: true))
 
