@@ -42,7 +42,7 @@ class Profile < Model
 end
 
 class ProfileSerializer < ActiveModel::Serializer
-  attributes :name, :description
+  attributes :name, :description, :nothing
 
   urls :posts, :comments
 

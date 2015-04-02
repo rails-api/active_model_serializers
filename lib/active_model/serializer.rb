@@ -183,7 +183,7 @@ module ActiveModel
       attributes += options[:required_fields] if options[:required_fields]
 
       attributes.each_with_object({}) do |name, hash|
-        hash[name] = send(name)
+        hash[name] = send(name) if !send(name).nil? || options[:include_nil]
       end
     end
 
