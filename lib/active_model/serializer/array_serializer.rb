@@ -8,11 +8,10 @@ module ActiveModel
 
       def initialize(objects, options = {})
         options.merge!(root: nil)
-
         @objects = objects.map do |object|
           serializer_class = options.fetch(
             :serializer,
-            ActiveModel::Serializer.serializer_for(object)
+            ActiveModel::Serializer.serializer_for(object, options)
           )
           serializer_class.new(object, options)
         end

@@ -24,6 +24,18 @@ module ActiveModel
 
         assert_equal serializers.last.custom_options[:some], :options
       end
+
+      def test_each_object_should_be_serialized_with_appropriate_serializer
+        @comment = BasicComment.new
+        @serializer = ArraySerializer.new([@comment, @post], {namespace: Test::Serializer})
+        serializers =  @serializer.to_a
+
+        assert_kind_of Test::Serializer::BasicComment, serializers.first
+        assert_kind_of Comment, serializers.first.object
+
+        assert_kind_of Test::Serializer::Post, serializers.last
+        assert_kind_of Post, serializers.last.object
+      end
     end
   end
 end
