@@ -101,6 +101,27 @@ module ActiveModel
 
         assert blog_is_present
       end
+
+      def test_associations_inheritance
+        inherited_klass = Class.new(PostSerializer)
+
+        assert_equal(PostSerializer._associations, inherited_klass._associations)
+      end
+
+      def test_associations_inheritance_with_new_association
+        inherited_klass = Class.new(PostSerializer) do
+          has_many :top_comments, serializer: CommentSerializer
+        end
+        expected_associations = PostSerializer._associations.merge(
+          top_comments: {
+            type: :has_many,
+            association_options: {
+              serializer: CommentSerializer
+            }
+          }
+        )
+        assert_equal(inherited_klass._associations, expected_associations)
+      end
     end
   end
 end
