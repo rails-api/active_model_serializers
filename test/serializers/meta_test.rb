@@ -49,7 +49,7 @@ module ActiveModel
 
       def test_meta_is_not_used_on_arrays
         serializer = ArraySerializer.new([@blog], root: "blog", meta: {total: 10}, meta_key: "haha_meta")
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include_nil: true)
         expected = [{
           id: 1,
           name: "AMS Hints",
