@@ -53,10 +53,11 @@ module ActiveModel
         end
 
         def add_included(resource_name, serializers, parent = nil)
-          serializers = Array(serializers) unless serializers.respond_to?(:each)
-
+          unless serializers.respond_to?(:each)
+            return unless serializers.object
+            serializers = Array(serializers)
+          end
           resource_path = [parent, resource_name].compact.join('.')
-
           if include_assoc?(resource_path)
             @hash[:included] ||= []
 

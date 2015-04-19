@@ -6,6 +6,7 @@ module ActiveModel
       class JsonApi
         class LinkedTest < Minitest::Test
           def setup
+            ActionController::Base.cache_store.clear
             @author1 = Author.new(id: 1, name: 'Steve K.')
             @author2 = Author.new(id: 2, name: 'Tenderlove')
             @bio1 = Bio.new(id: 1, content: 'AMS Contributor')
@@ -224,6 +225,29 @@ module ActiveModel
             ]
 
             assert_equal expected, adapter.serializable_hash[:included]
+          end
+
+          def test_nil_link_with_specified_serializer
+            @first_post.author = nil
+            serializer = PostPreviewSerializer.new(@first_post)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+              serializer,
+              include: ['author']
+            )
+
+            expected = {
+              data: {
+                id: "10",
+                title: "Hello!!",
+                body: "Hello, world!!",
+                type: "posts",
+                links: {
+                  comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
+                  author: { linkage: nil }
+                }
+              }
+            }
+            assert_equal expected, adapter.serializable_hash
           end
         end
       end
