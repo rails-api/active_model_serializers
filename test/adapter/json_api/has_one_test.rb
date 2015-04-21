@@ -41,6 +41,7 @@ module ActiveModel
             expected = [
               {
                 id: "43",
+                rating: nil,
                 type: "bios",
                 content:"AMS Contributor",
                 links: {

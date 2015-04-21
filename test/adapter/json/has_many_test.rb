@@ -6,6 +6,7 @@ module ActiveModel
       class Json
         class HasManyTestTest < Minitest::Test
           def setup
+            ActionController::Base.cache_store.clear
             @author = Author.new(id: 1, name: 'Steve K.')
             @post = Post.new(title: 'New Post', body: 'Body')
             @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')

@@ -1,5 +1,4 @@
 require 'test_helper'
-
 module ActiveModel
   class Serializer
     class Adapter
@@ -104,8 +103,9 @@ module ActiveModel
                   }
                 }, {
                   id: "1",
-                  content: "AMS Contributor",
+                  rating: nil,
                   type: "bios",
+                  content: "AMS Contributor",
                   links: {
                     author: { linkage: { type: "authors", id: "1" } }
                   }
@@ -120,8 +120,9 @@ module ActiveModel
                   }
                 }, {
                   id: "2",
-                  content: "Rails Contributor",
+                  rating: nil,
                   type: "bios",
+                  content: "Rails Contributor",
                   links: {
                     author: { linkage: { type: "authors", id: "2" } }
                   }

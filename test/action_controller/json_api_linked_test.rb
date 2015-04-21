@@ -111,6 +111,8 @@ module ActionController
             "id" => "1",
             "type" => "roles",
             "name" => "admin",
+            "description" => nil,
+            "slug" => "admin-1",
             "links" => {
               "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
@@ -118,6 +120,8 @@ module ActionController
             "id" => "2",
             "type" => "roles",
             "name" => "colab",
+            "description" => nil,
+            "slug" => "colab-2",
             "links" => {
               "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
