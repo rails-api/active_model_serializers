@@ -4,24 +4,18 @@
 
 ActiveModel::Serializers brings convention over configuration to your JSON generation.
 
-AMS does this through two components: **serializers** and **adapters**. Serializers describe _which_ attributes and relationships should be serialized. Adapters describe _how_ attributes and relationships should be serialized.
+AMS does this through two components: **serializers** and **adapters**.
+Serializers describe _which_ attributes and relationships should be serialized.
+Adapters describe _how_ attributes and relationships should be serialized.
 
-# MAINTENANCE, PLEASE READ
+# RELEASE CANDIDATE, PLEASE READ
 
 This is the master branch of AMS. It will become the `0.10.0` release when it's
-ready, but it's not. You probably don't want to use it yet. As such, we recommend
-that any new projects you start use the latest `0.8.x` version of this gem. This
-version is the most widely used, and will most closely resemble the forthcoming release.
-
-There are two released versions of AMS that you may want to use: `0.9.x` and
-`0.8.x`. `9` was recently `master`, so if you were using master, you probably want
-to use it. `8` was the version that was on RubyGems, so if you were using that,
-that's probably what you want.
+ready. Currently this is a release candidate. This is **not** backward
+compatible with `0.9.0` or `0.8.0`.
 
 `0.10.x` will be based on the `0.8.0` code, but with a more flexible
 architecture. We'd love your help. [Learn how you can help here.](https://github.com/rails-api/active_model_serializers/blob/master/CONTRIBUTING.md)
-
-Thanks!
 
 ## Example
 
