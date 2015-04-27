@@ -38,6 +38,10 @@ module ActiveModel
         adapter = ActiveModel::Serializer::Adapter.create(@serializer, { adapter: :json_api})
         assert_equal ActiveModel::Serializer::Adapter::JsonApi, adapter.class
       end
+
+      def test_as_json_is_sent_to_adapter
+        assert_equal @serializer.as_json, {name: nil, description: nil}
+      end
     end
   end
 end
