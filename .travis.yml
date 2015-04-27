@@ -15,13 +15,12 @@ install:
   - bundle install --retry=3
 
 env:
-  - "RAILS_VERSION=3.2"
   - "RAILS_VERSION=4.0"
   - "RAILS_VERSION=4.1"
+  - "RAILS_VERSION=4.2"
   - "RAILS_VERSION=master"
 
 matrix:
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
-    - env: "RAILS_VERSION=3.2"
