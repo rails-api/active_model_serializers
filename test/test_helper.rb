@@ -12,7 +12,8 @@ Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 class Foo < Rails::Application
   if Rails.version.to_s.start_with? '4'
     config.action_controller.perform_caching = true
-    ActionController::Base.cache_store = :memory_store
+    config.active_support.test_order         = :random
+    ActionController::Base.cache_store       = :memory_store
   end
 end
 
