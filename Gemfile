@@ -5,7 +5,7 @@ gemspec
 
 gem "minitest"
 
-version = ENV["RAILS_VERSION"] || "4.1"
+version = ENV["RAILS_VERSION"] || "4.2"
 
 if version == "master"
   gem "rails", github: "rails/rails"
