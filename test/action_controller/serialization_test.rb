@@ -319,13 +319,13 @@ module ActionController
         response = JSON.parse(@response.body)
 
         expected_return = {
+          "id"=>1,
+          "time"=>DateTime.now.to_s,
           "post" => {
             "id"=>1,
             "title"=>"New Post",
             "body"=>"Body"
-          },
-          "id"=>1,
-          "time"=>DateTime.now.to_s
+          }
         }
 
         assert_equal 'application/json', @response.content_type
