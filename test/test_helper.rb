@@ -36,7 +36,3 @@ ActionController::TestCase.class_eval do
     @routes = TestHelper::Routes
   end
 end
-
-def def_serializer(&block)
-  Class.new(ActiveModel::Serializer, &block)
-end
