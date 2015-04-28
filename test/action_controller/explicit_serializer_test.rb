@@ -80,7 +80,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_using_explicit_serializer
+      def test_render_array_using_implicit_serializer
         get :render_array_using_implicit_serializer
         assert_equal 'application/json', @response.content_type
 
