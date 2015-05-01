@@ -24,6 +24,14 @@ module ActiveModel
 
         assert_equal serializers.last.custom_options[:some], :options
       end
+
+      def test_meta_and_meta_key_attr_readers
+        meta_content = {meta: "the meta", meta_key: "the meta key"}
+        @serializer = ArraySerializer.new([@comment, @post], meta_content)
+
+        assert_equal @serializer.meta, "the meta"
+        assert_equal @serializer.meta_key, "the meta key"
+      end
     end
   end
 end
