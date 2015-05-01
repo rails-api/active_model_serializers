@@ -30,6 +30,9 @@ module ActiveModel
         class MyProfile < Profile
         end
 
+        class TopComment < BasicComment
+        end
+
         def setup
           @profile = Profile.new
           @my_profile = MyProfile.new
@@ -49,6 +52,18 @@ module ActiveModel
         def test_serializer_inherited_serializer
           serializer = ActiveModel::Serializer.serializer_for(@my_profile)
           assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_in_module
+          post = Post.new
+          serializer = ActiveModel::Serializer.serializer_for(post, { namespace: Test::Serializer })
+          assert_equal Test::Serializer::Post, serializer
+        end
+
+        def test_serializer_inherited_serializer_in_module
+          comment = TopComment.new
+          serializer = ActiveModel::Serializer.serializer_for(comment, { namespace: Test::Serializer })
+          assert_equal Test::Serializer::BasicComment, serializer
         end
       end
     end

@@ -6,3 +6,4 @@
   * updates JSON API support to RC3 [@mateomurphy]
   * adds fragment cache support [@joaomdmoura]
   * adds cache support to attributes and associations [@joaomdmoura]
+  * adds a `:namespace` option to association and array serializer [@groyoh]

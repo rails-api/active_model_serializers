@@ -118,9 +118,14 @@ module ActiveModel
       if resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        options
-          .fetch(:association_options, {})
-          .fetch(:serializer, get_serializer_for(resource.class))
+        resource_class = resource.class
+        association_options = options.fetch(:association_options, {})
+        namespace = options[:namespace] || association_options[:namespace]
+        if namespace
+          get_namespaced_serializer_for(namespace,resource_class)
+        else
+          association_options.fetch(:serializer, get_serializer_for(resource_class))
+        end
       end
     end
 
@@ -228,8 +233,11 @@ module ActiveModel
 
     def serializer_from_options(options)
       opts = {}
-      serializer = options.fetch(:association_options, {}).fetch(:serializer, nil)
-      opts[:serializer] = serializer if serializer
+      association_options = options.fetch(:association_options, {})
+      [:serializer,:namespace].each do |key|
+        value = association_options.fetch(key, nil)
+        opts[key] = value if value
+      end
       opts
     end
 
@@ -240,6 +248,19 @@ module ActiveModel
     private
 
     attr_reader :options
+
+    def self.get_namespaced_serializer_for(namespace, klass)
+      serializer_class_name = "#{namespace}::#{klass.name.demodulize}"
+      serializers_cache.fetch_or_store(serializer_class_name) do
+        serializer_class = serializer_class_name.safe_constantize
+
+        if serializer_class
+          serializer_class
+        elsif klass.superclass
+          get_namespaced_serializer_for(namespace, klass.superclass)
+        end
+      end
+    end
 
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do

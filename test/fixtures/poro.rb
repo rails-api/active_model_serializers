@@ -57,16 +57,18 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   urls :posts, :comments
 end
 
-Post     = Class.new(Model)
-Like     = Class.new(Model)
-Comment  = Class.new(Model)
-Author   = Class.new(Model)
-Bio      = Class.new(Model)
-Blog     = Class.new(Model)
-Role     = Class.new(Model)
-User = Class.new(Model)
-Location = Class.new(Model)
-Place    = Class.new(Model)
+Post           = Class.new(Model)
+Like           = Class.new(Model)
+Comment        = Class.new(Model)
+BasicComment   = Class.new(Comment)
+SpecialComment = Class.new(Comment)
+Author         = Class.new(Model)
+Bio            = Class.new(Model)
+Blog           = Class.new(Model)
+Role           = Class.new(Model)
+User           = Class.new(Model)
+Location       = Class.new(Model)
+Place          = Class.new(Model)
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
@@ -203,4 +205,30 @@ end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
+end
+
+module Test
+  module Serializer
+    Post = Class.new(ActiveModel::Serializer) do
+      attributes :id, :title
+
+      has_many :comments, namespace: Test::Serializer
+    end
+
+    BasicComment = Class.new(ActiveModel::Serializer) do
+      attribute :id
+
+      belongs_to :post, namespace: Test::Serializer
+    end
+
+    SpecialComment = Class.new(ActiveModel::Serializer) do
+      attributes :id, :special
+
+      belongs_to :post, namespace: Test::Serializer
+
+      def special
+        "I'm so special!"
+      end
+    end
+  end
 end

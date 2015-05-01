@@ -249,6 +249,16 @@ The `has_many`, `has_one`, and `belongs_to` declarations describe relationships 
 resources. By default, when you serialize a `Post`, you will get its `Comment`s
 as well.
 
+You may use the `:namespace` options to specify the `module` where the serializer(s) of an
+association may be found, for example:
+
+```ruby
+  has_many :comments, namespace: Blogging::Serializers
+```
+The serializer used then depends on the class of the object to be serialized e.g. if a
+comment is an instance of class `AdminComment`, the serializer would use
+`Blogging::Serializers::AdminComment` to serializer this comment.
+
 You may also use the `:serializer` option to specify a custom serializer class, for example:
 
 ```ruby
@@ -257,6 +267,20 @@ You may also use the `:serializer` option to specify a custom serializer class, 
 
 The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
+
+## Array serializer
+When calling the `ActiveModel::Serializer::ArraySerializer#new`, you may pass the `:namespace`
+to specify the module in which the objects serializers may be found. The serializers used then
+depend on the objects class.
+
+Take the example below:
+
+```ruby
+a = [Post.new,AdminComment.new]
+ActiveRecord::Serializer.ArraySerializer.new(a, namespace: Blogging::Serializers)
+```
+Here the objects of `a` would respectively be serialized using `Blogging::Serializers::Post`
+and `Blogging::Serializers::AdminComment.`
 
 ## Caching
 
