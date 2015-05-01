@@ -265,7 +265,7 @@ The options are the same options of ```ActiveSupport::Cache::Store```, plus
 a ```key``` option that will be the prefix of the object cache
 on a pattern ```"#{key}/#{object.id}-#{object.updated_at}"```.
 
-The cache support is optimized to use the cached object in multiple request. An object cached on an ```show``` request will be reused at the ```index```. If there is a relationship with another cached serializer it will also be created and reused automatically.
+The cache support is optimized to use the cached object in multiple request. An object cached on a ```show``` request will be reused at the ```index```. If there is a relationship with another cached serializer it will also be created and reused automatically.
 
 **[NOTE] Every object is individually cached.**
 
@@ -294,7 +294,7 @@ but in this case it will be automatically expired after 3 hours.
 
 ### Fragmenting Caching
 
-If there is some API endpoint that shouldn't be fully cached, you can still optmise it, using Fragment Cache on the attributes and relationships that you want to cache.
+If there is some API endpoint that shouldn't be fully cached, you can still optimise it, using Fragment Cache on the attributes and relationships that you want to cache.
 
 You can define the attribute by using ```only``` or ```except``` option on cache method.
 
