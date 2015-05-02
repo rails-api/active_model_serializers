@@ -40,7 +40,7 @@ module ActiveModel
 
       private
 
-     def cache_check(serializer)
+      def cache_check(serializer)
         @cached_serializer = serializer
         @klass             = @cached_serializer.class
         if is_cached?
