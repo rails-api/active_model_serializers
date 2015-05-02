@@ -15,24 +15,8 @@ module ActiveModel
             end
 
             serializer.each_association do |name, association, opts|
-              if association.respond_to?(:each)
-                array_serializer = association
-                @hash[name] = array_serializer.map do |item|
-                  cache_check(item) do
-                    item.attributes(opts)
-                  end
-                end
-              else
-                if association
-                  @hash[name] = cache_check(association) do
-                    association.attributes(options)
-                  end
-                elsif opts[:virtual_value]
-                  @hash[name] = opts[:virtual_value]
-                else
-                  @hash[name] = nil
-                end
-              end
+              populate_hash_for_array_serializer(name, association, opts)
+              populate_hash(name, association, opts, options)
             end
             @result = @core.merge @hash
           end
@@ -46,6 +30,32 @@ module ActiveModel
 
       def fragment_cache(cached_hash, non_cached_hash)
         Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+      end
+
+      private
+
+      def populate_hash_for_array_serializer(name, association, opts)
+        return unless association.respond_to?(:each)
+
+        array_serializer = association
+        @hash[name] = array_serializer.map do |item|
+          cache_check(item) do
+            item.attributes(opts)
+          end
+        end
+      end
+
+      def populate_hash(name, association, opts, options)
+        return if association.respond_to?(:each)
+
+        @hash[name] = nil
+        if association
+          @hash[name] = cache_check(association) do
+            association.attributes(options)
+          end
+        elsif opts[:virtual_value]
+          @hash[name] = opts[:virtual_value]
+        end
       end
     end
   end
