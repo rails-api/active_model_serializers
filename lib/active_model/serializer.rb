@@ -115,7 +115,9 @@ module ActiveModel
     end
 
     def self.serializer_for(resource, options = {})
-      if resource.respond_to?(:to_ary)
+      if resource.respond_to?(:serializer_class)
+        resource.serializer_class
+      elsif resource.respond_to?(:to_ary)
         config.array_serializer
       else
         options
