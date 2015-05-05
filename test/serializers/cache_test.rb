@@ -5,10 +5,10 @@ module ActiveModel
       def setup
         ActionController::Base.cache_store.clear
         @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
-        @blog           = Blog.new(id: 999, name: "Custom blog")
         @post           = Post.new(title: 'New Post', body: 'Body')
         @bio            = Bio.new(id: 1, content: 'AMS Contributor')
         @author         = Author.new(name: 'Joao M. D. Moura')
+        @blog           = Blog.new(id: 999, name: "Custom blog", writer: @author, articles: [])
         @role           = Role.new(name: 'Great Author')
         @location       = Location.new(lat: '-23.550520', lng: '-46.633309')
         @place          = Place.new(name: 'Amazing Place')
@@ -30,6 +30,7 @@ module ActiveModel
         @post_serializer     = PostSerializer.new(@post)
         @author_serializer   = AuthorSerializer.new(@author)
         @comment_serializer  = CommentSerializer.new(@comment)
+        @blog_serializer     = BlogSerializer.new(@blog)
       end
 
       def test_cache_definition
@@ -56,9 +57,9 @@ module ActiveModel
       end
 
       def test_cache_options_definition
-        assert_equal({expires_in: 0.1}, @post_serializer.class._cache_options)
-        assert_equal(nil, @author_serializer.class._cache_options)
-        assert_equal({expires_in: 1.day}, @comment_serializer.class._cache_options)
+        assert_equal({expires_in: 0.1, skip_digest: true}, @post_serializer.class._cache_options)
+        assert_equal(nil, @blog_serializer.class._cache_options)
+        assert_equal({expires_in: 1.day, skip_digest: true}, @comment_serializer.class._cache_options)
       end
 
       def test_fragment_cache_definition
@@ -113,6 +114,15 @@ module ActiveModel
 
         assert_equal(hash, expected_result)
         assert_equal({place: 'Nowhere'}, ActionController::Base.cache_store.fetch(@location.cache_key))
+      end
+
+      def test_uses_file_digest_in_cahe_key
+        blog = render_object_with_cache(@blog)
+        assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
+      end
+
+      def _cache_digest_definition
+        assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
       end
 
       private

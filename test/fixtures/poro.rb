@@ -1,10 +1,16 @@
 class Model
+  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
+
   def initialize(hash={})
     @attributes = hash
   end
 
   def cache_key
     "#{self.class.name.downcase}/#{self.id}-#{self.updated_at}"
+  end
+
+  def cache_key_with_digest
+    "#{cache_key}/#{FILE_DIGEST}"
   end
 
   def updated_at
@@ -64,7 +70,7 @@ Author   = Class.new(Model)
 Bio      = Class.new(Model)
 Blog     = Class.new(Model)
 Role     = Class.new(Model)
-User = Class.new(Model)
+User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
 
@@ -72,7 +78,7 @@ module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'post', expires_in: 0.1
+  cache key:'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
 
   has_many :comments
@@ -99,7 +105,7 @@ SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
-  cache expires_in: 1.day
+  cache expires_in: 1.day, skip_digest: true
   attributes :id, :body
 
   belongs_to :post
@@ -111,7 +117,7 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'writer'
+  cache key:'writer', skip_digest: true
   attributes :id, :name
 
   has_many :posts, embed: :ids
@@ -120,7 +126,7 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 RoleSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:name]
+  cache only: [:name], skip_digest: true
   attributes :id, :name, :description, :slug
 
   def slug
@@ -137,7 +143,7 @@ LikeSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 LocationSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:place]
+  cache only: [:place], skip_digest: true
   attributes :id, :lat, :lng
 
   belongs_to :place
@@ -154,13 +160,14 @@ PlaceSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 BioSerializer = Class.new(ActiveModel::Serializer) do
-  cache except: [:content]
+  cache except: [:content], skip_digest: true
   attributes :id, :content, :rating
 
   belongs_to :author
 end
 
 BlogSerializer = Class.new(ActiveModel::Serializer) do
+  cache key: 'blog'
   attributes :id, :name
 
   belongs_to :writer
