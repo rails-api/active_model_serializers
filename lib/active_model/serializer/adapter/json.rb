@@ -23,7 +23,7 @@ module ActiveModel
                   end
                 end
               else
-                if association
+                if association && association.object
                   @hash[name] = cache_check(association) do
                     association.attributes(options)
                   end
