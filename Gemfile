@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'minitest'
-gem 'rugged'
+gem 'git'
 
 version = ENV["RAILS_VERSION"] || "4.2"
 

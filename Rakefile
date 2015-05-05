@@ -1,5 +1,5 @@
 require 'bundler/gem_tasks'
-require 'rugged'
+require 'git'
 require 'benchmark'
 require 'rake/testtask'
 
@@ -20,27 +20,27 @@ Rake::TestTask.new :benchmark_tests do |t|
 end
 
 task :benchmark do
-  @repo = Rugged::Repository.new('.')
-  ref   = @repo.head
+  @git = Git.init('.')
+  ref  = @git.current_branch
 
-  actual_branch = ref.name
+  actual = run_benchmark_spec ref
+  master = run_benchmark_spec 'master'
 
-  set_commit('master')
-  old_bench = Benchmark.realtime { Rake::Task['benchmark_tests'].execute }
+  @git.checkout(ref)
 
-  set_commit(actual_branch)
-  new_bench = Benchmark.realtime { Rake::Task['benchmark_tests'].execute }
-
-  puts 'Results ============================'
+  puts "\n\nResults ============================\n"
   puts "------------------------------------~> (Branch) MASTER"
-  puts old_bench
-  puts "------------------------------------"
+  puts master
+  puts "------------------------------------\n\n"
 
-  puts "------------------------------------~> (Actual Branch) #{actual_branch}"
-  puts new_bench
+  puts "------------------------------------~> (Actual Branch) #{ref}"
+  puts actual
   puts "------------------------------------"
 end
 
-def set_commit(ref)
-  @repo.checkout ref
+def run_benchmark_spec(ref)
+    @git.checkout(ref)
+    response = Benchmark.realtime { Rake::Task['benchmark_tests'].invoke }
+    Rake::Task['benchmark_tests'].reenable
+    response
 end

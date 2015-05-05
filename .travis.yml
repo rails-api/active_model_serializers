@@ -15,16 +15,15 @@ install:
   - bundle install --retry=3
 
 env:
-  - "RAILS_VERSION=4.0"
-  - "RAILS_VERSION=4.1"
-  - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  global:
+    - JRUBY_OPTS=-Xcext.enabled=true
+  matrix:
+    - "RAILS_VERSION=4.0"
+    - "RAILS_VERSION=4.1"
+    - "RAILS_VERSION=4.2"
+    - "RAILS_VERSION=master"
 
 matrix:
-  include:
-    - rvm: jruby-19mode
-      gemfile: gemfiles/Gemfile.rails-3.2.x
-      env: "JRUBY_OPTS=-Xcext.enabled=true"
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
