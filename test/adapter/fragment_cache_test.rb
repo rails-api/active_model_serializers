@@ -20,6 +20,13 @@ module ActiveModel
           }
           assert_equal(@role_hash.fetch, expected_result)
         end
+
+        def test_this_works
+          role            = Test::NestedRole.new(name: 'Great Author', description:nil)
+          role_serializer = RoleSerializer.new(role)
+          role_hash       = FragmentCache.new(RoleSerializer.adapter.new(role_serializer), role_serializer, {}, nil).fetch
+          p role_hash
+        end
       end
     end
   end

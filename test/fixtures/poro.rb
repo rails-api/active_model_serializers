@@ -64,9 +64,13 @@ Author   = Class.new(Model)
 Bio      = Class.new(Model)
 Blog     = Class.new(Model)
 Role     = Class.new(Model)
-User = Class.new(Model)
+User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
+
+module Test
+  NestedRole     = Class.new(Model)
+end
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
