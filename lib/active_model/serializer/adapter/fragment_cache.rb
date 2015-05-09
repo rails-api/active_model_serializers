@@ -68,8 +68,11 @@ module ActiveModel
 
           scope = get_scope(name)
 
-          scope.const_set cached.rpartition('::').last, Class.new(ActiveModel::Serializer) unless scope.const_defined?(cached)
-          scope.const_set non_cached.rpartition('::').last, Class.new(ActiveModel::Serializer) unless scope.const_defined?(non_cached)
+          last_cached = cached.rpartition('::').last
+          last_non_cached = non_cached.rpartition('::').last
+
+          scope.const_set last_cached, Class.new(ActiveModel::Serializer) unless scope.const_defined?(last_cached)
+          scope.const_set last_non_cached, Class.new(ActiveModel::Serializer) unless scope.const_defined?(last_non_cached)
 
           klass._cache_options       ||= {}
           klass._cache_options[:key] = klass._cache_key if klass._cache_key
