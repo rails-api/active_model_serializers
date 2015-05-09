@@ -32,6 +32,15 @@ module ActiveModel
           @adapter.fragment_cache(cached_hash, non_cached_hash)
         end
 
+        def format(name)
+          name.split('::').map(&:camelize).join('::')
+        end
+
+        def get_scope(name)
+          scope = name.rpartition('::').first
+          scope.empty? ? Object : scope.constantize
+        end
+
         private
 
         def cached_attributes(klass, serializers)
@@ -54,11 +63,13 @@ module ActiveModel
         end
 
         def fragment_serializer(name, klass)
-          cached     = "#{name.capitalize}CachedSerializer"
-          non_cached = "#{name.capitalize}NonCachedSerializer"
+          cached     = "#{format(name)}CachedSerializer"
+          non_cached = "#{format(name)}NonCachedSerializer"
 
-          Object.const_set cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(cached)
-          Object.const_set non_cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(non_cached)
+          scope = get_scope(name)
+
+          scope.const_set cached.rpartition('::').last, Class.new(ActiveModel::Serializer) unless scope.const_defined?(cached)
+          scope.const_set non_cached.rpartition('::').last, Class.new(ActiveModel::Serializer) unless scope.const_defined?(non_cached)
 
           klass._cache_options       ||= {}
           klass._cache_options[:key] = klass._cache_key if klass._cache_key
