@@ -6,7 +6,7 @@ module ActiveModel
 
       included do |base|
         base.config.array_serializer = ActiveModel::Serializer::ArraySerializer
-        base.config.adapter = :json
+        base.config.adapter = :json_api
       end
     end
   end
