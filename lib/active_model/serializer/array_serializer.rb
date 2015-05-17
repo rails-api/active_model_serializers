@@ -14,7 +14,7 @@ module ActiveModel
             :serializer,
             ActiveModel::Serializer.serializer_for(object)
           )
-          serializer_class.new(object, options)
+          serializer_class.new(object, options.except(:serializer))
         end
         @meta     = options[:meta]
         @meta_key = options[:meta_key]
