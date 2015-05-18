@@ -22,9 +22,9 @@ module ActiveModel
     end
 
     def self.inherited(base)
-      base._attributes = []
-      base._attributes_keys = {}
-      base._associations = {}
+      base._attributes = self._attributes.try(:dup)  || []
+      base._attributes_keys = self._attributes_keys.try(:dup) || {}
+      base._associations = self._associations.try(:dup) || {}
       base._urls = []
     end
 
