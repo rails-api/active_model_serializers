@@ -31,6 +31,7 @@ module ActiveModel
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
+      @_attributes.uniq!
 
       attrs.each do |attr|
         define_method attr do
@@ -42,7 +43,7 @@ module ActiveModel
     def self.attribute(attr, options = {})
       key = options.fetch(:key, attr)
       @_attributes_keys[attr] = {key: key} if key != attr
-      @_attributes.concat [key]
+      @_attributes << key unless @_attributes.include?(key)
       define_method key do
         object.read_attribute_for_serialization(attr)
       end unless method_defined?(key) || _fragmented.respond_to?(attr)

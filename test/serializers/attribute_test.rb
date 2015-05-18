@@ -24,6 +24,15 @@ module ActiveModel
         adapter = ActiveModel::Serializer::Adapter::Json.new(blog_serializer)
         assert_equal({:id=>1, :title=>"AMS Hints"}, adapter.serializable_hash)
       end
+
+      def test_multiple_calls_with_the_same_attribute
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          attribute :title
+          attribute :title
+        end
+
+        assert_equal([:title], serializer_class._attributes)
+      end
     end
   end
 end
