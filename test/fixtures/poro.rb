@@ -178,6 +178,13 @@ AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
   attribute :name, key: :title
 end
 
+CustomBlogSerializer = Class.new(ActiveModel::Serializer) do
+  attribute :id
+  attribute :special_attribute
+
+  has_many :articles
+end
+
 CommentPreviewSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 

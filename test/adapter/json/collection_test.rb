@@ -22,6 +22,20 @@ module ActiveModel
             ActionController::Base.cache_store.clear
           end
 
+          def test_with_serializer_option
+            @blog.special_attribute = "Special"
+            @blog.articles = [@first_post, @second_post]
+            @serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerializer)
+            @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
+
+            expected = [{
+              id: 1,
+              special_attribute: "Special",
+              articles: [{id: 1,title: "Hello!!", body: "Hello, world!!"}, {id: 2, title: "New Post", body: "Body"}]
+            }]
+            assert_equal expected, @adapter.serializable_hash
+          end
+
           def test_include_multiple_posts
             expected = [{
               title: "Hello!!",
