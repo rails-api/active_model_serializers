@@ -49,6 +49,15 @@ module ActiveModel
         assert_equal({id: 1, body: "ZOMG!!", date: "2015", likes: nil},
                      serializer.attributes)
       end
+
+      def test_multiple_calls_with_the_same_attribute
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          attributes :id, :title
+          attributes :id, :title, :title, :body
+        end
+
+        assert_equal([:id, :title, :body], serializer_class._attributes)
+      end
     end
   end
 end
