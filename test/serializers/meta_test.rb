@@ -48,22 +48,27 @@ module ActiveModel
         assert_equal expected, adapter.as_json
       end
 
-      def test_meta_is_not_used_on_arrays
-        serializer = ArraySerializer.new([@blog], root: "blog", meta: {total: 10}, meta_key: "haha_meta")
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
-        expected = [{
-          id: 1,
-          name: "AMS Hints",
-          writer: {
-            id: 2,
-            name: "Steve"
-          },
-          articles: [{
-            id: 3,
-            title: "AMS",
-            body: nil
-          }]
-        }]
+      def test_meta_is_used_on_arrays
+        serializer = ArraySerializer.new([@blog], meta: {total: 10}, meta_key: "haha_meta")
+        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, root: 'blog')
+        expected = {
+          'blog' => [{
+            id: 1,
+            name: "AMS Hints",
+            writer: {
+              id: 2,
+              name: "Steve"
+            },
+            articles: [{
+              id: 3,
+              title: "AMS",
+              body: nil
+            }]
+          }],
+          'haha_meta' => {
+            total: 10
+          }
+        }
         assert_equal expected, adapter.as_json
       end
 

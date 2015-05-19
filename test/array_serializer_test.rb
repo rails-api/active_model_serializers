@@ -38,6 +38,20 @@ module ActiveModel
         assert_equal @serializer.meta, "the meta"
         assert_equal @serializer.meta_key, "the meta key"
       end
+
+      def test_root_attr_reader
+        root_content = {root: true}
+        @serializer = ArraySerializer.new([@comment, @post], root_content)
+
+        assert_equal true, @serializer.root
+      end
+
+      def test_root_attr_reader_with_empty_array
+        root_content = {root: true}
+        @serializer = ArraySerializer.new([], root_content)
+
+        assert_equal true, @serializer.root
+      end
     end
   end
 end
