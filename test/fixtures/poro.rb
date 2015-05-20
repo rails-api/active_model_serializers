@@ -214,6 +214,6 @@ end
 
 RaiseErrorSerializer = Class.new(ActiveModel::Serializer) do
   def json_key
-    raise StandardError, 'OOPS'
+    raise StandardError, 'Intentional error for rescue_from test'
   end
 end
