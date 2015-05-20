@@ -53,6 +53,14 @@ module ActionController
       end
     end
 
+    def rescue_with_handler(exception)
+      @_serializer = nil
+      @_serializer_opts = nil
+      @_adapter_opts = nil
+
+      super(exception)
+    end
+
     module ClassMethods
       def serialization_scope(scope)
         self._serialization_scope = scope

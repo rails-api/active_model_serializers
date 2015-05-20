@@ -211,3 +211,9 @@ end
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 end
+
+RaiseErrorSerializer = Class.new(ActiveModel::Serializer) do
+  def json_key
+    raise StandardError, 'OOPS'
+  end
+end
