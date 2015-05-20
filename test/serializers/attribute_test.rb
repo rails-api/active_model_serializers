@@ -33,6 +33,19 @@ module ActiveModel
 
         assert_equal([:title], serializer_class._attributes)
       end
+
+      def test_serializer_attribute_definition_with_key
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          attribute :posts_count, key: :numPosts
+
+          def posts_count
+            20
+          end
+        end
+
+        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer_class.new({}))
+        assert_equal({:numPosts => 20}, adapter.serializable_hash)
+      end
     end
   end
 end
