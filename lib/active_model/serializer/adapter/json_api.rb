@@ -85,24 +85,29 @@ module ActiveModel
           if serializer.respond_to?(:each)
             result = []
             serializer.each do |object|
-              options[:fields] = @fieldset && @fieldset.fields_for(serializer)
-              result << cache_check(object) do
-                options[:required_fields] = [:id, :type]
-                attributes = object.attributes(options)
-                attributes[:id] = attributes[:id].to_s
-                result << attributes
-              end
+              result << resource_object_for(object, options)
             end
           else
-            options[:fields] = @fieldset && @fieldset.fields_for(serializer)
-            options[:required_fields] = [:id, :type]
-            result = cache_check(serializer) do
-              result = serializer.attributes(options)
-              result[:id] = result[:id].to_s
-              result
-            end
+            result = resource_object_for(serializer, options)
           end
           result
+        end
+
+        def resource_object_for(serializer, options)
+          options[:fields] = @fieldset && @fieldset.fields_for(serializer)
+          options[:required_fields] = [:id, :type]
+
+          cache_check(serializer) do
+            attributes = serializer.attributes(options)
+
+            result = {
+              id: attributes.delete(:id).to_s,
+              type: attributes.delete(:type)
+            }
+
+            result[:attributes] = attributes if attributes.any?
+            result
+          end
         end
 
         def include_assoc?(assoc)

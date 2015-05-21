@@ -32,10 +32,12 @@ module ActionController
 
         expected = {
           data: {
-            name: "Name 1",
-            description: "Description 1",
             id: assigns(:profile).id.to_s,
-            type: "profiles"
+            type: "profiles",
+            attributes: {
+              name: "Name 1",
+              description: "Description 1",
+            }
           }
         }
 

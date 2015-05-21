@@ -91,7 +91,7 @@ module ActionController
         response = JSON.parse(@response.body)
         assert response.key? 'included'
         assert_equal 1, response['included'].size
-        assert_equal 'Steve K.', response['included'].first['name']
+        assert_equal 'Steve K.', response['included'].first['attributes']['name']
       end
 
       def test_render_resource_with_nested_has_many_include
@@ -101,7 +101,9 @@ module ActionController
           {
             "id" => "1",
             "type" => "authors",
-            "name" => "Steve K.",
+            "attributes" => {
+              "name" => "Steve K."
+            },
             "links" => {
               "posts" => { "linkage" => [] },
               "roles" => { "linkage" => [{ "type" =>"roles", "id" => "1" }, { "type" =>"roles", "id" => "2" }] },
@@ -110,18 +112,22 @@ module ActionController
           }, {
             "id" => "1",
             "type" => "roles",
-            "name" => "admin",
-            "description" => nil,
-            "slug" => "admin-1",
+            "attributes" => {
+              "name" => "admin",
+              "description" => nil,
+              "slug" => "admin-1"
+            },
             "links" => {
               "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
           }, {
             "id" => "2",
             "type" => "roles",
-            "name" => "colab",
-            "description" => nil,
-            "slug" => "colab-2",
+            "attributes" => {
+              "name" => "colab",
+              "description" => nil,
+              "slug" => "colab-2"
+            },
             "links" => {
               "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
             }
@@ -135,7 +141,7 @@ module ActionController
         response = JSON.parse(@response.body)
         assert response.key? 'included'
         assert_equal 1, response['included'].size
-        assert_equal 'Anonymous', response['included'].first['name']
+        assert_equal 'Anonymous', response['included'].first['attributes']['name']
       end
 
       def test_render_collection_without_include

@@ -43,7 +43,9 @@ module ActiveModel
             expected = [{
               id: "1",
               type: "comments",
-              body: 'ZOMG A COMMENT',
+              attributes: {
+                body: 'ZOMG A COMMENT'
+              },
               links: {
                 post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }
@@ -51,7 +53,9 @@ module ActiveModel
             }, {
               id: "2",
               type: "comments",
-              body: 'ZOMG ANOTHER COMMENT',
+              attributes: {
+                body: 'ZOMG ANOTHER COMMENT'
+              },
               links: {
                 post: { linkage: { type: "posts", id: "1" } },
                 author: { linkage: nil }

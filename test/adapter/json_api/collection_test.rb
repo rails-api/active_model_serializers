@@ -29,8 +29,10 @@ module ActiveModel
               {
                 id: "1",
                 type: "posts",
-                title: "Hello!!",
-                body: "Hello, world!!",
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -40,8 +42,10 @@ module ActiveModel
               {
                 id: "2",
                 type: "posts",
-                title: "New Post",
-                body: "Body",
+                attributes: {
+                  title: "New Post",
+                  body: "Body"
+                },
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -60,7 +64,9 @@ module ActiveModel
               {
                 id: "1",
                 type: "posts",
-                title: "Hello!!",
+                attributes: {
+                  title: "Hello!!"
+                },
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -70,7 +76,9 @@ module ActiveModel
               {
                 id: "2",
                 type: "posts",
-                title: "New Post",
+                attributes: {
+                  title: "New Post"
+                },
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },

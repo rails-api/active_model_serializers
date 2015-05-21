@@ -54,9 +54,11 @@ module ActiveModel
               data: [
                 {
                   id: "10",
-                  title: "Hello!!",
-                  body: "Hello, world!!",
                   type: "posts",
+                  attributes: {
+                    title: "Hello!!",
+                    body: "Hello, world!!"
+                  },
                   links: {
                     comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
                     blog: { linkage: { type: "blogs", id: "999" } },
@@ -65,9 +67,11 @@ module ActiveModel
                 },
                 {
                   id: "20",
-                  title: "New Post",
-                  body: "Body",
                   type: "posts",
+                  attributes: {
+                    title: "New Post",
+                    body: "Body"
+                  },
                   links: {
                     comments: { linkage: [] },
                     blog: { linkage: { type: "blogs", id: "999" } },
@@ -78,24 +82,30 @@ module ActiveModel
               included: [
                 {
                   id: "1",
-                  body: "ZOMG A COMMENT",
                   type: "comments",
+                  attributes: {
+                    body: "ZOMG A COMMENT"
+                  },
                   links: {
                     post: { linkage: { type: "posts", id: "10" } },
                     author: { linkage: nil }
                   }
                 }, {
                   id: "2",
-                  body: "ZOMG ANOTHER COMMENT",
                   type: "comments",
+                  attributes: {
+                    body: "ZOMG ANOTHER COMMENT",
+                  },
                   links: {
                     post: { linkage: { type: "posts", id: "10" } },
                     author: { linkage: nil }
                   }
                 }, {
                   id: "1",
-                  name: "Steve K.",
                   type: "authors",
+                  attributes: {
+                    name: "Steve K."
+                  },
                   links: {
                     posts: { linkage: [ { type: "posts", id: "10" }, { type: "posts", id: "30" } ] },
                     roles: { linkage: [] },
@@ -103,16 +113,20 @@ module ActiveModel
                   }
                 }, {
                   id: "1",
-                  rating: nil,
                   type: "bios",
-                  content: "AMS Contributor",
+                  attributes: {
+                    content: "AMS Contributor",
+                    rating: nil
+                  },
                   links: {
                     author: { linkage: { type: "authors", id: "1" } }
                   }
                 }, {
                   id: "2",
-                  name: "Tenderlove",
                   type: "authors",
+                  attributes: {
+                    name: "Tenderlove"
+                  },
                   links: {
                     posts: { linkage: [ { type: "posts", id:"20" } ] },
                     roles: { linkage: [] },
@@ -120,9 +134,11 @@ module ActiveModel
                   }
                 }, {
                   id: "2",
-                  rating: nil,
                   type: "bios",
-                  content: "Rails Contributor",
+                  attributes: {
+                    rating: nil,
+                    content: "Rails Contributor",
+                  },
                   links: {
                     author: { linkage: { type: "authors", id: "2" } }
                   }
@@ -148,7 +164,9 @@ module ActiveModel
               {
                 id: "1",
                 type: "authors",
-                name: "Steve K.",
+                attributes: {
+                  name: "Steve K."
+                },
                 links: {
                   posts: { linkage: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
                   roles: { linkage: [] },
@@ -157,8 +175,10 @@ module ActiveModel
               }, {
                 id: "10",
                 type: "posts",
-                title: "Hello!!",
-                body: "Hello, world!!",
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
                 links: {
                   comments: { linkage: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -167,8 +187,10 @@ module ActiveModel
               }, {
                 id: "30",
                 type: "posts",
-                title: "Yet Another Post",
-                body: "Body",
+                attributes: {
+                  title: "Yet Another Post",
+                  body: "Body"
+                },
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -208,9 +230,11 @@ module ActiveModel
             expected = [
               {
                 id: "10",
-                title: "Hello!!",
-                body: "Hello, world!!",
                 type: "posts",
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
                 links: {
                   comments: {
                     linkage: [{type: "comments", id: "1"}, {type: "comments", id: "2"}]
@@ -239,9 +263,11 @@ module ActiveModel
             expected = {
               data: {
                 id: "10",
-                title: "Hello!!",
-                body: "Hello, world!!",
                 type: "posts",
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
                 links: {
                   comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
                   author: { linkage: nil }

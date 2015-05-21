@@ -41,9 +41,11 @@ module ActiveModel
             expected = [
               {
                 id: "43",
-                rating: nil,
                 type: "bios",
-                content:"AMS Contributor",
+                attributes: {
+                  content:"AMS Contributor",
+                  rating: nil
+                },
                 links: {
                   author: { linkage: { type: "authors", id: "1" } }
                 }

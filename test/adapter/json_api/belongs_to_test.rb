@@ -42,8 +42,10 @@ module ActiveModel
             expected = [{
               id: "42",
               type: "posts",
-              title: 'New Post',
-              body: 'Body',
+              attributes: {
+                title: 'New Post',
+                body: 'Body',
+              },
               links: {
                 comments: { linkage: [ { type: "comments", id: "1" } ] },
                 blog: { linkage: { type: "blogs", id: "999" } },
@@ -58,7 +60,9 @@ module ActiveModel
             expected = [{
               id: "42",
               type: "posts",
-              title: 'New Post',
+              attributes: {
+                title: 'New Post'
+              },
               links: {
                 comments: { linkage: [ { type: "comments", id: "1" } ] },
                 blog: { linkage: { type: "blogs", id: "999" } },
@@ -110,7 +114,9 @@ module ActiveModel
               {
                 id: "1",
                 type: "authors",
-                name: "Steve K.",
+                attributes: {
+                  name: "Steve K."
+                },
                 links: {
                   posts: { linkage: [] },
                   roles: { linkage: [] },
@@ -119,8 +125,10 @@ module ActiveModel
               },{
                 id: "42",
                 type: "posts",
-                title: "New Post",
-                body: "Body",
+                attributes: {
+                  title: "New Post",
+                  body: "Body"
+                },
                 links: {
                   comments: { linkage: [ { type: "comments", id: "1" } ] },
                   blog: { linkage: { type: "blogs", id: "999" } },
@@ -129,8 +137,10 @@ module ActiveModel
               }, {
                 id: "43",
                 type: "posts",
-                title: "Hello!!",
-                body: "Hello, world!!",
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
                 links: {
                   comments: { linkage: [] },
                   blog: { linkage: { type: "blogs", id: "999" } },
