@@ -59,10 +59,10 @@ module ActiveModel
                     title: "Hello!!",
                     body: "Hello, world!!"
                   },
-                  links: {
-                    comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
-                    blog: { linkage: { type: "blogs", id: "999" } },
-                    author: { linkage: { type: "authors", id: "1" } }
+                  relationships: {
+                    comments: { data: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
+                    blog: { data: { type: "blogs", id: "999" } },
+                    author: { data: { type: "authors", id: "1" } }
                   }
                 },
                 {
@@ -72,10 +72,10 @@ module ActiveModel
                     title: "New Post",
                     body: "Body"
                   },
-                  links: {
-                    comments: { linkage: [] },
-                    blog: { linkage: { type: "blogs", id: "999" } },
-                    author: { linkage: { type: "authors", id: "2" } }
+                  relationships: {
+                    comments: { data: [] },
+                    blog: { data: { type: "blogs", id: "999" } },
+                    author: { data: { type: "authors", id: "2" } }
                   }
                 }
               ],
@@ -86,9 +86,9 @@ module ActiveModel
                   attributes: {
                     body: "ZOMG A COMMENT"
                   },
-                  links: {
-                    post: { linkage: { type: "posts", id: "10" } },
-                    author: { linkage: nil }
+                  relationships: {
+                    post: { data: { type: "posts", id: "10" } },
+                    author: { data: nil }
                   }
                 }, {
                   id: "2",
@@ -96,9 +96,9 @@ module ActiveModel
                   attributes: {
                     body: "ZOMG ANOTHER COMMENT",
                   },
-                  links: {
-                    post: { linkage: { type: "posts", id: "10" } },
-                    author: { linkage: nil }
+                  relationships: {
+                    post: { data: { type: "posts", id: "10" } },
+                    author: { data: nil }
                   }
                 }, {
                   id: "1",
@@ -106,10 +106,10 @@ module ActiveModel
                   attributes: {
                     name: "Steve K."
                   },
-                  links: {
-                    posts: { linkage: [ { type: "posts", id: "10" }, { type: "posts", id: "30" } ] },
-                    roles: { linkage: [] },
-                    bio: { linkage: { type: "bios", id: "1" } }
+                  relationships: {
+                    posts: { data: [ { type: "posts", id: "10" }, { type: "posts", id: "30" } ] },
+                    roles: { data: [] },
+                    bio: { data: { type: "bios", id: "1" } }
                   }
                 }, {
                   id: "1",
@@ -118,8 +118,8 @@ module ActiveModel
                     content: "AMS Contributor",
                     rating: nil
                   },
-                  links: {
-                    author: { linkage: { type: "authors", id: "1" } }
+                  relationships: {
+                    author: { data: { type: "authors", id: "1" } }
                   }
                 }, {
                   id: "2",
@@ -127,10 +127,10 @@ module ActiveModel
                   attributes: {
                     name: "Tenderlove"
                   },
-                  links: {
-                    posts: { linkage: [ { type: "posts", id:"20" } ] },
-                    roles: { linkage: [] },
-                    bio: { linkage: { type: "bios", id: "2" } }
+                  relationships: {
+                    posts: { data: [ { type: "posts", id:"20" } ] },
+                    roles: { data: [] },
+                    bio: { data: { type: "bios", id: "2" } }
                   }
                 }, {
                   id: "2",
@@ -139,8 +139,8 @@ module ActiveModel
                     rating: nil,
                     content: "Rails Contributor",
                   },
-                  links: {
-                    author: { linkage: { type: "authors", id: "2" } }
+                  relationships: {
+                    author: { data: { type: "authors", id: "2" } }
                   }
                 }
               ]
@@ -167,10 +167,10 @@ module ActiveModel
                 attributes: {
                   name: "Steve K."
                 },
-                links: {
-                  posts: { linkage: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
-                  roles: { linkage: [] },
-                  bio: { linkage: { type: "bios", id: "1" }}
+                relationships: {
+                  posts: { data: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
+                  roles: { data: [] },
+                  bio: { data: { type: "bios", id: "1" }}
                 }
               }, {
                 id: "10",
@@ -179,10 +179,10 @@ module ActiveModel
                   title: "Hello!!",
                   body: "Hello, world!!"
                 },
-                links: {
-                  comments: { linkage: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                relationships: {
+                  comments: { data: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               }, {
                 id: "30",
@@ -191,10 +191,10 @@ module ActiveModel
                   title: "Yet Another Post",
                   body: "Body"
                 },
-                links: {
-                  comments: { linkage: [] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                relationships: {
+                  comments: { data: [] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               }
             ]
@@ -208,16 +208,16 @@ module ActiveModel
             spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
             serializer = SpammyPostSerializer.new(spammy_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            links = adapter.serializable_hash[:data][:links]
+            relationships = adapter.serializable_hash[:data][:relationships]
             expected = {
               related: {
-                linkage: [{
+                data: [{
                   type: 'unrelated_links',
                   id: '456'
                 }]
               }
             }
-            assert_equal expected, links
+            assert_equal expected, relationships
           end
 
           def test_multiple_references_to_same_resource
@@ -235,15 +235,15 @@ module ActiveModel
                   title: "Hello!!",
                   body: "Hello, world!!"
                 },
-                links: {
+                relationships: {
                   comments: {
-                    linkage: [{type: "comments", id: "1"}, {type: "comments", id: "2"}]
+                    data: [{type: "comments", id: "1"}, {type: "comments", id: "2"}]
                   },
                   blog: {
-                    linkage: {type: "blogs", id: "999"}
+                    data: {type: "blogs", id: "999"}
                   },
                   author: {
-                    linkage: {type: "authors", id: "1"}
+                    data: {type: "authors", id: "1"}
                   }
                 }
               }
@@ -268,9 +268,9 @@ module ActiveModel
                   title: "Hello!!",
                   body: "Hello, world!!"
                 },
-                links: {
-                  comments: { linkage: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
-                  author: { linkage: nil }
+                relationships: {
+                  comments: { data: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
+                  author: { data: nil }
                 }
               }
             }

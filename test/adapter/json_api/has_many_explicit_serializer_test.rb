@@ -30,13 +30,13 @@ module ActiveModel
 
           def test_includes_comment_ids
             expected = {
-              linkage: [
+              data: [
                 { type: 'comments', id: '1' },
                 { type: 'comments', id: '2' }
               ]
             }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:comments])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
           end
 
           def test_includes_linked_data
@@ -45,22 +45,22 @@ module ActiveModel
               {
                 id: '1',
                 type: 'comments',
-                links: {
-                  post: { linkage: { type: 'posts', id: @post.id.to_s } }
+                relationships: {
+                  post: { data: { type: 'posts', id: @post.id.to_s } }
                 }
               },
               {
                 id: '2',
                 type: 'comments',
-                links: {
-                  post: { linkage: { type: 'posts', id: @post.id.to_s } }
+                relationships: {
+                  post: { data: { type: 'posts', id: @post.id.to_s } }
                 }
               },
               {
                 id: @author.id.to_s,
                 type: "authors",
-                links: {
-                  posts: { linkage: [ {type: "posts", id: @post.id.to_s } ] }
+                relationships: {
+                  posts: { data: [ {type: "posts", id: @post.id.to_s } ] }
                 }
               }
             ]
@@ -70,26 +70,26 @@ module ActiveModel
 
           def test_includes_author_id
             expected = {
-              linkage: { type: "authors", id: @author.id.to_s }
+              data: { type: "authors", id: @author.id.to_s }
             }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:author])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:author])
           end
 
           def test_explicit_serializer_with_null_resource
             @post.author = nil
 
-            expected = { linkage: nil }
+            expected = { data: nil }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:author])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:author])
           end
 
           def test_explicit_serializer_with_null_collection
             @post.comments = []
 
-            expected = { linkage: [] }
+            expected = { data: [] }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:comments])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
           end
         end
       end

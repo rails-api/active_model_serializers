@@ -33,9 +33,9 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            expected = { linkage: [ { type: "comments", id: "1" }, { type: "comments", id: "2" } ] }
+            expected = { data: [ { type: "comments", id: "1" }, { type: "comments", id: "2" } ] }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:comments])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
           end
 
           def test_includes_linked_comments
@@ -46,9 +46,9 @@ module ActiveModel
               attributes: {
                 body: 'ZOMG A COMMENT'
               },
-              links: {
-                post: { linkage: { type: "posts", id: "1" } },
-                author: { linkage: nil }
+              relationships: {
+                post: { data: { type: "posts", id: "1" } },
+                author: { data: nil }
               }
             }, {
               id: "2",
@@ -56,9 +56,9 @@ module ActiveModel
               attributes: {
                 body: 'ZOMG ANOTHER COMMENT'
               },
-              links: {
-                post: { linkage: { type: "posts", id: "1" } },
-                author: { linkage: nil }
+              relationships: {
+                post: { data: { type: "posts", id: "1" } },
+                author: { data: nil }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
@@ -69,16 +69,16 @@ module ActiveModel
             expected = [{
               id: "1",
               type: "comments",
-              links: {
-                post: { linkage: { type: "posts", id: "1" } },
-                author: { linkage: nil }
+              relationships: {
+                post: { data: { type: "posts", id: "1" } },
+                author: { data: nil }
               }
             }, {
               id: "2",
               type: "comments",
-              links: {
-                post: { linkage: { type: "posts", id: "1" } },
-                author: { linkage: nil }
+              relationships: {
+                post: { data: { type: "posts", id: "1" } },
+                author: { data: nil }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
@@ -94,9 +94,9 @@ module ActiveModel
           def test_include_type_for_association_when_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            actual = adapter.serializable_hash[:data][:links][:articles]
+            actual = adapter.serializable_hash[:data][:relationships][:articles]
             expected = {
-              linkage: [{
+              data: [{
                 type: "posts",
                 id: "1"
               }]

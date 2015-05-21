@@ -104,10 +104,10 @@ module ActionController
             "attributes" => {
               "name" => "Steve K."
             },
-            "links" => {
-              "posts" => { "linkage" => [] },
-              "roles" => { "linkage" => [{ "type" =>"roles", "id" => "1" }, { "type" =>"roles", "id" => "2" }] },
-              "bio" => { "linkage" => nil }
+            "relationships" => {
+              "posts" => { "data" => [] },
+              "roles" => { "data" => [{ "type" =>"roles", "id" => "1" }, { "type" =>"roles", "id" => "2" }] },
+              "bio" => { "data" => nil }
             }
           }, {
             "id" => "1",
@@ -117,8 +117,8 @@ module ActionController
               "description" => nil,
               "slug" => "admin-1"
             },
-            "links" => {
-              "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
+            "relationships" => {
+              "author" => { "data" => { "type" =>"authors", "id" => "1" } }
             }
           }, {
             "id" => "2",
@@ -128,8 +128,8 @@ module ActionController
               "description" => nil,
               "slug" => "colab-2"
             },
-            "links" => {
-              "author" => { "linkage" => { "type" =>"authors", "id" => "1" } }
+            "relationships" => {
+              "author" => { "data" => { "type" =>"authors", "id" => "1" } }
             }
           }
         ]

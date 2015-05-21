@@ -26,13 +26,13 @@ module ActiveModel
 
           def test_includes_comment_ids
             expected = {
-              linkage: [
+              data: [
                 { type: "posts", id: "1"},
                 { type: "posts", id: "2"}
               ]
             }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:posts])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:posts])
           end
 
           def test_no_includes_linked_comments
