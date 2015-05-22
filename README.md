@@ -8,7 +8,7 @@ AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 
-By default AMS will use the JsonApi Adapter that follows RC3 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
+By default AMS will use the JsonApi Adapter that follows RC4 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
 # RELEASE CANDIDATE, PLEASE READ
@@ -178,7 +178,7 @@ end
 
 #### JSONAPI
 
-This adapter follows RC3 of the format specified in
+This adapter follows RC4 of the format specified in
 [jsonapi.org/format](http://jsonapi.org/format). It will include the associated
 resources in the `"included"` member when the resource names are included in the
 `include` option.
