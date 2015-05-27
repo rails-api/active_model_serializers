@@ -45,7 +45,11 @@ module ActiveModel
       @_attributes_keys[attr] = {key: key} if key != attr
       @_attributes << key unless @_attributes.include?(key)
       define_method key do
-        object.read_attribute_for_serialization(attr)
+        if attr != key && self.class.method_defined?(attr)
+          self.send(attr)
+        else
+          object.read_attribute_for_serialization(attr)
+        end
       end unless method_defined?(key) || _fragmented.respond_to?(attr)
     end
 
