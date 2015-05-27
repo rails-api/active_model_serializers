@@ -35,8 +35,9 @@ module ActiveModel
         private
 
         def cached_attributes(klass, serializers)
-          cached_attributes     = (klass._cache_only) ? klass._cache_only : serializer.attributes.keys.delete_if {|attr| klass._cache_except.include?(attr) }
-          non_cached_attributes = serializer.attributes.keys.delete_if {|attr| cached_attributes.include?(attr) }
+          attributes            = serializer.class._attributes
+          cached_attributes     = (klass._cache_only) ? klass._cache_only : attributes.reject {|attr| klass._cache_except.include?(attr) }
+          non_cached_attributes = attributes - cached_attributes
 
           cached_attributes.each do |attribute|
             options = serializer.class._attributes_keys[attribute]
