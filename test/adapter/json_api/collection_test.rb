@@ -29,23 +29,27 @@ module ActiveModel
               {
                 id: "1",
                 type: "posts",
-                title: "Hello!!",
-                body: "Hello, world!!",
-                links: {
-                  comments: { linkage: [] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
+                relationships: {
+                  comments: { data: [] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               },
               {
                 id: "2",
                 type: "posts",
-                title: "New Post",
-                body: "Body",
-                links: {
-                  comments: { linkage: [] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                attributes: {
+                  title: "New Post",
+                  body: "Body"
+                },
+                relationships: {
+                  comments: { data: [] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               }
             ]
@@ -60,21 +64,25 @@ module ActiveModel
               {
                 id: "1",
                 type: "posts",
-                title: "Hello!!",
-                links: {
-                  comments: { linkage: [] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                attributes: {
+                  title: "Hello!!"
+                },
+                relationships: {
+                  comments: { data: [] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               },
               {
                 id: "2",
                 type: "posts",
-                title: "New Post",
-                links: {
-                  comments: { linkage: [] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                attributes: {
+                  title: "New Post"
+                },
+                relationships: {
+                  comments: { data: [] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               }
             ]

@@ -32,9 +32,9 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            expected = { linkage: { type: "posts", id: "42" } }
+            expected = { data: { type: "posts", id: "42" } }
 
-            assert_equal(expected, @adapter.serializable_hash[:data][:links][:post])
+            assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:post])
           end
 
           def test_includes_linked_post
@@ -42,12 +42,14 @@ module ActiveModel
             expected = [{
               id: "42",
               type: "posts",
-              title: 'New Post',
-              body: 'Body',
-              links: {
-                comments: { linkage: [ { type: "comments", id: "1" } ] },
-                blog: { linkage: { type: "blogs", id: "999" } },
-                author: { linkage: { type: "authors", id: "1" } }
+              attributes: {
+                title: 'New Post',
+                body: 'Body',
+              },
+              relationships: {
+                comments: { data: [ { type: "comments", id: "1" } ] },
+                blog: { data: { type: "blogs", id: "999" } },
+                author: { data: { type: "authors", id: "1" } }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
@@ -58,11 +60,13 @@ module ActiveModel
             expected = [{
               id: "42",
               type: "posts",
-              title: 'New Post',
-              links: {
-                comments: { linkage: [ { type: "comments", id: "1" } ] },
-                blog: { linkage: { type: "blogs", id: "999" } },
-                author: { linkage: { type: "authors", id: "1" } }
+              attributes: {
+                title: 'New Post'
+              },
+              relationships: {
+                comments: { data: [ { type: "comments", id: "1" } ] },
+                blog: { data: { type: "blogs", id: "999" } },
+                author: { data: { type: "authors", id: "1" } }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
@@ -72,22 +76,22 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: { linkage: [] }, blog: { linkage: { type: "blogs", id: "999" } }, author: { linkage: nil }}, adapter.serializable_hash[:data][:links])
+            assert_equal({comments: { data: [] }, blog: { data: { type: "blogs", id: "999" } }, author: { data: nil }}, adapter.serializable_hash[:data][:relationships])
           end
 
           def test_include_type_for_association_when_different_than_name
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            links = adapter.serializable_hash[:data][:links]
+            relationships = adapter.serializable_hash[:data][:relationships]
             expected = {
               writer: {
-                linkage: {
+                data: {
                   type: "authors",
                   id: "1"
                 }
               },
               articles: {
-                linkage: [
+                data: [
                   {
                     type: "posts",
                     id: "42"
@@ -99,7 +103,7 @@ module ActiveModel
                 ]
               }
             }
-            assert_equal expected, links
+            assert_equal expected, relationships
           end
 
           def test_include_linked_resources_with_type_name
@@ -110,31 +114,37 @@ module ActiveModel
               {
                 id: "1",
                 type: "authors",
-                name: "Steve K.",
-                links: {
-                  posts: { linkage: [] },
-                  roles: { linkage: [] },
-                  bio: { linkage: nil }
+                attributes: {
+                  name: "Steve K."
+                },
+                relationships: {
+                  posts: { data: [] },
+                  roles: { data: [] },
+                  bio: { data: nil }
                 }
               },{
                 id: "42",
                 type: "posts",
-                title: "New Post",
-                body: "Body",
-                links: {
-                  comments: { linkage: [ { type: "comments", id: "1" } ] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: { type: "authors", id: "1" } }
+                attributes: {
+                  title: "New Post",
+                  body: "Body"
+                },
+                relationships: {
+                  comments: { data: [ { type: "comments", id: "1" } ] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: { type: "authors", id: "1" } }
                 }
               }, {
                 id: "43",
                 type: "posts",
-                title: "Hello!!",
-                body: "Hello, world!!",
-                links: {
-                  comments: { linkage: [] },
-                  blog: { linkage: { type: "blogs", id: "999" } },
-                  author: { linkage: nil }
+                attributes: {
+                  title: "Hello!!",
+                  body: "Hello, world!!"
+                },
+                relationships: {
+                  comments: { data: [] },
+                  blog: { data: { type: "blogs", id: "999" } },
+                  author: { data: nil }
                 }
               }
             ]

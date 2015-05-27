@@ -29,7 +29,7 @@ module ActiveModel
             end
           else
             @hash[:data] = attributes_for_serializer(serializer, @options)
-            add_resource_links(@hash[:data], serializer)
+            add_resource_relationships(@hash[:data], serializer)
           end
           @hash
         end
@@ -41,18 +41,18 @@ module ActiveModel
 
         private
 
-        def add_links(resource, name, serializers)
-          resource[:links] ||= {}
-          resource[:links][name] ||= { linkage: [] }
-          resource[:links][name][:linkage] += serializers.map { |serializer| { type: serializer.type, id: serializer.id.to_s } }
+        def add_relationships(resource, name, serializers)
+          resource[:relationships] ||= {}
+          resource[:relationships][name] ||= { data: [] }
+          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.type, id: serializer.id.to_s } }
         end
 
-        def add_link(resource, name, serializer, val=nil)
-          resource[:links] ||= {}
-          resource[:links][name] = { linkage: nil }
+        def add_relationship(resource, name, serializer, val=nil)
+          resource[:relationships] ||= {}
+          resource[:relationships][name] = { data: nil }
 
           if serializer && serializer.object
-            resource[:links][name][:linkage] = { type: serializer.type, id: serializer.id.to_s }
+            resource[:relationships][name][:data] = { type: serializer.type, id: serializer.id.to_s }
           end
         end
 
@@ -68,7 +68,7 @@ module ActiveModel
             serializers.each do |serializer|
               attrs = attributes_for_serializer(serializer, @options)
 
-              add_resource_links(attrs, serializer, add_included: false)
+              add_resource_relationships(attrs, serializer, add_included: false)
 
               @hash[:included].push(attrs) unless @hash[:included].include?(attrs)
             end
@@ -85,24 +85,29 @@ module ActiveModel
           if serializer.respond_to?(:each)
             result = []
             serializer.each do |object|
-              options[:fields] = @fieldset && @fieldset.fields_for(serializer)
-              result << cache_check(object) do
-                options[:required_fields] = [:id, :type]
-                attributes = object.attributes(options)
-                attributes[:id] = attributes[:id].to_s
-                result << attributes
-              end
+              result << resource_object_for(object, options)
             end
           else
-            options[:fields] = @fieldset && @fieldset.fields_for(serializer)
-            options[:required_fields] = [:id, :type]
-            result = cache_check(serializer) do
-              result = serializer.attributes(options)
-              result[:id] = result[:id].to_s
-              result
-            end
+            result = resource_object_for(serializer, options)
           end
           result
+        end
+
+        def resource_object_for(serializer, options)
+          options[:fields] = @fieldset && @fieldset.fields_for(serializer)
+          options[:required_fields] = [:id, :type]
+
+          cache_check(serializer) do
+            attributes = serializer.attributes(options)
+
+            result = {
+              id: attributes.delete(:id).to_s,
+              type: attributes.delete(:type)
+            }
+
+            result[:attributes] = attributes if attributes.any?
+            result
+          end
         end
 
         def include_assoc?(assoc)
@@ -123,19 +128,19 @@ module ActiveModel
           end
         end
 
-        def add_resource_links(attrs, serializer, options = {})
+        def add_resource_relationships(attrs, serializer, options = {})
           options[:add_included] = options.fetch(:add_included, true)
 
           serializer.each_association do |name, association, opts|
-            attrs[:links] ||= {}
+            attrs[:relationships] ||= {}
 
             if association.respond_to?(:each)
-              add_links(attrs, name, association)
+              add_relationships(attrs, name, association)
             else
               if opts[:virtual_value]
-                add_link(attrs, name, nil, opts[:virtual_value])
+                add_relationship(attrs, name, nil, opts[:virtual_value])
               else
-                add_link(attrs, name, association)
+                add_relationship(attrs, name, association)
               end
             end
 
