@@ -8,7 +8,7 @@ AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 
-By default AMS will use the JsonApi Adapter that follows RC4 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
+By default AMS will use the **Json Adapter**. But we strongly advise you to use JsonApi Adapter that follows RC4 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
 # RELEASE CANDIDATE, PLEASE READ
@@ -50,17 +50,17 @@ end
 ```
 
 Generally speaking, you as a user of AMS will write (or generate) these
-serializer classes. If you want to use a different adapter, such as a normal Json adapter without the JsonApi conventions, you can
+serializer classes. If you want to use a different adapter, such as a JsonApi, you can
 change this in an initializer:
 
 ```ruby
-ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::Json
+ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
 ```
 
 or
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :json
+ActiveModel::Serializer.config.adapter = :json_api
 ```
 
 You won't need to implement an adapter unless you wish to use a new format or

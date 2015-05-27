@@ -4,7 +4,7 @@ module ActionController
   module Serialization
     class AdapterSelectorTest < ActionController::TestCase
       class MyController < ActionController::Base
-        def render_using_the_initializer_defined_adapter
+        def render_using_default_adapter
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile
         end
@@ -23,7 +23,7 @@ module ActionController
       tests MyController
 
       def test_render_using_default_adapter
-        get :render_using_the_initializer_defined_adapter
+        get :render_using_default_adapter
         assert_equal '{"name":"Name 1","description":"Description 1"}', response.body
       end
 
