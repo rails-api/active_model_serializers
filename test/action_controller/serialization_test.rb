@@ -14,6 +14,11 @@ module ActionController
           render json: @profile, root: "custom_root"
         end
 
+        def render_using_custom_root_and_meta
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile, root: "custom_root", meta: { total: 10 }
+        end
+
         def render_using_default_adapter_root
           with_adapter ActiveModel::Serializer::Adapter::JsonApi do
             # JSON-API adapter sets root by default
@@ -26,6 +31,14 @@ module ActionController
           # JSON-API adapter sets root by default
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile, root: "profile", adapter: :json_api
+        end
+
+        def render_array_using_custom_root_and_meta
+          array = [
+            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
+            Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
+          ]
+          render json: array, root: "custom_root", meta: { total: 10 }
         end
 
         def render_array_using_implicit_serializer
@@ -161,6 +174,13 @@ module ActionController
         assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
 
+      def test_render_using_custom_root_and_meta
+        get :render_using_custom_root_and_meta
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"},"meta":{"total":10}}', @response.body
+      end
+
       def test_render_using_default_root
         get :render_using_default_adapter_root
 
@@ -194,6 +214,25 @@ module ActionController
         }
 
         assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_array_using_custom_root_and_meta
+        get :render_array_using_custom_root_and_meta
+        assert_equal 'application/json', @response.content_type
+
+        expected = { custom_root: [
+          {
+            name: 'Name 1',
+            description: 'Description 1',
+          },
+          {
+            name: 'Name 2',
+            description: 'Description 2',
+          }],
+          meta: { total: 10 }
+        }
+
         assert_equal expected.to_json, @response.body
       end
 
