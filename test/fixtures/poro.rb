@@ -64,7 +64,7 @@ Author   = Class.new(Model)
 Bio      = Class.new(Model)
 Blog     = Class.new(Model)
 Role     = Class.new(Model)
-User = Class.new(Model)
+User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
 
