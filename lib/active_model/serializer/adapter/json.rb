@@ -37,10 +37,11 @@ module ActiveModel
             @result = @core.merge @hash
           end
 
-          if root = options.fetch(:root, serializer.json_key)
+          if root
             @result = { root => @result }
+          else
+            @result
           end
-          @result
         end
       end
 
