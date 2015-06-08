@@ -4,6 +4,11 @@ module ActiveModel
   class Serializer
     class Adapter
       class Json < Adapter
+        def initialize(serializer, options = {})
+          super
+          serializer.root = true if @options[:root]
+        end
+
         def serializable_hash(options = {})
           if serializer.respond_to?(:each)
             @result = serializer.map{|s| self.class.new(s).serializable_hash }
