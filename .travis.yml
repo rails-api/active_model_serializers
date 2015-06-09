@@ -15,10 +15,13 @@ install:
   - bundle install --retry=3
 
 env:
-  - "RAILS_VERSION=4.0"
-  - "RAILS_VERSION=4.1"
-  - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  global:
+    - JRUBY_OPTS=-Xcext.enabled=true
+  matrix:
+    - "RAILS_VERSION=4.0"
+    - "RAILS_VERSION=4.1"
+    - "RAILS_VERSION=4.2"
+    - "RAILS_VERSION=master"
 
 matrix:
   allow_failures:
