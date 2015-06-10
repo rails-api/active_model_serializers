@@ -10,7 +10,7 @@ require 'minitest/autorun'
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
 class Foo < Rails::Application
-  if Rails.version.to_s.start_with? '4'
+  if Rails::VERSION::MAJOR >= 4
     config.eager_load = false
     config.secret_key_base = 'abc123'
     config.action_controller.perform_caching = true
