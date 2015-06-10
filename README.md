@@ -8,7 +8,7 @@ AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 
-By default AMS will use the **Json Adapter**. But we strongly advise you to use JsonApi Adapter that follows RC4 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
+By default AMS will use the **Json Adapter**. But we strongly advise you to use JsonApi Adapter that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
 # RELEASE CANDIDATE, PLEASE READ
