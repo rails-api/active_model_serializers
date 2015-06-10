@@ -9,18 +9,20 @@ require 'minitest/autorun'
 # Ensure backward compatibility with Minitest 4
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
+require 'active_model_serializers'
+
 class Foo < Rails::Application
   if Rails::VERSION::MAJOR >= 4
     config.eager_load = false
     config.secret_key_base = 'abc123'
     config.action_controller.perform_caching = true
-    config.active_support.test_order         = :random
-    ActionController::Base.cache_store       = :memory_store
+    config.active_support.test_order = :random
+    config.logger = Logger.new(nil)
+    ActionController::Base.cache_store = :memory_store
   end
 end
-Foo.load_generators
-
-require "active_model_serializers"
+ActionController::Base.cache_store.clear
+Foo.initialize!
 
 require 'fixtures/poro'
 

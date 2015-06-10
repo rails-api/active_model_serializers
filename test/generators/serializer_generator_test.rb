@@ -1,3 +1,4 @@
+require 'test_helper'
 require 'generators/serializer/serializer_generator'
 
 class SerializerGeneratorTest < Rails::Generators::TestCase
