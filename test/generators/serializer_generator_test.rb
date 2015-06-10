@@ -10,7 +10,7 @@ Rails.application.load_generators
 require 'generators/serializer/serializer_generator'
 
 class SerializerGeneratorTest < Rails::Generators::TestCase
-  destination File.expand_path("../tmp", __FILE__)
+  destination File.expand_path("../../tmp", __FILE__)
   setup :prepare_destination
 
   tests Rails::Generators::SerializerGenerator
