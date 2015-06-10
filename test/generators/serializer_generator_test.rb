@@ -1,12 +1,3 @@
-class Foo < Rails::Application
-  if Rails.version.to_s.start_with? '4'
-    config.eager_load = false
-    config.secret_key_base = 'abc123'
-  end
-end
-
-Rails.application.load_generators
-
 require 'generators/serializer/serializer_generator'
 
 class SerializerGeneratorTest < Rails::Generators::TestCase
