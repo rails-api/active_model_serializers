@@ -55,6 +55,14 @@ module ActionController
 
           render json: [@post], each_serializer: PostPreviewSerializer
         end
+
+        def render_using_explicit_each_serializer
+          @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          @author  = Author.new(id: 1, name: 'Joao Moura.')
+          @post    = Post.new({ id: 1, title: 'New Post', body: 'Body', comments: [@comment], author: @author })
+
+          render json: @post, each_serializer: PostSerializer
+        end
       end
 
       tests MyController
@@ -102,6 +110,31 @@ module ActionController
             "author" => { "id" => assigns(:author).id }
           }
         ]
+
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_using_explicit_each_serializer
+        get :render_using_explicit_each_serializer
+
+        expected = {
+          id: 1,
+          title: 'New Post',
+          body: 'Body',
+          comments: [
+            {
+              id: 1,
+              body: 'ZOMG A COMMENT' }
+          ],
+          blog: {
+            id: 999,
+            name: 'Custom blog'
+          },
+          author: {
+            id: 1,
+            name: 'Joao Moura.'
+          }
+        }
 
         assert_equal expected.to_json, @response.body
       end
