@@ -14,6 +14,7 @@ module ActiveModel
 
     class << self
       attr_accessor :_attributes
+      attr_accessor :_deserialize
       attr_accessor :_attributes_keys
       attr_accessor :_urls
       attr_accessor :_cache
@@ -28,10 +29,16 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
+      base._deserialize = self._attributes.try(:dup)  || []
       base._urls = []
       serializer_file = File.open(caller.first[/^[^:]+/])
       base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
       super
+    end
+
+    def self.deserialize(*attrs)
+      @_deserialize.concat attrs
+      @_deserialize.uniq!
     end
 
     def self.attributes(*attrs)
