@@ -3,6 +3,7 @@ require 'active_model/serializer/version'
 require 'active_model/serializer'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializable_resource'
+require 'active_model/deserializer'
 
 begin
   require 'active_model/serializer/railtie'
