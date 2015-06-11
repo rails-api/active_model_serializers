@@ -68,6 +68,10 @@ User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
 
+module Test
+  NestedRole     = Class.new(Model)
+end
+
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
