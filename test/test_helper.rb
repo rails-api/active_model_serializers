@@ -6,6 +6,7 @@ require 'action_controller/test_case'
 require 'action_controller/railtie'
 require 'active_support/json'
 require 'minitest/autorun'
+require 'fileutils'
 # Ensure backward compatibility with Minitest 4
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
@@ -21,7 +22,7 @@ class Foo < Rails::Application
     ActionController::Base.cache_store = :memory_store
   end
 end
-ActionController::Base.cache_store.clear
+FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 Foo.initialize!
 
 require 'fixtures/poro'

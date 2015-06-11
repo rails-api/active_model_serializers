@@ -2,7 +2,7 @@ require 'test_helper'
 # require 'active_model/serializer/railtie'
 
 class ResourceGeneratorTest < Rails::Generators::TestCase
-  destination File.expand_path('../../tmp', __FILE__)
+  destination File.expand_path('../../../tmp/generators', __FILE__)
   setup :prepare_destination, :copy_routes
 
   tests Rails::Generators::ResourceGenerator
