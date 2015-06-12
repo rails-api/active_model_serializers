@@ -131,10 +131,7 @@ module ActiveModel
 
       private
       def render_object_with_cache(obj)
-        serializer_class = ActiveModel::Serializer.serializer_for(obj)
-        serializer = serializer_class.new(obj)
-        adapter = ActiveModel::Serializer.adapter.new(serializer)
-        adapter.serializable_hash
+        ActiveModel::SerializableResource.new(obj).serializable_hash
       end
     end
   end

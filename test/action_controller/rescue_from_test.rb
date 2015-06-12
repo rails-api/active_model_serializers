@@ -7,8 +7,8 @@ module ActionController
         rescue_from Exception, with: :handle_error
 
         def render_using_raise_error_serializer
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          render json: [@profile], serializer: RaiseErrorSerializer
+          profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: [profile], serializer: RaiseErrorSerializer
         end
 
         def handle_error(exception)
@@ -25,7 +25,7 @@ module ActionController
           errors: ['Internal Server Error']
         }.to_json
 
-        assert_equal expected, @response.body
+        assert_equal expected, response.body
       end
     end
   end

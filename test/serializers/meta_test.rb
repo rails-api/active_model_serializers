@@ -113,11 +113,8 @@ module ActiveModel
       private
 
       def load_adapter(options)
-        adapter_opts, serializer_opts =
-          options.partition { |k, _| ActionController::Serialization::ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
-
-        serializer = AlternateBlogSerializer.new(@blog, serializer_opts)
-        ActiveModel::Serializer::Adapter::FlattenJson.new(serializer, adapter_opts)
+        options = options.merge(adapter: :flatten_json, serializer: AlternateBlogSerializer)
+        ActiveModel::SerializableResource.new(@blog, options)
       end
     end
   end

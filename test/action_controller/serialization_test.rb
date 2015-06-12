@@ -4,6 +4,7 @@ require 'test_helper'
 module ActionController
   module Serialization
     class ImplicitSerializerTest < ActionController::TestCase
+      include ActiveSupport::Testing::Stream
       class ImplicitSerializationTestController < ActionController::Base
         def render_using_implicit_serializer
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
@@ -140,10 +141,7 @@ module ActionController
 
         private
         def generate_cached_serializer(obj)
-          serializer_class = ActiveModel::Serializer.serializer_for(obj)
-          serializer = serializer_class.new(obj)
-          adapter = ActiveModel::Serializer.adapter.new(serializer)
-          adapter.to_json
+          ActiveModel::SerializableResource.new(obj).to_json
         end
 
         def with_adapter(adapter)
@@ -399,6 +397,28 @@ module ActionController
 
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
+      end
+
+      def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
+        controller = Class.new(ImplicitSerializationTestController) {
+          def use_adapter?
+            false
+          end
+        }.new
+        assert_match /adapter: false/, (capture(:stderr) {
+          controller.get_serializer(@profile)
+        })
+      end
+
+      def test_dont_warn_overridding_use_adapter_as_truthy_on_controller_instance
+        controller = Class.new(ImplicitSerializationTestController) {
+          def use_adapter?
+            true
+          end
+        }.new
+        assert_equal "", (capture(:stderr) {
+          controller.get_serializer(@profile)
+        })
       end
     end
   end

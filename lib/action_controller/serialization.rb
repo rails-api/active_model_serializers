@@ -6,7 +6,8 @@ module ActionController
 
     include ActionController::Renderers
 
-    ADAPTER_OPTION_KEYS = [:include, :fields, :adapter]
+    # Deprecated
+    ADAPTER_OPTION_KEYS = ActiveModel::SerializableResource::ADAPTER_OPTION_KEYS
 
     included do
       class_attribute :_serialization_scope
@@ -18,47 +19,55 @@ module ActionController
         respond_to?(_serialization_scope, true)
     end
 
-    def get_serializer(resource)
-      @_serializer ||= @_serializer_opts.delete(:serializer)
-      @_serializer ||= ActiveModel::Serializer.serializer_for(resource)
-
-      if @_serializer_opts.key?(:each_serializer)
-        @_serializer_opts[:serializer] = @_serializer_opts.delete(:each_serializer)
+    def get_serializer(resource, options = {})
+      if ! use_adapter?
+        warn "ActionController::Serialization#use_adapter? has been removed. "\
+          "Please pass 'adapter: false' or see ActiveSupport::SerializableResource#serialize"
+        options[:adapter] = false
       end
-
-      @_serializer
+      ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
+        if serializable_resource.serializer?
+          serializable_resource.serialization_scope ||= serialization_scope
+          serializable_resource.serialization_scope_name = _serialization_scope
+          begin
+            serializable_resource.adapter
+          rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
+            resource
+          end
+        else
+          resource
+        end
+      end
     end
 
+    # Deprecated
     def use_adapter?
-      !(@_adapter_opts.key?(:adapter) && !@_adapter_opts[:adapter])
+      true
     end
 
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
-        @_adapter_opts, @_serializer_opts =
-          options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
-
-        if use_adapter? && (serializer = get_serializer(resource))
-          @_serializer_opts[:scope] ||= serialization_scope
-          @_serializer_opts[:scope_name] = _serialization_scope
-
-          begin
-            serialized = serializer.new(resource, @_serializer_opts)
-          rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
-          else
-            resource = ActiveModel::Serializer::Adapter.create(serialized, @_adapter_opts)
-          end
-        end
-
-        super(resource, options)
+        serializable_resource = get_serializer(resource, options)
+        super(serializable_resource, options)
       end
     end
 
+    # Tries to rescue the exception by looking up and calling a registered handler.
+    #
+    # Possibly Deprecated
+    # TODO: Either Decorate 'exception' and define #handle_error where it is serialized
+    # For example:
+    #   class ExceptionModel
+    #     include ActiveModel::Serialization
+    #     def initialize(exception)
+    #     # etc
+    #   end
+    #   def handle_error(exception)
+    #     exception_model = ActiveModel::Serializer.build_exception_model({ errors: ['Internal Server Error'] })
+    #     render json: exception_model, status: :internal_server_error
+    #   end
+    # OR remove method as it doesn't do anything right now.
     def rescue_with_handler(exception)
-      @_serializer = nil
-      @_serializer_opts = nil
-      @_adapter_opts = nil
-
       super(exception)
     end
 
