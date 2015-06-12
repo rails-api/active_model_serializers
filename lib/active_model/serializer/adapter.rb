@@ -63,6 +63,13 @@ module ActiveModel
       end
 
       def cache_key
+        parts = []
+        parts << object_cache_key
+        parts << @klass._cache_digest unless @klass._cache_options && @klass._cache_options[:skip_digest]
+        parts.join("/")
+      end
+
+      def object_cache_key
         (@klass._cache_key) ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{@cached_serializer.object.updated_at}" : @cached_serializer.object.cache_key
       end
 

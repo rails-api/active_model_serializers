@@ -19,6 +19,7 @@ module ActiveModel
       attr_accessor :_cache_only
       attr_accessor :_cache_except
       attr_accessor :_cache_options
+      attr_accessor :_cache_digest
     end
 
     def self.inherited(base)
@@ -26,6 +27,8 @@ module ActiveModel
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
       base._associations = self._associations.try(:dup) || {}
       base._urls = []
+      serializer_file = File.open(caller.first[/^[^:]+/])
+      base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
     end
 
     def self.attributes(*attrs)
