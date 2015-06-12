@@ -57,11 +57,10 @@ module ActionController
         end
 
         def render_using_explicit_each_serializer
-          @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
-          @author  = Author.new(id: 1, name: 'Joao Moura.')
-          @post    = Post.new({ id: 1, title: 'New Post', body: 'Body', comments: [@comment], author: @author })
+          location       = Location.new(id: 42, lat: '-23.550520', lng: '-46.633309')
+          place          = Place.new(id: 1337, name: 'Amazing Place', locations: [location])
 
-          render json: @post, each_serializer: PostSerializer
+          render json: place, each_serializer: PlaceSerializer
         end
       end
 
@@ -118,25 +117,19 @@ module ActionController
         get :render_using_explicit_each_serializer
 
         expected = {
-          id: 1,
-          title: 'New Post',
-          body: 'Body',
-          comments: [
+          id: 1337,
+          name: "Amazing Place",
+          locations: [
             {
-              id: 1,
-              body: 'ZOMG A COMMENT' }
-          ],
-          blog: {
-            id: 999,
-            name: 'Custom blog'
-          },
-          author: {
-            id: 1,
-            name: 'Joao Moura.'
-          }
+              id: 42,
+              lat: "-23.550520",
+              lng: "-46.633309",
+              place: "Nowhere" # is a virtual attribute on LocationSerializer
+            }
+          ]
         }
 
-        assert_equal expected.to_json, @response.body
+        assert_equal expected.to_json, response.body
       end
     end
   end
