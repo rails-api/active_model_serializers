@@ -188,7 +188,7 @@ module ActiveModel
     end
 
     def type
-      object.class.to_s.demodulize.underscore.pluralize
+      object.class.model_name.plural
     end
 
     def attributes(options = {})

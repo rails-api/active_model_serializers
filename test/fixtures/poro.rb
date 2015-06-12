@@ -1,6 +1,10 @@
 class Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
+  def self.model_name
+    @_model_name ||= ActiveModel::Name.new(self)
+  end
+
   def initialize(hash={})
     @attributes = hash
   end
