@@ -3,7 +3,7 @@ require 'test_helper'
 module ActionController
   module Serialization
     class ExplicitSerializerTest < ActionController::TestCase
-      class MyController < ActionController::Base
+      class ExplicitSerializerTestController < ActionController::Base
         def render_using_explicit_serializer
           @profile = Profile.new(name: 'Name 1',
                                  description: 'Description 1',
@@ -65,7 +65,7 @@ module ActionController
         end
       end
 
-      tests MyController
+      tests ExplicitSerializerTestController
 
       def test_render_using_explicit_serializer
         get :render_using_explicit_serializer

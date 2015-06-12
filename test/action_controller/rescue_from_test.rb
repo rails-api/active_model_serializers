@@ -3,7 +3,7 @@ require 'test_helper'
 module ActionController
   module Serialization
     class RescueFromTest < ActionController::TestCase
-      class MyController < ActionController::Base
+      class RescueFromTestController < ActionController::Base
         rescue_from Exception, with: :handle_error
 
         def render_using_raise_error_serializer
@@ -16,7 +16,7 @@ module ActionController
         end
       end
 
-      tests MyController
+      tests RescueFromTestController
 
       def test_rescue_from
         get :render_using_raise_error_serializer

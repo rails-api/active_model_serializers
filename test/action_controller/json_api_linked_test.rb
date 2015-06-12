@@ -3,7 +3,7 @@ require 'test_helper'
 module ActionController
   module Serialization
     class JsonApiLinkedTest < ActionController::TestCase
-      class MyController < ActionController::Base
+      class JsonApiLinkedTestController < ActionController::Base
         def setup_post
           ActionController::Base.cache_store.clear
           @role1 = Role.new(id: 1, name: 'admin')
@@ -78,7 +78,7 @@ module ActionController
         end
       end
 
-      tests MyController
+      tests JsonApiLinkedTestController
 
       def test_render_resource_without_include
         get :render_resource_without_include
