@@ -29,8 +29,10 @@ module ActiveModel
         @author.roles = []
         @blog = Blog.new({ name: 'AMS Blog' })
         @post = Post.new({ title: 'New Post', body: 'Body' })
+        @tag = Tag.new({name: '#hashtagged'})
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
+        @post.tags = [@tag]
         @post.blog = @blog
         @comment.post = @post
         @comment.author = nil
@@ -62,6 +64,12 @@ module ActiveModel
           else
             flunk "Unknown association: #{name}"
           end
+        end
+      end
+
+      def test_has_many_with_no_serializer
+        PostWithTagsSerializer.new(@post).each_association do |name, serializer, options|
+          puts "The line above will crash this test"
         end
       end
 

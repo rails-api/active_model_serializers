@@ -67,6 +67,7 @@ Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
+Tag      = Class.new(Model)
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
@@ -206,6 +207,12 @@ PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
 
   has_many :comments, serializer: CommentPreviewSerializer
   belongs_to :author, serializer: AuthorPreviewSerializer
+end
+
+PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :tags
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
