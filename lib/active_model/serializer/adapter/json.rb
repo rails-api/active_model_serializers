@@ -19,13 +19,17 @@ module ActiveModel
                 array_serializer = association
                 @hash[name] = array_serializer.map do |item|
                   cache_check(item) do
-                    item.attributes(opts)
+                    opts[:include_nested_associations] ?
+                      self.class.new(item).serializable_hash :
+                      item.attributes(opts)
                   end
                 end
               else
                 if association && association.object
                   @hash[name] = cache_check(association) do
-                    association.attributes(options)
+                    opts[:include_nested_associations] ?
+                      self.class.new(association).serializable_hash :
+                      association.attributes(options)
                   end
                 elsif opts[:virtual_value]
                   @hash[name] = opts[:virtual_value]
