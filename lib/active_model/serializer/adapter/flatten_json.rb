@@ -8,10 +8,10 @@ module ActiveModel
           super
           @result
         end
-      end
 
-      def fragment_cache(cached_hash, non_cached_hash)
-        Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+        def root
+          false
+        end
       end
     end
   end

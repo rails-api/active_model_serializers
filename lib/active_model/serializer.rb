@@ -145,14 +145,6 @@ module ActiveModel
       adapter_class
     end
 
-    def self._root
-      @@root ||= false
-    end
-
-    def self._root=(root)
-      @@root = root
-    end
-
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
@@ -162,7 +154,7 @@ module ActiveModel
     def initialize(object, options = {})
       @object     = object
       @options    = options
-      @root       = options[:root] || (self.class._root ? self.class.root_name : false)
+      @root       = options[:root]
       @meta       = options[:meta]
       @meta_key   = options[:meta_key]
       @scope      = options[:scope]
@@ -176,7 +168,7 @@ module ActiveModel
     end
 
     def json_key
-      if root == true || root.nil?
+      if root.nil?
         self.class.root_name
       else
         root
