@@ -220,7 +220,7 @@ module ActiveModel
         if serializer_class
           serializer = serializer_class.new(
             association_value,
-            options.merge(serializer_from_options(association_options))
+            options.except(:serializer).merge(serializer_from_options(association_options))
           )
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           association_options[:association_options][:virtual_value] = association_value
