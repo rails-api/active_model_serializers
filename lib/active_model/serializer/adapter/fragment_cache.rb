@@ -5,8 +5,7 @@ module ActiveModel
 
         attr_reader :serializer
 
-        def initialize(adapter, serializer, options, root)
-          @root       = root
+        def initialize(adapter, serializer, options)
           @options    = options
           @adapter    = adapter
           @serializer = serializer

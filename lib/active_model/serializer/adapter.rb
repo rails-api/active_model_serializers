@@ -48,7 +48,7 @@ module ActiveModel
             yield
           end
         elsif is_fragment_cached?
-          FragmentCache.new(self, @cached_serializer, @options, @root).fetch
+          FragmentCache.new(self, @cached_serializer, @options).fetch
         else
           yield
         end

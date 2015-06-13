@@ -8,7 +8,7 @@ module ActiveModel
           @role            = Role.new(name: 'Great Author', description:nil)
           @role.author     = [@author]
           @role_serializer = RoleSerializer.new(@role)
-          @role_hash       = FragmentCache.new(RoleSerializer.adapter.new(@role_serializer), @role_serializer, {}, nil)
+          @role_hash       = FragmentCache.new(RoleSerializer.adapter.new(@role_serializer), @role_serializer, {})
         end
 
         def test_fragment_fetch_with_virtual_attributes
