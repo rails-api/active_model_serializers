@@ -39,10 +39,11 @@ module ActiveModel
 
           { root => @result }
         end
-      end
 
-      def fragment_cache(cached_hash, non_cached_hash)
-        Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+        def fragment_cache(cached_hash, non_cached_hash)
+          Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+        end
+
       end
     end
   end
