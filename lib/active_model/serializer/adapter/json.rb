@@ -37,11 +37,7 @@ module ActiveModel
             @result = @core.merge @hash
           end
 
-          if root
-            @result = { root => @result }
-          else
-            @result
-          end
+          { root => @result }
         end
       end
 

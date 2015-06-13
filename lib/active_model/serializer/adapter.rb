@@ -82,7 +82,7 @@ module ActiveModel
       end
 
       def root
-        @options.fetch(:root) { serializer.json_key }
+        serializer.json_key
       end
 
       def include_meta(json)
