@@ -6,10 +6,6 @@ module ActiveModel
           super
           @result
         end
-
-        def root
-          false
-        end
       end
     end
   end

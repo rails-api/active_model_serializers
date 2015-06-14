@@ -87,7 +87,7 @@ module ActiveModel
       end
 
       def include_meta(json)
-        json[meta_key] = meta if meta && root
+        json[meta_key] = meta if meta
         json
       end
     end
