@@ -21,7 +21,7 @@ module ActiveModel
       end
 
       def json_key
-        @objects.first.json_key if @objects.first
+        @objects.first.json_key.pluralize if @objects.first
       end
 
       def root=(root)

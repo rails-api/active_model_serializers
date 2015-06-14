@@ -1,5 +1,3 @@
-require 'active_model/serializer/adapter/json/fragment_cache'
-
 module ActiveModel
   class Serializer
     class Adapter
