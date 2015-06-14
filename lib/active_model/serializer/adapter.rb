@@ -5,6 +5,7 @@ module ActiveModel
     class Adapter
       extend ActiveSupport::Autoload
       autoload :Json
+      autoload :FlattenJson
       autoload :Null
       autoload :JsonApi
 
@@ -82,7 +83,7 @@ module ActiveModel
       end
 
       def root
-        serializer.json_key
+        serializer.json_key.to_sym
       end
 
       def include_meta(json)
