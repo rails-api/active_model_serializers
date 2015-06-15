@@ -83,7 +83,7 @@ module ActiveModel
       end
 
       def root
-        serializer.json_key.to_sym
+        serializer.json_key.to_sym if serializer.json_key
       end
 
       def include_meta(json)
