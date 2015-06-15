@@ -22,7 +22,8 @@ module ActiveModel
 
       def as_json(options = {})
         hash = serializable_hash(options)
-        include_meta(hash)
+        include_meta(hash) unless self.class == FlattenJson
+        hash
       end
 
       def self.create(resource, options = {})

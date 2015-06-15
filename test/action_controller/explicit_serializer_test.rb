@@ -77,12 +77,10 @@ module ActionController
         get :render_array_using_explicit_serializer
         assert_equal 'application/json', @response.content_type
 
-        expected = {
-          'paginated' => [
-            { 'name' => 'Name 1' },
-            { 'name' => 'Name 2' }
-          ]
-        }
+        expected = [
+          { 'name' => 'Name 1' },
+          { 'name' => 'Name 2' }
+        ]
 
         assert_equal expected.to_json, @response.body
       end

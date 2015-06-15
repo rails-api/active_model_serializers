@@ -15,13 +15,13 @@ module ActiveModel
 
       def test_json_serializable_hash
         adapter = ActiveModel::Serializer::Adapter::Json.new(@blog_serializer)
-        assert_equal({:id=>1, :title=>"AMS Hints"}, adapter.serializable_hash)
+        assert_equal({alternate_blog: { id:1, title:"AMS Hints"}}, adapter.serializable_hash)
       end
 
       def test_attribute_inheritance_with_key
         inherited_klass = Class.new(AlternateBlogSerializer)
         blog_serializer = inherited_klass.new(@blog)
-        adapter = ActiveModel::Serializer::Adapter::Json.new(blog_serializer)
+        adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(blog_serializer)
         assert_equal({:id=>1, :title=>"AMS Hints"}, adapter.serializable_hash)
       end
 

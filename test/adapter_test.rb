@@ -31,7 +31,7 @@ module ActiveModel
 
       def test_create_adapter
         adapter = ActiveModel::Serializer::Adapter.create(@serializer)
-        assert_equal ActiveModel::Serializer::Adapter::Json, adapter.class
+        assert_equal ActiveModel::Serializer::Adapter::FlattenJson, adapter.class
       end
 
       def test_create_adapter_with_override

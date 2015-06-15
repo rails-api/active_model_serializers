@@ -6,7 +6,7 @@ module ActionController
 
     include ActionController::Renderers
 
-    ADAPTER_OPTION_KEYS = [:include, :fields, :root, :adapter]
+    ADAPTER_OPTION_KEYS = [:include, :fields, :adapter]
 
     included do
       class_attribute :_serialization_scope
