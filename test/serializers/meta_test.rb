@@ -12,10 +12,10 @@ module ActiveModel
       end
 
       def test_meta_is_present_with_root
-        serializer = AlternateBlogSerializer.new(@blog, root: "blog", meta: {total: 10})
+        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10})
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, root: 'blog')
         expected = {
-          blog: {
+          alternate_blog: {
             id: 1,
             title: "AMS Hints"
           },
@@ -39,7 +39,7 @@ module ActiveModel
         serializer = AlternateBlogSerializer.new(@blog, root: 'blog', meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, root: 'blog')
         expected = {
-          blog: {
+          alternate_blog: {
             id: 1,
             title: "AMS Hints"
           },
@@ -73,7 +73,7 @@ module ActiveModel
         serializer = ArraySerializer.new([@blog], meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, root: 'blog')
         expected = {
-          blog: [{
+          blogs: [{
             id: 1,
             name: "AMS Hints",
             writer: {

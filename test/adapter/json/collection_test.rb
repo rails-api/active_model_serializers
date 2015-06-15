@@ -28,7 +28,7 @@ module ActiveModel
             @serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerializer)
             @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
 
-            expected = {custom_blog:[{
+            expected = {custom_blogs:[{
               id: 1,
               special_attribute: "Special",
               articles: [{id: 1,title: "Hello!!", body: "Hello, world!!"}, {id: 2, title: "New Post", body: "Body"}]
@@ -37,7 +37,7 @@ module ActiveModel
           end
 
           def test_include_multiple_posts
-            expected = { post: [{
+            expected = { posts: [{
               title: "Hello!!",
               body: "Hello, world!!",
               id: 1,

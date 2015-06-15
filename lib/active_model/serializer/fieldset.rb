@@ -13,7 +13,7 @@ module ActiveModel
 
       def fields_for(serializer)
         key = serializer.json_key
-        fields[key.to_sym]
+        fields[key.to_sym] || fields[key.pluralize.to_sym]
       end
 
     private
