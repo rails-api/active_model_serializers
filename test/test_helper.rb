@@ -20,7 +20,6 @@ class Foo < Rails::Application
     config.active_support.test_order = :random
     config.logger = Logger.new(nil)
     ActionController::Base.cache_store = :memory_store
-    ActiveModel::Serializer.config.adapter = :flatten_json
   end
 end
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
