@@ -30,6 +30,7 @@ module ActiveModel
           else
             @hash[:data] = attributes_for_serializer(serializer, @options)
             add_resource_relationships(@hash[:data], serializer)
+            add_included
           end
           @hash
         end
@@ -56,7 +57,7 @@ module ActiveModel
           end
         end
 
-        def add_included(resource_name, serializers, parent = nil)
+        def add_included_association(resource_name, serializers, parent = nil)
           unless serializers.respond_to?(:each)
             return unless serializers.object
             serializers = Array(serializers)
@@ -68,7 +69,7 @@ module ActiveModel
             serializers.each do |serializer|
               attrs = attributes_for_serializer(serializer, @options)
 
-              add_resource_relationships(attrs, serializer, add_included: false)
+              add_resource_relationships(attrs, serializer)
 
               @hash[:included].push(attrs) unless @hash[:included].include?(attrs)
             end
@@ -76,7 +77,7 @@ module ActiveModel
 
           serializers.each do |serializer|
             serializer.each_association do |name, association, opts|
-              add_included(name, association, resource_path) if association
+              add_included_association(name, association, resource_path) if association
             end if include_nested_assoc? resource_path
           end
         end
@@ -128,9 +129,7 @@ module ActiveModel
           end
         end
 
-        def add_resource_relationships(attrs, serializer, options = {})
-          options[:add_included] = options.fetch(:add_included, true)
-
+        def add_resource_relationships(attrs, serializer)
           serializer.each_association do |name, association, opts|
             attrs[:relationships] ||= {}
 
@@ -143,11 +142,13 @@ module ActiveModel
                 add_relationship(attrs, name, association)
               end
             end
+          end
+        end
 
-            if options[:add_included]
-              Array(association).each do |association|
-                add_included(name, association)
-              end
+        def add_included
+          serializer.each_association do |name, association, opts|
+            Array(association).each do |association|
+              add_included_association(name, association)
             end
           end
         end
