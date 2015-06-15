@@ -5,7 +5,7 @@ module ActiveModel
     class IncludeNestedAssociationsTest < Minitest::Test
       def setup
         @author = Author.new(name: 'Steve K.')
-        @author.bio = Bio.new(content: 'Hello!', rating: 5)
+        @author.bio = Bio.new(id: 1, content: 'Hello!', rating: 5)
 
         @post = Post.new({ title: 'New Post', body: 'Body' })
 
@@ -24,7 +24,12 @@ module ActiveModel
       def test_no_option_is_passed_in
         @post_serializer = PostSerializerWithNestedAssociations.new(@post)
         json = ActiveModel::Serializer::Adapter::Json.new(@post_serializer).as_json
-        assert json[:author][:bio] != nil
+        expected_return = {
+          id: 1,
+          content: 'Hello!',
+          rating: 5
+        }
+        assert_equal json[:author][:bio] , expected_return
       end
     end
   end
