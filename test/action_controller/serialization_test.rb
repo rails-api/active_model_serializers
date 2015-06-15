@@ -173,20 +173,6 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_using_custom_root
-        get :render_using_custom_root
-
-        assert_equal 'application/json', @response.content_type
-        assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"}}', @response.body
-      end
-
-      def test_render_using_custom_root_and_meta
-        get :render_using_custom_root_and_meta
-
-        assert_equal 'application/json', @response.content_type
-        assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"},"meta":{"total":10}}', @response.body
-      end
-
       def test_render_using_default_root
         get :render_using_default_adapter_root
 
@@ -220,26 +206,6 @@ module ActionController
         }
 
         assert_equal 'application/json', @response.content_type
-        assert_equal expected.to_json, @response.body
-      end
-
-      def test_render_array_using_custom_root_and_meta
-        get :render_array_using_custom_root_and_meta
-
-        assert_equal 'application/json', @response.content_type
-
-        expected = { custom_root: [
-          {
-            name: 'Name 1',
-            description: 'Description 1',
-          },
-          {
-            name: 'Name 2',
-            description: 'Description 2',
-          }],
-          meta: { total: 10 }
-        }
-
         assert_equal expected.to_json, @response.body
       end
 

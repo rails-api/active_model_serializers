@@ -168,11 +168,7 @@ module ActiveModel
     end
 
     def json_key
-      if root.nil?
-        self.class.root_name
-      else
-        root
-      end
+      self.class.root_name
     end
 
     def id
