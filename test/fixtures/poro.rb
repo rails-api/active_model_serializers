@@ -89,6 +89,19 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
+SimpleAuthorSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :name
+
+  has_one :bio
+end
+
+PostSerializerWithNestedAssociations = Class.new(ActiveModel::Serializer) do
+  attributes :id, :title, :body
+
+  has_many  :comments
+  has_one   :author, serializer: SimpleAuthorSerializer, include_nested_associations: true
+end
+
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
   has_many :related
