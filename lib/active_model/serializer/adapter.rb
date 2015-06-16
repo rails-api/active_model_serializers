@@ -16,11 +16,11 @@ module ActiveModel
         @options = options
       end
 
-      def serializable_hash(options = {})
+      def serializable_hash(options = nil)
         raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
-      def as_json(options = {})
+      def as_json(options = nil)
         hash = serializable_hash(options)
         include_meta(hash) unless self.class == FlattenJson
         hash
