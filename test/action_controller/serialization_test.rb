@@ -10,13 +10,17 @@ module ActionController
         end
 
         def render_using_custom_root
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          render json: @profile, root: "custom_root"
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: @profile, root: "custom_root"
+          end
         end
 
         def render_using_custom_root_and_meta
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          render json: @profile, root: "custom_root", meta: { total: 10 }
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: @profile, root: "custom_root", meta: { total: 10 }
+          end
         end
 
         def render_using_default_adapter_root
@@ -34,11 +38,13 @@ module ActionController
         end
 
         def render_array_using_custom_root_and_meta
-          array = [
-            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
-            Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
-          ]
-          render json: array, root: "custom_root", meta: { total: 10 }
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            array = [
+              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
+              Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
+            ]
+            render json: array, root: "custom_root", meta: { total: 10 }
+          end
         end
 
         def render_array_using_implicit_serializer
@@ -167,20 +173,6 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_using_custom_root
-        get :render_using_custom_root
-
-        assert_equal 'application/json', @response.content_type
-        assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"}}', @response.body
-      end
-
-      def test_render_using_custom_root_and_meta
-        get :render_using_custom_root_and_meta
-
-        assert_equal 'application/json', @response.content_type
-        assert_equal '{"custom_root":{"name":"Name 1","description":"Description 1"},"meta":{"total":10}}', @response.body
-      end
-
       def test_render_using_default_root
         get :render_using_default_adapter_root
 
@@ -214,25 +206,6 @@ module ActionController
         }
 
         assert_equal 'application/json', @response.content_type
-        assert_equal expected.to_json, @response.body
-      end
-
-      def test_render_array_using_custom_root_and_meta
-        get :render_array_using_custom_root_and_meta
-        assert_equal 'application/json', @response.content_type
-
-        expected = { custom_root: [
-          {
-            name: 'Name 1',
-            description: 'Description 1',
-          },
-          {
-            name: 'Name 2',
-            description: 'Description 2',
-          }],
-          meta: { total: 10 }
-        }
-
         assert_equal expected.to_json, @response.body
       end
 

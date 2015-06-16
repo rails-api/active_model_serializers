@@ -7,9 +7,8 @@ module ActiveModel
       attr_reader :meta, :meta_key
 
       def initialize(objects, options = {})
-        options.merge!(root: nil)
-
-        @objects = objects.map do |object|
+        @resource = objects
+        @objects  = objects.map do |object|
           serializer_class = options.fetch(
             :serializer,
             ActiveModel::Serializer.serializer_for(object)
@@ -21,7 +20,11 @@ module ActiveModel
       end
 
       def json_key
-        @objects.first.json_key if @objects.first
+        if @objects.first
+          @objects.first.json_key.pluralize
+        else
+          @resource.name.downcase.pluralize if @resource.try(:name)
+        end
       end
 
       def root=(root)

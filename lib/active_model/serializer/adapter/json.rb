@@ -6,7 +6,7 @@ module ActiveModel
       class Json < Adapter
         def serializable_hash(options = {})
           if serializer.respond_to?(:each)
-            @result = serializer.map{|s| self.class.new(s).serializable_hash }
+            @result = serializer.map{|s| FlattenJson.new(s).serializable_hash }
           else
             @hash = {}
 
@@ -37,16 +37,13 @@ module ActiveModel
             @result = @core.merge @hash
           end
 
-          if root
-            @result = { root => @result }
-          else
-            @result
-          end
+          { root => @result }
         end
-      end
 
-      def fragment_cache(cached_hash, non_cached_hash)
-        Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+        def fragment_cache(cached_hash, non_cached_hash)
+          Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+        end
+
       end
     end
   end

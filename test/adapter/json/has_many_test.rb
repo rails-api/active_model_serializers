@@ -26,7 +26,7 @@ module ActiveModel
             assert_equal([
                            {id: 1, body: 'ZOMG A COMMENT'},
                            {id: 2, body: 'ZOMG ANOTHER COMMENT'}
-                         ], @adapter.serializable_hash[:comments])
+                         ], @adapter.serializable_hash[:post][:comments])
           end
         end
       end

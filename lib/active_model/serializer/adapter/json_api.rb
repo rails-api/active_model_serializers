@@ -6,7 +6,6 @@ module ActiveModel
       class JsonApi < Adapter
         def initialize(serializer, options = {})
           super
-          serializer.root = true
           @hash = { data: [] }
 
           if fields = options.delete(:fields)

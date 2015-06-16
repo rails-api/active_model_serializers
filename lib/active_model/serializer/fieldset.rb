@@ -12,8 +12,8 @@ module ActiveModel
       end
 
       def fields_for(serializer)
-        key = serializer.json_key || serializer.class.root_name
-        fields[key.to_sym]
+        key = serializer.json_key
+        fields[key.to_sym] || fields[key.pluralize.to_sym]
       end
 
     private

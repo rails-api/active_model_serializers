@@ -5,6 +5,7 @@ module ActiveModel
     class Adapter
       extend ActiveSupport::Autoload
       autoload :Json
+      autoload :FlattenJson
       autoload :Null
       autoload :JsonApi
 
@@ -21,7 +22,8 @@ module ActiveModel
 
       def as_json(options = {})
         hash = serializable_hash(options)
-        include_meta(hash)
+        include_meta(hash) unless self.class == FlattenJson
+        hash
       end
 
       def self.create(resource, options = {})
@@ -48,7 +50,7 @@ module ActiveModel
             yield
           end
         elsif is_fragment_cached?
-          FragmentCache.new(self, @cached_serializer, @options, @root).fetch
+          FragmentCache.new(self, @cached_serializer, @options).fetch
         else
           yield
         end
@@ -82,11 +84,11 @@ module ActiveModel
       end
 
       def root
-        @options.fetch(:root) { serializer.json_key }
+        serializer.json_key.to_sym if serializer.json_key
       end
 
       def include_meta(json)
-        json[meta_key] = meta if meta && root
+        json[meta_key] = meta if meta
         json
       end
     end
