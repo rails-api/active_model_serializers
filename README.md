@@ -1,8 +1,8 @@
-# ActiveModel::Serializers
+# ActiveModel::Serializer
 
 [![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 
-ActiveModel::Serializers brings convention over configuration to your JSON generation.
+ActiveModel::Serializer brings convention over configuration to your JSON generation.
 
 AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
