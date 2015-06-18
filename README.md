@@ -8,7 +8,7 @@ AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 
-By default AMS will use the **Json Adapter**. But we strongly advise you to use JsonApi Adapter that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
+By default AMS will use the **Flatten Json Adapter**. But we strongly advise you to use **JsonApi Adapter** that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
 # RELEASE CANDIDATE, PLEASE READ
@@ -65,6 +65,12 @@ ActiveModel::Serializer.config.adapter = :json_api
 
 You won't need to implement an adapter unless you wish to use a new format or
 media type with AMS.
+
+If you want to have a root key on your responses you should use the Json adapter, instead of the default FlattenJson:
+
+```ruby
+ActiveModel::Serializer.config.adapter = :json
+```
 
 If you would like the key in the outputted JSON to be different from its name in ActiveRecord, you can use the :key option to customize it:
 
@@ -130,17 +136,7 @@ The key can be customized using `meta_key` option.
 render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 ```
 
-`meta` will only be included in your response if there's a root. For instance,
-it won't be included in array responses.
-
-### Root key
-
-If you want to define a custom root for your response, specify it in the `render`
-call:
-
-```ruby
-render json: @post, root: "articles"
-```
+`meta` will only be included in your response if you are using an Adapter that supports `root`, as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
 
 ### Overriding association methods
 
@@ -176,9 +172,19 @@ end
 
 ### Built in Adapters
 
+#### FlattenJSON
+
+It's the default adapter, it generates a json response without a root key.
+Doesn't follow any specifc convention.
+
+#### JSON
+
+It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly with the objects being serialized.
+Doesn't follow any specifc convention.
+
 #### JSONAPI
 
-This adapter follows RC4 of the format specified in
+This adapter follows 1.0 of the format specified in
 [jsonapi.org/format](http://jsonapi.org/format). It will include the associated
 resources in the `"included"` member when the resource names are included in the
 `include` option.
