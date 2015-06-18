@@ -9,41 +9,11 @@ module ActionController
           render json: @profile
         end
 
-        def render_using_custom_root
-          with_adapter ActiveModel::Serializer::Adapter::Json do
-            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: @profile, root: "custom_root"
-          end
-        end
-
-        def render_using_custom_root_and_meta
-          with_adapter ActiveModel::Serializer::Adapter::Json do
-            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: @profile, root: "custom_root", meta: { total: 10 }
-          end
-        end
-
         def render_using_default_adapter_root
           with_adapter ActiveModel::Serializer::Adapter::JsonApi do
             # JSON-API adapter sets root by default
             @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
             render json: @profile
-          end
-        end
-
-        def render_using_custom_root_in_adapter_with_a_default
-          # JSON-API adapter sets root by default
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          render json: @profile, root: "profile", adapter: :json_api
-        end
-
-        def render_array_using_custom_root_and_meta
-          with_adapter ActiveModel::Serializer::Adapter::Json do
-            array = [
-              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
-              Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
-            ]
-            render json: array, root: "custom_root", meta: { total: 10 }
           end
         end
 
@@ -175,24 +145,6 @@ module ActionController
 
       def test_render_using_default_root
         get :render_using_default_adapter_root
-
-        expected = {
-          data: {
-            id: assigns(:profile).id.to_s,
-            type: "profiles",
-            attributes: {
-              name: "Name 1",
-              description: "Description 1"
-            }
-          }
-        }
-
-        assert_equal 'application/json', @response.content_type
-        assert_equal expected.to_json, @response.body
-      end
-
-      def test_render_using_custom_root_in_adapter_with_a_default
-        get :render_using_custom_root_in_adapter_with_a_default
 
         expected = {
           data: {
