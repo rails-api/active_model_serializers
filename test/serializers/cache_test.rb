@@ -116,7 +116,7 @@ module ActiveModel
         assert_equal({place: 'Nowhere'}, ActionController::Base.cache_store.fetch(@location.cache_key))
       end
 
-      def test_uses_file_digest_in_cahe_key
+      def test_uses_file_digest_in_cache_key
         blog = render_object_with_cache(@blog)
         assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
       end
