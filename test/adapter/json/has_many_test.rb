@@ -8,7 +8,7 @@ module ActiveModel
           def setup
             ActionController::Base.cache_store.clear
             @author = Author.new(id: 1, name: 'Steve K.')
-            @post = Post.new(title: 'New Post', body: 'Body')
+            @post = Post.new(id: 42, title: 'New Post', body: 'Body')
             @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
             @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
             @post.comments = [@first_comment, @second_comment]
@@ -19,22 +19,26 @@ module ActiveModel
             @post.blog = @blog
             @tag = Tag.new(id: 1, name: "#hash_tag")
             @post.tags = [@tag]
-
-            @serializer = PostSerializer.new(@post)
-            @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
           end
 
           def test_has_many
+            serializer = PostSerializer.new(@post)
+            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
             assert_equal([
                            {id: 1, body: 'ZOMG A COMMENT'},
                            {id: 2, body: 'ZOMG ANOTHER COMMENT'}
-                         ], @adapter.serializable_hash[:post][:comments])
+                         ], adapter.serializable_hash[:post][:comments])
           end
 
           def test_has_many_with_no_serializer
             serializer = PostWithTagsSerializer.new(@post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
-            assert_includes(adapter.as_json, :tags)
+            assert_equal({
+              id: 42,
+              tags: [
+                {"attributes"=>{"id"=>1, "name"=>"#hash_tag"}}
+              ]
+            }, adapter.serializable_hash[:post_with_tags])
           end
         end
       end

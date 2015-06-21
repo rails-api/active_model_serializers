@@ -69,7 +69,9 @@ module ActiveModel
 
       def test_has_many_with_no_serializer
         PostWithTagsSerializer.new(@post).each_association do |name, serializer, options|
-          puts "The line above will crash this test"
+          assert_equal name, :tags
+          assert_equal serializer, nil
+          assert_equal options, {:virtual_value=>[{"attributes"=>{"name"=>"#hashtagged"}}]}
         end
       end
 

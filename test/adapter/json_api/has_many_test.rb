@@ -29,7 +29,6 @@ module ActiveModel
             @post_without_comments.blog = nil
             @tag = Tag.new(id: 1, name: "#hash_tag")
             @post.tags = [@tag]
-
             @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
           end
@@ -97,6 +96,7 @@ module ActiveModel
             serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
             actual = adapter.serializable_hash[:data][:relationships][:articles]
+
             expected = {
               data: [{
                 type: "posts",
@@ -109,7 +109,16 @@ module ActiveModel
           def test_has_many_with_no_serializer
             serializer = PostWithTagsSerializer.new(@post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            assert_includes(adapter.serializable_hash, :tags)
+
+            assert_equal({
+              data: {
+                id: "1",
+                type: "posts",
+                relationships: {
+                  tags: {:data=>nil}
+                }
+              }
+            }, adapter.serializable_hash)
           end
         end
       end
