@@ -11,6 +11,14 @@ Adapters describe _how_ attributes and relationships should be serialized.
 By default AMS will use the **Flatten Json Adapter**. But we strongly advise you to use **JsonApi Adapter** that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
+# TO DOC
+
+## [FlattenJson](https://github.com/rails-api/active_model_serializers/pull/958#discussion_r32545532)
+
+This is a pretty big change. Prior to this, the root option always went to the adapter.
+Now it will always go to the serializer.
+Which code path should be dead? root to serializer or root to adapter?
+
 # RELEASE CANDIDATE, PLEASE READ
 
 This is the master branch of AMS. It will become the `0.10.0` release when it's
