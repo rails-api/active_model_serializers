@@ -52,25 +52,6 @@ module ActionController
       end
     end
 
-    # Tries to rescue the exception by looking up and calling a registered handler.
-    #
-    # Possibly Deprecated
-    # TODO: Either Decorate 'exception' and define #handle_error where it is serialized
-    # For example:
-    #   class ExceptionModel
-    #     include ActiveModel::Serialization
-    #     def initialize(exception)
-    #     # etc
-    #   end
-    #   def handle_error(exception)
-    #     exception_model = ActiveModel::Serializer.build_exception_model({ errors: ['Internal Server Error'] })
-    #     render json: exception_model, status: :internal_server_error
-    #   end
-    # OR remove method as it doesn't do anything right now.
-    def rescue_with_handler(exception)
-      super(exception)
-    end
-
     module ClassMethods
       def serialization_scope(scope)
         self._serialization_scope = scope
