@@ -211,7 +211,7 @@ module ActiveModel
               association_value,
               options.except(:serializer).merge(serializer_from_options(association_options))
             )
-          rescue NoMethodError
+          rescue ActiveModel::Serializer::ArraySerializer::Error
             # 1. Failure to serialize an element in a collection, e.g. [ {hi: "Steve" } ] will fail
             #    with NoMethodError when the ArraySerializer finds no serializer for the hash { hi: "Steve" },
             #    and tries to call new on that nil.

@@ -42,10 +42,9 @@ module ActionController
           @_serializer_opts[:scope] ||= serialization_scope
           @_serializer_opts[:scope_name] = _serialization_scope
 
-          object   = serializer.new(resource, @_serializer_opts)
-
-          if serializer == ActiveModel::Serializer.config.array_serializer
-            resource = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts) unless object.objects.all? {|i| i.nil?}
+          begin
+            object   = serializer.new(resource, @_serializer_opts)
+          rescue ActiveModel::Serializer::ArraySerializer::Error
           else
             resource = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
           end

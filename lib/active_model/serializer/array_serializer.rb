@@ -1,6 +1,7 @@
 module ActiveModel
   class Serializer
     class ArraySerializer
+      Error = Class.new(StandardError)
       include Enumerable
       delegate :each, to: :@objects
 
@@ -14,7 +15,9 @@ module ActiveModel
             ActiveModel::Serializer.serializer_for(object)
           )
 
-          unless serializer_class.nil?
+          if serializer_class.nil?
+            fail Error, "No serializer found for object: #{object.inspect}"
+          else
             serializer_class.new(object, options.except(:serializer))
           end
         end
