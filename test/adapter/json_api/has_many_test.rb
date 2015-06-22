@@ -115,7 +115,7 @@ module ActiveModel
                 id: "1",
                 type: "posts",
                 relationships: {
-                  tags: {:data=>nil}
+                  tags: { data: nil }
                 }
               }
             }, adapter.serializable_hash)

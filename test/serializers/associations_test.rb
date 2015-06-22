@@ -71,7 +71,7 @@ module ActiveModel
         PostWithTagsSerializer.new(@post).each_association do |name, serializer, options|
           assert_equal name, :tags
           assert_equal serializer, nil
-          assert_equal options, {:virtual_value=>[{"attributes"=>{"name"=>"#hashtagged"}}]}
+          assert_equal [{ attributes: { name: "#hashtagged" }}].as_json, options[:virtual_value]
         end
       end
 
