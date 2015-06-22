@@ -47,6 +47,14 @@ module ActionController
           render json: @post
         end
 
+        def render_json_object_without_serializer
+          render json: {error: 'Result is Invalid'}
+        end
+
+        def render_json_array_object_without_serializer
+          render json: [{error: 'Result is Invalid'}]
+        end
+
         def update_and_render_object_with_cache_enabled
           @post.updated_at = DateTime.now
 
@@ -158,6 +166,20 @@ module ActionController
 
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_json_object_without_serializer
+        get :render_json_object_without_serializer
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal ({error: 'Result is Invalid'}).to_json, @response.body
+      end
+
+      def test_render_json_array_object_without_serializer
+        get :render_json_array_object_without_serializer
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal ([{error: 'Result is Invalid'}]).to_json, @response.body
       end
 
       def test_render_array_using_implicit_serializer
