@@ -39,17 +39,19 @@ module ActionController
           options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
 
         if use_adapter? && (serializer = get_serializer(resource))
-
           @_serializer_opts[:scope] ||= serialization_scope
           @_serializer_opts[:scope_name] = _serialization_scope
 
-          # omg hax
-          object = serializer.new(resource, @_serializer_opts)
-          adapter = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
-          super(adapter, options)
-        else
-          super(resource, options)
+          object   = serializer.new(resource, @_serializer_opts)
+
+          if serializer == ActiveModel::Serializer.config.array_serializer
+            resource = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts) unless object.objects.all? {|i| i.nil?}
+          else
+            resource = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
+          end
         end
+
+        super(resource, options)
       end
     end
 

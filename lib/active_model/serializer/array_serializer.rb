@@ -4,7 +4,7 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@objects
 
-      attr_reader :meta, :meta_key
+      attr_reader :meta, :meta_key, :objects
 
       def initialize(objects, options = {})
         @resource = objects
@@ -13,7 +13,10 @@ module ActiveModel
             :serializer,
             ActiveModel::Serializer.serializer_for(object)
           )
-          serializer_class.new(object, options.except(:serializer))
+
+          unless serializer_class.nil?
+            serializer_class.new(object, options.except(:serializer))
+          end
         end
         @meta     = options[:meta]
         @meta_key = options[:meta_key]
