@@ -33,6 +33,10 @@ class Model
     @attributes[:id] || @attributes['id'] || object_id
   end
 
+  def to_param
+    id
+  end
+
   def method_missing(meth, *args)
     if meth.to_s =~ /^(.*)=$/
       @attributes[$1.to_sym] = args[0]
