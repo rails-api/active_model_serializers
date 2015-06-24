@@ -358,6 +358,8 @@ For more information, see [ActionController::Serialization](https://github.com/r
 
 Things a serializer test should cover:
 
+| What | How
+|----- | ----
 | serialized attributes | e.g. `serializer._attributes`
 | serialized nested resources (has associations) | e.g. `serializer._associations`
 | serializing a single resource and collections | e.g. see manual serialization code above
