@@ -15,10 +15,11 @@ module ActiveModel
           end
         end
 
-        def serializable_hash(options = {})
+        def serializable_hash(options = nil)
+          options = {}
           if serializer.respond_to?(:each)
             serializer.each do |s|
-              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash
+              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
               @hash[:data] << result[:data]
 
               if result[:included]
@@ -27,7 +28,7 @@ module ActiveModel
               end
             end
           else
-            @hash[:data] = attributes_for_serializer(serializer, @options)
+            @hash[:data] = attributes_for_serializer(serializer, options)
             add_resource_relationships(@hash[:data], serializer)
           end
           @hash
