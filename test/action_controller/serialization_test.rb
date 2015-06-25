@@ -1,3 +1,4 @@
+
 require 'test_helper'
 
 module ActionController
@@ -56,7 +57,7 @@ module ActionController
         end
 
         def update_and_render_object_with_cache_enabled
-          @post.updated_at = DateTime.now
+          @post.updated_at = Time.now
 
           generate_cached_serializer(@post)
           render json: @post
@@ -112,7 +113,7 @@ module ActionController
 
           generate_cached_serializer(like)
           like.likable = comment2
-          like.time = DateTime.now.to_s
+          like.time = Time.now.to_s
 
           render json: like
         end
@@ -224,9 +225,6 @@ module ActionController
       end
 
       def test_render_with_cache_enable
-        ActionController::Base.cache_store.clear
-        get :render_object_with_cache_enabled
-
         expected = {
           id: 1,
           title: 'New Post',
@@ -246,11 +244,16 @@ module ActionController
           }
         }
 
-        assert_equal 'application/json', @response.content_type
-        assert_equal expected.to_json, @response.body
+        ActionController::Base.cache_store.clear
+        Timecop.freeze(Time.now) do
+          get :render_object_with_cache_enabled
 
-        get :render_changed_object_with_cache_enabled
-        assert_not_equal expected.to_json, @response.body
+          assert_equal 'application/json', @response.content_type
+          assert_equal expected.to_json, @response.body
+
+          get :render_changed_object_with_cache_enabled
+          assert_equal expected.to_json, @response.body
+        end
 
         ActionController::Base.cache_store.clear
         get :render_changed_object_with_cache_enabled
@@ -306,20 +309,23 @@ module ActionController
 
       def test_render_fragment_changed_object_with_relationship
         ActionController::Base.cache_store.clear
-        get :render_fragment_changed_object_with_relationship
-        response = JSON.parse(@response.body)
 
-        expected_return = {
-          "id"=>1,
-          "time"=>DateTime.now.to_s,
-          "likeable" => {
+        Timecop.freeze(Time.now) do
+          get :render_fragment_changed_object_with_relationship
+          response = JSON.parse(@response.body)
+
+          expected_return = {
             "id"=>1,
-            "body"=>"ZOMG A COMMENT"
+            "time"=>Time.now.to_s,
+            "likeable" => {
+              "id"=>1,
+              "body"=>"ZOMG A COMMENT"
+            }
           }
-        }
 
-        assert_equal 'application/json', @response.content_type
-        assert_equal expected_return, response
+          assert_equal 'application/json', @response.content_type
+          assert_equal expected_return, response
+        end
       end
 
       def test_cache_expiration_on_update
