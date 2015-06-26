@@ -206,10 +206,16 @@ module ActiveModel
         serializer_class = ActiveModel::Serializer.serializer_for(association_value, association_options)
 
         if serializer_class
-          serializer = serializer_class.new(
-            association_value,
-            options.except(:serializer).merge(serializer_from_options(association_options))
-          )
+          begin
+            serializer = serializer_class.new(
+              association_value,
+              options.except(:serializer).merge(serializer_from_options(association_options))
+            )
+          rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
+            virtual_value = association_value
+            virtual_value = virtual_value.as_json if virtual_value.respond_to?(:as_json)
+            association_options[:association_options][:virtual_value] = virtual_value
+          end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           association_options[:association_options][:virtual_value] = association_value
         end

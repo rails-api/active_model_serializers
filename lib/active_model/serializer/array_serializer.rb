@@ -1,6 +1,7 @@
 module ActiveModel
   class Serializer
     class ArraySerializer
+      NoSerializerError = Class.new(StandardError)
       include Enumerable
       delegate :each, to: :@objects
 
@@ -13,7 +14,12 @@ module ActiveModel
             :serializer,
             ActiveModel::Serializer.serializer_for(object)
           )
-          serializer_class.new(object, options.except(:serializer))
+
+          if serializer_class.nil?
+            fail NoSerializerError, "No serializer found for object: #{object.inspect}"
+          else
+            serializer_class.new(object, options.except(:serializer))
+          end
         end
         @meta     = options[:meta]
         @meta_key = options[:meta_key]

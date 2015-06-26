@@ -76,6 +76,7 @@ Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
+Tag      = Class.new(Model)
 Comment  = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
@@ -222,6 +223,12 @@ PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
 
   has_many :comments, serializer: CommentPreviewSerializer
   belongs_to :author, serializer: AuthorPreviewSerializer
+end
+
+PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :tags
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
