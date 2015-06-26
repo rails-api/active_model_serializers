@@ -1,5 +1,6 @@
 require 'bundler/setup'
 
+require 'timecop'
 require 'rails'
 require 'action_controller'
 require 'action_controller/test_case'
