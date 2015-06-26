@@ -48,7 +48,7 @@ module ActiveModel
       def test_cache_key_interpolation_with_updated_at
         author = render_object_with_cache(@author)
         assert_equal(nil, ActionController::Base.cache_store.fetch(@author.cache_key))
-        assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at}").to_json)
+        assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}").to_json)
       end
 
       def test_default_cache_key_fallback
@@ -85,7 +85,7 @@ module ActiveModel
         # Generate a new Cache of Post object and each objects related to it.
         render_object_with_cache(@post)
 
-        # Check if if cache the objects separately
+        # Check if it cached the objects separately
         assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
         assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
 

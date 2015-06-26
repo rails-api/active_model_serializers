@@ -10,7 +10,7 @@ class Model
   end
 
   def cache_key
-    "#{self.class.name.downcase}/#{self.id}-#{self.updated_at}"
+    "#{self.class.name.downcase}/#{self.id}-#{self.updated_at.strftime("%Y%m%d%H%M%S%9N")}"
   end
 
   def cache_key_with_digest
@@ -18,7 +18,7 @@ class Model
   end
 
   def updated_at
-    @attributes[:updated_at] ||= DateTime.now.to_time.to_i
+    @attributes[:updated_at] ||= DateTime.now.to_time
   end
 
   def read_attribute_for_serialization(name)
@@ -69,7 +69,6 @@ end
 
 Post     = Class.new(Model)
 Like     = Class.new(Model)
-Comment  = Class.new(Model)
 Author   = Class.new(Model)
 Bio      = Class.new(Model)
 Blog     = Class.new(Model)
@@ -77,6 +76,12 @@ Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
+Comment  = Class.new(Model) do
+  # Uses a custom non-time-based cache key
+  def cache_key
+    "#{self.class.name.downcase}/#{self.id}"
+  end
+end
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
@@ -143,7 +148,7 @@ end
 LikeSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :time
 
-  belongs_to :post
+  belongs_to :likeable
 end
 
 LocationSerializer = Class.new(ActiveModel::Serializer) do

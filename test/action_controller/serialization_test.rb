@@ -98,13 +98,12 @@ module ActionController
 
         def render_fragment_changed_object_with_relationship
           comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          comment2 = Comment.new({ id: 1, body: 'ZOMG AN UPDATED-BUT-NOT-CACHE-EXPIRED COMMENT' })
           author = Author.new(id: 1, name: 'Joao Moura.')
-          post = Post.new({ id: 1, title: 'New Post', body: 'Body', comments: [comment], author: author })
-          post2 = Post.new({ id: 1, title: 'New Post2', body: 'Body2', comments: [comment], author: author })
-          like = Like.new({ id: 1, post: post, time: 3.days.ago })
+          like = Like.new({ id: 1, likeable: comment, time: 3.days.ago })
 
           generate_cached_serializer(like)
-          like.post = post2
+          like.likable = comment2
           like.time = DateTime.now.to_s
 
           render json: like
@@ -229,7 +228,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
 
         get :render_changed_object_with_cache_enabled
-        assert_equal expected.to_json, @response.body
+        assert_not_equal expected.to_json, @response.body
 
         ActionController::Base.cache_store.clear
         get :render_changed_object_with_cache_enabled
@@ -291,10 +290,9 @@ module ActionController
         expected_return = {
           "id"=>1,
           "time"=>DateTime.now.to_s,
-          "post" => {
+          "likeable" => {
             "id"=>1,
-            "title"=>"New Post",
-            "body"=>"Body"
+            "body"=>"ZOMG A COMMENT"
           }
         }
 
