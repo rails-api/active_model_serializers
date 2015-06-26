@@ -11,6 +11,12 @@ require 'fileutils'
 # Ensure backward compatibility with Minitest 4
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
+require "capture_warnings"
+@capture_warnings = CaptureWarnings.new(fail_build = false)
+@capture_warnings.before_tests
+at_exit do
+  @capture_warnings.after_tests
+end
 require 'active_model_serializers'
 
 class Foo < Rails::Application
