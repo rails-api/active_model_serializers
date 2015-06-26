@@ -38,7 +38,7 @@ module ActiveModel
               tags: [
                 {"attributes"=>{"id"=>1, "name"=>"#hash_tag"}}
               ]
-            }, adapter.serializable_hash[:post_with_tags])
+            }.to_json, adapter.serializable_hash[:post_with_tags].to_json)
           end
         end
       end
