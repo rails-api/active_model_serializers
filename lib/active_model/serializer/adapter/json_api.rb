@@ -41,19 +41,17 @@ module ActiveModel
 
         private
 
-        def add_relationships(resource, name, serializers)
-          resource[:relationships] ||= {}
-          resource[:relationships][name] ||= { data: [] }
-          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.type, id: serializer.id.to_s } }
+        def add_relationship(resource, name, serializer)
+          if serializer.respond_to?(:each)
+            data = serializer.map { |item_serializer| resource_identifier_object(item_serializer) }
+          elsif serializer && serializer.object
+            data = resource_identifier_object(serializer)
+          end
+          resource[:relationships][name] = { data: data }
         end
 
-        def add_relationship(resource, name, serializer, val=nil)
-          resource[:relationships] ||= {}
-          resource[:relationships][name] = { data: nil }
-
-          if serializer && serializer.object
-            resource[:relationships][name][:data] = { type: serializer.type, id: serializer.id.to_s }
-          end
+        def resource_identifier_object(serializer)
+          { type: serializer.type, id: serializer.id.to_s }
         end
 
         def add_included(resource_name, serializers, parent = nil)
@@ -82,15 +80,10 @@ module ActiveModel
         end
 
         def attributes_for_serializer(serializer, options)
-          if serializer.respond_to?(:each)
-            result = []
-            serializer.each do |object|
-              result << resource_object_for(object, options)
-            end
-          else
-            result = resource_object_for(serializer, options)
+          return resource_object_for(serializer, options) unless serializer.respond_to?(:each)
+          serializer.map do |object|
+            resource_object_for(object, options)
           end
-          result
         end
 
         def resource_object_for(serializer, options)
@@ -133,17 +126,10 @@ module ActiveModel
 
           serializer.each_association do |name, association, opts|
             attrs[:relationships] ||= {}
-
-            if association.respond_to?(:each)
-              add_relationships(attrs, name, association)
-            else
-              if opts[:virtual_value]
-                add_relationship(attrs, name, nil, opts[:virtual_value])
-              else
-                add_relationship(attrs, name, association)
-              end
-            end
-
+            
+            association_serializer = association unless opts[:virtual_value]
+            add_relationship(attrs, name, association_serializer)
+            
             if options[:add_included]
               Array(association).each do |association|
                 add_included(name, association)
