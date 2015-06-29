@@ -14,7 +14,7 @@ module ActiveModel
 
     class << self
       attr_accessor :_attributes
-      attr_accessor :_deserialize
+      attr_accessor :_params
       attr_accessor :_attributes_keys
       attr_accessor :_urls
       attr_accessor :_cache
@@ -29,16 +29,16 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
-      base._deserialize = self._attributes.try(:dup)  || []
+      base._params = self._attributes.try(:dup)  || []
       base._urls = []
       serializer_file = File.open(caller.first[/^[^:]+/])
       base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
       super
     end
 
-    def self.deserialize(*attrs)
-      @_deserialize.concat attrs
-      @_deserialize.uniq!
+    def self.params(*attrs)
+      @_params.concat attrs
+      @_params.uniq!
     end
 
     def self.attributes(*attrs)
@@ -115,6 +115,11 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
 
+    def self.deserialize(params)
+      object_class = root_name.split('_').first.camelize.constantize
+      object_class.find_or_initialize_by(params)
+    end
+
     attr_accessor :object, :root, :meta, :meta_key, :scope
 
     def initialize(object, options = {})
@@ -172,7 +177,7 @@ module ActiveModel
 
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
-        serializer_class_name = "#{klass.name}Serializer"
+        serializer_class_name = "#{klass.name}Serialization"
         serializer_class = serializer_class_name.safe_constantize
 
         if serializer_class
