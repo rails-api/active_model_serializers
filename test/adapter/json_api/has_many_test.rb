@@ -31,6 +31,8 @@ module ActiveModel
             @post.tags = [@tag]
             @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
+
+            @virtual_value = VirtualValue.new(id: 1)
           end
 
           def test_includes_comment_ids
@@ -115,7 +117,23 @@ module ActiveModel
                 id: "1",
                 type: "posts",
                 relationships: {
-                  tags: { data: nil }
+                  tags: { data: [@tag.as_json]}
+                }
+              }
+            }, adapter.serializable_hash)
+          end
+
+          def test_has_many_with_virtual_value
+            serializer = VirtualValueSerializer.new(@virtual_value)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+
+            assert_equal({
+              data: {
+                id: "1",
+                type: "virtual_values",
+                relationships: {
+                  maker: {data: {id: 1}},
+                  reviews: {data: [{id: 1}, {id: 2}]}
                 }
               }
             }, adapter.serializable_hash)

@@ -77,6 +77,7 @@ User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
 Tag      = Class.new(Model)
+VirtualValue = Class.new(Model)
 Comment  = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
@@ -229,6 +230,19 @@ PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
   has_many :tags
+end
+
+VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :reviews, virtual_value: [{id: 1}, {id: 2}]
+  has_one :maker, virtual_value: {id: 1}
+
+  def reviews
+  end
+
+  def maker
+  end
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
