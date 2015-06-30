@@ -5,6 +5,7 @@ module ActiveModel
     extend ActiveSupport::Autoload
     autoload :Configuration
     autoload :ArraySerializer
+    autoload :PaginationSerializer
     autoload :Adapter
     include Configuration
 
