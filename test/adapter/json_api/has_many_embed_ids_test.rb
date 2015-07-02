@@ -20,7 +20,7 @@ module ActiveModel
             @first_post.blog = @blog
             @second_post.blog = nil
 
-            @serializer = AuthorSerializer.new(@author)
+            @serializer = AuthorSerialization .new(@author)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
           end
 

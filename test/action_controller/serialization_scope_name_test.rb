@@ -2,7 +2,7 @@ require 'test_helper'
 require 'pathname'
 
 class DefaultScopeNameTest < ActionController::TestCase
-  class UserSerializer < ActiveModel::Serializer
+  class UserSerialization < ActiveModel::Serializer
     attributes :admin?
     def admin?
       current_user.admin
@@ -19,7 +19,7 @@ class DefaultScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: UserSerializer, adapter: :json_api
+      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: UserSerialization , adapter: :json_api
     end
   end
 
@@ -32,7 +32,7 @@ class DefaultScopeNameTest < ActionController::TestCase
 end
 
 class SerializationScopeNameTest < ActionController::TestCase
-  class AdminUserSerializer < ActiveModel::Serializer
+  class AdminUserSerialization < ActiveModel::Serializer
     attributes :admin?
     def admin?
       current_admin.admin
@@ -50,7 +50,7 @@ class SerializationScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: AdminUserSerializer, adapter: :json_api
+      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: AdminUserSerialization , adapter: :json_api
     end
   end
 

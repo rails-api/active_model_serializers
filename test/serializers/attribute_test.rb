@@ -5,7 +5,7 @@ module ActiveModel
     class AttributeTest < Minitest::Test
       def setup
         @blog = Blog.new({ id: 1, name: 'AMS Hints', type: "stuff" })
-        @blog_serializer = AlternateBlogSerializer.new(@blog)
+        @blog_serializer = AlternateBlogSerialization.new(@blog)
       end
 
       def test_attributes_definition
@@ -19,7 +19,7 @@ module ActiveModel
       end
 
       def test_attribute_inheritance_with_key
-        inherited_klass = Class.new(AlternateBlogSerializer)
+        inherited_klass = Class.new(AlternateBlogSerialization)
         blog_serializer = inherited_klass.new(@blog)
         adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(blog_serializer)
         assert_equal({:id=>1, :title=>"AMS Hints"}, adapter.serializable_hash)

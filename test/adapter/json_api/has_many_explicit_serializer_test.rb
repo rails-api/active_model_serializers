@@ -21,7 +21,7 @@ module ActiveModel
             @blog = Blog.new(id: 23, name: 'AMS Blog')
             @post.blog = @blog
 
-            @serializer = PostPreviewSerializer.new(@post)
+            @serializer = PostPreviewSerialization .new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               @serializer,
               include: ['comments', 'author']
@@ -40,7 +40,7 @@ module ActiveModel
           end
 
           def test_includes_linked_data
-            # If CommentPreviewSerializer is applied correctly the body text will not be present in the output
+            # If CommentPreviewSerialization is applied correctly the body text will not be present in the output
             expected = [
               {
                 id: '1',

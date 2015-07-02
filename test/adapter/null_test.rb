@@ -6,7 +6,7 @@ module ActiveModel
       class NullTest < Minitest::Test
         def setup
           profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-          serializer = ProfileSerializer.new(profile)
+          serializer = ProfileSerialization .new(profile)
 
           @adapter = Null.new(serializer)
         end
