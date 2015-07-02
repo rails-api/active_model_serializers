@@ -49,7 +49,7 @@ module ActiveModel
 
         def add_relationship(resource, name, serializer, val=nil)
           resource[:relationships] ||= {}
-          resource[:relationships][name] = { data: nil }
+          resource[:relationships][name] = { data: val }
 
           if serializer && serializer.object
             resource[:relationships][name][:data] = { type: serializer.type, id: serializer.id.to_s }
