@@ -39,6 +39,7 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
     assert_file "app/serializers/account_serializer.rb" do |serializer|
       assert_match(/^  attributes :id, :name, :description$/, serializer)
       assert_match(/^  has_one :business$/, serializer)
+      assert_match(/^end\n*\z/, serializer)
     end
   end
 
