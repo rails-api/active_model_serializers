@@ -112,7 +112,7 @@ module ActiveModel
     end
 
     def self.root_name
-      name.demodulize.underscore.sub(/_serializer$/, '') if name
+      name.demodulize.underscore.sub(/_serialization$/, '') if name
     end
 
     def self.deserialize(params)
