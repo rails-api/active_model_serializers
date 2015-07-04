@@ -45,6 +45,7 @@ module ActiveModel
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
       @_attributes.uniq!
+      @_params ||= @_attributes
 
       attrs.each do |attr|
         define_method attr do
