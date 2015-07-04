@@ -116,9 +116,16 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serialization$/, '') if name
     end
 
+    def self.object_class_name
+      root_name.split('_').first
+    end
+
+    def self.permitted(params)
+      params.require(object_class_name.to_sym).permit(_params)
+    end
+
     def self.deserialize(params)
-      object_class = root_name.split('_').first.camelize.constantize
-      object_class.find_or_initialize_by(params)
+      object_class_name.camelize.constantize.find_or_initialize_by(params)
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
