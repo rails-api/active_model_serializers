@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class Adapter
-      class JsonTest < Minitest::Test
+      class JsonApiTest < Minitest::Test
         def setup
           ActionController::Base.cache_store.clear
           @author = Author.new(id: 1, name: 'Steve K.')
@@ -17,32 +17,22 @@ module ActiveModel
           @blog = Blog.new(id: 1, name: "My Blog!!")
           @post.blog = @blog
 
-          @serializer = PostSerializer.new(@post)
-          @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
-        end
-
-        def test_has_many
-          assert_equal([
-                         {id: 1, body: 'ZOMG A COMMENT'},
-                         {id: 2, body: 'ZOMG ANOTHER COMMENT'}
-                       ], @adapter.serializable_hash[:post][:comments])
         end
 
         def test_custom_keys
           serializer = PostWithCustomKeysSerializer.new(@post)
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
           assert_equal({
-            id: 1,
-            reviews: [{id: 1, body: "ZOMG A COMMENT"},
-                      {id: 2, body: "ZOMG ANOTHER COMMENT"}
-                    ],
-            writer: {id: 1, name: "Steve K."},
-            site: {id: 1, name: "My Blog!!"}
-            }, adapter.serializable_hash[:post_with_custom_keys])
+            reviews: { data: [
+                        {type: "comments", id: "1"},
+                        {type: "comments", id: "2"}
+                    ]},
+            writer: { data: {type: "authors", id: "1"} },
+            site: { data: {type: "blogs", id: "1" } }
+            }, adapter.serializable_hash[:data][:relationships])
         end
       end
     end
   end
 end
-

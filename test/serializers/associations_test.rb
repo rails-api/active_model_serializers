@@ -51,33 +51,33 @@ module ActiveModel
             bio: { type: :has_one, association_options: {} } },
           @author_serializer.class._associations
         )
-        @author_serializer.each_association do |name, serializer, options|
-          if name == :posts
+        @author_serializer.each_association do |key, serializer, options|
+          if key == :posts
             assert_equal({embed: :ids}, options)
             assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
-          elsif name == :bio
+          elsif key == :bio
             assert_equal({}, options)
             assert_nil serializer
-          elsif name == :roles
+          elsif key == :roles
             assert_equal({embed: :ids}, options)
             assert_kind_of(ActiveModel::Serializer.config.array_serializer, serializer)
           else
-            flunk "Unknown association: #{name}"
+            flunk "Unknown association: #{key}"
           end
         end
       end
 
       def test_has_many_with_no_serializer
-        PostWithTagsSerializer.new(@post).each_association do |name, serializer, options|
-          assert_equal name, :tags
+        PostWithTagsSerializer.new(@post).each_association do |key, serializer, options|
+          assert_equal key, :tags
           assert_equal serializer, nil
           assert_equal [{ attributes: { name: "#hashtagged" }}].to_json, options[:virtual_value].to_json
         end
       end
 
       def test_serializer_options_are_passed_into_associations_serializers
-        @post_serializer.each_association do |name, association|
-          if name == :comments
+        @post_serializer.each_association do |key, association|
+          if key == :comments
             assert association.first.custom_options[:custom_options]
           end
         end
@@ -89,15 +89,15 @@ module ActiveModel
             author: { type: :belongs_to, association_options: {} } },
           @comment_serializer.class._associations
         )
-        @comment_serializer.each_association do |name, serializer, options|
-          if name == :post
+        @comment_serializer.each_association do |key, serializer, options|
+          if key == :post
             assert_equal({}, options)
             assert_kind_of(PostSerializer, serializer)
-          elsif name == :author
+          elsif key == :author
             assert_equal({}, options)
             assert_nil serializer
           else
-            flunk "Unknown association: #{name}"
+            flunk "Unknown association: #{key}"
           end
         end
       end
@@ -105,8 +105,8 @@ module ActiveModel
       def test_belongs_to_with_custom_method
         blog_is_present = false
 
-        @post_serializer.each_association do |name, serializer, options|
-          blog_is_present = true if name == :blog
+        @post_serializer.each_association do |key, serializer, options|
+          blog_is_present = true if key == :blog
         end
 
         assert blog_is_present
@@ -131,6 +131,19 @@ module ActiveModel
           }
         )
         assert_equal(inherited_klass._associations, expected_associations)
+      end
+
+      def test_associations_custom_keys
+        serializer = PostWithCustomKeysSerializer.new(@post)
+
+        expected_association_keys = []
+        serializer.each_association do |key, serializer, options|
+          expected_association_keys << key
+        end
+
+        assert expected_association_keys.include? :reviews
+        assert expected_association_keys.include? :writer
+        assert expected_association_keys.include? :site
       end
     end
   end

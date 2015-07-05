@@ -264,6 +264,12 @@ You may also use the `:serializer` option to specify a custom serializer class, 
   has_many :comments, serializer: CommentPreviewSerializer
 ```
 
+And you can change the JSON key that the serializer should use for a particular association:
+
+```ruby
+  has_many :comments, key: :reviews
+```
+
 The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
 

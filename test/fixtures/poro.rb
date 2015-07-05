@@ -228,6 +228,14 @@ PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
   has_many :tags
 end
 
+PostWithCustomKeysSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :comments, key: :reviews
+  belongs_to :author, key: :writer
+  has_one :blog, key: :site
+end
+
 VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
