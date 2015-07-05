@@ -118,8 +118,9 @@ module ActiveModel
     end
 
     def self.permit(params)
-      key = adapter.root || root_name
-      params.require(key.to_sym).permit(self.class._params)
+      permitted_params = adapter.params(@_params, @_associations.keys) || @_params
+      permitted_key    = adapter.root || root_name
+      params.require(permitted_key.to_sym).permit(permitted_params)
     end
 
     def self.deserialize(params)
