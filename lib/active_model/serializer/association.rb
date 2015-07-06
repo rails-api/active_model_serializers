@@ -1,0 +1,21 @@
+module ActiveModel
+  class Serializer
+    # This class hold all information about serializer's association.
+    #
+    # @param [Symbol] name
+    # @param [ActiveModel::Serializer] serializer
+    # @param [Hash{Symbol => Object}] options
+    #
+    # @example
+    #  Association.new(:comments, CommentSummarySerializer, embed: :ids)
+    #
+    Association = Struct.new(:name, :serializer, :options) do
+
+      # @return [Symbol]
+      #
+      def key
+        options.fetch(:key, name)
+      end
+    end
+  end
+end
