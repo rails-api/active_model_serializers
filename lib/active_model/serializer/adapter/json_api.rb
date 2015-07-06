@@ -75,8 +75,8 @@ module ActiveModel
           end
 
           serializers.each do |serializer|
-            serializer.each_association do |name, association, opts|
-              add_included(name, association, resource_path) if association
+            serializer.each_association do |key, association, opts|
+              add_included(key, association, resource_path) if association
             end if include_nested_assoc? resource_path
           end
         end
@@ -131,22 +131,22 @@ module ActiveModel
         def add_resource_relationships(attrs, serializer, options = {})
           options[:add_included] = options.fetch(:add_included, true)
 
-          serializer.each_association do |name, association, opts|
+          serializer.each_association do |key, association, opts|
             attrs[:relationships] ||= {}
 
             if association.respond_to?(:each)
-              add_relationships(attrs, name, association)
+              add_relationships(attrs, key, association)
             else
               if opts[:virtual_value]
-                add_relationship(attrs, name, nil, opts[:virtual_value])
+                add_relationship(attrs, key, nil, opts[:virtual_value])
               else
-                add_relationship(attrs, name, association)
+                add_relationship(attrs, key, association)
               end
             end
 
             if options[:add_included]
               Array(association).each do |association|
-                add_included(name, association)
+                add_included(key, association)
               end
             end
           end

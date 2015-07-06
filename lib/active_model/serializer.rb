@@ -220,8 +220,9 @@ module ActiveModel
           association_options[:association_options][:virtual_value] = association_value
         end
 
+        association_key = association_options[:association_options][:key] || name
         if block_given?
-          block.call(name, serializer, association_options[:association_options])
+          block.call(association_key, serializer, association_options[:association_options])
         end
       end
     end

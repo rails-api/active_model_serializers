@@ -15,23 +15,23 @@ module ActiveModel
               serializer.attributes(options)
             end
 
-            serializer.each_association do |name, association, opts|
+            serializer.each_association do |key, association, opts|
               if association.respond_to?(:each)
                 array_serializer = association
-                @hash[name] = array_serializer.map do |item|
+                @hash[key] = array_serializer.map do |item|
                   cache_check(item) do
                     item.attributes(opts)
                   end
                 end
               else
                 if association && association.object
-                  @hash[name] = cache_check(association) do
+                  @hash[key] = cache_check(association) do
                     association.attributes(options)
                   end
                 elsif opts[:virtual_value]
-                  @hash[name] = opts[:virtual_value]
+                  @hash[key] = opts[:virtual_value]
                 else
-                  @hash[name] = nil
+                  @hash[key] = nil
                 end
               end
             end
