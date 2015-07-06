@@ -168,7 +168,7 @@ module ActiveModel
     end
 
     def json_key
-      self.class.root_name
+      @root || self.class.root_name
     end
 
     def id
