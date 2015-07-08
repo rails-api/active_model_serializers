@@ -179,8 +179,17 @@ Doesn't follow any specifc convention.
 
 #### JSON
 
-It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly with the objects being serialized.
-Doesn't follow any specifc convention.
+It also generates a json response but always with a root key. Doesn't follow any specifc convention. The root key can only be overwritten by overriding the `json_key` method that's present on the serializer. Be sure to use the singular form of the key.
+
+``` ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  def json_key
+    "article"
+  end
+end
+```
 
 #### JSONAPI
 
