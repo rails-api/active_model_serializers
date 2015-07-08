@@ -38,7 +38,7 @@ module ActiveModel
 
       def test_meta_key_is_used
         serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, root: 'blog')
+        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {
           alternate_blog: {
             id: 1,
@@ -47,6 +47,20 @@ module ActiveModel
           "haha_meta" => {
             total: 10
           }
+        }
+        assert_equal expected, adapter.as_json
+      end
+
+      def test_meta_key_is_used_with_json_api
+        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
+        adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+        expected = {
+          data: {
+            id: "1",
+            type: "blogs",
+            attributes: { title: "AMS Hints" }
+          },
+          "haha_meta" => { total: 10 }
         }
         assert_equal expected, adapter.as_json
       end
