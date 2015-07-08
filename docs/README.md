@@ -1,0 +1,26 @@
+# Docs - ActiveModel::Serializer 0.10.x
+
+This is the documentation of AMS, it's focused on **0.10.x version.**
+
+-----
+
+## General
+
+- [Getting Started](general/getting_started.md)
+- [Adapters](general/adapters.md)
+
+## How to
+
+- [How to use add root key](howto/add_root_key.md)
+
+## Getting Help
+
+If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).
+
+If you have a question, please [post to Stack Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
+
+Thanks!
+
+## Contributing
+
+See [CONTRIBUTING.md](https://github.com/rails-api/active_model_serializers/blob/master/CONTRIBUTING.md)
