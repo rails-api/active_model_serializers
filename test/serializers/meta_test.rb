@@ -53,7 +53,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used_with_json_api
-        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
+        serializer = AlternateBlogSerialization.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
         expected = {
           data: {
