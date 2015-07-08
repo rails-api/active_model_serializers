@@ -18,6 +18,8 @@ module ActiveModel
         def serializable_hash(options = nil)
           options = {}
           if serializer.respond_to?(:each)
+            add_pagination if serializer.class == PaginationSerializer
+
             serializer.each do |s|
               result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
               @hash[:data] << result[:data]
@@ -79,6 +81,23 @@ module ActiveModel
               add_included(key, association, resource_path) if association
             end if include_nested_assoc? resource_path
           end
+        end
+
+        def add_pagination
+          return if serializer.page_size.nil? || serializer.page_number.nil?
+
+          total_objects = serializer.count
+          total_pages   = (total_objects / serializer.page_size).ceil
+          prev = serializer.page_number == 1 ? nil : "?page[size]=#{serializer.page_size}&page[number]=#{serializer.page_number - 1}"
+          last = serializer.page_number == total_pages ? nil : "?page[size]=#{serializer.page_size}&page[number]=#{serializer.page_number + 1}"
+
+          @hash[:links] = {
+            self:  "?page[size]=#{serializer.page_size}&page[number]=#{serializer.page_number}",
+            first: "?page[size]=#{serializer.page_size}&page[number]=1",
+            last:  "?page[size]=#{serializer.page_size}&page[number]=#{total_pages}",
+            prev:  prev,
+            next:  last
+          }
         end
 
         def attributes_for_serializer(serializer, options)
