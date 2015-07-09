@@ -6,6 +6,7 @@ module ActiveModel
     autoload :Configuration
     autoload :ArraySerializer
     autoload :Adapter
+    autoload :Lint
     include Configuration
 
     class << self
