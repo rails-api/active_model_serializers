@@ -169,7 +169,7 @@ module ActiveModel
     end
 
     def json_key
-      @root || self.class.root_name
+      @root || object.class.model_name.to_s.downcase
     end
 
     def id
