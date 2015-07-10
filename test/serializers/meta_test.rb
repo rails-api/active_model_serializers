@@ -15,7 +15,7 @@ module ActiveModel
         serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10})
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {
-          alternate_blog: {
+          blog: {
             id: 1,
             title: "AMS Hints"
           },
@@ -40,7 +40,7 @@ module ActiveModel
         serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {
-          alternate_blog: {
+          blog: {
             id: 1,
             title: "AMS Hints"
           },

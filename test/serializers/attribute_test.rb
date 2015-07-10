@@ -15,7 +15,7 @@ module ActiveModel
 
       def test_json_serializable_hash
         adapter = ActiveModel::Serializer::Adapter::Json.new(@blog_serializer)
-        assert_equal({alternate_blog: { id:1, title:"AMS Hints"}}, adapter.serializable_hash)
+        assert_equal({blog: { id:1, title:"AMS Hints"}}, adapter.serializable_hash)
       end
 
       def test_attribute_inheritance_with_key
