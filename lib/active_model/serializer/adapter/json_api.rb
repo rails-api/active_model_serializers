@@ -7,19 +7,13 @@ module ActiveModel
         def initialize(serializer, options = {})
           super
           @hash = { data: [] }
-
-          if fields = options.delete(:fields)
-            @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
-          else
-            @fieldset = options[:fieldset]
-          end
         end
 
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
             serializer.each do |s|
-              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
+              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash
               @hash[:data] << result[:data]
 
               if result[:included]
@@ -28,7 +22,7 @@ module ActiveModel
               end
             end
           else
-            @hash[:data] = attributes_for_serializer(serializer, options)
+            @hash[:data] = attributes_for_serializer(serializer, @options)
             add_resource_relationships(@hash[:data], serializer)
           end
           @hash
@@ -96,6 +90,7 @@ module ActiveModel
         end
 
         def resource_object_for(serializer, options)
+          options ||= {}
           options[:fields] = @fieldset && @fieldset.fields_for(serializer)
           options[:required_fields] = [:id, :json_api_type]
 
