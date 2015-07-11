@@ -1,5 +1,9 @@
 module ActiveModel
   class Serializer
+    class OverriddenAdapterSerializer < ActiveModel::Serializer
+      use_adapter :json
+    end
+
     class AdapterForTest < Minitest::Test
       def setup
         @previous_adapter = ActiveModel::Serializer.config.adapter
@@ -28,6 +32,13 @@ module ActiveModel
 
         adapter = ActiveModel::Serializer.adapter
         assert_equal ActiveModel::Serializer::Adapter::Null, adapter
+      end
+
+      def test_adapter_specified_in_serializer
+        ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::Null
+
+        adapter = OverriddenAdapterSerializer.adapter
+        assert_equal ActiveModel::Serializer::Adapter::Json, adapter
       end
 
       def test_raises_exception_if_invalid_symbol_given
