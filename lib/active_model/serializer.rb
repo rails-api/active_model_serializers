@@ -9,6 +9,7 @@ module ActiveModel
     include Configuration
 
     class << self
+      attr_accessor :_adapter
       attr_accessor :_attributes
       attr_accessor :_attributes_keys
       attr_accessor :_associations
@@ -130,13 +131,20 @@ module ActiveModel
       end
     end
 
+    def self.use_adapter(adapter)
+      self._adapter = adapter
+    end
+
     def self.adapter
-      adapter_class = case config.adapter
+      configured_adapter = _adapter || config.adapter
+
+      adapter_class = case configured_adapter
       when Symbol
-        ActiveModel::Serializer::Adapter.adapter_class(config.adapter)
+        ActiveModel::Serializer::Adapter.adapter_class(configured_adapter)
       when Class
-        config.adapter
+        configured_adapter
       end
+
       unless adapter_class
         valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.downcase}" }
         raise ArgumentError, "Unknown adapter: #{config.adapter}. Valid adapters are: #{valid_adapters}"
