@@ -125,7 +125,7 @@ module ActiveModel
 
     def self.deserialize(params)
       object_class = root_name.split('_').first.camelize.safe_constantize
-      object_class.find_or_initialize_by(params)
+      object_class.find_or_initialize_by(adapter.parse(params))
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
