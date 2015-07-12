@@ -43,7 +43,6 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
   has_one :author
 
-  url :post
 end
 ```
 
@@ -55,7 +54,6 @@ class CommentSerializer < ActiveModel::Serializer
 
   belongs_to :post_id
 
-  url [:post, :comment]
 end
 ```
 
