@@ -72,34 +72,38 @@ module ActiveModel
         assert_equal(nil, ActionController::Base.cache_store.fetch(@post.cache_key))
         assert_equal(nil, ActionController::Base.cache_store.fetch(@comment.cache_key))
 
-        post = render_object_with_cache(@post)
+        Timecop.freeze(Time.now) do
+          post = render_object_with_cache(@post)
 
-        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
-        assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
+          assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+        end
       end
 
       def test_associations_cache_when_updated
         # Clean the Cache
         ActionController::Base.cache_store.clear
 
-        # Generate a new Cache of Post object and each objects related to it.
-        render_object_with_cache(@post)
+        Timecop.freeze(Time.now) do
+          # Generate a new Cache of Post object and each objects related to it.
+          render_object_with_cache(@post)
 
-        # Check if it cached the objects separately
-        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
-        assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+          # Check if it cached the objects separately
+          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
+          assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
 
-        # Simulating update on comments relationship with Post
-        new_comment            = Comment.new(id: 2, body: 'ZOMG A NEW COMMENT')
-        new_comment_serializer = CommentSerializer.new(new_comment)
-        @post.comments         = [new_comment]
+          # Simulating update on comments relationship with Post
+          new_comment            = Comment.new(id: 2, body: 'ZOMG A NEW COMMENT')
+          new_comment_serializer = CommentSerializer.new(new_comment)
+          @post.comments         = [new_comment]
 
-        # Ask for the serialized object
-        render_object_with_cache(@post)
+          # Ask for the serialized object
+          render_object_with_cache(@post)
 
-        # Check if the the new comment was cached
-        assert_equal(new_comment_serializer.attributes, ActionController::Base.cache_store.fetch(new_comment.cache_key))
-        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
+          # Check if the the new comment was cached
+          assert_equal(new_comment_serializer.attributes, ActionController::Base.cache_store.fetch(new_comment.cache_key))
+          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
+        end
       end
 
       def test_fragment_fetch_with_virtual_associations
