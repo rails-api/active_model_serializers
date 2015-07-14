@@ -19,16 +19,6 @@ module ActiveModel
         assert_equal @serializer, @adapter.serializer
       end
 
-      def test_adapter_class_for_known_adapter
-        klass = ActiveModel::Serializer::Adapter.adapter_class(:json_api)
-        assert_equal ActiveModel::Serializer::Adapter::JsonApi, klass
-      end
-
-      def test_adapter_class_for_unknown_adapter
-        klass = ActiveModel::Serializer::Adapter.adapter_class(:json_simple)
-        assert_nil klass
-      end
-
       def test_create_adapter
         adapter = ActiveModel::Serializer::Adapter.create(@serializer)
         assert_equal ActiveModel::Serializer::Adapter::FlattenJson, adapter.class

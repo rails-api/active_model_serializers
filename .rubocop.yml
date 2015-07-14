@@ -16,6 +16,9 @@ Lint/NestedMethodDefinition:
 Style/StringLiterals:
   EnforcedStyle: single_quotes
 
+Style/SpecialGlobalVars:
+  Enabled: false
+
 Metrics/AbcSize:
   Max: 35 # TODO: Lower to 15
 

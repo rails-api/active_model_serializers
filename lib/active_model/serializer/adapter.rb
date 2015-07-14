@@ -1,6 +1,9 @@
 module ActiveModel
   class Serializer
     class Adapter
+      UnknownAdapterError = Class.new(ArgumentError)
+      ADAPTER_MAP = {}
+      private_constant :ADAPTER_MAP if defined?(private_constant)
       extend ActiveSupport::Autoload
       require 'active_model/serializer/adapter/json'
       require 'active_model/serializer/adapter/json_api'
@@ -14,9 +17,71 @@ module ActiveModel
         klass.new(resource, options)
       end
 
+      # @see ActiveModel::Serializer::Adapter.get
       def self.adapter_class(adapter)
-        adapter_name = adapter.to_s.classify.sub('API', 'Api')
-        "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize
+        ActiveModel::Serializer::Adapter.get(adapter)
+      end
+
+      # Only the Adapter class has these methods.
+      # None of the sublasses have them.
+      class << ActiveModel::Serializer::Adapter
+        # @return Hash<adapter_name, adapter_class>
+        def adapter_map
+          ADAPTER_MAP
+        end
+
+        # @return [Array<Symbol>] list of adapter names
+        def adapters
+          adapter_map.keys.sort
+        end
+
+        # Adds an adapter 'klass' with 'name' to the 'adapter_map'
+        # Names are stringified and underscored
+        # @param [Symbol, String] name of the registered adapter
+        # @param [Class] klass - adapter class itself
+        # @example
+        #     AMS::Adapter.register(:my_adapter, MyAdapter)
+        def register(name, klass)
+          adapter_map.update(name.to_s.underscore => klass)
+          self
+        end
+
+        # @param  adapter [String, Symbol, Class] name to fetch adapter by
+        # @return [ActiveModel::Serializer::Adapter] subclass of Adapter
+        # @raise  [UnknownAdapterError]
+        def get(adapter)
+          # 1. return if is a class
+          return adapter if adapter.is_a?(Class)
+          adapter_name = adapter.to_s.underscore
+          # 2. return if registered
+          adapter_map.fetch(adapter_name) {
+            # 3. try to find adapter class from environment
+            adapter_class = find_by_name(adapter_name)
+            register(adapter_name, adapter_class)
+            adapter_class
+          }
+        rescue ArgumentError
+          failure_message =
+            "Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
+          raise UnknownAdapterError, failure_message, $!.backtrace
+        rescue NameError
+          failure_message =
+            "NameError: #{$!.message}. Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
+          raise UnknownAdapterError, failure_message, $!.backtrace
+        end
+
+        # @api private
+        def find_by_name(adapter_name)
+          adapter_name = adapter_name.to_s.classify.tr('API', 'Api')
+          "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize or # rubocop:disable Style/AndOr
+            fail UnknownAdapterError
+        end
+        private :find_by_name
+      end
+
+      # Automatically register adapters when subclassing
+      def self.inherited(subclass)
+        ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
       end
 
       attr_reader :serializer
