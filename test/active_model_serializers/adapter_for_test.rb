@@ -102,7 +102,8 @@ module ActiveModelSerializers
         'null'.freeze              => ActiveModelSerializers::Adapter::Null,
         'json'.freeze              => ActiveModelSerializers::Adapter::Json,
         'attributes'.freeze => ActiveModelSerializers::Adapter::Attributes,
-        'json_api'.freeze => ActiveModelSerializers::Adapter::JsonApi
+        'json_api'.freeze => ActiveModelSerializers::Adapter::JsonApi,
+        'json_api/error'.freeze => ActiveModelSerializers::Adapter::JsonApi::Error
       }
       actual = ActiveModelSerializers::Adapter.adapter_map
       assert_equal actual, expected_adapter_map
@@ -113,6 +114,7 @@ module ActiveModelSerializers
         'attributes'.freeze,
         'json'.freeze,
         'json_api'.freeze,
+        'json_api/error'.freeze,
         'null'.freeze
       ]
     end

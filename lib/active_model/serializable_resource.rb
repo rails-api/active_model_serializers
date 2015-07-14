@@ -16,6 +16,19 @@ module ActiveModel
       @resource = resource
       @adapter_opts, @serializer_opts =
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
+
+      # TECHDEBT: clean up single vs. collection of resources
+      if resource.respond_to?(:each)
+        if resource.any? { |elem| elem.respond_to?(:errors) && !elem.errors.empty? }
+          @serializer_opts[:serializer] = ActiveModel::Serializer::ErrorSerializer
+          @adapter_opts[:adapter] = :'json_api/error'
+        end
+      else
+        if resource.respond_to?(:errors) && !resource.errors.empty?
+          @serializer_opts[:serializer] = ActiveModel::Serializer::ErrorSerializer
+          @adapter_opts[:adapter] = :'json_api/error'
+        end
+      end
     end
 
     def serialization_scope=(scope)

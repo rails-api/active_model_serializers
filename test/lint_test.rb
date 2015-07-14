@@ -27,6 +27,15 @@ module ActiveModel
         def updated_at
         end
 
+        def errors
+        end
+
+        def self.human_attribute_name(attr, options = {})
+        end
+
+        def self.lookup_ancestors
+        end
+
         def self.model_name
           @_model_name ||= ActiveModel::Name.new(self)
         end

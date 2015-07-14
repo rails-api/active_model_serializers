@@ -1,6 +1,7 @@
 require 'thread_safe'
 require 'active_model/serializer/collection_serializer'
 require 'active_model/serializer/array_serializer'
+require 'active_model/serializer/error_serializer'
 require 'active_model/serializer/include_tree'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/attributes'
