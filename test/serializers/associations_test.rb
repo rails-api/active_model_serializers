@@ -133,7 +133,7 @@ module ActiveModel
         assert_equal(inherited_klass._associations, expected_associations)
       end
 
-      def test_associations_string_serializer
+      def test_associations_serializer_string_name
         inherited_klass = Class.new(PostSerializer) do
           belongs_to :blog, serializer: "CustomBlogSerializer"
         end

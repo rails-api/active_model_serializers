@@ -31,6 +31,13 @@ module ActiveModel
         refute serializers.first.custom_options.key?(:serializer)
       end
 
+      def test_serializer_option_string_value
+        serializers = ArraySerializer.new([@post], {serializer: "PostSerializer"}).to_a
+
+        assert_kind_of PostSerializer, serializers.last
+        assert_kind_of Post, serializers.last.object
+      end
+
       def test_meta_and_meta_key_attr_readers
         meta_content = {meta: "the meta", meta_key: "the meta key"}
         @serializer = ArraySerializer.new([@comment, @post], meta_content)

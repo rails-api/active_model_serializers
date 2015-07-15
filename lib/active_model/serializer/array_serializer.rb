@@ -14,6 +14,7 @@ module ActiveModel
             :serializer,
             ActiveModel::Serializer.serializer_for(object)
           )
+          serializer_class = serializer_class.constantize if serializer_class.respond_to?(:constantize)
 
           if serializer_class.nil?
             fail NoSerializerError, "No serializer found for object: #{object.inspect}"
