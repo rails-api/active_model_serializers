@@ -29,7 +29,7 @@ module ActiveModel
         if @objects.first
           @objects.first.json_key.pluralize
         else
-          @resource.name.downcase.pluralize if @resource.try(:name)
+          @resource.name.underscore.pluralize if @resource.try(:name)
         end
       end
 
