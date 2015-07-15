@@ -32,11 +32,15 @@ module ActiveModel
         class CustomProfile
           def serializer_class; ProfileSerializer; end
         end
+        class CustomProfileString
+          def serializer_class; "ProfileSerializer"; end
+        end
 
         def setup
           @profile = Profile.new
           @my_profile = MyProfile.new
           @custom_profile = CustomProfile.new
+          @custom_profile_string = CustomProfileString.new
           @model = ::Model.new
         end
 
@@ -57,6 +61,11 @@ module ActiveModel
 
         def test_serializer_custom_serializer
           serializer = ActiveModel::Serializer.serializer_for(@custom_profile)
+          assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_string_serializer
+          serializer = ActiveModel::Serializer.serializer_for(@custom_profile_string)
           assert_equal ProfileSerializer, serializer
         end
       end
