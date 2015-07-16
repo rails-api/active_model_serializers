@@ -38,6 +38,17 @@ module ActiveModel
         assert_equal @serializer.meta, "the meta"
         assert_equal @serializer.meta_key, "the meta key"
       end
+
+      def test_json_key_when_resource_is_empty
+        Array.class_eval do
+          def name
+            'PostComment'
+          end
+        end
+        @post_comments = []
+        @serializer = ArraySerializer.new(@post_comments)
+        assert_equal @serializer.json_key, "post_comments"
+      end
     end
   end
 end
