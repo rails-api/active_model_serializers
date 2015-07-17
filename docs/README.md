@@ -1,6 +1,6 @@
 # Docs - ActiveModel::Serializer 0.10.x
 
-This is the documentation of AMS, it's focused on **0.10.x version.**
+This is the documentation of AMS, it's focused on the **0.10.x version.**
 
 -----
 
@@ -11,7 +11,7 @@ This is the documentation of AMS, it's focused on **0.10.x version.**
 
 ## How to
 
-- [How to use add root key](howto/add_root_key.md)
+- [How to add root key](howto/add_root_key.md)
 
 ## Getting Help
 
