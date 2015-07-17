@@ -177,7 +177,7 @@ module ActiveModel
     end
 
     def type
-      object.class.model_name.plural
+      object.respond_to?(:type) ? object.type : object.class.model_name.plural
     end
 
     def attributes(options = {})
