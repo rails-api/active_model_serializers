@@ -33,7 +33,8 @@ module ActiveModel
       end
 
       def self.adapter_class(adapter)
-        "ActiveModel::Serializer::Adapter::#{adapter.to_s.classify}".safe_constantize
+        adapter_name = adapter.to_s.classify.sub("API", "Api")
+        "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize
       end
 
       def fragment_cache(*args)
@@ -42,7 +43,7 @@ module ActiveModel
 
       private
 
-     def cache_check(serializer)
+      def cache_check(serializer)
         @cached_serializer = serializer
         @klass             = @cached_serializer.class
         if is_cached?
