@@ -6,7 +6,13 @@ module ActiveModel
       def setup
         @comment = Comment.new
         @post = Post.new
-        @serializer = ArraySerializer.new([@comment, @post], {some: :options})
+        @resource = build_named_collection @comment, @post
+        @serializer = ArraySerializer.new(@resource, {some: :options})
+      end
+
+      def build_named_collection(*resource)
+        resource.define_singleton_method(:name){ 'MeResource' }
+        resource
       end
 
       def test_respond_to_each
@@ -39,15 +45,52 @@ module ActiveModel
         assert_equal @serializer.meta_key, "the meta key"
       end
 
-      def test_json_key_when_resource_is_empty
-        Array.class_eval do
-          def name
-            'PostComment'
-          end
-        end
-        @post_comments = []
-        @serializer = ArraySerializer.new(@post_comments)
-        assert_equal @serializer.json_key, "post_comments"
+      def test_root_default
+        @serializer = ArraySerializer.new([@comment, @post])
+        assert_equal @serializer.root, nil
+      end
+
+      def test_root
+        expected =  'custom_root'
+        @serializer = ArraySerializer.new([@comment, @post], root: expected)
+        assert_equal @serializer.root, expected
+      end
+
+      def test_root_with_no_serializers
+        expected =  'custom_root'
+        @serializer = ArraySerializer.new([], root: expected)
+        assert_equal @serializer.root, expected
+      end
+
+      def test_json_key
+        assert_equal @serializer.json_key, 'comments'
+      end
+
+      def test_json_key_with_resource_with_name_and_no_serializers
+        serializer = ArraySerializer.new(build_named_collection)
+        assert_equal serializer.json_key, 'me_resources'
+      end
+
+      def test_json_key_with_resource_with_nil_name_and_no_serializers
+        resource = []
+        resource.define_singleton_method(:name){ nil }
+        serializer = ArraySerializer.new(resource)
+        assert_equal serializer.json_key, nil
+      end
+
+      def test_json_key_with_resource_without_name_and_no_serializers
+        serializer = ArraySerializer.new([])
+        assert_equal serializer.json_key, nil
+      end
+
+      def test_json_key_with_root
+        serializer = ArraySerializer.new(@resource, root: 'custom_root')
+        assert_equal serializer.json_key, 'custom_roots'
+      end
+
+      def test_json_key_with_root_and_no_serializers
+        serializer = ArraySerializer.new(build_named_collection, root: 'custom_root')
+        assert_equal serializer.json_key, 'custom_roots'
       end
     end
   end

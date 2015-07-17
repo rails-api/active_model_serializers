@@ -5,9 +5,10 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@objects
 
-      attr_reader :meta, :meta_key
+      attr_reader :root, :meta, :meta_key
 
       def initialize(objects, options = {})
+        @root = options[:root]
         @resource = objects
         @objects  = objects.map do |object|
           serializer_class = options.fetch(
@@ -26,15 +27,8 @@ module ActiveModel
       end
 
       def json_key
-        if @objects.first
-          @objects.first.json_key.pluralize
-        else
-          @resource.name.underscore.pluralize if @resource.try(:name)
-        end
-      end
-
-      def root=(root)
-        @objects.first.root = root if @objects.first
+        key = root || @objects.first.try(:json_key) || @resource.try(:name).try(:underscore)
+        key.try(:pluralize)
       end
     end
   end

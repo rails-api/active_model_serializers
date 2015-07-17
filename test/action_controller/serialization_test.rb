@@ -18,6 +18,26 @@ module ActionController
           end
         end
 
+        def render_array_using_custom_root
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: [@profile], root: "custom_root"
+          end
+        end
+
+        def render_array_that_is_empty_using_custom_root
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            render json: [], root: "custom_root"
+          end
+        end
+
+        def render_object_using_custom_root
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: @profile, root: "custom_root"
+          end
+        end
+
         def render_array_using_implicit_serializer
           array = [
             Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
@@ -165,6 +185,30 @@ module ActionController
           }
         }
 
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_array_using_custom_root
+        get :render_array_using_custom_root
+
+        expected =  {custom_roots: [{name: "Name 1", description: "Description 1"}]}
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_array_that_is_empty_using_custom_root
+        get :render_array_that_is_empty_using_custom_root
+
+        expected =  {custom_roots: []}
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_object_using_custom_root
+        get :render_object_using_custom_root
+
+        expected =  {custom_root: {name: "Name 1", description: "Description 1"}}
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
