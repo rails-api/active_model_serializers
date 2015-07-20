@@ -172,6 +172,10 @@ module ActiveModel
       @root || self.class.root_name
     end
 
+    def as_json
+      self.class.adapter.new(self).as_json
+    end
+
     def id
       object.id if object
     end
