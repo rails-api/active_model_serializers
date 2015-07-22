@@ -94,7 +94,7 @@ module ActiveModel
 
           # Simulating update on comments relationship with Post
           new_comment            = Comment.new(id: 2, body: 'ZOMG A NEW COMMENT')
-          new_comment_serializer = CommentSerializer.new(new_comment)
+          new_comment_serializer = CommentSerialization.new(new_comment)
           @post.comments         = [new_comment]
 
           # Ask for the serialized object
