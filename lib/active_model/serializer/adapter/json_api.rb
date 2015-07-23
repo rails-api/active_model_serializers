@@ -6,14 +6,20 @@ module ActiveModel
     class Adapter
       class JsonApi < Adapter
         @root = :data
+        DEFAULT_ATTRIBUTES = [:type, :id]
 
         def self.params(permitted, associations)
           relationships = {}
           associations.each do |assoc|
-             relationships[assoc] = { data: [:type, :id] }
+             relationships[assoc] = {}
+             relationships[assoc][@root] = DEFAULT_ATTRIBUTES
            end
 
           return :type, {attributes: permitted}, {relationships: relationships}
+        end
+
+        def self.parse(params)
+          params["attributes"]
         end
 
         def initialize(serializer, options = {})
