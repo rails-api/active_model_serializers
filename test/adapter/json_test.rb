@@ -39,10 +39,9 @@ module ActiveModel
                     ],
             writer: {id: 1, name: "Steve K."},
             site: {id: 1, name: "My Blog!!"}
-            }, adapter.serializable_hash[:post_with_custom_keys])
+            }, adapter.serializable_hash[:post])
         end
       end
     end
   end
 end
-

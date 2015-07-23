@@ -39,7 +39,7 @@ module ActiveModel
             serializer = PostPreviewSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            assert_equal({posts: {title: "Hello!!", body: "Hello, world!!", id: 43, comments: [], author: nil}}, adapter.serializable_hash)
+            assert_equal({post: {title: "Hello!!", body: "Hello, world!!", id: 43, comments: [], author: nil}}, adapter.serializable_hash)
           end
         end
       end
