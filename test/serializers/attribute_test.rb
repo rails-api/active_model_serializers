@@ -33,6 +33,29 @@ module ActiveModel
 
         assert_equal([:title], serializer_class._attributes)
       end
+
+      def test_type_attribute
+        serializer_class = Class.new(ActiveModel::Serializer){ attribute :type }
+
+        adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(serializer_class.new(@blog))
+        assert_equal({type: 'blogs'}, adapter.serializable_hash)
+      end
+
+      def test_type_attribute_on_object
+        @blog.define_singleton_method(:type){ 'type' }
+        serializer_class = Class.new(ActiveModel::Serializer){ attribute :type }
+
+        adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(serializer_class.new(@blog))
+        assert_equal({type: @blog.type}, adapter.serializable_hash)
+      end
+
+      def test_type_attribute_on_object_with_nil_value
+        @blog.define_singleton_method(:type){ nil }
+        serializer_class = Class.new(ActiveModel::Serializer){ attribute :type }
+
+        adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(serializer_class.new(@blog))
+        assert_equal({type: @blog.type}, adapter.serializable_hash)
+      end
     end
   end
 end
