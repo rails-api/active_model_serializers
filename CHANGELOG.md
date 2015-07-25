@@ -65,6 +65,8 @@ Features:
     CollectionSerializer for clarity, add ActiveModelSerializers.config.collection_serializer (@bf4)
 - [#1295](https://github.com/rails-api/active_model_serializers/pull/1295) Add config `serializer_lookup_enabled` that,
   when disabled, requires serializers to explicitly specified. (@trek)
+- [#1247](https://github.com/rails-api/active_model_serializers/pull/1247) Add top-level links (@beauby)
+  * Add more tests and docs for top-level links (@leandrocp)
 
 Fixes:
 
