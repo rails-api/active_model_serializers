@@ -22,8 +22,8 @@ architecture. We'd love your help. [Learn how you can help here.](https://github
 
 ## Example
 
-Given two models, a `Post(title:string, body:text)` and a
-`Comment(name:string, body:text, post_id:integer)`, you will have two
+Given two models, a `Post(title: string, body: text)` and a
+`Comment(name: string, body: text, post_id: integer)`, you will have two
 serializers:
 
 ```ruby
