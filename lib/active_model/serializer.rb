@@ -154,6 +154,10 @@ module ActiveModel
 
     def initialize(object, options = {})
       @object     = object
+
+      @associated = options.delete(:associated)
+      @listed     = options.delete(:listed)
+
       @options    = options
       @root       = options[:root]
       @meta       = options[:meta]
@@ -208,10 +212,8 @@ module ActiveModel
 
         if serializer_class
           begin
-            serializer = serializer_class.new(
-              association_value,
-              options.except(:serializer).merge(serializer_from_options(association_options))
-            )
+            serializer_options = options.except(:serializer).merge(associated: true).merge(serializer_from_options(association_options))
+            serializer = serializer_class.new(association_value, serializer_options)
           rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
             virtual_value = association_value
             virtual_value = virtual_value.as_json if virtual_value.respond_to?(:as_json)
@@ -254,6 +256,18 @@ module ActiveModel
           get_serializer_for(klass.superclass)
         end
       end
+    end
+
+    def listed?
+      !!@listed
+    end
+
+    def associated?
+      !!@associated
+    end
+
+    def nested?
+      listed? or associated?
     end
 
   end

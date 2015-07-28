@@ -19,7 +19,7 @@ module ActiveModel
           if serializer_class.nil?
             fail NoSerializerError, "No serializer found for object: #{object.inspect}"
           else
-            serializer_class.new(object, options.except(:serializer))
+            serializer_class.new(object, options.except(:serializer).merge(listed: true))
           end
         end
         @meta     = options[:meta]
