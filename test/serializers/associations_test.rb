@@ -145,6 +145,15 @@ module ActiveModel
         assert expected_association_keys.include? :writer
         assert expected_association_keys.include? :site
       end
+
+      def test_associated_and_nested_predicates
+        @post_serializer.each_association do |key, association|
+          if key == :blog
+            assert association.associated?
+            assert association.nested?
+          end
+        end
+      end
     end
   end
 end

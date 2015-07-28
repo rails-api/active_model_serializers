@@ -92,6 +92,16 @@ module ActiveModel
         serializer = ArraySerializer.new(build_named_collection, root: 'custom_root')
         assert_equal serializer.json_key, 'custom_roots'
       end
+
+      def test_listed_and_nested_predicates
+        serializers =  @serializer.to_a
+
+        assert serializers.first.listed?
+        assert serializers.first.nested?
+
+        assert serializers.last.listed?
+        assert serializers.last.nested?
+      end
     end
   end
 end

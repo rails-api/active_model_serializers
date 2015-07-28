@@ -241,6 +241,18 @@ module ActiveModel
       @serializers_cache ||= ThreadSafe::Cache.new
     end
 
+    def listed?
+      !!@listed
+    end
+
+    def associated?
+      !!@associated
+    end
+
+    def nested?
+      listed? or associated?
+    end
+
     private
 
     attr_reader :options
@@ -256,18 +268,6 @@ module ActiveModel
           get_serializer_for(klass.superclass)
         end
       end
-    end
-
-    def listed?
-      !!@listed
-    end
-
-    def associated?
-      !!@associated
-    end
-
-    def nested?
-      listed? or associated?
     end
 
   end
