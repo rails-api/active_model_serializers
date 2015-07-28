@@ -155,14 +155,13 @@ module ActiveModel
     def initialize(object, options = {})
       @object     = object
 
-      @associated = options.delete(:associated)
-      @listed     = options.delete(:listed)
-
       @options    = options
       @root       = options[:root]
       @meta       = options[:meta]
       @meta_key   = options[:meta_key]
       @scope      = options[:scope]
+      @associated = options[:associated]
+      @listed     = options[:listed]
 
       scope_name = options[:scope_name]
       if scope_name && !respond_to?(scope_name)
