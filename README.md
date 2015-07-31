@@ -170,6 +170,28 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+### Context-aware predicate methods
+
+If you want to serialize attributes or associations differently depending on the context they're serialized, you can use:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  has_many :comments
+
+  def body
+    if listed? or associated? # same as `if nested?`
+      object.body.lines.first + '...'
+    else
+      object.body
+    end
+  end
+end
+```
+
+If object is serialized as part of a nested list of objects, `listed?` will be true. If object is serialized as an association of another object, `associated?` will be true. If either are true, `nested?` will be true.
+
 ### Built in Adapters
 
 #### FlattenJSON

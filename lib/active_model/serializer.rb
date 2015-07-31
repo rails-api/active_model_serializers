@@ -154,11 +154,14 @@ module ActiveModel
 
     def initialize(object, options = {})
       @object     = object
+
       @options    = options
       @root       = options[:root]
       @meta       = options[:meta]
       @meta_key   = options[:meta_key]
       @scope      = options[:scope]
+      @associated = options[:associated]
+      @listed     = options[:listed]
 
       scope_name = options[:scope_name]
       if scope_name && !respond_to?(scope_name)
@@ -208,10 +211,8 @@ module ActiveModel
 
         if serializer_class
           begin
-            serializer = serializer_class.new(
-              association_value,
-              options.except(:serializer).merge(serializer_from_options(association_options))
-            )
+            serializer_options = options.except(:serializer).merge(associated: true).merge(serializer_from_options(association_options))
+            serializer = serializer_class.new(association_value, serializer_options)
           rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
             virtual_value = association_value
             virtual_value = virtual_value.as_json if virtual_value.respond_to?(:as_json)
@@ -237,6 +238,18 @@ module ActiveModel
 
     def self.serializers_cache
       @serializers_cache ||= ThreadSafe::Cache.new
+    end
+
+    def listed?
+      !!@listed
+    end
+
+    def associated?
+      !!@associated
+    end
+
+    def nested?
+      listed? or associated?
     end
 
     private
