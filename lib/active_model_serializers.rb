@@ -2,10 +2,10 @@ require 'active_model'
 require 'active_model/serializer/version'
 require 'active_model/serializer'
 require 'active_model/serializer/fieldset'
-require 'active_model/serializer/railtie'
 require 'active_model/serializable_resource'
 
 begin
+  require 'active_model/serializer/railtie'
   require 'action_controller'
   require 'action_controller/serialization'
 
