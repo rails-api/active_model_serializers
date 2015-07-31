@@ -30,8 +30,8 @@ module ActiveModel
                 @hash[association.key] =
                   if serializer && serializer.object
                     cache_check(serializer) do
-                      options[:fields] = @fieldset && @fieldset.fields_for(association)
-                      association.attributes(options)
+                      options[:fields] = @fieldset && @fieldset.fields_for(serializer)
+                      serializer.attributes(options)
                     end
                   elsif opts[:virtual_value]
                     opts[:virtual_value]
