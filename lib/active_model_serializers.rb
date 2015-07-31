@@ -3,6 +3,7 @@ require 'active_model/serializer/version'
 require 'active_model/serializer'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/railtie'
+require 'active_model/serializable_resource'
 
 begin
   require 'action_controller'
