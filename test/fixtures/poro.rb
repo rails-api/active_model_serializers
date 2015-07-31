@@ -1,8 +1,13 @@
 class Model
+  extend ActiveModel::Naming
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
   def self.model_name
     @_model_name ||= ActiveModel::Name.new(self)
+  end
+
+  def to_model
+    self
   end
 
   def initialize(hash={})
@@ -29,9 +34,14 @@ class Model
     @attributes[:id] || @attributes['id'] || object_id
   end
 
+  def to_param
+    id.to_s
+  end
+
   ### Helper methods, not required to be serializable
   #
   # Convenience for adding @attributes readers and writers
+
   def method_missing(meth, *args)
     if meth.to_s =~ /^(.*)=$/
       @attributes[$1.to_sym] = args[0]
@@ -87,6 +97,7 @@ Comment  = Class.new(Model) do
     "#{self.class.name.downcase}/#{self.id}"
   end
 end
+Tag = Class.new(Model)
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
@@ -241,6 +252,10 @@ PostWithCustomKeysSerializer = Class.new(ActiveModel::Serializer) do
   has_many :comments, key: :reviews
   belongs_to :author, key: :writer
   has_one :blog, key: :site
+end
+
+LinkTagSerializer = Class.new(ActiveModel::Serializer) do
+  has_many :posts, links: true, data: false
 end
 
 VirtualValueSerializer = Class.new(ActiveModel::Serializer) do

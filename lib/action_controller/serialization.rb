@@ -27,6 +27,7 @@ module ActionController
       end
       ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
         if serializable_resource.serializer?
+          serializable_resource.url_helper = self
           serializable_resource.serialization_scope ||= serialization_scope
           serializable_resource.serialization_scope_name = _serialization_scope
           begin
