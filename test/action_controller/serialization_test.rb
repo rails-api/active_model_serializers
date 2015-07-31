@@ -406,7 +406,7 @@ module ActionController
           end
         }.new
         assert_match /adapter: false/, (capture(:stderr) {
-          controller.get_serializer(@profile)
+          controller.get_serializer(Profile.new)
         })
       end
 
@@ -417,7 +417,7 @@ module ActionController
           end
         }.new
         assert_equal "", (capture(:stderr) {
-          controller.get_serializer(@profile)
+          controller.get_serializer(Profile.new)
         })
       end
     end
