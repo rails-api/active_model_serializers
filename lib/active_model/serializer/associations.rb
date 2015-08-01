@@ -29,65 +29,57 @@ module ActiveModel
           base._reflections = self._reflections.try(:dup) || []
         end
 
-        # @param [Array(Array<Symbol>, Hash{Symbol => Object})] attrs
+        # @param [Symbol] name of the association
+        # @param [Hash<Symbol => any>] options for the reflection
         # @return [void]
         #
         # @example
         #  has_many :comments, serializer: CommentSummarySerializer
-        #  has_many :commits, authors
         #
-        def has_many(*attrs)
-          associate attrs do |name, options|
-            HasManyReflection.new(name, options)
-          end
+        def has_many(name, options = {})
+          associate HasManyReflection.new(name, options)
         end
 
-        # @param [Array(Array<Symbol>, Hash{Symbol => Object})] attrs
+        # @param [Symbol] name of the association
+        # @param [Hash<Symbol => any>] options for the reflection
         # @return [void]
         #
         # @example
         #  belongs_to :author, serializer: AuthorSerializer
         #
-        def belongs_to(*attrs)
-          associate attrs do |name, options|
-            BelongsToReflection.new(name, options)
-          end
+        def belongs_to(name, options = {})
+          associate BelongsToReflection.new(name, options)
         end
 
-        # @param [Array(Array<Symbol>, Hash{Symbol => Object})] attrs
+        # @param [Symbol] name of the association
+        # @param [Hash<Symbol => any>] options for the reflection
         # @return [void]
         #
         # @example
         #  has_one :author, serializer: AuthorSerializer
         #
-        def has_one(*attrs)
-          associate attrs do |name, options|
-            HasOneReflection.new(name, options)
-          end
+        def has_one(name, options = {})
+          associate HasOneReflection.new(name, options)
         end
 
         private
 
         # Add reflection and define {name} accessor.
-        # @param [Array<Symbol>]
-        # @yield [Symbol] return reflection
+        # @param [ActiveModel::Serializer::Reflection] reflection
+        # @return [void]
         #
         # @api private
         #
-        def associate(attrs)
-          options = attrs.extract_options!
-
+        def associate(reflection)
           self._reflections = _reflections.dup
 
-          attrs.each do |name|
-            unless method_defined?(name)
-              define_method name do
-                object.send name
-              end
+          unless method_defined?(reflection.name)
+            define_method reflection.name do
+              object.send reflection.name
             end
-
-            self._reflections << yield(name, options)
           end
+
+          self._reflections << reflection
         end
       end
 
