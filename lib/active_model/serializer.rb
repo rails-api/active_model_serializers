@@ -29,8 +29,8 @@ module ActiveModel
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
       base._urls = []
-      serializer_file = File.open(caller.first[/^[^:]+/])
-      base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
+      serializer_file_path = caller.first[/\A\S+(?=:\d+:in)/]
+      base._cache_digest = Digest::MD5.hexdigest(File.read(serializer_file_path))
       super
     end
 
