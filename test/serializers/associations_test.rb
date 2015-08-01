@@ -145,6 +145,14 @@ module ActiveModel
         assert expected_association_keys.include? :writer
         assert expected_association_keys.include? :site
       end
+
+      def test_overriding_associations
+        serializer = CustomizablePostSerializer.new(@post, excludes: [:comments])
+
+        association_keys = serializer.associations.map(&:key)
+
+        assert association_keys.exclude? :comments
+      end
     end
   end
 end
