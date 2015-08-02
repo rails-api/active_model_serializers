@@ -2,6 +2,7 @@ require 'active_model'
 require 'active_model/serializer/version'
 require 'active_model/serializer'
 require 'active_model/serializer/fieldset'
+require 'active_model/serializer/pagination'
 require 'active_model/serializable_resource'
 
 begin
