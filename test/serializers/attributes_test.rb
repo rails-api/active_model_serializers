@@ -14,7 +14,7 @@ module ActiveModel
       end
 
       def test_attributes_definition
-        assert_equal([:name, :description],
+        assert_equal([:name, :description].to_set,
                      @profile_serializer.class._attributes)
       end
 
@@ -30,7 +30,7 @@ module ActiveModel
       end
 
       def test_attributes_inheritance_definition
-        assert_equal([:id, :body], @serializer_klass._attributes)
+        assert_equal([:id, :body].to_set, @serializer_klass._attributes)
       end
 
       def test_attributes_inheritance
@@ -40,8 +40,8 @@ module ActiveModel
       end
 
       def test_attribute_inheritance_with_new_attribute_definition
-        assert_equal([:id, :body, :date, :likes], @serializer_klass_with_new_attributes._attributes)
-        assert_equal([:id, :body], CommentSerializer._attributes)
+        assert_equal([:id, :body, :date, :likes].to_set, @serializer_klass_with_new_attributes._attributes)
+        assert_equal([:id, :body].to_set, CommentSerializer._attributes)
       end
 
       def test_attribute_inheritance_with_new_attribute
@@ -56,7 +56,7 @@ module ActiveModel
           attributes :id, :title, :title, :body
         end
 
-        assert_equal([:id, :title, :body], serializer_class._attributes)
+        assert_equal([:id, :title, :body].to_set, serializer_class._attributes)
       end
     end
   end
