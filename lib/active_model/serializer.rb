@@ -118,7 +118,8 @@ module ActiveModel
     end
 
     def self.deserialize(params)
-      permitted_params = adapter.params(@_params, @_associations.keys) || @_params
+      association_keys = _reflections.map(&:name)
+      permitted_params = adapter.params(@_params, association_keys) || @_params
       permitted_key    = adapter.root || root_name
 
       sanitazed_params = params.require(permitted_key.to_sym).permit(permitted_params)
