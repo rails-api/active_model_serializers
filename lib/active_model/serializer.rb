@@ -3,13 +3,13 @@ require 'thread_safe'
 module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
+    require_relative 'serializer/associations'
+    require_relative 'serializer/attributes'
 
     autoload :Configuration
     autoload :ArraySerializer
     autoload :Adapter
     autoload :Lint
-    autoload :Associations
-    autoload :Attributes
     include Configuration
     include Associations
     include Attributes
