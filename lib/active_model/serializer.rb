@@ -134,7 +134,7 @@ module ActiveModel
       object.id if object
     end
 
-    def type
+    def json_api_type
       object.class.model_name.plural
     end
 

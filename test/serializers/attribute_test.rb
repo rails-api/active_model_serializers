@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     class AttributeTest < Minitest::Test
       def setup
-        @blog = Blog.new({ id: 1, name: 'AMS Hints' })
+        @blog = Blog.new({ id: 1, name: 'AMS Hints', type: "stuff" })
         @blog_serializer = AlternateBlogSerializer.new(@blog)
       end
 
@@ -41,6 +41,21 @@ module ActiveModel
 
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer.new(@blog))
         assert_equal({ blog: { id: "AMS Hints" } }, adapter.serializable_hash)
+      end
+
+      def test_type_attribute
+        attribute_serializer = Class.new(ActiveModel::Serializer) do
+          attribute :id, key: :type
+        end
+        attributes_serializer = Class.new(ActiveModel::Serializer) do
+          attributes :type
+        end
+
+        adapter = ActiveModel::Serializer::Adapter::Json.new(attribute_serializer.new(@blog))
+        assert_equal({ blog: { type: 1} }, adapter.serializable_hash)
+
+        adapter = ActiveModel::Serializer::Adapter::Json.new(attributes_serializer.new(@blog))
+        assert_equal({ blog: { type: "stuff" } }, adapter.serializable_hash)
       end
     end
   end
