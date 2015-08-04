@@ -151,8 +151,8 @@ module ActiveModel
             end
 
             if options[:add_included]
-              Array(serializer).each do |serializer|
-                add_included(key, serializer)
+              Array(serializer).each do |s|
+                add_included(key, s)
               end
             end
           end
