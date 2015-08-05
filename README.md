@@ -255,7 +255,7 @@ end
 The attribute names are a **whitelist** of attributes to be serialized.
 
 The `has_many`, `has_one`, and `belongs_to` declarations describe relationships between
-resources. By default, when you serialize a `Post`, you will get its `Comment`s
+resources. By default, when you serialize a `Post`, you will get its `Comments`
 as well.
 
 You may also use the `:serializer` option to specify a custom serializer class, for example:
