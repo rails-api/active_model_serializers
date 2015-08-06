@@ -9,7 +9,7 @@ module ActiveModel
       end
 
       def test_attributes_definition
-        assert_equal([:id, :title],
+        assert_equal([:id, :title].to_set,
                      @blog_serializer.class._attributes)
       end
 
@@ -31,7 +31,7 @@ module ActiveModel
           attribute :title
         end
 
-        assert_equal([:title], serializer_class._attributes)
+        assert_equal([:title].to_set, serializer_class._attributes)
       end
     end
   end

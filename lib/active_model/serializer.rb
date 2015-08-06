@@ -3,18 +3,18 @@ require 'thread_safe'
 module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
+    require_relative 'serializer/associations'
+    require_relative 'serializer/attributes'
 
     autoload :Configuration
     autoload :ArraySerializer
     autoload :Adapter
     autoload :Lint
-    autoload :Associations
     include Configuration
     include Associations
+    include Attributes
 
     class << self
-      attr_accessor :_attributes
-      attr_accessor :_attributes_keys
       attr_accessor :_urls
       attr_accessor :_cache
       attr_accessor :_fragmented
@@ -26,33 +26,10 @@ module ActiveModel
     end
 
     def self.inherited(base)
-      base._attributes = self._attributes.try(:dup) || []
-      base._attributes_keys = self._attributes_keys.try(:dup) || {}
       base._urls = []
       serializer_file = File.open(caller.first[/^[^:]+/])
       base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
       super
-    end
-
-    def self.attributes(*attrs)
-      attrs = attrs.first if attrs.first.class == Array
-      @_attributes.concat attrs
-      @_attributes.uniq!
-
-      attrs.each do |attr|
-        define_method attr do
-          object && object.read_attribute_for_serialization(attr)
-        end unless method_defined?(attr) || _fragmented.respond_to?(attr)
-      end
-    end
-
-    def self.attribute(attr, options = {})
-      key = options.fetch(:key, attr)
-      @_attributes_keys[attr] = { key: key } if key != attr
-      @_attributes << key unless @_attributes.include?(key)
-      define_method key do
-        object.read_attribute_for_serialization(attr)
-      end unless method_defined?(key) || _fragmented.respond_to?(attr)
     end
 
     def self.fragmented(serializer)
@@ -133,25 +110,6 @@ module ActiveModel
 
     def type
       object.class.model_name.plural
-    end
-
-    def attributes(options = {})
-      attributes =
-        if options[:fields]
-          self.class._attributes & options[:fields]
-        else
-          self.class._attributes.dup
-        end
-
-      attributes += options[:required_fields] if options[:required_fields]
-
-      attributes.each_with_object({}) do |name, hash|
-        unless self.class._fragmented
-          hash[name] = send(name)
-        else
-          hash[name] = self.class._fragmented.public_send(name)
-        end
-      end
     end
 
     def self.serializers_cache
