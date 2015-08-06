@@ -23,10 +23,9 @@ module ActiveModel
       end
 
       def build_links(per_page)
-        pages = pages_from.each_with_object({}) do |(key, value), hash|
+        pages_from.each_with_object({}) do |(key, value), hash|
           hash[key] = "?page=#{value}&per_page=#{per_page}"
         end
-        { pages: pages } unless pages.empty?
       end
 
       def pages_from
