@@ -92,6 +92,15 @@ module ActiveModel
         serializer = ArraySerializer.new(build_named_collection, root: 'custom_root')
         assert_equal serializer.json_key, 'custom_roots'
       end
+
+      def test_pagination_attr_readers
+        serializer = ArraySerializer.new(@resource, pagination: true)
+        assert_equal serializer.pagination, true
+      end
+
+      def test_resource
+        assert_equal @serializer.resource, @resource
+      end
     end
   end
 end

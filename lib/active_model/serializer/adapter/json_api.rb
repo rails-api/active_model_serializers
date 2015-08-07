@@ -1,4 +1,5 @@
 require 'active_model/serializer/adapter/json_api/fragment_cache'
+require 'active_model/serializer/adapter/json_api/pagination_links'
 
 module ActiveModel
   class Serializer
@@ -27,6 +28,8 @@ module ActiveModel
                 @hash[:included] |= result[:included]
               end
             end
+
+            include_pagination_links if serializer.pagination
           else
             @hash[:data] = attributes_for_serializer(serializer, options)
             add_resource_relationships(@hash[:data], serializer)
@@ -156,6 +159,20 @@ module ActiveModel
               end
             end
           end
+        end
+
+        def include_pagination_links
+          return if page_links.empty?
+
+          links? ? @hash[:links].merge!(page_links) : @hash[:links] = page_links
+        end
+
+        def page_links
+          @links ||= JsonApi::PaginationLinks.new(serializer.resource).page_links
+        end
+
+        def links?
+          !@hash[:links].nil?
         end
       end
     end

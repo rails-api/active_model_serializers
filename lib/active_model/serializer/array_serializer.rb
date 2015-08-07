@@ -4,9 +4,8 @@ module ActiveModel
       NoSerializerError = Class.new(StandardError)
       include Enumerable
       delegate :each, to: :@objects
-      delegate :page_links, to: :pagination
 
-      attr_reader :root, :meta, :meta_key, :pagination
+      attr_reader :root, :meta, :meta_key, :pagination, :resource
 
       def initialize(objects, options = {})
         @root = options[:root]
@@ -25,7 +24,7 @@ module ActiveModel
         end
         @meta     = options[:meta]
         @meta_key = options[:meta_key]
-        @pagination = ActiveModel::Serializer::Pagination.new(objects) if options[:pagination]
+        @pagination = options[:pagination]
       end
 
       def json_key

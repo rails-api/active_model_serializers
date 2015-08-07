@@ -94,21 +94,6 @@ module ActiveModel
         json[meta_key] = meta if meta
         json
       end
-
-      def include_pagination_links(json)
-        return unless page_links
-
-        links?(json) ? json.merge!(page_links) : json['links'] = page_links
-        json
-      end
-
-      def page_links
-        @links ||= serializer.page_links
-      end
-
-      def links?(json)
-        !json['links'].nil?
-      end
     end
   end
 end

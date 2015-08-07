@@ -283,7 +283,7 @@ If you want pagination links in your response, specify it in the `render`
 
 AMS relies on either Kaminari or WillPaginate. Please install either dependency by adding one of those to your Gemfile.
 
-Pagination links will only be included in your response if you are using an Adapter that supports `root`, as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
+Pagination links will only be included in your response if you are using a JsonAPI adapter, the others adapters doesn't have this feature.
 
 ## Caching
 
