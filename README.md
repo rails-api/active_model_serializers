@@ -273,18 +273,6 @@ And you can change the JSON key that the serializer should use for a particular 
 The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
 
-## Pagination
-
-If you want pagination links in your response, specify it in the `render`
-
-```ruby
-  render json: @posts, pagination: true
-```
-
-AMS relies on either Kaminari or WillPaginate. Please install either dependency by adding one of those to your Gemfile.
-
-Pagination links will only be included in your response if you are using a JsonAPI adapter, the others adapters doesn't have this feature.
-
 ## Caching
 
 To cache a serializer, call ```cache``` and pass its options.
