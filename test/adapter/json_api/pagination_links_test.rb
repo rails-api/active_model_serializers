@@ -50,23 +50,23 @@ module ActiveModel
                 }
               }],
               links:{
-                first:"?page=1&per_page=1",
-                prev:"?page=1&per_page=1",
-                next:"?page=3&per_page=1",
-                last:"?page=3&per_page=1"
+                first: "http://example.com?page=1&per_page=1",
+                prev: "http://example.com?page=1&per_page=1",
+                next: "http://example.com?page=3&per_page=1",
+                last: "http://example.com?page=3&per_page=1"
               }
             }
           end
 
           def test_pagination_links_using_kaminari
-            serializer = ArraySerializer.new(using_kaminari, pagination: true)
+            serializer = ArraySerializer.new(using_kaminari, pagination: true, original_url: "http://example.com")
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_equal expected_response_with_pagination_links, adapter.serializable_hash
           end
 
           def test_pagination_links_using_will_paginate
-            serializer = ArraySerializer.new(using_will_paginate, pagination: true)
+            serializer = ArraySerializer.new(using_will_paginate, pagination: true, original_url: "http://example.com")
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_equal expected_response_with_pagination_links, adapter.serializable_hash

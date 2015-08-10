@@ -5,11 +5,12 @@ module ActiveModel
         class PaginationLinks
           FIRST_PAGE = 1
 
-          attr_reader :collection
+          attr_reader :collection, :options
 
-          def initialize(collection)
+          def initialize(collection, options={})
             raise_unless_any_gem_installed
             @collection = collection
+            @options = options
           end
 
           def page_links
@@ -20,7 +21,7 @@ module ActiveModel
 
           def build_links
             pages_from.each_with_object({}) do |(key, value), hash|
-              hash[key] = "?page=#{value}&per_page=#{collection.size}"
+              hash[key] = "#{url}?page=#{value}&per_page=#{collection.size}"
             end
           end
 
@@ -44,6 +45,15 @@ module ActiveModel
             return if defined?(WillPaginate) || defined?(Kaminari)
             raise "AMS relies on either Kaminari or WillPaginate." +
               "Please install either dependency by adding one of those to your Gemfile"
+          end
+
+          def url
+            return default_url unless options && options[:links] && options[:links][:self]
+            options[:links][:self]
+          end
+
+          def default_url
+            options[:original_url]
           end
         end
       end

@@ -95,7 +95,7 @@ module ActiveModel
 
       def test_pagination_attr_readers
         serializer = ArraySerializer.new(@resource, pagination: true)
-        assert_equal serializer.pagination, true
+        assert_equal serializer.options[:pagination], true
       end
 
       def test_resource

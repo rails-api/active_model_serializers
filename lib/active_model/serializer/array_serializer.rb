@@ -5,7 +5,7 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@objects
 
-      attr_reader :root, :meta, :meta_key, :pagination, :resource
+      attr_reader :root, :meta, :meta_key, :options, :resource
 
       def initialize(objects, options = {})
         @root = options[:root]
@@ -24,7 +24,7 @@ module ActiveModel
         end
         @meta     = options[:meta]
         @meta_key = options[:meta_key]
-        @pagination = options[:pagination]
+        @options = options
       end
 
       def json_key

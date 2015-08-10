@@ -29,7 +29,7 @@ module ActiveModel
               end
             end
 
-            include_pagination_links if serializer.pagination
+            include_pagination_links if serializer.options[:pagination]
           else
             @hash[:data] = attributes_for_serializer(serializer, options)
             add_resource_relationships(@hash[:data], serializer)
@@ -168,7 +168,7 @@ module ActiveModel
         end
 
         def page_links
-          @links ||= JsonApi::PaginationLinks.new(serializer.resource).page_links
+          @links ||= JsonApi::PaginationLinks.new(serializer.resource, serializer.options).page_links
         end
 
         def links?

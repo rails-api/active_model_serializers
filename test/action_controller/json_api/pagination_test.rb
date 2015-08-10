@@ -47,7 +47,10 @@ module ActionController
         tests PaginationTestController
 
         def test_render_pagination_links_with_will_paginate
-          expected_links = {"first"=>"?page=1&per_page=1", "prev"=>"?page=1&per_page=1", "next"=>"?page=3&per_page=1", "last"=>"?page=3&per_page=1"}
+          expected_links = {"first"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate?page=1&per_page=1",
+            "prev"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate?page=1&per_page=1",
+            "next"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate?page=3&per_page=1",
+            "last"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate?page=3&per_page=1"}
 
           get :render_pagination_using_will_paginate, page: 2, per_page: 1
           response = JSON.parse(@response.body)
@@ -55,21 +58,26 @@ module ActionController
         end
 
         def test_render_only_last_and_next_pagination_links
-          expected_links = {"next"=>"?page=2&per_page=2", "last"=>"?page=2&per_page=2"}
+          expected_links = {"next"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate?page=2&per_page=2",
+            "last"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate?page=2&per_page=2"}
           get :render_pagination_using_will_paginate, page: 1, per_page: 2
           response = JSON.parse(@response.body)
           assert_equal expected_links, response['links']
         end
 
         def test_render_pagination_links_with_kaminari
-          expected_links = {"first"=>"?page=1&per_page=1", "prev"=>"?page=1&per_page=1", "next"=>"?page=3&per_page=1", "last"=>"?page=3&per_page=1"}
+          expected_links = {"first"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari?page=1&per_page=1",
+            "prev"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari?page=1&per_page=1",
+            "next"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari?page=3&per_page=1",
+            "last"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari?page=3&per_page=1"}
           get :render_pagination_using_kaminari, page: 2, per_page: 1
           response = JSON.parse(@response.body)
           assert_equal expected_links, response['links']
         end
 
         def test_render_only_prev_and_first_pagination_links
-          expected_links = {"first"=>"?page=1&per_page=1", "prev"=>"?page=2&per_page=1"}
+          expected_links = {"first"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari?page=1&per_page=1",
+            "prev"=>"http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari?page=2&per_page=1"}
           get :render_pagination_using_kaminari, page: 3, per_page: 1
           response = JSON.parse(@response.body)
           assert_equal expected_links, response['links']
