@@ -14,16 +14,13 @@ module ActiveModel
           end
 
           def page_links
-            build_links
+            pages_from.each_with_object({}) do |(key, value), hash|
+              params = query_parameters.merge(page: { number: value, size: collection.size }).to_query
+              hash[key] = "#{url}?#{params}"
+            end
           end
 
           private
-
-          def build_links
-            pages_from.each_with_object({}) do |(key, value), hash|
-              hash[key] = "#{url}?page=#{value}&per_page=#{collection.size}"
-            end
-          end
 
           def pages_from
             return {} if collection.total_pages == FIRST_PAGE
@@ -54,6 +51,10 @@ module ActiveModel
 
           def default_url
             options[:original_url]
+          end
+
+          def query_parameters
+            options[:query_parameters] ? options[:query_parameters] : {}
           end
         end
       end

@@ -26,7 +26,7 @@ module ActiveModel
             @array.paginate(page: 2, per_page: 1)
           end
 
-          def expected_response_without_pagination_links
+          def data
             {
               data: [{
                 id:"2",
@@ -39,23 +39,28 @@ module ActiveModel
             }
           end
 
-          def expected_response_with_pagination_links
+          def links
             {
-              data: [{
-                id:"2",
-                type:"profiles",
-                attributes:{
-                  name:"Name 2",
-                  description:"Description 2"
-                }
-              }],
               links:{
-                first: "http://example.com?page=1&per_page=1",
-                prev: "http://example.com?page=1&per_page=1",
-                next: "http://example.com?page=3&per_page=1",
-                last: "http://example.com?page=3&per_page=1"
+                first: "http://example.com?page%5Bnumber%5D=1&page%5Bsize%5D=1",
+                prev: "http://example.com?page%5Bnumber%5D=1&page%5Bsize%5D=1",
+                next: "http://example.com?page%5Bnumber%5D=3&page%5Bsize%5D=1",
+                last: "http://example.com?page%5Bnumber%5D=3&page%5Bsize%5D=1"
               }
             }
+          end
+
+          def expected_response_without_pagination_links
+            data
+          end
+
+          def expected_response_with_pagination_links
+            data.merge links
+          end
+
+          def expected_response_with_pagination_links_and_additional_params
+            new_links = links[:links].each_with_object({}) {|(key, value), hash| hash[key] = "#{value}&teste=teste" }
+            data.merge links: new_links
           end
 
           def test_pagination_links_using_kaminari
@@ -70,6 +75,15 @@ module ActiveModel
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_equal expected_response_with_pagination_links, adapter.serializable_hash
+          end
+
+          def test_pagination_links_with_additional_params
+            serializer = ArraySerializer.new(using_will_paginate, pagination: true,
+                                             original_url: "http://example.com",
+                                             query_parameters: { teste: "teste"})
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+
+            assert_equal expected_response_with_pagination_links_and_additional_params, adapter.serializable_hash
           end
 
           def test_not_showing_pagination_links

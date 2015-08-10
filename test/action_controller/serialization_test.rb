@@ -404,9 +404,6 @@ module ActionController
           def use_adapter?
             false
           end
-          def original_url
-            "http://example.com/"
-          end
         }.new
         assert_match /adapter: false/, (capture(:stderr) {
           controller.get_serializer(Profile.new)
@@ -417,9 +414,6 @@ module ActionController
         controller = Class.new(ImplicitSerializationTestController) {
           def use_adapter?
             true
-          end
-          def original_url
-            "http://example.com/"
           end
         }.new
         assert_equal "", (capture(:stderr) {

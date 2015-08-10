@@ -25,7 +25,10 @@ module ActionController
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource#serialize"
         options[:adapter] = false
       end
-      options[:original_url] = original_url
+      if options[:pagination]
+        options[:original_url] = original_url
+        options[:query_parameters] = query_parameters
+      end
       ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
         if serializable_resource.serializer?
           serializable_resource.serialization_scope ||= serialization_scope
@@ -61,6 +64,10 @@ module ActionController
 
     def original_url
       request.original_url.sub(/\?.*$/, "")
+    end
+
+    def query_parameters
+      request.query_parameters
     end
   end
 end
