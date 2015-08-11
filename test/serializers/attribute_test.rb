@@ -33,6 +33,15 @@ module ActiveModel
 
         assert_equal([:title], serializer_class._attributes)
       end
+
+      def test_id_attribute_override
+        serializer = Class.new(ActiveModel::Serializer) do
+          attribute :name, key: :id
+        end
+
+        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer.new(@blog))
+        assert_equal({ blog: { id: "AMS Hints" } }, adapter.serializable_hash)
+      end
     end
   end
 end

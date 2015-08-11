@@ -50,9 +50,12 @@ module ActiveModel
       key = options.fetch(:key, attr)
       @_attributes_keys[attr] = { key: key } if key != attr
       @_attributes << key unless @_attributes.include?(key)
-      define_method key do
-        object.read_attribute_for_serialization(attr)
-      end unless method_defined?(key) || _fragmented.respond_to?(attr)
+
+      unless respond_to?(key, false) || _fragmented.respond_to?(attr)
+        define_method key do
+          object.read_attribute_for_serialization(attr)
+        end
+      end
     end
 
     def self.fragmented(serializer)
