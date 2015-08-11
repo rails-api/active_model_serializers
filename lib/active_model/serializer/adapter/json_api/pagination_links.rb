@@ -5,18 +5,19 @@ module ActiveModel
         class PaginationLinks
           FIRST_PAGE = 1
 
-          attr_reader :collection, :options
+          attr_reader :collection
 
-          def initialize(collection, options={})
+          def initialize(collection)
             raise_unless_any_gem_installed
             @collection = collection
-            @options = options
           end
 
-          def page_links
+          def serializable_hash(options = {})
             pages_from.each_with_object({}) do |(key, value), hash|
+              query_parameters = options.fetch(:query_parameters) { {} }
               params = query_parameters.merge(page: { number: value, size: collection.size }).to_query
-              hash[key] = "#{url}?#{params}"
+
+              hash[key] = "#{url(options)}?#{params}"
             end
           end
 
@@ -44,17 +45,9 @@ module ActiveModel
               "Please install either dependency by adding one of those to your Gemfile"
           end
 
-          def url
-            return default_url unless options && options[:links] && options[:links][:self]
-            options[:links][:self]
-          end
-
-          def default_url
-            options[:original_url]
-          end
-
-          def query_parameters
-            options[:query_parameters] ? options[:query_parameters] : {}
+          def url(options)
+            self_link = options.fetch(:links) {{}}
+            self_link.fetch(:self) {} ? options[:links][:self] : options[:original_url]
           end
         end
       end

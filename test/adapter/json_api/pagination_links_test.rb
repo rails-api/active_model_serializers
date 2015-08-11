@@ -64,31 +64,33 @@ module ActiveModel
           end
 
           def test_pagination_links_using_kaminari
-            serializer = ArraySerializer.new(using_kaminari, pagination: true, original_url: "http://example.com")
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            serializer = ArraySerializer.new(using_kaminari)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, pagination: true)
 
-            assert_equal expected_response_with_pagination_links, adapter.serializable_hash
+            assert_equal expected_response_with_pagination_links,
+              adapter.serializable_hash(original_url: "http://example.com")
           end
 
           def test_pagination_links_using_will_paginate
-            serializer = ArraySerializer.new(using_will_paginate, pagination: true, original_url: "http://example.com")
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            serializer = ArraySerializer.new(using_will_paginate)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, pagination: true)
 
-            assert_equal expected_response_with_pagination_links, adapter.serializable_hash
+            assert_equal expected_response_with_pagination_links,
+              adapter.serializable_hash(original_url: "http://example.com")
           end
 
           def test_pagination_links_with_additional_params
-            serializer = ArraySerializer.new(using_will_paginate, pagination: true,
-                                             original_url: "http://example.com",
-                                             query_parameters: { teste: "teste"})
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            serializer = ArraySerializer.new(using_will_paginate)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, pagination: true)
+            assert_equal expected_response_with_pagination_links_and_additional_params,
+              adapter.serializable_hash(original_url: "http://example.com",
+                                        query_parameters: { teste: "teste"})
 
-            assert_equal expected_response_with_pagination_links_and_additional_params, adapter.serializable_hash
           end
 
           def test_not_showing_pagination_links
-            serializer = ArraySerializer.new(using_will_paginate, pagination: false)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            serializer = ArraySerializer.new(using_will_paginate)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, pagination: false)
 
             assert_equal expected_response_without_pagination_links, adapter.serializable_hash
           end

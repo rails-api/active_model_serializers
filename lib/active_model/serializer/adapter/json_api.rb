@@ -20,7 +20,7 @@ module ActiveModel
           options ||= {}
           if serializer.respond_to?(:each)
             serializer.each do |s|
-              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
+              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash({})
               @hash[:data] << result[:data]
 
               if result[:included]
@@ -29,9 +29,9 @@ module ActiveModel
               end
             end
 
-            include_pagination_links if serializer.options[:pagination]
+            add_links(options)
           else
-            @hash[:data] = attributes_for_serializer(serializer, options)
+            @hash[:data] = attributes_for_serializer(serializer, {})
             add_resource_relationships(@hash[:data], serializer)
           end
           @hash
@@ -161,18 +161,14 @@ module ActiveModel
           end
         end
 
-        def include_pagination_links
-          return if page_links.empty?
-
-          links? ? @hash[:links].merge!(page_links) : @hash[:links] = page_links
+        def add_links(options)
+          links = @hash.fetch(:links) { {} }
+          resources = serializer.instance_variable_get(:@resource)
+          @hash[:links] = add_pagination_links(links, resources, options) if @options[:pagination]
         end
 
-        def page_links
-          @links ||= JsonApi::PaginationLinks.new(serializer.resource, serializer.options).page_links
-        end
-
-        def links?
-          !@hash[:links].nil?
+        def add_pagination_links(links, resources, options)
+          links.update(JsonApi::PaginationLinks.new(resources).serializable_hash(options))
         end
       end
     end
