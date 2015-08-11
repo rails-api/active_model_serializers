@@ -16,7 +16,7 @@ module ActiveModel
         end
 
         def serializable_hash(options = nil)
-          options = {}
+          options ||= {}
           if serializer.respond_to?(:each)
             serializer.each do |s|
               result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
