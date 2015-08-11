@@ -41,8 +41,10 @@ module ActiveModel
 
           def raise_unless_any_gem_installed
             return if defined?(WillPaginate) || defined?(Kaminari)
-            raise "AMS relies on either Kaminari or WillPaginate." +
-              "Please install either dependency by adding one of those to your Gemfile"
+            raise <<-EOF
+            AMS relies on either Kaminari or WillPaginate for pagination.
+            Please install either dependency by adding one of those to your Gemfile.
+            EOF
           end
 
           def url(options)
