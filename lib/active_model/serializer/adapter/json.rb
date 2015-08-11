@@ -37,7 +37,7 @@ module ActiveModel
             @result = @core.merge @hash
           end
 
-          { root => @result }
+          { (options[:root] || root) => @result }
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
