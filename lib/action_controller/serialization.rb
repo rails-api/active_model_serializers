@@ -63,7 +63,7 @@ module ActionController
     end
 
     def original_url
-      request.original_url.sub(/\?.*$/, "")
+      request.original_url[/\A[^?]+/]
     end
 
     def query_parameters

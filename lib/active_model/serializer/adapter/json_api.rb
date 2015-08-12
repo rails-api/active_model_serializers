@@ -20,7 +20,7 @@ module ActiveModel
           options ||= {}
           if serializer.respond_to?(:each)
             serializer.each do |s|
-              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash({})
+              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
               @hash[:data] << result[:data]
 
               if result[:included]
@@ -31,7 +31,7 @@ module ActiveModel
 
             add_links(options)
           else
-            @hash[:data] = attributes_for_serializer(serializer, {})
+            @hash[:data] = attributes_for_serializer(serializer, options)
             add_resource_relationships(@hash[:data], serializer)
           end
           @hash
