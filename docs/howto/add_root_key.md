@@ -4,9 +4,9 @@ Add the root key to your API is quite simple with AMS. The **Adapter** is what d
 
 ```json
 {
-  id: 1,
-  title: "Awesome Post Tile",
-  content: "Post content"
+  "id": 1,
+  "title": "Awesome Post Tile",
+  "content": "Post content"
 }
 ```
 
@@ -23,10 +23,10 @@ ex:
 
 ```json
 {
-  post: {
-    id: 1,
-    title: "Awesome Post Tile",
-    content: "Post content"
+  "post": {
+    "id": 1,
+    "title": "Awesome Post Tile",
+    "content": "Post content"
   }
 }
 ```
@@ -35,16 +35,16 @@ or if it returns a collection:
 
 ```json
 {
-  posts: [
+  "posts": [
     {
-      id: 1,
-      title: "Awesome Post Tile",
-      content: "Post content"
+      "id": 1,
+      "title": "Awesome Post Tile",
+      "content": "Post content"
     },
     {
-      id: 2,
-      title: "Another Post Tile",
-      content: "Another post content"
+      "id": 2,
+      "title": "Another Post Tile",
+      "content": "Another post content"
     }
   ]
 }
