@@ -44,7 +44,7 @@ module ActiveModel
         def add_relationships(resource, name, serializers)
           resource[:relationships] ||= {}
           resource[:relationships][name] ||= { data: [] }
-          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.type, id: serializer.id.to_s } }
+          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
         end
 
         def add_relationship(resource, name, serializer, val=nil)
@@ -52,7 +52,7 @@ module ActiveModel
           resource[:relationships][name] = { data: val }
 
           if serializer && serializer.object
-            resource[:relationships][name][:data] = { type: serializer.type, id: serializer.id.to_s }
+            resource[:relationships][name][:data] = { type: serializer.json_api_type, id: serializer.id.to_s }
           end
         end
 
@@ -97,14 +97,14 @@ module ActiveModel
 
         def resource_object_for(serializer, options)
           options[:fields] = @fieldset && @fieldset.fields_for(serializer)
-          options[:required_fields] = [:id, :type]
+          options[:required_fields] = [:id, :json_api_type]
 
           cache_check(serializer) do
             attributes = serializer.attributes(options)
 
             result = {
               id: attributes.delete(:id).to_s,
-              type: attributes.delete(:type)
+              type: attributes.delete(:json_api_type)
             }
 
             result[:attributes] = attributes if attributes.any?
@@ -151,8 +151,8 @@ module ActiveModel
             end
 
             if options[:add_included]
-              Array(serializer).each do |serializer|
-                add_included(key, serializer)
+              Array(serializer).each do |s|
+                add_included(key, s)
               end
             end
           end
