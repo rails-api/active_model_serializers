@@ -27,6 +27,8 @@ module ActiveModel
             return {} if collection.total_pages == FIRST_PAGE
 
             {}.tap do |pages|
+              pages[:self] = collection.current_page
+
               unless collection.current_page == FIRST_PAGE
                 pages[:first] = FIRST_PAGE
                 pages[:prev]  = collection.current_page - FIRST_PAGE

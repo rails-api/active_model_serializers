@@ -42,6 +42,7 @@ module ActiveModel
           def links
             {
               links:{
+                self: "http://example.com?page%5Bnumber%5D=2&page%5Bsize%5D=1",
                 first: "http://example.com?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                 prev: "http://example.com?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                 next: "http://example.com?page%5Bnumber%5D=3&page%5Bsize%5D=1",
