@@ -54,8 +54,8 @@ module ActiveModel
         end
 
         def fragment_serializer(name, klass)
-          cached     = "#{name.capitalize}CachedSerializer"
-          non_cached = "#{name.capitalize}NonCachedSerializer"
+          cached     = "#{to_valid_const_name(name)}CachedSerializer"
+          non_cached = "#{to_valid_const_name(name)}NonCachedSerializer"
 
           Object.const_set cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(cached)
           Object.const_set non_cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(non_cached)
@@ -71,6 +71,10 @@ module ActiveModel
           serializers = {cached: cached, non_cached: non_cached}
           cached_attributes(klass, serializers)
           serializers
+        end
+
+        def to_valid_const_name(name)
+          name.gsub('::', '_')
         end
       end
     end
