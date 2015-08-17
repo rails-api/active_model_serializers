@@ -106,7 +106,7 @@ module ActiveModel::Serializer::Lint
     private
 
     def resource
-      @resource
+      @resource or fail "'@resource' must be set as the linted object"
     end
 
     def assert_instance_of(result, name)
