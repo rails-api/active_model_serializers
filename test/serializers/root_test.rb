@@ -5,13 +5,17 @@ module ActiveModel
     class RootTest < Minitest::Test
 
       def setup
-        @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-        @profile_serializer = ProfileSerializer.new(@post, {root: 'smth'})
+        @virtual_value = VirtualValue.new(id: 1)
       end
 
       def test_overwrite_root
-        setup
-        assert_equal('smth', @profile_serializer.json_key)
+        serializer = VirtualValueSerializer.new(@virtual_value, {root: 'smth'})
+        assert_equal('smth', serializer.json_key)
+      end
+
+      def test_underscore_in_root
+        serializer = VirtualValueSerializer.new(@virtual_value)
+        assert_equal('virtual_value', serializer.json_key)
       end
 
     end
