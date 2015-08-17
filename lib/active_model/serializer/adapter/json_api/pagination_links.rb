@@ -14,7 +14,7 @@ module ActiveModel
 
           def serializable_hash(options = {})
             pages_from.each_with_object({}) do |(key, value), hash|
-              query_parameters = options.fetch(:query_parameters) { {} }
+              query_parameters = options[:pagination].fetch(:query_parameters) { {} }
               params = query_parameters.merge(page: { number: value, size: collection.size }).to_query
 
               hash[key] = "#{url(options)}?#{params}"
@@ -51,7 +51,7 @@ module ActiveModel
 
           def url(options)
             self_link = options.fetch(:links) {{}}
-            self_link.fetch(:self) {} ? options[:links][:self] : options[:original_url]
+            self_link.fetch(:self) {} ? options[:links][:self] : options[:pagination][:original_url]
           end
         end
       end

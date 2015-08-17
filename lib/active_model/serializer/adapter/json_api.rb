@@ -164,7 +164,7 @@ module ActiveModel
         def add_links(options)
           links = @hash.fetch(:links) { {} }
           resources = serializer.instance_variable_get(:@resource)
-          @hash[:links] = add_pagination_links(links, resources, options) if @options[:pagination]
+          @hash[:links] = add_pagination_links(links, resources, options) if options[:pagination]
         end
 
         def add_pagination_links(links, resources, options)

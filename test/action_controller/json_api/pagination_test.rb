@@ -31,19 +31,16 @@ module ActionController
           end
 
           def render_pagination_using_kaminari
-            render json: using_kaminari, adapter: :json_api, pagination: true
+            render json: using_kaminari, adapter: :json_api
           end
 
           def render_pagination_using_will_paginate
-            render json: using_will_paginate, adapter: :json_api, pagination: true
+            render json: using_will_paginate, adapter: :json_api
           end
 
           def render_array_without_pagination_links
-            render json: using_will_paginate, adapter: :json_api, pagination: false
-          end
-
-          def render_array_omitting_pagination_options
-            render json: using_kaminari, adapter: :json_api
+            setup
+            render json: @array, adapter: :json_api
           end
         end
 
@@ -101,12 +98,6 @@ module ActionController
 
         def test_array_without_pagination_links
           get :render_array_without_pagination_links, page: { number: 2, size: 1 }
-          response = JSON.parse(@response.body)
-          refute response.key? 'links'
-        end
-
-        def test_array_omitting_pagination_options
-          get :render_array_omitting_pagination_options, page: { number: 2, size: 1 }
           response = JSON.parse(@response.body)
           refute response.key? 'links'
         end

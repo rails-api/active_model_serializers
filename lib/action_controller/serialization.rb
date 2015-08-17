@@ -25,9 +25,10 @@ module ActionController
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource#serialize"
         options[:adapter] = false
       end
-      if options[:pagination]
-        options[:original_url] = original_url
-        options[:query_parameters] = query_parameters
+      if resource.respond_to?(:current_page) && resource.respond_to?(:total_pages)
+        options[:pagination] = {}
+        options[:pagination][:original_url] = original_url
+        options[:pagination][:query_parameters] = query_parameters
       end
       ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
         if serializable_resource.serializer?

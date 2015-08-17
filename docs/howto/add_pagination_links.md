@@ -1,14 +1,18 @@
 # How to add pagination links
 
-If you want pagination links in your response, specify it in the `render`
+Pagination links will be included in your response automatically as long as the resource is paginated and if you are using a ```JSON-API``` adapter. The others adapters does not have this feature.
+
+If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
 
 ```ruby
-  render json: @posts, pagination: true
+#kaminari example
+@posts = Kaminari.paginate_array(Post.all).page(3).per(1)
+render json: @posts
+
+#will_paginate example
+@posts = Post.all.paginate(page: 3, per_page: 1)
+render json: @posts
 ```
-
-AMS relies on either `Kaminari` or `WillPaginate`. Please install either dependency by adding one of those to your Gemfile.
-
-Pagination links will only be included in your response if you are using a ```JSON-API``` adapter, the others adapters doesn't have this feature.
 
 ```ruby
 ActiveModel::Serializer.config.adapter = :json_api
@@ -38,3 +42,5 @@ ex:
   }
 }
 ```
+
+AMS relies on either [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate). Please install either dependency by adding one of those to your Gemfile.
