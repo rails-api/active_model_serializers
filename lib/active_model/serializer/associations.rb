@@ -89,10 +89,14 @@ module ActiveModel
         return unless object
 
         Enumerator.new do |y|
-          self.class._reflections.each do |reflection|
+          reflections.each do |reflection|
             y.yield reflection.build_association(self, options)
           end
         end
+      end
+
+      def reflections
+        self.class._reflections
       end
     end
   end

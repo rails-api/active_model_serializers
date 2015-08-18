@@ -102,6 +102,13 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
+CustomizablePostSerializer = Class.new(PostSerializer) do
+  def reflections
+    excludes = @options[:excludes] || []
+    super.select{ |r| excludes.exclude?(r.name) }
+  end
+end
+
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
   has_many :related
