@@ -9,6 +9,8 @@ module ActiveModel
     class Adapter
       class JsonApi
         class PaginationLinksTest < Minitest::Test
+          URI = 'http://example.com'
+
           def setup
             ActionController::Base.cache_store.clear
             @array = [
@@ -16,6 +18,14 @@ module ActiveModel
               Profile.new({ id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2' }),
               Profile.new({ id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3' })
             ]
+          end
+
+          def mock_request(query_parameters={}, original_url=URI)
+            context = Minitest::Mock.new
+            context.expect(:original_url, original_url )
+            context.expect(:query_parameters, query_parameters)
+            @options = {}
+            @options[:context] = context
           end
 
           def using_kaminari
@@ -38,11 +48,11 @@ module ActiveModel
           def links
             {
               links:{
-                self: "http://example.com?page%5Bnumber%5D=2&page%5Bsize%5D=1",
-                first: "http://example.com?page%5Bnumber%5D=1&page%5Bsize%5D=1",
-                prev: "http://example.com?page%5Bnumber%5D=1&page%5Bsize%5D=1",
-                next: "http://example.com?page%5Bnumber%5D=3&page%5Bsize%5D=1",
-                last: "http://example.com?page%5Bnumber%5D=3&page%5Bsize%5D=1"
+                self: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1",
+                first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
+                prev: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
+                next: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1",
+                last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1"
               }
             }
           end
@@ -59,7 +69,7 @@ module ActiveModel
           end
 
           def expected_response_with_pagination_links_and_additional_params
-            new_links = links[:links].each_with_object({}) {|(key, value), hash| hash[key] = "#{value}&teste=teste" }
+            new_links = links[:links].each_with_object({}) {|(key, value), hash| hash[key] = "#{value}&test=test" }
             {}.tap do |hash|
               hash[:data] = [data.values.flatten.second]
               hash.merge! links: new_links
@@ -70,25 +80,25 @@ module ActiveModel
             serializer = ArraySerializer.new(using_kaminari)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal expected_response_with_pagination_links,
-              adapter.serializable_hash(pagination: { original_url: "http://example.com" })
+            mock_request
+            assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
           end
 
           def test_pagination_links_using_will_paginate
             serializer = ArraySerializer.new(using_will_paginate)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal expected_response_with_pagination_links,
-              adapter.serializable_hash(pagination: { original_url: "http://example.com" })
+            mock_request
+            assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
           end
 
           def test_pagination_links_with_additional_params
             serializer = ArraySerializer.new(using_will_paginate)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            assert_equal expected_response_with_pagination_links_and_additional_params,
-              adapter.serializable_hash(pagination: { original_url: "http://example.com",
-                                        query_parameters: { teste: "teste"}})
 
+            mock_request({ test: 'test' })
+            assert_equal expected_response_with_pagination_links_and_additional_params,
+              adapter.serializable_hash(@options)
           end
 
           def test_not_showing_pagination_links

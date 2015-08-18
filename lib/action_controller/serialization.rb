@@ -25,11 +25,6 @@ module ActionController
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource#serialize"
         options[:adapter] = false
       end
-      if resource.respond_to?(:current_page) && resource.respond_to?(:total_pages)
-        options[:pagination] = {}
-        options[:pagination][:original_url] = original_url
-        options[:pagination][:query_parameters] = query_parameters
-      end
       ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
         if serializable_resource.serializer?
           serializable_resource.serialization_scope ||= serialization_scope
@@ -52,6 +47,7 @@ module ActionController
 
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
+        options.fetch(:context) { options[:context] = request }
         serializable_resource = get_serializer(resource, options)
         super(serializable_resource, options)
       end
@@ -61,14 +57,6 @@ module ActionController
       def serialization_scope(scope)
         self._serialization_scope = scope
       end
-    end
-
-    def original_url
-      request.original_url[/\A[^?]+/]
-    end
-
-    def query_parameters
-      request.query_parameters
     end
   end
 end

@@ -21,9 +21,9 @@ module ActiveModel
       end
 
       def as_json(options = nil)
-        serializable_hash(options).tap do |hash|
-          include_meta(hash)
-        end
+        hash = serializable_hash(options)
+        include_meta(hash)
+        hash
       end
 
       def self.create(resource, options = {})

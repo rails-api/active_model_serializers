@@ -5,16 +5,15 @@ module ActiveModel
         class PaginationLinks
           FIRST_PAGE = 1
 
-          attr_reader :collection
+          attr_reader :collection, :context
 
-          def initialize(collection)
-            raise_unless_any_gem_installed
+          def initialize(collection, context)
             @collection = collection
+            @context = context
           end
 
           def serializable_hash(options = {})
             pages_from.each_with_object({}) do |(key, value), hash|
-              query_parameters = options[:pagination].fetch(:query_parameters) { {} }
               params = query_parameters.merge(page: { number: value, size: collection.size }).to_query
 
               hash[key] = "#{url(options)}?#{params}"
@@ -41,17 +40,17 @@ module ActiveModel
             end
           end
 
-          def raise_unless_any_gem_installed
-            return if defined?(WillPaginate) || defined?(Kaminari)
-            raise <<-EOF
-            AMS relies on either Kaminari or WillPaginate for pagination.
-            Please install either dependency by adding one of those to your Gemfile.
-            EOF
-          end
-
           def url(options)
             self_link = options.fetch(:links) {{}}
-            self_link.fetch(:self) {} ? options[:links][:self] : options[:pagination][:original_url]
+            self_link.fetch(:self) {} ? options[:links][:self] : original_url
+          end
+
+          def original_url
+            @original_url ||= context.original_url[/\A[^?]+/]
+          end
+
+          def query_parameters
+            @query_parameters ||= context.query_parameters
           end
         end
       end
