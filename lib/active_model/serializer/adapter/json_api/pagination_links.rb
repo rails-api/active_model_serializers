@@ -41,8 +41,7 @@ module ActiveModel
           end
 
           def url(options)
-            self_link = options.fetch(:links) {{}}
-            self_link.fetch(:self) {} ? options[:links][:self] : original_url
+            @url ||= options.fetch(:links, {}).fetch(:self, nil) || original_url
           end
 
           def original_url
