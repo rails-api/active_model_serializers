@@ -274,9 +274,9 @@ The `url` declaration describes which named routes to use while generating URLs
 for your JSON. Not every adapter will require URLs.
 ## Pagination
 
-Pagination links will be included in your response automatically as long as the resource is paginated using [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate) and if you are using a ```JSON-API``` adapter. The others adapters does not have this feature.
+Pagination links will be included in your response automatically as long as the resource is paginated using [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate) and if you are using a ```JSON-API``` adapter.
 
-For more information about it, please see in our docs [How to add pagination links](https://github.com/rails-api/active_model_serializers/blob/master/docs/howto/add_pagination_links.md)
+Although the others adapters does not have this feature, it is possible to implement pagination links to `JSON` adapter. For more information about it, please see in our docs [How to add pagination links](https://github.com/rails-api/active_model_serializers/blob/master/docs/howto/add_pagination_links.md)
 
 ## Caching
 

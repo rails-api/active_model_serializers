@@ -1,6 +1,8 @@
 # How to add pagination links
 
-Pagination links will be included in your response automatically as long as the resource is paginated and if you are using a ```JSON-API``` adapter. The others adapters does not have this feature.
+### JSON-API adapter
+
+Pagination links will be included in your response automatically as long as the resource is paginated and if you are using a ```JSON-API``` adapter.
 
 If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
 
@@ -44,3 +46,53 @@ ex:
 ```
 
 AMS relies on either [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate). Please install either dependency by adding one of those to your Gemfile.
+
+### JSON adapter
+
+If you are using `JSON` adapter, pagination links will not be included automatically, but it is possible to do so using `meta` key.
+
+In your action specify a custom serializer.
+```ruby
+render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
+```
+
+And then, you could do something like the following class.
+```ruby
+class PaginatedSerializer < ActiveModel::Serializer::ArraySerializer
+  def initialize(object, options={})
+    meta_key = options[:meta_key] || :meta
+    options[meta_key] ||= {}
+    options[meta_key] = {
+      current_page: object.current_page,
+      next_page: object.next_page,
+      prev_page: object.prev_page,
+      total_pages: object.total_pages,
+      total_count: object.total_count
+    }
+    super(object, options)
+  end
+end
+```
+ex.
+```json
+{
+  "articles": [
+    {
+      "id": 2,
+      "title": "JSON API paints my bikeshed!",
+      "body": "The shortest article. Ever."
+    }
+  ],
+  "meta": {
+    "current_page": 3,
+    "next_page": 4,
+    "prev_page": 2,
+    "total_pages": 10,
+    "total_count": 10
+  }
+}
+```
+
+### FlattenJSON adapter
+
+This adapter does not allow us to use `meta` key, due to that it is not possible to add pagination links.
