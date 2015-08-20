@@ -13,6 +13,8 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 
 - [How to add root key](howto/add_root_key.md)
 
+- [Filtering Assocations](howto/filter_associations.md)
+
 ## Getting Help
 
 If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).
