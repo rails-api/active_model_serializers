@@ -6,13 +6,26 @@ Pagination links will be included in your response automatically as long as the 
 
 If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
 
+###### Kaminari examples
 ```ruby
-#kaminari example
-@posts = Kaminari.paginate_array(Post.all).page(3).per(1)
+#array
+@posts = Kaminari.paginate_array([1, 2, 3]).page(3).per(1)
 render json: @posts
 
-#will_paginate example
-@posts = Post.all.paginate(page: 3, per_page: 1)
+#active_record
+@posts = Post.page(3).per(1)
+render json: @posts
+```
+
+###### WillPaginate examples
+
+```ruby
+#array
+@posts = [1,2,3].paginate(page: 3, per_page: 1)
+render json: @posts
+
+#active_record
+@posts = Post.page(3).per_page(1)
 render json: @posts
 ```
 
@@ -45,7 +58,8 @@ ex:
 }
 ```
 
-AMS relies on either [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate). Please install either dependency by adding one of those to your Gemfile.
+AMS pagination relies on a paginated collection with the methods `current_page`, `total_pages`, and `size`, such as are supported by both [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
+
 
 ### JSON adapter
 
