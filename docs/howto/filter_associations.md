@@ -2,7 +2,7 @@
 
 Say you have the following model: 
 
-```
+```ruby
 class CategorySerializer < ActiveModel::Serializer
   attributes :id, :name
   has_many :products
@@ -13,7 +13,7 @@ For smaller apps, the rendering and loading of the serialized object (and its ch
 
 You can do this by adding:
 
-```
+```ruby
 def filter(keys)
   keys.delete :products if serialization_options[:products_disabled]
 end
@@ -23,7 +23,7 @@ There are a few ways that you can invoke this.
 
 Rails Console / Testing: 
 
-```
+```ruby
 @category = Category.create(name: "Sample Category")
 
 serializer = CategorySerializer.new(@category)
@@ -32,7 +32,7 @@ serializer.as_json(products_disabled: true)
 
 Controller: 
 
-```
+```ruby
 class CategoryController < ApplicationController
   def index
     @categories = Category.all
