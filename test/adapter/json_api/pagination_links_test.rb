@@ -28,6 +28,11 @@ module ActiveModel
             @options[:context] = context
           end
 
+          def load_adapter(paginated_collection, options = {})
+            options = options.merge(adapter: :json_api)
+            ActiveModel::SerializableResource.new(paginated_collection, options)
+          end
+
           def using_kaminari
             Kaminari.paginate_array(@array).page(2).per(1)
           end
@@ -77,24 +82,21 @@ module ActiveModel
           end
 
           def test_pagination_links_using_kaminari
-            serializer = ArraySerializer.new(using_kaminari)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            adapter = load_adapter(using_kaminari)
 
             mock_request
             assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
           end
 
           def test_pagination_links_using_will_paginate
-            serializer = ArraySerializer.new(using_will_paginate)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            adapter = load_adapter(using_will_paginate)
 
             mock_request
             assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
           end
 
           def test_pagination_links_with_additional_params
-            serializer = ArraySerializer.new(using_will_paginate)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            adapter = load_adapter(using_will_paginate)
 
             mock_request({ test: 'test' })
             assert_equal expected_response_with_pagination_links_and_additional_params,
@@ -102,8 +104,7 @@ module ActiveModel
           end
 
           def test_not_showing_pagination_links
-            serializer = ArraySerializer.new(@array)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+            adapter = load_adapter(@array)
 
             assert_equal expected_response_without_pagination_links, adapter.serializable_hash
           end
