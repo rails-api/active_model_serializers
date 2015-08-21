@@ -3,7 +3,10 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in active_model_serializers.gemspec
 gemspec
 
-gem "minitest"
+group :development do
+  gem "minitest"
+  gem "sqlite3"
+end
 
 version = ENV["RAILS_VERSION"] || "4.2"
 
