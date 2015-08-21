@@ -15,10 +15,13 @@ environment:
 
 install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - ruby --version
+  - gem --version
   - gem install bundler
+  - bundler --version
   - bundle install --retry=3
 
 test_script:
-  - RAILS_ENV=test bundle exec rake
+  - bundle exec rake
 
 build: off
