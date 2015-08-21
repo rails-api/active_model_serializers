@@ -11,7 +11,7 @@ module ActiveModel
         def self.params_whitelist(permitted, associations)
           relationships = {}
           associations.each do |assoc|
-            relationships[assoc] = { @root => DEFAULT_ATTRIBUTES }
+            relationships[assoc] = [ @root, @root => DEFAULT_ATTRIBUTES ]
           end
 
           return :id, :type, { attributes: permitted }, { relationships: relationships }
