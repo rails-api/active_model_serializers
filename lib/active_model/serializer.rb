@@ -115,18 +115,21 @@ module ActiveModel
     def self.sanitize_params(params, whitelist = nil)
       attrs = @_params
       assocs = _reflections.map(&:name)
+      forbid_id = false
       if whitelist
         assocs = assocs & whitelist
         attrs = @_params & whitelist
+        forbid_id = !whitelist.include?(:id)
       end
-      permitted_params = adapter.params_whitelist(attrs, assocs)
+      permitted_params = adapter.params_whitelist(attrs, assocs, forbid_id)
       permitted_key = adapter.root || root_name
 
       params.require(permitted_key.to_sym).permit(permitted_params)
     end
 
     def self.deserialize(params, whitelist = nil)
-      sanitized_params = sanitize_params(params, whitelist.map { |x| x.to_sym })
+      whitelist = whitelist.map { |x| x.to_sym } if whitelist
+      sanitized_params = sanitize_params(params, whitelist)
       adapter.parse(sanitized_params)
     end
 
