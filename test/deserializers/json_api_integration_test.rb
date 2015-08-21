@@ -44,8 +44,6 @@ module ActionController
       end
 
       def test_json_api_deserialization_on_create_with_associations
-        # data[relationships][user][data][type]
-        # data[relationships][user][data][id]
         post_params = {
           data: {
             type: 'posts',
@@ -54,7 +52,12 @@ module ActionController
               body: 'ZOMG now a post body'
             },
             relationships: {
-
+              comments:{
+                data:{
+                  id: 1,
+                  type: 'comment'
+                }
+              }
             }
           }
         }

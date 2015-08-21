@@ -2,7 +2,7 @@ class Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
   def self.create(params)
-    @attributes = params
+    new(params)
   end
 
   @@associations = {}
