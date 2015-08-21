@@ -8,13 +8,15 @@ module ActiveModel
         @root = :data
         DEFAULT_ATTRIBUTES = [:id, :type]
 
-        def self.params_whitelist(permitted, associations)
+        def self.params_whitelist(permitted, associations, forbid_id = false)
           relationships = {}
           associations.each do |assoc|
             relationships[assoc] = [ @root, @root => DEFAULT_ATTRIBUTES ]
           end
+          whitelist = :type, { attributes: permitted }, { relationships: relationships }
+          whitelist << :id unless forbid_id
 
-          return :id, :type, { attributes: permitted }, { relationships: relationships }
+          whitelist
         end
 
         def self.parse(params)
