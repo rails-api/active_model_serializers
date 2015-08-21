@@ -29,7 +29,7 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
-      base._params = self._attributes.try(:dup)  || []
+      base._params = self._attributes.try(:dup) || []
       base._urls = []
 
       serializer_file = File.open(caller.first[/^[^:]+/])
@@ -124,6 +124,19 @@ module ActiveModel
 
       sanitazed_params = params.require(permitted_key.to_sym).permit(permitted_params)
       adapter.parse(sanitazed_params)
+    end
+
+    def self.sanitize_params(params)
+      association_keys = _reflections.map(&:name)
+      permitted_params = adapter.params(@_params, association_keys) || @_params
+      permitted_key = adapter.root || root_name
+
+      params.require(permitted_key.to_sym).permit(permitted_params)
+    end
+
+    def self.deserialize(params)
+      sanitized_params = sanitize_params(params)
+      adapter.parse(sanitized_params)
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
