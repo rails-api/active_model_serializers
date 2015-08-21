@@ -40,7 +40,7 @@ module ActiveModel
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
       @_attributes.uniq!
-      @_params ||= @_attributes
+      @_params = @_attributes
 
       attrs.each do |attr|
         define_method attr do
@@ -53,6 +53,7 @@ module ActiveModel
       key = options.fetch(:key, attr)
       @_attributes_keys[attr] = { key: key } if key != attr
       @_attributes << key unless @_attributes.include?(key)
+      @_params << key unless @_params.include?(key)
 
       unless respond_to?(key, false) || _fragmented.respond_to?(attr)
         define_method key do
