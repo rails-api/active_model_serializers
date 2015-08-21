@@ -15,10 +15,17 @@ Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
 
 require 'capture_warnings'
-@capture_warnings = CaptureWarnings.new(fail_build = false)
+@capture_warnings = CaptureWarnings.new(fail_build = true)
 @capture_warnings.before_tests
-Minitest.after_run do
-  @capture_warnings.after_tests
+if Minitest.respond_to?(:after_run)
+  Minitest.after_run do
+    @capture_warnings.after_tests
+  end
+else
+  at_exit do
+    STDOUT.puts "Minitest.after_run not available."
+    @capture_warnings.after_tests
+  end
 end
 
 require 'active_model_serializers'

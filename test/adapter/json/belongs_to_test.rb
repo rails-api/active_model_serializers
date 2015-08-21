@@ -11,7 +11,6 @@ module ActiveModel
             @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
             @post.comments = [@comment]
             @anonymous_post.comments = []
-            @post.author = @author
             @comment.post = @post
             @comment.author = nil
             @anonymous_post.author = nil

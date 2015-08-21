@@ -81,7 +81,7 @@ module ActiveModel
       def test_serializer_options_are_passed_into_associations_serializers
         association = @post_serializer
                         .associations
-                        .detect { |association| association.key == :comments }
+                        .detect { |assoc| assoc.key == :comments }
 
         assert association.serializer.first.custom_options[:custom_options]
       end

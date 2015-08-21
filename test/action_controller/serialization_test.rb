@@ -129,7 +129,6 @@ module ActionController
         def render_fragment_changed_object_with_relationship
           comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
           comment2 = Comment.new({ id: 1, body: 'ZOMG AN UPDATED-BUT-NOT-CACHE-EXPIRED COMMENT' })
-          author = Author.new(id: 1, name: 'Joao Moura.')
           like = Like.new({ id: 1, likeable: comment, time: 3.days.ago })
 
           generate_cached_serializer(like)
@@ -215,14 +214,16 @@ module ActionController
         get :render_json_object_without_serializer
 
         assert_equal 'application/json', @response.content_type
-        assert_equal ({error: 'Result is Invalid'}).to_json, @response.body
+        expected_body = {error: 'Result is Invalid'}
+        assert_equal expected_body.to_json, @response.body
       end
 
       def test_render_json_array_object_without_serializer
         get :render_json_array_object_without_serializer
 
         assert_equal 'application/json', @response.content_type
-        assert_equal ([{error: 'Result is Invalid'}]).to_json, @response.body
+        expected_body = [{error: 'Result is Invalid'}]
+        assert_equal expected_body.to_json, @response.body
       end
 
       def test_render_array_using_implicit_serializer
@@ -405,9 +406,9 @@ module ActionController
             false
           end
         }.new
-        assert_match /adapter: false/, (capture(:stderr) {
+        assert_match(/adapter: false/, (capture(:stderr) {
           controller.get_serializer(Profile.new)
-        })
+        }))
       end
 
       def test_dont_warn_overridding_use_adapter_as_truthy_on_controller_instance

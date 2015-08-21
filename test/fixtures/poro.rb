@@ -1,3 +1,5 @@
+verbose = $VERBOSE
+$VERBOSE = nil
 class Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
@@ -260,9 +262,4 @@ Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:id]
   attributes :id
 end
-
-RaiseErrorSerializer = Class.new(ActiveModel::Serializer) do
-  def json_key
-    raise StandardError, 'Intentional error for rescue_from test'
-  end
-end
+$VERBOSE = verbose
