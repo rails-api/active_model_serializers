@@ -21,7 +21,7 @@ module ActiveModel
         def self.parse(params)
           attrs, assoc = {}, {}
           attrs = params['attributes'] if params['attributes']
-          assoc = params['relationships'].map {|a| {a.shift => a.first['data']['type'].camelize.safe_constantize.find(a.shift['data']['id'])}} if params['relationships']
+          assoc = params['relationships'].map {|a| {a.shift => a.first['data']['type'].camelize.singularize.safe_constantize.find(a.shift['data']['id'])}} if params['relationships']
           assoc.reduce attrs, :merge
         end
 
