@@ -117,8 +117,8 @@ module ActiveModel
       assocs = _reflections.map(&:name)
       forbid_id = false
       if whitelist
-        assocs = assocs & whitelist
-        attrs = @_params & whitelist
+        assocs &= whitelist
+        attrs &= whitelist
         forbid_id = !whitelist.include?(:id)
       end
       permitted_params = adapter.params_whitelist(attrs, assocs, forbid_id)
