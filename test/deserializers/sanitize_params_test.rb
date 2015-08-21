@@ -12,11 +12,6 @@ module ActiveModel
       end
 
       def test_sanitize_attributes
-        # class PostSerializer < ActiveModelSerializer
-        #   attributes :id, :title, :body
-        # end
-
-
         payload = {
           'data' => {
             'type' => 'posts',
