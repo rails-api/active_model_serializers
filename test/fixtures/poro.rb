@@ -5,6 +5,12 @@ class Model
     @attributes = params
   end
 
+  @@associations = {}
+
+  def self.associations=(assoc)
+    @@associations = assoc
+  end
+
   def self.model_name
     @_model_name ||= ActiveModel::Name.new(self)
   end
@@ -41,6 +47,8 @@ class Model
       @attributes[$1.to_sym] = args[0]
     elsif @attributes.key?(meth)
       @attributes[meth]
+    elsif @@associations.key?(meth)
+      @@associations[meth] == :has_many ? [] : nil
     else
       super
     end
@@ -114,7 +122,15 @@ PostSerialization = Class.new(ActiveModel::Serializer) do
   end
 end
 
-SpammyPostSerialization = Class.new(ActiveModel::Serializer) do
+Post.associations = {
+  comments: :has_many,
+  tags: :has_many,
+  related: :has_many,
+  author: :belongs_to,
+  blog: :belongs_to
+}
+
+SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
   has_many :related
 
@@ -135,7 +151,12 @@ CommentSerialization = Class.new(ActiveModel::Serializer) do
   end
 end
 
-AuthorSerialization = Class.new(ActiveModel::Serializer) do
+Comment.associations = {
+  post: :belongs_to,
+  author: :belongs_to
+}
+
+AuthorSerializer = Class.new(ActiveModel::Serializer) do
   cache key:'writer', skip_digest: true
   attributes :id, :name
 
@@ -144,7 +165,13 @@ AuthorSerialization = Class.new(ActiveModel::Serializer) do
   has_one :bio
 end
 
-RoleSerialization = Class.new(ActiveModel::Serializer) do
+Author.associations = {
+  posts: :has_many,
+  roles: :has_many,
+  bio: :has_one
+}
+
+RoleSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:name], skip_digest: true
   attributes :id, :name, :description, :slug
 
@@ -155,13 +182,21 @@ RoleSerialization = Class.new(ActiveModel::Serializer) do
   belongs_to :author
 end
 
-LikeSerialization = Class.new(ActiveModel::Serializer) do
+Role.associations = {
+  author: :belongs_to
+}
+
+LikeSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :time
 
   belongs_to :likeable
 end
 
-LocationSerialization = Class.new(ActiveModel::Serializer) do
+Like.associations = {
+  likeable: :belongs_to
+}
+
+LocationSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:place], skip_digest: true
   attributes :id, :lat, :lng
 
@@ -172,20 +207,32 @@ LocationSerialization = Class.new(ActiveModel::Serializer) do
   end
 end
 
-PlaceSerialization = Class.new(ActiveModel::Serializer) do
+Location.associations = {
+  place: :belongs_to
+}
+
+PlaceSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :name
 
   has_many :locations
 end
 
-BioSerialization = Class.new(ActiveModel::Serializer) do
+Place.associations = {
+  locations: :has_many
+}
+
+BioSerializer = Class.new(ActiveModel::Serializer) do
   cache except: [:content], skip_digest: true
   attributes :id, :content, :rating
 
   belongs_to :author
 end
 
-BlogSerialization = Class.new(ActiveModel::Serializer) do
+Bio.associations = {
+  author: :belongs_to
+}
+
+BlogSerializer = Class.new(ActiveModel::Serializer) do
   cache key: 'blog'
   attributes :id, :name
 
@@ -193,7 +240,12 @@ BlogSerialization = Class.new(ActiveModel::Serializer) do
   has_many :articles
 end
 
-PaginatedSerialization = Class.new(ActiveModel::Serializer::ArraySerializer) do
+Blog.associations = {
+  writer: :belongs_to,
+  articles: :has_many
+}
+
+PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
   def json_key
     'paginated'
   end
