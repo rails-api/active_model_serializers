@@ -6,6 +6,7 @@ module ActiveModel
       extend ActiveSupport::Autoload
       autoload :Json
       autoload :FlattenJson
+      autoload :NestedJson
       autoload :Null
       autoload :JsonApi
 

@@ -266,3 +266,18 @@ RaiseErrorSerializer = Class.new(ActiveModel::Serializer) do
     raise StandardError, 'Intentional error for rescue_from test'
   end
 end
+
+CommentNestedSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :body, :id
+end
+
+PostNestedSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :title, :body, :id
+  has_many :comments, serializer: CommentNestedSerializer
+end
+
+AuthorNestedSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+  has_many :posts, serializer: PostNestedSerializer
+end
+
