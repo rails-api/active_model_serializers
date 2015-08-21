@@ -42,8 +42,7 @@ module ActiveModel
         def initialize(serializer, options = {})
           super
           @root = self.class.root
-          @hash = {}
-          @hash[@root] = []
+          @hash = { @root => [] }
 
           if fields = options.delete(:fields)
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
