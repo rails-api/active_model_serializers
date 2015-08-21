@@ -8,7 +8,7 @@ module ActiveModel
         @root = :data
         DEFAULT_ATTRIBUTES = [:id, :type]
 
-        def self.params(permitted, associations)
+        def self.params_whitelist(permitted, associations)
           relationships = {}
           associations.each do |assoc|
             relationships[assoc] = { @root => DEFAULT_ATTRIBUTES }

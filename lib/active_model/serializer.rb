@@ -37,11 +37,6 @@ module ActiveModel
       super
     end
 
-    def self.params(*attrs)
-      @_params.concat attrs
-      @_params.uniq!
-    end
-
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
@@ -128,7 +123,7 @@ module ActiveModel
 
     def self.sanitize_params(params)
       association_keys = _reflections.map(&:name)
-      permitted_params = adapter.params(@_params, association_keys) || @_params
+      permitted_params = adapter.params_whitelist(@_params, association_keys) || @_params
       permitted_key = adapter.root || root_name
 
       params.require(permitted_key.to_sym).permit(permitted_params)
