@@ -29,6 +29,66 @@ module ActiveModel
         assert_equal(payload['data'], object)
       end
 
+      def test_sanitize_attributes_whitelist
+        payload = {
+          'data' => {
+            'type' => 'posts',
+            'attributes' => {
+              'title' => 'Title 1',
+              'body' => 'Body 1'
+            }
+          }
+        }
+
+        object = with_adapter :json_api do
+          PostSerializer.sanitize_params(ActionController::Parameters.new(payload),
+                                         [:title])
+        end
+
+        expected = {
+          'type' => 'posts',
+          'attributes' => {
+            'title' => 'Title 1'
+          }
+        }
+
+        assert_equal(expected, object)
+      end
+
+      def test_sanitize_associations_whitelist
+        payload = {
+          'data' => {
+            'type' => 'posts',
+            'relationships' => {
+              'author' => {
+                'data' => { 'id' => 1, 'type' => 'authors' }
+              },
+              'comments' => {
+                'data' => [ { 'id' => 1, 'type' => 'comments' },
+                            { 'id' => 2, 'type' => 'comments' }]
+              }
+            }
+          }
+        }
+
+        object = with_adapter :json_api do
+          PostSerializer.sanitize_params(ActionController::Parameters.new(payload),
+                                         [:comments])
+        end
+
+        expected = {
+          'type' => 'posts',
+          'relationships' => {
+            'comments' => {
+              'data' => [ { 'id' => 1, 'type' => 'comments' },
+                          { 'id' => 2, 'type' => 'comments' }]
+            }
+          }
+        }
+
+        assert_equal(expected, object)
+      end
+
       def test_sanitize_association_to_one
         payload = {
           'data' => {
