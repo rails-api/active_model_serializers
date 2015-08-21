@@ -20,7 +20,7 @@ class CaptureWarnings
 
   def after_tests
     stderr_file.rewind
-    lines = stderr_file.read.split("\n").uniq
+    lines = stderr_file.read.split("\n")
     stderr_file.close!
 
     $stderr.reopen(STDERR)
