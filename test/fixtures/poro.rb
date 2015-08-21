@@ -78,69 +78,23 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   urls :posts, :comments
 end
 
-Post = Class.new(Model)
-Post.associations = {
-  comments: :has_many,
-  tags: :has_many,
-  related: :has_many,
-  author: :belongs_to,
-  blog: :belongs_to
-}
-
-Like = Class.new(Model)
-Like.associations = {
-  likeable: :belongs_to
-}
-
-Author = Class.new(Model)
-Author.associations = {
-  posts: :has_many,
-  roles: :has_many,
-  bio: :has_one
-}
-
-Bio = Class.new(Model)
-Bio.associations = {
-  author: :belongs_to
-}
-
-Blog = Class.new(Model)
-Blog.associations = {
-  writer: :belongs_to,
-  articles: :has_many
-}
-
-Role = Class.new(Model)
-Role.associations = {
-  author: :belongs_to
-}
-
-User = Class.new(Model)
-
+Post     = Class.new(Model)
+Like     = Class.new(Model)
+Author   = Class.new(Model)
+Bio      = Class.new(Model)
+Blog     = Class.new(Model)
+Role     = Class.new(Model)
+User     = Class.new(Model)
 Location = Class.new(Model)
-Location.associations = {
-  place: :belongs_to
-}
-
-Place = Class.new(Model)
-Place.associations = {
-  locations: :has_many
-}
-
-Tag = Class.new(Model)
-
+Place    = Class.new(Model)
+Tag      = Class.new(Model)
 VirtualValue = Class.new(Model)
-
-Comment = Class.new(Model) do
+Comment  = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{self.id}"
   end
 end
-Comment.associations = {
-  post: :belongs_to,
-  author: :belongs_to
-}
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
@@ -163,6 +117,14 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
+Post.associations = {
+  comments: :has_many,
+  tags: :has_many,
+  related: :has_many,
+  author: :belongs_to,
+  blog: :belongs_to
+}
+
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
   has_many :related
@@ -184,6 +146,11 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
+Comment.associations = {
+  post: :belongs_to,
+  author: :belongs_to
+}
+
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
   cache key:'writer', skip_digest: true
   attributes :id, :name
@@ -192,6 +159,12 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
   has_many :roles, embed: :ids
   has_one :bio
 end
+
+Author.associations = {
+  posts: :has_many,
+  roles: :has_many,
+  bio: :has_one
+}
 
 RoleSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:name], skip_digest: true
@@ -204,11 +177,19 @@ RoleSerializer = Class.new(ActiveModel::Serializer) do
   belongs_to :author
 end
 
+Role.associations = {
+  author: :belongs_to
+}
+
 LikeSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :time
 
   belongs_to :likeable
 end
+
+Like.associations = {
+  likeable: :belongs_to
+}
 
 LocationSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:place], skip_digest: true
@@ -221,11 +202,19 @@ LocationSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
+Location.associations = {
+  place: :belongs_to
+}
+
 PlaceSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :name
 
   has_many :locations
 end
+
+Place.associations = {
+  locations: :has_many
+}
 
 BioSerializer = Class.new(ActiveModel::Serializer) do
   cache except: [:content], skip_digest: true
@@ -234,6 +223,10 @@ BioSerializer = Class.new(ActiveModel::Serializer) do
   belongs_to :author
 end
 
+Bio.associations = {
+  author: :belongs_to
+}
+
 BlogSerializer = Class.new(ActiveModel::Serializer) do
   cache key: 'blog'
   attributes :id, :name
@@ -241,6 +234,11 @@ BlogSerializer = Class.new(ActiveModel::Serializer) do
   belongs_to :writer
   has_many :articles
 end
+
+Blog.associations = {
+  writer: :belongs_to,
+  articles: :has_many
+}
 
 PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
   def json_key
