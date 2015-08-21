@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 
+Windows Build Status - [![Build Status](https://ci.appveyor.com/api/projects/status/1dly7uj4l69bchmu)
+
 ActiveModel::Serializer brings convention over configuration to your JSON generation.
 
 AMS does this through two components: **serializers** and **adapters**.
