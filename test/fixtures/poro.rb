@@ -66,7 +66,7 @@ end
 class Profile < Model
 end
 
-class ProfileSerialization < ActiveModel::Serializer
+class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 
   urls :posts, :comments
@@ -76,7 +76,7 @@ class ProfileSerialization < ActiveModel::Serializer
   end
 end
 
-class ProfilePreviewSerialization < ActiveModel::Serializer
+class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
 
   urls :posts, :comments
@@ -149,7 +149,7 @@ Comment.associations = {
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
-PostSerialization = Class.new(ActiveModel::Serializer) do
+PostSerializer = Class.new(ActiveModel::Serializer) do
   cache key:'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
   params :title, :body
@@ -177,7 +177,7 @@ SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
-CommentSerialization = Class.new(ActiveModel::Serializer) do
+CommentSerializer = Class.new(ActiveModel::Serializer) do
   cache expires_in: 1.day, skip_digest: true
   attributes :id, :body
 
@@ -253,48 +253,48 @@ PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
   end
 end
 
-AlternateBlogSerialization = Class.new(ActiveModel::Serializer) do
+AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
   attribute :id
   attribute :name, key: :title
 end
 
-CustomBlogSerialization = Class.new(ActiveModel::Serializer) do
+CustomBlogSerializer = Class.new(ActiveModel::Serializer) do
   attribute :id
   attribute :special_attribute
 
   has_many :articles
 end
 
-CommentPreviewSerialization = Class.new(ActiveModel::Serializer) do
+CommentPreviewSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
   belongs_to :post
 end
 
-AuthorPreviewSerialization = Class.new(ActiveModel::Serializer) do
+AuthorPreviewSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
   has_many :posts
 end
 
-PostPreviewSerialization = Class.new(ActiveModel::Serializer) do
+PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
   def self.root_name
     'posts'
   end
 
   attributes :title, :body, :id
 
-  has_many :comments, serializer: CommentPreviewSerialization
-  belongs_to :author, serializer: AuthorPreviewSerialization
+  has_many :comments, serializer: CommentPreviewSerializer
+  belongs_to :author, serializer: AuthorPreviewSerializer
 end
 
-PostWithTagsSerialization = Class.new(ActiveModel::Serializer) do
+PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
   has_many :tags
 end
 
-PostWithCustomKeysSerialization = Class.new(ActiveModel::Serializer) do
+PostWithCustomKeysSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
   has_many :comments, key: :reviews
@@ -302,7 +302,7 @@ PostWithCustomKeysSerialization = Class.new(ActiveModel::Serializer) do
   has_one :blog, key: :site
 end
 
-VirtualValueSerialization = Class.new(ActiveModel::Serializer) do
+VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
   has_many :reviews, virtual_value: [{id: 1}, {id: 2}]
@@ -315,12 +315,12 @@ VirtualValueSerialization = Class.new(ActiveModel::Serializer) do
   end
 end
 
-Spam::UnrelatedLinkSerialization = Class.new(ActiveModel::Serializer) do
-  cache only: [:id]
+Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
+    cache only: [:id]
   attributes :id
 end
 
-RaiseErrorSerialization = Class.new(ActiveModel::Serializer) do
+RaiseErrorSerializer = Class.new(ActiveModel::Serializer) do
   def json_key
     raise StandardError, 'Intentional error for rescue_from test'
   end

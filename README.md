@@ -27,7 +27,7 @@ Given two models, a `Post(title: string, body: text)` and a
 serializers:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   cache key: 'posts', expires_in: 3.hours
   attributes :title, :body
 
@@ -40,7 +40,7 @@ end
 and
 
 ```ruby
-class CommentSerialization < ActiveModel::Serializer
+class CommentSerializer < ActiveModel::Serializer
   attributes :name, :body
 
   belongs_to :post
@@ -75,7 +75,7 @@ ActiveModel::Serializer.config.adapter = :json
 If you would like the key in the outputted JSON to be different from its name in ActiveRecord, you can use the :key option to customize it:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :body
 
   # look up :subject on the model, but use +title+ in the JSON
@@ -97,7 +97,7 @@ class PostsController < ApplicationController
 end
 ```
 
-In this case, Rails will look for a serializer named `PostSerialization `, and if
+In this case, Rails will look for a serializer named `PostSerializer `, and if
 it exists, use it to serialize the `Post`.
 
 ### Specify a serializer
@@ -107,7 +107,7 @@ If you wish to use a serializer other than the default, you can explicitly pass 
 #### 1. For a resource:
 
 ```ruby
-  render json: @post, serializer: PostPreviewSerialization
+  render json: @post, serializer: PostPreviewSerializer
 ```
 
 #### 2. For an array resource:
@@ -115,7 +115,7 @@ If you wish to use a serializer other than the default, you can explicitly pass 
 ```ruby
 # Use the default `ArraySerializer`, which will use `each_serializer` to
 # serialize each element
-render json: @posts, each_serializer: PostPreviewSerialization
+render json: @posts, each_serializer: PostPreviewSerializer
 
 # Or, you can explicitly provide the collection serializer as well
 render json: @posts, serializer: CollectionSerializer, each_serializer: PostPreviewSerializer
@@ -143,7 +143,7 @@ render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 If you want to override any association, you can use:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :body
 
   has_many :comments
@@ -159,7 +159,7 @@ end
 If you want to override any attribute, you can use:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   attributes :id, :body
 
   has_many :comments
@@ -230,7 +230,7 @@ The generated seralizer will contain basic `attributes` and
 `has_many`/`has_one`/`belongs_to` declarations, based on the model. For example:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
   has_many :comments
@@ -243,7 +243,7 @@ end
 and
 
 ```ruby
-class CommentSerialization < ActiveModel::Serializer
+class CommentSerializer < ActiveModel::Serializer
   attributes :name, :body
 
   belongs_to :post_id
@@ -298,7 +298,7 @@ cache(options = nil) # options: ```{key, expires_in, compress, force, race_condi
 Take the example bellow:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   cache key: 'post', expires_in: 3.hours
   attributes :title, :body
 
@@ -323,7 +323,7 @@ You can define the attribute by using ```only``` or ```except``` option on cache
 Example:
 
 ```ruby
-class PostSerialization < ActiveModel::Serializer
+class PostSerializer < ActiveModel::Serializer
   cache key: 'post', expires_in: 3.hours, only: [:title]
   attributes :title, :body
 

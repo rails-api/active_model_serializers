@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module ActionController
-  module Serialization
+  module Serializer
     class JsonApiIntegrationTest < ActionController::TestCase
       class JsonApiIntegrationTestController < ActionController::Base
         def create_resource
@@ -14,7 +14,7 @@ module ActionController
         private
 
         def post_params
-          PostSerialization.deserialize(params)
+          PostSerializer.deserialize(params)
         end
 
         def with_adapter(adapter)

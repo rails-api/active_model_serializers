@@ -150,7 +150,7 @@ module ActiveModel
           end
 
           def test_include_multiple_posts_and_linked
-            serializer = BioSerialization .new @bio1
+            serializer = BioSerializer .new @bio1
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
               include: ['author', 'author.posts']
@@ -206,7 +206,7 @@ module ActiveModel
           def test_underscore_model_namespace_for_linked_resource_type
             spammy_post = Post.new(id: 123)
             spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
-            serializer = SpammyPostSerialization .new(spammy_post)
+            serializer = SpammyPostSerializer .new(spammy_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
             relationships = adapter.serializable_hash[:data][:relationships]
             expected = {
@@ -254,7 +254,7 @@ module ActiveModel
 
           def test_nil_link_with_specified_serializer
             @first_post.author = nil
-            serializer = PostPreviewSerialization .new(@first_post)
+            serializer = PostPreviewSerializer .new(@first_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
               include: ['author']

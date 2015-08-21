@@ -2,10 +2,10 @@
 require 'test_helper'
 
 module ActionController
-  module Serialization
+  module Serializer
     class ImplicitSerializerTest < ActionController::TestCase
       include ActiveSupport::Testing::Stream
-      class ImplicitSerializationTestController < ActionController::Base
+      class ImplicitSerializerTestController < ActionController::Base
         def render_using_implicit_serializer
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile
@@ -154,7 +154,7 @@ module ActionController
         end
       end
 
-      tests ImplicitSerializationTestController
+      tests ImplicitSerializerTestController
 
       # We just have Null for now, this will change
       def test_render_using_implicit_serializer
@@ -400,7 +400,7 @@ module ActionController
       end
 
       def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
-        controller = Class.new(ImplicitSerializationTestController) {
+        controller = Class.new(ImplicitSerializerTestController) {
           def use_adapter?
             false
           end
@@ -411,7 +411,7 @@ module ActionController
       end
 
       def test_dont_warn_overridding_use_adapter_as_truthy_on_controller_instance
-        controller = Class.new(ImplicitSerializationTestController) {
+        controller = Class.new(ImplicitSerializerTestController) {
           def use_adapter?
             true
           end

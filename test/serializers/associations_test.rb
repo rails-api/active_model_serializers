@@ -39,9 +39,9 @@ module ActiveModel
         @post.author = @author
         @author.posts = [@post]
 
-        @post_serializer = PostSerialization .new(@post, {custom_options: true})
-        @author_serializer = AuthorSerialization .new(@author)
-        @comment_serializer = CommentSerialization .new(@comment)
+        @post_serializer = PostSerializer .new(@post, {custom_options: true})
+        @author_serializer = AuthorSerializer .new(@author)
+        @comment_serializer = CommentSerializer .new(@comment)
       end
 
       def test_has_many_and_has_one
@@ -67,7 +67,7 @@ module ActiveModel
       end
 
       def test_has_many_with_no_serializer
-        PostWithTagsSerialization.new(@post).associations.each do |association|
+        PostWithTagsSerializer.new(@post).associations.each do |association|
           key = association.key
           serializer = association.serializer
           options = association.options
@@ -92,7 +92,7 @@ module ActiveModel
 
           case key
           when :post
-            assert_kind_of(PostSerialization, serializer)
+            assert_kind_of(PostSerializer, serializer)
           when :author
             assert_nil serializer
           else
@@ -112,18 +112,18 @@ module ActiveModel
       end
 
       def test_associations_inheritance
-        inherited_klass = Class.new(PostSerialization)
+        inherited_klass = Class.new(PostSerializer)
 
-        assert_equal(PostSerialization._reflections, inherited_klass._reflections)
+        assert_equal(PostSerializer._reflections, inherited_klass._reflections)
       end
 
       def test_associations_inheritance_with_new_association
-        inherited_klass = Class.new(PostSerialization) do
-          has_many :top_comments, serializer: CommentSerialization
+        inherited_klass = Class.new(PostSerializer) do
+          has_many :top_comments, serializer: CommentSerializer
         end
 
         assert(
-          PostSerialization._reflections.all? do |reflection|
+          PostSerializer._reflections.all? do |reflection|
             inherited_klass._reflections.include?(reflection)
           end
         )
@@ -136,7 +136,7 @@ module ActiveModel
       end
 
       def test_associations_custom_keys
-        serializer = PostWithCustomKeysSerialization.new(@post)
+        serializer = PostWithCustomKeysSerializer.new(@post)
 
         expected_association_keys = serializer.associations.map(&:key)
 

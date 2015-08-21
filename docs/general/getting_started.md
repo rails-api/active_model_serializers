@@ -49,7 +49,7 @@ end
 and
 
 ```ruby
-class CommentSerialization < ActiveModel::Serializer
+class CommentSerializer < ActiveModel::Serializer
   attributes :name, :body
 
   belongs_to :post_id

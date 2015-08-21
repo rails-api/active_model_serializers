@@ -12,7 +12,7 @@ module ActiveModel
       end
 
       def test_meta_is_present_with_root
-        serializer = AlternateBlogSerialization.new(@blog, meta: {total: 10})
+        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10})
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {
           blog: {
@@ -37,7 +37,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used
-        serializer = AlternateBlogSerialization.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
+        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
         expected = {
@@ -53,7 +53,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used_with_json_api
-        serializer = AlternateBlogSerialization.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
+        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
         expected = {
           data: {
@@ -114,7 +114,7 @@ module ActiveModel
       private
 
       def load_adapter(options)
-        options = options.merge(adapter: :flatten_json, serializer: AlternateBlogSerialization)
+        options = options.merge(adapter: :flatten_json, serializer: AlternateBlogSerializer)
         ActiveModel::SerializableResource.new(@blog, options)
       end
     end

@@ -183,7 +183,7 @@ module ActiveModel
 
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
-        serializer_class_name = "#{klass.name}Serialization"
+        serializer_class_name = "#{klass.name}Serializer"
         serializer_class = serializer_class_name.safe_constantize
 
         if serializer_class

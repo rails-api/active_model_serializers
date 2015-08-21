@@ -5,7 +5,7 @@ module ActiveModel
     class AdapterTest < Minitest::Test
       def setup
         profile = Profile.new
-        @serializer = ProfileSerialization .new(profile)
+        @serializer = ProfileSerializer .new(profile)
         @adapter = ActiveModel::Serializer::Adapter.new(@serializer)
       end
 

@@ -20,7 +20,7 @@ module ActiveModel
         end
 
         def test_custom_keys
-          serializer = PostWithCustomKeysSerialization.new(@post)
+          serializer = PostWithCustomKeysSerializer.new(@post)
           adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
           assert_equal({

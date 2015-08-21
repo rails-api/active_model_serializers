@@ -10,18 +10,18 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
 
   def test_generates_a_serializer
     run_generator
-    assert_file "app/serializers/account_serializer.rb", /class AccountSerialization < ActiveModel::Serializer/
+    assert_file "app/serializers/account_serializer.rb", /class AccountSerializer < ActiveModel::Serializer/
   end
 
   def test_generates_a_namespaced_serializer
     run_generator ["admin/account"]
-    assert_file "app/serializers/admin/account_serializer.rb", /class Admin::AccountSerialization < ActiveModel::Serializer/
+    assert_file "app/serializers/admin/account_serializer.rb", /class Admin::AccountSerializer < ActiveModel::Serializer/
   end
 
   def test_uses_application_serializer_if_one_exists
     Object.const_set(:ApplicationSerializer, Class.new)
     run_generator
-    assert_file "app/serializers/account_serializer.rb", /class AccountSerialization < ApplicationSerializer/
+    assert_file "app/serializers/account_serializer.rb", /class AccountSerializer < ApplicationSerializer/
   ensure
     Object.send :remove_const, :ApplicationSerializer
   end
@@ -29,7 +29,7 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   def test_uses_given_parent
     Object.const_set(:ApplicationSerializer, Class.new)
     run_generator ["Account", "--parent=MySerializer"]
-    assert_file "app/serializers/account_serializer.rb", /class AccountSerialization < MySerializer/
+    assert_file "app/serializers/account_serializer.rb", /class AccountSerializer < MySerializer/
   ensure
     Object.send :remove_const, :ApplicationSerializer
   end
