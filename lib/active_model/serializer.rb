@@ -14,6 +14,7 @@ module ActiveModel
 
     class << self
       attr_accessor :_attributes
+      attr_accessor :_params
       attr_accessor :_attributes_keys
       attr_accessor :_urls
       attr_accessor :_cache
@@ -28,16 +29,23 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
+      base._params = self._attributes.try(:dup) || []
       base._urls = []
       serializer_file = File.open(caller.first[/^[^:]+/])
       base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
       super
     end
 
+    def self.params(*attrs)
+      @_params.concat attrs
+      @_params.uniq!
+    end
+
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
       @_attributes.uniq!
+      @_params ||= @_attributes
 
       attrs.each do |attr|
         define_method attr do
@@ -106,6 +114,19 @@ module ActiveModel
 
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
+    end
+
+    def self.sanitize_params(params)
+      association_keys = _reflections.map(&:name)
+      permitted_params = adapter.params(@_params, association_keys) || @_params
+      permitted_key = adapter.root || root_name
+
+      params.require(permitted_key.to_sym).permit(permitted_params)
+    end
+
+    def self.deserialize(params)
+      sanitized_params = sanitize_params(params)
+      adapter.parse(sanitized_params)
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
