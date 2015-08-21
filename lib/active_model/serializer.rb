@@ -14,6 +14,7 @@ module ActiveModel
 
     class << self
       attr_accessor :_attributes
+      attr_accessor :_params
       attr_accessor :_attributes_keys
       attr_accessor :_urls
       attr_accessor :_cache
@@ -28,6 +29,7 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
+      base._params = self._attributes.try(:dup) || []
       base._urls = []
       serializer_file = File.open(caller.first[/^[^:]+/])
       base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
@@ -38,6 +40,7 @@ module ActiveModel
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
       @_attributes.uniq!
+      @_params = @_attributes
 
       attrs.each do |attr|
         define_method attr do
@@ -50,6 +53,7 @@ module ActiveModel
       key = options.fetch(:key, attr)
       @_attributes_keys[attr] = { key: key } if key != attr
       @_attributes << key unless @_attributes.include?(key)
+      @_params << key unless @_params.include?(key)
 
       unless respond_to?(key, false) || _fragmented.respond_to?(attr)
         define_method key do
@@ -106,6 +110,27 @@ module ActiveModel
 
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
+    end
+
+    def self.sanitize_params(params, whitelist = nil)
+      attrs = @_params
+      assocs = _reflections.map(&:name)
+      forbid_id = false
+      if whitelist
+        assocs &= whitelist
+        attrs &= whitelist
+        forbid_id = !whitelist.include?(:id)
+      end
+      permitted_params = adapter.params_whitelist(attrs, assocs, forbid_id)
+      permitted_key = adapter.root || root_name
+
+      params.require(permitted_key.to_sym).permit(permitted_params)
+    end
+
+    def self.deserialize(params, whitelist = nil)
+      whitelist = whitelist.map { |x| x.to_sym } if whitelist
+      sanitized_params = sanitize_params(params, whitelist)
+      adapter.parse(sanitized_params)
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
