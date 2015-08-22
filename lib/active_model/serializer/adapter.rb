@@ -8,6 +8,7 @@ module ActiveModel
       autoload :FlattenJson
       autoload :Null
       autoload :JsonApi
+      autoload :CollectionJson
 
       attr_reader :serializer
 
