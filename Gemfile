@@ -5,7 +5,8 @@ gemspec
 
 group :development do
   gem "minitest"
-  gem "sqlite3"
+  gem "sqlite3", platform: :ruby
+  gem "activerecord-jdbcsqlite3-adapter", platform: :jruby
 end
 
 version = ENV["RAILS_VERSION"] || "4.2"
