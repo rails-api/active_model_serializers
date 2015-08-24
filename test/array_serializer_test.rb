@@ -15,6 +15,10 @@ module ActiveModel
         resource
       end
 
+      def test_has_object_reader_serializer_interface
+        assert_equal @serializer.object, @resource
+      end
+
       def test_respond_to_each
         assert_respond_to @serializer, :each
       end
