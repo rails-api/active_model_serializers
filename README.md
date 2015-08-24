@@ -333,6 +333,48 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+## Serializable Resource Interface
+
+Serializable resources must include [`ActiveModel::Serialization`](https://github.com/rails/rails/blob/master/activemodel/lib/active_model/serialization.rb)
+or implement its interface:
+
+- `#serializable_hash(options)`: hash representation of a resources attributes
+- `#read_attribute_for_serialization(name)`: gets the attribute value for serialization
+
+ActiveRecord::Base objects include ActiveModel::Serialization
+
+The additionally must implement:
+- `#as_json(options)`: Hash representation of a serialized resource, may delegate to #serializable_hash
+- `#to_json(options)`: string representation (JSON) to Hash from `as_json`
+- `#cache_key`: a (self-expiring) unique key for the instance, used by the adapter
+- `#id`: a unique identifier for the object
+- `::model_name`: an ActiveModel::Name instance, used by the serializer to identify the type
+
+ActiveRecord::Base objects implement these methods by default.
+
+## Manual Serialization
+
+For the simple case, you may serialize a object with the below snippet:
+
+```ruby
+serializer_class = ActiveModel::Serializer.serializer_for(obj)
+serializer = serializer_class.new(obj)
+adapter = ActiveModel::Serializer.adapter.new(serializer)
+adapter.serializable_hash
+```
+
+For more information, see [ActionController::Serialization](https://github.com/rails-api/active_model_serializers/blob/master/lib/action_controller/serialization.rb)
+
+## Testing Serializers
+
+Things a serializer test should cover:
+
+| What | How
+|----- | ----
+| serialized attributes | e.g. `serializer._attributes`
+| serialized nested resources (has associations) | e.g. `serializer._associations`
+| serializing a single resource and collections | e.g. see manual serialization code above
+
 ## Getting Help
 
 If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).
