@@ -26,7 +26,10 @@ module ActionController
         options[:adapter] = false
       end
 
-      options[:adapter] ||= ActiveModel::Serializer::Adapter.by_request(request)
+      unless options[:adapter]
+        adapter = ActiveModel::Serializer::Adapter.by_request(request)
+        options[:adapter] ||= adapter if adapter
+      end
 
       ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
         if serializable_resource.serializer?
