@@ -104,6 +104,22 @@ module ActiveModel
       adapter_class
     end
 
+    def self.custom_media_type_adapters=(media_type_adapters)
+      config.custom_media_type_adapters ||= {}
+
+      unless media_type_adatets.is_a? Array
+        media_types_adapters = [media_types_adapters]
+      end
+
+      media_types_adapters.each do |media_type_adapter|
+        config.custom_media_type_adapters.merge!(media_type_adapter)
+      end
+    end
+
+    def self.custom_media_type_adapters
+      config.custom_media_type_adapters ||= {}
+    end
+
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end

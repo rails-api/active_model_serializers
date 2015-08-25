@@ -18,6 +18,11 @@ module ActionController
           @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile, adapter: false
         end
+
+        def render_selecting_adapter_by_accept_header_field
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile
+        end
       end
 
       tests AdapterSelectorTestController
@@ -48,6 +53,26 @@ module ActionController
         get :render_skipping_adapter
         assert_equal '{"attributes":{"name":"Name 1","description":"Description 1","comments":"Comments 1"}}', response.body
       end
+
+      def test_render_using_adapter_selected_by_accept_header_field
+        request.headers['Accept'] = "application/vnd.api+json"
+
+        get :render_selecting_adapter_by_accept_header_field
+
+        expected = {
+          data: {
+            id: assigns(:profile).id.to_s,
+            type: "profiles",
+            attributes: {
+              name: "Name 1",
+              description: "Description 1",
+            }
+          }
+        }
+
+        assert_equal expected.to_json, response.body
+      end
+
     end
   end
 end
