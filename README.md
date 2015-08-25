@@ -51,16 +51,36 @@ end
 
 Generally speaking, you as a user of AMS will write (or generate) these
 serializer classes. If you want to use a different adapter, such as a JsonApi, you can
-change this in an initializer:
+change this in your render, or in an initializer:
 
 ```ruby
+#class
 ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
-```
 
+#symbol
+ActiveModel::Serializer.config.adapter = :json_api
+```
 or
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :json_api
+render json: @posts, adapter: :json_api
+```
+
+You can use `Accept` HTTP header-field to select a specific adapter by enabling it.
+
+```ruby
+ActiveModel::Serializer.config.enabled_adapters_by_media_type = true
+```
+By default, AMS responds to media type `application/json` and `application/vnd.api+json` using the `FlattenJson` and `JsonApi` adapters respectively. If you want to add a different media type,  override the defaults or even create your own, you can do it in your initializer.
+
+To override media type `application/json` to respond with `Json` instead of `FlattenJson` adapter:
+```ruby
+ActiveModel::Serializer.config.custom_media_type_adapters = {"application/json" => :json}
+```
+
+If you have a custom adapter (`xml`, as example) you can create your own media type:
+```ruby
+ActiveModel::Serializer.config.custom_media_type_adapters = {"application/xml" => :xml}
 ```
 
 You won't need to implement an adapter unless you wish to use a new format or

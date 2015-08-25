@@ -26,7 +26,7 @@ module ActionController
         options[:adapter] = false
       end
 
-      unless options[:adapter]
+      if ActiveModel::Serializer.enabled_adapters_by_media_type && !options.fetch(:adapter, nil)
         adapter = ActiveModel::Serializer::Adapter.by_request(request)
         options[:adapter] ||= adapter if adapter
       end

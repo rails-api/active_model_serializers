@@ -55,6 +55,7 @@ module ActionController
       end
 
       def test_render_using_adapter_selected_by_accept_header_field
+        ActiveModel::Serializer.config.enabled_adapters_by_media_type = true
         request.headers['Accept'] = "application/vnd.api+json"
 
         get :render_selecting_adapter_by_accept_header_field
