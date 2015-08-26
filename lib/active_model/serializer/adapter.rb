@@ -9,6 +9,11 @@ module ActiveModel
       autoload :Null
       autoload :JsonApi
 
+      class << self
+        attr_accessor :root
+        attr_accessor :params
+      end
+
       attr_reader :serializer
 
       def initialize(serializer, options = {})

@@ -10,8 +10,8 @@ module ActiveModel
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
 
-        @profile_serializer = ProfileSerializer.new(@profile)
-        @post_serializer = PostSerializer.new(@post)
+        @profile_serializer = ProfileSerializer .new(@profile)
+        @post_serializer = PostSerializer .new(@post)
       end
 
       def test_urls_definition

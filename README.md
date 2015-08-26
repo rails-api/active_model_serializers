@@ -5,8 +5,8 @@
 ActiveModel::Serializer brings convention over configuration to your JSON generation.
 
 AMS does this through two components: **serializers** and **adapters**.
-Serializers describe _which_ attributes and relationships should be serialized.
-Adapters describe _how_ attributes and relationships should be serialized.
+Serializers describe _which_ attributes and relationships should be serialized and deserialized.
+Adapters describe _how_ attributes and relationships should be serialized and deserialized.
 
 By default AMS will use the **Flatten Json Adapter**. But we strongly advise you to use **JsonApi Adapter** that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
@@ -97,7 +97,7 @@ class PostsController < ApplicationController
 end
 ```
 
-In this case, Rails will look for a serializer named `PostSerializer`, and if
+In this case, Rails will look for a serializer named `PostSerializer `, and if
 it exists, use it to serialize the `Post`.
 
 ### Specify a serializer

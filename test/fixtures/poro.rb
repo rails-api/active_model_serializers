@@ -1,6 +1,10 @@
 class Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
+  def self.create(params)
+    new(params)
+  end
+
   def self.model_name
     @_model_name ||= ActiveModel::Name.new(self)
   end
@@ -94,6 +98,7 @@ Spam::UnrelatedLink = Class.new(Model)
 PostSerializer = Class.new(ActiveModel::Serializer) do
   cache key:'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
+  params :title, :body
 
   has_many :comments
   belongs_to :blog
@@ -257,7 +262,7 @@ VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:id]
+    cache only: [:id]
   attributes :id
 end
 

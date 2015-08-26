@@ -39,6 +39,7 @@ module ActiveModel
       def test_meta_key_is_used
         serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: "haha_meta")
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+
         expected = {
           blog: {
             id: 1,

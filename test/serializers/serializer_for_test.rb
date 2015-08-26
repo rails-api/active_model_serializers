@@ -30,7 +30,7 @@ module ActiveModel
         class MyProfile < Profile
         end
         class CustomProfile
-          def serializer_class; ProfileSerializer; end
+          def serializer_class; ProfileSerializer ; end
         end
 
         def setup
@@ -42,7 +42,7 @@ module ActiveModel
 
         def test_serializer_for_existing_serializer
           serializer = ActiveModel::Serializer.serializer_for(@profile)
-          assert_equal ProfileSerializer, serializer
+          assert_equal ProfileSerializer , serializer
         end
 
         def test_serializer_for_not_existing_serializer
@@ -52,12 +52,12 @@ module ActiveModel
 
         def test_serializer_inherited_serializer
           serializer = ActiveModel::Serializer.serializer_for(@my_profile)
-          assert_equal ProfileSerializer, serializer
+          assert_equal ProfileSerializer , serializer
         end
 
         def test_serializer_custom_serializer
           serializer = ActiveModel::Serializer.serializer_for(@custom_profile)
-          assert_equal ProfileSerializer, serializer
+          assert_equal ProfileSerializer , serializer
         end
       end
     end

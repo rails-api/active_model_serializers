@@ -34,4 +34,3 @@ module ActiveModel
     end
   end
 end
-
