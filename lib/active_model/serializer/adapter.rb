@@ -1,13 +1,23 @@
-require 'active_model/serializer/adapter/fragment_cache'
-
 module ActiveModel
   class Serializer
     class Adapter
       extend ActiveSupport::Autoload
-      autoload :Json
+      require 'active_model/serializer/adapter/json'
+      require 'active_model/serializer/adapter/json_api'
       autoload :FlattenJson
       autoload :Null
-      autoload :JsonApi
+      autoload :FragmentCache
+
+      def self.create(resource, options = {})
+        override = options.delete(:adapter)
+        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
+        klass.new(resource, options)
+      end
+
+      def self.adapter_class(adapter)
+        adapter_name = adapter.to_s.classify.sub("API", "Api")
+        "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize
+      end
 
       attr_reader :serializer
 
@@ -24,17 +34,6 @@ module ActiveModel
         hash = serializable_hash(options)
         include_meta(hash)
         hash
-      end
-
-      def self.create(resource, options = {})
-        override = options.delete(:adapter)
-        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
-        klass.new(resource, options)
-      end
-
-      def self.adapter_class(adapter)
-        adapter_name = adapter.to_s.classify.sub("API", "Api")
-        "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize
       end
 
       def fragment_cache(*args)

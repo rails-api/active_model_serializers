@@ -47,9 +47,9 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
     run_generator ["account"]
     assert_file "app/serializers/account_serializer.rb" do |content|
       if RUBY_PLATFORM =~ /mingw/
-        assert_no_match /\r\n\r\nend/, content
+        assert_no_match(/\r\n\r\nend/, content)
       else
-        assert_no_match /\n\nend/, content
+        assert_no_match(/\n\nend/, content)
       end
     end
   end

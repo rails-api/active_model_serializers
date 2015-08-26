@@ -18,7 +18,9 @@ module ActiveModel
 
     private
 
+      ActiveModelSerializers.silence_warnings do
       attr_reader :raw_fields, :root
+      end
 
       def parsed_fields
         if raw_fields.is_a?(Hash)

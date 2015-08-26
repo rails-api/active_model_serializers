@@ -1,4 +1,4 @@
-require "set"
+require 'set'
 module ActiveModel
   class SerializableResource
 
@@ -76,7 +76,9 @@ module ActiveModel
 
     private
 
+    ActiveModelSerializers.silence_warnings do
     attr_reader :resource, :adapter_opts, :serializer_opts
+    end
 
   end
 end

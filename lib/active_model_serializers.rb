@@ -1,7 +1,18 @@
+module ActiveModelSerializers
+  module_function
+
+  def silence_warnings
+    verbose = $VERBOSE
+    $VERBOSE = nil
+    yield
+  ensure
+    $VERBOSE = verbose
+  end
+
+end
 require 'active_model'
 require 'active_model/serializer/version'
 require 'active_model/serializer'
-require 'active_model/serializer/fieldset'
 require 'active_model/serializable_resource'
 
 begin

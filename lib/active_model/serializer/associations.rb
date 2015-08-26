@@ -73,11 +73,9 @@ module ActiveModel
         def associate(reflection)
           self._reflections = _reflections.dup
 
-          unless method_defined?(reflection.name)
-            define_method reflection.name do
-              object.send reflection.name
-            end
-          end
+          define_method reflection.name do
+            object.send reflection.name
+          end unless method_defined?(reflection.name)
 
           self._reflections << reflection
         end

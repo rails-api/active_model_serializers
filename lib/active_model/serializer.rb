@@ -9,6 +9,7 @@ module ActiveModel
     autoload :Adapter
     autoload :Lint
     autoload :Associations
+    autoload :Fieldset
     include Configuration
     include Associations
 
@@ -66,10 +67,10 @@ module ActiveModel
       @_attributes_keys[attr] = { key: key } if key != attr
       @_attributes << key unless @_attributes.include?(key)
 
-      unless respond_to?(key, false) || _fragmented.respond_to?(attr)
+      ActiveModelSerializers.silence_warnings do
         define_method key do
           object.read_attribute_for_serialization(attr)
-        end
+        end unless respond_to?(key, false) || _fragmented.respond_to?(attr)
       end
     end
 
