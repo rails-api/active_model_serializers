@@ -14,7 +14,7 @@ module ActiveModel
           @author.posts = [@post]
 
           @serializer = AuthorNestedSerializer.new(@author)
-          @adapter = ActiveModel::Serializer::Adapter::NestedJson.new(@serializer)
+          @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
         end
 
         def test_has_many
@@ -27,13 +27,27 @@ module ActiveModel
                 {id: 2, body: 'ZOMG ANOTHER COMMENT'}
               ]
             }]
-          }, @adapter.serializable_hash)
+          }, @adapter.serializable_hash(limit_depth: 5)[:author])
         end
 
         def test_limit_depth
-          assert_raises do
-            @adapter.serializable_hash(limit_depth: 1)
+          assert_raises(StandardError) do
+            @adapter.serializable_hash(limit_depth: 1, check_depth_strategy: :fail)
           end
+        end
+
+        def test_flatten_json
+          adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(@serializer)
+          assert_equal({
+            id: 1, name: 'Steve K.',
+            posts: [{
+              id: 1, title: 'New Post', body: 'Body',
+              comments: [
+                {id: 1, body: 'ZOMG A COMMENT'},
+                {id: 2, body: 'ZOMG ANOTHER COMMENT'}
+              ]
+            }]
+          }, adapter.serializable_hash(limit_depth: 5))
         end
       end
     end
