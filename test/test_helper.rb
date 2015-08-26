@@ -81,8 +81,6 @@ end
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 Foo.initialize!
 
-require 'fixtures/poro'
-
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
@@ -98,3 +96,6 @@ ActionController::TestCase.class_eval do
     @routes = TestHelper::Routes
   end
 end
+
+require 'fixtures/poro'
+require 'fixtures/active_record'
