@@ -133,8 +133,8 @@ module ActiveModel
       params.require(permitted_key.to_sym).permit(permitted_params)
     end
 
-    def self.deserialize(params, whitelist = nil)
-      whitelist = whitelist.map { |x| x.to_sym } if whitelist
+    def self.deserialize(params, whitelist = [])
+      whitelist.map! { |x| x.to_sym }
       sanitized_params = sanitize_params(params, whitelist)
       adapter.parse(sanitized_params)
     end
