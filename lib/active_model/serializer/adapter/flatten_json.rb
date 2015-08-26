@@ -2,14 +2,12 @@ module ActiveModel
   class Serializer
     class Adapter
       class FlattenJson < Json
-        def serializable_hash(options = {})
-          super
-          @result
-        end
-
         private
 
-        # no-op: FlattenJson adapter does not include meta data, because it does not support root.
+        def rooting?
+          false
+        end
+
         def include_meta(json)
           json
         end
@@ -17,3 +15,4 @@ module ActiveModel
     end
   end
 end
+
