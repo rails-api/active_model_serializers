@@ -37,6 +37,11 @@ module ActiveModel
       super
     end
 
+    def self.params(*attrs)
+      @_params.concat attrs
+      @_params.uniq!
+    end
+
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
       @_attributes.concat attrs
