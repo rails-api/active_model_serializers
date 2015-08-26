@@ -118,15 +118,6 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serialization$/, '') if name
     end
 
-    def self.deserialize(params)
-      association_keys = _reflections.map(&:name)
-      permitted_params = adapter.params(@_params, association_keys) || @_params
-      permitted_key    = adapter.root || root_name
-
-      sanitazed_params = params.require(permitted_key.to_sym).permit(permitted_params)
-      adapter.parse(sanitazed_params)
-    end
-
     def self.sanitize_params(params, whitelist = nil)
       attrs = @_params
       assocs = _reflections.map(&:name)
