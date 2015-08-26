@@ -39,9 +39,9 @@ module ActiveModel
         @post.author = @author
         @author.posts = [@post]
 
-        @post_serializer = PostSerializer .new(@post, {custom_options: true})
-        @author_serializer = AuthorSerializer .new(@author)
-        @comment_serializer = CommentSerializer .new(@comment)
+        @post_serializer = PostSerializer.new(@post, {custom_options: true})
+        @author_serializer = AuthorSerializer.new(@author)
+        @comment_serializer = CommentSerializer.new(@comment)
       end
 
       def test_has_many_and_has_one
@@ -71,6 +71,7 @@ module ActiveModel
           key = association.key
           serializer = association.serializer
           options = association.options
+
           assert_equal key, :tags
           assert_equal serializer, nil
           assert_equal [{ attributes: { name: "#hashtagged" }}].to_json, options[:virtual_value].to_json

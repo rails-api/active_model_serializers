@@ -29,7 +29,7 @@ module ActiveModel
             @post_without_comments.blog = nil
             @tag = Tag.new(id: 1, name: "#hash_tag")
             @post.tags = [@tag]
-            @serializer = PostSerializer .new(@post)
+            @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
 
             @virtual_value = VirtualValue.new(id: 1)
@@ -88,14 +88,14 @@ module ActiveModel
           end
 
           def test_no_include_linked_if_comments_is_empty
-            serializer = PostSerializer .new(@post_without_comments)
+            serializer = PostSerializer.new(@post_without_comments)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_nil adapter.serializable_hash[:linked]
           end
 
           def test_include_type_for_association_when_different_than_name
-            serializer = BlogSerializer .new(@blog)
+            serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
             actual = adapter.serializable_hash[:data][:relationships][:articles]
 
@@ -109,7 +109,7 @@ module ActiveModel
           end
 
           def test_has_many_with_no_serializer
-            serializer = PostWithTagsSerializer .new(@post)
+            serializer = PostWithTagsSerializer.new(@post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_equal({
@@ -124,7 +124,7 @@ module ActiveModel
           end
 
           def test_has_many_with_virtual_value
-            serializer = VirtualValueSerializer .new(@virtual_value)
+            serializer = VirtualValueSerializer.new(@virtual_value)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_equal({

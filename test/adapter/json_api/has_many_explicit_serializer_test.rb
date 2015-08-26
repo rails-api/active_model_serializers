@@ -21,7 +21,7 @@ module ActiveModel
             @blog = Blog.new(id: 23, name: 'AMS Blog')
             @post.blog = @blog
 
-            @serializer = PostPreviewSerializer .new(@post)
+            @serializer = PostPreviewSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               @serializer,
               include: ['comments', 'author']

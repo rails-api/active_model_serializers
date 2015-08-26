@@ -8,7 +8,7 @@ module ActionController
           @profile = Profile.new(name: 'Name 1',
                                  description: 'Description 1',
                                  comments: 'Comments 1')
-          render json: @profile, serializer: ProfilePreviewSerializer 
+          render json: @profile, serializer: ProfilePreviewSerializer
         end
 
         def render_array_using_explicit_serializer
@@ -21,8 +21,8 @@ module ActionController
                         comments: 'Comments 2')
           ]
           render json: array,
-                 serializer: PaginatedSerializer ,
-                 each_serializer: ProfilePreviewSerializer 
+                 serializer: PaginatedSerializer,
+                 each_serializer: ProfilePreviewSerializer
         end
 
         def render_array_using_implicit_serializer
@@ -35,7 +35,7 @@ module ActionController
                         comments: 'Comments 2')
           ]
           render json: array,
-                 each_serializer: ProfilePreviewSerializer 
+                 each_serializer: ProfilePreviewSerializer
         end
 
         def render_array_using_explicit_serializer_and_custom_serializers
@@ -53,14 +53,14 @@ module ActionController
           @blog = Blog.new(id: 23, name: 'AMS Blog')
           @post.blog = @blog
 
-          render json: [@post], each_serializer: PostPreviewSerializer 
+          render json: [@post], each_serializer: PostPreviewSerializer
         end
 
         def render_using_explicit_each_serializer
           location       = Location.new(id: 42, lat: '-23.550520', lng: '-46.633309')
           place          = Place.new(id: 1337, name: 'Amazing Place', locations: [location])
 
-          render json: place, each_serializer: PlaceSerializer 
+          render json: place, each_serializer: PlaceSerializer
         end
       end
 

@@ -262,7 +262,7 @@ VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
-    cache only: [:id]
+  cache only: [:id]
   attributes :id
 end
 

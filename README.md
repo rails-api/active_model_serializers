@@ -97,7 +97,7 @@ class PostsController < ApplicationController
 end
 ```
 
-In this case, Rails will look for a serializer named `PostSerializer `, and if
+In this case, Rails will look for a serializer named `PostSerializer`, and if
 it exists, use it to serialize the `Post`.
 
 ### Specify a serializer
