@@ -26,7 +26,7 @@ module ActiveModel
             @blog.articles = [@post, @anonymous_post]
             @author.posts = []
 
-            @serializer = CommentSerializer .new(@comment)
+            @serializer = CommentSerializer.new(@comment)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
             ActionController::Base.cache_store.clear
           end
@@ -73,14 +73,14 @@ module ActiveModel
           end
 
           def test_include_nil_author
-            serializer = PostSerializer .new(@anonymous_post)
+            serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
             assert_equal({comments: { data: [] }, blog: { data: { type: "blogs", id: "999" } }, author: { data: nil }}, adapter.serializable_hash[:data][:relationships])
           end
 
           def test_include_type_for_association_when_different_than_name
-            serializer = BlogSerializer .new(@blog)
+            serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
             relationships = adapter.serializable_hash[:data][:relationships]
             expected = {
@@ -107,7 +107,7 @@ module ActiveModel
           end
 
           def test_include_linked_resources_with_type_name
-            serializer = BlogSerializer .new(@blog)
+            serializer = BlogSerializer.new(@blog)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: ['writer', 'articles'])
             linked = adapter.serializable_hash[:included]
             expected = [

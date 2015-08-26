@@ -19,7 +19,7 @@ class DefaultScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: UserSerializer , adapter: :json_api
+      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: UserSerializer, adapter: :json_api
     end
   end
 
@@ -50,7 +50,7 @@ class SerializerScopeNameTest < ActionController::TestCase
     end
 
     def render_new_user
-      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: AdminUserSerializer , adapter: :json_api
+      render json: User.new(id: 1, name: 'Pete', admin: false), serializer: AdminUserSerializer, adapter: :json_api
     end
   end
 

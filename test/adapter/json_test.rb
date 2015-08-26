@@ -17,7 +17,7 @@ module ActiveModel
           @blog = Blog.new(id: 1, name: "My Blog!!")
           @post.blog = @blog
 
-          @serializer = PostSerializer .new(@post)
+          @serializer = PostSerializer.new(@post)
           @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
         end
 
