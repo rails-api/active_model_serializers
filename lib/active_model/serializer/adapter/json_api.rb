@@ -8,13 +8,15 @@ module ActiveModel
         def initialize(serializer, options = {})
           super
           @hash = { data: [] }
-
+          @url_helper = options[:url_helper]
           if fields = options.delete(:fields)
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
           else
             @fieldset = options[:fieldset]
           end
         end
+
+        attr_reader :url_helper
 
         def serializable_hash(options = nil)
           options ||= {}
@@ -44,10 +46,17 @@ module ActiveModel
 
         private
 
-        def add_relationships(resource, name, serializers)
+        def add_relationships(resource, name, serializers, opts)
           resource[:relationships] ||= {}
-          resource[:relationships][name] ||= { data: [] }
-          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
+
+          if opts.fetch(:data, true)
+            resource[:relationships][name] ||= { data: [] }
+            resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
+          end
+          if opts.fetch(:links, false)
+            resource[:relationships][name] ||= {}
+            resource[:relationships][name][:links] = { related: url_helper.url_for([serializer.object, name]) }
+          end
         end
 
         def add_relationship(resource, name, serializer, val=nil)
@@ -144,7 +153,7 @@ module ActiveModel
             attrs[:relationships] ||= {}
 
             if serializer.respond_to?(:each)
-              add_relationships(attrs, key, serializer)
+              add_relationships(attrs, key, serializer, opts)
             else
               if opts[:virtual_value]
                 add_relationship(attrs, key, nil, opts[:virtual_value])

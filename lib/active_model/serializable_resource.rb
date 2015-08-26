@@ -30,6 +30,10 @@ module ActiveModel
       serializer_opts[:scope] = scope
     end
 
+    def url_helper=(url_helper)
+      adapter_opts[:url_helper] = url_helper
+    end
+
     def serialization_scope
       serializer_opts[:scope]
     end

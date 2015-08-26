@@ -86,6 +86,7 @@ require 'fixtures/poro'
 module TestHelper
   Routes = ActionDispatch::Routing::RouteSet.new
   Routes.draw do
+    get 'tags/:tag_id/posts', to: 'application#index', as: 'tag_posts'
     get ':controller(/:action(/:id))'
     get ':controller(/:action)'
   end
