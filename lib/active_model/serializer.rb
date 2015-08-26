@@ -119,6 +119,14 @@ module ActiveModel
       adapter_class
     end
 
+    def self.custom_media_type_adapters
+      config.custom_media_type_adapters
+    end
+
+    def self.enabled_adapters_by_media_type
+      config.enabled_adapters_by_media_type
+    end
+
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end

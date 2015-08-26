@@ -11,6 +11,11 @@ module ActiveModel
 
       attr_reader :serializer
 
+      MEDIA_TYPE_ADAPTERS = {
+        "application/vnd.api+json" => "json_api",
+        "application/json" => "flatten_json"
+      }
+
       def initialize(serializer, options = {})
         @serializer = serializer
         @options = options
@@ -35,6 +40,13 @@ module ActiveModel
       def self.adapter_class(adapter)
         adapter_name = adapter.to_s.classify.sub("API", "Api")
         "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize
+      end
+
+      def self.by_request(request)
+        return unless request && request.accept
+        custom = ActiveModel::Serializer.custom_media_type_adapters
+        media_type_adapters = MEDIA_TYPE_ADAPTERS.merge(custom)
+        media_type_adapters[request.accept]
       end
 
       def fragment_cache(*args)
