@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tempfile'
 module ActiveModel
   class Serializer
     class CacheTest < Minitest::Test
@@ -125,8 +126,32 @@ module ActiveModel
         assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
       end
 
-      def _cache_digest_definition
+      def test_cache_digest_definition
         assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
+      end
+
+      def test_serializer_file_path_on_nix
+        path = "/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb"
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
+      def test_serializer_file_path_on_windows
+        path = "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb"
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
+      def test_digest_caller_file
+        contents = "puts 'AMS rocks'!"
+        file = Tempfile.new("some_ruby.rb")
+        file.write(contents)
+        path = file.path
+        caller_line = "#{path}:1:in `<top (required)>'"
+        file.close
+        assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
+      ensure
+        file.unlink
       end
 
       private
