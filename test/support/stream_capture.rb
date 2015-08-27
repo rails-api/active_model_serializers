@@ -3,6 +3,7 @@
 begin
   require 'active_support/testing/stream'
 rescue LoadError
+  require 'tempfile'
   module ActiveSupport
     module Testing
       module Stream #:nodoc:

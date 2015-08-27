@@ -9,23 +9,26 @@ require 'active_support/json'
 require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 
+gem 'minitest'
 require 'minitest/autorun'
-# Ensure backward compatibility with Minitest 4
-Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
-
-require 'capture_warnings'
-@capture_warnings = CaptureWarnings.new(fail_build = true)
-@capture_warnings.before_tests
-if Minitest.respond_to?(:after_run)
-  Minitest.after_run do
-    @capture_warnings.after_tests
-  end
+if defined?(Minitest::Test)
+  # Minitest 5
+  # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
+  # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest.rb#L45-L59
 else
-  at_exit do
-    STDOUT.puts 'Minitest.after_run not available.'
-    @capture_warnings.after_tests
+  # Minitest 4
+  # https://github.com/seattlerb/minitest/blob/644a52fd0/lib/minitest/autorun.rb
+  # https://github.com/seattlerb/minitest/blob/644a52fd0/lib/minitest/unit.rb#L768-L787
+  # Ensure backward compatibility with Minitest 4
+  Minitest = MiniTest unless defined?(Minitest)
+  Minitest::Test = MiniTest::Unit::TestCase
+  def Minitest.after_run(&block)
+    MiniTest::Unit.after_tests(&block)
   end
 end
+
+require 'capture_warnings'
+CaptureWarnings.new(_fail_build = true).execute!
 
 require 'active_model_serializers'
 
