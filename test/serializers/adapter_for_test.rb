@@ -64,7 +64,8 @@ module ActiveModel
           'null'.freeze              => ActiveModel::Serializer::Adapter::Null,
           'json'.freeze              => ActiveModel::Serializer::Adapter::Json,
           'attributes'.freeze => ActiveModel::Serializer::Adapter::Attributes,
-          'json_api'.freeze => ActiveModel::Serializer::Adapter::JsonApi
+          'json_api'.freeze => ActiveModel::Serializer::Adapter::JsonApi,
+          'flat_json'.freeze => ActiveModel::Serializer::Adapter::FlatJson
         }
         actual = ActiveModel::Serializer::Adapter.adapter_map
         assert_equal actual, expected_adapter_map
@@ -73,6 +74,7 @@ module ActiveModel
       def test_adapters
         assert_equal ActiveModel::Serializer::Adapter.adapters.sort, [
           'attributes'.freeze,
+          'flat_json'.freeze,
           'json'.freeze,
           'json_api'.freeze,
           'null'.freeze
