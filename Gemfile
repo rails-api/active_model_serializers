@@ -29,6 +29,9 @@ group :test do
   gem 'activerecord'
   gem 'sqlite3', platform: :ruby
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+
+group :test, :development do
+  gem 'simplecov', '~> 0.10', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

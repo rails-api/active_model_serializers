@@ -1,3 +1,8 @@
+begin
+  require 'simplecov'
+rescue LoadError
+end
+
 require 'bundler/gem_tasks'
 
 begin
