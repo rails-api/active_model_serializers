@@ -5,6 +5,7 @@ module ActiveModel
       require 'active_model/serializer/adapter/json'
       require 'active_model/serializer/adapter/json_api'
       autoload :FlattenJson
+      autoload :JsonLegacy
       autoload :Null
       autoload :FragmentCache
 
