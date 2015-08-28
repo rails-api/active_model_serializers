@@ -39,15 +39,6 @@ else
 end
 
 require 'active_model_serializers'
-# eager load autoloaded adapters
-# rubocop:disable Lint/Void
-require 'active_model/serializer/adapter'
-ActiveModel::Serializer::Adapter::Null
-ActiveModel::Serializer::Adapter::Json
-ActiveModel::Serializer::Adapter::FlattenJson
-ActiveModel::Serializer::Adapter::JsonApi
-# rubocop:enable Lint/Void
-require 'active_model/serializer/adapter'
 
 require 'support/stream_capture'
 

@@ -1,10 +1,8 @@
-require 'active_model/serializer/adapter/json_api/fragment_cache'
-require 'active_model/serializer/adapter/json_api/pagination_links'
+class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapter
+        extend ActiveSupport::Autoload
+        autoload :PaginationLinks
+        autoload :FragmentCache
 
-module ActiveModel
-  class Serializer
-    class Adapter
-      class JsonApi < Adapter
         def initialize(serializer, options = {})
           super
           @hash = { data: [] }
@@ -49,7 +47,7 @@ module ActiveModel
 
         def fragment_cache(cached_hash, non_cached_hash)
           root = false if @options.include?(:include)
-          JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
+          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new().fragment_cache(root, cached_hash, non_cached_hash)
         end
 
         private
@@ -60,6 +58,12 @@ module ActiveModel
           else
             serializer.object.class.model_name.plural
           end
+        end
+
+        def add_relationships(resource, name, serializers)
+          resource[:relationships] ||= {}
+          resource[:relationships][name] ||= { data: [] }
+          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
         end
 
         def resource_identifier_id_for(serializer)
@@ -161,8 +165,8 @@ module ActiveModel
           @hash[:links] = add_pagination_links(links, collection, options) if paginated?(collection)
         end
 
-        def add_pagination_links(links, collection, options)
-          pagination_links = JsonApi::PaginationLinks.new(collection, options[:context]).serializable_hash(options)
+        def add_pagination_links(links, resources, options)
+          pagination_links = ActiveModel::Serializer::Adapter::JsonApi::PaginationLinks.new(resources, options[:context]).serializable_hash(options)
           links.update(pagination_links)
         end
 
@@ -171,7 +175,4 @@ module ActiveModel
             collection.respond_to?(:total_pages) &&
             collection.respond_to?(:size)
         end
-      end
-    end
-  end
 end

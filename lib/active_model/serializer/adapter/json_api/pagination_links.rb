@@ -1,8 +1,4 @@
-module ActiveModel
-  class Serializer
-    class Adapter
-      class JsonApi < Adapter
-        class PaginationLinks
+class ActiveModel::Serializer::Adapter::JsonApi::PaginationLinks
           FIRST_PAGE = 1
 
           attr_reader :collection, :context
@@ -51,8 +47,4 @@ module ActiveModel
           def query_parameters
             @query_parameters ||= context.query_parameters
           end
-        end
-      end
-    end
-  end
 end

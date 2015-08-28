@@ -5,6 +5,11 @@ module ActiveModel
 
       def setup
         @previous_adapter = ActiveModel::Serializer.config.adapter
+        # Eager load adapters
+        ActiveModel::Serializer::Adapter.eager_load!
+        [:json_api, :flatten_json, :null, :json].each do |adapter_name|
+          ActiveModel::Serializer::Adapter.lookup(adapter_name)
+        end
       end
 
       def teardown

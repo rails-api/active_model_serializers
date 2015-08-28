@@ -25,7 +25,7 @@ class DefaultScopeNameTest < ActionController::TestCase
     end
   end
 
- tests UserTestController
+  tests UserTestController
 
   def test_default_scope_name
     get :render_new_user

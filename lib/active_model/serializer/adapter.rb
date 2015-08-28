@@ -5,11 +5,11 @@ module ActiveModel
       ADAPTER_MAP = {}
       private_constant :ADAPTER_MAP if defined?(private_constant)
       extend ActiveSupport::Autoload
-      require 'active_model/serializer/adapter/json'
-      require 'active_model/serializer/adapter/json_api'
-      autoload :FlattenJson
-      autoload :Null
       autoload :FragmentCache
+      autoload :Json
+      autoload :JsonApi
+      autoload :Null
+      autoload :FlattenJson
 
       def self.create(resource, options = {})
         override = options.delete(:adapter)
@@ -60,14 +60,14 @@ module ActiveModel
             register(adapter_name, adapter_class)
             adapter_class
           }
-        rescue ArgumentError
+        rescue ArgumentError => e
           failure_message =
             "Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
-          raise UnknownAdapterError, failure_message, $!.backtrace
-        rescue NameError
+          raise UnknownAdapterError, failure_message, e.backtrace
+        rescue NameError => e
           failure_message =
-            "NameError: #{$!.message}. Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
-          raise UnknownAdapterError, failure_message, $!.backtrace
+            "NameError: #{e.message}. Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
+          raise UnknownAdapterError, failure_message, e.backtrace
         end
 
         # @api private

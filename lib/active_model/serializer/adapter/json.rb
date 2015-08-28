@@ -1,9 +1,7 @@
-require 'active_model/serializer/adapter/json/fragment_cache'
+class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
+        extend ActiveSupport::Autoload
+        autoload :FragmentCache
 
-module ActiveModel
-  class Serializer
-    class Adapter
-      class Json < Adapter
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
@@ -44,9 +42,6 @@ module ActiveModel
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
-          Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+          ActiveModel::Serializer::Adapter::Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
         end
-      end
-    end
-  end
 end
