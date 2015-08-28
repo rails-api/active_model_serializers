@@ -37,3 +37,5 @@ require 'support/rails_app'
 require 'fixtures/poro'
 
 require 'support/test_case'
+
+require 'support/serialization_testing'
