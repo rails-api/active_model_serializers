@@ -151,7 +151,11 @@ module ActiveModel
     end
 
     def json_api_type
-      object.class.model_name.plural
+      if config.jsonapi_resource_type == :plural
+        object.class.model_name.plural
+      else
+        object.class.model_name.singular
+      end
     end
 
     def attributes(options = {})
