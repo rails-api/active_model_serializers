@@ -38,7 +38,7 @@ module ActiveModel
           def test_config_plural
             with_adapter :json_api do
               with_jsonapi_resource_type :plural do
-                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
+                hash = ActiveModel::SerializableResource.serialize(@comment).serializable_hash
                 assert_equal('comments', hash[:data][:type])
               end
             end
@@ -47,7 +47,7 @@ module ActiveModel
           def test_config_singular
             with_adapter :json_api do
               with_jsonapi_resource_type :singular do
-                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
+                hash = ActiveModel::SerializableResource.serialize(@comment).serializable_hash
                 assert_equal('comment', hash[:data][:type])
               end
             end
