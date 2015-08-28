@@ -73,6 +73,8 @@ module ActiveModel
         def too_deep? depth
           if depth > @limit_depth
             case @check_depth_strategy
+            when :pass
+              false
             when :fail
               fail 'Too deep associations.'
             when :trim

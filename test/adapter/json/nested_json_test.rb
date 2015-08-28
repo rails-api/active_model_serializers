@@ -36,6 +36,28 @@ module ActiveModel
           end
         end
 
+        def test_trim_strategy
+          assert_equal({
+            id: 1, name: 'Steve K.',
+            posts: [{
+              id: 1, title: 'New Post', body: 'Body',
+            }]
+          }, @adapter.serializable_hash(limit_depth: 1, check_depth_strategy: :trim)[:author])
+        end
+
+        def test_pass_strategy
+          assert_equal({
+            id: 1, name: 'Steve K.',
+            posts: [{
+              id: 1, title: 'New Post', body: 'Body',
+              comments: [
+                {id: 1, body: 'ZOMG A COMMENT'},
+                {id: 2, body: 'ZOMG ANOTHER COMMENT'}
+              ]
+            }]
+          }, @adapter.serializable_hash(limit_depth: 1, check_depth_strategy: :pass)[:author])
+        end
+
         def test_flatten_json
           adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(@serializer)
           assert_equal({
