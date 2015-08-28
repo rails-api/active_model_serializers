@@ -1,4 +1,12 @@
+require 'logger'
+require 'active_model'
+require "active_support/railtie"
+require 'action_controller'
+require "action_controller/railtie"
 module ActiveModelSerializers
+  mattr_accessor :logger
+  self.logger = Rails.logger || Logger.new(IO::NULL)
+
   module_function
 
   def silence_warnings
@@ -10,9 +18,6 @@ module ActiveModelSerializers
   end
 
 end
-
-require 'active_model'
-require 'action_controller'
 
 require 'active_model/serializer'
 require 'active_model/serializable_resource'
