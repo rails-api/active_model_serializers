@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module ActionController
-  module Serializer
+  module Serialization
     class ExplicitSerializerTest < ActionController::TestCase
       class ExplicitSerializerTestController < ActionController::Base
         def render_using_explicit_serializer
@@ -122,7 +122,7 @@ module ActionController
               id: 42,
               lat: "-23.550520",
               lng: "-46.633309",
-              place: "Nowhere" # is a virtual attribute on LocationSerializer 
+              place: "Nowhere" # is a virtual attribute on LocationSerializer
             }
           ]
         }

@@ -31,7 +31,7 @@ class DefaultScopeNameTest < ActionController::TestCase
   end
 end
 
-class SerializerScopeNameTest < ActionController::TestCase
+class SerializationScopeNameTest < ActionController::TestCase
   class AdminUserSerializer < ActiveModel::Serializer
     attributes :admin?
     def admin?

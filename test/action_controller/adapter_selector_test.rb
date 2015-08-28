@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module ActionController
-  module Serializer
+  module Serialization
     class AdapterSelectorTest < ActionController::TestCase
       class AdapterSelectorTestController < ActionController::Base
         def render_using_default_adapter
