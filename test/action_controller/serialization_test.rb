@@ -11,31 +11,56 @@ module ActionController
         end
 
         def render_using_default_adapter_root
-          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
-            # JSON-API adapter sets root by default
-            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: @profile
-          end
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile
         end
 
         def render_array_using_custom_root
+<<<<<<< HEAD
           with_adapter ActiveModel::Serializer::Adapter::Json do
             @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
             render json: [@profile], root: 'custom_root'
           end
+||||||| parent of 4bba16b... Factor `with_adapter` + force cache clear before each test.
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: [@profile], root: "custom_root"
+          end
+=======
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: [@profile], root: "custom_root"
+>>>>>>> 4bba16b... Factor `with_adapter` + force cache clear before each test.
         end
 
         def render_array_that_is_empty_using_custom_root
+<<<<<<< HEAD
           with_adapter ActiveModel::Serializer::Adapter::Json do
             render json: [], root: 'custom_root'
           end
+||||||| parent of 4bba16b... Factor `with_adapter` + force cache clear before each test.
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            render json: [], root: "custom_root"
+          end
+=======
+          render json: [], root: "custom_root"
+>>>>>>> 4bba16b... Factor `with_adapter` + force cache clear before each test.
         end
 
         def render_object_using_custom_root
+<<<<<<< HEAD
           with_adapter ActiveModel::Serializer::Adapter::Json do
             @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
             render json: @profile, root: 'custom_root'
           end
+||||||| parent of 4bba16b... Factor `with_adapter` + force cache clear before each test.
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: @profile, root: "custom_root"
+          end
+=======
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile, root: "custom_root"
+>>>>>>> 4bba16b... Factor `with_adapter` + force cache clear before each test.
         end
 
         def render_array_using_implicit_serializer
@@ -47,13 +72,24 @@ module ActionController
         end
 
         def render_array_using_implicit_serializer_and_meta
+<<<<<<< HEAD
           with_adapter ActiveModel::Serializer::Adapter::JsonApi do
             @profiles = [
               Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
             ]
+||||||| parent of 4bba16b... Factor `with_adapter` + force cache clear before each test.
+          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
 
-            render json: @profiles, meta: { total: 10 }
-          end
+            @profiles = [
+              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            ]
+=======
+          @profiles = [
+            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          ]
+>>>>>>> 4bba16b... Factor `with_adapter` + force cache clear before each test.
+
+          render json: @profiles, meta: { total: 10 }
         end
 
         def render_object_with_cache_enabled
@@ -168,8 +204,9 @@ module ActionController
       end
 
       def test_render_using_default_root
-        get :render_using_default_adapter_root
-
+        with_adapter :json_api do
+          get :render_using_default_adapter_root
+        end
         expected = {
           data: {
             id: assigns(:profile).id.to_s,
@@ -186,15 +223,28 @@ module ActionController
       end
 
       def test_render_array_using_custom_root
+<<<<<<< HEAD
         get :render_array_using_custom_root
 
         expected = { custom_roots: [{ name: 'Name 1', description: 'Description 1' }] }
+||||||| parent of 4bba16b... Factor `with_adapter` + force cache clear before each test.
+        get :render_array_using_custom_root
+
+        expected =  {custom_roots: [{name: "Name 1", description: "Description 1"}]}
+=======
+        with_adapter :json do
+          get :render_array_using_custom_root
+        end
+        expected =  {custom_roots: [{name: "Name 1", description: "Description 1"}]}
+>>>>>>> 4bba16b... Factor `with_adapter` + force cache clear before each test.
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
 
       def test_render_array_that_is_empty_using_custom_root
-        get :render_array_that_is_empty_using_custom_root
+        with_adapter :json do
+          get :render_array_that_is_empty_using_custom_root
+        end
 
         expected = { custom_roots: [] }
         assert_equal 'application/json', @response.content_type
@@ -202,7 +252,9 @@ module ActionController
       end
 
       def test_render_object_using_custom_root
-        get :render_object_using_custom_root
+        with_adapter :json do
+          get :render_object_using_custom_root
+        end
 
         expected = { custom_root: { name: 'Name 1', description: 'Description 1' } }
         assert_equal 'application/json', @response.content_type
@@ -244,8 +296,9 @@ module ActionController
       end
 
       def test_render_array_using_implicit_serializer_and_meta
-        get :render_array_using_implicit_serializer_and_meta
-
+        with_adapter :json_api do
+          get :render_array_using_implicit_serializer_and_meta
+        end
         expected = {
           data: [
             {
