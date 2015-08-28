@@ -1,40 +1,8 @@
 require 'test_helper'
-require 'active_record'
 
 module ActiveModel
   class Serializer
     class DeserializeTest < Minitest::Test
-      def setup
-        super
-        ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
-        ActiveRecord::Schema.define do
-          create_table :posts, force: true do |t|
-            t.string :title
-            t.text :body
-            t.references :author
-          end
-          create_table :authors, force: true do |t|
-            t.string :name
-          end
-          create_table :comments, force: true do |t|
-            t.text :contents
-            t.references :author
-            t.references :post
-          end
-        end
-      end
-      class Post < ActiveRecord::Base
-        has_many :comments
-        belongs_to :author
-      end
-      class Comment < ActiveRecord::Base
-        belongs_to :post
-        belongs_to :author
-      end
-      class Author < ActiveRecord::Base
-        has_many :posts
-      end
-
       def with_adapter(adapter)
         old_adapter = ActiveModel::Serializer.config.adapter
         # JSON-API adapter sets root by default
@@ -44,10 +12,10 @@ module ActiveModel
         ActiveModel::Serializer.config.adapter = old_adapter
       end
 
-      def test_json_api_deserialization_on_create
-        author = Author.create(id: 1, name: "Author 1")
-        Comment.create(id: 1, contents: "Comment 1", author: author)
-        Comment.create(id: 2, contents: "Comment 2", author: author)
+      def test_json_api_deserialize_on_create
+        author = ARModels::Author.create(name: "Author 1")
+        comment1 = ARModels::Comment.create(contents: "Comment 1", author: author)
+        comment2 = ARModels::Comment.create(contents: "Comment 2", author: author)
         payload = {
           data: {
             type: 'posts',
@@ -57,18 +25,18 @@ module ActiveModel
             },
             relationships: {
               author: {
-                data: { id: 1, type: 'authors'}
+                data: { id: author.id, type: 'authors'}
               },
               comments: {
-                data: [{ id: 1, type: 'comments'},
-                       { id: 2, type: 'comments'}]
+                data: [{ id: comment1.id, type: 'comments'},
+                       { id: comment2.id, type: 'comments'}]
               }
             }
           }
         }
 
         post = with_adapter :json_api do
-          Post.create(PostSerializer.deserialize(ActionController::Parameters.new(payload)))
+          ARModels::Post.create(ARModels::PostSerializer.deserialize(ActionController::Parameters.new(payload)))
         end
 
         assert_equal('Title 1', post.title)
