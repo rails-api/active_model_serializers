@@ -81,8 +81,12 @@ end.new do
   SimpleCov.start 'app'
   if @generate_report
     if @running_ci
-      @output.puts '[COVERAGE] Running with SimpleCov Simple Formatter'
-      formatters = [SimpleCov::Formatter::SimpleFormatter]
+      require 'codeclimate-test-reporter'
+      @output.puts '[COVERAGE] Running with SimpleCov Simple Formatter and CodeClimate Test Reporter'
+      formatters = [
+        SimpleCov::Formatter::SimpleFormatter,
+        CodeClimate::TestReporter::Formatter
+      ]
     else
       @output.puts '[COVERAGE] Running with SimpleCov HTML Formatter'
       formatters = [SimpleCov::Formatter::HTMLFormatter]

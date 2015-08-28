@@ -29,6 +29,8 @@ group :test do
   gem 'activerecord'
   gem 'sqlite3', platform: :ruby
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+  gem 'codeclimate-test-reporter', require: false
+end
 
 group :test, :development do
   gem 'simplecov', '~> 0.10', require: false
