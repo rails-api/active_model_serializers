@@ -14,6 +14,7 @@ module ActiveModelSerializers
   autoload :Callbacks
   autoload :Deserialization
   autoload :Logging
+  autoload :Test
 end
 
 require 'active_model/serializer'
