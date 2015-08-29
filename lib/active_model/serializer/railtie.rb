@@ -19,5 +19,9 @@ module ActiveModel
       app.load_generators
       require 'generators/serializer/resource_override'
     end
+
+    if Rails.env.test?
+      ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Schema)
+    end
   end
 end

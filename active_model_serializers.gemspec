@@ -54,4 +54,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'timecop', '~> 0.7'
   spec.add_development_dependency 'minitest-reporters'
   spec.add_development_dependency 'grape', ['>= 0.13', '< 1.0']
+  spec.add_development_dependency 'json_schema'
 end
