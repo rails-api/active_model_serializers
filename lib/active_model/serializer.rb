@@ -96,13 +96,15 @@ module ActiveModel
     end
 
     def self.serializer_for(resource, options = {})
-      if resource.respond_to?(:serializer_class)
+      serializer = if resource.respond_to?(:serializer_class)
         resource.serializer_class
       elsif resource.respond_to?(:to_ary)
         config.array_serializer
       else
         options.fetch(:serializer, get_serializer_for(resource.class))
       end
+
+      serializer.respond_to?(:constantize) ? serializer.constantize : serializer
     end
 
     def self.adapter

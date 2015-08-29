@@ -136,6 +136,19 @@ module ActiveModel
         )
       end
 
+      def test_associations_serializer_string_name
+        inherited_klass = Class.new(PostSerializer) do
+          belongs_to :blog, serializer: "CustomBlogSerializer"
+        end
+        serializer = inherited_klass.new(@post)
+
+        expected_association_serializers = []
+        serializer.each_association do |key, serializer, options|
+          expected_association_serializers << serializer
+        end
+        assert expected_association_serializers.map(&:class).include? CustomBlogSerializer
+      end
+
       def test_associations_custom_keys
         serializer = PostWithCustomKeysSerializer.new(@post)
 
