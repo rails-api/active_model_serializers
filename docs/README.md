@@ -22,6 +22,7 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - [How to add root key](howto/add_root_key.md)
 - [How to add pagination links](howto/add_pagination_links.md)
 - [Using ActiveModelSerializers Outside Of Controllers](howto/outside_controller_use.md)
+- [Testing ActiveModelSerializers](howto/test.md)
 
 ## Integrations
 

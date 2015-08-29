@@ -15,6 +15,7 @@ module ActiveModel
       @resource = resource
       @adapter_opts, @serializer_opts =
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
+      notify_active_support
     end
 
     def serialization_scope=(scope)
@@ -66,6 +67,13 @@ module ActiveModel
     end
 
     protected
+
+    def notify_active_support
+      return unless serializer?
+      event_name = 'serialize.active_model_serializers'
+      payload = { serializer: serializer.name }
+      ActiveSupport::Notifications.instrument(event_name, payload)
+    end
 
     attr_reader :resource, :adapter_opts, :serializer_opts
   end

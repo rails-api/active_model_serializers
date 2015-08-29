@@ -28,6 +28,7 @@ Features:
     CollectionSerializer for clarity, add ActiveModelSerializers.config.collection_serializer (@bf4)
 - [#1295](https://github.com/rails-api/active_model_serializers/pull/1295) Add config `serializer_lookup_enabled` that,
   when disabled, requires serializers to explicitly specified. (@trek)
+- [#1099](https://github.com/rails-api/active_model_serializers/pull/1099) Adds `assert_serializer` test helper (@maurogeorge)
 
 Fixes:
 - [#1239](https://github.com/rails-api/active_model_serializers/pull/1239) Fix duplicates in JSON API compound documents (@beauby)

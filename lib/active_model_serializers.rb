@@ -51,6 +51,7 @@ end
 require 'active_model/serializer'
 require 'active_model/serializable_resource'
 require 'active_model/serializer/version'
+require 'active_model/serializer/assertions'
 
 require 'action_controller/serialization'
 ActiveSupport.on_load(:action_controller) do
@@ -59,6 +60,7 @@ ActiveSupport.on_load(:action_controller) do
   ActionDispatch::Reloader.to_prepare do
     ActiveModel::Serializer.serializers_cache.clear
   end
+  ActionController::TestCase.send(:include, ActiveModel::Serializer::Assertions)
 end
 
 require 'active_model/serializer/railtie'
