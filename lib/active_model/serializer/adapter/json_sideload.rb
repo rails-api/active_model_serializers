@@ -21,6 +21,11 @@ module ActiveModel
         def serializable_hash(options = nil)
           options ||= {}
 
+          # begin recursive serialization
+          # TODO: this will evaluate ALL specified relationships
+          # throughout the entire tree.
+          #
+          # Do we want a way to limit this?
           serialize_hash(options)
 
           singularize_lone_objects
@@ -33,9 +38,7 @@ module ActiveModel
           result = nil
 
           if serializer.respond_to?(:each)
-            #TODO: Is this ever hit?
-            # binding.pry
-            ap "wwwwwwwwwwwwwwwwwwwwww"
+            # TODO: Is this ever hit?
             result = serialize_array(serializer, options)
           else
             # skip if we are already serialized
@@ -45,10 +48,7 @@ module ActiveModel
             return if exists
 
             # we aren't an array! woo!
-
             result = serialized_attributes_of(serializer, options)
-            # add to the list of the serialized
-
 
             # now, go over our associations, and add them to the master
             # serialized hash
@@ -64,25 +64,20 @@ module ActiveModel
                 array = serialize_array(serializer, opts)
                 association_list = @serialized[association.key]
 
-
+                # ensure that we don't add duplicates
                 array.each do |item|
                   if not association_list.include?(item)
                     association_list << item
                   end
                 end
+
+                # re-set the list for this model
                 @serialized[association.key] = association_list
 
                 # add the ids to the result
                 result[ids_name_for(association.key)] = array.map{|a| a[:id] }
               else
-                hash = (
-                  if serializer && serializer.object
-                    serialized_attributes_of(serializer, options)
-                  elsif opts[:virtual_value]
-                    opts[:virtual_value]
-                  end
-                )
-
+                hash = serialized_or_virtual_object(serializer, options)
                 add(association.key, hash)
 
                 # add the id to the result
@@ -92,10 +87,19 @@ module ActiveModel
             end
           end
 
+          # add to the list of the serialized
           @serialized[key_name] ||= []
           add(key_name, result)
 
           result
+        end
+
+        def serialized_or_virtual_object(serializer, options)
+          if serializer && serializer.object
+            serialized_attributes_of(serializer, options)
+          elsif opts[:virtual_value]
+            opts[:virtual_value]
+          end
         end
 
         def add(key, data)
@@ -141,6 +145,18 @@ module ActiveModel
           end
         end
 
+        # To make keeping track of serialized objects easier,
+        # they are all tracked in arrays with plural keys.
+        #
+        # Once the recursion is done, we don't need plural keys / arrays
+        # for singular objects.
+        #
+        # This method converts:
+        #   objects: [{data}]
+        #   #  to
+        #   object: {data}
+        #
+        # This modifies and returns @serialized
         def singularize_lone_objects
           temp = {}
 
@@ -155,6 +171,9 @@ module ActiveModel
           @serialized = temp
         end
 
+        # adds a set of objects to the @serialized structure,
+        # while checking to make sure that a particular object
+        # isn't already tracked.
         def append_to_serialized(serialized_objects)
           serialized_objects ||= {}
 
