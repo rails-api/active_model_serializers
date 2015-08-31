@@ -50,7 +50,8 @@ module ActiveModel
                  else
                    serializer.object.class.model_name.singular
                  end
-          id = serializer.object.id.to_s
+          id = serializer.id.to_s if serializer.respond_to?('id')
+          id ||= serializer.object.id.to_s
 
           { id: id, type: type }
         end
