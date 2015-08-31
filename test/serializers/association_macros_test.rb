@@ -6,7 +6,7 @@ module ActiveModel
       AuthorSummarySerializer = Class.new
       class AssociationsTestSerializer < Serializer
         belongs_to :author, serializer: AuthorSummarySerializer
-        has_many :comments, embed: :ids
+        has_many :comments
         has_one :category
       end
 
@@ -21,7 +21,7 @@ module ActiveModel
       end
 
       def test_has_many_defines_reflection
-        has_many_reflection = HasManyReflection.new(:comments, embed: :ids)
+        has_many_reflection = HasManyReflection.new(:comments, {})
 
         assert_includes(@reflections, has_many_reflection)
       end
