@@ -23,12 +23,6 @@ module ActiveModel
                      @profile_serializer.attributes(fields: [:name]))
       end
 
-      def test_required_fields
-        assert_equal({name: 'Name 1', description: 'Description 1'},
-                     @profile_serializer.attributes(fields: [:name, :description], required_fields: [:name]))
-
-      end
-
       def test_attributes_inheritance_definition
         assert_equal([:id, :body], @serializer_klass._attributes)
       end

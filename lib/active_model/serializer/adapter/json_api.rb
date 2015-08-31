@@ -44,19 +44,34 @@ module ActiveModel
 
         private
 
+        def resource_identifier(serializer)
+          type = if ActiveModel::Serializer.config.jsonapi_resource_type == :plural
+                   serializer.object.class.model_name.plural
+                 else
+                   serializer.object.class.model_name.singular
+                 end
+          id = serializer.object.id.to_s
+
+          { id: id, type: type }
+        end
+
         def add_relationships(resource, name, serializers)
           resource[:relationships] ||= {}
           resource[:relationships][name] ||= { data: [] }
-          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
+          resource[:relationships][name][:data] += serializers.map { |serializer| resource_identifier(serializer) }
         end
 
         def add_relationship(resource, name, serializer, val=nil)
           resource[:relationships] ||= {}
-          resource[:relationships][name] = { data: val }
 
-          if serializer && serializer.object
-            resource[:relationships][name][:data] = { type: serializer.json_api_type, id: serializer.id.to_s }
-          end
+          resource[:relationships][name] ||= {}
+          resource[:relationships][name][:data] = if val
+                                                    val
+                                                  elsif serializer && serializer.object
+                                                    resource_identifier(serializer)
+                                                  else
+                                                    nil
+                                                  end
         end
 
         def add_included(resource_name, serializers, parent = nil)
@@ -100,15 +115,12 @@ module ActiveModel
 
         def resource_object_for(serializer, options)
           options[:fields] = @fieldset && @fieldset.fields_for(serializer)
-          options[:required_fields] = [:id, :json_api_type]
 
           cache_check(serializer) do
             attributes = serializer.attributes(options)
+            attributes.delete(:id)
 
-            result = {
-              id: attributes.delete(:id).to_s,
-              type: attributes.delete(:json_api_type)
-            }
+            result = resource_identifier(serializer)
 
             result[:attributes] = attributes if attributes.any?
             result
