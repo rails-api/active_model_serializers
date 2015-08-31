@@ -32,6 +32,23 @@ module ActiveModel
             site: { data: {type: "blogs", id: "1" } }
             }, adapter.serializable_hash[:data][:relationships])
         end
+
+        def test_id_attribute_method_override
+          serializer = Class.new(ActiveModel::Serializer) do
+            attributes :id, :name
+
+            def id
+              "override"
+            end
+          end
+          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer.new(@blog))
+
+          assert_equal({ data: {
+                           id: 'override',
+                           type: 'blogs',
+                           attributes: { name: 'AMS Hints' }
+                         } }, adapter.serializable_hash)
+        end
       end
     end
   end
