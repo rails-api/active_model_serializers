@@ -25,5 +25,11 @@ else
   gem 'actionpack', gem_version
 end
 
+group :test do
+  gem 'activerecord'
+  gem 'sqlite3', platform: :ruby
+  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+end
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
