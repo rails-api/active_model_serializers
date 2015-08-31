@@ -14,6 +14,7 @@ require 'active_model'
 require 'action_controller'
 
 require 'active_model/serializer'
+require 'active_model/serializer/utils'
 require 'active_model/serializable_resource'
 require 'active_model/serializer/version'
 
