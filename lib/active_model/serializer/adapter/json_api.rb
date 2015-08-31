@@ -50,8 +50,7 @@ module ActiveModel
                  else
                    serializer.object.class.model_name.singular
                  end
-          id = serializer.id.to_s if serializer.respond_to?('id')
-          id ||= serializer.object.id.to_s
+          id = serializer.respond_to?('id') ? serializer.id.to_s : serializer.object.id.to_s
 
           { id: id, type: type }
         end
@@ -85,25 +84,18 @@ module ActiveModel
 
         def attributes_for_serializer(serializer, options)
           if serializer.respond_to?(:each)
-            result = []
-            serializer.each do |object|
-              result << resource_object_for(object, options)
-            end
+            serializer.map { |s| resource_object_for(s, options) }
           else
-            result = resource_object_for(serializer, options)
+            resource_object_for(serializer, options)
           end
-          result
         end
 
         def resource_object_for(serializer, options)
           options[:fields] = @fieldset && @fieldset.fields_for(serializer)
 
           cache_check(serializer) do
-            attributes = serializer.attributes(options)
-            attributes.delete(:id)
-
             result = resource_identifier(serializer)
-
+            attributes = serializer.attributes(options).except(:id)
             result[:attributes] = attributes if attributes.any?
             result
           end
@@ -127,25 +119,29 @@ module ActiveModel
           end
         end
 
+        def resource_relationship_value(serializer, options = {})
+          if serializer.respond_to?(:each)
+            serializer.map { |s| resource_identifier(s) }
+          else
+            if options[:virtual_value]
+              options[:virtual_value]
+            elsif serializer.object
+              resurce_identifier(serializer)
+            else
+              nil
+            end
+          end
+        end
+
         def add_resource_relationships(attrs, serializer, options = {})
           options[:add_included] = options.fetch(:add_included, true)
 
-          attrs[:relationships] ||= {} if serializer.associations.any?
+          attrs[:relationships] = {} if serializer.associations.any?
           serializer.associations.each do |association|
             key = association.key
             serializer = association.serializer
-            opts = association.options
-            value = if serializer.respond_to?(:each)
-                      serializer.map { |s| resource_identifier(s) }
-                    else
-                      if opts[:virtual_value]
-                        opts[:virtual_value]
-                      elsif serializer && serializer.object
-                        resource_identifier(serializer)
-                      else
-                        nil
-                      end
-                    end
+            options = association.options
+            value = resource_relationship_value(serializer, options)
 
             attrs[:relationships][association.key] = { data: value }
 
