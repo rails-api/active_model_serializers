@@ -103,7 +103,7 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   url :comments
 
   def blog
-    Blog.new(id: 999, name: "Custom blog")
+    Blog.new(id: 999, name: 'Custom blog')
   end
 
   def custom_options

@@ -14,7 +14,7 @@ module ActiveModel
           @first_comment.post = @post
           @second_comment.post = @post
           @post.author = @author
-          @blog = Blog.new(id: 1, name: "My Blog!!")
+          @blog = Blog.new(id: 1, name: 'My Blog!!')
           @post.blog = @blog
 
         end
@@ -25,11 +25,11 @@ module ActiveModel
 
           assert_equal({
             reviews: { data: [
-                        {type: "comments", id: "1"},
-                        {type: "comments", id: "2"}
+                        {type: 'comments', id: '1'},
+                        {type: 'comments', id: '2'}
                     ]},
-            writer: { data: {type: "authors", id: "1"} },
-            site: { data: {type: "blogs", id: "1" } }
+            writer: { data: {type: 'authors', id: '1'} },
+            site: { data: {type: 'blogs', id: '1' } }
             }, adapter.serializable_hash[:data][:relationships])
         end
       end

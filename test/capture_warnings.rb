@@ -1,15 +1,15 @@
 # https://raw.githubusercontent.com/metric_fu/metric_fu/master/spec/capture_warnings.rb
-require "tempfile"
-require "fileutils"
+require 'tempfile'
+require 'fileutils'
 
 class CaptureWarnings
   def initialize(fail_on_warnings = true)
     @fail_on_warnings = fail_on_warnings
-    @stderr_file = Tempfile.new("app.stderr")
+    @stderr_file = Tempfile.new('app.stderr')
     @app_root ||= Dir.pwd
-    @output_dir = File.join(app_root, "tmp")
+    @output_dir = File.join(app_root, 'tmp')
     FileUtils.mkdir_p(output_dir)
-    @bundle_dir = File.join(app_root, "bundle")
+    @bundle_dir = File.join(app_root, 'bundle')
   end
 
   def before_tests
@@ -40,9 +40,9 @@ class CaptureWarnings
     end
 
     if other_warnings.any?
-      File.write(File.join(output_dir, "warnings.txt"), other_warnings.join("\n") << "\n")
+      File.write(File.join(output_dir, 'warnings.txt'), other_warnings.join("\n") << "\n")
       puts
-      puts "Non-app warnings written to tmp/warnings.txt"
+      puts 'Non-app warnings written to tmp/warnings.txt'
       puts
     end
 

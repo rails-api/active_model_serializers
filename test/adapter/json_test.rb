@@ -14,7 +14,7 @@ module ActiveModel
           @first_comment.post = @post
           @second_comment.post = @post
           @post.author = @author
-          @blog = Blog.new(id: 1, name: "My Blog!!")
+          @blog = Blog.new(id: 1, name: 'My Blog!!')
           @post.blog = @blog
 
           @serializer = PostSerializer.new(@post)
@@ -34,11 +34,11 @@ module ActiveModel
 
           assert_equal({
             id: 1,
-            reviews: [{id: 1, body: "ZOMG A COMMENT"},
-                      {id: 2, body: "ZOMG ANOTHER COMMENT"}
+            reviews: [{id: 1, body: 'ZOMG A COMMENT'},
+                      {id: 2, body: 'ZOMG ANOTHER COMMENT'}
                     ],
-            writer: {id: 1, name: "Steve K."},
-            site: {id: 1, name: "My Blog!!"}
+            writer: {id: 1, name: 'Steve K.'},
+            site: {id: 1, name: 'My Blog!!'}
             }, adapter.serializable_hash[:post])
         end
       end

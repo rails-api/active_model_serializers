@@ -58,9 +58,9 @@ module ActiveModel
               },
               {
                 id: @author.id.to_s,
-                type: "authors",
+                type: 'authors',
                 relationships: {
-                  posts: { data: [ {type: "posts", id: @post.id.to_s } ] }
+                  posts: { data: [ {type: 'posts', id: @post.id.to_s } ] }
                 }
               }
             ]
@@ -70,7 +70,7 @@ module ActiveModel
 
           def test_includes_author_id
             expected = {
-              data: { type: "authors", id: @author.id.to_s }
+              data: { type: 'authors', id: @author.id.to_s }
             }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:author])

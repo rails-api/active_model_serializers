@@ -27,8 +27,8 @@ module ActiveModel
           def test_includes_comment_ids
             expected = {
               data: [
-                { type: "posts", id: "1"},
-                { type: "posts", id: "2"}
+                { type: 'posts', id: '1'},
+                { type: 'posts', id: '2'}
               ]
             }
 

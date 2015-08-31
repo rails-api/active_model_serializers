@@ -22,12 +22,12 @@ module ActiveModel
             @second_comment.post = @post
             @post.author = @author
             @post_without_comments.author = nil
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @blog.writer = @author
             @blog.articles = [@post]
             @post.blog = @blog
             @post_without_comments.blog = nil
-            @tag = Tag.new(id: 1, name: "#hash_tag")
+            @tag = Tag.new(id: 1, name: '#hash_tag')
             @post.tags = [@tag]
             @serializer = PostSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
@@ -36,7 +36,7 @@ module ActiveModel
           end
 
           def test_includes_comment_ids
-            expected = { data: [ { type: "comments", id: "1" }, { type: "comments", id: "2" } ] }
+            expected = { data: [ { type: 'comments', id: '1' }, { type: 'comments', id: '2' } ] }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
           end
@@ -44,23 +44,23 @@ module ActiveModel
           def test_includes_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments')
             expected = [{
-              id: "1",
-              type: "comments",
+              id: '1',
+              type: 'comments',
               attributes: {
                 body: 'ZOMG A COMMENT'
               },
               relationships: {
-                post: { data: { type: "posts", id: "1" } },
+                post: { data: { type: 'posts', id: '1' } },
                 author: { data: nil }
               }
             }, {
-              id: "2",
-              type: "comments",
+              id: '2',
+              type: 'comments',
               attributes: {
                 body: 'ZOMG ANOTHER COMMENT'
               },
               relationships: {
-                post: { data: { type: "posts", id: "1" } },
+                post: { data: { type: 'posts', id: '1' } },
                 author: { data: nil }
               }
             }]
@@ -70,17 +70,17 @@ module ActiveModel
           def test_limit_fields_of_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'comments', fields: {comment: [:id]})
             expected = [{
-              id: "1",
-              type: "comments",
+              id: '1',
+              type: 'comments',
               relationships: {
-                post: { data: { type: "posts", id: "1" } },
+                post: { data: { type: 'posts', id: '1' } },
                 author: { data: nil }
               }
             }, {
-              id: "2",
-              type: "comments",
+              id: '2',
+              type: 'comments',
               relationships: {
-                post: { data: { type: "posts", id: "1" } },
+                post: { data: { type: 'posts', id: '1' } },
                 author: { data: nil }
               }
             }]
@@ -101,8 +101,8 @@ module ActiveModel
 
             expected = {
               data: [{
-                type: "posts",
-                id: "1"
+                type: 'posts',
+                id: '1'
               }]
             }
             assert_equal expected, actual
@@ -114,8 +114,8 @@ module ActiveModel
 
             assert_equal({
               data: {
-                id: "1",
-                type: "posts",
+                id: '1',
+                type: 'posts',
                 relationships: {
                   tags: { data: [@tag.as_json]}
                 }
@@ -129,8 +129,8 @@ module ActiveModel
 
             assert_equal({
               data: {
-                id: "1",
-                type: "virtual_values",
+                id: '1',
+                type: 'virtual_values',
                 relationships: {
                   maker: {data: {id: 1}},
                   reviews: {data: [{id: 1}, {id: 2}]}

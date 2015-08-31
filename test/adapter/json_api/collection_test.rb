@@ -27,29 +27,29 @@ module ActiveModel
           def test_include_multiple_posts
             expected = [
               {
-                id: "1",
-                type: "posts",
+                id: '1',
+                type: 'posts',
                 attributes: {
-                  title: "Hello!!",
-                  body: "Hello, world!!"
+                  title: 'Hello!!',
+                  body: 'Hello, world!!'
                 },
                 relationships: {
                   comments: { data: [] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               },
               {
-                id: "2",
-                type: "posts",
+                id: '2',
+                type: 'posts',
                 attributes: {
-                  title: "New Post",
-                  body: "Body"
+                  title: 'New Post',
+                  body: 'Body'
                 },
                 relationships: {
                   comments: { data: [] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               }
             ]
@@ -62,27 +62,27 @@ module ActiveModel
 
             expected = [
               {
-                id: "1",
-                type: "posts",
+                id: '1',
+                type: 'posts',
                 attributes: {
-                  title: "Hello!!"
+                  title: 'Hello!!'
                 },
                 relationships: {
                   comments: { data: [] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               },
               {
-                id: "2",
-                type: "posts",
+                id: '2',
+                type: 'posts',
                 attributes: {
-                  title: "New Post"
+                  title: 'New Post'
                 },
                 relationships: {
                   comments: { data: [] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               }
             ]

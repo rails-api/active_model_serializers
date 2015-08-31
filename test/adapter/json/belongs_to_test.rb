@@ -14,7 +14,7 @@ module ActiveModel
             @comment.post = @post
             @comment.author = nil
             @anonymous_post.author = nil
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @post.blog = @blog
             @anonymous_post.blog = nil
 
@@ -31,14 +31,14 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            assert_equal({post: {title: "Hello!!", body: "Hello, world!!", id: 43, comments: [], blog: {id: 999, name: "Custom blog"}, author: nil}}, adapter.serializable_hash)
+            assert_equal({post: {title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], blog: {id: 999, name: 'Custom blog'}, author: nil}}, adapter.serializable_hash)
           end
 
           def test_include_nil_author_with_specified_serializer
             serializer = PostPreviewSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            assert_equal({post: {title: "Hello!!", body: "Hello, world!!", id: 43, comments: [], author: nil}}, adapter.serializable_hash)
+            assert_equal({post: {title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil}}, adapter.serializable_hash)
           end
         end
       end

@@ -23,7 +23,7 @@ module ActiveModel::Serializer::Lint
     # <tt>serializable_hash</tt> returns a hash representation of a object's attributes.
     # Typically, it is implemented by including ActiveModel::Serialization.
     def test_serializable_hash
-      assert_respond_to resource, :serializable_hash, "The resource should respond to serializable_hash"
+      assert_respond_to resource, :serializable_hash, 'The resource should respond to serializable_hash'
       resource.serializable_hash
       resource.serializable_hash(nil)
     end
@@ -35,7 +35,7 @@ module ActiveModel::Serializer::Lint
     # <tt>read_attribute_for_serialization</tt> gets the attribute value for serialization
     # Typically, it is implemented by including ActiveModel::Serialization.
     def test_read_attribute_for_serialization
-      assert_respond_to resource, :read_attribute_for_serialization, "The resource should respond to read_attribute_for_serialization"
+      assert_respond_to resource, :read_attribute_for_serialization, 'The resource should respond to read_attribute_for_serialization'
       actual_arity = resource.method(:read_attribute_for_serialization).arity
       if defined?(::Rubinius)
         #  1 for def read_attribute_for_serialization(name); end

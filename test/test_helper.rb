@@ -23,7 +23,7 @@ if Minitest.respond_to?(:after_run)
   end
 else
   at_exit do
-    STDOUT.puts "Minitest.after_run not available."
+    STDOUT.puts 'Minitest.after_run not available.'
     @capture_warnings.after_tests
   end
 end

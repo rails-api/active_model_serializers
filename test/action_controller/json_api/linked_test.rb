@@ -28,10 +28,10 @@ module ActionController
             @first_comment.author = @author2
             @second_comment.post = @post
             @second_comment.author = nil
-            @post2 = Post.new(id: 2, title: "Another Post", body: "Body")
+            @post2 = Post.new(id: 2, title: 'Another Post', body: 'Body')
             @post2.author = @author
             @post2.comments = []
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @post.blog = @blog
             @post2.blog = @blog
           end
@@ -100,37 +100,37 @@ module ActionController
           response = JSON.parse(@response.body)
           expected_linked = [
             {
-              "id" => "1",
-              "type" => "authors",
-              "attributes" => {
-                "name" => "Steve K."
+              'id' => '1',
+              'type' => 'authors',
+              'attributes' => {
+                'name' => 'Steve K.'
               },
-              "relationships" => {
-                "posts" => { "data" => [] },
-                "roles" => { "data" => [{ "type" =>"roles", "id" => "1" }, { "type" =>"roles", "id" => "2" }] },
-                "bio" => { "data" => nil }
+              'relationships' => {
+                'posts' => { 'data' => [] },
+                'roles' => { 'data' => [{ 'type' =>'roles', 'id' => '1' }, { 'type' =>'roles', 'id' => '2' }] },
+                'bio' => { 'data' => nil }
               }
             }, {
-              "id" => "1",
-              "type" => "roles",
-              "attributes" => {
-                "name" => "admin",
-                "description" => nil,
-                "slug" => "admin-1"
+              'id' => '1',
+              'type' => 'roles',
+              'attributes' => {
+                'name' => 'admin',
+                'description' => nil,
+                'slug' => 'admin-1'
               },
-              "relationships" => {
-                "author" => { "data" => { "type" =>"authors", "id" => "1" } }
+              'relationships' => {
+                'author' => { 'data' => { 'type' =>'authors', 'id' => '1' } }
               }
             }, {
-              "id" => "2",
-              "type" => "roles",
-              "attributes" => {
-                "name" => "colab",
-                "description" => nil,
-                "slug" => "colab-2"
+              'id' => '2',
+              'type' => 'roles',
+              'attributes' => {
+                'name' => 'colab',
+                'description' => nil,
+                'slug' => 'colab-2'
               },
-              "relationships" => {
-                "author" => { "data" => { "type" =>"authors", "id" => "1" } }
+              'relationships' => {
+                'author' => { 'data' => { 'type' =>'authors', 'id' => '1' } }
               }
             }
           ]

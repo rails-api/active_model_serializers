@@ -53,94 +53,94 @@ module ActiveModel
             expected = {
               data: [
                 {
-                  id: "10",
-                  type: "posts",
+                  id: '10',
+                  type: 'posts',
                   attributes: {
-                    title: "Hello!!",
-                    body: "Hello, world!!"
+                    title: 'Hello!!',
+                    body: 'Hello, world!!'
                   },
                   relationships: {
-                    comments: { data: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
-                    blog: { data: { type: "blogs", id: "999" } },
-                    author: { data: { type: "authors", id: "1" } }
+                    comments: { data: [ { type: 'comments', id: '1' }, { type: 'comments', id: '2' } ] },
+                    blog: { data: { type: 'blogs', id: '999' } },
+                    author: { data: { type: 'authors', id: '1' } }
                   }
                 },
                 {
-                  id: "20",
-                  type: "posts",
+                  id: '20',
+                  type: 'posts',
                   attributes: {
-                    title: "New Post",
-                    body: "Body"
+                    title: 'New Post',
+                    body: 'Body'
                   },
                   relationships: {
                     comments: { data: [] },
-                    blog: { data: { type: "blogs", id: "999" } },
-                    author: { data: { type: "authors", id: "2" } }
+                    blog: { data: { type: 'blogs', id: '999' } },
+                    author: { data: { type: 'authors', id: '2' } }
                   }
                 }
               ],
               included: [
                 {
-                  id: "1",
-                  type: "comments",
+                  id: '1',
+                  type: 'comments',
                   attributes: {
-                    body: "ZOMG A COMMENT"
+                    body: 'ZOMG A COMMENT'
                   },
                   relationships: {
-                    post: { data: { type: "posts", id: "10" } },
+                    post: { data: { type: 'posts', id: '10' } },
                     author: { data: nil }
                   }
                 }, {
-                  id: "2",
-                  type: "comments",
+                  id: '2',
+                  type: 'comments',
                   attributes: {
-                    body: "ZOMG ANOTHER COMMENT",
+                    body: 'ZOMG ANOTHER COMMENT',
                   },
                   relationships: {
-                    post: { data: { type: "posts", id: "10" } },
+                    post: { data: { type: 'posts', id: '10' } },
                     author: { data: nil }
                   }
                 }, {
-                  id: "1",
-                  type: "authors",
+                  id: '1',
+                  type: 'authors',
                   attributes: {
-                    name: "Steve K."
+                    name: 'Steve K.'
                   },
                   relationships: {
-                    posts: { data: [ { type: "posts", id: "10" }, { type: "posts", id: "30" } ] },
+                    posts: { data: [ { type: 'posts', id: '10' }, { type: 'posts', id: '30' } ] },
                     roles: { data: [] },
-                    bio: { data: { type: "bios", id: "1" } }
+                    bio: { data: { type: 'bios', id: '1' } }
                   }
                 }, {
-                  id: "1",
-                  type: "bios",
+                  id: '1',
+                  type: 'bios',
                   attributes: {
-                    content: "AMS Contributor",
+                    content: 'AMS Contributor',
                     rating: nil
                   },
                   relationships: {
-                    author: { data: { type: "authors", id: "1" } }
+                    author: { data: { type: 'authors', id: '1' } }
                   }
                 }, {
-                  id: "2",
-                  type: "authors",
+                  id: '2',
+                  type: 'authors',
                   attributes: {
-                    name: "Tenderlove"
+                    name: 'Tenderlove'
                   },
                   relationships: {
-                    posts: { data: [ { type: "posts", id:"20" } ] },
+                    posts: { data: [ { type: 'posts', id:'20' } ] },
                     roles: { data: [] },
-                    bio: { data: { type: "bios", id: "2" } }
+                    bio: { data: { type: 'bios', id: '2' } }
                   }
                 }, {
-                  id: "2",
-                  type: "bios",
+                  id: '2',
+                  type: 'bios',
                   attributes: {
                     rating: nil,
-                    content: "Rails Contributor",
+                    content: 'Rails Contributor',
                   },
                   relationships: {
-                    author: { data: { type: "authors", id: "2" } }
+                    author: { data: { type: 'authors', id: '2' } }
                   }
                 }
               ]
@@ -162,39 +162,39 @@ module ActiveModel
 
             expected = [
               {
-                id: "1",
-                type: "authors",
+                id: '1',
+                type: 'authors',
                 attributes: {
-                  name: "Steve K."
+                  name: 'Steve K.'
                 },
                 relationships: {
-                  posts: { data: [ { type: "posts", id: "10"}, { type: "posts", id: "30" }] },
+                  posts: { data: [ { type: 'posts', id: '10'}, { type: 'posts', id: '30' }] },
                   roles: { data: [] },
-                  bio: { data: { type: "bios", id: "1" }}
+                  bio: { data: { type: 'bios', id: '1' }}
                 }
               }, {
-                id: "10",
-                type: "posts",
+                id: '10',
+                type: 'posts',
                 attributes: {
-                  title: "Hello!!",
-                  body: "Hello, world!!"
+                  title: 'Hello!!',
+                  body: 'Hello, world!!'
                 },
                 relationships: {
-                  comments: { data: [ { type: "comments", id: "1"}, { type: "comments", id: "2" }] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  comments: { data: [ { type: 'comments', id: '1'}, { type: 'comments', id: '2' }] },
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               }, {
-                id: "30",
-                type: "posts",
+                id: '30',
+                type: 'posts',
                 attributes: {
-                  title: "Yet Another Post",
-                  body: "Body"
+                  title: 'Yet Another Post',
+                  body: 'Body'
                 },
                 relationships: {
                   comments: { data: [] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               }
             ]
@@ -229,21 +229,21 @@ module ActiveModel
 
             expected = [
               {
-                id: "10",
-                type: "posts",
+                id: '10',
+                type: 'posts',
                 attributes: {
-                  title: "Hello!!",
-                  body: "Hello, world!!"
+                  title: 'Hello!!',
+                  body: 'Hello, world!!'
                 },
                 relationships: {
                   comments: {
-                    data: [{type: "comments", id: "1"}, {type: "comments", id: "2"}]
+                    data: [{type: 'comments', id: '1'}, {type: 'comments', id: '2'}]
                   },
                   blog: {
-                    data: {type: "blogs", id: "999"}
+                    data: {type: 'blogs', id: '999'}
                   },
                   author: {
-                    data: {type: "authors", id: "1"}
+                    data: {type: 'authors', id: '1'}
                   }
                 }
               }
@@ -262,14 +262,14 @@ module ActiveModel
 
             expected = {
               data: {
-                id: "10",
-                type: "posts",
+                id: '10',
+                type: 'posts',
                 attributes: {
-                  title: "Hello!!",
-                  body: "Hello, world!!"
+                  title: 'Hello!!',
+                  body: 'Hello, world!!'
                 },
                 relationships: {
-                  comments: { data: [ { type: "comments", id: '1' }, { type: "comments", id: '2' } ] },
+                  comments: { data: [ { type: 'comments', id: '1' }, { type: 'comments', id: '2' } ] },
                   author: { data: nil }
                 }
               }

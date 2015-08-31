@@ -13,7 +13,7 @@ module ActiveModel
             @second_post.comments = []
             @first_post.author = @author
             @second_post.author = @author
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @first_post.blog = @blog
             @second_post.blog = nil
 
@@ -21,15 +21,15 @@ module ActiveModel
           end
 
           def test_with_serializer_option
-            @blog.special_attribute = "Special"
+            @blog.special_attribute = 'Special'
             @blog.articles = [@first_post, @second_post]
             serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerializer)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
             expected = {blogs:[{
               id: 1,
-              special_attribute: "Special",
-              articles: [{id: 1,title: "Hello!!", body: "Hello, world!!"}, {id: 2, title: "New Post", body: "Body"}]
+              special_attribute: 'Special',
+              articles: [{id: 1,title: 'Hello!!', body: 'Hello, world!!'}, {id: 2, title: 'New Post', body: 'Body'}]
             }]}
             assert_equal expected, adapter.serializable_hash
           end
@@ -39,30 +39,30 @@ module ActiveModel
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
             expected = { posts: [{
-              title: "Hello!!",
-              body: "Hello, world!!",
+              title: 'Hello!!',
+              body: 'Hello, world!!',
               id: 1,
               comments: [],
               author: {
                 id: 1,
-                name: "Steve K."
+                name: 'Steve K.'
               },
               blog: {
                 id: 999,
-                name: "Custom blog"
+                name: 'Custom blog'
               }
             }, {
-              title: "New Post",
-              body: "Body",
+              title: 'New Post',
+              body: 'Body',
               id: 2,
               comments: [],
               author: {
                 id: 1,
-                name: "Steve K."
+                name: 'Steve K.'
               },
               blog: {
                 id: 999,
-                name: "Custom blog"
+                name: 'Custom blog'
               }
             }]}
             assert_equal expected, adapter.serializable_hash

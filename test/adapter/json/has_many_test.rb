@@ -15,9 +15,9 @@ module ActiveModel
             @post.author = @author
             @first_comment.post = @post
             @second_comment.post = @post
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @post.blog = @blog
-            @tag = Tag.new(id: 1, name: "#hash_tag")
+            @tag = Tag.new(id: 1, name: '#hash_tag')
             @post.tags = [@tag]
           end
 
@@ -36,7 +36,7 @@ module ActiveModel
             assert_equal({
               id: 42,
               tags: [
-                {"attributes"=>{"id"=>1, "name"=>"#hash_tag"}}
+                {'attributes'=>{'id'=>1, 'name'=>'#hash_tag'}}
               ]
             }.to_json, adapter.serializable_hash[:post].to_json)
           end
