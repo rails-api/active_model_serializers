@@ -83,7 +83,7 @@ Location = Class.new(Model)
 Place    = Class.new(Model)
 Tag      = Class.new(Model)
 VirtualValue = Class.new(Model)
-Comment  = Class.new(Model) do
+Comment = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{self.id}"

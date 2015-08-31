@@ -26,7 +26,7 @@ module ActiveModel
         end
       end
 
-      class SerializerTest <  Minitest::Test
+      class SerializerTest < Minitest::Test
         class MyProfile < Profile
         end
         class CustomProfile

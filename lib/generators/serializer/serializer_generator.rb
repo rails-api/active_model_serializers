@@ -9,7 +9,7 @@ module Rails
       class_option :parent, :type => :string, :desc => "The parent class for the generated serializer"
 
       def create_serializer_file
-        template 'serializer.rb', File.join('app/serializers', class_path, "#{file_name}_serializer.rb")
+        template 'serializer.rb.erb', File.join('app/serializers', class_path, "#{file_name}_serializer.rb")
       end
 
       private

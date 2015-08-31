@@ -29,7 +29,7 @@ rescue LoadError
         def capture(stream)
           stream = stream.to_s
           captured_stream = Tempfile.new(stream)
-          stream_io = eval("$#{stream}")
+          stream_io = eval("$#{stream}") # rubocop:disable Lint/Eval
           origin_stream = stream_io.dup
           stream_io.reopen(captured_stream)
 

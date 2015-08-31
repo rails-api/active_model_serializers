@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 module ActionController
@@ -189,7 +188,7 @@ module ActionController
       def test_render_array_using_custom_root
         get :render_array_using_custom_root
 
-        expected =  {custom_roots: [{name: "Name 1", description: "Description 1"}]}
+        expected = {custom_roots: [{name: "Name 1", description: "Description 1"}]}
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
@@ -197,7 +196,7 @@ module ActionController
       def test_render_array_that_is_empty_using_custom_root
         get :render_array_that_is_empty_using_custom_root
 
-        expected =  {custom_roots: []}
+        expected = {custom_roots: []}
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
@@ -205,7 +204,7 @@ module ActionController
       def test_render_object_using_custom_root
         get :render_object_using_custom_root
 
-        expected =  {custom_root: {name: "Name 1", description: "Description 1"}}
+        expected = {custom_root: {name: 'Name 1', description: 'Description 1'}}
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
