@@ -10,3 +10,4 @@
   * uses model name to determine the type [@lsylvester]
   * remove root key option and split JSON adapter [@joaomdmoura]
   * adds FlattenJSON as default adapter [@joaomdmoura]
+  * adds support for `pagination links` at top level of JsonApi adapter [@bacarini]

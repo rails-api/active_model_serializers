@@ -9,8 +9,25 @@ module ActiveModel
     autoload :Adapter
     autoload :Lint
     autoload :Associations
+    autoload :Fieldset
     include Configuration
     include Associations
+
+
+    # Matches
+    #  "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
+    #  AND
+    #  "/c/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
+    #  AS
+    #  c/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb
+    CALLER_FILE = /
+      \A       # start of string
+      \S+      # one or more non-spaces
+      (?=      # stop previous match when
+        :\d+     # a colon is followed by one or more digits
+        :in      # followed by a colon followed by in
+      )
+    /x
 
     class << self
       attr_accessor :_attributes
@@ -29,8 +46,7 @@ module ActiveModel
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
       base._urls = []
-      serializer_file = File.open(caller.first[/^[^:]+/])
-      base._cache_digest = Digest::MD5.hexdigest(serializer_file.read)
+      base._cache_digest = digest_caller_file(caller.first)
       super
     end
 
@@ -51,10 +67,10 @@ module ActiveModel
       @_attributes_keys[attr] = { key: key } if key != attr
       @_attributes << key unless @_attributes.include?(key)
 
-      unless respond_to?(key, false) || _fragmented.respond_to?(attr)
+      ActiveModelSerializers.silence_warnings do
         define_method key do
           object.read_attribute_for_serialization(attr)
-        end
+        end unless respond_to?(key, false) || _fragmented.respond_to?(attr)
       end
     end
 
@@ -135,7 +151,11 @@ module ActiveModel
     end
 
     def json_api_type
-      object.class.model_name.plural
+      if config.jsonapi_resource_type == :plural
+        object.class.model_name.plural
+      else
+        object.class.model_name.singular
+      end
     end
 
     def attributes(options = {})
@@ -159,6 +179,12 @@ module ActiveModel
 
     def self.serializers_cache
       @serializers_cache ||= ThreadSafe::Cache.new
+    end
+
+    def self.digest_caller_file(caller_line)
+      serializer_file_path = caller_line[CALLER_FILE]
+      serializer_file_contents = IO.read(serializer_file_path)
+      Digest::MD5.hexdigest(serializer_file_contents)
     end
 
     attr_reader :options

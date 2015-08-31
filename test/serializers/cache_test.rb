@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tempfile'
 module ActiveModel
   class Serializer
     class CacheTest < Minitest::Test
@@ -46,13 +47,13 @@ module ActiveModel
       end
 
       def test_cache_key_interpolation_with_updated_at
-        author = render_object_with_cache(@author)
+        render_object_with_cache(@author)
         assert_equal(nil, ActionController::Base.cache_store.fetch(@author.cache_key))
         assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}").to_json)
       end
 
       def test_default_cache_key_fallback
-        comment = render_object_with_cache(@comment)
+        render_object_with_cache(@comment)
         assert_equal(@comment_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(@comment.cache_key).to_json)
       end
 
@@ -73,7 +74,7 @@ module ActiveModel
         assert_equal(nil, ActionController::Base.cache_store.fetch(@comment.cache_key))
 
         Timecop.freeze(Time.now) do
-          post = render_object_with_cache(@post)
+          render_object_with_cache(@post)
 
           assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
           assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
@@ -121,12 +122,36 @@ module ActiveModel
       end
 
       def test_uses_file_digest_in_cache_key
-        blog = render_object_with_cache(@blog)
+        render_object_with_cache(@blog)
         assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
       end
 
-      def _cache_digest_definition
+      def test_cache_digest_definition
         assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
+      end
+
+      def test_serializer_file_path_on_nix
+        path = "/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb"
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
+      def test_serializer_file_path_on_windows
+        path = "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb"
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
+      def test_digest_caller_file
+        contents = "puts 'AMS rocks'!"
+        file = Tempfile.new("some_ruby.rb")
+        file.write(contents)
+        path = file.path
+        caller_line = "#{path}:1:in `<top (required)>'"
+        file.close
+        assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
+      ensure
+        file.unlink
       end
 
       private
