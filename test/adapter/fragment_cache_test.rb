@@ -6,7 +6,7 @@ module ActiveModel
         def setup
           @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')
           @author          = Author.new(name: 'Joao M. D. Moura')
-          @role            = Role.new(name: 'Great Author', description:nil)
+          @role            = Role.new(name: 'Great Author', description: nil)
           @role.author     = [@author]
           @role_serializer = RoleSerializer.new(@role)
           @spam_serializer = Spam::UnrelatedLinkSerializer.new(@spam)

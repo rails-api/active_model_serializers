@@ -24,7 +24,7 @@ module ActiveModel
             @serializer = PostPreviewSerializer.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               @serializer,
-              include: ['comments', 'author']
+              include: %w(comments author)
             )
           end
 
@@ -60,7 +60,7 @@ module ActiveModel
                 id: @author.id.to_s,
                 type: 'authors',
                 relationships: {
-                  posts: { data: [ {type: 'posts', id: @post.id.to_s } ] }
+                  posts: { data: [{ type: 'posts', id: @post.id.to_s }] }
                 }
               }
             ]

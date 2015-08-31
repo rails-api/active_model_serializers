@@ -58,9 +58,9 @@ module ActiveModel
       end
 
       def test_cache_options_definition
-        assert_equal({expires_in: 0.1, skip_digest: true}, @post_serializer.class._cache_options)
+        assert_equal({ expires_in: 0.1, skip_digest: true }, @post_serializer.class._cache_options)
         assert_equal(nil, @blog_serializer.class._cache_options)
-        assert_equal({expires_in: 1.day, skip_digest: true}, @comment_serializer.class._cache_options)
+        assert_equal({ expires_in: 1.day, skip_digest: true }, @comment_serializer.class._cache_options)
       end
 
       def test_fragment_cache_definition
@@ -118,7 +118,7 @@ module ActiveModel
         hash = render_object_with_cache(@location)
 
         assert_equal(hash, expected_result)
-        assert_equal({place: 'Nowhere'}, ActionController::Base.cache_store.fetch(@location.cache_key))
+        assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(@location.cache_key))
       end
 
       def test_uses_file_digest_in_cache_key
@@ -155,6 +155,7 @@ module ActiveModel
       end
 
       private
+
       def render_object_with_cache(obj)
         ActiveModel::SerializableResource.new(obj).serializable_hash
       end

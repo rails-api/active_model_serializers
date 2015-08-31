@@ -15,7 +15,6 @@ module ActiveModel::Serializer::Lint
   # always return +{}+, and the tests would pass. It is up to you to ensure
   # that the values are semantically meaningful.
   module Tests
-
     # Passes if the object responds to <tt>serializable_hash</tt> and if it takes
     # zero or one arguments.
     # Fails otherwise.
@@ -126,6 +125,5 @@ module ActiveModel::Serializer::Lint
     def assert_instance_of(result, name)
       assert result.instance_of?(name), "#{result} should be an instance of #{name}"
     end
-
   end
 end

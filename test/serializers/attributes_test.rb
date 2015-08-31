@@ -15,18 +15,17 @@ module ActiveModel
 
       def test_attributes_definition
         assert_equal([:name, :description],
-                     @profile_serializer.class._attributes)
+          @profile_serializer.class._attributes)
       end
 
       def test_attributes_with_fields_option
-        assert_equal({name: 'Name 1'},
-                     @profile_serializer.attributes(fields: [:name]))
+        assert_equal({ name: 'Name 1' },
+          @profile_serializer.attributes(fields: [:name]))
       end
 
       def test_required_fields
-        assert_equal({name: 'Name 1', description: 'Description 1'},
-                     @profile_serializer.attributes(fields: [:name, :description], required_fields: [:name]))
-
+        assert_equal({ name: 'Name 1', description: 'Description 1' },
+          @profile_serializer.attributes(fields: [:name, :description], required_fields: [:name]))
       end
 
       def test_attributes_inheritance_definition
@@ -35,8 +34,8 @@ module ActiveModel
 
       def test_attributes_inheritance
         serializer = @serializer_klass.new(@comment)
-        assert_equal({id: 1, body: 'ZOMG!!'},
-                     serializer.attributes)
+        assert_equal({ id: 1, body: 'ZOMG!!' },
+          serializer.attributes)
       end
 
       def test_attribute_inheritance_with_new_attribute_definition
@@ -46,8 +45,8 @@ module ActiveModel
 
       def test_attribute_inheritance_with_new_attribute
         serializer = @serializer_klass_with_new_attributes.new(@comment)
-        assert_equal({id: 1, body: 'ZOMG!!', date: '2015', likes: nil},
-                     serializer.attributes)
+        assert_equal({ id: 1, body: 'ZOMG!!', date: '2015', likes: nil },
+          serializer.attributes)
       end
 
       def test_multiple_calls_with_the_same_attribute

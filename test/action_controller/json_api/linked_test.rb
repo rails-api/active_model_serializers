@@ -75,7 +75,7 @@ module ActionController
 
           def render_collection_with_include
             setup_post
-            render json: [@post], include: ['author', 'comments'], adapter: :json_api
+            render json: [@post], include: %w(author comments), adapter: :json_api
           end
         end
 
@@ -107,7 +107,7 @@ module ActionController
               },
               'relationships' => {
                 'posts' => { 'data' => [] },
-                'roles' => { 'data' => [{ 'type' =>'roles', 'id' => '1' }, { 'type' =>'roles', 'id' => '2' }] },
+                'roles' => { 'data' => [{ 'type' => 'roles', 'id' => '1' }, { 'type' => 'roles', 'id' => '2' }] },
                 'bio' => { 'data' => nil }
               }
             }, {
@@ -119,7 +119,7 @@ module ActionController
                 'slug' => 'admin-1'
               },
               'relationships' => {
-                'author' => { 'data' => { 'type' =>'authors', 'id' => '1' } }
+                'author' => { 'data' => { 'type' => 'authors', 'id' => '1' } }
               }
             }, {
               'id' => '2',
@@ -130,7 +130,7 @@ module ActionController
                 'slug' => 'colab-2'
               },
               'relationships' => {
-                'author' => { 'data' => { 'type' =>'authors', 'id' => '1' } }
+                'author' => { 'data' => { 'type' => 'authors', 'id' => '1' } }
               }
             }
           ]
@@ -172,7 +172,7 @@ module ActionController
         end
 
         def has_type?(collection, value)
-          collection.detect { |i| i['type'] == value}
+          collection.detect { |i| i['type'] == value }
         end
       end
     end

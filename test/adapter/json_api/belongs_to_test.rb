@@ -47,7 +47,7 @@ module ActiveModel
                 body: 'Body',
               },
               relationships: {
-                comments: { data: [ { type: 'comments', id: '1' } ] },
+                comments: { data: [{ type: 'comments', id: '1' }] },
                 blog: { data: { type: 'blogs', id: '999' } },
                 author: { data: { type: 'authors', id: '1' } }
               }
@@ -56,7 +56,7 @@ module ActiveModel
           end
 
           def test_limiting_linked_post_fields
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: {post: [:title]})
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: { post: [:title] })
             expected = [{
               id: '42',
               type: 'posts',
@@ -64,7 +64,7 @@ module ActiveModel
                 title: 'New Post'
               },
               relationships: {
-                comments: { data: [ { type: 'comments', id: '1' } ] },
+                comments: { data: [{ type: 'comments', id: '1' }] },
                 blog: { data: { type: 'blogs', id: '999' } },
                 author: { data: { type: 'authors', id: '1' } }
               }
@@ -76,7 +76,7 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: { data: [] }, blog: { data: { type: 'blogs', id: '999' } }, author: { data: nil }}, adapter.serializable_hash[:data][:relationships])
+            assert_equal({ comments: { data: [] }, blog: { data: { type: 'blogs', id: '999' } }, author: { data: nil } }, adapter.serializable_hash[:data][:relationships])
           end
 
           def test_include_type_for_association_when_different_than_name
@@ -108,7 +108,7 @@ module ActiveModel
 
           def test_include_linked_resources_with_type_name
             serializer = BlogSerializer.new(@blog)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: ['writer', 'articles'])
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: %w(writer articles))
             linked = adapter.serializable_hash[:included]
             expected = [
               {
@@ -122,7 +122,7 @@ module ActiveModel
                   roles: { data: [] },
                   bio: { data: nil }
                 }
-              },{
+              }, {
                 id: '42',
                 type: 'posts',
                 attributes: {
@@ -130,7 +130,7 @@ module ActiveModel
                   body: 'Body'
                 },
                 relationships: {
-                  comments: { data: [ { type: 'comments', id: '1' } ] },
+                  comments: { data: [{ type: 'comments', id: '1' }] },
                   blog: { data: { type: 'blogs', id: '999' } },
                   author: { data: { type: 'authors', id: '1' } }
                 }

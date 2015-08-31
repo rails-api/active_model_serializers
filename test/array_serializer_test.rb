@@ -7,11 +7,11 @@ module ActiveModel
         @comment = Comment.new
         @post = Post.new
         @resource = build_named_collection @comment, @post
-        @serializer = ArraySerializer.new(@resource, {some: :options})
+        @serializer = ArraySerializer.new(@resource, { some: :options })
       end
 
       def build_named_collection(*resource)
-        resource.define_singleton_method(:name){ 'MeResource' }
+        resource.define_singleton_method(:name) { 'MeResource' }
         resource
       end
 
@@ -36,13 +36,13 @@ module ActiveModel
       end
 
       def test_serializer_option_not_passed_to_each_serializer
-        serializers = ArraySerializer.new([@post], {serializer: PostSerializer}).to_a
+        serializers = ArraySerializer.new([@post], { serializer: PostSerializer }).to_a
 
         refute serializers.first.custom_options.key?(:serializer)
       end
 
       def test_meta_and_meta_key_attr_readers
-        meta_content = {meta: 'the meta', meta_key: 'the meta key'}
+        meta_content = { meta: 'the meta', meta_key: 'the meta key' }
         @serializer = ArraySerializer.new([@comment, @post], meta_content)
 
         assert_equal @serializer.meta, 'the meta'
@@ -77,7 +77,7 @@ module ActiveModel
 
       def test_json_key_with_resource_with_nil_name_and_no_serializers
         resource = []
-        resource.define_singleton_method(:name){ nil }
+        resource.define_singleton_method(:name) { nil }
         serializer = ArraySerializer.new(resource)
         assert_equal serializer.json_key, nil
       end

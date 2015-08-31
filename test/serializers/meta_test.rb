@@ -12,7 +12,7 @@ module ActiveModel
       end
 
       def test_meta_is_present_with_root
-        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10})
+        serializer = AlternateBlogSerializer.new(@blog, meta: { total: 10 })
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {
           blog: {
@@ -28,7 +28,7 @@ module ActiveModel
 
       def test_meta_is_not_included_when_root_is_missing
         # load_adapter uses FlattenJson Adapter
-        adapter = load_adapter(meta: {total: 10})
+        adapter = load_adapter(meta: { total: 10 })
         expected = {
           id: 1,
           title: 'AMS Hints'
@@ -37,7 +37,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used
-        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: 'haha_meta')
+        serializer = AlternateBlogSerializer.new(@blog, meta: { total: 10 }, meta_key: 'haha_meta')
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {
           blog: {
@@ -52,7 +52,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used_with_json_api
-        serializer = AlternateBlogSerializer.new(@blog, meta: {total: 10}, meta_key: 'haha_meta')
+        serializer = AlternateBlogSerializer.new(@blog, meta: { total: 10 }, meta_key: 'haha_meta')
         adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
         expected = {
           data: {
@@ -66,7 +66,7 @@ module ActiveModel
       end
 
       def test_meta_is_not_present_on_arrays_without_root
-        serializer = ArraySerializer.new([@blog], meta: {total: 10})
+        serializer = ArraySerializer.new([@blog], meta: { total: 10 })
         # FlattenJSON doesn't have support to root
         adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(serializer)
         expected = [{
@@ -86,7 +86,7 @@ module ActiveModel
       end
 
       def test_meta_is_present_on_arrays_with_root
-        serializer = ArraySerializer.new([@blog], meta: {total: 10}, meta_key: 'haha_meta')
+        serializer = ArraySerializer.new([@blog], meta: { total: 10 }, meta_key: 'haha_meta')
         # JSON adapter adds root by default
         adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
         expected = {

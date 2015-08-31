@@ -7,7 +7,7 @@ class Model
     @_model_name ||= ActiveModel::Name.new(self)
   end
 
-  def initialize(hash={})
+  def initialize(hash = {})
     @attributes = hash
   end
 
@@ -94,7 +94,7 @@ module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'post', expires_in: 0.1, skip_digest: true
+  cache key: 'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
 
   has_many :comments
@@ -133,7 +133,7 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'writer', skip_digest: true
+  cache key: 'writer', skip_digest: true
   attribute :id
   attribute :name
 
@@ -249,8 +249,8 @@ end
 VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
-  has_many :reviews, virtual_value: [{id: 1}, {id: 2}]
-  has_one :maker, virtual_value: {id: 1}
+  has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]
+  has_one :maker, virtual_value: { id: 1 }
 
   def reviews
   end

@@ -20,7 +20,7 @@ module ActionController
     end
 
     def get_serializer(resource, options = {})
-      if ! use_adapter?
+      if !use_adapter?
         warn 'ActionController::Serialization#use_adapter? has been removed. '\
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource#serialize"
         options[:adapter] = false

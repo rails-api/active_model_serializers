@@ -50,7 +50,7 @@ module ActiveModel
           resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
         end
 
-        def add_relationship(resource, name, serializer, val=nil)
+        def add_relationship(resource, name, serializer, val = nil)
           resource[:relationships] ||= {}
           resource[:relationships][name] = { data: val }
 

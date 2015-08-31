@@ -13,7 +13,6 @@ require 'minitest/autorun'
 # Ensure backward compatibility with Minitest 4
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
-
 require 'capture_warnings'
 @capture_warnings = CaptureWarnings.new(fail_build = true)
 @capture_warnings.before_tests

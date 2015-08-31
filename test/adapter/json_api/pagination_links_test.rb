@@ -20,9 +20,9 @@ module ActiveModel
             ]
           end
 
-          def mock_request(query_parameters={}, original_url=URI)
+          def mock_request(query_parameters = {}, original_url = URI)
             context = Minitest::Mock.new
-            context.expect(:original_url, original_url )
+            context.expect(:original_url, original_url)
             context.expect(:query_parameters, query_parameters)
             @options = {}
             @options[:context] = context
@@ -42,17 +42,17 @@ module ActiveModel
           end
 
           def data
-            { data:[
-                { id:'1', type:'profiles', attributes:{name:'Name 1', description:'Description 1' } },
-                { id:'2', type:'profiles', attributes:{name:'Name 2', description:'Description 2' } },
-                { id:'3', type:'profiles', attributes:{name:'Name 3', description:'Description 3' } }
+            { data: [
+                { id: '1', type: 'profiles', attributes: { name: 'Name 1', description: 'Description 1' } },
+                { id: '2', type: 'profiles', attributes: { name: 'Name 2', description: 'Description 2' } },
+                { id: '3', type: 'profiles', attributes: { name: 'Name 3', description: 'Description 3' } }
               ]
             }
           end
 
           def links
             {
-              links:{
+              links: {
                 self: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1",
                 first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                 prev: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
@@ -74,7 +74,7 @@ module ActiveModel
           end
 
           def expected_response_with_pagination_links_and_additional_params
-            new_links = links[:links].each_with_object({}) {|(key, value), hash| hash[key] = "#{value}&test=test" }
+            new_links = links[:links].each_with_object({}) { |(key, value), hash| hash[key] = "#{value}&test=test" }
             {}.tap do |hash|
               hash[:data] = [data.values.flatten.second]
               hash.merge! links: new_links

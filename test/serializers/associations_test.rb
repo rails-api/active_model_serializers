@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     class AssociationsTest < Minitest::Test
       class Model
-        def initialize(hash={})
+        def initialize(hash = {})
           @attributes = hash
         end
 
@@ -29,7 +29,7 @@ module ActiveModel
         @author.roles = []
         @blog = Blog.new({ name: 'AMS Blog' })
         @post = Post.new({ title: 'New Post', body: 'Body' })
-        @tag = Tag.new({name: '#hashtagged'})
+        @tag = Tag.new({ name: '#hashtagged' })
         @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
         @post.comments = [@comment]
         @post.tags = [@tag]
@@ -39,7 +39,7 @@ module ActiveModel
         @post.author = @author
         @author.posts = [@post]
 
-        @post_serializer = PostSerializer.new(@post, {custom_options: true})
+        @post_serializer = PostSerializer.new(@post, { custom_options: true })
         @author_serializer = AuthorSerializer.new(@author)
         @comment_serializer = CommentSerializer.new(@comment)
       end
@@ -74,7 +74,7 @@ module ActiveModel
 
           assert_equal key, :tags
           assert_equal serializer, nil
-          assert_equal [{ attributes: { name: '#hashtagged' }}].to_json, options[:virtual_value].to_json
+          assert_equal [{ attributes: { name: '#hashtagged' } }].to_json, options[:virtual_value].to_json
         end
       end
 

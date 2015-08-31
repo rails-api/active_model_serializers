@@ -60,7 +60,7 @@ module ActiveModel
                     body: 'Hello, world!!'
                   },
                   relationships: {
-                    comments: { data: [ { type: 'comments', id: '1' }, { type: 'comments', id: '2' } ] },
+                    comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
                     blog: { data: { type: 'blogs', id: '999' } },
                     author: { data: { type: 'authors', id: '1' } }
                   }
@@ -107,7 +107,7 @@ module ActiveModel
                     name: 'Steve K.'
                   },
                   relationships: {
-                    posts: { data: [ { type: 'posts', id: '10' }, { type: 'posts', id: '30' } ] },
+                    posts: { data: [{ type: 'posts', id: '10' }, { type: 'posts', id: '30' }] },
                     roles: { data: [] },
                     bio: { data: { type: 'bios', id: '1' } }
                   }
@@ -128,7 +128,7 @@ module ActiveModel
                     name: 'Tenderlove'
                   },
                   relationships: {
-                    posts: { data: [ { type: 'posts', id:'20' } ] },
+                    posts: { data: [{ type: 'posts', id: '20' }] },
                     roles: { data: [] },
                     bio: { data: { type: 'bios', id: '2' } }
                   }
@@ -168,9 +168,9 @@ module ActiveModel
                   name: 'Steve K.'
                 },
                 relationships: {
-                  posts: { data: [ { type: 'posts', id: '10'}, { type: 'posts', id: '30' }] },
+                  posts: { data: [{ type: 'posts', id: '10' }, { type: 'posts', id: '30' }] },
                   roles: { data: [] },
-                  bio: { data: { type: 'bios', id: '1' }}
+                  bio: { data: { type: 'bios', id: '1' } }
                 }
               }, {
                 id: '10',
@@ -180,7 +180,7 @@ module ActiveModel
                   body: 'Hello, world!!'
                 },
                 relationships: {
-                  comments: { data: [ { type: 'comments', id: '1'}, { type: 'comments', id: '2' }] },
+                  comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
                   blog: { data: { type: 'blogs', id: '999' } },
                   author: { data: { type: 'authors', id: '1' } }
                 }
@@ -237,13 +237,13 @@ module ActiveModel
                 },
                 relationships: {
                   comments: {
-                    data: [{type: 'comments', id: '1'}, {type: 'comments', id: '2'}]
+                    data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }]
                   },
                   blog: {
-                    data: {type: 'blogs', id: '999'}
+                    data: { type: 'blogs', id: '999' }
                   },
                   author: {
-                    data: {type: 'authors', id: '1'}
+                    data: { type: 'authors', id: '1' }
                   }
                 }
               }
@@ -269,7 +269,7 @@ module ActiveModel
                   body: 'Hello, world!!'
                 },
                 relationships: {
-                  comments: { data: [ { type: 'comments', id: '1' }, { type: 'comments', id: '2' } ] },
+                  comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
                   author: { data: nil }
                 }
               }

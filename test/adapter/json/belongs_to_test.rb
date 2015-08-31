@@ -24,21 +24,21 @@ module ActiveModel
           end
 
           def test_includes_post
-            assert_equal({id: 42, title: 'New Post', body: 'Body'}, @adapter.serializable_hash[:comment][:post])
+            assert_equal({ id: 42, title: 'New Post', body: 'Body' }, @adapter.serializable_hash[:comment][:post])
           end
 
           def test_include_nil_author
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            assert_equal({post: {title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], blog: {id: 999, name: 'Custom blog'}, author: nil}}, adapter.serializable_hash)
+            assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], blog: { id: 999, name: 'Custom blog' }, author: nil } }, adapter.serializable_hash)
           end
 
           def test_include_nil_author_with_specified_serializer
             serializer = PostPreviewSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            assert_equal({post: {title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil}}, adapter.serializable_hash)
+            assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil } }, adapter.serializable_hash)
           end
         end
       end

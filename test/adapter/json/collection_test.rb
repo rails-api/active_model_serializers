@@ -26,11 +26,11 @@ module ActiveModel
             serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerializer)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
-            expected = {blogs:[{
+            expected = { blogs: [{
               id: 1,
               special_attribute: 'Special',
-              articles: [{id: 1,title: 'Hello!!', body: 'Hello, world!!'}, {id: 2, title: 'New Post', body: 'Body'}]
-            }]}
+              articles: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' }, { id: 2, title: 'New Post', body: 'Body' }]
+            }] }
             assert_equal expected, adapter.serializable_hash
           end
 
@@ -64,7 +64,7 @@ module ActiveModel
                 id: 999,
                 name: 'Custom blog'
               }
-            }]}
+            }] }
             assert_equal expected, adapter.serializable_hash
           end
 

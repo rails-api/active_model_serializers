@@ -53,5 +53,6 @@ class CaptureWarnings
   end
 
   private
+
   attr_reader :stderr_file, :app_root, :output_dir, :bundle_dir, :fail_on_warnings
 end

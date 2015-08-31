@@ -88,7 +88,6 @@ module ActiveModel
             ]
             assert_equal(expected, @adapter.serializable_hash[:data])
           end
-
         end
       end
     end

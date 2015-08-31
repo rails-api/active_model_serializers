@@ -103,7 +103,7 @@ module ActionController
           { 'title' => 'New Post',
             'body' => 'Body',
             'id' => assigns(:post).id,
-            'comments' => [{'id' => 1}, {'id' => 2}],
+            'comments' => [{ 'id' => 1 }, { 'id' => 2 }],
             'author' => { 'id' => assigns(:author).id }
           }
         ]
