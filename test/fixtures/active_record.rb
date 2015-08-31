@@ -37,7 +37,6 @@ module ARModels
 
   class PostSerializer < ActiveModel::Serializer
     attributes :id, :title, :body
-    params :title, :body
 
     has_many :comments
     belongs_to :author
