@@ -1,16 +1,48 @@
 module ActiveModel
   class Serializer
+    # TODO: description of this class, and overview of how it's used
     class IncludeTree
       module Parsing
         module_function
 
+        # Translates a comma separated list of dot separated paths (JSON API format) into a Hash.
+        #
+        # @example
+        #   `'posts.author, posts.comments.upvotes, posts.comments.author'`
+        #
+        #   would become
+        #
+        #   `{ posts: { author: {}, comments: { author: {}, upvotes: {} } } }`.
+        #
+        # @param [String] included
+        # @return [Hash] a Hash representing the same tree structure
         def include_string_to_hash(included)
+          # TODO: Needs comment walking through the process of what all this is doing.
           included.delete(' ').split(',').reduce({}) do |hash, path|
             include_tree = path.split('.').reverse_each.reduce({}) { |a, e| { e.to_sym => a } }
             hash.deep_merge!(include_tree)
           end
         end
 
+        # Translates the arguments passed to the include option into a Hash. The format can be either
+        # a String (see #include_string_to_hash), an Array of Symbols and Hashes, or a mix of both.
+        #
+        # @example
+        #  `posts: [:author, comments: [:author, :upvotes]]`
+        #
+        #  would become
+        #
+        #   `{ posts: { author: {}, comments: { author: {}, upvotes: {} } } }`.
+        #
+        # @example
+        #  `[:author, :comments => [:author]]`
+        #
+        #   would become
+        #
+        #   `{:author => {}, :comments => { author: {} } }`
+        #
+        # @param [Symbol, Hash, Array, String] included
+        # @return [Hash] a Hash representing the same tree structure
         def include_args_to_hash(included)
           case included
           when Symbol
@@ -47,6 +79,8 @@ module ActiveModel
       # @return [IncludeTree]
       #
       def self.from_include_args(included)
+        return included if included.is_a?(IncludeTree)
+
         new(Parsing.include_args_to_hash(included))
       end
 

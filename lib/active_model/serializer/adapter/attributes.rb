@@ -9,40 +9,12 @@ module ActiveModel
 
         def serializable_hash(options = nil)
           options ||= {}
+
           if serializer.respond_to?(:each)
-            result = serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
+            serializable_hash_for_collection(options)
           else
-            hash = {}
-
-            core = cache_check(serializer) do
-              serializer.attributes(options)
-            end
-
-            serializer.associations(@include_tree).each do |association|
-              serializer = association.serializer
-              association_options = association.options
-
-              if serializer.respond_to?(:each)
-                array_serializer = serializer
-                hash[association.key] = array_serializer.map do |item|
-                  cache_check(item) do
-                    item.attributes(association_options)
-                  end
-                end
-              else
-                hash[association.key] =
-                  if serializer && serializer.object
-                    cache_check(serializer) do
-                      serializer.attributes(options)
-                    end
-                  elsif association_options[:virtual_value]
-                    association_options[:virtual_value]
-                  end
-              end
-            end
-            result = core.merge hash
+            serializable_hash_for_single_resource(options)
           end
-          result
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
@@ -51,9 +23,42 @@ module ActiveModel
 
         private
 
+        def serializable_hash_for_collection(options)
+          serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
+        end
+
+        def serializable_hash_for_single_resource(options)
+          resource = resource_object_for(options)
+          relationships = resource_relationships(options)
+          resource.merge!(relationships)
+        end
+
+        def resource_relationships(options)
+          relationships = {}
+          serializer.associations(@include_tree).each do |association|
+            relationships[association.key] = relationship_value_for(association, options)
+          end
+
+          relationships
+        end
+
+        def relationship_value_for(association, options)
+          return association.options[:virtual_value] if association.options[:virtual_value]
+          return unless association.serializer && association.serializer.object
+
+          opts = instance_options.merge(include: @include_tree[association.key])
+          Attributes.new(association.serializer, opts).serializable_hash(options)
+        end
+
         # no-op: Attributes adapter does not include meta data, because it does not support root.
         def include_meta(json)
           json
+        end
+
+        def resource_object_for(options)
+          cache_check(serializer) do
+            serializer.attributes(options)
+          end
         end
       end
     end
