@@ -70,7 +70,7 @@ module ActiveModel
       ActiveModelSerializers.silence_warnings do
         define_method key do
           object.read_attribute_for_serialization(attr)
-        end unless respond_to?(key, false) || _fragmented.respond_to?(attr)
+        end unless (key != :id && method_defined?(key)) || _fragmented.respond_to?(attr)
       end
     end
 

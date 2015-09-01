@@ -134,7 +134,8 @@ end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
   cache key:'writer', skip_digest: true
-  attributes :id, :name
+  attribute :id
+  attribute :name
 
   has_many :posts
   has_many :roles
