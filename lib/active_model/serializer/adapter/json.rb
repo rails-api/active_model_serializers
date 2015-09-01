@@ -6,6 +6,7 @@ module ActiveModel
       class Json < Adapter
         def serializable_hash(options = nil)
           options ||= {}
+
           if serializer.respond_to?(:each)
             @result = serialize_array_without_root(serializer, options)
           else
@@ -35,9 +36,9 @@ module ActiveModel
             opts = association.options
 
             if serializer.respond_to?(:each)
-              add_relationships(association.key, serializer, opts)
+              add_has_many_relationship(association.key, serializer, opts)
             else
-              add_relationship(association.key, serializer, opts)
+              add_singular_relationship(association.key, serializer, opts)
             end
           end
 
@@ -45,12 +46,12 @@ module ActiveModel
         end
 
         # add a singular relationship
-        def add_relationship(key, serializer, options)
+        def add_singular_relationship(key, serializer, options)
           @hash[key] = serialized_or_virtual_of(serializer, options)
         end
 
         # add a many relationship
-        def add_relationships(key, serializer, options)
+        def add_has_many_relationship(key, serializer, options)
           @hash[key] = serialize_array(serializer, options)
         end
 
