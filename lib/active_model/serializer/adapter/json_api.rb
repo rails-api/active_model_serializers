@@ -9,6 +9,11 @@ module ActiveModel
           super
           @hash = { data: [] }
 
+          @options[:include] ||= []
+          if @options[:include].is_a?(String)
+            @options[:include] = @options[:include].split(',')
+          end
+
           if fields = options.delete(:fields)
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
           else
@@ -119,47 +124,43 @@ module ActiveModel
           end
         end
 
-        def add_included(resource_name, serializers, parent = nil)
-          unless serializers.respond_to?(:each)
-            return unless serializers.object
-            serializers = Array(serializers)
+        def add_included(resource_name, serializer, parent = nil)
+          if serializer.respond_to?(:each)
+            serializer.each { |s| add_included(resource_name, s, parent) }
+            return
+          else
+            return unless serializer.object
           end
+
           resource_path = [parent, resource_name].compact.join('.')
+
           if include_assoc?(resource_path)
             @hash[:included] ||= []
 
-            serializers.each do |serializer|
-              attrs = attributes_for(serializer, @options)
-              relationships = relationships_for(serializer)
-              attrs[:relationships] = relationships if relationships.any?
+            attrs = attributes_for(serializer, @options)
+            relationships = relationships_for(serializer)
+            attrs[:relationships] = relationships if relationships.any?
 
-              @hash[:included].push(attrs) unless @hash[:included].include?(attrs)
-            end
+            @hash[:included].push(attrs) unless @hash[:included].include?(attrs)
           end
 
-          serializers.each do |serializer|
+          if include_nested_assoc?(resource_path)
             serializer.associations.each do |association|
               add_included(association.key, association.serializer, resource_path) if association.serializer
-            end if include_nested_assoc?(resource_path)
+            end
           end
         end
 
         def include_assoc?(assoc)
-          return false unless @options[:include]
           check_assoc("#{assoc}$")
         end
 
         def include_nested_assoc?(assoc)
-          return false unless @options[:include]
           check_assoc("#{assoc}.")
         end
 
         def check_assoc(assoc)
-          include_opt = @options[:include]
-          include_opt = include_opt.split(',') if include_opt.is_a?(String)
-          include_opt.any? do |s|
-            s.match(/^#{assoc.gsub('.', '\.')}/)
-          end
+          @options[:include].any? { |s| s.match(/^#{assoc.gsub('.', '\.')}/) }
         end
 
         def add_links(options)
