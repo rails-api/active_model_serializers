@@ -39,7 +39,8 @@ module ActiveModel
             @hash[:data] = attributes_for(serializer, options)
             relationships = relationships_for(serializer)
             @hash[:data][:relationships] = relationships if relationships.any?
-            add_included_relationships(serializer)
+            included = included_for(serializer)
+            @hash[:included] = included if included.any?
           end
           @hash
         end
@@ -116,38 +117,35 @@ module ActiveModel
           relationships
         end
 
-        def add_included_relationships(serializer)
-          serializer.associations.each do |association|
-            Array(association.serializer).each do |assoc_serializer|
-              add_included(association.key, assoc_serializer)
-            end
-          end
+        def included_for(serializer)
+          serializer.associations.flat_map { |assoc| _included_for(assoc.key, assoc.serializer) }.uniq
         end
 
-        def add_included(resource_name, serializer, parent = nil)
+        def _included_for(resource_name, serializer, parent = nil)
           if serializer.respond_to?(:each)
-            serializer.each { |s| add_included(resource_name, s, parent) }
-            return
+            serializer.flat_map { |s| _included_for(resource_name, s, parent) }.uniq
           else
-            return unless serializer.object
-          end
+            result = []
+            if serializer && serializer.object
+              resource_path = [parent, resource_name].compact.join('.')
 
-          resource_path = [parent, resource_name].compact.join('.')
+              if include_assoc?(resource_path)
+                attrs = attributes_for(serializer, @options)
+                relationships = relationships_for(serializer)
+                attrs[:relationships] = relationships if relationships.any?
+                result.push(attrs)
+              end
 
-          if include_assoc?(resource_path)
-            @hash[:included] ||= []
-
-            attrs = attributes_for(serializer, @options)
-            relationships = relationships_for(serializer)
-            attrs[:relationships] = relationships if relationships.any?
-
-            @hash[:included].push(attrs) unless @hash[:included].include?(attrs)
-          end
-
-          if include_nested_assoc?(resource_path)
-            serializer.associations.each do |association|
-              add_included(association.key, association.serializer, resource_path) if association.serializer
+              if include_nested_assoc?(resource_path)
+                serializer.associations.each do |association|
+                  if association.serializer
+                    result.concat(_included_for(association.key, association.serializer, resource_path))
+                    result.uniq!
+                  end
+                end
+              end
             end
+            result
           end
         end
 
