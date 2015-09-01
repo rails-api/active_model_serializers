@@ -36,10 +36,11 @@ module ActiveModel
 
             add_links(options)
           else
-            @hash[:data] = resource_objects_for(serializer, options)
+            resource_objects = resource_objects_for(serializer, options)
             relationships = relationships_for(serializer)
-            @hash[:data][:relationships] = relationships if relationships.any?
             included = included_for(serializer)
+            @hash[:data] = resource_objects
+            @hash[:data][:relationships] = relationships if relationships.any?
             @hash[:included] = included if included.any?
           end
           @hash
@@ -109,7 +110,7 @@ module ActiveModel
         end
 
         def relationships_for(serializer)
-          serializer.associations.map { |association| [ association.key, { data: relationship_value_for(association.serializer, association.options) } ] }.to_h
+         Hash[serializer.associations.map { |association| [ association.key, { data: relationship_value_for(association.serializer, association.options) } ] }]
         end
 
         def included_for(serializer)
