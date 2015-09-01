@@ -44,13 +44,25 @@ module ActiveModel
 
         private
 
+        def resource_identifier_type(serializer)
+          if ActiveModel::Serializer.config.jsonapi_resource_type == :singular
+            serializer.object.class.model_name.singular
+          else
+            serializer.object.class.model_name.plural
+          end
+        end
+
+        def resource_identifier_id(serializer)
+          if serializer.respond_to?('id')
+            serializer.id.to_s
+          else
+            serializer.object.id.to_s
+          end
+        end
+
         def resource_identifier(serializer)
-          type = if ActiveModel::Serializer.config.jsonapi_resource_type == :plural
-                   serializer.object.class.model_name.plural
-                 else
-                   serializer.object.class.model_name.singular
-                 end
-          id = serializer.respond_to?('id') ? serializer.id.to_s : serializer.object.id.to_s
+          type = resource_identifier_type(serializer)
+          id   = resource_identifier_id(serializer)
 
           { id: id, type: type }
         end
@@ -125,8 +137,8 @@ module ActiveModel
           else
             if options[:virtual_value]
               options[:virtual_value]
-            elsif serializer.object
-              resurce_identifier(serializer)
+            elsif serializer && serializer.object
+              resource_identifier(serializer)
             else
               nil
             end
@@ -135,19 +147,13 @@ module ActiveModel
 
         def add_resource_relationships(attrs, serializer, options = {})
           options[:add_included] = options.fetch(:add_included, true)
-
           attrs[:relationships] = {} if serializer.associations.any?
           serializer.associations.each do |association|
-            key = association.key
-            serializer = association.serializer
-            options = association.options
-            value = resource_relationship_value(serializer, options)
-
+            value = resource_relationship_value(association.serializer, association.options)
             attrs[:relationships][association.key] = { data: value }
-
             if options[:add_included]
-              Array(serializer).each do |s|
-                add_included(key, s)
+              Array(association.serializer).each do |s|
+                add_included(association.key, s)
               end
             end
           end
