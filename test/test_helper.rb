@@ -34,8 +34,10 @@ require 'support/stream_capture'
 
 require 'support/rails_app'
 
-require 'fixtures/poro'
-
 require 'support/test_case'
 
 require 'support/serialization_testing'
+
+require 'fixtures/active_record'
+
+require 'fixtures/poro'
