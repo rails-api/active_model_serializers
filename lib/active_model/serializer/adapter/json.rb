@@ -6,17 +6,17 @@ module ActiveModel
       class Json < Adapter
         def serializable_hash(options = nil)
           options ||= {}
-
           if serializer.respond_to?(:each)
             @result = serialize_array_without_root(serializer, options)
           else
-            @hash = {}
+            @result = resource_object_for(serializer)
+            @result = add_resource_relationships(
+              @result,
+              serializer,
+              serializer.options[:include])
 
-            @core = resource_object_for(serializer, options)
 
-            add_resource_relationships(serializer)
-
-            @result = @core.merge @hash
+            @result
           end
 
           { root => @result }
@@ -28,32 +28,83 @@ module ActiveModel
 
         private
 
+        def serialize_association(association)
+          serialized_or_virtual_of(association.serializer, association.options)
+        end
+
         # iterate through the associations on the serializer,
-        # adding them to @hash as needed (as singular or plural)
-        def add_resource_relationships(serializer)
-          serializer.associations.each do |association|
+        # adding them to the parent as needed (as singular or plural)
+        #
+        # restrict_to is a list of symbols that governs what
+        # associations on the passed in seralizer to include
+        def add_resource_relationships(parent, serializer, restrict_to = [])
+          # have the include array normalized
+          restrict_to = include_array_to_hash(restrict_to)
+
+          included_associations = if restrict_to.present?
+            serializer.associations.select{ |association|
+              # restrict_to is a hash of:
+              #   key => nested association to include
+              restrict_to.keys.include?(association.name)
+            }
+          else
+            serializer.associations
+          end
+
+          included_associations.each do |association|
             serializer = association.serializer
             opts = association.options
+            key = association.key
+
+            # sanity check if the association has nesting data
+            has_nesting = restrict_to[key].present?
+            if has_nesting
+              include_options_from_parent = { include: restrict_to[key] }
+              opts = opts.merge(include_options_from_parent)
+            end
 
             if serializer.respond_to?(:each)
-              add_has_many_relationship(association.key, serializer, opts)
+              parent[key] = add_relationships(serializer, opts)
             else
-              add_singular_relationship(association.key, serializer, opts)
+              parent[key] = add_relationship(serializer, opts)
             end
           end
 
-          @hash
+          parent
         end
 
         # add a singular relationship
-        def add_singular_relationship(key, serializer, options)
-          @hash[key] = serialized_or_virtual_of(serializer, options)
+        # the options should always belong to the serializer
+        def add_relationship(serializer, options)
+          serialized_relationship = serialized_or_virtual_of(serializer, options)
+
+          nested_relationships = options[:include]
+          if nested_relationships.present?
+            serialized_relationship = add_resource_relationships(
+              serialized_relationship,
+              serializer,
+              nested_relationships)
+          end
+
+          serialized_relationship
         end
 
         # add a many relationship
-        def add_has_many_relationship(key, serializer, options)
-          @hash[key] = serialize_array(serializer, options)
+        def add_relationships(serializer, options)
+          serialize_array(serializer, options) do |serialized_item, serializer|
+            nested_relationships = options[:include]
+
+            if nested_relationships.present?
+              seralized_item = add_resource_relationships(
+                serialized_item,
+                serializer,
+                nested_relationships)
+            end
+
+            serialized_item
+          end
         end
+
 
         def serialize_array_without_root(serializer, options)
           serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
@@ -63,7 +114,7 @@ module ActiveModel
         # such as a ruby array, or any other raw value
         def serialized_or_virtual_of(serializer, options)
           if serializer && serializer.object
-            resource_object_for(serializer, options)
+            resource_object_for(serializer)
           elsif options[:virtual_value]
             options[:virtual_value]
           end
@@ -71,14 +122,53 @@ module ActiveModel
 
         def serialize_array(serializer, options)
           serializer.map do |item|
-            resource_object_for(item, options)
+            serialized_item = resource_object_for(item)
+            serialized_item = yield(serialized_item, item) if block_given?
+            serialized_item
           end
         end
 
-        def resource_object_for(item, options)
-          cache_check(item) do
-            item.attributes(options)
+        def resource_object_for(serializer)
+          cache_check(serializer) do
+            serializer.attributes(serializer.options)
           end
+        end
+
+        # converts the include hash to a standard format
+        # for constrained serialization recursion
+        #
+        # converts
+        #  [:author, :comments => [:author]] to
+        #  {:author => [], :comments => [:author]}
+        #
+        # and
+        #  [:author, :comments => {:author => :bio}, :posts => [:comments]] to
+        #  {:author => [], :comments => {:author => :bio}, :posts => [:comments]}
+        #
+        # The data passed in to this method should be an array where the last
+        # parameter is a hash
+        #
+        # the point of this method is to normalize the include
+        # options for the child relationships.
+        # if a sub inclusion is still an array after this method,
+        # it will get converted during the next iteration
+        def include_array_to_hash(include_array)
+          # still don't trust input
+          # but this also allows
+          #  include: :author syntax
+          include_array = Array[*include_array].compact
+
+          result = {}
+
+          hashes = include_array.select{|a| a.is_a?(Hash)}
+          non_hashes = include_array - hashes
+
+          hashes += non_hashes.map{ |association_name| { association_name => [] } }
+
+          # now merge all the hashes
+          hashes.each{|hash| result.merge!(hash) }
+
+          result
         end
 
       end
