@@ -53,7 +53,7 @@ module ActiveModel
         end
 
         def resource_identifier_id(serializer)
-          if serializer.respond_to?('id')
+          if serializer.respond_to?(:id)
             serializer.id.to_s
           else
             serializer.object.id.to_s
