@@ -36,7 +36,7 @@ module ActiveModel
 
             add_links(options)
           else
-            @hash[:data] = attributes_for(serializer, options)
+            @hash[:data] = resource_objects_for(serializer, options)
             relationships = relationships_for(serializer)
             @hash[:data][:relationships] = relationships if relationships.any?
             included = included_for(serializer)
@@ -75,15 +75,7 @@ module ActiveModel
           { id: id.to_s, type: type }
         end
 
-        def attributes_for(serializer, options)
-          if serializer.respond_to?(:each)
-            serializer.map { |s| resource_object_for(s, options) }
-          else
-            resource_object_for(serializer, options)
-          end
-        end
-
-        def resource_object_for(serializer, options)
+        def resource_object_for(serializer, options = {})
           options[:fields] = @fieldset && @fieldset.fields_for(serializer)
 
           cache_check(serializer) do
@@ -91,6 +83,14 @@ module ActiveModel
             attributes = serializer.attributes(options).except(:id)
             result[:attributes] = attributes if attributes.any?
             result
+          end
+        end
+
+        def resource_objects_for(serializer, options)
+          if serializer.respond_to?(:each)
+            serializer.map { |s| resource_object_for(s, options) }
+          else
+            resource_object_for(serializer, options)
           end
         end
 
@@ -130,10 +130,10 @@ module ActiveModel
               resource_path = [parent, resource_name].compact.join('.')
 
               if include_assoc?(resource_path)
-                attrs = attributes_for(serializer, @options)
+                resource_object = resource_object_for(serializer, @options)
                 relationships = relationships_for(serializer)
-                attrs[:relationships] = relationships if relationships.any?
-                result.push(attrs)
+                resource_object[:relationships] = relationships if relationships.any?
+                result.push(resource_object)
               end
 
               if include_nested_assoc?(resource_path)
