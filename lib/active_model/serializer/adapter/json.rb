@@ -91,13 +91,13 @@ module ActiveModel
 
         # add a many relationship
         def add_relationships(serializer, options)
-          serialize_array(serializer, options) do |serialized_item, serializer|
+          serialize_array(serializer, options) do |serialized_item, item_serializer|
             nested_relationships = options[:include]
 
             if nested_relationships.present?
-              seralized_item = add_resource_relationships(
+              serialized_item = add_resource_relationships(
                 serialized_item,
-                serializer,
+                item_serializer,
                 nested_relationships)
             end
 
