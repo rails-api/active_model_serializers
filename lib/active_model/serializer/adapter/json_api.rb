@@ -109,12 +109,7 @@ module ActiveModel
         end
 
         def relationships_for(serializer)
-          relationships = {}
-          serializer.associations.each do |association|
-            value = relationship_value_for(association.serializer, association.options)
-            relationships[association.key] = { data: value }
-          end
-          relationships
+          serializer.associations.map { |association| [ association.key, { data: relationship_value_for(association.serializer, association.options) } ] }.to_h
         end
 
         def included_for(serializer)
