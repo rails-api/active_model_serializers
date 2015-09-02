@@ -36,10 +36,10 @@ module ActiveModel
 
             add_links(options)
           else
-            resource_objects = resource_objects_for(serializer, options)
+            primary_data = primary_data_for(serializer, options)
             relationships = relationships_for(serializer)
             included = included_for(serializer)
-            @hash[:data] = resource_objects
+            @hash[:data] = primary_data
             @hash[:data][:relationships] = relationships if relationships.any?
             @hash[:included] = included if included.any?
           end
@@ -87,7 +87,7 @@ module ActiveModel
           end
         end
 
-        def resource_objects_for(serializer, options)
+        def primary_data_for(serializer, options)
           if serializer.respond_to?(:each)
             serializer.map { |s| resource_object_for(s, options) }
           else
@@ -126,10 +126,10 @@ module ActiveModel
               resource_path = [parent, resource_name].compact.join('.')
 
               if include_assoc?(resource_path)
-                resource_object = resource_object_for(serializer, @options)
+                primary_data = primary_data_for(serializer, @options)
                 relationships = relationships_for(serializer)
-                resource_object[:relationships] = relationships if relationships.any?
-                result.push(resource_object)
+                primary_data[:relationships] = relationships if relationships.any?
+                result.push(primary_data)
               end
 
               if include_nested_assoc?(resource_path)
