@@ -6,6 +6,8 @@ module ActiveModel
       class Json < Adapter
         def serializable_hash(options = nil)
           options ||= {}
+          sideload = ActiveModel::Serializer.config.sideload_associations
+
           if serializer.respond_to?(:each)
             @result = serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
           else
@@ -18,7 +20,7 @@ module ActiveModel
             serializer.associations.each do |association|
               serializer = association.serializer
               opts = association.options
-
+              
               if serializer.respond_to?(:each)
                 array_serializer = serializer
                 @hash[association.key] = array_serializer.map do |item|
@@ -37,10 +39,35 @@ module ActiveModel
                   end
               end
             end
-            @result = @core.merge @hash
+
+            if sideload
+              association_ids = {}
+              @hash.map do |association_name, associated_models|
+                # TODO: use active support inflectors?
+                letters = association_name.to_s.split('')
+                letters = letters[0..letters.length - 2] if letters.last == 's'
+                singular_name = letters.join
+                id_name = (singular_name.singularize + "_ids").to_sym
+
+                # build id list
+                association_ids[id_name] ||= []
+
+                ids = Array.wrap(associated_models).map{ |model_hash|
+                  model_hash[:id]
+                }
+                association_ids[id_name] = ids
+              end
+              @result = @core.merge association_ids
+            else
+              @result = @core.merge @hash
+            end
           end
 
-          { root => @result }
+          if sideload
+            { root => @result }.merge(@hash || {})
+          else
+            { root => @result }
+          end
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
