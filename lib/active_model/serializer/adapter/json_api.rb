@@ -163,19 +163,21 @@ module ActiveModel
 
         def add_links(options)
           links = @hash.fetch(:links) { {} }
-          resources = serializer.instance_variable_get(:@resource)
-          @hash[:links] = add_pagination_links(links, resources, options) if is_paginated?(resources)
+          collection = serializer.object
+          if is_paginated?(collection)
+            @hash[:links] = add_pagination_links(links, collection, options)
+          end
         end
 
-        def add_pagination_links(links, resources, options)
-          pagination_links = JsonApi::PaginationLinks.new(resources, options[:context]).serializable_hash(options)
+        def add_pagination_links(links, collection, options)
+          pagination_links = JsonApi::PaginationLinks.new(collection, options[:context]).serializable_hash(options)
           links.update(pagination_links)
         end
 
-        def is_paginated?(resource)
-          resource.respond_to?(:current_page) &&
-            resource.respond_to?(:total_pages) &&
-            resource.respond_to?(:size)
+        def is_paginated?(collection)
+          collection.respond_to?(:current_page) &&
+            collection.respond_to?(:total_pages) &&
+            collection.respond_to?(:size)
         end
       end
     end
