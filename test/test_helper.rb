@@ -7,6 +7,14 @@ require 'action_controller/test_case'
 require 'action_controller/railtie'
 require 'active_support/json'
 require 'fileutils'
+
+begin
+  require 'awesome_print'
+  require 'pry-byebug'
+rescue LoadError => e
+  # not required for tests to run
+end
+
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 
 require 'minitest/autorun'

@@ -33,3 +33,10 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+
+# Add a Gemfile.local to locally bundle gems outside of version control
+local_gemfile = File.join(File.expand_path("..", __FILE__), "Gemfile.local")
+if File.readable?(local_gemfile)
+  eval_gemfile local_gemfile
+end
