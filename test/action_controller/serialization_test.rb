@@ -138,6 +138,22 @@ module ActionController
           render json: like
         end
 
+        def render_json_filtering_fields
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+            render json: profile, fields: [:name]
+          end
+        end
+
+        def render_json_filtering_relationship_fields
+          with_adapter ActiveModel::Serializer::Adapter::Json do
+            author = Author.new(id: 1, name: 'Joao Moura.')
+            role = Role.new({ id: 42, name: 'ZOMG A ROLE', description: 'DESCRIPTION HERE', author: author })
+
+            render json: role, fields: {role: [:name], author: [:id]}
+          end
+        end
+
         private
         def generate_cached_serializer(obj)
           ActiveModel::SerializableResource.new(obj).to_json
@@ -400,6 +416,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
+
       def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
         controller = Class.new(ImplicitSerializationTestController) {
           def use_adapter?
@@ -420,6 +437,35 @@ module ActionController
         assert_equal "", (capture(:stderr) {
           controller.get_serializer(Profile.new)
         })
+      end
+
+      def test_json_adapter_filtering_fields
+        get :render_json_filtering_fields
+
+        expected = {
+          profile: {
+            name: 'Name 1'
+          }
+        }
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_json_adapter_filtering_relationship_fields
+        get :render_json_filtering_relationship_fields
+
+        expected = {
+          role: {
+            name: 'ZOMG A ROLE',
+            author: {
+              id: 1
+            }
+          }
+        }
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
       end
     end
   end

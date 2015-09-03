@@ -24,6 +24,13 @@ module ActiveModel
       def initialize(serializer, options = {})
         @serializer = serializer
         @options = options
+
+        if fields = @options.delete(:fields)
+          @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
+          @options[:fieldset] = @fieldset
+        else
+          @fieldset = options[:fieldset]
+        end
       end
 
       def serializable_hash(options = nil)

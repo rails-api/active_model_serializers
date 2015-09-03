@@ -5,13 +5,13 @@ module ActiveModel
     class Adapter
       class Json < Adapter
         def serializable_hash(options = nil)
-          options ||= {}
           if serializer.respond_to?(:each)
-            @result = serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
+            @result = serializer.map { |s| FlattenJson.new(s, @options).serializable_hash(options) }
           else
             @hash = {}
 
             @core = cache_check(serializer) do
+              options = {fields: @fieldset && @fieldset.fields_for(serializer)}
               serializer.attributes(options)
             end
 
@@ -23,13 +23,14 @@ module ActiveModel
                 array_serializer = serializer
                 @hash[association.key] = array_serializer.map do |item|
                   cache_check(item) do
-                    item.attributes(opts)
+                    item.attributes(opts.merge(fields: @fieldset && @fieldset.fields_for(item)))
                   end
                 end
               else
                 @hash[association.key] =
                   if serializer && serializer.object
                     cache_check(serializer) do
+                      options[:fields] = @fieldset && @fieldset.fields_for(serializer)
                       serializer.attributes(options)
                     end
                   elsif opts[:virtual_value]
