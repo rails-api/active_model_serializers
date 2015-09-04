@@ -31,17 +31,17 @@ module ActiveModel
         # iterate through the associations on the serializer,
         # adding them to the parent as needed (as singular or plural)
         #
-        # restrict_to is a list of symbols that governs what
+        # nested_associations is a list of symbols that governs what
         # associations on the passed in seralizer to include
-        def add_resource_relationships(parent, serializer, restrict_to = [])
+        def add_resource_relationships(parent, serializer, nested_associations = [])
           # have the include array normalized
-          restrict_to = include_array_to_hash(restrict_to)
+          nested_associations = include_array_to_hash(nested_associations)
 
-          included_associations = if restrict_to.present?
+          included_associations = if nested_associations.present?
             serializer.associations.select{ |association|
-              # restrict_to is a hash of:
+              # nested_associations is a hash of:
               #   key => nested association to include
-              restrict_to.keys.include?(association.name)
+              nested_associations.keys.include?(association.name)
             }
           else
             serializer.associations
@@ -53,9 +53,9 @@ module ActiveModel
             key = association.key
 
             # sanity check if the association has nesting data
-            has_nesting = restrict_to[key].present?
+            has_nesting = nested_associations[key].present?
             if has_nesting
-              include_options_from_parent = { include: restrict_to[key] }
+              include_options_from_parent = { include: nested_associations[key] }
               opts = opts.merge(include_options_from_parent)
             end
 
@@ -74,12 +74,12 @@ module ActiveModel
         def add_relationship(serializer, options)
           serialized_relationship = serialized_or_virtual_of(serializer, options)
 
-          nested_relationships = options[:include]
-          if nested_relationships.present?
+          nested_associations_to_include = options[:include]
+          if nested_associations_to_include.present?
             serialized_relationship = add_resource_relationships(
               serialized_relationship,
               serializer,
-              nested_relationships)
+              nested_associations_to_include)
           end
 
           serialized_relationship
@@ -88,13 +88,13 @@ module ActiveModel
         # add a many relationship
         def add_relationships(serializer, options)
           serialize_array(serializer, options) do |serialized_item, item_serializer|
-            nested_relationships = options[:include]
+            nested_associations_to_include = options[:include]
 
-            if nested_relationships.present?
+            if nested_associations_to_include.present?
               serialized_item = add_resource_relationships(
                 serialized_item,
                 item_serializer,
-                nested_relationships)
+                nested_associations_to_include)
             end
 
             serialized_item
