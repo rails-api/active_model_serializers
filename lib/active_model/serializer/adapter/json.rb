@@ -10,10 +10,7 @@ module ActiveModel
             @result = serialize_array_without_root(serializer, options)
           else
             @result = resource_object_for(serializer)
-            @result = add_resource_relationships(
-              @result,
-              serializer,
-              serializer.options[:include])
+            @result = add_resource_relationships(@result, serializer)
 
 
             @result
