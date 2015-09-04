@@ -112,12 +112,14 @@ module ActiveModel
         end
       end
 
+      private
+
       def meta
         serializer.meta if serializer.respond_to?(:meta)
       end
 
       def meta_key
-        serializer.meta_key || 'meta'
+        serializer.meta_key || 'meta'.freeze
       end
 
       def root
