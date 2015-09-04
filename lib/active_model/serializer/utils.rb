@@ -1,7 +1,7 @@
 module ActiveModel::Serializer::Utils
   module_function
 
-  # Translates a comma separated list of dot separated paths (JSONAPI format) into a Hash.
+  # Translates a comma separated list of dot separated paths (JSON API format) into a Hash.
   # Example: `'posts.author, posts.comments.upvotes, posts.comments.author'` would become `{ posts: { author: {}, comments: { author: {}, upvotes: {} } } }`.
   #
   # @param [String] included

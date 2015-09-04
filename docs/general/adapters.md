@@ -17,7 +17,7 @@ Doesn't follow any specifc convention.
 It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly to the objects being serialized.
 Doesn't follow any specifc convention.
 
-### JSONAPI
+### JSON API
 
 This adapter follows **version 1.0** of the format specified in
 [jsonapi.org/format](http://jsonapi.org/format). It will include the associated
