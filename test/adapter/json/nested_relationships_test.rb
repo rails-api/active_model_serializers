@@ -26,6 +26,13 @@ ComplexNestedAuthorSerializer = Class.new(ActiveModel::Serializer) do
   has_many :posts, include: [:author, comments: [:author]]
 end
 
+MultipleRelationshipAuthorSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+
+  has_many :posts, include: [{comments: [:author]}]
+  has_many :comments
+end
+
 module ActiveModel
   class Serializer
     class Adapter
@@ -48,6 +55,57 @@ module ActiveModel
             @blog = Blog.new(id: 1, name: "My Blog!!")
             @post.blog = @blog
             @author.posts = [@post]
+          end
+
+          def test_multiple_relationships_has_many
+            @first_comment.author = @author
+            @second_comment.author = @author
+            @author.comments = [@first_comment, @second_comment]
+
+
+            serializer = MultipleRelationshipAuthorSerializer.new(@author)
+            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+
+            expected = {
+              author: {
+                id: 1,
+                name: 'Steve K.',
+                posts: [
+                  {
+                    id: 42, title: 'New Post', body: 'Body',
+                    comments: [
+                      {
+                        id: 1, body: 'ZOMG A COMMENT',
+                        author: {
+                          id: 1,
+                          name: 'Steve K.'
+                        }
+                      },
+                      {
+                        id: 2, body: 'ZOMG ANOTHER COMMENT',
+                        author: {
+                          id: 1,
+                          name: 'Steve K.'
+                        }
+                      }
+                    ]
+                  }
+                ],
+                comments: [
+                  {
+                    id: 1, body: 'ZOMG A COMMENT'
+                  },
+                  {
+                    id: 2, body: 'ZOMG ANOTHER COMMENT'
+                  }
+                ]
+              }
+            }
+
+            actual = adapter.serializable_hash
+
+            assert_equal(expected, actual)
+
           end
 
           def test_complex_nested_has_many
