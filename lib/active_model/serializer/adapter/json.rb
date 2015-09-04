@@ -28,10 +28,6 @@ module ActiveModel
 
         private
 
-        def serialize_association(association)
-          serialized_or_virtual_of(association.serializer, association.options)
-        end
-
         # iterate through the associations on the serializer,
         # adding them to the parent as needed (as singular or plural)
         #
