@@ -243,17 +243,6 @@ module ActiveModel
 
             assert_equal(expected, actual)
           end
-
-          def test_include_array_to_hash
-            serializer = NestedCommentBelongsToSerializer.new(@first_comment)
-            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
-
-            expected = {author: [], comments: {author: :bio}, posts: [:comments]}
-            input = [:author, comments: {author: :bio}, posts: [:comments]]
-            actual = adapter.send(:include_array_to_hash, input)
-
-            assert_equal(expected, actual)
-          end
         end
       end
     end
