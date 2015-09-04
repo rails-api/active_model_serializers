@@ -38,7 +38,7 @@ module ActiveModel
             serializer.associations.select{ |association|
               # nested_associations is a hash of:
               #   key => nested association to include
-              nested_associations.keys.include?(association.name)
+              nested_associations.has_key?(association.name)
             }
           else
             serializer.associations
