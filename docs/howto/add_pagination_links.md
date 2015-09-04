@@ -110,6 +110,6 @@ ex.
 }
 ```
 
-### FlattenJSON adapter
+### Attributes adapter
 
 This adapter does not allow us to use `meta` key, due to that it is not possible to add pagination links.

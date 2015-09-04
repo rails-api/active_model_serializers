@@ -4,7 +4,7 @@ The following configuration options can be set on `ActiveModel::Serializer.confi
 
 ## General
 
-- `adapter`: The [adapter](adapters.md) to use. Possible values: `:flatten_json, :json, :json_api`. Default: `:flatten_json`.
+- `adapter`: The [adapter](adapters.md) to use. Possible values: `:attributes, :json, :json_api`. Default: `:attributes`.
 
 ## JSON API
 

@@ -1,8 +1,8 @@
-class ActiveModel::Serializer::Adapter::FlattenJson < ActiveModel::Serializer::Adapter::Json
+class ActiveModel::Serializer::Adapter::Attributes < ActiveModel::Serializer::Adapter
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
-            result = serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
+            result = serializer.map { |s| Attributes.new(s).serializable_hash(options) }
           else
             hash = {}
 
@@ -43,7 +43,7 @@ class ActiveModel::Serializer::Adapter::FlattenJson < ActiveModel::Serializer::A
 
         private
 
-        # no-op: FlattenJson adapter does not include meta data, because it does not support root.
+        # no-op: Attributes adapter does not include meta data, because it does not support root.
         def include_meta(json)
           json
         end

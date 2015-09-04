@@ -1,6 +1,6 @@
 # How to add root key
 
-Add the root key to your API is quite simple with AMS. The **Adapter** is what determines the format of your JSON response. The default adapter is the ```FlattenJSON``` which doesn't have the root key, so your response is something similar to:
+Add the root key to your API is quite simple with AMS. The **Adapter** is what determines the format of your JSON response. The default adapter is the ```Attributes``` which doesn't have the root key, so your response is something similar to:
 
 ```json
 {

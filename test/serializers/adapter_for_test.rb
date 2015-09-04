@@ -7,7 +7,7 @@ module ActiveModel
         @previous_adapter = ActiveModel::Serializer.config.adapter
         # Eager load adapters
         ActiveModel::Serializer::Adapter.eager_load!
-        [:json_api, :flatten_json, :null, :json].each do |adapter_name|
+        [:json_api, :attributes, :null, :json].each do |adapter_name|
           ActiveModel::Serializer::Adapter.lookup(adapter_name)
         end
       end
@@ -18,7 +18,7 @@ module ActiveModel
 
       def test_returns_default_adapter
         adapter = ActiveModel::Serializer.adapter
-        assert_equal ActiveModel::Serializer::Adapter::FlattenJson, adapter
+        assert_equal ActiveModel::Serializer::Adapter::Attributes, adapter
       end
 
       def test_overwrite_adapter_with_symbol
@@ -68,15 +68,15 @@ module ActiveModel
         expected_adapter_map = {
           'json'.freeze              => ActiveModel::Serializer::Adapter::Json,
           'json_api'.freeze          => ActiveModel::Serializer::Adapter::JsonApi,
-          'flatten_json'.freeze      => ActiveModel::Serializer::Adapter::FlattenJson,
-          'null'.freeze              => ActiveModel::Serializer::Adapter::Null
+          'attributes'.freeze => ActiveModel::Serializer::Adapter::Attributes,
+          'null'.freeze => ActiveModel::Serializer::Adapter::Null
         }
         assert_equal ActiveModel::Serializer::Adapter.adapter_map, expected_adapter_map
       end
 
       def test_adapters
         assert_equal ActiveModel::Serializer::Adapter.adapters.sort, [
-          'flatten_json'.freeze,
+          'attributes'.freeze,
           'json'.freeze,
           'json_api'.freeze,
           'null'.freeze
@@ -114,8 +114,8 @@ module ActiveModel
       end
 
       def test_adapter
-        assert_equal ActiveModel::Serializer.config.adapter, :flatten_json
-        assert_equal ActiveModel::Serializer.adapter, ActiveModel::Serializer::Adapter::FlattenJson
+        assert_equal ActiveModel::Serializer.config.adapter, :attributes
+        assert_equal ActiveModel::Serializer.adapter, ActiveModel::Serializer::Adapter::Attributes
       end
 
       def test_register_adapter

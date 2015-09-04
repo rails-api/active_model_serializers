@@ -27,7 +27,7 @@ module ActiveModel
       end
 
       def test_meta_is_not_included_when_root_is_missing
-        # load_adapter uses FlattenJson Adapter
+        # load_adapter uses Attributes Adapter
         adapter = load_adapter(meta: { total: 10 })
         expected = {
           id: 1,
@@ -67,8 +67,8 @@ module ActiveModel
 
       def test_meta_is_not_present_on_arrays_without_root
         serializer = ArraySerializer.new([@blog], meta: { total: 10 })
-        # FlattenJSON doesn't have support to root
-        adapter = ActiveModel::Serializer::Adapter::FlattenJson.new(serializer)
+        # Attributes doesn't have support to root
+        adapter = ActiveModel::Serializer::Adapter::Attributes.new(serializer)
         expected = [{
           id: 1,
           name: 'AMS Hints',
@@ -113,7 +113,7 @@ module ActiveModel
       private
 
       def load_adapter(options)
-        options = options.merge(adapter: :flatten_json, serializer: AlternateBlogSerializer)
+        options = options.merge(adapter: :attributes, serializer: AlternateBlogSerializer)
         ActiveModel::SerializableResource.new(@blog, options)
       end
     end

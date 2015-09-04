@@ -4,7 +4,7 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
 
         def serializable_hash(options = nil)
           options ||= {}
-          { root => FlattenJson.new(serializer).serializable_hash(options) }
+          { root => Attributes.new(serializer).serializable_hash(options) }
         end
 
         private

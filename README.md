@@ -12,7 +12,7 @@ AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 
-By default AMS will use the **Flatten Json Adapter**. But we strongly advise you to use **JsonApi Adapter** that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
+By default AMS will use the **Attributes Adapter**. But we strongly advise you to use **JsonApi Adapter** that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
 # RELEASE CANDIDATE, PLEASE READ
@@ -66,7 +66,7 @@ ActiveModel::Serializer.config.adapter = :json_api
 You won't need to implement an adapter unless you wish to use a new format or
 media type with AMS.
 
-If you want to have a root key on your responses you should use the Json adapter, instead of the default FlattenJson:
+If you want to have a root key on your responses you should use the Json adapter, instead of the default Attributes:
 
 ```ruby
 ActiveModel::Serializer.config.adapter = :json
@@ -137,7 +137,7 @@ render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 ```
 
 `meta` will only be included in your response if you are using an Adapter that supports `root`,
-as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
+as JsonAPI and Json adapters, the default adapter (Attributes) doesn't have `root`.
 
 ### Using a serializer without `render`
 
@@ -190,7 +190,7 @@ end
 
 ### Built in Adapters
 
-#### FlattenJSON
+#### Attributes
 
 It's the default adapter, it generates a json response without a root key.
 Doesn't follow any specifc convention.

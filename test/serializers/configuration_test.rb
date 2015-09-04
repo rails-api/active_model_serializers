@@ -8,7 +8,7 @@ module ActiveModel
       end
 
       def test_default_adapter
-        assert_equal :flatten_json, ActiveModel::Serializer.config.adapter
+        assert_equal :attributes, ActiveModel::Serializer.config.adapter
       end
     end
   end

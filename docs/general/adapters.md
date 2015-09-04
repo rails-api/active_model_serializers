@@ -3,11 +3,11 @@
 AMS does this through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
-You can use one of the built-in adapters (```FlattenJSON``` is the default one) or create one by yourself, but you won't need to implement an adapter unless you wish to use a new format or media type with AMS.
+You can use one of the built-in adapters (```Attributes``` is the default one) or create one by yourself, but you won't need to implement an adapter unless you wish to use a new format or media type with AMS.
 
 ## Built in Adapters
 
-### FlattenJSON - Default
+### Attributes - Default
 
 It's the default adapter, it generates a json response without a root key.
 Doesn't follow any specifc convention.
@@ -51,7 +51,7 @@ ActiveModel::Serializer.config.adapter = :json_api
 ```
 
 If you want to have a root key for each resource in your responses, you should use the Json or
-JsonApi adapters instead of the default FlattenJson:
+JsonApi adapters instead of the default Attributes:
 
 ```ruby
 ActiveModel::Serializer.config.adapter = :json
