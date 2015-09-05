@@ -1,0 +1,49 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - config/initializers/forbidden_yaml.rb
+    - !ruby/regexp /(vendor|bundle|bin|db|tmp)\/.*/
+  RunRailsCops: true
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+
+Lint/NestedMethodDefinition:
+  Enabled: false
+  Exclude:
+    - test/action_controller/serialization_test.rb
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Metrics/AbcSize:
+  Max: 35 # TODO: Lower to 15
+
+Metrics/ClassLength:
+  Max: 261 # TODO: Lower to 100
+  Exclude:
+    - test/**/*.rb
+
+Metrics/CyclomaticComplexity:
+  Max: 7 # TODO: Lower to 6
+
+Metrics/LineLength:
+  Max: 251 # TODO: Lower to 80
+
+Metrics/MethodLength:
+  Max: 106 # TODO: Lower to 10
+
+Metrics/PerceivedComplexity:
+  Max: 9 # TODO: Lower to 7
+
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Style/Documentation:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented

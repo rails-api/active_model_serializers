@@ -3,7 +3,6 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class UrlsTest < Minitest::Test
-
       def setup
         @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
         @post = Post.new({ title: 'New Post', body: 'Body' })

@@ -21,7 +21,7 @@ module ActiveModel
             @comment.author = nil
             @post.author = @author
             @anonymous_post.author = nil
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @blog.writer = @author
             @blog.articles = [@post, @anonymous_post]
             @author.posts = []
@@ -32,7 +32,7 @@ module ActiveModel
           end
 
           def test_includes_post_id
-            expected = { data: { type: "posts", id: "42" } }
+            expected = { data: { type: 'posts', id: '42' } }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:post])
           end
@@ -40,33 +40,33 @@ module ActiveModel
           def test_includes_linked_post
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post')
             expected = [{
-              id: "42",
-              type: "posts",
+              id: '42',
+              type: 'posts',
               attributes: {
                 title: 'New Post',
                 body: 'Body',
               },
               relationships: {
-                comments: { data: [ { type: "comments", id: "1" } ] },
-                blog: { data: { type: "blogs", id: "999" } },
-                author: { data: { type: "authors", id: "1" } }
+                comments: { data: [{ type: 'comments', id: '1' }] },
+                blog: { data: { type: 'blogs', id: '999' } },
+                author: { data: { type: 'authors', id: '1' } }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
           end
 
           def test_limiting_linked_post_fields
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: {post: [:title]})
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'post', fields: { post: [:title] })
             expected = [{
-              id: "42",
-              type: "posts",
+              id: '42',
+              type: 'posts',
               attributes: {
                 title: 'New Post'
               },
               relationships: {
-                comments: { data: [ { type: "comments", id: "1" } ] },
-                blog: { data: { type: "blogs", id: "999" } },
-                author: { data: { type: "authors", id: "1" } }
+                comments: { data: [{ type: 'comments', id: '1' }] },
+                blog: { data: { type: 'blogs', id: '999' } },
+                author: { data: { type: 'authors', id: '1' } }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
@@ -76,7 +76,7 @@ module ActiveModel
             serializer = PostSerializer.new(@anonymous_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
 
-            assert_equal({comments: { data: [] }, blog: { data: { type: "blogs", id: "999" } }, author: { data: nil }}, adapter.serializable_hash[:data][:relationships])
+            assert_equal({ comments: { data: [] }, blog: { data: { type: 'blogs', id: '999' } }, author: { data: nil } }, adapter.serializable_hash[:data][:relationships])
           end
 
           def test_include_type_for_association_when_different_than_name
@@ -86,19 +86,19 @@ module ActiveModel
             expected = {
               writer: {
                 data: {
-                  type: "authors",
-                  id: "1"
+                  type: 'authors',
+                  id: '1'
                 }
               },
               articles: {
                 data: [
                   {
-                    type: "posts",
-                    id: "42"
+                    type: 'posts',
+                    id: '42'
                   },
                   {
-                    type: "posts",
-                    id: "43"
+                    type: 'posts',
+                    id: '43'
                   }
                 ]
               }
@@ -108,42 +108,42 @@ module ActiveModel
 
           def test_include_linked_resources_with_type_name
             serializer = BlogSerializer.new(@blog)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: ['writer', 'articles'])
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: %w(writer articles))
             linked = adapter.serializable_hash[:included]
             expected = [
               {
-                id: "1",
-                type: "authors",
+                id: '1',
+                type: 'authors',
                 attributes: {
-                  name: "Steve K."
+                  name: 'Steve K.'
                 },
                 relationships: {
                   posts: { data: [] },
                   roles: { data: [] },
                   bio: { data: nil }
                 }
-              },{
-                id: "42",
-                type: "posts",
+              }, {
+                id: '42',
+                type: 'posts',
                 attributes: {
-                  title: "New Post",
-                  body: "Body"
+                  title: 'New Post',
+                  body: 'Body'
                 },
                 relationships: {
-                  comments: { data: [ { type: "comments", id: "1" } ] },
-                  blog: { data: { type: "blogs", id: "999" } },
-                  author: { data: { type: "authors", id: "1" } }
+                  comments: { data: [{ type: 'comments', id: '1' }] },
+                  blog: { data: { type: 'blogs', id: '999' } },
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               }, {
-                id: "43",
-                type: "posts",
+                id: '43',
+                type: 'posts',
                 attributes: {
-                  title: "Hello!!",
-                  body: "Hello, world!!"
+                  title: 'Hello!!',
+                  body: 'Hello, world!!'
                 },
                 relationships: {
                   comments: { data: [] },
-                  blog: { data: { type: "blogs", id: "999" } },
+                  blog: { data: { type: 'blogs', id: '999' } },
                   author: { data: nil }
                 }
               }

@@ -15,7 +15,7 @@ module ActiveModel
       end
 
       def self.adapter_class(adapter)
-        adapter_name = adapter.to_s.classify.sub("API", "Api")
+        adapter_name = adapter.to_s.classify.sub('API', 'Api')
         "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize
       end
 
@@ -68,12 +68,12 @@ module ActiveModel
         parts = []
         parts << object_cache_key
         parts << @klass._cache_digest unless @klass._cache_options && @klass._cache_options[:skip_digest]
-        parts.join("/")
+        parts.join('/')
       end
 
       def object_cache_key
         object_time_safe = @cached_serializer.object.updated_at
-        object_time_safe = object_time_safe.strftime("%Y%m%d%H%M%S%9N") if object_time_safe.respond_to?(:strftime)
+        object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
         (@klass._cache_key) ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}" : @cached_serializer.object.cache_key
       end
 
@@ -82,7 +82,7 @@ module ActiveModel
       end
 
       def meta_key
-        serializer.meta_key || "meta"
+        serializer.meta_key || 'meta'
       end
 
       def root

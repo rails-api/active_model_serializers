@@ -3,12 +3,11 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class FieldsetTest < Minitest::Test
-
       def test_fieldset_with_hash
-        fieldset = ActiveModel::Serializer::Fieldset.new({'post' => ['id', 'title'], 'coment' => ['body']})
+        fieldset = ActiveModel::Serializer::Fieldset.new({ 'post' => %w(id title), 'coment' => ['body'] })
 
         assert_equal(
-          {:post=>[:id, :title], :coment=>[:body]}, 
+          { :post => [:id, :title], :coment => [:body] },
           fieldset.fields
         )
       end
@@ -17,7 +16,7 @@ module ActiveModel
         fieldset = ActiveModel::Serializer::Fieldset.new(['title'], 'post')
 
         assert_equal(
-          {:post => [:title]}, 
+          { :post => [:title] },
           fieldset.fields
         )
       end

@@ -13,7 +13,6 @@ module ActiveModel
     include Configuration
     include Associations
 
-
     # Matches
     #  "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
     #  AND
