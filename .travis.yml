@@ -25,7 +25,7 @@ env:
   - "RAILS_VERSION=4.0"
   - "RAILS_VERSION=4.1"
   - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  - "RAILS_VERSION=master CODECLIMATE_REPO_TOKEN=9c472e989d66205e9eaea9b5d5659f108513b47c286feaf95211510e0b48bc0e"
 
 matrix:
   allow_failures:
