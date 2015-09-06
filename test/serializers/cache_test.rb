@@ -9,7 +9,7 @@ module ActiveModel
         @post           = Post.new(title: 'New Post', body: 'Body')
         @bio            = Bio.new(id: 1, content: 'AMS Contributor')
         @author         = Author.new(name: 'Joao M. D. Moura')
-        @blog           = Blog.new(id: 999, name: "Custom blog", writer: @author, articles: [])
+        @blog           = Blog.new(id: 999, name: 'Custom blog', writer: @author, articles: [])
         @role           = Role.new(name: 'Great Author')
         @location       = Location.new(lat: '-23.550520', lng: '-46.633309')
         @place          = Place.new(name: 'Amazing Place')
@@ -58,9 +58,9 @@ module ActiveModel
       end
 
       def test_cache_options_definition
-        assert_equal({expires_in: 0.1, skip_digest: true}, @post_serializer.class._cache_options)
+        assert_equal({ expires_in: 0.1, skip_digest: true }, @post_serializer.class._cache_options)
         assert_equal(nil, @blog_serializer.class._cache_options)
-        assert_equal({expires_in: 1.day, skip_digest: true}, @comment_serializer.class._cache_options)
+        assert_equal({ expires_in: 1.day, skip_digest: true }, @comment_serializer.class._cache_options)
       end
 
       def test_fragment_cache_definition
@@ -118,7 +118,7 @@ module ActiveModel
         hash = render_object_with_cache(@location)
 
         assert_equal(hash, expected_result)
-        assert_equal({place: 'Nowhere'}, ActionController::Base.cache_store.fetch(@location.cache_key))
+        assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(@location.cache_key))
       end
 
       def test_uses_file_digest_in_cache_key
@@ -131,20 +131,20 @@ module ActiveModel
       end
 
       def test_serializer_file_path_on_nix
-        path = "/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb"
+        path = '/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb'
         caller_line = "#{path}:1:in `<top (required)>'"
         assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
       end
 
       def test_serializer_file_path_on_windows
-        path = "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb"
+        path = 'c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb'
         caller_line = "#{path}:1:in `<top (required)>'"
         assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
       end
 
       def test_digest_caller_file
         contents = "puts 'AMS rocks'!"
-        file = Tempfile.new("some_ruby.rb")
+        file = Tempfile.new('some_ruby.rb')
         file.write(contents)
         path = file.path
         caller_line = "#{path}:1:in `<top (required)>'"
@@ -155,6 +155,7 @@ module ActiveModel
       end
 
       private
+
       def render_object_with_cache(obj)
         ActiveModel::SerializableResource.new(obj).serializable_hash
       end

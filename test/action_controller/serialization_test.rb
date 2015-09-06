@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 module ActionController
@@ -22,20 +21,20 @@ module ActionController
         def render_array_using_custom_root
           with_adapter ActiveModel::Serializer::Adapter::Json do
             @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: [@profile], root: "custom_root"
+            render json: [@profile], root: 'custom_root'
           end
         end
 
         def render_array_that_is_empty_using_custom_root
           with_adapter ActiveModel::Serializer::Adapter::Json do
-            render json: [], root: "custom_root"
+            render json: [], root: 'custom_root'
           end
         end
 
         def render_object_using_custom_root
           with_adapter ActiveModel::Serializer::Adapter::Json do
             @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: @profile, root: "custom_root"
+            render json: @profile, root: 'custom_root'
           end
         end
 
@@ -49,7 +48,6 @@ module ActionController
 
         def render_array_using_implicit_serializer_and_meta
           with_adapter ActiveModel::Serializer::Adapter::JsonApi do
-
             @profiles = [
               Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
             ]
@@ -70,11 +68,11 @@ module ActionController
         end
 
         def render_json_object_without_serializer
-          render json: {error: 'Result is Invalid'}
+          render json: { error: 'Result is Invalid' }
         end
 
         def render_json_array_object_without_serializer
-          render json: [{error: 'Result is Invalid'}]
+          render json: [{ error: 'Result is Invalid' }]
         end
 
         def update_and_render_object_with_cache_enabled
@@ -139,6 +137,7 @@ module ActionController
         end
 
         private
+
         def generate_cached_serializer(obj)
           ActiveModel::SerializableResource.new(obj).to_json
         end
@@ -160,8 +159,8 @@ module ActionController
         get :render_using_implicit_serializer
 
         expected = {
-          name: "Name 1",
-          description: "Description 1"
+          name: 'Name 1',
+          description: 'Description 1'
         }
 
         assert_equal 'application/json', @response.content_type
@@ -174,10 +173,10 @@ module ActionController
         expected = {
           data: {
             id: assigns(:profile).id.to_s,
-            type: "profiles",
+            type: 'profiles',
             attributes: {
-              name: "Name 1",
-              description: "Description 1"
+              name: 'Name 1',
+              description: 'Description 1'
             }
           }
         }
@@ -189,7 +188,7 @@ module ActionController
       def test_render_array_using_custom_root
         get :render_array_using_custom_root
 
-        expected =  {custom_roots: [{name: "Name 1", description: "Description 1"}]}
+        expected = { custom_roots: [{ name: 'Name 1', description: 'Description 1' }] }
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
@@ -197,7 +196,7 @@ module ActionController
       def test_render_array_that_is_empty_using_custom_root
         get :render_array_that_is_empty_using_custom_root
 
-        expected =  {custom_roots: []}
+        expected = { custom_roots: [] }
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
@@ -205,7 +204,7 @@ module ActionController
       def test_render_object_using_custom_root
         get :render_object_using_custom_root
 
-        expected =  {custom_root: {name: "Name 1", description: "Description 1"}}
+        expected = { custom_root: { name: 'Name 1', description: 'Description 1' } }
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
@@ -214,7 +213,7 @@ module ActionController
         get :render_json_object_without_serializer
 
         assert_equal 'application/json', @response.content_type
-        expected_body = {error: 'Result is Invalid'}
+        expected_body = { error: 'Result is Invalid' }
         assert_equal expected_body.to_json, @response.body
       end
 
@@ -222,7 +221,7 @@ module ActionController
         get :render_json_array_object_without_serializer
 
         assert_equal 'application/json', @response.content_type
-        expected_body = [{error: 'Result is Invalid'}]
+        expected_body = [{ error: 'Result is Invalid' }]
         assert_equal expected_body.to_json, @response.body
       end
 
@@ -251,10 +250,10 @@ module ActionController
           data: [
             {
               id: assigns(:profiles).first.id.to_s,
-              type: "profiles",
+              type: 'profiles',
               attributes: {
-                name: "Name 1",
-                description: "Description 1"
+                name: 'Name 1',
+                description: 'Description 1'
               }
             }
           ],
@@ -336,8 +335,8 @@ module ActionController
         response = JSON.parse(@response.body)
 
         assert_equal 'application/json', @response.content_type
-        assert_equal 'ZOMG A ROLE', response["name"]
-        assert_equal 'HUEHUEBRBR', response["description"]
+        assert_equal 'ZOMG A ROLE', response['name']
+        assert_equal 'HUEHUEBRBR', response['description']
       end
 
       def test_render_with_fragment_except_cache_enable
@@ -346,8 +345,8 @@ module ActionController
         response = JSON.parse(@response.body)
 
         assert_equal 'application/json', @response.content_type
-        assert_equal 5, response["rating"]
-        assert_equal 'lol', response["content"]
+        assert_equal 5, response['rating']
+        assert_equal 'lol', response['content']
       end
 
       def test_render_fragment_changed_object_with_relationship
@@ -358,11 +357,11 @@ module ActionController
           response = JSON.parse(@response.body)
 
           expected_return = {
-            "id"=>1,
-            "time"=>Time.now.to_s,
-            "likeable" => {
-              "id"=>1,
-              "body"=>"ZOMG A COMMENT"
+            'id' => 1,
+            'time' => Time.now.to_s,
+            'likeable' => {
+              'id' => 1,
+              'body' => 'ZOMG A COMMENT'
             }
           }
 
@@ -385,8 +384,8 @@ module ActionController
               body: 'ZOMG A COMMENT' }
           ],
           blog: {
-            id:999,
-            name: "Custom blog"
+            id: 999,
+            name: 'Custom blog'
           },
           author: {
             id: 1,
@@ -417,7 +416,7 @@ module ActionController
             true
           end
         }.new
-        assert_equal "", (capture(:stderr) {
+        assert_equal '', (capture(:stderr) {
           controller.get_serializer(Profile.new)
         })
       end

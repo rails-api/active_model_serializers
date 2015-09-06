@@ -7,7 +7,7 @@ class Model
     @_model_name ||= ActiveModel::Name.new(self)
   end
 
-  def initialize(hash={})
+  def initialize(hash = {})
     @attributes = hash
   end
 
@@ -83,7 +83,7 @@ Location = Class.new(Model)
 Place    = Class.new(Model)
 Tag      = Class.new(Model)
 VirtualValue = Class.new(Model)
-Comment  = Class.new(Model) do
+Comment = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{self.id}"
@@ -94,7 +94,7 @@ module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'post', expires_in: 0.1, skip_digest: true
+  cache key: 'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
 
   has_many :comments
@@ -103,7 +103,7 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   url :comments
 
   def blog
-    Blog.new(id: 999, name: "Custom blog")
+    Blog.new(id: 999, name: 'Custom blog')
   end
 
   def custom_options
@@ -133,11 +133,12 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'writer', skip_digest: true
-  attributes :id, :name
+  cache key: 'writer', skip_digest: true
+  attribute :id
+  attribute :name
 
-  has_many :posts, embed: :ids
-  has_many :roles, embed: :ids
+  has_many :posts
+  has_many :roles
   has_one :bio
 end
 
@@ -248,8 +249,8 @@ end
 VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
-  has_many :reviews, virtual_value: [{id: 1}, {id: 2}]
-  has_one :maker, virtual_value: {id: 1}
+  has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]
+  has_one :maker, virtual_value: { id: 1 }
 
   def reviews
   end

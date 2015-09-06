@@ -2,7 +2,6 @@ module ActiveModel
   class Serializer
     class Adapter
       class FragmentCache
-
         attr_reader :serializer
 
         def initialize(adapter, serializer, options)
@@ -35,7 +34,7 @@ module ActiveModel
 
         def cached_attributes(klass, serializers)
           attributes            = serializer.class._attributes
-          cached_attributes     = (klass._cache_only) ? klass._cache_only : attributes.reject {|attr| klass._cache_except.include?(attr) }
+          cached_attributes     = (klass._cache_only) ? klass._cache_only : attributes.reject { |attr| klass._cache_except.include?(attr) }
           non_cached_attributes = attributes - cached_attributes
 
           cached_attributes.each do |attribute|
@@ -60,7 +59,7 @@ module ActiveModel
           Object.const_set cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(cached)
           Object.const_set non_cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(non_cached)
 
-          klass._cache_options       ||= {}
+          klass._cache_options ||= {}
           klass._cache_options[:key] = klass._cache_key if klass._cache_key
 
           cached.constantize.cache(klass._cache_options)
@@ -68,7 +67,7 @@ module ActiveModel
           cached.constantize.fragmented(serializer)
           non_cached.constantize.fragmented(serializer)
 
-          serializers = {cached: cached, non_cached: non_cached}
+          serializers = { cached: cached, non_cached: non_cached }
           cached_attributes(klass, serializers)
           serializers
         end

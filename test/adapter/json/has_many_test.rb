@@ -15,9 +15,9 @@ module ActiveModel
             @post.author = @author
             @first_comment.post = @post
             @second_comment.post = @post
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @post.blog = @blog
-            @tag = Tag.new(id: 1, name: "#hash_tag")
+            @tag = Tag.new(id: 1, name: '#hash_tag')
             @post.tags = [@tag]
           end
 
@@ -25,8 +25,8 @@ module ActiveModel
             serializer = PostSerializer.new(@post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
             assert_equal([
-                           {id: 1, body: 'ZOMG A COMMENT'},
-                           {id: 2, body: 'ZOMG ANOTHER COMMENT'}
+                           { id: 1, body: 'ZOMG A COMMENT' },
+                           { id: 2, body: 'ZOMG ANOTHER COMMENT' }
                          ], adapter.serializable_hash[:post][:comments])
           end
 
@@ -36,7 +36,7 @@ module ActiveModel
             assert_equal({
               id: 42,
               tags: [
-                {"attributes"=>{"id"=>1, "name"=>"#hash_tag"}}
+                { 'attributes' => { 'id' => 1, 'name' => '#hash_tag' } }
               ]
             }.to_json, adapter.serializable_hash[:post].to_json)
           end

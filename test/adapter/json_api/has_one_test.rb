@@ -19,7 +19,7 @@ module ActiveModel
             @comment.author = nil
             @post.author = @author
             @anonymous_post.author = nil
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @blog.writer = @author
             @blog.articles = [@post, @anonymous_post]
             @author.posts = []
@@ -32,7 +32,7 @@ module ActiveModel
           end
 
           def test_includes_bio_id
-            expected = { data: { type: "bios", id: "43" } }
+            expected = { data: { type: 'bios', id: '43' } }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:bio])
           end
@@ -42,14 +42,14 @@ module ActiveModel
 
             expected = [
               {
-                id: "43",
-                type: "bios",
+                id: '43',
+                type: 'bios',
                 attributes: {
-                  content:"AMS Contributor",
+                  content: 'AMS Contributor',
                   rating: nil
                 },
                 relationships: {
-                  author: { data: { type: "authors", id: "1" } }
+                  author: { data: { type: 'authors', id: '1' } }
                 }
               }
             ]
@@ -63,11 +63,11 @@ module ActiveModel
 
             expected = {
               data: {
-                id: "1",
-                type: "virtual_values",
+                id: '1',
+                type: 'virtual_values',
                 relationships: {
-                  maker: {data: {id: 1}},
-                  reviews: {data: [{id: 1}, {id: 2}]}
+                  maker: { data: { id: 1 } },
+                  reviews: { data: [{ id: 1 }, { id: 2 }] }
                 }
               }
             }

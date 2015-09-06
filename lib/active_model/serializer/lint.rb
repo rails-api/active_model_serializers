@@ -15,7 +15,6 @@ module ActiveModel::Serializer::Lint
   # always return +{}+, and the tests would pass. It is up to you to ensure
   # that the values are semantically meaningful.
   module Tests
-
     # Passes if the object responds to <tt>serializable_hash</tt> and if it takes
     # zero or one arguments.
     # Fails otherwise.
@@ -23,7 +22,7 @@ module ActiveModel::Serializer::Lint
     # <tt>serializable_hash</tt> returns a hash representation of a object's attributes.
     # Typically, it is implemented by including ActiveModel::Serialization.
     def test_serializable_hash
-      assert_respond_to resource, :serializable_hash, "The resource should respond to serializable_hash"
+      assert_respond_to resource, :serializable_hash, 'The resource should respond to serializable_hash'
       resource.serializable_hash
       resource.serializable_hash(nil)
     end
@@ -35,8 +34,18 @@ module ActiveModel::Serializer::Lint
     # <tt>read_attribute_for_serialization</tt> gets the attribute value for serialization
     # Typically, it is implemented by including ActiveModel::Serialization.
     def test_read_attribute_for_serialization
-      assert_respond_to resource, :read_attribute_for_serialization, "The resource should respond to read_attribute_for_serialization"
-      assert_equal resource.method(:read_attribute_for_serialization).arity, 1
+      assert_respond_to resource, :read_attribute_for_serialization, 'The resource should respond to read_attribute_for_serialization'
+      actual_arity = resource.method(:read_attribute_for_serialization).arity
+      if defined?(::Rubinius)
+        #  1 for def read_attribute_for_serialization(name); end
+        # -2 for alias :read_attribute_for_serialization :send for rbx because :shrug:
+        assert_includes [1, -2], actual_arity, "expected #{actual_arity.inspect} to be 1 or -2"
+      else
+        # using absolute value since arity is:
+        #  1 for def read_attribute_for_serialization(name); end
+        # -1 for alias :read_attribute_for_serialization :send
+        assert_includes [1, -1], actual_arity, "expected #{actual_arity.inspect} to be 1 or -1"
+      end
     end
 
     # Passes if the object responds to <tt>as_json</tt> and if it takes
@@ -68,7 +77,7 @@ module ActiveModel::Serializer::Lint
     end
 
     # Passes if the object responds to <tt>cache_key</tt> and if it takes no
-    # arguments.
+    # arguments (Rails 4.0) or a splat (Rails 4.1+).
     # Fails otherwise.
     #
     # <tt>cache_key</tt> returns a (self-expiring) unique key for the object,
@@ -76,7 +85,11 @@ module ActiveModel::Serializer::Lint
     # It is not required unless caching is enabled.
     def test_cache_key
       assert_respond_to resource, :cache_key
-      assert_equal resource.method(:cache_key).arity, 0
+      actual_arity = resource.method(:cache_key).arity
+      # using absolute value since arity is:
+      #   0 for Rails 4.1+, *timestamp_names
+      #  -1 for Rails 4.0, no arguments
+      assert_includes [-1, 0], actual_arity, "expected #{actual_arity.inspect} to be 0 or -1"
     end
 
     # Passes if the object responds to <tt>id</tt> and if it takes no
@@ -112,6 +125,5 @@ module ActiveModel::Serializer::Lint
     def assert_instance_of(result, name)
       assert result.instance_of?(name), "#{result} should be an instance of #{name}"
     end
-
   end
 end

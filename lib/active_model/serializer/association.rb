@@ -7,10 +7,9 @@ module ActiveModel
     # @param [Hash{Symbol => Object}] options
     #
     # @example
-    #  Association.new(:comments, CommentSummarySerializer, embed: :ids)
+    #  Association.new(:comments, CommentSummarySerializer)
     #
     Association = Struct.new(:name, :serializer, :options) do
-
       # @return [Symbol]
       #
       def key
