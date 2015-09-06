@@ -14,7 +14,8 @@ module ActiveModel
             @options[:include] = @options[:include].split(',')
           end
 
-          if fields = options.delete(:fields)
+          fields = options.delete(:fields)
+          if fields
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
           else
             @fieldset = options[:fieldset]
@@ -48,7 +49,7 @@ module ActiveModel
 
         def fragment_cache(cached_hash, non_cached_hash)
           root = false if @options.include?(:include)
-          JsonApi::FragmentCache.new().fragment_cache(root, cached_hash, non_cached_hash)
+          JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
         private
@@ -103,14 +104,12 @@ module ActiveModel
               options[:virtual_value]
             elsif serializer && serializer.object
               resource_identifier_for(serializer)
-            else
-              nil
             end
           end
         end
 
         def relationships_for(serializer)
-         Hash[serializer.associations.map { |association| [ association.key, { data: relationship_value_for(association.serializer, association.options) } ] }]
+          Hash[serializer.associations.map { |association| [association.key, { data: relationship_value_for(association.serializer, association.options) }] }]
         end
 
         def included_for(serializer)
@@ -121,24 +120,23 @@ module ActiveModel
           if serializer.respond_to?(:each)
             serializer.flat_map { |s| _included_for(resource_name, s, parent) }.uniq
           else
+            return [] unless serializer && serializer.object
             result = []
-            if serializer && serializer.object
-              resource_path = [parent, resource_name].compact.join('.')
+            resource_path = [parent, resource_name].compact.join('.')
 
-              if include_assoc?(resource_path)
-                primary_data = primary_data_for(serializer, @options)
-                relationships = relationships_for(serializer)
-                primary_data[:relationships] = relationships if relationships.any?
-                result.push(primary_data)
-              end
+            if include_assoc?(resource_path)
+              primary_data = primary_data_for(serializer, @options)
+              relationships = relationships_for(serializer)
+              primary_data[:relationships] = relationships if relationships.any?
+              result.push(primary_data)
+            end
 
-              if include_nested_assoc?(resource_path)
-                serializer.associations.each do |association|
-                  if association.serializer
-                    result.concat(_included_for(association.key, association.serializer, resource_path))
-                    result.uniq!
-                  end
-                end
+            if include_nested_assoc?(resource_path)
+              non_empty_associations = serializer.associations.select(&:serializer)
+
+              non_empty_associations.each do |association|
+                result.concat(_included_for(association.key, association.serializer, resource_path))
+                result.uniq!
               end
             end
             result
@@ -160,9 +158,7 @@ module ActiveModel
         def add_links(options)
           links = @hash.fetch(:links) { {} }
           collection = serializer.object
-          if is_paginated?(collection)
-            @hash[:links] = add_pagination_links(links, collection, options)
-          end
+          @hash[:links] = add_pagination_links(links, collection, options) if paginated?(collection)
         end
 
         def add_pagination_links(links, collection, options)
@@ -170,7 +166,7 @@ module ActiveModel
           links.update(pagination_links)
         end
 
-        def is_paginated?(collection)
+        def paginated?(collection)
           collection.respond_to?(:current_page) &&
             collection.respond_to?(:total_pages) &&
             collection.respond_to?(:size)
