@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 
-_Windows Build Status -_ ![Build Status](https://ci.appveyor.com/api/projects/status/1dly7uj4l69bchmu)
+_Windows Build Status -_ [![Build status](https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true)](https://ci.appveyor.com/project/joaomdmoura/active-model-serializers/branch/master)
 
 ActiveModel::Serializer brings convention over configuration to your JSON generation.
 
