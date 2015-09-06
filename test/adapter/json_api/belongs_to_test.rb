@@ -150,6 +150,27 @@ module ActiveModel
             ]
             assert_equal expected, linked
           end
+
+          def test_ar_belongs_to_doesnt_load_record
+            author = ARModels::User.create(name: 'Name 1')
+            post = ARModels::Post.create(author_id: author.id)
+
+            class << post
+              def author
+                fail "should use author_id"
+              end
+            end
+
+            hash = ActiveModel::SerializableResource.new(post, adapter: :json_api).serializable_hash
+            assert_equal({ data: { id: author.id.to_s, type: 'users' } }, hash[:data][:relationships][:author])
+          end
+
+          def test_ar_belongs_to_empty
+            post = ARModels::Post.create
+
+            hash = ActiveModel::SerializableResource.new(post, adapter: :json_api).serializable_hash
+            assert_equal({ data: nil }, hash[:data][:relationships][:author])
+          end
         end
       end
     end

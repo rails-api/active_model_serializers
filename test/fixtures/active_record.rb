@@ -8,7 +8,7 @@ ActiveRecord::Schema.define do
     t.references :author
     t.timestamps null: false
   end
-  create_table :authors, force: true do |t|
+  create_table :users, force: true do |t|
     t.string :name
     t.timestamps null: false
   end
@@ -23,15 +23,15 @@ end
 module ARModels
   class Post < ActiveRecord::Base
     has_many :comments
-    belongs_to :author
+    belongs_to :author, class_name: 'User'
   end
 
   class Comment < ActiveRecord::Base
     belongs_to :post
-    belongs_to :author
+    belongs_to :author, class_name: 'User'
   end
 
-  class Author < ActiveRecord::Base
+  class User < ActiveRecord::Base
     has_many :posts
   end
 
@@ -49,7 +49,7 @@ module ARModels
     belongs_to :author
   end
 
-  class AuthorSerializer < ActiveModel::Serializer
+  class UserSerializer < ActiveModel::Serializer
     attributes :id, :name
 
     has_many :posts
