@@ -5,8 +5,6 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         def initialize(serializer, options = {})
           super
-          @hash = { data: [] }
-
           @included = ActiveModel::Serializer::Utils.include_args_to_hash(@options[:include])
           fields = options.delete(:fields)
           if fields
@@ -19,37 +17,49 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
-            serializer.each do |s|
-              result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
-              @hash[:data] << result[:data]
-
-              if result[:included]
-                @hash[:included] ||= []
-                @hash[:included] |= result[:included]
-              end
-            end
-
-            if serializer.paginated?
-              @hash[:links] ||= {}
-              @hash[:links].update(links_for(serializer, options))
-            end
+            serializable_hash_for_collection(serializer, options)
           else
-            primary_data = primary_data_for(serializer, options)
-            relationships = relationships_for(serializer)
-            included = included_for(serializer)
-            @hash[:data] = primary_data
-            @hash[:data][:relationships] = relationships if relationships.any?
-            @hash[:included] = included if included.any?
+            serializable_hash_for_single_resource(serializer, options)
           end
-          @hash
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
           root = false if @options.include?(:include)
-          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new().fragment_cache(root, cached_hash, non_cached_hash)
+          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
         private
+
+        def serializable_hash_for_collection(serializer, options)
+          hash = { data: [] }
+          serializer.each do |s|
+            result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
+            hash[:data] << result[:data]
+
+            if result[:included]
+              hash[:included] ||= []
+              hash[:included] |= result[:included]
+            end
+          end
+
+          if serializer.paginated?
+            hash[:links] ||= {}
+            hash[:links].update(links_for(serializer, options))
+          end
+
+          hash
+        end
+
+        def serializable_hash_for_single_resource(serializer, options)
+          primary_data = primary_data_for(serializer, options)
+          relationships = relationships_for(serializer)
+          included = included_for(serializer)
+          hash = { data: primary_data }
+          hash[:data][:relationships] = relationships if relationships.any?
+          hash[:included] = included if included.any?
+
+          hash
+        end
 
         def resource_identifier_type_for(serializer)
           if ActiveModel::Serializer.config.jsonapi_resource_type == :singular
