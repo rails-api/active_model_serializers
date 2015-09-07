@@ -55,12 +55,12 @@ module ActiveModel
         private
 
         def resource_identifier_type_for(serializer)
-          type = if serializer.respond_to?(:type)
-                   serializer.type
-                 else
-                   serializer.object.class.model_name.singular
-                 end
-          ActiveModel::Serializer.config.jsonapi_type_transformer.call(type)
+          if serializer.respond_to?(:type)
+            serializer.type
+          else
+            type = serializer.object.class.model_name.singular
+            ActiveModel::Serializer.config.jsonapi_type_transformer.call(type)
+          end
         end
 
         def resource_identifier_id_for(serializer)
