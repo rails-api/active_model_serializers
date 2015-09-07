@@ -8,7 +8,6 @@ module ActiveModelSerializers
   ensure
     $VERBOSE = verbose
   end
-
 end
 
 require 'active_model'

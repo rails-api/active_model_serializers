@@ -21,35 +21,35 @@ module ActiveModel
             @comment.author = nil
             @post.author = @author
             @anonymous_post.author = nil
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @blog.writer = @author
             @blog.articles = [@post, @anonymous_post]
             @author.posts = []
           end
 
           def with_jsonapi_resource_type type
-            old_type = ActiveModel::Serializer.config[:jsonapi_resource_type]
-            ActiveModel::Serializer.config[:jsonapi_resource_type] = type
+            old_type = ActiveModel::Serializer.config.jsonapi_resource_type
+            ActiveModel::Serializer.config.jsonapi_resource_type = type
             yield
           ensure
-            ActiveModel::Serializer.config[:jsonapi_resource_type] = old_type
+            ActiveModel::Serializer.config.jsonapi_resource_type = old_type
           end
 
           def test_config_plural
-            with_jsonapi_resource_type :plural do
-              serializer = CommentSerializer.new(@comment)
-              adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-              ActionController::Base.cache_store.clear
-              assert_equal('comments', adapter.serializable_hash[:data][:type])
+            with_adapter :json_api do
+              with_jsonapi_resource_type :plural do
+                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
+                assert_equal('comments', hash[:data][:type])
+              end
             end
           end
 
           def test_config_singular
-            with_jsonapi_resource_type :singular do
-              serializer = CommentSerializer.new(@comment)
-              adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-              ActionController::Base.cache_store.clear
-              assert_equal('comment', adapter.serializable_hash[:data][:type])
+            with_adapter :json_api do
+              with_jsonapi_resource_type :singular do
+                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
+                assert_equal('comment', hash[:data][:type])
+              end
             end
           end
         end

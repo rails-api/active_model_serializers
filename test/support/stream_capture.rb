@@ -1,7 +1,7 @@
 # Use cleaner stream testing interface from Rails 5 if available
 # see https://github.com/rails/rails/blob/29959eb59d/activesupport/lib/active_support/testing/stream.rb
 begin
-  require "active_support/testing/stream"
+  require 'active_support/testing/stream'
 rescue LoadError
   module ActiveSupport
     module Testing
@@ -29,7 +29,7 @@ rescue LoadError
         def capture(stream)
           stream = stream.to_s
           captured_stream = Tempfile.new(stream)
-          stream_io = eval("$#{stream}")
+          stream_io = eval("$#{stream}") # rubocop:disable Lint/Eval
           origin_stream = stream_io.dup
           stream_io.reopen(captured_stream)
 
