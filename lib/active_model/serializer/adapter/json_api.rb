@@ -29,7 +29,10 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
               end
             end
 
-            add_links(options)
+            if serializer.paginated?
+              @hash[:links] ||= {}
+              @hash[:links].update(links_for(serializer, options))
+            end
           else
             primary_data = primary_data_for(serializer, options)
             relationships = relationships_for(serializer)
@@ -145,20 +148,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           end
         end
 
-        def add_links(options)
-          links = @hash.fetch(:links) { {} }
-          collection = serializer.object
-          @hash[:links] = add_pagination_links(links, collection, options) if paginated?(collection)
-        end
-
-        def add_pagination_links(links, resources, options)
-          pagination_links = ActiveModel::Serializer::Adapter::JsonApi::PaginationLinks.new(resources, options[:context]).serializable_hash(options)
-          links.update(pagination_links)
-        end
-
-        def paginated?(collection)
-          collection.respond_to?(:current_page) &&
-            collection.respond_to?(:total_pages) &&
-            collection.respond_to?(:size)
+        def links_for(serializer, options)
+          JsonApi::PaginationLinks.new(serializer.object, options[:context]).serializable_hash(options)
         end
 end
