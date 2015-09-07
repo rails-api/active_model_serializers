@@ -6,60 +6,48 @@ module ActionController
       include ActiveSupport::Testing::Stream
       class ImplicitSerializationTestController < ActionController::Base
         def render_using_implicit_serializer
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile
         end
 
         def render_using_default_adapter_root
-          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
-            # JSON-API adapter sets root by default
-            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: @profile
-          end
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          render json: @profile
         end
 
         def render_array_using_custom_root
-          with_adapter ActiveModel::Serializer::Adapter::Json do
-            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: [@profile], root: 'custom_root'
-          end
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          render json: [@profile], root: 'custom_root'
         end
 
         def render_array_that_is_empty_using_custom_root
-          with_adapter ActiveModel::Serializer::Adapter::Json do
-            render json: [], root: 'custom_root'
-          end
+          render json: [], root: 'custom_root'
         end
 
         def render_object_using_custom_root
-          with_adapter ActiveModel::Serializer::Adapter::Json do
-            @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            render json: @profile, root: 'custom_root'
-          end
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          render json: @profile, root: 'custom_root'
         end
 
         def render_array_using_implicit_serializer
           array = [
-            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
-            Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' })
+            Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
+            Profile.new(name: 'Name 2', description: 'Description 2', comments: 'Comments 2')
           ]
           render json: array
         end
 
         def render_array_using_implicit_serializer_and_meta
-          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
-            @profiles = [
-              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
-            ]
-
-            render json: @profiles, meta: { total: 10 }
-          end
+          @profiles = [
+            Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          ]
+          render json: @profiles, meta: { total: 10 }
         end
 
         def render_object_with_cache_enabled
-          @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           @author  = Author.new(id: 1, name: 'Joao Moura.')
-          @post    = Post.new({ id: 1, title: 'New Post', body: 'Body', comments: [@comment], author: @author })
+          @post    = Post.new(id: 1, title: 'New Post', body: 'Body', comments: [@comment], author: @author)
 
           generate_cached_serializer(@post)
 
@@ -83,9 +71,9 @@ module ActionController
         end
 
         def render_object_expired_with_cache_enabled
-          comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           author = Author.new(id: 1, name: 'Joao Moura.')
-          post = Post.new({ id: 1, title: 'New Post', body: 'Body', comments: [comment], author: author })
+          post = Post.new(id: 1, title: 'New Post', body: 'Body', comments: [comment], author: author)
 
           generate_cached_serializer(post)
 
@@ -95,16 +83,16 @@ module ActionController
         end
 
         def render_changed_object_with_cache_enabled
-          comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           author = Author.new(id: 1, name: 'Joao Moura.')
-          post = Post.new({ id: 1, title: 'ZOMG a New Post', body: 'Body', comments: [comment], author: author })
+          post = Post.new(id: 1, title: 'ZOMG a New Post', body: 'Body', comments: [comment], author: author)
 
           render json: post
         end
 
         def render_fragment_changed_object_with_only_cache_enabled
           author = Author.new(id: 1, name: 'Joao Moura.')
-          role = Role.new({ id: 42, name: 'ZOMG A ROLE', description: 'DESCRIPTION HERE', author: author })
+          role = Role.new(id: 42, name: 'ZOMG A ROLE', description: 'DESCRIPTION HERE', author: author)
 
           generate_cached_serializer(role)
           role.name = 'lol'
@@ -115,7 +103,7 @@ module ActionController
 
         def render_fragment_changed_object_with_except_cache_enabled
           author = Author.new(id: 1, name: 'Joao Moura.')
-          bio = Bio.new({ id: 42, content: 'ZOMG A ROLE', rating: 5, author: author })
+          bio = Bio.new(id: 42, content: 'ZOMG A ROLE', rating: 5, author: author)
 
           generate_cached_serializer(bio)
           bio.content = 'lol'
@@ -125,13 +113,13 @@ module ActionController
         end
 
         def render_fragment_changed_object_with_relationship
-          comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
-          comment2 = Comment.new({ id: 1, body: 'ZOMG AN UPDATED-BUT-NOT-CACHE-EXPIRED COMMENT' })
-          like = Like.new({ id: 1, likeable: comment, time: 3.days.ago })
+          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          comment2 = Comment.new(id: 1, body: 'ZOMG AN UPDATED-BUT-NOT-CACHE-EXPIRED COMMENT')
+          like = Like.new(id: 1, likeable: comment, time: 3.days.ago)
 
           generate_cached_serializer(like)
           like.likable = comment2
-          like.time = Time.now.to_s
+          like.time = Time.zone.now.to_s
 
           render json: like
         end
@@ -168,8 +156,9 @@ module ActionController
       end
 
       def test_render_using_default_root
-        get :render_using_default_adapter_root
-
+        with_adapter :json_api do
+          get :render_using_default_adapter_root
+        end
         expected = {
           data: {
             id: assigns(:profile).id.to_s,
@@ -186,15 +175,18 @@ module ActionController
       end
 
       def test_render_array_using_custom_root
-        get :render_array_using_custom_root
-
+        with_adapter :json do
+          get :render_array_using_custom_root
+        end
         expected = { custom_roots: [{ name: 'Name 1', description: 'Description 1' }] }
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
 
       def test_render_array_that_is_empty_using_custom_root
-        get :render_array_that_is_empty_using_custom_root
+        with_adapter :json do
+          get :render_array_that_is_empty_using_custom_root
+        end
 
         expected = { custom_roots: [] }
         assert_equal 'application/json', @response.content_type
@@ -202,7 +194,9 @@ module ActionController
       end
 
       def test_render_object_using_custom_root
-        get :render_object_using_custom_root
+        with_adapter :json do
+          get :render_object_using_custom_root
+        end
 
         expected = { custom_root: { name: 'Name 1', description: 'Description 1' } }
         assert_equal 'application/json', @response.content_type
@@ -232,11 +226,11 @@ module ActionController
         expected = [
           {
             name: 'Name 1',
-            description: 'Description 1',
+            description: 'Description 1'
           },
           {
             name: 'Name 2',
-            description: 'Description 2',
+            description: 'Description 2'
           }
         ]
 
@@ -244,8 +238,9 @@ module ActionController
       end
 
       def test_render_array_using_implicit_serializer_and_meta
-        get :render_array_using_implicit_serializer_and_meta
-
+        with_adapter :json_api do
+          get :render_array_using_implicit_serializer_and_meta
+        end
         expected = {
           data: [
             {
@@ -287,7 +282,7 @@ module ActionController
         }
 
         ActionController::Base.cache_store.clear
-        Timecop.freeze(Time.now) do
+        Timecop.freeze(Time.zone.now) do
           get :render_object_with_cache_enabled
 
           assert_equal 'application/json', @response.content_type
@@ -352,13 +347,13 @@ module ActionController
       def test_render_fragment_changed_object_with_relationship
         ActionController::Base.cache_store.clear
 
-        Timecop.freeze(Time.now) do
+        Timecop.freeze(Time.zone.now) do
           get :render_fragment_changed_object_with_relationship
           response = JSON.parse(@response.body)
 
           expected_return = {
             'id' => 1,
-            'time' => Time.now.to_s,
+            'time' => Time.zone.now.to_s,
             'likeable' => {
               'id' => 1,
               'body' => 'ZOMG A COMMENT'
