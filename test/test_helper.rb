@@ -1,5 +1,16 @@
 require 'bundler/setup'
 
+begin
+  require 'simplecov'
+  # HACK: till https://github.com/colszowka/simplecov/pull/400 is merged and released.
+  # Otherwise you may get:
+  # simplecov-0.10.0/lib/simplecov/defaults.rb:50: warning: global variable `$ERROR_INFO' not initialized
+  require 'support/simplecov'
+  AppCoverage.start
+rescue LoadError
+  STDERR.puts 'Running without SimpleCov'
+end
+
 require 'timecop'
 require 'rails'
 require 'action_controller'
@@ -13,7 +24,6 @@ require 'minitest/autorun'
 # Ensure backward compatibility with Minitest 4
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
 
-
 require 'capture_warnings'
 @capture_warnings = CaptureWarnings.new(fail_build = true)
 @capture_warnings.before_tests
@@ -23,7 +33,7 @@ if Minitest.respond_to?(:after_run)
   end
 else
   at_exit do
-    STDOUT.puts "Minitest.after_run not available."
+    STDOUT.puts 'Minitest.after_run not available.'
     @capture_warnings.after_tests
   end
 end

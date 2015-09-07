@@ -21,7 +21,7 @@ module ActiveModel
             @comment.author = nil
             @post.author = @author
             @anonymous_post.author = nil
-            @blog = Blog.new(id: 1, name: "My Blog!!")
+            @blog = Blog.new(id: 1, name: 'My Blog!!')
             @blog.writer = @author
             @blog.articles = [@post, @anonymous_post]
             @author.posts = []

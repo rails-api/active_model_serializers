@@ -7,27 +7,21 @@ module ActiveModel
 
       class CompliantResource
         def serializable_hash(options = nil)
-
         end
 
         def read_attribute_for_serialization(name)
-
         end
 
         def as_json(options = nil)
-
         end
 
         def to_json(options = nil)
-
         end
 
         def cache_key
-
         end
 
         def id
-
         end
 
         def self.model_name
@@ -38,7 +32,6 @@ module ActiveModel
       def setup
         @resource = CompliantResource.new
       end
-
     end
   end
 end

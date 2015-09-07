@@ -1,7 +1,6 @@
 require 'set'
 module ActiveModel
   class SerializableResource
-
     ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter])
 
     def initialize(resource, options = {})
@@ -79,6 +78,5 @@ module ActiveModel
     ActiveModelSerializers.silence_warnings do
     attr_reader :resource, :adapter_opts, :serializer_opts
     end
-
   end
 end
