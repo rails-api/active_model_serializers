@@ -31,6 +31,17 @@ module ActiveModel
             site: { data: { type: 'blogs', id: '1' } }
             }, adapter.serializable_hash[:data][:relationships])
         end
+
+        def test_override_type
+          post_override_serializer = Class.new(PostSerializer) do
+            def type
+              'override'
+            end
+          end
+          hash = ActiveModel::SerializableResource.new(@post, adapter: :json_api, serializer: post_override_serializer).serializable_hash
+
+          assert_equal('override', hash[:data][:type])
+        end
       end
     end
   end
