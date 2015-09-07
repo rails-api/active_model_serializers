@@ -11,22 +11,22 @@ module ActionController
         end
 
         def render_using_default_adapter_root
-          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           render json: @profile
         end
 
         def render_array_using_custom_root
-          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
-          render json: [@profile], root: 'custom_root'
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: [@profile], root: "custom_root"
         end
 
         def render_array_that_is_empty_using_custom_root
-          render json: [], root: 'custom_root'
+          render json: [], root: "custom_root"
         end
 
         def render_object_using_custom_root
-          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
-          render json: @profile, root: 'custom_root'
+          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          render json: @profile, root: "custom_root"
         end
 
         def render_array_using_implicit_serializer
@@ -39,8 +39,9 @@ module ActionController
 
         def render_array_using_implicit_serializer_and_meta
           @profiles = [
-            Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+            Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
           ]
+
           render json: @profiles, meta: { total: 10 }
         end
 
@@ -178,7 +179,8 @@ module ActionController
         with_adapter :json do
           get :render_array_using_custom_root
         end
-        expected = { custom_roots: [{ name: 'Name 1', description: 'Description 1' }] }
+
+        expected =  {custom_roots: [{name: "Name 1", description: "Description 1"}]}
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
