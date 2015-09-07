@@ -59,7 +59,7 @@ module ActiveModel
             serializer.type
           else
             type = serializer.object.class.model_name.singular
-            ActiveModel::Serializer.config.jsonapi_type_transformer.call(type)
+            ActiveModel::Serializer.config.jsonapi_type_formatter.call(type)
           end
         end
 
