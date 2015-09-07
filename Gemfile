@@ -29,19 +29,20 @@ else
   gem 'actionpack', gem_version
 end
 
-group :test do
-  gem 'activerecord'
-  gem 'sqlite3', platform: [:ruby, :mingw, :x64_mingw, :mswin]
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
-  gem 'codeclimate-test-reporter', require: false
-end
-
-group :test, :development do
-  gem 'simplecov', '~> 0.10', require: false
-end
+# https://github.com/bundler/bundler/blob/89a8778c19269561926cea172acdcda241d26d23/lib/bundler/dependency.rb#L30-L54
+@windows_platforms = [:mswin, :mingw, :x64_mingw]
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
+
+group :test do
+  gem 'activerecord'
+  gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
+  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+
+  gem 'codeclimate-test-reporter', require: false
+  gem 'simplecov', '~> 0.10', require: false, group: :development
+end
 
 group :development, :test do
   gem 'rubocop', '~> 0.34.0', require: false
