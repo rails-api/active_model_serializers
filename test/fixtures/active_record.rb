@@ -40,7 +40,6 @@ module ARModels
 
     has_many :comments
     belongs_to :author
-    url :comments
   end
 
   class CommentSerializer < ActiveModel::Serializer
