@@ -31,7 +31,6 @@ module ActiveModel
     class << self
       attr_accessor :_attributes
       attr_accessor :_attributes_keys
-      attr_accessor :_urls
       attr_accessor :_cache
       attr_accessor :_fragmented
       attr_accessor :_cache_key
@@ -44,7 +43,6 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
-      base._urls = []
       base._cache_digest = digest_caller_file(caller.first)
       super
     end
@@ -84,14 +82,6 @@ module ActiveModel
       @_cache_only = options.delete(:only)
       @_cache_except = options.delete(:except)
       @_cache_options = (options.empty?) ? nil : options
-    end
-
-    def self.url(attr)
-      @_urls.push attr
-    end
-
-    def self.urls(*attrs)
-      @_urls.concat attrs
     end
 
     def self.serializer_for(resource, options = {})
