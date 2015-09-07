@@ -27,7 +27,7 @@ end
 
 group :test do
   gem 'activerecord'
-  gem 'sqlite3', platform: :ruby
+  gem 'sqlite3', platform: [:ruby, :mingw, :x64_mingw, :mswin]
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
   gem 'codeclimate-test-reporter', require: false
 end
@@ -40,5 +40,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :development, :test do
-  gem 'rubocop', '~> 0.33.0', require: false
+  gem 'rubocop', '~> 0.34.0', require: false
 end
