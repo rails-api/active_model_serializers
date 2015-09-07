@@ -36,20 +36,20 @@ module ActiveModel
           end
 
           def test_config_plural
-            with_jsonapi_type_formatter -> (type) { type.pluralize } do
-              serializer = CommentSerializer.new(@comment)
-              adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-              ActionController::Base.cache_store.clear
-              assert_equal('comments', adapter.serializable_hash[:data][:type])
+            with_adapter :json_api do
+              with_jsonapi_type_formatter -> (type) { type.pluralize } do
+                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
+                assert_equal('comments', hash[:data][:type])
+              end
             end
           end
 
           def test_config_singular
-            with_jsonapi_type_formatter -> (type) { type.singularize } do
-              serializer = CommentSerializer.new(@comment)
-              adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-              ActionController::Base.cache_store.clear
-              assert_equal('comment', adapter.serializable_hash[:data][:type])
+            with_adapter :json_api do
+              with_jsonapi_type_formatter -> (type) { type.singularize } do
+                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
+                assert_equal('comment', hash[:data][:type])
+              end
             end
           end
         end

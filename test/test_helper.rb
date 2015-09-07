@@ -46,6 +46,8 @@ require 'support/rails_app'
 
 require 'support/test_case'
 
+require 'support/serialization_testing'
+
 require 'fixtures/active_record'
 
 require 'fixtures/poro'
