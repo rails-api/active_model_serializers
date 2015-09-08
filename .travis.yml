@@ -2,6 +2,9 @@ language: ruby
 
 sudo: false
 
+cache:
+  bundler: true
+
 rvm:
   - 1.9.3
   - 2.0.0
@@ -14,6 +17,10 @@ rvm:
 install:
   - bundle install --retry=3
 
+script:
+  - bundle exec rake
+  - bundle exec rake rubocop
+
 env:
   - "RAILS_VERSION=4.0"
   - "RAILS_VERSION=4.1"
@@ -24,3 +31,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
+  fast_finish: true

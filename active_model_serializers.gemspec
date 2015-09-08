@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Steve Klabnik']
   spec.email         = ['steve@steveklabnik.com']
-  spec.summary       = %q{Conventions-based JSON generation for Rails.}
-  spec.description   = %q{ActiveModel::Serializers allows you to generate your JSON in an object-oriented and convention-driven manner.}
+  spec.summary       = 'Conventions-based JSON generation for Rails.'
+  spec.description   = 'ActiveModel::Serializers allows you to generate your JSON in an object-oriented and convention-driven manner.'
   spec.homepage      = 'https://github.com/rails-api/active_model_serializers'
   spec.license       = 'MIT'
 

@@ -1,8 +1,10 @@
 # ActiveModel::Serializer
 
-[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
+[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers) 
+<a href="https://codeclimate.com/github/rails-api/active_model_serializers"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/gpa.svg" /></a>
+<a href="https://codeclimate.com/github/rails-api/active_model_serializers/coverage"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/coverage.svg" /></a>
 
-_Windows Build Status -_ ![Build Status](https://ci.appveyor.com/api/projects/status/1dly7uj4l69bchmu)
+_Windows Build Status -_ [![Build status](https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true)](https://ci.appveyor.com/project/joaomdmoura/active-model-serializers/branch/master)
 
 ActiveModel::Serializer brings convention over configuration to your JSON generation.
 
@@ -34,8 +36,6 @@ class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
   has_many :comments
-
-  url :post
 end
 ```
 
@@ -46,8 +46,6 @@ class CommentSerializer < ActiveModel::Serializer
   attributes :name, :body
 
   belongs_to :post
-
-  url [:post, :comment]
 end
 ```
 
@@ -237,8 +235,6 @@ class PostSerializer < ActiveModel::Serializer
 
   has_many :comments
   has_one :author
-
-  url :post
 end
 ```
 
@@ -249,8 +245,6 @@ class CommentSerializer < ActiveModel::Serializer
   attributes :name, :body
 
   belongs_to :post_id
-
-  url [:post, :comment]
 end
 ```
 
@@ -272,8 +266,6 @@ And you can change the JSON key that the serializer should use for a particular 
   has_many :comments, key: :reviews
 ```
 
-The `url` declaration describes which named routes to use while generating URLs
-for your JSON. Not every adapter will require URLs.
 ## Pagination
 
 Pagination links will be included in your response automatically as long as the resource is paginated using [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate) and if you are using a ```JSON-API``` adapter.
@@ -305,8 +297,6 @@ class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
   has_many :comments
-
-  url :post
 end
 ```
 
@@ -330,8 +320,6 @@ class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
   has_many :comments
-
-  url :post
 end
 ```
 

@@ -35,12 +35,12 @@ module ActiveModel
       end
 
       def test_create_adapter_with_override
-        adapter = ActiveModel::Serializer::Adapter.create(@serializer, { adapter: :json_api})
+        adapter = ActiveModel::Serializer::Adapter.create(@serializer, { adapter: :json_api })
         assert_equal ActiveModel::Serializer::Adapter::JsonApi, adapter.class
       end
 
       def test_inflected_adapter_class_for_known_adapter
-        ActiveSupport::Inflector.inflections(:en){|inflect| inflect.acronym 'API' }
+        ActiveSupport::Inflector.inflections(:en) { |inflect| inflect.acronym 'API' }
         klass = ActiveModel::Serializer::Adapter.adapter_class(:json_api)
 
         ActiveSupport::Inflector.inflections.acronyms.clear

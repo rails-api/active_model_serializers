@@ -20,7 +20,6 @@ module ActiveModel
         adapter = ActiveModel::Serializer.adapter
         assert_equal ActiveModel::Serializer::Adapter::Null, adapter
       ensure
-
       end
 
       def test_overwrite_adapter_with_class

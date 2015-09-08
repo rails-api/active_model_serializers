@@ -13,7 +13,6 @@ module ActiveModel
     include Configuration
     include Associations
 
-
     # Matches
     #  "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
     #  AND
@@ -32,7 +31,6 @@ module ActiveModel
     class << self
       attr_accessor :_attributes
       attr_accessor :_attributes_keys
-      attr_accessor :_urls
       attr_accessor :_cache
       attr_accessor :_fragmented
       attr_accessor :_cache_key
@@ -45,7 +43,6 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = self._attributes.try(:dup) || []
       base._attributes_keys = self._attributes_keys.try(:dup) || {}
-      base._urls = []
       base._cache_digest = digest_caller_file(caller.first)
       super
     end
@@ -70,7 +67,7 @@ module ActiveModel
       ActiveModelSerializers.silence_warnings do
         define_method key do
           object.read_attribute_for_serialization(attr)
-        end unless respond_to?(key, false) || _fragmented.respond_to?(attr)
+        end unless (key != :id && method_defined?(key)) || _fragmented.respond_to?(attr)
       end
     end
 
@@ -85,14 +82,6 @@ module ActiveModel
       @_cache_only = options.delete(:only)
       @_cache_except = options.delete(:except)
       @_cache_options = (options.empty?) ? nil : options
-    end
-
-    def self.url(attr)
-      @_urls.push attr
-    end
-
-    def self.urls(*attrs)
-      @_urls.concat attrs
     end
 
     def self.serializer_for(resource, options = {})
@@ -146,18 +135,6 @@ module ActiveModel
       @root || object.class.model_name.to_s.underscore
     end
 
-    def id
-      object.id if object
-    end
-
-    def json_api_type
-      if config.jsonapi_resource_type == :plural
-        object.class.model_name.plural
-      else
-        object.class.model_name.singular
-      end
-    end
-
     def attributes(options = {})
       attributes =
         if options[:fields]
@@ -165,8 +142,6 @@ module ActiveModel
         else
           self.class._attributes.dup
         end
-
-      attributes += options[:required_fields] if options[:required_fields]
 
       attributes.each_with_object({}) do |name, hash|
         unless self.class._fragmented
