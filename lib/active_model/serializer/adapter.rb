@@ -17,9 +17,9 @@ module ActiveModel
         klass.new(resource, options)
       end
 
-      # @see ActiveModel::Serializer::Adapter.get
+      # @see ActiveModel::Serializer::Adapter.lookup
       def self.adapter_class(adapter)
-        ActiveModel::Serializer::Adapter.get(adapter)
+        ActiveModel::Serializer::Adapter.lookup(adapter)
       end
 
       # Only the Adapter class has these methods.
@@ -49,7 +49,7 @@ module ActiveModel
         # @param  adapter [String, Symbol, Class] name to fetch adapter by
         # @return [ActiveModel::Serializer::Adapter] subclass of Adapter
         # @raise  [UnknownAdapterError]
-        def get(adapter)
+        def lookup(adapter)
           # 1. return if is a class
           return adapter if adapter.is_a?(Class)
           adapter_name = adapter.to_s.underscore

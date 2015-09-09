@@ -83,33 +83,33 @@ module ActiveModel
         ]
       end
 
-      def test_get_adapter_by_string_name
-        assert_equal ActiveModel::Serializer::Adapter.get('json'.freeze), ActiveModel::Serializer::Adapter::Json
+      def test_lookup_adapter_by_string_name
+        assert_equal ActiveModel::Serializer::Adapter.lookup('json'.freeze), ActiveModel::Serializer::Adapter::Json
       end
 
-      def test_get_adapter_by_symbol_name
-        assert_equal ActiveModel::Serializer::Adapter.get(:json), ActiveModel::Serializer::Adapter::Json
+      def test_lookup_adapter_by_symbol_name
+        assert_equal ActiveModel::Serializer::Adapter.lookup(:json), ActiveModel::Serializer::Adapter::Json
       end
 
-      def test_get_adapter_by_class
+      def test_lookup_adapter_by_class
         klass = ActiveModel::Serializer::Adapter::Json
-        assert_equal ActiveModel::Serializer::Adapter.get(klass), klass
+        assert_equal ActiveModel::Serializer::Adapter.lookup(klass), klass
       end
 
-      def test_get_adapter_from_environment_registers_adapter
+      def test_lookup_adapter_from_environment_registers_adapter
         ActiveModel::Serializer::Adapter.const_set(:AdapterFromEnvironment, Class.new)
         klass = ::ActiveModel::Serializer::Adapter::AdapterFromEnvironment
         name = 'adapter_from_environment'.freeze
-        assert_equal ActiveModel::Serializer::Adapter.get(name), klass
+        assert_equal ActiveModel::Serializer::Adapter.lookup(name), klass
         assert ActiveModel::Serializer::Adapter.adapters.include?(name)
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete(name)
         ActiveModel::Serializer::Adapter.send(:remove_const, :AdapterFromEnvironment)
       end
 
-      def test_get_adapter_for_unknown_name
+      def test_lookup_adapter_for_unknown_name
         assert_raises UnknownAdapterError do
-          ActiveModel::Serializer::Adapter.get(:json_simple)
+          ActiveModel::Serializer::Adapter.lookup(:json_simple)
         end
       end
 
@@ -123,7 +123,7 @@ module ActiveModel
         new_adapter_klass = Class.new
         ActiveModel::Serializer::Adapter.register(new_adapter_name, new_adapter_klass)
         assert ActiveModel::Serializer::Adapter.adapters.include?('foo'.freeze)
-        assert ActiveModel::Serializer::Adapter.get(:foo), new_adapter_klass
+        assert ActiveModel::Serializer::Adapter.lookup(:foo), new_adapter_klass
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete(new_adapter_name.to_s)
       end
@@ -132,7 +132,7 @@ module ActiveModel
         Object.const_set(:MyAdapter, Class.new)
         my_adapter = MyAdapter
         ActiveModel::Serializer::Adapter.inherited(my_adapter)
-        assert_equal ActiveModel::Serializer::Adapter.get(:my_adapter), my_adapter
+        assert_equal ActiveModel::Serializer::Adapter.lookup(:my_adapter), my_adapter
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete('my_adapter'.freeze)
         Object.send(:remove_const, :MyAdapter)
@@ -143,7 +143,7 @@ module ActiveModel
         MyNamespace.const_set(:MyAdapter, Class.new)
         my_adapter = MyNamespace::MyAdapter
         ActiveModel::Serializer::Adapter.inherited(my_adapter)
-        assert_equal ActiveModel::Serializer::Adapter.get(:my_adapter), my_adapter
+        assert_equal ActiveModel::Serializer::Adapter.lookup(:my_adapter), my_adapter
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete('my_adapter'.freeze)
         MyNamespace.send(:remove_const, :MyAdapter)
@@ -157,8 +157,8 @@ module ActiveModel
         my_subclassed_adapter = MySubclassedAdapter
         ActiveModel::Serializer::Adapter.inherited(my_adapter)
         ActiveModel::Serializer::Adapter.inherited(my_subclassed_adapter)
-        assert_equal ActiveModel::Serializer::Adapter.get(:my_adapter), my_adapter
-        assert_equal ActiveModel::Serializer::Adapter.get(:my_subclassed_adapter), my_subclassed_adapter
+        assert_equal ActiveModel::Serializer::Adapter.lookup(:my_adapter), my_adapter
+        assert_equal ActiveModel::Serializer::Adapter.lookup(:my_subclassed_adapter), my_subclassed_adapter
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete('my_adapter'.freeze)
         ActiveModel::Serializer::Adapter.adapter_map.delete('my_subclassed_adapter'.freeze)

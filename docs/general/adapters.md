@@ -91,9 +91,9 @@ ActiveModel::Serializer::Adapter.register(:special_adapter, MyAdapter)
 
 | `ActiveModel::Serializer::Adapter.adapter_map` | A Hash of all known adapters { adapter_name => adapter_class } |
 | `ActiveModel::Serializer::Adapter.adapters`    | A (sorted) Array of all known adapter_names |
-| `ActiveModel::Serializer::Adapter.get(name_or_klass)` |  The adapter_class, else raises an `ActiveModel::Serializer::Adapter::UnknownAdapter` error |
-| `ActiveModel::Serializer::Adapter.adapter_class(adapter)` | delegates to `ActiveModel::Serializer::Adapter.get(adapter)` |
-| `ActiveModel::Serializer.adapter` | a convenience method for `ActiveModel::Serializer::Adapter.get(config.adapter)` |
+| `ActiveModel::Serializer::Adapter.lookup(name_or_klass)` |  The adapter_class, else raises an `ActiveModel::Serializer::Adapter::UnknownAdapter` error |
+| `ActiveModel::Serializer::Adapter.adapter_class(adapter)` | delegates to `ActiveModel::Serializer::Adapter.lookup(adapter)` |
+| `ActiveModel::Serializer.adapter` | a convenience method for `ActiveModel::Serializer::Adapter.lookup(config.adapter)` |
 
 The registered adapter name is always a String, but may be looked up as a Symbol or String.
 Helpfully, the Symbol or String is underscored, so that `get(:my_adapter)` and `get("MyAdapter")`

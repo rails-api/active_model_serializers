@@ -94,9 +94,9 @@ module ActiveModel
       end
     end
 
-    # @see ActiveModel::Serializer::Adapter.get
+    # @see ActiveModel::Serializer::Adapter.lookup
     def self.adapter
-      ActiveModel::Serializer::Adapter.get(config.adapter)
+      ActiveModel::Serializer::Adapter.lookup(config.adapter)
     end
 
     def self.root_name
