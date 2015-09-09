@@ -60,11 +60,7 @@ module ActiveModel
             register(adapter_name, adapter_class)
             adapter_class
           }
-        rescue ArgumentError => e
-          failure_message =
-            "Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
-          raise UnknownAdapterError, failure_message, e.backtrace
-        rescue NameError => e
+        rescue NameError, ArgumentError => e
           failure_message =
             "NameError: #{e.message}. Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"
           raise UnknownAdapterError, failure_message, e.backtrace
@@ -73,7 +69,7 @@ module ActiveModel
         # @api private
         def find_by_name(adapter_name)
           adapter_name = adapter_name.to_s.classify.tr('API', 'Api')
-          "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize or # rubocop:disable Style/AndOr
+          ActiveModel::Serializer::Adapter.const_get(adapter_name.to_sym) or # rubocop:disable Style/AndOr
             fail UnknownAdapterError
         end
         private :find_by_name
