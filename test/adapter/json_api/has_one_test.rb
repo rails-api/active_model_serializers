@@ -28,7 +28,7 @@ module ActiveModel
             @virtual_value = VirtualValue.new(id: 1)
 
             @serializer = AuthorSerializer.new(@author)
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'bio,posts')
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:bio, :posts])
           end
 
           def test_includes_bio_id
@@ -38,7 +38,7 @@ module ActiveModel
           end
 
           def test_includes_linked_bio
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: 'bio')
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:bio])
 
             expected = [
               {
