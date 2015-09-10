@@ -7,11 +7,11 @@ module ActiveModel
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
-            @result = serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
+            result = serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
           else
-            @hash = {}
+            hash = {}
 
-            @core = cache_check(serializer) do
+            core = cache_check(serializer) do
               serializer.attributes(options)
             end
 
@@ -21,13 +21,13 @@ module ActiveModel
 
               if serializer.respond_to?(:each)
                 array_serializer = serializer
-                @hash[association.key] = array_serializer.map do |item|
+                hash[association.key] = array_serializer.map do |item|
                   cache_check(item) do
                     item.attributes(opts)
                   end
                 end
               else
-                @hash[association.key] =
+                hash[association.key] =
                   if serializer && serializer.object
                     cache_check(serializer) do
                       serializer.attributes(options)
@@ -37,10 +37,10 @@ module ActiveModel
                   end
               end
             end
-            @result = @core.merge @hash
+            result = core.merge hash
           end
 
-          { root => @result }
+          { root => result }
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
