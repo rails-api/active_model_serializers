@@ -6,6 +6,12 @@ module ActionController
 
     include ActionController::Renderers
 
+    RENDERER_METHODS = [
+      :_render_option_json,
+      :_render_with_renderer_json,
+      :_render_option_xml,
+      :_render_with_renderer_xml
+    ]
     # Deprecated
     ADAPTER_OPTION_KEYS = ActiveModel::SerializableResource::ADAPTER_OPTION_KEYS
 
@@ -45,7 +51,7 @@ module ActionController
       true
     end
 
-    [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
+    RENDERER_METHODS.each do |renderer_method|
       define_method renderer_method do |resource, options|
         options.fetch(:context) { options[:context] = request }
         serializable_resource = get_serializer(resource, options)

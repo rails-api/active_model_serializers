@@ -136,6 +136,13 @@ module ActionController
           render json: like
         end
 
+        def render_object_xml
+          profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          with_adapter :flatten_json do
+            render xml: profile
+          end
+        end
+
         private
 
         def generate_cached_serializer(obj)
@@ -419,6 +426,14 @@ module ActionController
         assert_equal '', (capture(:stderr) {
           controller.get_serializer(Profile.new)
         })
+      end
+
+      def test_render_object_xml
+        get :render_object_xml
+
+        hash = Hash.from_xml(@response.body).each_value.first
+        assert_equal('application/xml', @response.content_type)
+        assert_equal({ 'name' => 'Name 1', 'description' => 'Description 1' }, hash)
       end
     end
   end
