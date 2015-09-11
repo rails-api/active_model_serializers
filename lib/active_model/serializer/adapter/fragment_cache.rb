@@ -1,7 +1,4 @@
-module ActiveModel
-  class Serializer
-    class Adapter
-      class FragmentCache
+class ActiveModel::Serializer::Adapter::FragmentCache
         attr_reader :serializer
 
         def initialize(adapter, serializer, options)
@@ -75,7 +72,4 @@ module ActiveModel
         def to_valid_const_name(name)
           name.gsub('::', '_')
         end
-      end
-    end
-  end
 end

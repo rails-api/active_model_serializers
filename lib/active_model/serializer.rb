@@ -94,19 +94,9 @@ module ActiveModel
       end
     end
 
+    # @see ActiveModel::Serializer::Adapter.lookup
     def self.adapter
-      adapter_class = case config.adapter
-                      when Symbol
-                        ActiveModel::Serializer::Adapter.adapter_class(config.adapter)
-                      when Class
-                        config.adapter
-                      end
-      unless adapter_class
-        valid_adapters = Adapter.constants.map { |klass| ":#{klass.to_s.downcase}" }
-        raise ArgumentError, "Unknown adapter: #{config.adapter}. Valid adapters are: #{valid_adapters}"
-      end
-
-      adapter_class
+      ActiveModel::Serializer::Adapter.lookup(config.adapter)
     end
 
     def self.root_name

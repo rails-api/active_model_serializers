@@ -76,7 +76,7 @@ module ActiveModel
     private
 
     ActiveModelSerializers.silence_warnings do
-    attr_reader :resource, :adapter_opts, :serializer_opts
+      attr_reader :resource, :adapter_opts, :serializer_opts
     end
   end
 end
