@@ -1,7 +1,4 @@
-module ActiveModel
-  class Serializer
-    class Adapter
-      class FlattenJson < Json
+class ActiveModel::Serializer::Adapter::FlattenJson < ActiveModel::Serializer::Adapter::Json
         def serializable_hash(options = {})
           super
           @result
@@ -13,7 +10,4 @@ module ActiveModel
         def include_meta(json)
           json
         end
-      end
-    end
-  end
 end
