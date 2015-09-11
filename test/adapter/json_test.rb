@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class JsonTest < Minitest::Test
         def setup
           ActionController::Base.cache_store.clear

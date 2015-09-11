@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
-    class Adapter
-      class Json < Adapter
+    module Adapter
+      class Json < Base
         extend ActiveSupport::Autoload
         autoload :FragmentCache
 

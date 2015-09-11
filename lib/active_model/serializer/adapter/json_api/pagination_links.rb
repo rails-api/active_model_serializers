@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
-    class Adapter
-      class JsonApi < Adapter
+    module Adapter
+      class JsonApi < Base
         class PaginationLinks
           FIRST_PAGE = 1
 

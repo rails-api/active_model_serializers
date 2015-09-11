@@ -6,7 +6,7 @@ module ActiveModel
       def setup
         profile = Profile.new
         @serializer = ProfileSerializer.new(profile)
-        @adapter = ActiveModel::Serializer::Adapter.new(@serializer)
+        @adapter = ActiveModel::Serializer::Adapter::Base.new(@serializer)
       end
 
       def test_serializable_hash_is_abstract_method

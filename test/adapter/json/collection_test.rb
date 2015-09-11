@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class Json
         class Collection < Minitest::Test
           def setup

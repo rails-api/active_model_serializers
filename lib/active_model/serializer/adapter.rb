@@ -1,26 +1,30 @@
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       UnknownAdapterError = Class.new(ArgumentError)
       ADAPTER_MAP = {}
       private_constant :ADAPTER_MAP if defined?(private_constant)
       require 'active_model/serializer/adapter/fragment_cache'
       require 'active_model/serializer/adapter/cached_serializer'
 
-      def self.create(resource, options = {})
-        override = options.delete(:adapter)
-        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
-        klass.new(resource, options)
-      end
+      class << self # All methods are class functions
+        def new(*args)
+          fail ArgumentError, 'Adapters inherit from Adapter::Base.' \
+            "Adapter.new called with args: '#{args.inspect}', from" \
+            "'caller[0]'."
+        end
 
-      # @see ActiveModel::Serializer::Adapter.lookup
-      def self.adapter_class(adapter)
-        ActiveModel::Serializer::Adapter.lookup(adapter)
-      end
+        def create(resource, options = {})
+          override = options.delete(:adapter)
+          klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
+          klass.new(resource, options)
+        end
 
-      # Only the Adapter class has these methods.
-      # None of the sublasses have them.
-      class << ActiveModel::Serializer::Adapter
+        # @see ActiveModel::Serializer::Adapter.lookup
+        def adapter_class(adapter)
+          ActiveModel::Serializer::Adapter.lookup(adapter)
+        end
+
         # @return Hash<adapter_name, adapter_class>
         def adapter_map
           ADAPTER_MAP
@@ -76,58 +80,8 @@ module ActiveModel
         private :find_by_name
       end
 
-      # Automatically register adapters when subclassing
-      def self.inherited(subclass)
-        ActiveModel::Serializer::Adapter.register(subclass)
-      end
-
-      attr_reader :serializer, :instance_options
-
-      def initialize(serializer, options = {})
-        @serializer = serializer
-        @instance_options = options
-      end
-
-      def serializable_hash(options = nil)
-        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
-      end
-
-      def as_json(options = nil)
-        hash = serializable_hash(options)
-        include_meta(hash)
-        hash
-      end
-
-      def fragment_cache(*args)
-        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
-      end
-
-      def cache_check(serializer)
-        CachedSerializer.new(serializer).cache_check(self) do
-          yield
-        end
-      end
-
-      private
-
-      def meta
-        serializer.meta if serializer.respond_to?(:meta)
-      end
-
-      def meta_key
-        serializer.meta_key || 'meta'.freeze
-      end
-
-      def root
-        serializer.json_key.to_sym if serializer.json_key
-      end
-
-      def include_meta(json)
-        json[meta_key] = meta if meta
-        json
-      end
-
       # Gotta be at the bottom to use the code above it :(
+      require 'active_model/serializer/adapter/base'
       require 'active_model/serializer/adapter/null'
       require 'active_model/serializer/adapter/attributes'
       require 'active_model/serializer/adapter/json'

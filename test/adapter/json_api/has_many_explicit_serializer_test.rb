@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class JsonApi
         # Test 'has_many :assocs, serializer: AssocXSerializer'
         class HasManyExplicitSerializerTest < Minitest::Test
