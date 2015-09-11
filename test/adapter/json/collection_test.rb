@@ -23,7 +23,7 @@ module ActiveModel
           def test_with_serializer_option
             @blog.special_attribute = 'Special'
             @blog.articles = [@first_post, @second_post]
-            serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerializer)
+            serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerialization)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
             expected = { blogs: [{

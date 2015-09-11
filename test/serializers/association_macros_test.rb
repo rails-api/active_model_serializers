@@ -3,15 +3,15 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssociationMacrosTest < Minitest::Test
-      AuthorSummarySerializer = Class.new
-      class AssociationsTestSerializer < Serializer
-        belongs_to :author, serializer: AuthorSummarySerializer
+      AuthorSummarySerialization = Class.new
+      class AssociationsTestSerialization < ActiveModel::Serializer
+        belongs_to :author, serializer: AuthorSummarySerialization
         has_many :comments
         has_one :category
       end
 
       def before_setup
-        @reflections = AssociationsTestSerializer._reflections
+        @reflections = AssociationsTestSerialization._reflections
       end
 
       def test_has_one_defines_reflection
@@ -27,7 +27,7 @@ module ActiveModel
       end
 
       def test_belongs_to_defines_reflection
-        belongs_to_reflection = BelongsToReflection.new(:author, serializer: AuthorSummarySerializer)
+        belongs_to_reflection = BelongsToReflection.new(:author, serializer: AuthorSummarySerialization)
 
         assert_includes(@reflections, belongs_to_reflection)
       end

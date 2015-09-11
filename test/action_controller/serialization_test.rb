@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActionController
   module Serialization
-    class ImplicitSerializerTest < ActionController::TestCase
+    class ImplicitSerializationTest < ActionController::TestCase
       include ActiveSupport::Testing::Stream
       class ImplicitSerializationTestController < ActionController::Base
         include SerializationTesting

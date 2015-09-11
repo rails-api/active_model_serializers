@@ -67,12 +67,12 @@ If you are using `JSON` adapter, pagination links will not be included automatic
 
 In your action specify a custom serializer.
 ```ruby
-render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPreviewSerializer
+render json: @posts, serializer: PaginatedSerialization, each_serializer: PostPreviewSerialization
 ```
 
 And then, you could do something like the following class.
 ```ruby
-class PaginatedSerializer < ActiveModel::Serializer::ArraySerializer
+class PaginatedSerialization < ActiveModel::Serializer::ArraySerializer
   def initialize(object, options={})
     meta_key = options[:meta_key] || :meta
     options[meta_key] ||= {}

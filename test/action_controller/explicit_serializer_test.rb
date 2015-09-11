@@ -2,13 +2,13 @@ require 'test_helper'
 
 module ActionController
   module Serialization
-    class ExplicitSerializerTest < ActionController::TestCase
-      class ExplicitSerializerTestController < ActionController::Base
+    class ExplicitSerializationTest < ActionController::TestCase
+      class ExplicitSerializationTestController < ActionController::Base
         def render_using_explicit_serializer
           @profile = Profile.new(name: 'Name 1',
                                  description: 'Description 1',
                                  comments: 'Comments 1')
-          render json: @profile, serializer: ProfilePreviewSerializer
+          render json: @profile, serializer: ProfilePreviewSerialization
         end
 
         def render_array_using_explicit_serializer
@@ -21,8 +21,8 @@ module ActionController
                         comments: 'Comments 2')
           ]
           render json: array,
-                 serializer: PaginatedSerializer,
-                 each_serializer: ProfilePreviewSerializer
+                 serializer: PaginatedSerialization,
+                 each_serializer: ProfilePreviewSerialization
         end
 
         def render_array_using_implicit_serializer
@@ -35,7 +35,7 @@ module ActionController
                         comments: 'Comments 2')
           ]
           render json: array,
-                 each_serializer: ProfilePreviewSerializer
+                 each_serializer: ProfilePreviewSerialization
         end
 
         def render_array_using_explicit_serializer_and_custom_serializers
@@ -53,18 +53,18 @@ module ActionController
           @blog = Blog.new(id: 23, name: 'AMS Blog')
           @post.blog = @blog
 
-          render json: [@post], each_serializer: PostPreviewSerializer
+          render json: [@post], each_serializer: PostPreviewSerialization
         end
 
         def render_using_explicit_each_serializer
           location       = Location.new(id: 42, lat: '-23.550520', lng: '-46.633309')
           place          = Place.new(id: 1337, name: 'Amazing Place', locations: [location])
 
-          render json: place, each_serializer: PlaceSerializer
+          render json: place, each_serializer: PlaceSerialization
         end
       end
 
-      tests ExplicitSerializerTestController
+      tests ExplicitSerializationTestController
 
       def test_render_using_explicit_serializer
         get :render_using_explicit_serializer
@@ -122,7 +122,7 @@ module ActionController
               id: 42,
               lat: '-23.550520',
               lng: '-46.633309',
-              place: 'Nowhere' # is a virtual attribute on LocationSerializer
+              place: 'Nowhere' # is a virtual attribute on LocationSerialization
             }
           ]
         }

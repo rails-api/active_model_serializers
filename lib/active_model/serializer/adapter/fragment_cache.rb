@@ -37,21 +37,21 @@ class ActiveModel::Serializer::Adapter::FragmentCache
           cached_attributes.each do |attribute|
             options = serializer.class._attributes_keys[attribute]
             options ||= {}
-            # Add cached attributes to cached Serializer
+            # Add cached attributes to cached Serialization
             serializers[:cached].constantize.attribute(attribute, options)
           end
 
           non_cached_attributes.each do |attribute|
             options = serializer.class._attributes_keys[attribute]
             options ||= {}
-            # Add non-cached attributes to non-cached Serializer
+            # Add non-cached attributes to non-cached Serialization
             serializers[:non_cached].constantize.attribute(attribute, options)
           end
         end
 
         def fragment_serializer(name, klass)
-          cached     = "#{to_valid_const_name(name)}CachedSerializer"
-          non_cached = "#{to_valid_const_name(name)}NonCachedSerializer"
+          cached     = "#{to_valid_const_name(name)}CachedSerialization"
+          non_cached = "#{to_valid_const_name(name)}NonCachedSerialization"
 
           Object.const_set cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(cached)
           Object.const_set non_cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(non_cached)

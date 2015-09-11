@@ -4,8 +4,8 @@ module ActiveModel
   class Serializer
     class Adapter
       class JsonApi
-        # Test 'has_many :assocs, serializer: AssocXSerializer'
-        class HasManyExplicitSerializerTest < Minitest::Test
+        # Test 'has_many :assocs, serializer: AssocXSerialization'
+        class HasManyExplicitSerializationTest < Minitest::Test
           def setup
             @post = Post.new(title: 'New Post', body: 'Body')
             @author = Author.new(name: 'Jane Blogger')
@@ -21,7 +21,7 @@ module ActiveModel
             @blog = Blog.new(id: 23, name: 'AMS Blog')
             @post.blog = @blog
 
-            @serializer = PostPreviewSerializer.new(@post)
+            @serializer = PostPreviewSerialization.new(@post)
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               @serializer,
               include: [:comments, :author]
@@ -40,7 +40,7 @@ module ActiveModel
           end
 
           def test_includes_linked_data
-            # If CommentPreviewSerializer is applied correctly the body text will not be present in the output
+            # If CommentPreviewSerialization is applied correctly the body text will not be present in the output
             expected = [
               {
                 id: '1',
