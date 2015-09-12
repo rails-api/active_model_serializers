@@ -146,8 +146,8 @@ the resource you want to be serialized and call `.serializable_hash`.
 ```ruby
 def create
   @message = current_user.messages.create!(message_params)
-   MessageCreationWorker.perform(serialized_message)
-   head 204
+  MessageCreationWorker.perform(serialized_message)
+  head 204
 end
 
 def serialized_message
