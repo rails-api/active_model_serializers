@@ -138,6 +138,23 @@ render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 
 `meta` will only be included in your response if you are using an Adapter that supports `root`, as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
 
+### Using a serializer without `render`
+
+At times, you might want to use a serializer without rendering it to the view. For those cases, you can create an instance of `ActiveModel::SerializableResource` with
+the resource you want to be serialized and call `.serializable_hash`.
+
+```ruby
+def create
+  @message = current_user.messages.create!(message_params)
+   MessageCreationWorker.perform(serialized_message)
+   head 204
+end
+
+def serialized_message
+  ActiveModel::SerializableResource.new(@message).serializable_hash
+end
+```
+
 ### Overriding association methods
 
 If you want to override any association, you can use:
