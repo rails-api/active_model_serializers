@@ -18,9 +18,29 @@ module ActiveModel
           @profile_serializer.class._attributes)
       end
 
+      def test_attributes
+        assert_equal({ name: 'Name 1', description: 'Description 1' },
+          @profile_serializer.attributes)
+      end
+
       def test_attributes_with_fields_option
         assert_equal({ name: 'Name 1' },
           @profile_serializer.attributes(fields: [:name]))
+      end
+
+      def test_attributes_with_fields_method
+        @profile_serializer.define_singleton_method(:include_attributes) do |included|
+          included - [:name]
+        end
+        assert_equal({ description: 'Description 1' },
+          @profile_serializer.attributes)
+      end
+
+      def test_attributes_with_fields_option_and_method
+        @profile_serializer.define_singleton_method(:include_attributes) do |included|
+          included - [:name]
+        end
+        assert_equal({}, @profile_serializer.attributes(fields: [:name]))
       end
 
       def test_attributes_inheritance_definition

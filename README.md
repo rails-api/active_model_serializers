@@ -188,6 +188,26 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+### Conditionally including or excluding attributes
+
+You can also dynamically include or exclude serialized attributes by defining a
+method named include_attributes. This is typically used to customize the output
+based on `current_user`. For example:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body, :author
+
+  def include_attributes(included)
+    if current_user.admin?
+      included
+    else
+      included - [:author]
+    end
+  end
+end
+```
+
 ### Built in Adapters
 
 #### Attributes
