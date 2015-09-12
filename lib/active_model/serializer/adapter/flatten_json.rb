@@ -1,7 +1,6 @@
 class ActiveModel::Serializer::Adapter::FlattenJson < ActiveModel::Serializer::Adapter::Json
         def serializable_hash(options = {})
-          super
-          @result
+          super.each_value.first
         end
 
         private

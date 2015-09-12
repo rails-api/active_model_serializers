@@ -7,11 +7,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           super
           @hash = { data: [] }
 
-          @options[:include] ||= []
-          if @options[:include].is_a?(String)
-            @options[:include] = @options[:include].split(',')
-          end
-
+          @included = ActiveModel::Serializer::Utils.include_args_to_hash(@options[:include])
           fields = options.delete(:fields)
           if fields
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
@@ -117,46 +113,36 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def included_for(serializer)
-          serializer.associations.flat_map { |assoc| _included_for(assoc.key, assoc.serializer) }.uniq
+          included = @included.flat_map do |inc|
+            association = serializer.associations.find { |assoc| assoc.key == inc.first }
+            _included_for(association.serializer, inc.second) if association
+          end
+
+          included.uniq
         end
 
-        def _included_for(resource_name, serializer, parent = nil)
+        def _included_for(serializer, includes)
           if serializer.respond_to?(:each)
-            serializer.flat_map { |s| _included_for(resource_name, s, parent) }.uniq
+            serializer.flat_map { |s| _included_for(s, includes) }.uniq
           else
             return [] unless serializer && serializer.object
-            result = []
-            resource_path = [parent, resource_name].compact.join('.')
 
-            if include_assoc?(resource_path)
-              primary_data = primary_data_for(serializer, @options)
-              relationships = relationships_for(serializer)
-              primary_data[:relationships] = relationships if relationships.any?
-              result.push(primary_data)
-            end
+            primary_data = primary_data_for(serializer, @options)
+            relationships = relationships_for(serializer)
+            primary_data[:relationships] = relationships if relationships.any?
 
-            if include_nested_assoc?(resource_path)
-              non_empty_associations = serializer.associations.select(&:serializer)
+            included = [primary_data]
 
-              non_empty_associations.each do |association|
-                result.concat(_included_for(association.key, association.serializer, resource_path))
-                result.uniq!
+            includes.each do |inc|
+              association = serializer.associations.find { |assoc| assoc.key == inc.first }
+              if association
+                included.concat(_included_for(association.serializer, inc.second))
+                included.uniq!
               end
             end
-            result
+
+            included
           end
-        end
-
-        def include_assoc?(assoc)
-          check_assoc("#{assoc}$")
-        end
-
-        def include_nested_assoc?(assoc)
-          check_assoc("#{assoc}.")
-        end
-
-        def check_assoc(assoc)
-          @options[:include].any? { |s| s.match(/^#{assoc.gsub('.', '\.')}/) }
         end
 
         def add_links(options)

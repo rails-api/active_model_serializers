@@ -1,6 +1,6 @@
 # ActiveModel::Serializer
 
-[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers) 
+[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 <a href="https://codeclimate.com/github/rails-api/active_model_serializers"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/gpa.svg" /></a>
 <a href="https://codeclimate.com/github/rails-api/active_model_serializers/coverage"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/coverage.svg" /></a>
 
@@ -137,6 +137,23 @@ render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 ```
 
 `meta` will only be included in your response if you are using an Adapter that supports `root`, as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
+
+### Using a serializer without `render`
+
+At times, you might want to use a serializer without rendering it to the view. For those cases, you can create an instance of `ActiveModel::SerializableResource` with
+the resource you want to be serialized and call `.serializable_hash`.
+
+```ruby
+def create
+  @message = current_user.messages.create!(message_params)
+  MessageCreationWorker.perform(serialized_message)
+  head 204
+end
+
+def serialized_message
+  ActiveModel::SerializableResource.new(@message).serializable_hash
+end
+```
 
 ### Overriding association methods
 
@@ -283,7 +300,7 @@ The cache support is optimized to use the cached object in multiple request. An 
 
 **[NOTE] Every object is individually cached.**
 
-**[NOTE] The cache is automatically expired after update an object but it's not deleted.**
+**[NOTE] The cache is automatically expired after an object is updated, but it's not deleted.**
 
 ```ruby
 cache(options = nil) # options: ```{key, expires_in, compress, force, race_condition_ttl}```

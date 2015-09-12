@@ -11,3 +11,4 @@
   * remove root key option and split JSON adapter [@joaomdmoura]
   * adds FlattenJSON as default adapter [@joaomdmoura]
   * adds support for `pagination links` at top level of JsonApi adapter [@bacarini]
+  * adds extended format for `include` option to JSONAPI adapter [@beauby]
