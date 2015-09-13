@@ -25,9 +25,13 @@ resources in the `"included"` member when the resource names are included in the
 `include` option.
 
 ```ruby
-  render @posts, include: ['authors', 'comments']
-  # or
-  render @posts, include: 'authors,comments'
+render @posts, include: ['authors', 'comments']
+```
+
+or
+
+```ruby
+render @posts, include: 'authors,comments'
 ```
 
 The format of the `include` option can be either a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes), an Array of Symbols and Hashes, or a mix of both.
@@ -91,11 +95,13 @@ ActiveModel::Serializer::Adapter.register(:special_adapter, MyAdapter)
 
 ### Looking up an adapter
 
-| `ActiveModel::Serializer::Adapter.adapter_map` | A Hash of all known adapters { adapter_name => adapter_class } |
-| `ActiveModel::Serializer::Adapter.adapters`    | A (sorted) Array of all known adapter_names |
-| `ActiveModel::Serializer::Adapter.lookup(name_or_klass)` |  The adapter_class, else raises an `ActiveModel::Serializer::Adapter::UnknownAdapter` error |
-| `ActiveModel::Serializer::Adapter.adapter_class(adapter)` | delegates to `ActiveModel::Serializer::Adapter.lookup(adapter)` |
-| `ActiveModel::Serializer.adapter` | a convenience method for `ActiveModel::Serializer::Adapter.lookup(config.adapter)` |
+| Method | Return value |
+| :------------ |:---------------|
+| `ActiveModel::Serializer::Adapter.adapter_map` | A Hash of all known adapters `{ adapter_name => adapter_class }` |
+| `ActiveModel::Serializer::Adapter.adapters` | A (sorted) Array of all known `adapter_names` |
+| `ActiveModel::Serializer::Adapter.lookup(name_or_klass)` |  The `adapter_class`, else raises an `ActiveModel::Serializer::Adapter::UnknownAdapter` error |
+| `ActiveModel::Serializer::Adapter.adapter_class(adapter)` | Delegates to `ActiveModel::Serializer::Adapter.lookup(adapter)` |
+| `ActiveModel::Serializer.adapter` | A convenience method for `ActiveModel::Serializer::Adapter.lookup(config.adapter)` |
 
 The registered adapter name is always a String, but may be looked up as a Symbol or String.
 Helpfully, the Symbol or String is underscored, so that `get(:my_adapter)` and `get("MyAdapter")`
