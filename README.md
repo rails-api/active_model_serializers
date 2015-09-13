@@ -1,6 +1,6 @@
 # ActiveModel::Serializer
 
-[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers) 
+[![Build Status](https://travis-ci.org/rails-api/active_model_serializers.svg)](https://travis-ci.org/rails-api/active_model_serializers)
 <a href="https://codeclimate.com/github/rails-api/active_model_serializers"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/gpa.svg" /></a>
 <a href="https://codeclimate.com/github/rails-api/active_model_serializers/coverage"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/coverage.svg" /></a>
 
@@ -300,7 +300,7 @@ The cache support is optimized to use the cached object in multiple request. An 
 
 **[NOTE] Every object is individually cached.**
 
-**[NOTE] The cache is automatically expired after update an object but it's not deleted.**
+**[NOTE] The cache is automatically expired after an object is updated, but it's not deleted.**
 
 ```ruby
 cache(options = nil) # options: ```{key, expires_in, compress, force, race_condition_ttl}```
