@@ -10,6 +10,7 @@ module ActiveModel
     autoload :Lint
     autoload :Associations
     autoload :Fieldset
+    autoload :Utils
     include Configuration
     include Associations
 

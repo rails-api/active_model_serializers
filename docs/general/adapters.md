@@ -30,6 +30,8 @@ resources in the `"included"` member when the resource names are included in the
   render @posts, include: 'authors,comments'
 ```
 
+The format of the `include` option can be either a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes), an Array of Symbols and Hashes, or a mix of both.
+
 ## Choosing an adapter
 
 If you want to use a specify a default adapter, such as JsonApi, you can change this in an initializer:

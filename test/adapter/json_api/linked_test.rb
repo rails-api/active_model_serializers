@@ -43,11 +43,11 @@ module ActiveModel
             serializer = ArraySerializer.new([@first_post, @second_post])
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
-              include: ['author', 'author.bio', 'comments']
+              include: [:comments, author: [:bio]]
             )
             alt_adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
-              include: 'author,author.bio,comments'
+              include: [:comments, author: [:bio]]
             )
 
             expected = {
@@ -153,11 +153,11 @@ module ActiveModel
             serializer = BioSerializer.new @bio1
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
-              include: ['author', 'author.posts']
+              include: [author: [:posts]]
             )
             alt_adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
-              include: 'author,author.posts'
+              include: [author: [:posts]]
             )
 
             expected = [
@@ -224,7 +224,7 @@ module ActiveModel
             serializer = ArraySerializer.new([@first_comment, @second_comment])
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
-              include: ['post']
+              include: [:post]
             )
 
             expected = [
@@ -257,7 +257,7 @@ module ActiveModel
             serializer = PostPreviewSerializer.new(@first_post)
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
-              include: ['author']
+              include: [:author]
             )
 
             expected = {
