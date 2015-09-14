@@ -43,7 +43,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         def fragment_cache(cached_hash, non_cached_hash)
           root = false if @options.include?(:include)
-          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new().fragment_cache(root, cached_hash, non_cached_hash)
+          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
         private
@@ -54,12 +54,6 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           else
             serializer.object.class.model_name.plural
           end
-        end
-
-        def add_relationships(resource, name, serializers)
-          resource[:relationships] ||= {}
-          resource[:relationships][name] ||= { data: [] }
-          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
         end
 
         def resource_identifier_id_for(serializer)
