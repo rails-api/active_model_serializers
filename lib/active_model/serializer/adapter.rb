@@ -108,22 +108,22 @@ module ActiveModel
       def cache_check(serializer)
         @cached_serializer = serializer
         @klass             = @cached_serializer.class
-        if is_cached?
+        if cached?
           @klass._cache.fetch(cache_key, @klass._cache_options) do
             yield
           end
-        elsif is_fragment_cached?
+        elsif fragment_cached?
           FragmentCache.new(self, @cached_serializer, @options).fetch
         else
           yield
         end
       end
 
-      def is_cached?
+      def cached?
         @klass._cache && !@klass._cache_only && !@klass._cache_except
       end
 
-      def is_fragment_cached?
+      def fragment_cached?
         @klass._cache_only && !@klass._cache_except || !@klass._cache_only && @klass._cache_except
       end
 
