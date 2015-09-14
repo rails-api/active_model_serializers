@@ -43,7 +43,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         def fragment_cache(cached_hash, non_cached_hash)
           root = false if @options.include?(:include)
-          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new().fragment_cache(root, cached_hash, non_cached_hash)
+          ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
         private
