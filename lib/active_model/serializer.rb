@@ -42,8 +42,8 @@ module ActiveModel
     end
 
     def self.inherited(base)
-      base._attributes = self._attributes.try(:dup) || []
-      base._attributes_keys = self._attributes_keys.try(:dup) || {}
+      base._attributes = _attributes.try(:dup) || []
+      base._attributes_keys = _attributes_keys.try(:dup) || {}
       base._cache_digest = digest_caller_file(caller.first)
       super
     end
@@ -105,6 +105,7 @@ module ActiveModel
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
+    attr_reader :options
 
     def initialize(object, options = {})
       @object = object
@@ -115,10 +116,10 @@ module ActiveModel
       @scope = options[:scope]
 
       scope_name = options[:scope_name]
-      if scope_name && !respond_to?(scope_name)
-        self.class.class_eval do
-          define_method scope_name, lambda { scope }
-        end
+      return unless scope_name && !respond_to?(scope_name)
+
+      self.class.class_eval do
+        define_method scope_name, -> () { scope }
       end
     end
 
@@ -135,10 +136,10 @@ module ActiveModel
         end
 
       attributes.each_with_object({}) do |name, hash|
-        unless self.class._fragmented
-          hash[name] = send(name)
-        else
+        if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
+        else
+          hash[name] = send(name)
         end
       end
     end
@@ -152,8 +153,6 @@ module ActiveModel
       serializer_file_contents = IO.read(serializer_file_path)
       Digest::MD5.hexdigest(serializer_file_contents)
     end
-
-    attr_reader :options
 
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
