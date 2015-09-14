@@ -11,15 +11,22 @@ module ActiveModel
       autoload :Null
       autoload :FlattenJson
 
-      def self.create(resource, options = {})
-        override = options.delete(:adapter)
-        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
-        klass.new(resource, options)
-      end
+      class << self
+        def create(resource, options = {})
+          override = options.delete(:adapter)
+          klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
+          klass.new(resource, options)
+        end
 
-      # @see ActiveModel::Serializer::Adapter.lookup
-      def self.adapter_class(adapter)
-        ActiveModel::Serializer::Adapter.lookup(adapter)
+        # @see ActiveModel::Serializer::Adapter.lookup
+        def adapter_class(adapter)
+          ActiveModel::Serializer::Adapter.lookup(adapter)
+        end
+
+        # Automatically register adapters when subclassing
+        def inherited(subclass)
+          ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
+        end
       end
 
       # Only the Adapter class has these methods.
@@ -73,11 +80,6 @@ module ActiveModel
             fail UnknownAdapterError
         end
         private :find_by_name
-      end
-
-      # Automatically register adapters when subclassing
-      def self.inherited(subclass)
-        ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
       end
 
       attr_reader :serializer
