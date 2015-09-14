@@ -3,6 +3,22 @@ module ActiveModel
   class SerializableResource
     ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter])
 
+    class << self
+      # Primary interface to building a serializer (with adapter)
+      # If no block is given,
+      # returns the serializable_resource, ready for #as_json/#to_json/#serializable_hash.
+      # Otherwise, yields the serializable_resource and
+      # returns the contents of the block
+      def serialize(resource, options = {})
+        serializable_resource = SerializableResource.new(resource, options)
+        if block_given?
+          yield serializable_resource
+        else
+          serializable_resource
+        end
+      end
+    end
+
     def initialize(resource, options = {})
       @resource = resource
       @adapter_opts, @serializer_opts =
@@ -10,20 +26,6 @@ module ActiveModel
     end
 
     delegate :serializable_hash, :as_json, :to_json, to: :adapter
-
-    # Primary interface to building a serializer (with adapter)
-    # If no block is given,
-    # returns the serializable_resource, ready for #as_json/#to_json/#serializable_hash.
-    # Otherwise, yields the serializable_resource and
-    # returns the contents of the block
-    def self.serialize(resource, options = {})
-      serializable_resource = SerializableResource.new(resource, options)
-      if block_given?
-        yield serializable_resource
-      else
-        serializable_resource
-      end
-    end
 
     def serialization_scope=(scope)
       serializer_opts[:scope] = scope
@@ -70,10 +72,8 @@ module ActiveModel
     end
 
     def serializer?
-      use_adapter? && !!(serializer)
+      use_adapter? && !serializer.nil?
     end
-
-    private
 
     ActiveModelSerializers.silence_warnings do
       attr_reader :resource, :adapter_opts, :serializer_opts
