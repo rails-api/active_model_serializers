@@ -87,8 +87,8 @@ module ActiveModel
         @options = options
       end
 
-      def serializable_hash(options = nil)
-        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
+      def serializable_hash(_options = nil)
+        fail NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
       def as_json(options = nil)
@@ -97,8 +97,8 @@ module ActiveModel
         hash
       end
 
-      def fragment_cache(*args)
-        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
+      def fragment_cache(*_args)
+        fail NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
       private
