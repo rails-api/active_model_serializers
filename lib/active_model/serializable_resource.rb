@@ -1,7 +1,8 @@
 require 'set'
 module ActiveModel
   class SerializableResource
-    ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter])
+    ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter,
+                                   :jsonapi_toplevel_meta])
 
     def initialize(resource, options = {})
       @resource = resource
