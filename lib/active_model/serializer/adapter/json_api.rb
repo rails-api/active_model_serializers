@@ -56,12 +56,6 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           end
         end
 
-        def add_relationships(resource, name, serializers)
-          resource[:relationships] ||= {}
-          resource[:relationships][name] ||= { data: [] }
-          resource[:relationships][name][:data] += serializers.map { |serializer| { type: serializer.json_api_type, id: serializer.id.to_s } }
-        end
-
         def resource_identifier_id_for(serializer)
           if serializer.respond_to?(:id)
             serializer.id
