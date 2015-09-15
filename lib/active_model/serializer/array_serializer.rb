@@ -29,6 +29,12 @@ module ActiveModel
         key = root || @serializers.first.try(:json_key) || object.try(:name).try(:underscore)
         key.try(:pluralize)
       end
+
+      def paginated?
+        object.respond_to?(:current_page) &&
+          object.respond_to?(:total_pages) &&
+          object.respond_to?(:size)
+      end
     end
   end
 end

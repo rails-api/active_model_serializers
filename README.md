@@ -204,12 +204,12 @@ Doesn't follow any specifc convention.
 This adapter follows 1.0 of the format specified in
 [jsonapi.org/format](http://jsonapi.org/format). It will include the associated
 resources in the `"included"` member when the resource names are included in the
-`include` option.
+`include` option. Including nested associated resources is also supported.
 
 ```ruby
-  render @posts, include: ['authors', 'comments']
+  render @posts, include: ['author', 'comments', 'comments.author']
   # or
-  render @posts, include: 'authors,comments'
+  render @posts, include: 'author,comments,comments.author'
 ```
 
 ## Installation
