@@ -14,6 +14,7 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 
 - [How to add root key](howto/add_root_key.md)
 - [How to add pagination links](howto/add_pagination_links.md)
+- [Use AMS Outside A Controller](howto/outside_controller_use.md)
 
 ## Getting Help
 
