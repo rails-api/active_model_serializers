@@ -48,27 +48,61 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         private
 
-        def resource_identifier_type_for(serializer)
-          if ActiveModel::Serializer.config.jsonapi_resource_type == :singular
-            serializer.object.class.model_name.singular
+        def formatted_type(type)
+          type = if ActiveModel::Serializer.config.jsonapi_resource_type == :singular
+                   type.singularize
+                 else
+                   type.pluralize
+                 end
+          type.underscore
+        end
+
+        def resource_identifier_type_for_association(serializer, association)
+          if association.serializer.respond_to?(:type)
+            formatted_type(association.serializer.type)
+          elsif serializer.object.class.respond_to?(:reflections)
+            reflection = serializer.object.class.reflections[association.key.to_s]
+            formatted_type(reflection.class_name)
           else
-            serializer.object.class.model_name.plural
+            resource_identifier_type_for(association.serializer)
           end
         end
 
-        def resource_identifier_id_for(serializer)
-          if serializer.respond_to?(:id)
-            serializer.id
+        def resource_identifier_type_for(serializer, association = nil)
+          if association
+            resource_identifier_type_for_association(serializer, association)
           else
+            if serializer.respond_to?(:type)
+              serializer.type
+            elsif serializer && serializer.object
+              if serializer.object.class.respond_to?(:model_name)
+                formatted_type(serializer.object.class.model_name.singular)
+              else
+                formatted_type(serializer.object.class_name)
+              end
+            end
+          end
+        end
+
+        def resource_identifier_id_for(serializer, association = nil)
+          if association
+            if serializer.respond_to?("#{association.key}_id")
+              serializer.send("#{association.key}_id")
+            else
+              resource_identifier_id_for(association.serializer)
+            end
+          elsif serializer.respond_to?(:id)
+            serializer.id
+          elsif serializer && serializer.object
             serializer.object.id
           end
         end
 
-        def resource_identifier_for(serializer)
-          type = resource_identifier_type_for(serializer)
-          id   = resource_identifier_id_for(serializer)
+        def resource_identifier_for(serializer, association = nil)
+          type = resource_identifier_type_for(serializer, association)
+          id   = resource_identifier_id_for(serializer, association)
 
-          { id: id.to_s, type: type }
+          { id: id.to_s, type: type } unless id.nil?
         end
 
         def resource_object_for(serializer, options = {})
@@ -90,20 +124,22 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           end
         end
 
-        def relationship_value_for(serializer, options = {})
-          if serializer.respond_to?(:each)
-            serializer.map { |s| resource_identifier_for(s) }
+        def relationship_value_for(serializer, association)
+          if association.serializer.respond_to?(:each)
+            association.serializer.map { |s| resource_identifier_for(s) }
           else
-            if options[:virtual_value]
-              options[:virtual_value]
-            elsif serializer && serializer.object
-              resource_identifier_for(serializer)
+            if association.options[:virtual_value]
+              association.options[:virtual_value]
+            elsif serializer.class._reflections.find { |r| r.name == association.key }.is_a? BelongsToReflection
+              resource_identifier_for(serializer, association)
+            elsif association.serializer && association.serializer.object
+              resource_identifier_for(association.serializer)
             end
           end
         end
 
         def relationships_for(serializer)
-          Hash[serializer.associations.map { |association| [association.key, { data: relationship_value_for(association.serializer, association.options) }] }]
+          Hash[serializer.associations.map { |association| [association.key, { data: relationship_value_for(serializer, association) }] }]
         end
 
         def included_for(serializer)
