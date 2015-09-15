@@ -22,21 +22,20 @@ module ActionController
     def get_serializer(resource, options = {})
       if !use_adapter?
         warn 'ActionController::Serialization#use_adapter? has been removed. '\
-          "Please pass 'adapter: false' or see ActiveSupport::SerializableResource#serialize"
+          "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
         options[:adapter] = false
       end
-      ActiveModel::SerializableResource.serialize(resource, options) do |serializable_resource|
-        if serializable_resource.serializer?
-          serializable_resource.serialization_scope ||= serialization_scope
-          serializable_resource.serialization_scope_name = _serialization_scope
-          begin
-            serializable_resource.adapter
-          rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
-            resource
-          end
-        else
+      serializable_resource = ActiveModel::SerializableResource.new(resource, options)
+      if serializable_resource.serializer?
+        serializable_resource.serialization_scope ||= serialization_scope
+        serializable_resource.serialization_scope_name = _serialization_scope
+        begin
+          serializable_resource.adapter
+        rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
           resource
         end
+      else
+        resource
       end
     end
 
