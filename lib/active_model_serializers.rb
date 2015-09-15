@@ -1,8 +1,8 @@
 require 'logger'
 require 'active_model'
-require "active_support/railtie"
+require 'active_support/railtie'
 require 'action_controller'
-require "action_controller/railtie"
+require 'action_controller/railtie'
 module ActiveModelSerializers
   mattr_accessor :logger
   self.logger = Rails.logger || Logger.new(IO::NULL)
