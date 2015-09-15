@@ -11,15 +11,22 @@ module ActiveModel
       autoload :Null
       autoload :FlattenJson
 
-      def self.create(resource, options = {})
-        override = options.delete(:adapter)
-        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
-        klass.new(resource, options)
-      end
+      class << self
+        def create(resource, options = {})
+          override = options.delete(:adapter)
+          klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
+          klass.new(resource, options)
+        end
 
-      # @see ActiveModel::Serializer::Adapter.lookup
-      def self.adapter_class(adapter)
-        ActiveModel::Serializer::Adapter.lookup(adapter)
+        # @see ActiveModel::Serializer::Adapter.lookup
+        def adapter_class(adapter)
+          ActiveModel::Serializer::Adapter.lookup(adapter)
+        end
+
+        # Automatically register adapters when subclassing
+        def inherited(subclass)
+          ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
+        end
       end
 
       # Only the Adapter class has these methods.
@@ -75,11 +82,6 @@ module ActiveModel
         private :find_by_name
       end
 
-      # Automatically register adapters when subclassing
-      def self.inherited(subclass)
-        ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
-      end
-
       attr_reader :serializer
 
       def initialize(serializer, options = {})
@@ -87,8 +89,8 @@ module ActiveModel
         @options = options
       end
 
-      def serializable_hash(options = nil)
-        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
+      def serializable_hash(_options = nil)
+        fail NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
       def as_json(options = nil)
@@ -97,8 +99,8 @@ module ActiveModel
         hash
       end
 
-      def fragment_cache(*args)
-        raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
+      def fragment_cache(*_args)
+        fail NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
       private
@@ -106,22 +108,22 @@ module ActiveModel
       def cache_check(serializer)
         @cached_serializer = serializer
         @klass             = @cached_serializer.class
-        if is_cached?
+        if cached?
           @klass._cache.fetch(cache_key, @klass._cache_options) do
             yield
           end
-        elsif is_fragment_cached?
+        elsif fragment_cached?
           FragmentCache.new(self, @cached_serializer, @options).fetch
         else
           yield
         end
       end
 
-      def is_cached?
+      def cached?
         @klass._cache && !@klass._cache_only && !@klass._cache_except
       end
 
-      def is_fragment_cached?
+      def fragment_cached?
         @klass._cache_only && !@klass._cache_except || !@klass._cache_only && @klass._cache_except
       end
 
