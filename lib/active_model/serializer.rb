@@ -115,8 +115,7 @@ module ActiveModel
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
-        serializer_path = nested_lookup_paths.find { |path| path.const_defined?(serializer_class_name, false) }
-        serializer_class = serializer_path.const_get(serializer_class_name) if serializer_path
+        serializer_class = Utils.nested_lookup(nested_lookup_paths, serializer_class_name)
 
         if serializer_class
           serializer_class

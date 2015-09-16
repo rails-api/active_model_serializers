@@ -42,4 +42,9 @@ module ActiveModel::Serializer::Utils
 
     paths
   end
+
+  def nested_lookup(paths, class_name)
+    class_path = paths.find { |path| path.const_defined?(class_name, false) }
+    class_path.const_get(class_name) if class_path
+  end
 end
