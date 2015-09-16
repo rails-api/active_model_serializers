@@ -97,6 +97,10 @@ module ActiveModel
         hash
       end
 
+      def to_xml(options = nil)
+        as_json(options).to_xml
+      end
+
       def fragment_cache(*args)
         raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
