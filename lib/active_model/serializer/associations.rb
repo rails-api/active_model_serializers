@@ -93,7 +93,7 @@ module ActiveModel
         Enumerator.new do |y|
           self.class._reflections.each do |reflection|
             next unless include_tree.key?(reflection.name)
-            y.yield reflection.build_association(self, instance_options)
+            y.yield reflection.build_association(self, instance_options.merge(_parent: self.class))
           end
         end
       end
