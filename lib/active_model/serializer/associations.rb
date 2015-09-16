@@ -10,6 +10,8 @@ module ActiveModel
     module Associations
       extend ActiveSupport::Concern
 
+      DEFAULT_INCLUDE_TREE = ActiveModel::Serializer::IncludeTree.from_string('*')
+
       included do |base|
         class << base
           attr_accessor :_reflections
@@ -82,13 +84,15 @@ module ActiveModel
         end
       end
 
+      # @param [IncludeTree] include_tree (defaults to all associations when not provided)
       # @return [Enumerator<Association>]
       #
-      def associations
+      def associations(include_tree = DEFAULT_INCLUDE_TREE)
         return unless object
 
         Enumerator.new do |y|
           self.class._reflections.each do |reflection|
+            next unless include_tree.key?(reflection.name)
             y.yield reflection.build_association(self, instance_options)
           end
         end
