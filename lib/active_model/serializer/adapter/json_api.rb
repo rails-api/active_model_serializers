@@ -124,9 +124,9 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def included_for(serializer)
-          included.flat_map { |inc|
-            association = serializer.associations.find { |assoc| assoc.key == inc.first }
-            _included_for(association.serializer, inc.second) if association
+          included_associations = serializer.expand_includes(@included)
+          included_associations.flat_map { |association, assoc_includes|
+            _included_for(association.serializer, assoc_includes)
           }.uniq
         end
 
@@ -142,12 +142,10 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
             included = [primary_data]
 
-            includes.each do |inc|
-              association = serializer.associations.find { |assoc| assoc.key == inc.first }
-              if association
-                included.concat(_included_for(association.serializer, inc.second))
-                included.uniq!
-              end
+            included_associations = serializer.expand_includes(includes)
+            included_associations.each do |association, assoc_includes|
+              included.concat(_included_for(association.serializer, assoc_includes))
+              included.uniq!
             end
 
             included
