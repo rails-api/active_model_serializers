@@ -265,6 +265,10 @@ class TweetSerializer < ActiveModel::Serializer
   attributes :id, :body, :date
 
   belongs_to :author
+  class AuthorSerializer < ActiveModel::Serializer
+    attributes :id
+  end
+
   has_many :shares
   class ShareSerializer < ActiveModel::Serializer
     attributes :id, :platform
