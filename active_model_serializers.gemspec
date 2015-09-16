@@ -42,9 +42,9 @@ Gem::Specification.new do |spec|
     # 'thread_safe'
 
   # Soft dependency for pagination
-  spec.add_development_dependency 'kaminari'
-  spec.add_development_dependency 'will_paginate'
+  spec.add_development_dependency 'kaminari', ' ~> 0.16.3'
+  spec.add_development_dependency 'will_paginate', '~> 3.0', '>= 3.0.7'
 
   spec.add_development_dependency 'bundler', '~> 1.6'
-  spec.add_development_dependency 'timecop', '>= 0.7'
+  spec.add_development_dependency 'timecop', '~> 0.7'
 end
