@@ -165,5 +165,25 @@ module ActiveModel
     ActiveModelSerializers.silence_warnings do
       attr_accessor :instance_options
     end
+
+    # Transforms an inclusion hash into an array of corresponding existing associations,
+    # and corresponding inclusion hashes.
+    # @param [Hash] includes
+    # @return [Array] an array of pairs [association, include_hash] for matching associations
+    def expand_includes(includes)
+      if includes.size == 1 && includes.each_key.first == :*
+        associations.map { |assoc| [assoc, includes.each_value.first] }
+      elsif includes.size == 1 && includes.each_key.first == :**
+        associations.map { |assoc| [assoc, { :** => nil }] }
+      else
+        expanded_associations = includes.map do |inc|
+          association = associations.find { |assoc| assoc.key == inc.first }
+          [association, inc.second] if association
+        end
+        expanded_associations.delete(nil)
+
+        expanded_associations
+      end
+    end
   end
 end
