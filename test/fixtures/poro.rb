@@ -79,6 +79,8 @@ Location = Class.new(Model)
 Place    = Class.new(Model)
 Tag      = Class.new(Model)
 VirtualValue = Class.new(Model)
+Tweet    = Class.new(Model)
+Share    = Class.new(Model)
 Comment = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
@@ -258,4 +260,30 @@ Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:id]
   attributes :id
 end
+
+class TweetSerializer < ActiveModel::Serializer
+  attributes :id, :body, :date
+
+  belongs_to :author
+  has_many :shares
+  class ShareSerializer < ActiveModel::Serializer
+    attributes :id, :platform
+
+    belongs_to :author
+    class AuthorSerializer < ActiveModel::Serializer
+      attributes :id, :name
+    end
+  end
+end
+
+class ShareSerializer < ActiveModel::Serializer
+  attributes :id, :platform, :date
+
+  belongs_to :author
+  class AuthorSerializer < ActiveModel::Serializer
+    attributes :id, :name, :email
+  end
+  belongs_to :post
+end
+
 $VERBOSE = verbose
