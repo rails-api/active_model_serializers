@@ -5,6 +5,7 @@ module ActionController
     class ImplicitSerializerTest < ActionController::TestCase
       include ActiveSupport::Testing::Stream
       class ImplicitSerializationTestController < ActionController::Base
+        include SerializationTesting
         def render_using_implicit_serializer
           @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile
@@ -122,21 +123,6 @@ module ActionController
           like.time = Time.zone.now.to_s
 
           render json: like
-        end
-
-        private
-
-        def generate_cached_serializer(obj)
-          ActiveModel::SerializableResource.new(obj).to_json
-        end
-
-        def with_adapter(adapter)
-          old_adapter = ActiveModel::Serializer.config.adapter
-          # JSON-API adapter sets root by default
-          ActiveModel::Serializer.config.adapter = adapter
-          yield
-        ensure
-          ActiveModel::Serializer.config.adapter = old_adapter
         end
       end
 
