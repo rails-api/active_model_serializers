@@ -16,6 +16,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         def serializable_hash(options = nil)
           options ||= {}
+
           if serializer.respond_to?(:each)
             serializable_hash_for_collection(serializer, options)
           else
@@ -120,7 +121,17 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def relationships_for(serializer)
-          Hash[serializer.associations.map { |association| [association.key, { data: relationship_value_for(association.serializer, association.options) }] }]
+          Hash[
+            serializer.associations.map do |association|
+              [
+                association.key,
+                {
+                  data: relationship_value_for(association.serializer,
+                                               association.options)
+                }
+              ]
+            end
+          ]
         end
 
         def included_for(serializer)
