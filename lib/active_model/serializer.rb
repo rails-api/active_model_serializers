@@ -1,3 +1,4 @@
+require 'active_support/core_ext/class/attribute'
 require 'thread_safe'
 
 module ActiveModel
@@ -29,6 +30,8 @@ module ActiveModel
       )
     /x
 
+    cattr_accessor :serializers_cache
+    self.serializers_cache ||= ThreadSafe::Cache.new
     class << self
       attr_accessor :_attributes
       attr_accessor :_attributes_keys
@@ -102,10 +105,6 @@ module ActiveModel
 
     def self.root_name
       name.demodulize.underscore.sub(/_serializer$/, '') if name
-    end
-
-    def self.serializers_cache
-      @serializers_cache ||= ThreadSafe::Cache.new
     end
 
     def self.digest_caller_file(caller_line)
