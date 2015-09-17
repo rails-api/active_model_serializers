@@ -15,13 +15,13 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
 
             serializer.associations.each do |association|
               serializer = association.serializer
-              opts = association.options
+              association_options = association.options
 
               if serializer.respond_to?(:each)
                 array_serializer = serializer
                 hash[association.key] = array_serializer.map do |item|
                   cache_check(item) do
-                    item.attributes(opts)
+                    item.attributes(association_options)
                   end
                 end
               else
@@ -30,8 +30,8 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
                     cache_check(serializer) do
                       serializer.attributes(options)
                     end
-                  elsif opts[:virtual_value]
-                    opts[:virtual_value]
+                  elsif association_options[:virtual_value]
+                    association_options[:virtual_value]
                   end
               end
             end

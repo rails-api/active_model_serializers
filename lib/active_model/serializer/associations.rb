@@ -88,7 +88,7 @@ module ActiveModel
 
         Enumerator.new do |y|
           self.class._reflections.each do |reflection|
-            y.yield reflection.build_association(self, options)
+            y.yield reflection.build_association(self, instance_options)
           end
         end
       end

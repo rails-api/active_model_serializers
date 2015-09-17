@@ -2,7 +2,7 @@ class ActiveModel::Serializer::Adapter::FragmentCache
         attr_reader :serializer
 
         def initialize(adapter, serializer, options)
-          @options    = options
+          @instance_options = options
           @adapter    = adapter
           @serializer = serializer
         end
@@ -16,18 +16,22 @@ class ActiveModel::Serializer::Adapter::FragmentCache
           cached_serializer     = serializers[:cached].constantize.new(serializer.object)
           non_cached_serializer = serializers[:non_cached].constantize.new(serializer.object)
 
-          cached_adapter     = @adapter.class.new(cached_serializer, @options)
-          non_cached_adapter = @adapter.class.new(non_cached_serializer, @options)
+          cached_adapter     = adapter.class.new(cached_serializer, instance_options)
+          non_cached_adapter = adapter.class.new(non_cached_serializer, instance_options)
 
           # Get serializable hash from both
           cached_hash     = cached_adapter.serializable_hash
           non_cached_hash = non_cached_adapter.serializable_hash
 
           # Merge both results
-          @adapter.fragment_cache(cached_hash, non_cached_hash)
+          adapter.fragment_cache(cached_hash, non_cached_hash)
         end
 
         private
+
+        ActiveModelSerializers.silence_warnings do
+          attr_reader :instance_options, :adapter
+        end
 
         def cached_attributes(klass, serializers)
           attributes            = serializer.class._attributes

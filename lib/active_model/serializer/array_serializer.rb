@@ -26,7 +26,7 @@ module ActiveModel
       end
 
       def json_key
-        key = root || @serializers.first.try(:json_key) || object.try(:name).try(:underscore)
+        key = root || serializers.first.try(:json_key) || object.try(:name).try(:underscore)
         key.try(:pluralize)
       end
 
@@ -34,6 +34,12 @@ module ActiveModel
         object.respond_to?(:current_page) &&
           object.respond_to?(:total_pages) &&
           object.respond_to?(:size)
+      end
+
+      private # rubocop:disable Lint/UselessAccessModifier
+
+      ActiveModelSerializers.silence_warnings do
+        attr_reader :serializers
       end
     end
   end
