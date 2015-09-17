@@ -62,9 +62,23 @@ module ActionController
 
           render json: place, each_serializer: PlaceSerializer
         end
+
+        def render_empty_array
+          render json: [], each_serializer: PlaceSerializer, adapter: :json
+        end
       end
 
       tests ExplicitSerializerTestController
+
+      def test_render_empty_array
+        get :render_empty_array
+        response = JSON.parse(@response.body)
+        expected = {
+          'places' => []
+        }
+
+        assert_equal expected, response
+      end
 
       def test_render_using_explicit_serializer
         get :render_using_explicit_serializer
