@@ -1,16 +1,14 @@
 require 'thread_safe'
-require 'active_model/serializer/configuration'
+require 'active_model/serializer/adapter'
+require 'active_model/serializer/array_serializer'
 require 'active_model/serializer/associations'
+require 'active_model/serializer/configuration'
+require 'active_model/serializer/fieldset'
+require 'active_model/serializer/lint'
+require 'active_model/serializer/utils'
 
 module ActiveModel
   class Serializer
-    extend ActiveSupport::Autoload
-
-    autoload :ArraySerializer
-    autoload :Adapter
-    autoload :Lint
-    autoload :Fieldset
-    autoload :Utils
     include Configuration
     include Associations
 
