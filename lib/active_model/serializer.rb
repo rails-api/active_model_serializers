@@ -122,8 +122,12 @@ module ActiveModel
       end
     end
 
+    def object_model_name
+      object.class.model_name
+    end
+
     def json_key
-      @root || object.class.model_name.to_s.underscore
+      @root || object_model_name.to_s.underscore
     end
 
     def attributes(options = {})
