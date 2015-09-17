@@ -60,7 +60,7 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 
   def arguments_passed_in?
-    options[:my_options] == :accessible
+    instance_options[:my_options] == :accessible
   end
 end
 
@@ -102,7 +102,7 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   end
 
   def custom_options
-    options
+    instance_options
   end
 end
 
@@ -123,7 +123,7 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
   belongs_to :author
 
   def custom_options
-    options
+    instance_options
   end
 end
 

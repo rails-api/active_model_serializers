@@ -5,7 +5,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         def initialize(serializer, options = {})
           super
-          @included = ActiveModel::Serializer::Utils.include_args_to_hash(@options[:include])
+          @included = ActiveModel::Serializer::Utils.include_args_to_hash(instance_options[:include])
           fields = options.delete(:fields)
           if fields
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
@@ -24,16 +24,20 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
-          root = false if @options.include?(:include)
+          root = false if instance_options.include?(:include)
           ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
         private
 
+        ActiveModel.silence_warnings do
+          attr_reader :included, :fieldset
+        end
+
         def serializable_hash_for_collection(serializer, options)
           hash = { data: [] }
           serializer.each do |s|
-            result = self.class.new(s, @options.merge(fieldset: @fieldset)).serializable_hash(options)
+            result = self.class.new(s, instance_options.merge(fieldset: fieldset)).serializable_hash(options)
             hash[:data] << result[:data]
 
             if result[:included]
@@ -85,7 +89,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def resource_object_for(serializer, options = {})
-          options[:fields] = @fieldset && @fieldset.fields_for(serializer)
+          options[:fields] = fieldset && fieldset.fields_for(serializer)
 
           cache_check(serializer) do
             result = resource_identifier_for(serializer)
@@ -120,12 +124,10 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def included_for(serializer)
-          included = @included.flat_map do |inc|
+          included.flat_map { |inc|
             association = serializer.associations.find { |assoc| assoc.key == inc.first }
             _included_for(association.serializer, inc.second) if association
-          end
-
-          included.uniq
+          }.uniq
         end
 
         def _included_for(serializer, includes)
@@ -134,7 +136,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           else
             return [] unless serializer && serializer.object
 
-            primary_data = primary_data_for(serializer, @options)
+            primary_data = primary_data_for(serializer, instance_options)
             relationships = relationships_for(serializer)
             primary_data[:relationships] = relationships if relationships.any?
 

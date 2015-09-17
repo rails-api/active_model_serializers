@@ -10,6 +10,7 @@ module ActiveModel
       autoload :JsonApi
       autoload :Null
       autoload :FlattenJson
+      autoload :CachedSerializer
 
       def self.create(resource, options = {})
         override = options.delete(:adapter)
@@ -80,11 +81,11 @@ module ActiveModel
         ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
       end
 
-      attr_reader :serializer
+      attr_reader :serializer, :instance_options
 
       def initialize(serializer, options = {})
         @serializer = serializer
-        @options = options
+        @instance_options = options
       end
 
       def serializable_hash(options = nil)
@@ -101,41 +102,10 @@ module ActiveModel
         raise NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
 
-      private
-
       def cache_check(serializer)
-        @cached_serializer = serializer
-        @klass             = @cached_serializer.class
-        if is_cached?
-          @klass._cache.fetch(cache_key, @klass._cache_options) do
-            yield
-          end
-        elsif is_fragment_cached?
-          FragmentCache.new(self, @cached_serializer, @options).fetch
-        else
+        CachedSerializer.new(serializer).cache_check(self) do
           yield
         end
-      end
-
-      def is_cached?
-        @klass._cache && !@klass._cache_only && !@klass._cache_except
-      end
-
-      def is_fragment_cached?
-        @klass._cache_only && !@klass._cache_except || !@klass._cache_only && @klass._cache_except
-      end
-
-      def cache_key
-        parts = []
-        parts << object_cache_key
-        parts << @klass._cache_digest unless @klass._cache_options && @klass._cache_options[:skip_digest]
-        parts.join('/')
-      end
-
-      def object_cache_key
-        object_time_safe = @cached_serializer.object.updated_at
-        object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
-        (@klass._cache_key) ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}" : @cached_serializer.object.cache_key
       end
 
       def meta

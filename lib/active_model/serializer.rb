@@ -42,16 +42,16 @@ module ActiveModel
     end
 
     def self.inherited(base)
-      base._attributes = self._attributes.try(:dup) || []
-      base._attributes_keys = self._attributes_keys.try(:dup) || {}
+      base._attributes = _attributes.try(:dup) || []
+      base._attributes_keys = _attributes_keys.try(:dup) || {}
       base._cache_digest = digest_caller_file(caller.first)
       super
     end
 
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
-      @_attributes.concat attrs
-      @_attributes.uniq!
+      _attributes.concat(attrs)
+      _attributes.uniq!
 
       attrs.each do |attr|
         define_method attr do
@@ -62,8 +62,8 @@ module ActiveModel
 
     def self.attribute(attr, options = {})
       key = options.fetch(:key, attr)
-      @_attributes_keys[attr] = { key: key } if key != attr
-      @_attributes << key unless @_attributes.include?(key)
+      self._attributes_keys[attr] = { key: key } if key != attr
+      self._attributes << key unless _attributes.include?(key)
 
       ActiveModelSerializers.silence_warnings do
         define_method key do
@@ -73,16 +73,16 @@ module ActiveModel
     end
 
     def self.fragmented(serializer)
-      @_fragmented = serializer
+      self._fragmented = serializer
     end
 
     # Enables a serializer to be automatically cached
     def self.cache(options = {})
-      @_cache = ActionController::Base.cache_store if Rails.configuration.action_controller.perform_caching
-      @_cache_key = options.delete(:key)
-      @_cache_only = options.delete(:only)
-      @_cache_except = options.delete(:except)
-      @_cache_options = (options.empty?) ? nil : options
+      self._cache = ActionController::Base.cache_store if Rails.configuration.action_controller.perform_caching
+      self._cache_key = options.delete(:key)
+      self._cache_only = options.delete(:only)
+      self._cache_except = options.delete(:except)
+      self._cache_options = (options.empty?) ? nil : options
     end
 
     def self.serializer_for(resource, options = {})
@@ -91,7 +91,7 @@ module ActiveModel
       elsif resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        options.fetch(:serializer, get_serializer_for(resource.class))
+        options.fetch(:serializer) { get_serializer_for(resource.class) }
       end
     end
 
@@ -104,17 +104,40 @@ module ActiveModel
       name.demodulize.underscore.sub(/_serializer$/, '') if name
     end
 
+    def self.serializers_cache
+      @serializers_cache ||= ThreadSafe::Cache.new
+    end
+
+    def self.digest_caller_file(caller_line)
+      serializer_file_path = caller_line[CALLER_FILE]
+      serializer_file_contents = IO.read(serializer_file_path)
+      Digest::MD5.hexdigest(serializer_file_contents)
+    end
+
+    def self.get_serializer_for(klass)
+      serializers_cache.fetch_or_store(klass) do
+        serializer_class_name = "#{klass.name}Serializer"
+        serializer_class = serializer_class_name.safe_constantize
+
+        if serializer_class
+          serializer_class
+        elsif klass.superclass
+          get_serializer_for(klass.superclass)
+        end
+      end
+    end
+
     attr_accessor :object, :root, :meta, :meta_key, :scope
 
     def initialize(object, options = {})
-      @object = object
-      @options = options
-      @root = options[:root]
-      @meta = options[:meta]
-      @meta_key = options[:meta_key]
-      @scope = options[:scope]
+      self.object = object
+      self.instance_options = options
+      self.root = instance_options[:root]
+      self.meta = instance_options[:meta]
+      self.meta_key = instance_options[:meta_key]
+      self.scope = instance_options[:scope]
 
-      scope_name = options[:scope_name]
+      scope_name = instance_options[:scope_name]
       if scope_name && !respond_to?(scope_name)
         self.class.class_eval do
           define_method scope_name, lambda { scope }
@@ -123,7 +146,7 @@ module ActiveModel
     end
 
     def json_key
-      @root || object.class.model_name.to_s.underscore
+      root || object.class.model_name.to_s.underscore
     end
 
     def attributes(options = {})
@@ -143,29 +166,10 @@ module ActiveModel
       end
     end
 
-    def self.serializers_cache
-      @serializers_cache ||= ThreadSafe::Cache.new
-    end
+    private # rubocop:disable Lint/UselessAccessModifier
 
-    def self.digest_caller_file(caller_line)
-      serializer_file_path = caller_line[CALLER_FILE]
-      serializer_file_contents = IO.read(serializer_file_path)
-      Digest::MD5.hexdigest(serializer_file_contents)
-    end
-
-    attr_reader :options
-
-    def self.get_serializer_for(klass)
-      serializers_cache.fetch_or_store(klass) do
-        serializer_class_name = "#{klass.name}Serializer"
-        serializer_class = serializer_class_name.safe_constantize
-
-        if serializer_class
-          serializer_class
-        elsif klass.superclass
-          get_serializer_for(klass.superclass)
-        end
-      end
+    ActiveModelSerializers.silence_warnings do
+      attr_accessor :instance_options
     end
   end
 end
