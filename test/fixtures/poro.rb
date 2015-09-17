@@ -68,6 +68,10 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
 end
 
+class ProfileWithOptionsSerializer < ActiveModel::Serializer
+  attributes :name, :description, :options
+end
+
 Post     = Class.new(Model)
 Like     = Class.new(Model)
 Author   = Class.new(Model)
