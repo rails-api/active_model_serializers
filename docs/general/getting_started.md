@@ -16,7 +16,7 @@ And then execute:
 $ bundle
 ```
 
-## Creating a Serializer
+## Creating a Serialization
 
 The easiest way to create a new serializer is to generate a new resource, which
 will generate a serializer at the same time:
@@ -37,7 +37,7 @@ The generated seralizer will contain basic `attributes` and
 `has_many`/`has_one`/`belongs_to` declarations, based on the model. For example:
 
 ```ruby
-class PostSerializer < ActiveModel::Serializer
+class PostSerialization < ActiveModel::Serializer
   attributes :title, :body
 
   has_many :comments
@@ -49,7 +49,7 @@ end
 and
 
 ```ruby
-class CommentSerializer < ActiveModel::Serializer
+class CommentSerialization < ActiveModel::Serializer
   attributes :name, :body
 
   belongs_to :post_id

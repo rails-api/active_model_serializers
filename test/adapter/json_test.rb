@@ -17,7 +17,7 @@ module ActiveModel
           @blog = Blog.new(id: 1, name: 'My Blog!!')
           @post.blog = @blog
 
-          @serializer = PostSerializer.new(@post)
+          @serializer = PostSerialization.new(@post)
           @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
         end
 
@@ -29,7 +29,7 @@ module ActiveModel
         end
 
         def test_custom_keys
-          serializer = PostWithCustomKeysSerializer.new(@post)
+          serializer = PostWithCustomKeysSerialization.new(@post)
           adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
           assert_equal({

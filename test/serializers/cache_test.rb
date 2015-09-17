@@ -25,13 +25,13 @@ module ActiveModel
         @post.blog      = @blog
         @location.place = @place
 
-        @location_serializer = LocationSerializer.new(@location)
-        @bio_serializer      = BioSerializer.new(@bio)
-        @role_serializer     = RoleSerializer.new(@role)
-        @post_serializer     = PostSerializer.new(@post)
-        @author_serializer   = AuthorSerializer.new(@author)
-        @comment_serializer  = CommentSerializer.new(@comment)
-        @blog_serializer     = BlogSerializer.new(@blog)
+        @location_serializer = LocationSerialization.new(@location)
+        @bio_serializer      = BioSerialization.new(@bio)
+        @role_serializer     = RoleSerialization.new(@role)
+        @post_serializer     = PostSerialization.new(@post)
+        @author_serializer   = AuthorSerialization.new(@author)
+        @comment_serializer  = CommentSerialization.new(@comment)
+        @blog_serializer     = BlogSerialization.new(@blog)
       end
 
       def test_cache_definition
@@ -95,7 +95,7 @@ module ActiveModel
 
           # Simulating update on comments relationship with Post
           new_comment            = Comment.new(id: 2, body: 'ZOMG A NEW COMMENT')
-          new_comment_serializer = CommentSerializer.new(new_comment)
+          new_comment_serializer = CommentSerialization.new(new_comment)
           @post.comments         = [new_comment]
 
           # Ask for the serialized object

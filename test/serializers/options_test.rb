@@ -8,12 +8,12 @@ module ActiveModel
       end
 
       def test_options_are_accessible
-        @profile_serializer = ProfileSerializer.new(@profile, my_options: :accessible)
+        @profile_serializer = ProfileSerialization.new(@profile, my_options: :accessible)
         assert @profile_serializer.arguments_passed_in?
       end
 
       def test_no_option_is_passed_in
-        @profile_serializer = ProfileSerializer.new(@profile)
+        @profile_serializer = ProfileSerialization.new(@profile)
         refute @profile_serializer.arguments_passed_in?
       end
     end

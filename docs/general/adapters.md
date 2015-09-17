@@ -1,7 +1,7 @@
 # Adapters
 
 AMS does this through two components: **serializers** and **adapters**.
-Serializers describe _which_ attributes and relationships should be serialized.
+Serializations describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 You can use one of the built-in adapters (```FlattenJSON``` is the default one) or create one by yourself, but you won't need to implement an adapter unless you wish to use a new format or media type with AMS.
 

@@ -10,7 +10,7 @@ class ResourceGeneratorTest < Rails::Generators::TestCase
   def test_serializer_file_is_generated
     run_generator
 
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ActiveModel::Serializer/
+    assert_file 'app/serializers/account_serializer.rb', /class AccountSerialization < ActiveModel::Serializer/
   end
 
   private

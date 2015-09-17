@@ -35,20 +35,20 @@ module ARModels
     has_many :posts
   end
 
-  class PostSerializer < ActiveModel::Serializer
+  class PostSerialization < ActiveModel::Serializer
     attributes :id, :title, :body
 
     has_many :comments
     belongs_to :author
   end
 
-  class CommentSerializer < ActiveModel::Serializer
+  class CommentSerialization < ActiveModel::Serializer
     attributes :id, :contents
 
     belongs_to :author
   end
 
-  class AuthorSerializer < ActiveModel::Serializer
+  class AuthorSerialization < ActiveModel::Serializer
     attributes :id, :name
 
     has_many :posts

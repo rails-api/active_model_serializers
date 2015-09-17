@@ -8,10 +8,10 @@ module ActiveModel
           @author          = Author.new(name: 'Joao M. D. Moura')
           @role            = Role.new(name: 'Great Author', description: nil)
           @role.author     = [@author]
-          @role_serializer = RoleSerializer.new(@role)
-          @spam_serializer = Spam::UnrelatedLinkSerializer.new(@spam)
-          @role_hash       = FragmentCache.new(RoleSerializer.adapter.new(@role_serializer), @role_serializer, {})
-          @spam_hash       = FragmentCache.new(Spam::UnrelatedLinkSerializer.adapter.new(@spam_serializer), @spam_serializer, {})
+          @role_serializer = RoleSerialization.new(@role)
+          @spam_serializer = Spam::UnrelatedLinkSerialization.new(@spam)
+          @role_hash       = FragmentCache.new(RoleSerialization.adapter.new(@role_serializer), @role_serializer, {})
+          @spam_hash       = FragmentCache.new(Spam::UnrelatedLinkSerialization.adapter.new(@spam_serializer), @spam_serializer, {})
         end
 
         def test_fragment_fetch_with_virtual_attributes

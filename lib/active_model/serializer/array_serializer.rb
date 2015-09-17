@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
     class ArraySerializer
-      NoSerializerError = Class.new(StandardError)
+      NoSerializationError = Class.new(StandardError)
       include Enumerable
       delegate :each, to: :@serializers
 
@@ -16,7 +16,7 @@ module ActiveModel
           }
 
           if serializer_class.nil?
-            fail NoSerializerError, "No serializer found for resource: #{resource.inspect}"
+            fail NoSerializationError, "No serialization found for resource: #{resource.inspect}"
           else
             serializer_class.new(resource, options.except(:serializer))
           end

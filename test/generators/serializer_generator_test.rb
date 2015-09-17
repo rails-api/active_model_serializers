@@ -5,33 +5,33 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   destination File.expand_path('../../../tmp/generators', __FILE__)
   setup :prepare_destination
 
-  tests Rails::Generators::SerializerGenerator
+  tests Rails::Generators::SerializationGenerator
   arguments %w(account name:string description:text business:references)
 
   def test_generates_a_serializer
     run_generator
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ActiveModel::Serializer/
+    assert_file 'app/serializers/account_serializer.rb', /class AccountSerialization < ActiveModel::Serializer/
   end
 
   def test_generates_a_namespaced_serializer
     run_generator ['admin/account']
-    assert_file 'app/serializers/admin/account_serializer.rb', /class Admin::AccountSerializer < ActiveModel::Serializer/
+    assert_file 'app/serializers/admin/account_serializer.rb', /class Admin::AccountSerialization < ActiveModel::Serializer/
   end
 
   def test_uses_application_serializer_if_one_exists
-    Object.const_set(:ApplicationSerializer, Class.new)
+    Object.const_set(:ApplicationSerialization, Class.new)
     run_generator
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
+    assert_file 'app/serializers/account_serializer.rb', /class AccountSerialization < ApplicationSerialization/
   ensure
-    Object.send :remove_const, :ApplicationSerializer
+    Object.send :remove_const, :ApplicationSerialization
   end
 
   def test_uses_given_parent
-    Object.const_set(:ApplicationSerializer, Class.new)
-    run_generator ['Account', '--parent=MySerializer']
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < MySerializer/
+    Object.const_set(:ApplicationSerialization, Class.new)
+    run_generator ['Account', '--parent=MySerialization']
+    assert_file 'app/serializers/account_serializer.rb', /class AccountSerialization < MySerialization/
   ensure
-    Object.send :remove_const, :ApplicationSerializer
+    Object.send :remove_const, :ApplicationSerialization
   end
 
   def test_generates_attributes_and_associations
