@@ -1,4 +1,6 @@
 require 'thread_safe'
+require_relative 'serializer/configuration'
+require_relative 'serializer/associations'
 
 module ActiveModel
   class Serializer
