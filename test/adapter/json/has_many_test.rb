@@ -9,8 +9,8 @@ module ActiveModel
             ActionController::Base.cache_store.clear
             @author = Author.new(id: 1, name: 'Steve K.')
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
-            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
-            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
+            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text')
             @post.comments = [@first_comment, @second_comment]
             @post.author = @author
             @first_comment.post = @post
@@ -25,8 +25,8 @@ module ActiveModel
             serializer = PostSerializer.new(@post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
             assert_equal([
-                           { id: 1, body: 'ZOMG A COMMENT' },
-                           { id: 2, body: 'ZOMG ANOTHER COMMENT' }
+                           { id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown' },
+                           { id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text' }
                          ], adapter.serializable_hash[:post][:comments])
           end
 

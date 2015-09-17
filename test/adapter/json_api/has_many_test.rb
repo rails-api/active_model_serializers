@@ -12,9 +12,9 @@ module ActiveModel
             @author.bio = nil
             @post = Post.new(id: 1, title: 'New Post', body: 'Body')
             @post_without_comments = Post.new(id: 2, title: 'Second Post', body: 'Second')
-            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
             @first_comment.author = nil
-            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text')
             @second_comment.author = nil
             @post.comments = [@first_comment, @second_comment]
             @post_without_comments.comments = []
@@ -47,7 +47,8 @@ module ActiveModel
               id: '1',
               type: 'comments',
               attributes: {
-                body: 'ZOMG A COMMENT'
+                body: 'ZOMG A COMMENT',
+                'original_format': 'markdown'
               },
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
@@ -57,7 +58,8 @@ module ActiveModel
               id: '2',
               type: 'comments',
               attributes: {
-                body: 'ZOMG ANOTHER COMMENT'
+                body: 'ZOMG ANOTHER COMMENT',
+                'original_format': 'text'
               },
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },

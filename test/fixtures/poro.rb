@@ -117,7 +117,7 @@ end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
   cache expires_in: 1.day, skip_digest: true
-  attributes :id, :body
+  attributes :id, :body, :original_format
 
   belongs_to :post
   belongs_to :author
