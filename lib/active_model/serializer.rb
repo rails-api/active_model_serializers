@@ -6,11 +6,9 @@ module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
 
-    autoload :Configuration
     autoload :ArraySerializer
     autoload :Adapter
     autoload :Lint
-    autoload :Associations
     autoload :Fieldset
     autoload :Utils
     include Configuration
