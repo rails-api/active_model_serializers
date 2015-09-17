@@ -38,12 +38,16 @@ module ActiveModel
 
         # Adds an adapter 'klass' with 'name' to the 'adapter_map'
         # Names are stringified and underscored
-        # @param [Symbol, String] name of the registered adapter
-        # @param [Class] klass - adapter class itself
+        # @param name [Symbol, String, Class] name of the registered adapter
+        # @param klass [Class] adapter class itself, optional if name is the class
         # @example
         #     AMS::Adapter.register(:my_adapter, MyAdapter)
-        def register(name, klass)
-          adapter_map.update(name.to_s.underscore => klass)
+        # @note The registered name strips out 'ActiveModel::Serializer::Adapter::'
+        #   so that registering 'ActiveModel::Serializer::Adapter::Json' and
+        #   'Json' will both register as 'json'.
+        def register(name, klass = name)
+          name = name.to_s.gsub(/\AActiveModel::Serializer::Adapter::/, ''.freeze)
+          adapter_map.update(name.underscore => klass)
           self
         end
 
@@ -78,7 +82,7 @@ module ActiveModel
 
       # Automatically register adapters when subclassing
       def self.inherited(subclass)
-        ActiveModel::Serializer::Adapter.register(subclass.to_s.demodulize, subclass)
+        ActiveModel::Serializer::Adapter.register(subclass)
       end
 
       attr_reader :serializer, :instance_options
