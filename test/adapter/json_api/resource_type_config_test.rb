@@ -27,17 +27,17 @@ module ActiveModel
             @author.posts = []
           end
 
-          def with_jsonapi_resource_type type
-            old_type = ActiveModel::Serializer.config.jsonapi_resource_type
-            ActiveModel::Serializer.config.jsonapi_resource_type = type
+          def with_jsonapi_type_formatter formatter
+            old_formatter = ActiveModel::Serializer.config.jsonapi_type_formatter
+            ActiveModel::Serializer.config.jsonapi_type_formatter = formatter
             yield
           ensure
-            ActiveModel::Serializer.config.jsonapi_resource_type = old_type
+            ActiveModel::Serializer.config.jsonapi_type_formatter = old_formatter
           end
 
           def test_config_plural
             with_adapter :json_api do
-              with_jsonapi_resource_type :plural do
+              with_jsonapi_type_formatter -> (type) { type.pluralize } do
                 hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
                 assert_equal('comments', hash[:data][:type])
               end
@@ -46,7 +46,7 @@ module ActiveModel
 
           def test_config_singular
             with_adapter :json_api do
-              with_jsonapi_resource_type :singular do
+              with_jsonapi_type_formatter -> (type) { type.singularize } do
                 hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
                 assert_equal('comment', hash[:data][:type])
               end
