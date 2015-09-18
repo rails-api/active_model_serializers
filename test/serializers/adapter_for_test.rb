@@ -138,14 +138,14 @@ module ActiveModel
         Object.send(:remove_const, :MyAdapter)
       end
 
-      def test_inherited_adapter_hooks_register_demodulized_adapter
+      def test_inherited_adapter_hooks_register_namespaced_adapter
         Object.const_set(:MyNamespace, Module.new)
         MyNamespace.const_set(:MyAdapter, Class.new)
         my_adapter = MyNamespace::MyAdapter
         ActiveModel::Serializer::Adapter.inherited(my_adapter)
-        assert_equal ActiveModel::Serializer::Adapter.lookup(:my_adapter), my_adapter
+        assert_equal ActiveModel::Serializer::Adapter.lookup(:'my_namespace/my_adapter'), my_adapter
       ensure
-        ActiveModel::Serializer::Adapter.adapter_map.delete('my_adapter'.freeze)
+        ActiveModel::Serializer::Adapter.adapter_map.delete('my_namespace/my_adapter'.freeze)
         MyNamespace.send(:remove_const, :MyAdapter)
         Object.send(:remove_const, :MyNamespace)
       end
