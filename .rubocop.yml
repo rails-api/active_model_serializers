@@ -10,7 +10,7 @@ AllCops:
 
 Style/IndentationConsistency:
   Exclude:
-    - lib/active_model/serializer/adapter/flatten_json.rb
+    - lib/active_model/serializer/adapter/attributes.rb
     - lib/active_model/serializer/adapter/fragment_cache.rb
     - lib/active_model/serializer/adapter/json.rb
     - lib/active_model/serializer/adapter/json/fragment_cache.rb
@@ -21,7 +21,7 @@ Style/IndentationConsistency:
 
 Style/IndentationWidth:
   Exclude:
-    - lib/active_model/serializer/adapter/flatten_json.rb
+    - lib/active_model/serializer/adapter/attributes.rb
     - lib/active_model/serializer/adapter/fragment_cache.rb
     - lib/active_model/serializer/adapter/json.rb
     - lib/active_model/serializer/adapter/json/fragment_cache.rb
@@ -32,7 +32,7 @@ Style/IndentationWidth:
 
 Style/AccessModifierIndentation:
   Exclude:
-    - lib/active_model/serializer/adapter/flatten_json.rb
+    - lib/active_model/serializer/adapter/attributes.rb
     - lib/active_model/serializer/adapter/fragment_cache.rb
     - lib/active_model/serializer/adapter/json.rb
     - lib/active_model/serializer/adapter/json/fragment_cache.rb

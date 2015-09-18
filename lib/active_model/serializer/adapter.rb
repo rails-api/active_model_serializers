@@ -5,11 +5,11 @@ module ActiveModel
       ADAPTER_MAP = {}
       private_constant :ADAPTER_MAP if defined?(private_constant)
       extend ActiveSupport::Autoload
+      autoload :Attributes
+      autoload :Null
       autoload :FragmentCache
       autoload :Json
       autoload :JsonApi
-      autoload :Null
-      autoload :FlattenJson
       autoload :CachedSerializer
 
       def self.create(resource, options = {})
@@ -74,7 +74,8 @@ module ActiveModel
         # @api private
         def find_by_name(adapter_name)
           adapter_name = adapter_name.to_s.classify.tr('API', 'Api')
-          ActiveModel::Serializer::Adapter.const_get(adapter_name.to_sym) or # rubocop:disable Style/AndOr
+          "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize ||
+            "ActiveModel::Serializer::Adapter::#{adapter_name.pluralize}".safe_constantize or # rubocop:disable Style/AndOr
             fail UnknownAdapterError
         end
         private :find_by_name
@@ -112,12 +113,14 @@ module ActiveModel
         end
       end
 
+      private
+
       def meta
         serializer.meta if serializer.respond_to?(:meta)
       end
 
       def meta_key
-        serializer.meta_key || 'meta'
+        serializer.meta_key || 'meta'.freeze
       end
 
       def root
