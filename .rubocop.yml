@@ -8,39 +8,6 @@ AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
 
-Style/IndentationConsistency:
-  Exclude:
-    - lib/active_model/serializer/adapter/attributes.rb
-    - lib/active_model/serializer/adapter/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json.rb
-    - lib/active_model/serializer/adapter/json/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json_api.rb
-    - lib/active_model/serializer/adapter/json_api/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json_api/pagination_links.rb
-    - lib/active_model/serializer/adapter/null.rb
-
-Style/IndentationWidth:
-  Exclude:
-    - lib/active_model/serializer/adapter/attributes.rb
-    - lib/active_model/serializer/adapter/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json.rb
-    - lib/active_model/serializer/adapter/json/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json_api.rb
-    - lib/active_model/serializer/adapter/json_api/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json_api/pagination_links.rb
-    - lib/active_model/serializer/adapter/null.rb
-
-Style/AccessModifierIndentation:
-  Exclude:
-    - lib/active_model/serializer/adapter/attributes.rb
-    - lib/active_model/serializer/adapter/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json.rb
-    - lib/active_model/serializer/adapter/json/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json_api.rb
-    - lib/active_model/serializer/adapter/json_api/fragment_cache.rb
-    - lib/active_model/serializer/adapter/json_api/pagination_links.rb
-    - lib/active_model/serializer/adapter/null.rb
-
 Lint/NestedMethodDefinition:
   Enabled: false
   Exclude:

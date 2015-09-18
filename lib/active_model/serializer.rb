@@ -9,8 +9,6 @@ require 'active_model/serializer/utils'
 
 module ActiveModel
   class Serializer
-    extend ActiveSupport::Autoload
-
     include Configuration
     include Associations
 

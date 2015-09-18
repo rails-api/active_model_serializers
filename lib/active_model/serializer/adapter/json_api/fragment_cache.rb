@@ -1,4 +1,8 @@
-class ActiveModel::Serializer::Adapter::JsonApi::FragmentCache
+module ActiveModel
+  class Serializer
+    class Adapter
+      class JsonApi
+        class FragmentCache
           def fragment_cache(root, cached_hash, non_cached_hash)
             hash              = {}
             core_cached       = cached_hash.first
@@ -10,4 +14,8 @@ class ActiveModel::Serializer::Adapter::JsonApi::FragmentCache
 
             hash.deep_merge no_root_non_cache.deep_merge no_root_cache
           end
+        end
+      end
+    end
+  end
 end

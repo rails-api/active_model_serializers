@@ -5,11 +5,6 @@ module ActiveModel
 
       def setup
         @previous_adapter = ActiveModel::Serializer.config.adapter
-        # Eager load adapters
-        ActiveModel::Serializer::Adapter.eager_load!
-        [:json_api, :attributes, :null, :json].each do |adapter_name|
-          ActiveModel::Serializer::Adapter.lookup(adapter_name)
-        end
       end
 
       def teardown
@@ -66,12 +61,13 @@ module ActiveModel
 
       def test_adapter_map
         expected_adapter_map = {
+          'null'.freeze              => ActiveModel::Serializer::Adapter::Null,
           'json'.freeze              => ActiveModel::Serializer::Adapter::Json,
-          'json_api'.freeze          => ActiveModel::Serializer::Adapter::JsonApi,
           'attributes'.freeze => ActiveModel::Serializer::Adapter::Attributes,
-          'null'.freeze => ActiveModel::Serializer::Adapter::Null
+          'json_api'.freeze => ActiveModel::Serializer::Adapter::JsonApi
         }
-        assert_equal ActiveModel::Serializer::Adapter.adapter_map, expected_adapter_map
+        actual = ActiveModel::Serializer::Adapter.adapter_map
+        assert_equal actual, expected_adapter_map
       end
 
       def test_adapters
