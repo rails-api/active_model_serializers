@@ -86,7 +86,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           type = resource_identifier_type_for(serializer)
           id   = resource_identifier_id_for(serializer)
 
-          { id: id.to_s, type: type }
+          { id: id.to_s, type: format_key(type).to_s }
         end
 
         def resource_object_for(serializer, options = {})
@@ -95,7 +95,15 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           cache_check(serializer) do
             result = resource_identifier_for(serializer)
             attributes = serializer.attributes(options).except(:id)
-            result[:attributes] = attributes if attributes.any?
+
+            if attributes.any?
+              attributes = attributes.each_with_object({}) do |(name, value), hash|
+                hash[format_key(name)] = value
+              end
+
+              result[:attributes] = attributes
+            end
+
             result
           end
         end
@@ -124,7 +132,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           Hash[
             serializer.associations.map do |association|
               [
-                association.key,
+                format_key(association.key),
                 {
                   data: relationship_value_for(association.serializer,
                                                association.options)

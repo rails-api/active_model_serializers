@@ -13,22 +13,38 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
               serializer.attributes(options)
             end
 
+            core = core.each_with_object({}) do |(name, value), formatted_hash|
+              formatted_hash[format_key(name)] = value
+            end
+
             serializer.associations.each do |association|
               serializer = association.serializer
               association_options = association.options
 
               if serializer.respond_to?(:each)
                 array_serializer = serializer
-                hash[association.key] = array_serializer.map do |item|
-                  cache_check(item) do
+                formatted_association_key = format_key(association.key)
+
+                hash[formatted_association_key] = array_serializer.map do |item|
+                  attributes = cache_check(item) do
                     item.attributes(association_options)
+                  end
+
+                  attributes.each_with_object({}) do |(name, value), formatted_hash|
+                    formatted_hash[format_key(name)] = value
                   end
                 end
               else
-                hash[association.key] =
+                formatted_association_key = format_key(association.key)
+
+                hash[formatted_association_key] =
                   if serializer && serializer.object
-                    cache_check(serializer) do
+                    attributes = cache_check(serializer) do
                       serializer.attributes(options)
+                    end
+
+                    attributes.each_with_object({}) do |(name, value), formatted_hash|
+                      formatted_hash[format_key(name)] = value
                     end
                   elsif association_options[:virtual_value]
                     association_options[:virtual_value]

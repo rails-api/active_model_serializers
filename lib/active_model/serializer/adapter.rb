@@ -124,6 +124,21 @@ module ActiveModel
         json[meta_key] = meta if meta
         json
       end
+
+      def key_format
+        default_key_format
+      end
+
+      def format_key(formattable_key)
+        case key_format
+        else
+          formattable_key
+        end
+      end
+
+      def default_key_format
+        :unaltered
+      end
     end
   end
 end
