@@ -135,6 +135,8 @@ module ActiveModel
           formattable_key.to_s.camelize(:lower).to_sym
         when :dasherize
           formattable_key.to_s.underscore.dasherize.to_sym
+        when :underscore
+          formattable_key.to_s.underscore.to_sym
         else
           formattable_key
         end
