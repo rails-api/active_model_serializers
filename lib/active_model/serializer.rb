@@ -50,20 +50,16 @@ module ActiveModel
 
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
-      _attributes.concat(attrs)
-      _attributes.uniq!
 
       attrs.each do |attr|
-        define_method attr do
-          object && object.read_attribute_for_serialization(attr)
-        end unless method_defined?(attr) || _fragmented.respond_to?(attr)
+        attribute(attr)
       end
     end
 
     def self.attribute(attr, options = {})
       key = options.fetch(:key, attr)
-      self._attributes_keys[attr] = { key: key } if key != attr
-      self._attributes << key unless _attributes.include?(key)
+      _attributes_keys[attr] = { key: key } if key != attr
+      _attributes << key unless _attributes.include?(key)
 
       ActiveModelSerializers.silence_warnings do
         define_method key do
