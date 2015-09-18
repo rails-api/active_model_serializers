@@ -1,12 +1,15 @@
 # How to add pagination links
 
-### JSON-API adapter
+### JSON API adapter
 
-Pagination links will be included in your response automatically as long as the resource is paginated and if you are using a ```JSON-API``` adapter.
+Pagination links will be included in your response automatically as long as
+the resource is paginated and if you are using the ```JsonApi``` adapter.
 
-If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
+If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari)
+or [WillPaginate](https://github.com/mislav/will_paginate).
 
 ###### Kaminari examples
+
 ```ruby
 #array
 @posts = Kaminari.paginate_array([1, 2, 3]).page(3).per(1)

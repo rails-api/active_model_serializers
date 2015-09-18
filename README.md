@@ -136,7 +136,8 @@ The key can be customized using `meta_key` option.
 render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 ```
 
-`meta` will only be included in your response if you are using an Adapter that supports `root`, as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
+`meta` will only be included in your response if you are using an Adapter that supports `root`,
+as JsonAPI and Json adapters, the default adapter (FlattenJson) doesn't have `root`.
 
 ### Using a serializer without `render`
 
@@ -199,7 +200,7 @@ Doesn't follow any specifc convention.
 It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly with the objects being serialized.
 Doesn't follow any specifc convention.
 
-#### JSONAPI
+#### JSON API
 
 This adapter follows 1.0 of the format specified in
 [jsonapi.org/format](http://jsonapi.org/format). It will include the associated
@@ -285,9 +286,15 @@ And you can change the JSON key that the serializer should use for a particular 
 
 ## Pagination
 
-Pagination links will be included in your response automatically as long as the resource is paginated using [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate) and if you are using a ```JSON-API``` adapter.
+Pagination links will be included in your response automatically as long
+as the resource is paginated using [Kaminari](https://github.com/amatsuda/kaminari) or
+[WillPaginate](https://github.com/mislav/will_paginate) and
+if you are using the ```JsonApi``` adapter.
 
-Although the others adapters does not have this feature, it is possible to implement pagination links to `JSON` adapter. For more information about it, please see in our docs [How to add pagination links](https://github.com/rails-api/active_model_serializers/blob/master/docs/howto/add_pagination_links.md)
+Although the others adapters does not have this feature, it is possible to
+implement pagination links to `JSON` adapter. For more information about it,
+please see in our docs [How to add pagination
+links](https://github.com/rails-api/active_model_serializers/blob/master/docs/howto/add_pagination_links.md).
 
 ## Caching
 
