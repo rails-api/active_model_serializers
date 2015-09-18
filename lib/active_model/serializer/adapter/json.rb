@@ -2,10 +2,15 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
         extend ActiveSupport::Autoload
         autoload :FragmentCache
 
+        def initialize(serializer, options = {})
+          super
+          @included = ActiveModel::Serializer::Utils.include_args_to_hash(instance_options[:include] || '*')
+        end
+
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
-            result = serializer.map { |s| FlattenJson.new(s).serializable_hash(options) }
+            result = serializer.map { |s| FlattenJson.new(s, include: @included).serializable_hash(options) }
           else
             hash = {}
 
@@ -13,27 +18,15 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
               serializer.attributes(options)
             end
 
-            serializer.associations.each do |association|
-              serializer = association.serializer
-              association_options = association.options
-
-              if serializer.respond_to?(:each)
-                array_serializer = serializer
-                hash[association.key] = array_serializer.map do |item|
-                  cache_check(item) do
-                    item.attributes(association_options)
-                  end
+            included_associations = serializer.expand_includes(@included)
+            included_associations.each do |association, assoc_includes|
+              hash[association.key] =
+                if association.options[:virtual_value]
+                  association.options[:virtual_value]
+                elsif association.serializer && association.serializer.object
+                  FlattenJson.new(association.serializer, association.options.merge(include: assoc_includes))
+                    .serializable_hash(options)
                 end
-              else
-                hash[association.key] =
-                  if serializer && serializer.object
-                    cache_check(serializer) do
-                      serializer.attributes(options)
-                    end
-                  elsif association_options[:virtual_value]
-                    association_options[:virtual_value]
-                  end
-              end
             end
             result = core.merge hash
           end
@@ -42,6 +35,6 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
         end
 
         def fragment_cache(cached_hash, non_cached_hash)
-          ActiveModel::Serializer::Adapter::Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
+          ActiveModel::Serializer::Adapter::Json::FragmentCache.new.fragment_cache(cached_hash, non_cached_hash)
         end
 end

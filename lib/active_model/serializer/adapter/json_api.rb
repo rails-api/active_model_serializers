@@ -124,33 +124,32 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def included_for(serializer)
-          included.flat_map { |inc|
-            association = serializer.associations.find { |assoc| assoc.key == inc.first }
-            _included_for(association.serializer, inc.second) if association
-          }.uniq
+          included = []
+          included_associations = serializer.expand_includes(@included)
+          included_associations.each do |association, assoc_includes|
+            _included_for(included, association.serializer, assoc_includes)
+          end
+
+          included
         end
 
-        def _included_for(serializer, includes)
+        def _included_for(included, serializer, includes)
           if serializer.respond_to?(:each)
-            serializer.flat_map { |s| _included_for(s, includes) }.uniq
+            serializer.each { |s| _included_for(included, s, includes) }
           else
-            return [] unless serializer && serializer.object
+            return unless serializer && serializer.object
 
             primary_data = primary_data_for(serializer, instance_options)
             relationships = relationships_for(serializer)
             primary_data[:relationships] = relationships if relationships.any?
 
-            included = [primary_data]
+            return if included.include?(primary_data)
+            included.push(primary_data)
 
-            includes.each do |inc|
-              association = serializer.associations.find { |assoc| assoc.key == inc.first }
-              if association
-                included.concat(_included_for(association.serializer, inc.second))
-                included.uniq!
-              end
+            included_associations = serializer.expand_includes(includes)
+            included_associations.each do |association, assoc_includes|
+              _included_for(included, association.serializer, assoc_includes)
             end
-
-            included
           end
         end
 
