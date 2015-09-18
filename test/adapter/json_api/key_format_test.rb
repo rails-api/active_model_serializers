@@ -36,6 +36,14 @@ module ActiveModel
             assert @adapter.serializable_hash[:data][:relationships].key?(:'tons-of-comments')
             assert @adapter.serializable_hash[:data][:relationships].key?(:'stoic-author')
           end
+
+          def test_accepts_adapter_override
+            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, key_format: :lower_camel)
+
+            assert @adapter.serializable_hash[:data][:attributes].key?(:'multiWordAttribute')
+            assert @adapter.serializable_hash[:data][:relationships].key?(:'tonsOfComments')
+            assert @adapter.serializable_hash[:data][:relationships].key?(:'stoicAuthor')
+          end
         end
       end
     end
