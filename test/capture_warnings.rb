@@ -26,38 +26,44 @@ class CaptureWarnings
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def after_tests(lines)
     app_warnings, other_warnings = lines.partition { |line|
       line.include?(app_root) && !line.include?(bundle_dir)
     }
 
-    header = "#{'-' * 22} app warnings: #{'-' * 22}"
-    output.puts
-    output.puts header
-
     if app_warnings.any?
-      output.puts app_warnings.join("\n")
+      warnings_message = app_warnings.join("\n")
+      print_warnings = true
     else
-      output.puts 'None. Yay!'
+      warnings_message = 'None. Yay!'
+      ENV['FULL_BUILD'] ||= ENV['CI']
+      running_ci          = ENV['FULL_BUILD'] =~ /\Atrue\z/i
+      print_warnings = running_ci
     end
 
     if other_warnings.any?
       File.write(File.join(output_dir, 'warnings.txt'), other_warnings.join("\n") << "\n")
-      output.puts
-      output.puts 'Non-app warnings written to tmp/warnings.txt'
-      output.puts
+      warnings_message << "\nNon-app warnings written to tmp/warnings.txt"
+      print_warnings = true
     end
 
-    output.puts
-    output.puts '-' * header.size
+    header = "#{'-' * 22} app warnings: #{'-' * 22}"
+    message = <<-EOF.strip_heredoc
+
+    #{header}
+
+    #{warnings_message}
+
+    #{'-' * header.size}
+    EOF
+
+    output.puts(message) if print_warnings
 
     # fail the build...
     if fail_on_warnings && app_warnings.any?
       abort "Failing build due to app warnings: #{app_warnings.inspect}"
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   private
 
