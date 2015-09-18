@@ -133,7 +133,7 @@ module ActiveModel
         case key_format
         when :lower_camel
           formattable_key.to_s.camelize(:lower).to_sym
-        when :dasherize
+        when :dasherize, :json_api
           formattable_key.to_s.underscore.dasherize.to_sym
         when :underscore
           formattable_key.to_s.underscore.to_sym
