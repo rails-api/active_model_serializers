@@ -85,7 +85,7 @@ module ActiveModel
                   type: 'comments',
                   attributes: {
                     body: 'ZOMG A COMMENT',
-                    'original_format': 'markdown'
+                    'original-format': 'markdown'
                   },
                   relationships: {
                     post: { data: { type: 'posts', id: '10' } },
@@ -96,7 +96,7 @@ module ActiveModel
                   type: 'comments',
                   attributes: {
                     body: 'ZOMG ANOTHER COMMENT',
-                    'original_format': 'text'
+                    'original-format': 'text'
                   },
                   relationships: {
                     post: { data: { type: 'posts', id: '10' } },
@@ -214,7 +214,7 @@ module ActiveModel
             expected = {
               related: {
                 data: [{
-                  type: 'spam_unrelated_links',
+                  type: 'spam-unrelated-links',
                   id: '456'
                 }]
               }

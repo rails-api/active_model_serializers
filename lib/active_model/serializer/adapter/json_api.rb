@@ -29,6 +29,10 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
+        def default_key_format
+          :dasherize
+        end
+
         private
 
         ActiveModel.silence_warnings do

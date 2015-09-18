@@ -48,7 +48,7 @@ module ActiveModel
               type: 'comments',
               attributes: {
                 body: 'ZOMG A COMMENT',
-                'original_format': 'markdown'
+                'original-format': 'markdown'
               },
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
@@ -59,7 +59,7 @@ module ActiveModel
               type: 'comments',
               attributes: {
                 body: 'ZOMG ANOTHER COMMENT',
-                'original_format': 'text'
+                'original-format': 'text'
               },
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
@@ -132,7 +132,7 @@ module ActiveModel
             assert_equal({
               data: {
                 id: '1',
-                type: 'virtual_values',
+                type: 'virtual-values',
                 relationships: {
                   maker: { data: { id: 1 } },
                   reviews: { data: [{ id: 1 }, { id: 2 }] }
