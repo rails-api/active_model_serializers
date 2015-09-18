@@ -65,6 +65,8 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   Max: 106 # TODO: Lower to 10
+  Exclude:
+    - test/**/*.rb
 
 Metrics/PerceivedComplexity:
   Max: 9 # TODO: Lower to 7
