@@ -15,6 +15,7 @@ module ActiveModel
           attr_accessor :_reflections
         end
 
+        extend ActiveSupport::Autoload
         autoload :Association
         autoload :Reflection
         autoload :SingularReflection

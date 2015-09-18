@@ -1,4 +1,7 @@
-class ActiveModel::Serializer::Adapter::Attributes < ActiveModel::Serializer::Adapter
+module ActiveModel
+  class Serializer
+    class Adapter
+      class Attributes < Adapter
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
@@ -47,4 +50,7 @@ class ActiveModel::Serializer::Adapter::Attributes < ActiveModel::Serializer::Ad
         def include_meta(json)
           json
         end
+      end
+    end
+  end
 end

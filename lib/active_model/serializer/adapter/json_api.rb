@@ -1,4 +1,7 @@
-class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapter
+module ActiveModel
+  class Serializer
+    class Adapter
+      class JsonApi < Adapter
         extend ActiveSupport::Autoload
         autoload :PaginationLinks
         autoload :FragmentCache
@@ -157,4 +160,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         def links_for(serializer, options)
           JsonApi::PaginationLinks.new(serializer.object, options[:context]).serializable_hash(options)
         end
+      end
+    end
+  end
 end

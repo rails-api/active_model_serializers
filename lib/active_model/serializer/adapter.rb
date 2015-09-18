@@ -4,13 +4,8 @@ module ActiveModel
       UnknownAdapterError = Class.new(ArgumentError)
       ADAPTER_MAP = {}
       private_constant :ADAPTER_MAP if defined?(private_constant)
-      extend ActiveSupport::Autoload
-      autoload :Attributes
-      autoload :Null
-      autoload :FragmentCache
-      autoload :Json
-      autoload :JsonApi
-      autoload :CachedSerializer
+      require 'active_model/serializer/adapter/fragment_cache'
+      require 'active_model/serializer/adapter/cached_serializer'
 
       def self.create(resource, options = {})
         override = options.delete(:adapter)
@@ -131,6 +126,12 @@ module ActiveModel
         json[meta_key] = meta if meta
         json
       end
+
+      # Gotta be at the bottom to use the code above it :(
+      require 'active_model/serializer/adapter/null'
+      require 'active_model/serializer/adapter/attributes'
+      require 'active_model/serializer/adapter/json'
+      require 'active_model/serializer/adapter/json_api'
     end
   end
 end
