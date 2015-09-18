@@ -38,8 +38,14 @@ else
   end
 end
 
-require 'capture_warnings'
-CaptureWarnings.new(_fail_build = true).execute!
+# If there's no failure info, try disabling capturing stderr:
+# `env CAPTURE_STDERR=false rake`
+# This is way easier than writing a Minitest plugin
+# for 4.x and 5.x.
+if ENV['CAPTURE_STDERR'] !~ /false|1/i
+  require 'capture_warnings'
+  CaptureWarnings.new(_fail_build = true).execute!
+end
 
 require 'active_model_serializers'
 
