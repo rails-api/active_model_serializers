@@ -44,26 +44,26 @@ module ActiveModel
           def test_includes_linked_comments
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:comments])
             expected = [{
-              id: '1',
-              type: 'comments',
-              attributes: {
-                body: 'ZOMG A COMMENT',
-                'original-format': 'markdown'
+              :id => '1',
+              :type => 'comments',
+              :attributes => {
+                :body => 'ZOMG A COMMENT',
+                :'original-format' => 'markdown'
               },
-              relationships: {
-                post: { data: { type: 'posts', id: '1' } },
-                author: { data: nil }
+              :relationships => {
+                :post => { :data => { :type => 'posts', :id => '1' } },
+                :author => { :data => nil }
               }
             }, {
-              id: '2',
-              type: 'comments',
-              attributes: {
-                body: 'ZOMG ANOTHER COMMENT',
-                'original-format': 'text'
+              :id => '2',
+              :type => 'comments',
+              :attributes => {
+                :body => 'ZOMG ANOTHER COMMENT',
+                :'original-format' => 'text'
               },
-              relationships: {
-                post: { data: { type: 'posts', id: '1' } },
-                author: { data: nil }
+              :relationships => {
+                :post => { :data => { :type => 'posts', :id => '1' } },
+                :author => { :data => nil }
               }
             }]
             assert_equal expected, @adapter.serializable_hash[:included]

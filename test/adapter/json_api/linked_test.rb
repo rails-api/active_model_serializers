@@ -51,98 +51,98 @@ module ActiveModel
             )
 
             expected = {
-              data: [
+              :data => [
                 {
-                  id: '10',
-                  type: 'posts',
-                  attributes: {
-                    title: 'Hello!!',
-                    body: 'Hello, world!!'
+                  :id => '10',
+                  :type => 'posts',
+                  :attributes => {
+                    :title => 'Hello!!',
+                    :body => 'Hello, world!!'
                   },
-                  relationships: {
-                    comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
-                    blog: { data: { type: 'blogs', id: '999' } },
-                    author: { data: { type: 'authors', id: '1' } }
+                  :relationships => {
+                    :comments => { :data => [{ :type => 'comments', :id => '1' }, { :type => 'comments', :id => '2' }] },
+                    :blog => { :data => { :type => 'blogs', :id => '999' } },
+                    :author => { :data => { :type => 'authors', :id => '1' } }
                   }
                 },
                 {
-                  id: '20',
-                  type: 'posts',
-                  attributes: {
-                    title: 'New Post',
-                    body: 'Body'
+                  :id => '20',
+                  :type => 'posts',
+                  :attributes => {
+                    :title => 'New Post',
+                    :body => 'Body'
                   },
-                  relationships: {
-                    comments: { data: [] },
-                    blog: { data: { type: 'blogs', id: '999' } },
-                    author: { data: { type: 'authors', id: '2' } }
+                  :relationships => {
+                    :comments => { :data => [] },
+                    :blog => { :data => { :type => 'blogs', :id => '999' } },
+                    :author => { :data => { :type => 'authors', :id => '2' } }
                   }
                 }
               ],
-              included: [
+              :included => [
                 {
-                  id: '1',
-                  type: 'comments',
-                  attributes: {
-                    body: 'ZOMG A COMMENT',
-                    'original-format': 'markdown'
+                  :id => '1',
+                  :type => 'comments',
+                  :attributes => {
+                    :body => 'ZOMG A COMMENT',
+                    :'original-format' => 'markdown'
                   },
-                  relationships: {
-                    post: { data: { type: 'posts', id: '10' } },
-                    author: { data: nil }
+                  :relationships => {
+                    :post => { :data => { :type => 'posts', :id => '10' } },
+                    :author => { :data => nil }
                   }
                 }, {
-                  id: '2',
-                  type: 'comments',
-                  attributes: {
-                    body: 'ZOMG ANOTHER COMMENT',
-                    'original-format': 'text'
+                  :id => '2',
+                  :type => 'comments',
+                  :attributes => {
+                    :body => 'ZOMG ANOTHER COMMENT',
+                    :'original-format' => 'text'
                   },
-                  relationships: {
-                    post: { data: { type: 'posts', id: '10' } },
-                    author: { data: nil }
+                  :relationships => {
+                    :post => { :data => { :type => 'posts', :id => '10' } },
+                    :author => { :data => nil }
                   }
                 }, {
-                  id: '1',
-                  type: 'authors',
-                  attributes: {
-                    name: 'Steve K.'
+                  :id => '1',
+                  :type => 'authors',
+                  :attributes => {
+                    :name => 'Steve K.'
                   },
-                  relationships: {
-                    posts: { data: [{ type: 'posts', id: '10' }, { type: 'posts', id: '30' }] },
-                    roles: { data: [] },
-                    bio: { data: { type: 'bios', id: '1' } }
+                  :relationships => {
+                    :posts => { :data => [{ :type => 'posts', :id => '10' }, { :type => 'posts', :id => '30' }] },
+                    :roles => { :data => [] },
+                    :bio => { :data => { :type => 'bios', :id => '1' } }
                   }
                 }, {
-                  id: '1',
-                  type: 'bios',
-                  attributes: {
-                    content: 'AMS Contributor',
-                    rating: nil
+                  :id => '1',
+                  :type => 'bios',
+                  :attributes => {
+                    :content => 'AMS Contributor',
+                    :rating => nil
                   },
-                  relationships: {
-                    author: { data: { type: 'authors', id: '1' } }
+                  :relationships => {
+                    :author => { :data => { :type => 'authors', :id => '1' } }
                   }
                 }, {
-                  id: '2',
-                  type: 'authors',
-                  attributes: {
-                    name: 'Tenderlove'
+                  :id => '2',
+                  :type => 'authors',
+                  :attributes => {
+                    :name => 'Tenderlove'
                   },
-                  relationships: {
-                    posts: { data: [{ type: 'posts', id: '20' }] },
-                    roles: { data: [] },
-                    bio: { data: { type: 'bios', id: '2' } }
+                  :relationships => {
+                    :posts => { :data => [{ :type => 'posts', :id => '20' }] },
+                    :roles => { :data => [] },
+                    :bio => { :data => { :type => 'bios', :id => '2' } }
                   }
                 }, {
-                  id: '2',
-                  type: 'bios',
-                  attributes: {
-                    rating: nil,
-                    content: 'Rails Contributor',
+                  :id => '2',
+                  :type => 'bios',
+                  :attributes => {
+                    :rating => nil,
+                    :content => 'Rails Contributor',
                   },
-                  relationships: {
-                    author: { data: { type: 'authors', id: '2' } }
+                  :relationships => {
+                    :author => { :data => { :type => 'authors', :id => '2' } }
                   }
                 }
               ]

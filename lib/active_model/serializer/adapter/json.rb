@@ -2,6 +2,7 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
         extend ActiveSupport::Autoload
         autoload :FragmentCache
 
+        # rubocop:disable Metrics/AbcSize
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
@@ -56,6 +57,7 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
 
           { root => result }
         end
+        # rubocop:enable Metrics/AbcSize
 
         def default_key_format
           :lower_camel

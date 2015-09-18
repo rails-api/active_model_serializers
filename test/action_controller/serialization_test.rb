@@ -358,7 +358,7 @@ module ActionController
             'likeable' => {
               'id' => 1,
               'body' => 'ZOMG A COMMENT',
-              'originalFormat'=>'markdown'
+              'originalFormat' => 'markdown'
             }
           }
 
@@ -379,7 +379,7 @@ module ActionController
             {
               id: 1,
               body: 'ZOMG A COMMENT',
-              originalFormat: 'markdown'}
+              originalFormat: 'markdown' }
           ],
           blog: {
             id: 999,
