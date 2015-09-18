@@ -227,6 +227,13 @@ PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
   belongs_to :author, serializer: AuthorPreviewSerializer
 end
 
+PostWithMultiWordKeysSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :title, :body, :id, :multi_word_attribute
+
+  has_many :comments, key: :tons_of_comments
+  belongs_to :author, key: :stoic_author
+end
+
 PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 

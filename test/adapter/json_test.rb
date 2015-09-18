@@ -23,8 +23,8 @@ module ActiveModel
 
         def test_has_many
           assert_equal([
-                         { id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown' },
-                         { id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text' }
+                         { id: 1, body: 'ZOMG A COMMENT', originalFormat: 'markdown' },
+                         { id: 2, body: 'ZOMG ANOTHER COMMENT', originalFormat: 'text' }
                        ], @adapter.serializable_hash[:post][:comments])
         end
 
@@ -34,8 +34,8 @@ module ActiveModel
 
           assert_equal({
             id: 1,
-            reviews: [{ id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown' },
-                      { id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text' }
+            reviews: [{ id: 1, body: 'ZOMG A COMMENT', originalFormat: 'markdown' },
+                      { id: 2, body: 'ZOMG ANOTHER COMMENT', originalFormat: 'text' }
                     ],
             writer: { id: 1, name: 'Steve K.' },
             site: { id: 1, name: 'My Blog!!' }

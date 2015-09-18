@@ -28,7 +28,7 @@ module ActiveModel
 
             expected = { blogs: [{
               id: 1,
-              special_attribute: 'Special',
+              specialAttribute: 'Special',
               articles: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' }, { id: 2, title: 'New Post', body: 'Body' }]
             }] }
             assert_equal expected, adapter.serializable_hash

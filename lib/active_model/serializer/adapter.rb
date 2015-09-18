@@ -131,6 +131,8 @@ module ActiveModel
 
       def format_key(formattable_key)
         case key_format
+        when :lower_camel
+          formattable_key.to_s.camelize(:lower).to_sym
         else
           formattable_key
         end

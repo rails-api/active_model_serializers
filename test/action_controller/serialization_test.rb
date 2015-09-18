@@ -263,7 +263,7 @@ module ActionController
             {
               id: 1,
               body: 'ZOMG A COMMENT',
-              original_format: 'markdown' }
+              originalFormat: 'markdown' }
           ],
           blog: {
             id: 999,
@@ -303,7 +303,7 @@ module ActionController
             {
               id: 1,
               body: 'ZOMG A COMMENT',
-              original_format: 'markdown' }
+              originalFormat: 'markdown' }
           ],
           blog: {
             id: 999,
@@ -358,7 +358,7 @@ module ActionController
             'likeable' => {
               'id' => 1,
               'body' => 'ZOMG A COMMENT',
-              'original_format'=>'markdown'
+              'originalFormat'=>'markdown'
             }
           }
 
@@ -379,7 +379,7 @@ module ActionController
             {
               id: 1,
               body: 'ZOMG A COMMENT',
-              original_format: 'markdown'}
+              originalFormat: 'markdown'}
           ],
           blog: {
             id: 999,

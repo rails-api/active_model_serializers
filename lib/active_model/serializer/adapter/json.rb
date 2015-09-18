@@ -57,6 +57,10 @@ class ActiveModel::Serializer::Adapter::Json < ActiveModel::Serializer::Adapter
           { root => result }
         end
 
+        def default_key_format
+          :lower_camel
+        end
+
         def fragment_cache(cached_hash, non_cached_hash)
           ActiveModel::Serializer::Adapter::Json::FragmentCache.new().fragment_cache(cached_hash, non_cached_hash)
         end

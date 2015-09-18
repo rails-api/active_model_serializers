@@ -25,8 +25,8 @@ module ActiveModel
             serializer = PostSerializer.new(@post)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
             assert_equal([
-                           { id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown' },
-                           { id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text' }
+                           { id: 1, body: 'ZOMG A COMMENT', originalFormat: 'markdown' },
+                           { id: 2, body: 'ZOMG ANOTHER COMMENT', originalFormat: 'text' }
                          ], adapter.serializable_hash[:post][:comments])
           end
 
