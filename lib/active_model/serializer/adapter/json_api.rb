@@ -139,7 +139,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
                 format_key(association.key),
                 {
                   data: relationship_value_for(association.serializer,
-                                               association.options)
+                    association.options)
                 }
               ]
             end

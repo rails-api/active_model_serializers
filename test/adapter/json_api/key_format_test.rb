@@ -9,15 +9,15 @@ module ActiveModel
             @author = Author.new(name: 'Steve K.')
 
             @first_post = Post.new(
-                            id:                   1,
-                            title:                'Hello!!',
-                            body:                 'Hello, world!!',
-                            multi_word_attribute: 'Something about hello')
+              id:                   1,
+              title:                'Hello!!',
+              body:                 'Hello, world!!',
+              multi_word_attribute: 'Something about hello')
             @second_post = Post.new(
-                            id:                   2,
-                            title:                'New Post',
-                            body:                 'Body',
-                            multi_word_attribute: 'Something about new')
+              id:                   2,
+              title:                'New Post',
+              body:                 'Body',
+              multi_word_attribute: 'Something about new')
 
             @author.posts = [@first_post, @second_post]
 
@@ -40,17 +40,17 @@ module ActiveModel
           def test_accepts_adapter_override
             @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, key_format: :lower_camel)
 
-            assert @adapter.serializable_hash[:data][:attributes].key?(:'multiWordAttribute')
-            assert @adapter.serializable_hash[:data][:relationships].key?(:'tonsOfComments')
-            assert @adapter.serializable_hash[:data][:relationships].key?(:'stoicAuthor')
+            assert @adapter.serializable_hash[:data][:attributes].key?(:multiWordAttribute)
+            assert @adapter.serializable_hash[:data][:relationships].key?(:tonsOfComments)
+            assert @adapter.serializable_hash[:data][:relationships].key?(:stoicAuthor)
           end
 
           def test_accepts_global_override
             ActiveModel::Serializer.config.key_format = :lower_camel
 
-            assert @adapter.serializable_hash[:data][:attributes].key?(:'multiWordAttribute')
-            assert @adapter.serializable_hash[:data][:relationships].key?(:'tonsOfComments')
-            assert @adapter.serializable_hash[:data][:relationships].key?(:'stoicAuthor')
+            assert @adapter.serializable_hash[:data][:attributes].key?(:multiWordAttribute)
+            assert @adapter.serializable_hash[:data][:relationships].key?(:tonsOfComments)
+            assert @adapter.serializable_hash[:data][:relationships].key?(:stoicAuthor)
 
             ActiveModel::Serializer.config.key_format = nil
           end

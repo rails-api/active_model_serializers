@@ -9,15 +9,15 @@ module ActiveModel
             @author = Author.new(name: 'Steve K.')
 
             @first_post = Post.new(
-                            id:                   1,
-                            title:                'Hello!!',
-                            body:                 'Hello, world!!',
-                            multi_word_attribute: 'Something about hello')
+              id:                   1,
+              title:                'Hello!!',
+              body:                 'Hello, world!!',
+              multi_word_attribute: 'Something about hello')
             @second_post = Post.new(
-                            id:                   2,
-                            title:                'New Post',
-                            body:                 'Body',
-                            multi_word_attribute: 'Something about new')
+              id:                   2,
+              title:                'New Post',
+              body:                 'Body',
+              multi_word_attribute: 'Something about new')
 
             @author.posts = [@first_post, @second_post]
 
@@ -32,9 +32,9 @@ module ActiveModel
           end
 
           def test_camelizes_keys_by_default
-            assert @adapter.serializable_hash[:post].key?(:'multiWordAttribute')
-            assert @adapter.serializable_hash[:post].key?(:'tonsOfComments')
-            assert @adapter.serializable_hash[:post].key?(:'stoicAuthor')
+            assert @adapter.serializable_hash[:post].key?(:multiWordAttribute)
+            assert @adapter.serializable_hash[:post].key?(:tonsOfComments)
+            assert @adapter.serializable_hash[:post].key?(:stoicAuthor)
           end
 
           def test_accepts_adapter_override
