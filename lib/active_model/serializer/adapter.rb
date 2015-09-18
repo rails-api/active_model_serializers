@@ -126,7 +126,7 @@ module ActiveModel
       end
 
       def key_format
-        instance_options[:key_format] || default_key_format
+        instance_options[:key_format] || ActiveModel::Serializer.config.key_format || default_key_format
       end
 
       def format_key(formattable_key)

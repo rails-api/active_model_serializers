@@ -8,6 +8,7 @@ module ActiveModel
         base.config.array_serializer = ActiveModel::Serializer::ArraySerializer
         base.config.adapter = :flatten_json
         base.config.jsonapi_resource_type = :plural
+        base.config.key_format = nil
       end
     end
   end

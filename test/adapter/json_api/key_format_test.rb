@@ -44,6 +44,16 @@ module ActiveModel
             assert @adapter.serializable_hash[:data][:relationships].key?(:'tonsOfComments')
             assert @adapter.serializable_hash[:data][:relationships].key?(:'stoicAuthor')
           end
+
+          def test_accepts_global_override
+            ActiveModel::Serializer.config.key_format = :lower_camel
+
+            assert @adapter.serializable_hash[:data][:attributes].key?(:'multiWordAttribute')
+            assert @adapter.serializable_hash[:data][:relationships].key?(:'tonsOfComments')
+            assert @adapter.serializable_hash[:data][:relationships].key?(:'stoicAuthor')
+
+            ActiveModel::Serializer.config.key_format = nil
+          end
         end
       end
     end

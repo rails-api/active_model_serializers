@@ -44,6 +44,16 @@ module ActiveModel
             assert @adapter.serializable_hash[:post].key?(:tons_of_comments)
             assert @adapter.serializable_hash[:post].key?(:stoic_author)
           end
+
+          def test_accepts_global_override
+            ActiveModel::Serializer.config.key_format = :underscore
+
+            assert @adapter.serializable_hash[:post].key?(:multi_word_attribute)
+            assert @adapter.serializable_hash[:post].key?(:tons_of_comments)
+            assert @adapter.serializable_hash[:post].key?(:stoic_author)
+
+            ActiveModel::Serializer.config.key_format = nil
+          end
         end
       end
     end
