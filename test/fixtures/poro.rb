@@ -117,7 +117,7 @@ end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
   cache expires_in: 1.day, skip_digest: true
-  attributes :id, :body
+  attributes :id, :body, :original_format
 
   belongs_to :post
   belongs_to :author
@@ -225,6 +225,13 @@ PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
 
   has_many :comments, serializer: CommentPreviewSerializer
   belongs_to :author, serializer: AuthorPreviewSerializer
+end
+
+PostWithMultiWordKeysSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :title, :body, :id, :multi_word_attribute
+
+  has_many :comments, key: :tons_of_comments
+  belongs_to :author, key: :stoic_author
 end
 
 PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do

@@ -16,6 +16,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
 
         def serializable_hash(options = nil)
           options ||= {}
+
           if serializer.respond_to?(:each)
             serializable_hash_for_collection(serializer, options)
           else
@@ -26,6 +27,10 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         def fragment_cache(cached_hash, non_cached_hash)
           root = false if instance_options.include?(:include)
           ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
+        end
+
+        def default_key_format
+          :dasherize
         end
 
         private
@@ -85,7 +90,7 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           type = resource_identifier_type_for(serializer)
           id   = resource_identifier_id_for(serializer)
 
-          { id: id.to_s, type: type }
+          { id: id.to_s, type: format_key(type).to_s }
         end
 
         def resource_object_for(serializer, options = {})
@@ -94,7 +99,15 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
           cache_check(serializer) do
             result = resource_identifier_for(serializer)
             attributes = serializer.attributes(options).except(:id)
-            result[:attributes] = attributes if attributes.any?
+
+            if attributes.any?
+              attributes = attributes.each_with_object({}) do |(name, value), hash|
+                hash[format_key(name)] = value
+              end
+
+              result[:attributes] = attributes
+            end
+
             result
           end
         end
@@ -120,7 +133,17 @@ class ActiveModel::Serializer::Adapter::JsonApi < ActiveModel::Serializer::Adapt
         end
 
         def relationships_for(serializer)
-          Hash[serializer.associations.map { |association| [association.key, { data: relationship_value_for(association.serializer, association.options) }] }]
+          Hash[
+            serializer.associations.map do |association|
+              [
+                format_key(association.key),
+                {
+                  data: relationship_value_for(association.serializer,
+                    association.options)
+                }
+              ]
+            end
+          ]
         end
 
         def included_for(serializer)

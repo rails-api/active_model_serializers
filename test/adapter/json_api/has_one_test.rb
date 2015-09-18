@@ -12,7 +12,7 @@ module ActiveModel
             @bio.author = @author
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
             @anonymous_post = Post.new(id: 43, title: 'Hello!!', body: 'Hello, world!!')
-            @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+            @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
             @post.comments = [@comment]
             @anonymous_post.comments = []
             @comment.post = @post
@@ -64,7 +64,7 @@ module ActiveModel
             expected = {
               data: {
                 id: '1',
-                type: 'virtual_values',
+                type: 'virtual-values',
                 relationships: {
                   maker: { data: { id: 1 } },
                   reviews: { data: [{ id: 1 }, { id: 2 }] }

@@ -30,7 +30,7 @@ module ActiveModel
         @blog = Blog.new({ name: 'AMS Blog' })
         @post = Post.new({ title: 'New Post', body: 'Body' })
         @tag = Tag.new({ name: '#hashtagged' })
-        @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+        @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown' })
         @post.comments = [@comment]
         @post.tags = [@tag]
         @post.blog = @blog

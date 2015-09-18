@@ -128,6 +128,27 @@ module ActiveModel
         json[meta_key] = meta if meta
         json
       end
+
+      def key_format
+        instance_options[:key_format] || ActiveModel::Serializer.config.key_format || default_key_format
+      end
+
+      def format_key(formattable_key)
+        case key_format
+        when :lower_camel
+          formattable_key.to_s.camelize(:lower).to_sym
+        when :dasherize, :json_api
+          formattable_key.to_s.underscore.dasherize.to_sym
+        when :underscore
+          formattable_key.to_s.underscore.to_sym
+        else
+          formattable_key
+        end
+      end
+
+      def default_key_format
+        :unaltered
+      end
     end
   end
 end

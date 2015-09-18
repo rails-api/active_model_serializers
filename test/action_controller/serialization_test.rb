@@ -46,7 +46,7 @@ module ActionController
         end
 
         def render_object_with_cache_enabled
-          @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
           @author  = Author.new(id: 1, name: 'Joao Moura.')
           @post    = Post.new(id: 1, title: 'New Post', body: 'Body', comments: [@comment], author: @author)
 
@@ -72,7 +72,7 @@ module ActionController
         end
 
         def render_object_expired_with_cache_enabled
-          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
           author = Author.new(id: 1, name: 'Joao Moura.')
           post = Post.new(id: 1, title: 'New Post', body: 'Body', comments: [comment], author: author)
 
@@ -91,7 +91,7 @@ module ActionController
         end
 
         def render_changed_object_with_cache_enabled
-          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
           author = Author.new(id: 1, name: 'Joao Moura.')
           post = Post.new(id: 1, title: 'ZOMG a New Post', body: 'Body', comments: [comment], author: author)
 
@@ -121,7 +121,7 @@ module ActionController
         end
 
         def render_fragment_changed_object_with_relationship
-          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+          comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
           comment2 = Comment.new(id: 1, body: 'ZOMG AN UPDATED-BUT-NOT-CACHE-EXPIRED COMMENT')
           like = Like.new(id: 1, likeable: comment, time: 3.days.ago)
 
@@ -262,7 +262,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT',
+              originalFormat: 'markdown' }
           ],
           blog: {
             id: 999,
@@ -301,7 +302,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT',
+              originalFormat: 'markdown' }
           ],
           blog: {
             id: 999,
@@ -355,7 +357,8 @@ module ActionController
             'time' => Time.zone.now.to_s,
             'likeable' => {
               'id' => 1,
-              'body' => 'ZOMG A COMMENT'
+              'body' => 'ZOMG A COMMENT',
+              'originalFormat' => 'markdown'
             }
           }
 
@@ -375,7 +378,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT',
+              originalFormat: 'markdown' }
           ],
           blog: {
             id: 999,

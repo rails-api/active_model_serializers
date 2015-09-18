@@ -5,7 +5,7 @@ module ActiveModel
     class CacheTest < Minitest::Test
       def setup
         ActionController::Base.cache_store.clear
-        @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
+        @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
         @post           = Post.new(title: 'New Post', body: 'Body')
         @bio            = Bio.new(id: 1, content: 'AMS Contributor')
         @author         = Author.new(name: 'Joao M. D. Moura')

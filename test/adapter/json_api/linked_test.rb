@@ -14,8 +14,8 @@ module ActiveModel
             @second_post = Post.new(id: 20, title: 'New Post', body: 'Body')
             @third_post = Post.new(id: 30, title: 'Yet Another Post', body: 'Body')
             @blog = Blog.new({ name: 'AMS Blog' })
-            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
-            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+            @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
+            @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text')
             @first_post.blog = @blog
             @second_post.blog = @blog
             @third_post.blog = nil
@@ -84,7 +84,8 @@ module ActiveModel
                   id: '1',
                   type: 'comments',
                   attributes: {
-                    body: 'ZOMG A COMMENT'
+                    body: 'ZOMG A COMMENT',
+                    'original-format': 'markdown'
                   },
                   relationships: {
                     post: { data: { type: 'posts', id: '10' } },
@@ -95,6 +96,7 @@ module ActiveModel
                   type: 'comments',
                   attributes: {
                     body: 'ZOMG ANOTHER COMMENT',
+                    'original-format': 'text'
                   },
                   relationships: {
                     post: { data: { type: 'posts', id: '10' } },
@@ -212,7 +214,7 @@ module ActiveModel
             expected = {
               related: {
                 data: [{
-                  type: 'spam_unrelated_links',
+                  type: 'spam-unrelated-links',
                   id: '456'
                 }]
               }

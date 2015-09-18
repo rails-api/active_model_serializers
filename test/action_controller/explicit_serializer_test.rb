@@ -43,8 +43,8 @@ module ActionController
           @author = Author.new(name: 'Jane Blogger')
           @author.posts = [@post]
           @post.author = @author
-          @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
-          @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
+          @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT', original_format: 'markdown')
+          @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT', original_format: 'text')
           @post.comments = [@first_comment, @second_comment]
           @first_comment.post = @post
           @first_comment.author = nil
