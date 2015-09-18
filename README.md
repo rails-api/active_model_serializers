@@ -187,6 +187,38 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+### Overriding the Key Format
+
+You can specify that serializers use a different style for the format of the
+keys that are sent over. This can be done globally or at the controller action
+level.
+
+Each adapter has a default format, so typically you're either not going to have
+to change this, or you'll edit the global setting.
+
+For example, the JSON adapter defaults to `lower_camel` whereas the JSON API
+adapter defaults to `dasherize`. Any other adapter will default to `unaltered`.
+
+```ruby
+# Global
+ActiveModel::Serializer.config.key_format = :lower_camel
+
+# Per Controller Action
+class MyController < ActionController::Base
+  def index
+    render json:       my_resource,
+           key_format: :lower_camel
+  end
+end
+```
+
+#### Currently Supported Key Formats ####
+
+* `:unaltered`
+* `:lower_camel`
+* `:underscore`
+* `:dasherize` (aliased to `json_api`)
+
 ### Built in Adapters
 
 #### FlattenJSON
