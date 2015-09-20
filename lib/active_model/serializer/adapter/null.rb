@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
-    class Adapter
-      class Null < Adapter
+    module Adapter
+      class Null < Base
         def serializable_hash(options = nil)
           {}
         end

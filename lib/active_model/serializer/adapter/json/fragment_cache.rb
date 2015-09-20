@@ -1,6 +1,6 @@
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class Json
         class FragmentCache
           def fragment_cache(cached_hash, non_cached_hash)

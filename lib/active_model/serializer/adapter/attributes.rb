@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
-    class Adapter
-      class Attributes < Adapter
+    module Adapter
+      class Attributes < Base
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)

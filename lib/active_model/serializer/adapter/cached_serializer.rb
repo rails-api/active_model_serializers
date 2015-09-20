@@ -1,6 +1,6 @@
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class CachedSerializer
         def initialize(serializer)
           @cached_serializer = serializer

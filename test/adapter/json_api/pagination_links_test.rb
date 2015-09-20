@@ -6,7 +6,7 @@ require 'kaminari/hooks'
 
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class JsonApi
         class PaginationLinksTest < Minitest::Test
           URI = 'http://example.com'

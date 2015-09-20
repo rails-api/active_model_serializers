@@ -1,7 +1,7 @@
 require 'test_helper'
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class FragmentCacheTest < Minitest::Test
         def setup
           @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')

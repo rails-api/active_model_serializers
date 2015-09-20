@@ -127,7 +127,7 @@ module ActiveModel
       def test_inherited_adapter_hooks_register_adapter
         Object.const_set(:MyAdapter, Class.new)
         my_adapter = MyAdapter
-        ActiveModel::Serializer::Adapter.inherited(my_adapter)
+        ActiveModel::Serializer::Adapter::Base.inherited(my_adapter)
         assert_equal ActiveModel::Serializer::Adapter.lookup(:my_adapter), my_adapter
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete('my_adapter'.freeze)
@@ -138,7 +138,7 @@ module ActiveModel
         Object.const_set(:MyNamespace, Module.new)
         MyNamespace.const_set(:MyAdapter, Class.new)
         my_adapter = MyNamespace::MyAdapter
-        ActiveModel::Serializer::Adapter.inherited(my_adapter)
+        ActiveModel::Serializer::Adapter::Base.inherited(my_adapter)
         assert_equal ActiveModel::Serializer::Adapter.lookup(:'my_namespace/my_adapter'), my_adapter
       ensure
         ActiveModel::Serializer::Adapter.adapter_map.delete('my_namespace/my_adapter'.freeze)
@@ -151,8 +151,8 @@ module ActiveModel
         my_adapter = MyAdapter
         Object.const_set(:MySubclassedAdapter, Class.new(MyAdapter))
         my_subclassed_adapter = MySubclassedAdapter
-        ActiveModel::Serializer::Adapter.inherited(my_adapter)
-        ActiveModel::Serializer::Adapter.inherited(my_subclassed_adapter)
+        ActiveModel::Serializer::Adapter::Base.inherited(my_adapter)
+        ActiveModel::Serializer::Adapter::Base.inherited(my_subclassed_adapter)
         assert_equal ActiveModel::Serializer::Adapter.lookup(:my_adapter), my_adapter
         assert_equal ActiveModel::Serializer::Adapter.lookup(:my_subclassed_adapter), my_subclassed_adapter
       ensure

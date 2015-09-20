@@ -1,6 +1,6 @@
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class FragmentCache
         attr_reader :serializer
 
