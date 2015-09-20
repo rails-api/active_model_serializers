@@ -58,12 +58,12 @@ module ActiveModel
           return adapter if adapter.is_a?(Class)
           adapter_name = adapter.to_s.underscore
           # 2. return if registered
-          adapter_map.fetch(adapter_name) {
+          adapter_map.fetch(adapter_name) do
             # 3. try to find adapter class from environment
             adapter_class = find_by_name(adapter_name)
             register(adapter_name, adapter_class)
             adapter_class
-          }
+          end
         rescue NameError, ArgumentError => e
           failure_message =
             "NameError: #{e.message}. Unknown adapter: #{adapter.inspect}. Valid adapters are: #{adapters}"

@@ -130,14 +130,11 @@ module ActiveModel
           end
         end
 
-        def included_resources(include_tree)
-          included = []
-
-          serializer.associations(include_tree).each do |association|
-            add_included_resources_for(association.serializer, include_tree[association.key], included)
-          end
-
-          included
+        def included_for(serializer)
+          included.flat_map do |inc|
+            association = serializer.associations.find { |assoc| assoc.key == inc.first }
+            _included_for(association.serializer, inc.second) if association
+          end.uniq
         end
 
         def add_included_resources_for(serializer, include_tree, included)

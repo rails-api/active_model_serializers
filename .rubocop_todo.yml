@@ -78,12 +78,6 @@ Style/AndOr:
   Exclude:
     - 'lib/active_model/serializer/lint.rb'
 
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, ProceduralMethods, FunctionalMethods, IgnoredMethods.
-Style/BlockDelimiters:
-  Enabled: false
-
 # Offense count: 46
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
