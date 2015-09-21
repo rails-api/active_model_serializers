@@ -6,6 +6,7 @@ require 'active_model/serializer/associations'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
+require 'active_model/serializer/utils'
 
 module ActiveModel
   class Serializer

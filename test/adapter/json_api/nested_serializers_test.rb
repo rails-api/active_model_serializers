@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class Adapter
+    module Adapter
       class JsonApi
         class NestedSerializersTest < Minitest::Test
           def setup
@@ -18,11 +18,15 @@ module ActiveModel
           end
 
           def test_nested_serializers
-            hash = with_adapter :json_api do
-              ActiveModel::SerializableResource.new(@tweet).serializable_hash
-            end
-
-            assert_equal(nil, hash)
+            actual = ActiveModel::SerializableResource.new(@tweet, adapter: :json_api).serializable_hash
+            expected = {
+              data: {
+                id: '1', type: 'tweets', attributes: { body: 'Tweet 1', date: 'Jan 15' },
+                relationships: { author: { data: { id: '1', type: 'authors' } },
+                                 shares: { data: [{ id: '1', type: 'shares' }] } }
+              }
+            }
+            assert_equal(expected, actual)
           end
         end
       end
