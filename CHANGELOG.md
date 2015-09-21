@@ -23,6 +23,7 @@ Features:
   * adds support for `pagination links` at top level of JsonApi adapter [@bacarini]
   * adds extended format for `include` option to JsonApi adapter [@beauby]
   * adds support for wildcards in `include` option [@beauby]
+  * adds support for nested associations for JSON and Attributes adapters via the `include` option [@NullVoxPopuli, @beauby]
 
 Fixes:
 
