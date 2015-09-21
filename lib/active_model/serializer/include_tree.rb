@@ -68,6 +68,8 @@ module ActiveModel
           self.class.new(@hash[:*])
         when @hash.key?(:**)
           self.class.new(:** => {})
+        else
+          nil
         end
       end
     end
