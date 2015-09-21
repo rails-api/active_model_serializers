@@ -10,15 +10,14 @@ rvm:
   - 2.0.0
   - 2.1
   - 2.2
-  - jruby-19mode
-  - rbx-2
   - ruby-head
+  - rbx-2
 
 install:
   - bundle install --retry=3
 
 script:
-  - bundle exec rake
+  - env CAPTURE_STDERR=false bundle exec rake
   - bundle exec rake rubocop
 
 env:
@@ -28,6 +27,9 @@ env:
   - "RAILS_VERSION=master"
 
 matrix:
+  include:
+  - rvm: jruby-19mode
+    env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
