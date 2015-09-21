@@ -7,8 +7,14 @@ module ActiveModel::Serializer::Utils
   def nested_lookup_paths(klass)
     paths = klass.to_s.split('::').reverse.reduce([]) { |a, e| a + [[e] + Array(a.last)] }.reverse
     paths.map! { |path| "#{path.join('::')}" }
-    paths.select! { |path| Object.const_defined?(path, false) }
-    paths.map! { |path| Object.const_get(path) }
+    paths.map! do |path|
+      begin
+        path.constantize
+      rescue NameError
+        nil
+      end
+    end
+    paths.delete(nil)
     paths.push(Object)
 
     paths
