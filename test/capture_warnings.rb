@@ -28,9 +28,9 @@ class CaptureWarnings
 
   # rubocop:disable Metrics/AbcSize
   def after_tests(lines)
-    app_warnings, other_warnings = lines.partition { |line|
+    app_warnings, other_warnings = lines.partition do |line|
       line.include?(app_root) && !line.include?(bundle_dir)
-    }
+    end
 
     header = "#{'-' * 22} app warnings: #{'-' * 22}"
     output.puts

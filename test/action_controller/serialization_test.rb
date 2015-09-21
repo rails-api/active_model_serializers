@@ -400,25 +400,25 @@ module ActionController
       end
 
       def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
-        controller = Class.new(ImplicitSerializationTestController) {
+        controller = Class.new(ImplicitSerializationTestController) do
           def use_adapter?
             false
           end
-        }.new
-        assert_match(/adapter: false/, (capture(:stderr) {
+        end.new
+        assert_match(/adapter: false/, (capture(:stderr) do
           controller.get_serializer(Profile.new)
-        }))
+        end))
       end
 
       def test_dont_warn_overridding_use_adapter_as_truthy_on_controller_instance
-        controller = Class.new(ImplicitSerializationTestController) {
+        controller = Class.new(ImplicitSerializationTestController) do
           def use_adapter?
             true
           end
-        }.new
-        assert_equal '', (capture(:stderr) {
+        end.new
+        assert_equal '', (capture(:stderr) do
           controller.get_serializer(Profile.new)
-        })
+        end)
       end
     end
   end

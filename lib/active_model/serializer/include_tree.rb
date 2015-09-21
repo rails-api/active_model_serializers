@@ -16,9 +16,9 @@ module ActiveModel
           when Symbol
             { included => {} }
           when Hash
-            included.each_with_object({}) { |(key, value), hash|
+            included.each_with_object({}) do |(key, value), hash|
               hash[key] = include_args_to_hash(value)
-            }
+            end
           when Array
             included.reduce({}) { |a, e| a.merge!(include_args_to_hash(e)) }
           when String
