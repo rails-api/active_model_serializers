@@ -45,6 +45,13 @@ Style/ClassAndModuleChildren:
 Style/Documentation:
   Enabled: false
 
+Style/MissingElse:
+  Enabled: true
+  EnforcedStyle: case
+
+Style/EmptyElse:
+  EnforcedStyle: empty
+
 Style/MultilineOperationIndentation:
   EnforcedStyle: indented
 
