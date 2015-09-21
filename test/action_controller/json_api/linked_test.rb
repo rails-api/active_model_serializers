@@ -51,9 +51,9 @@ module ActionController
             render json: @post, include: [comments: [:author]], adapter: :json_api
           end
 
-          def render_resource_with_nested_has_many_include
+          def render_resource_with_nested_has_many_include_wildcard
             setup_post
-            render json: @post, include: 'author.roles', adapter: :json_api
+            render json: @post, include: 'author.*', adapter: :json_api
           end
 
           def render_resource_with_missing_nested_has_many_include
@@ -96,7 +96,7 @@ module ActionController
         end
 
         def test_render_resource_with_nested_has_many_include
-          get :render_resource_with_nested_has_many_include
+          get :render_resource_with_nested_has_many_include_wildcard
           response = JSON.parse(@response.body)
           expected_linked = [
             {

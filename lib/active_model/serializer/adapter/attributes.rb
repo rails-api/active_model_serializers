@@ -2,6 +2,11 @@ module ActiveModel
   class Serializer
     module Adapter
       class Attributes < Base
+        def initialize(serializer, options = {})
+          super
+          @include_tree = IncludeTree.from_include_args(options[:include] || '*')
+        end
+
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
@@ -13,7 +18,7 @@ module ActiveModel
               serializer.attributes(options)
             end
 
-            serializer.associations.each do |association|
+            serializer.associations(@include_tree).each do |association|
               serializer = association.serializer
               association_options = association.options
 

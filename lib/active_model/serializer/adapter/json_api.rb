@@ -8,7 +8,8 @@ module ActiveModel
 
         def initialize(serializer, options = {})
           super
-          @included = ActiveModel::Serializer::Utils.include_args_to_hash(instance_options[:include])
+          @include_tree = IncludeTree.from_include_args(options[:include])
+
           fields = options.delete(:fields)
           if fields
             @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
@@ -19,10 +20,11 @@ module ActiveModel
 
         def serializable_hash(options = nil)
           options ||= {}
+
           if serializer.respond_to?(:each)
-            serializable_hash_for_collection(serializer, options)
+            serializable_hash_for_collection(options)
           else
-            serializable_hash_for_single_resource(serializer, options)
+            serializable_hash_for_single_resource(options)
           end
         end
 
@@ -34,10 +36,10 @@ module ActiveModel
         private
 
         ActiveModel.silence_warnings do
-          attr_reader :included, :fieldset
+          attr_reader :fieldset
         end
 
-        def serializable_hash_for_collection(serializer, options)
+        def serializable_hash_for_collection(options)
           hash = { data: [] }
           serializer.each do |s|
             result = self.class.new(s, instance_options.merge(fieldset: fieldset)).serializable_hash(options)
@@ -57,10 +59,10 @@ module ActiveModel
           hash
         end
 
-        def serializable_hash_for_single_resource(serializer, options)
+        def serializable_hash_for_single_resource(options)
           primary_data = primary_data_for(serializer, options)
           relationships = relationships_for(serializer)
-          included = included_for(serializer)
+          included = included_resources(@include_tree)
           hash = { data: primary_data }
           hash[:data][:relationships] = relationships if relationships.any?
           hash[:included] = included if included.any?
@@ -123,37 +125,37 @@ module ActiveModel
         end
 
         def relationships_for(serializer)
-          Hash[serializer.associations.map { |association| [association.key, { data: relationship_value_for(association.serializer, association.options) }] }]
+          serializer.associations.each_with_object({}) do |association, hash|
+            hash[association.key] = { data: relationship_value_for(association.serializer, association.options) }
+          end
         end
 
-        def included_for(serializer)
-          included.flat_map { |inc|
-            association = serializer.associations.find { |assoc| assoc.key == inc.first }
-            _included_for(association.serializer, inc.second) if association
-          }.uniq
+        def included_resources(include_tree)
+          included = []
+
+          serializer.associations(include_tree).each do |association|
+            add_included_resources_for(association.serializer, include_tree[association.key], included)
+          end
+
+          included
         end
 
-        def _included_for(serializer, includes)
+        def add_included_resources_for(serializer, include_tree, included)
           if serializer.respond_to?(:each)
-            serializer.flat_map { |s| _included_for(s, includes) }.uniq
+            serializer.each { |s| add_included_resources_for(s, include_tree, included) }
           else
-            return [] unless serializer && serializer.object
+            return unless serializer && serializer.object
 
             primary_data = primary_data_for(serializer, instance_options)
             relationships = relationships_for(serializer)
             primary_data[:relationships] = relationships if relationships.any?
 
-            included = [primary_data]
+            return if included.include?(primary_data)
+            included.push(primary_data)
 
-            includes.each do |inc|
-              association = serializer.associations.find { |assoc| assoc.key == inc.first }
-              if association
-                included.concat(_included_for(association.serializer, inc.second))
-                included.uniq!
-              end
+            serializer.associations(include_tree).each do |association|
+              add_included_resources_for(association.serializer, include_tree[association.key], included)
             end
-
-            included
           end
         end
 
