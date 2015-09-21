@@ -75,6 +75,16 @@ module ActiveModel
 
             assert_equal 1, adapter.serializable_hash[:virtual_values].length
           end
+
+          def test_include_option
+            serializer = ArraySerializer.new([@first_post, @second_post])
+            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include: '')
+            actual = adapter.serializable_hash
+            expected = { posts: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' },
+                                 { id: 2, title: 'New Post', body: 'Body' }] }
+
+            assert_equal(expected, actual)
+          end
         end
       end
     end

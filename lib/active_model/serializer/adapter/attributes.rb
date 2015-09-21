@@ -10,7 +10,7 @@ module ActiveModel
         def serializable_hash(options = nil)
           options ||= {}
           if serializer.respond_to?(:each)
-            result = serializer.map { |s| Attributes.new(s).serializable_hash(options) }
+            result = serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
           else
             hash = {}
 
