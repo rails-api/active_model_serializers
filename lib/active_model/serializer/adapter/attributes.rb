@@ -7,31 +7,6 @@ module ActiveModel
           @include_tree = IncludeTree.from_include_args(options[:include] || '*')
         end
 
-        def serializable_hash_for_collection(options)
-          serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
-        end
-
-        def serializable_hash_for_single_resource(options)
-          hash = {}
-
-          core = cache_check(serializer) do
-            serializer.attributes(options)
-          end
-
-          serializer.associations(@include_tree).each do |association|
-            hash[association.key] =
-              if association.options[:virtual_value]
-                association.options[:virtual_value]
-              elsif association.serializer && association.serializer.object
-                Attributes.new(association.serializer, association.options.merge(include: @include_tree[association.key]))
-                  .serializable_hash(options)
-              end
-          end
-          result = core.merge hash
-
-          result
-        end
-
         def serializable_hash(options = nil)
           options ||= {}
 
