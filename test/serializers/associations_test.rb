@@ -3,26 +3,6 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssociationsTest < Minitest::Test
-      class Model
-        def initialize(hash = {})
-          @attributes = hash
-        end
-
-        def read_attribute_for_serialization(name)
-          @attributes[name]
-        end
-
-        def method_missing(meth, *args)
-          if meth.to_s =~ /^(.*)=$/
-            @attributes[$1.to_sym] = args[0]
-          elsif @attributes.key?(meth)
-            @attributes[meth]
-          else
-            super
-          end
-        end
-      end
-
       def setup
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
