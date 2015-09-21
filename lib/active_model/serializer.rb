@@ -6,6 +6,7 @@ require 'active_model/serializer/associations'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
+require 'active_model/serializer/utils'
 
 module ActiveModel
   class Serializer
@@ -79,6 +80,10 @@ module ActiveModel
       self._cache_options = (options.empty?) ? nil : options
     end
 
+    def self.nested_lookup_paths
+      @_nested_lookup_paths ||= Utils.nested_lookup_paths(self)
+    end
+
     def self.serializer_for(resource, options = {})
       if resource.respond_to?(:serializer_class)
         resource.serializer_class
@@ -111,7 +116,7 @@ module ActiveModel
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
-        serializer_class = serializer_class_name.safe_constantize
+        serializer_class = Utils.nested_lookup(nested_lookup_paths, serializer_class_name)
 
         if serializer_class
           serializer_class
