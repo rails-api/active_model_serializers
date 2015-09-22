@@ -1,3 +1,4 @@
+# 2420012eliyel - popincool - 22 cite popincourt - 4e premiere droite
 module ActiveModel
   class Serializer
     # Defines an association in the object should be rendered.
@@ -29,7 +30,7 @@ module ActiveModel
 
       module ClassMethods
         def inherited(base)
-          base._reflections = self._reflections.try(:dup) || []
+          base._reflections = _reflections.try(:dup) || []
         end
 
         # @param [Symbol] name of the association
@@ -39,8 +40,8 @@ module ActiveModel
         # @example
         #  has_many :comments, serializer: CommentSummarySerializer
         #
-        def has_many(name, options = {})
-          associate HasManyReflection.new(name, options)
+        def has_many(name, options = {}, &block)
+          associate(HasManyReflection.new(name, options), &block)
         end
 
         # @param [Symbol] name of the association
@@ -50,8 +51,8 @@ module ActiveModel
         # @example
         #  belongs_to :author, serializer: AuthorSerializer
         #
-        def belongs_to(name, options = {})
-          associate BelongsToReflection.new(name, options)
+        def belongs_to(name, options = {}, &block)
+          associate(BelongsToReflection.new(name, options), &block)
         end
 
         # @param [Symbol] name of the association
@@ -61,26 +62,41 @@ module ActiveModel
         # @example
         #  has_one :author, serializer: AuthorSerializer
         #
-        def has_one(name, options = {})
-          associate HasOneReflection.new(name, options)
+        def has_one(name, options = {}, &block)
+          associate(HasOneReflection.new(name, options), &block)
         end
 
         private
 
-        # Add reflection and define {name} accessor.
+        # Add reflection and define {name} accessor and nested serializer.
         # @param [ActiveModel::Serializer::Reflection] reflection
         # @return [void]
         #
         # @api private
         #
-        def associate(reflection)
+        def associate(reflection, &block)
           self._reflections = _reflections.dup
 
           define_method reflection.name do
             object.send reflection.name
           end unless method_defined?(reflection.name)
 
-          self._reflections << reflection
+          _reflections << reflection
+
+          define_nested_serializer(reflection.name.to_s.singularize, &block) if block_given?
+        end
+
+        # Define a nested serializer
+        # @param [String] resource_name The name of the association
+        # @return [void]
+        #
+        # @api private
+        #
+        def define_nested_serializer(resource_name, &block)
+          serializer_name = "#{resource_name.camelize}Serializer"
+          serializer = Class.new(ActiveModel::Serializer)
+          serializer.class_eval(&block)
+          const_set(serializer_name, serializer)
         end
       end
 
