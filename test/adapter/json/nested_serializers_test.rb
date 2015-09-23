@@ -18,14 +18,8 @@ module ActiveModel
           end
 
           def test_nested_serializers
-            actual = ActiveModel::SerializableResource.new(@tweet, adapter: :json_api).serializable_hash
-            expected = {
-              data: {
-                id: '1', type: 'tweets', attributes: { body: 'Tweet 1', date: 'Jan 15' },
-                relationships: { author: { data: { id: '1', type: 'authors' } },
-                                 shares: { data: [{ id: '1', type: 'shares' }] } }
-              }
-            }
+            actual = ActiveModel::SerializableResource.new(@tweet, adapter: :json).serializable_hash
+            expected = { tweet: { id: 1, body: 'Tweet 1', date: 'Jan 15', author: { id: 1 }, shares: [{ id: 1, platform: 'facebook' }] } }
             assert_equal(expected, actual)
           end
         end
