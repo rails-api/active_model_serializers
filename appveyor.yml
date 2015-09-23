@@ -17,6 +17,7 @@ install:
   - gem --version
   - gem install bundler
   - bundler --version
+  - bundle platform
   - bundle install --retry=3
 
 test_script:
