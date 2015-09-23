@@ -111,12 +111,10 @@ module ActiveModel
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
-        serializer_class =
-          if const_defined?(serializer_class_name)
-            const_get(serializer_class_name)
-          else
-            serializer_class_name.safe_constantize
-          end
+        global_serializer_class = serializer_class_name.safe_constantize
+        nested_serializer_class = "#{self}::#{serializer_class_name}".safe_constantize
+        serializer_class = nested_serializer_class || global_serializer_class
+
         if serializer_class
           serializer_class
         elsif klass.superclass
