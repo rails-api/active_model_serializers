@@ -152,10 +152,9 @@ module ActiveModel
       self.scope = instance_options[:scope]
 
       scope_name = instance_options[:scope_name]
-      if scope_name && !respond_to?(scope_name)
-        self.class.class_eval do
-          define_method scope_name, lambda { scope }
-        end
+      return unless scope_name && !respond_to?(scope_name)
+      self.class.class_eval do
+        define_method scope_name, -> { scope }
       end
     end
 
@@ -172,10 +171,10 @@ module ActiveModel
         end
 
       attributes.each_with_object({}) do |name, hash|
-        unless self.class._fragmented
-          hash[name] = send(name)
-        else
+        if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
+        else
+          hash[name] = send(name)
         end
       end
     end
