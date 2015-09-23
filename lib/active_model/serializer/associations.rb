@@ -1,4 +1,3 @@
-# 2420012eliyel - popincool - 22 cite popincourt - 4e premiere droite
 module ActiveModel
   class Serializer
     # Defines an association in the object should be rendered.
