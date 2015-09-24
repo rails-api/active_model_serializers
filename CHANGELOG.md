@@ -18,6 +18,7 @@ Features:
 - [#1127](https://github.com/rails-api/active_model_serializers/pull/1127) Add support for nested
     associations for JSON and Attributes adapters via the `include` option (@NullVoxPopuli, @beauby)
 - [#1193](https://github.com/rails-api/active_model_serializers/pull/1193) Add support for inline nested serializers (@beauby)
+- [#1196](https://github.com/rails-api/active_model_serializers/pull/1196) Add support for namespaced serializers (@beauby)
 
 Fixes:
 
