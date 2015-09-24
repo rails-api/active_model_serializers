@@ -110,22 +110,40 @@ module ActiveModel
       Digest::MD5.hexdigest(serializer_file_contents)
     end
 
+    # Compute the lookup chain for a given serializer class, parent serializer and controller
+    # @param [String] serializer_class_name The class name to lookup
+    # @param [ActiveModel::Serializer] parent_serializer The instance of the parent serializer, if any
+    # @param [ActionController] controller The instance of the calling controller, if any
+    #
+    # @return [Array<String>] The lookup chain
+    #
+    def self.serializer_lookup_chain_for(serializer_class_name, parent_serializer, controller)
+      chain = []
+
+      # Look for a serializer nested inside the current serializer first, if inside a user-defined serializer
+      chain.push("#{self}::#{serializer_class_name}") if self.class != ActiveModel::Serializer
+
+      # Look for a serializer inside the controller namespace
+      chain.push("#{controller.class.name.deconstantize}::#{serializer_class_name}") if controller
+
+      # Look for a serializer inside the root namespace (i.e. that of the first serializer of the chain)
+      if parent_serializer
+        chain.push("#{parent_serializer.root_serializer.class.name.deconstantize}::#{serializer_class_name}")
+      elsif self.class != ActiveModel::Serializer # The first serializer of the chain does not have a parent
+        chain.push("#{name.deconstantize}::#{serializer_class_name}")
+      end
+
+      # Finally, look for the serializer in the global namespace
+      chain.push(serializer_class_name)
+
+      chain
+    end
+
     def self.get_serializer_for(klass, parent_serializer, controller)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
-
-        nested_serializer_class_name = "#{self}::#{serializer_class_name}"
-        serializer_class = nested_serializer_class_name.safe_constantize
-
-        if parent_serializer
-          namespaced_serializer_class_name = "#{parent_serializer.root_serializer.class.name.deconstantize}::#{serializer_class_name}"
-          serializer_class ||= namespaced_serializer_class_name.safe_constantize
-        elsif controller
-          controller_namespaced_serializer_class_name = "#{controller.class.name.deconstantize}::#{serializer_class_name}"
-          serializer_class ||= controller_namespaced_serializer_class_name.safe_constantize
-        end
-
-        serializer_class ||= serializer_class_name.safe_constantize
+        serializer_class = serializer_lookup_chain_for(serializer_class_name, parent_serializer, controller).lazy
+                           .map(&:safe_constantize).find { |x| x }
 
         if serializer_class
           serializer_class
