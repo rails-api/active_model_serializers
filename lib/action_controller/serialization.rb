@@ -25,7 +25,8 @@ module ActionController
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
         options[:adapter] = false
       end
-      serializable_resource = ActiveModel::SerializableResource.new(resource, options)
+      serializable_options = options.merge(controller: self)
+      serializable_resource = ActiveModel::SerializableResource.new(resource, serializable_options)
       if serializable_resource.serializer?
         serializable_resource.serialization_scope ||= serialization_scope
         serializable_resource.serialization_scope_name = _serialization_scope

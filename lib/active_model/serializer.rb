@@ -87,7 +87,7 @@ module ActiveModel
       elsif options.key?(:serializer)
         options[:serializer]
       else
-        get_serializer_for(resource.class, options[:parent_serializer])
+        get_serializer_for(resource.class, options[:parent_serializer], options[:controller])
       end
     end
 
@@ -110,7 +110,7 @@ module ActiveModel
       Digest::MD5.hexdigest(serializer_file_contents)
     end
 
-    def self.get_serializer_for(klass, parent_serializer)
+    def self.get_serializer_for(klass, parent_serializer, controller)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
 
@@ -120,6 +120,9 @@ module ActiveModel
         if parent_serializer
           namespaced_serializer_class_name = "#{parent_serializer.root_serializer.class.name.deconstantize}::#{serializer_class_name}"
           serializer_class ||= namespaced_serializer_class_name.safe_constantize
+        elsif controller
+          controller_namespaced_serializer_class_name = "#{controller.class.name.deconstantize}::#{serializer_class_name}"
+          serializer_class ||= controller_namespaced_serializer_class_name.safe_constantize
         end
 
         serializer_class ||= serializer_class_name.safe_constantize
@@ -127,7 +130,7 @@ module ActiveModel
         if serializer_class
           serializer_class
         elsif klass.superclass
-          get_serializer_for(klass.superclass, parent_serializer)
+          get_serializer_for(klass.superclass, parent_serializer, controller)
         end
       end
     end
