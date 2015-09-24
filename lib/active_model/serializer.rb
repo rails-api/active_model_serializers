@@ -84,8 +84,10 @@ module ActiveModel
         resource.serializer_class
       elsif resource.respond_to?(:to_ary)
         config.array_serializer
+      elsif options.key?(:serializer)
+        options[:serializer]
       else
-        options.fetch(:serializer) { get_serializer_for(resource.class) }
+        get_serializer_for(resource.class, options[:parent_serializer])
       end
     end
 
@@ -108,22 +110,29 @@ module ActiveModel
       Digest::MD5.hexdigest(serializer_file_contents)
     end
 
-    def self.get_serializer_for(klass)
+    def self.get_serializer_for(klass, parent_serializer)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
-        global_serializer_class = serializer_class_name.safe_constantize
-        nested_serializer_class = "#{self}::#{serializer_class_name}".safe_constantize
-        serializer_class = nested_serializer_class || global_serializer_class
+
+        nested_serializer_class_name = "#{self}::#{serializer_class_name}"
+        serializer_class = nested_serializer_class_name.safe_constantize
+
+        if parent_serializer
+          namespaced_serializer_class_name = "#{parent_serializer.root_serializer.class.name.deconstantize}::#{serializer_class_name}"
+          serializer_class ||= namespaced_serializer_class_name.safe_constantize
+        end
+
+        serializer_class ||= serializer_class_name.safe_constantize
 
         if serializer_class
           serializer_class
         elsif klass.superclass
-          get_serializer_for(klass.superclass)
+          get_serializer_for(klass.superclass, parent_serializer)
         end
       end
     end
 
-    attr_accessor :object, :root, :meta, :meta_key, :scope
+    attr_accessor :object, :root, :meta, :meta_key, :scope, :parent_serializer, :root_serializer
 
     def initialize(object, options = {})
       self.object = object
@@ -132,6 +141,8 @@ module ActiveModel
       self.meta = instance_options[:meta]
       self.meta_key = instance_options[:meta_key]
       self.scope = instance_options[:scope]
+      self.parent_serializer = instance_options[:parent_serializer]
+      self.root_serializer = (parent_serializer && parent_serializer.root_serializer) || self
 
       scope_name = instance_options[:scope_name]
       return unless scope_name && !respond_to?(scope_name)

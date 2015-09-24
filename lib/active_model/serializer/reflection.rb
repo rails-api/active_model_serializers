@@ -42,7 +42,7 @@ module ActiveModel
       def build_association(subject, parent_serializer_options)
         association_value = subject.send(name)
         reflection_options = options.dup
-        serializer_class = subject.class.serializer_for(association_value, reflection_options)
+        serializer_class = subject.class.serializer_for(association_value, reflection_options.merge(parent_serializer: subject))
 
         if serializer_class
           begin
@@ -67,7 +67,7 @@ module ActiveModel
 
         serializer_options = parent_serializer_options.except(:serializer)
         serializer_options[:serializer] = serializer if serializer
-        serializer_options[:_parent_serializer] = subject.class
+        serializer_options[:parent_serializer] = subject
         serializer_options
       end
     end

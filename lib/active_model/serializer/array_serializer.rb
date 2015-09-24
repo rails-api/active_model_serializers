@@ -5,19 +5,23 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@serializers
 
-      attr_reader :object, :root, :meta, :meta_key
+      attr_reader :object, :root, :meta, :meta_key, :parent_serializer, :root_serializer
 
       def initialize(resources, options = {})
         @root = options[:root]
         @object = resources
-        parent_serializer = options.fetch(:_parent_serializer, ActiveModel::Serializer)
+        @parent_serializer = options[:parent_serializer]
+        @root_serializer = @parent_serializer.try(:root_serializer)
+        lookup_serializer = (@parent_serializer && @parent_serializer.class) || ActiveModel::Serializer
         @serializers = resources.map do |resource|
-          serializer_class = options.fetch(:serializer) { parent_serializer.serializer_for(resource) }
+          serializer_class = options.fetch(:serializer) { lookup_serializer.serializer_for(resource) }
 
           if serializer_class.nil?
             fail NoSerializerError, "No serializer found for resource: #{resource.inspect}"
           else
-            serializer_class.new(resource, options.except(:serializer))
+            serializer_options = options.except(:serializer)
+            serializer_options.merge!(parent_serializer: @parent_serializer) if @parent_serializer
+            serializer_class.new(resource, serializer_options)
           end
         end
         @meta     = options[:meta]
