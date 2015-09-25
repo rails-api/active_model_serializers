@@ -213,6 +213,26 @@ resources in the `"included"` member when the resource names are included in the
   render @posts, include: 'author,comments,comments.author'
 ```
 
+In addition, two types of wildcards may be used. `*` includes one level of associations, and `**` includes all recursively. These can be combined with other paths.
+
+```ruby
+  render @posts, include: '**' # or '*' for a single layer
+```
+
+The following would render posts and include the author, the author's comments, and every resource referenced by the author's comments (recursively). It could be combined, like above, with other paths in any combination desired.
+
+```ruby
+  render @posts, include: 'author.comments.**'
+```
+
+The JSON API [specifies](http://jsonapi.org/format/#fetching-includes) that the user may supply a parameter specifying which related resources are to be included:
+
+```ruby
+  render @posts, include: params[:include]
+```
+
+This raises some security concerns since the user could pass in `include=**`, so filter the values for `include` appropriately if you decide to support this JSON API feature.
+
 ## Installation
 
 Add this line to your application's Gemfile:
