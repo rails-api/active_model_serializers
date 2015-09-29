@@ -19,6 +19,7 @@ Features:
     associations for JSON and Attributes adapters via the `include` option (@NullVoxPopuli, @beauby).
 
 Fixes:
+- [#1214](https://github.com/rails-api/active_model_serializers/pull/1214) retrieve the key from the reflection options when building associations (@NullVoxPopuli, @hut8)
 
 Misc:
 - [#1178](https://github.com/rails-api/active_model_serializers/pull/1178) env CAPTURE_STDERR=false lets devs see hard failures (@bf4)
