@@ -203,7 +203,7 @@ module ActiveModel
             assert_equal expected, alt_adapter.serializable_hash[:included]
           end
 
-          def test_underscore_model_namespace_for_linked_resource_type
+          def test_remove_model_namespace_for_linked_resource_type
             spammy_post = Post.new(id: 123)
             spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
             serializer = SpammyPostSerializer.new(spammy_post)
@@ -212,7 +212,7 @@ module ActiveModel
             expected = {
               related: {
                 data: [{
-                  type: 'spam_unrelated_links',
+                  type: 'unrelated_links',
                   id: '456'
                 }]
               }
