@@ -6,6 +6,41 @@ module ActiveModel
         autoload :PaginationLinks
         autoload :FragmentCache
 
+        # TODO: if we like this abstraction and other API objects to it,
+        # then extract to its own file and require it.
+        module ApiObjects
+          module JsonApi
+            ActiveModel::Serializer.config.jsonapi_version = '1.0'
+            ActiveModel::Serializer.config.jsonapi_toplevel_meta = {}
+            # Make JSON API top-level jsonapi member opt-in
+            # ref: http://jsonapi.org/format/#document-top-level
+            ActiveModel::Serializer.config.jsonapi_include_toplevel_object = false
+
+            module_function
+
+            def add!(hash)
+              hash.merge!(object) if include_object?
+            end
+
+            def include_object?
+              ActiveModel::Serializer.config.jsonapi_include_toplevel_object
+            end
+
+            # TODO: see if we can cache this
+            def object
+              object = {
+                jsonapi: {
+                  version: ActiveModel::Serializer.config.jsonapi_version,
+                  meta: ActiveModel::Serializer.config.jsonapi_toplevel_meta
+                }
+              }
+              object[:jsonapi].reject! { |_, v| v.blank? }
+
+              object
+            end
+          end
+        end
+
         def initialize(serializer, options = {})
           super
           @include_tree = IncludeTree.from_include_args(options[:include])
@@ -21,11 +56,16 @@ module ActiveModel
         def serializable_hash(options = nil)
           options ||= {}
 
-          if serializer.respond_to?(:each)
-            serializable_hash_for_collection(options)
-          else
-            serializable_hash_for_single_resource(options)
-          end
+          hash =
+            if serializer.respond_to?(:each)
+              serializable_hash_for_collection(options)
+            else
+              serializable_hash_for_single_resource(options)
+            end
+
+          ApiObjects::JsonApi.add!(hash)
+
+          hash
         end
 
         def fragment_cache(cached_hash, non_cached_hash)

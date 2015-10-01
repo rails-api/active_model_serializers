@@ -4,6 +4,8 @@ module ActiveModel
       include ActiveSupport::Configurable
       extend ActiveSupport::Concern
 
+      # Configuration options may also be set in
+      # Serializers and Adapters
       included do |base|
         base.config.array_serializer = ActiveModel::Serializer::ArraySerializer
         base.config.adapter = :attributes
