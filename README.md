@@ -15,6 +15,13 @@ Adapters describe _how_ attributes and relationships should be serialized.
 By default AMS will use the **Attributes Adapter**. But we strongly advise you to use **JsonApi Adapter** that follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections bellow.
 
+# Documentation
+
+AMS has two main sets of documentation: the
+[Docs](https://github.com/rails-api/active_model_serializers/tree/master/docs),
+which is a comprehensive guide and in
+[RDoc](http://www.rubydoc.info/github/rails-api/active_model_serializers) format.
+
 # RELEASE CANDIDATE, PLEASE READ
 
 This is the master branch of AMS. It will become the `0.10.0` release when it's
