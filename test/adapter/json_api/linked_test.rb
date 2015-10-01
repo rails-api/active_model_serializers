@@ -212,7 +212,7 @@ module ActiveModel
             expected = {
               related: {
                 data: [{
-                  type: 'unrelated_links',
+                  type: 'spam--unrelated_links',
                   id: '456'
                 }]
               }

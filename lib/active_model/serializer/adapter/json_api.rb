@@ -71,7 +71,7 @@ module ActiveModel
         end
 
         def resource_identifier_type_for(serializer)
-          type = serializer.object.class.name.demodulize.underscore
+          type = serializer.object.class.name.underscore.gsub('/', '--')
           ActiveModel::Serializer.config.jsonapi_resource_type == :singular ? type : type.pluralize
         end
 
