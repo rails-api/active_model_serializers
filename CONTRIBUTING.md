@@ -29,3 +29,21 @@ AMS uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIs
 7. Create a new Pull Request
 
 Remember to squash your commits and rebase off `master`.
+
+### Running tests
+
+#### Running with Rake
+
+The easiest way to run the unit tests is through Rake. The default task runs
+the entire test suite for all classes. For more information, checkout the
+full array of rake tasks with "rake -T"
+
+Rake can be found at http://docs.seattlerb.org/rake/.
+
+To run a single test suite
+
+   rake test TEST=path/to/test.rb
+
+which can be further narrowed down to one test:
+
+   rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"
