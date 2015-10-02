@@ -3,11 +3,12 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class RootTest < Minitest::Test
-      class VirtualValue < ::Model
-      end
+      VirtualValue = Class.new(::Model)
+
       class VirtualValueSerializer < ActiveModel::Serializer
         attributes :id
       end
+
       def setup
         @virtual_value = VirtualValue.new(id: 1)
       end
