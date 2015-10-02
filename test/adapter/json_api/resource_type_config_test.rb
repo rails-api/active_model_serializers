@@ -5,6 +5,11 @@ module ActiveModel
     module Adapter
       class JsonApi
         class ResourceTypeConfigTest < Minitest::Test
+          class ProfileTypeSerializer < ActiveModel::Serializer
+            attributes :name
+            type 'profile'
+          end
+
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
             @author.bio = nil
@@ -36,21 +41,28 @@ module ActiveModel
           end
 
           def test_config_plural
-            with_adapter :json_api do
-              with_jsonapi_resource_type :plural do
-                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
-                assert_equal('comments', hash[:data][:type])
-              end
+            with_jsonapi_resource_type :plural do
+              hash = serializable(@comment, adapter: :json_api).serializable_hash
+              assert_equal('comments', hash[:data][:type])
             end
           end
 
           def test_config_singular
-            with_adapter :json_api do
-              with_jsonapi_resource_type :singular do
-                hash = ActiveModel::SerializableResource.new(@comment).serializable_hash
-                assert_equal('comment', hash[:data][:type])
-              end
+            with_jsonapi_resource_type :singular do
+              hash = serializable(@comment, adapter: :json_api).serializable_hash
+              assert_equal('comment', hash[:data][:type])
             end
+          end
+
+          def test_explicit_type_value
+            hash = serializable(@author, serializer: ProfileTypeSerializer, adapter: :json_api).serializable_hash
+            assert_equal('profile', hash.fetch(:data).fetch(:type))
+          end
+
+          private
+
+          def serializable(resource, options = {})
+            ActiveModel::SerializableResource.new(resource, options)
           end
         end
       end
