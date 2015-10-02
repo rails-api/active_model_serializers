@@ -46,6 +46,11 @@ module ActionController
             render json: @post, include: [:author], adapter: :json_api
           end
 
+          def render_resource_with_include_of_custom_key_by_original
+            setup_post
+            render json: @post, include: [:reviews], adapter: :json_api, serializer: PostWithCustomKeysSerializer
+          end
+
           def render_resource_with_nested_include
             setup_post
             render json: @post, include: [comments: [:author]], adapter: :json_api
@@ -135,6 +140,18 @@ module ActionController
             }
           ]
           assert_equal expected_linked, response['included']
+        end
+
+        def test_render_resource_with_include_of_custom_key_by_original
+          get :render_resource_with_include_of_custom_key_by_original
+          response = JSON.parse(@response.body)
+          assert response.key? 'included'
+
+          relationships = response['data']['relationships']
+
+          assert_includes relationships, 'reviews'
+          assert_includes relationships, 'writer'
+          assert_includes relationships, 'site'
         end
 
         def test_render_resource_with_nested_include

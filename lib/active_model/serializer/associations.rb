@@ -92,7 +92,8 @@ module ActiveModel
 
         Enumerator.new do |y|
           self.class._reflections.each do |reflection|
-            next unless include_tree.key?(reflection.name)
+            key = reflection.options.fetch(:key, reflection.name)
+            next unless include_tree.key?(key)
             y.yield reflection.build_association(self, instance_options)
           end
         end
