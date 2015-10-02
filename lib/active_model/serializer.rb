@@ -46,6 +46,10 @@ module ActiveModel
       super
     end
 
+    def self.type(type)
+      self._type = type
+    end
+
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
 
@@ -122,6 +126,7 @@ module ActiveModel
     end
 
     attr_accessor :object, :root, :meta, :meta_key, :scope
+    class_attribute :_type, instance_writer: false
 
     def initialize(object, options = {})
       self.object = object
