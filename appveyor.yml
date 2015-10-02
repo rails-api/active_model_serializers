@@ -21,6 +21,6 @@ install:
   - bundle install --retry=3
 
 test_script:
-  - bundle exec rake test
+  - bundle exec rake ci
 
 build: off

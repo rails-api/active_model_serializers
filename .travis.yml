@@ -17,7 +17,7 @@ install:
   - bundle install --retry=3
 
 script:
-  - env CAPTURE_STDERR=false bundle exec rake
+  - env CAPTURE_STDERR=false bundle exec rake ci
 
 env:
   - "RAILS_VERSION=4.0"
