@@ -103,6 +103,16 @@ module ActiveModel
         # @param [Block] inline definition of the serializer for this association
         # @return [void]
         #
+        # @example
+        #  Namespace::PostSerializer.define_nested_serializer("comment") do
+        #    attributes :id, :content
+        #  end
+        #
+        # is equivalent to
+        #  class Namespace::PostSerializer::CommentSerializer < ActiveModel::Serializer
+        #    attributes :id, :content
+        #  end
+        #
         # @api private
         #
         def define_nested_serializer(resource_name, &block)
