@@ -3,8 +3,9 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssociationMacrosTest < Minitest::Test
-      AuthorSummarySerializer = Class.new
-      class AssociationsTestSerializer < Serializer
+      class AuthorSummarySerializer
+      end
+      class AssociationsTestSerializer < ActiveModel::Serializer
         belongs_to :author, serializer: AuthorSummarySerializer
         has_many :comments
         has_one :category
