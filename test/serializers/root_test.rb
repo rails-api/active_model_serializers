@@ -20,7 +20,9 @@ module ActiveModel
 
       def test_underscore_in_root
         serializer = VirtualValueSerializer.new(@virtual_value)
-        assert_equal('active_model/serializer/root_test/virtual_value', serializer.json_key)
+
+        namespace_path = self.class.to_s.underscore
+        assert_equal("#{namespace_path}/virtual_value", serializer.json_key)
       end
     end
   end
