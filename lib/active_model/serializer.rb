@@ -84,8 +84,10 @@ module ActiveModel
         resource.serializer_class
       elsif resource.respond_to?(:to_ary)
         config.array_serializer
+      elsif options.key?(:serializer)
+        options[:serializer]
       else
-        options.fetch(:serializer) { get_serializer_for(resource.class) }
+        get_serializer_for(resource.class, options[:parent_serializer], options[:controller])
       end
     end
 
@@ -108,20 +110,50 @@ module ActiveModel
       Digest::MD5.hexdigest(serializer_file_contents)
     end
 
-    def self.get_serializer_for(klass)
+    # Compute the lookup chain for a given serializer class, parent serializer and controller
+    # @param [String] serializer_class_name The class name to lookup
+    # @param [ActiveModel::Serializer] parent_serializer The instance of the parent serializer, if any
+    # @param [ActionController] controller The instance of the calling controller, if any
+    #
+    # @return [Array<String>] The lookup chain
+    #
+    def self.serializer_lookup_chain_for(serializer_class_name, parent_serializer, controller)
+      chain = []
+
+      # Look for a serializer nested inside the current serializer first, if inside a user-defined serializer
+      chain.push("#{self}::#{serializer_class_name}") if self.class != ActiveModel::Serializer
+
+      # Look for a serializer inside the controller namespace
+      chain.push("#{controller.class.name.deconstantize}::#{serializer_class_name}") if controller
+
+      # Look for a serializer inside the root namespace (i.e. that of the first serializer of the chain)
+      if parent_serializer
+        chain.push("#{parent_serializer.root_serializer.class.name.deconstantize}::#{serializer_class_name}")
+      elsif self.class != ActiveModel::Serializer # The first serializer of the chain does not have a parent
+        chain.push("#{name.deconstantize}::#{serializer_class_name}")
+      end
+
+      # Finally, look for the serializer in the global namespace
+      chain.push(serializer_class_name)
+
+      chain
+    end
+
+    def self.get_serializer_for(klass, parent_serializer, controller)
       serializers_cache.fetch_or_store(klass) do
         serializer_class_name = "#{klass.name}Serializer"
-        serializer_class = serializer_class_name.safe_constantize
+        serializer_class = serializer_lookup_chain_for(serializer_class_name, parent_serializer, controller).lazy
+                           .map(&:safe_constantize).find { |x| x }
 
         if serializer_class
           serializer_class
         elsif klass.superclass
-          get_serializer_for(klass.superclass)
+          get_serializer_for(klass.superclass, parent_serializer, controller)
         end
       end
     end
 
-    attr_accessor :object, :root, :meta, :meta_key, :scope
+    attr_accessor :object, :root, :meta, :meta_key, :scope, :parent_serializer, :root_serializer
 
     def initialize(object, options = {})
       self.object = object
@@ -130,12 +162,13 @@ module ActiveModel
       self.meta = instance_options[:meta]
       self.meta_key = instance_options[:meta_key]
       self.scope = instance_options[:scope]
+      self.parent_serializer = instance_options[:parent_serializer]
+      self.root_serializer = (parent_serializer && parent_serializer.root_serializer) || self
 
       scope_name = instance_options[:scope_name]
-      if scope_name && !respond_to?(scope_name)
-        self.class.class_eval do
-          define_method scope_name, lambda { scope }
-        end
+      return unless scope_name && !respond_to?(scope_name)
+      self.class.class_eval do
+        define_method scope_name, -> { scope }
       end
     end
 
@@ -152,10 +185,10 @@ module ActiveModel
         end
 
       attributes.each_with_object({}) do |name, hash|
-        unless self.class._fragmented
-          hash[name] = send(name)
-        else
+        if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
+        else
+          hash[name] = send(name)
         end
       end
     end

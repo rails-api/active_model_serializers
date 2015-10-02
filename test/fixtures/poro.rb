@@ -85,6 +85,8 @@ Comment = Class.new(Model) do
     "#{self.class.name.downcase}/#{self.id}"
   end
 end
+Tweet = Class.new(Model)
+Share = Class.new(Model)
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
@@ -258,4 +260,30 @@ Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:id]
   attributes :id
 end
+
+class TweetSerializer < ActiveModel::Serializer
+  attributes :id, :body, :date
+
+  belongs_to :author do
+    attributes :id
+  end
+
+  has_many :shares do
+    attributes :id, :platform
+
+    belongs_to :author do
+      attributes :id, :name
+    end
+  end
+end
+
+class ShareSerializer < ActiveModel::Serializer
+  attributes :id, :platform, :date
+
+  belongs_to :author do
+    attributes :id, :name, :email
+  end
+  belongs_to :post
+end
+
 $VERBOSE = verbose
