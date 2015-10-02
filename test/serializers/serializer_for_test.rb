@@ -38,6 +38,8 @@ module ActiveModel
           @my_profile = MyProfile.new
           @custom_profile = CustomProfile.new
           @model = ::Model.new
+          @tweet = Tweet.new
+          @share1 = Share.new
         end
 
         def test_serializer_for_existing_serializer
@@ -58,6 +60,11 @@ module ActiveModel
         def test_serializer_custom_serializer
           serializer = ActiveModel::Serializer.serializer_for(@custom_profile)
           assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_for_nested_resource
+          serializer = TweetSerializer.serializer_for(@share1)
+          assert_equal(TweetSerializer::ShareSerializer, serializer)
         end
       end
     end

@@ -112,10 +112,25 @@ module ActiveModel
       Digest::MD5.hexdigest(serializer_file_contents)
     end
 
+    # TODO(beauby): Cache this.
+    def self.serializer_lookup_chain_for(klass)
+      chain = []
+
+      resource_class_name = klass.name.demodulize
+      resource_namespace = klass.name.deconstantize
+      serializer_class_name = "#{resource_class_name}Serializer"
+
+      chain.push("#{name}::#{serializer_class_name}")
+      chain.push("#{resource_namespace}::#{serializer_class_name}")
+      chain.push(serializer_class_name)
+
+      chain
+    end
+
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
-        serializer_class_name = "#{klass.name}Serializer"
-        serializer_class = serializer_class_name.safe_constantize
+        # NOTE(beauby): Once we drop 1.9.3 support, we can lazify the map for better perfs.
+        serializer_class = serializer_lookup_chain_for(klass).map(&:safe_constantize).find { |x| x }
 
         if serializer_class
           serializer_class
@@ -137,10 +152,9 @@ module ActiveModel
       self.scope = instance_options[:scope]
 
       scope_name = instance_options[:scope_name]
-      if scope_name && !respond_to?(scope_name)
-        self.class.class_eval do
-          define_method scope_name, lambda { scope }
-        end
+      return unless scope_name && !respond_to?(scope_name)
+      self.class.class_eval do
+        define_method scope_name, -> { scope }
       end
     end
 
@@ -157,10 +171,10 @@ module ActiveModel
         end
 
       attributes.each_with_object({}) do |name, hash|
-        unless self.class._fragmented
-          hash[name] = send(name)
-        else
+        if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
+        else
+          hash[name] = send(name)
         end
       end
     end
