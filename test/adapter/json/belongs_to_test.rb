@@ -26,7 +26,7 @@ module ActiveModel
             expected = { id: 42, title: 'New Post', body: 'Body' }
             actual = resource.serializable_hash[:comment][:post]
 
-            assert_equal expected, actual
+            assert_equal(expected, actual)
           end
 
           def test_include_nil_author
@@ -40,7 +40,7 @@ module ActiveModel
             }
             actual = resource.serializable_hash
 
-            assert_equal expected, actual
+            assert_equal(expected, actual)
           end
 
           def test_include_nil_author_with_specified_serializer
@@ -48,7 +48,7 @@ module ActiveModel
             expected = { post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil } }
             actual = resource.serializable_hash
 
-            assert_equal expected, actual
+            assert_equal(expected, actual)
           end
         end
       end

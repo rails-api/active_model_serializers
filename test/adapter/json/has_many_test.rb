@@ -34,7 +34,7 @@ module ActiveModel
             ]
             actual = resource.serializable_hash[:post][:comments]
 
-            assert_equal expected, actual
+            assert_equal(expected, actual)
           end
 
           def test_has_many_with_no_serializer
@@ -52,7 +52,7 @@ module ActiveModel
             }.to_json
             actual = resource.serializable_hash[:post].to_json
 
-            assert_equal expected, actual
+            assert_equal(expected, actual)
           end
         end
       end
