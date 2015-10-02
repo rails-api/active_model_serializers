@@ -18,7 +18,6 @@ install:
 
 script:
   - env CAPTURE_STDERR=false bundle exec rake
-  - bundle exec rake rubocop
 
 env:
   - "RAILS_VERSION=4.0"
