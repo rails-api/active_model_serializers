@@ -10,9 +10,10 @@ module ActiveModel
       def initialize(resources, options = {})
         @root = options[:root]
         @object = resources
+        parent_serializer = options.fetch(:_parent_serializer, ActiveModel::Serializer)
         @serializers = resources.map do |resource|
           serializer_class = options.fetch(:serializer) do
-            ActiveModel::Serializer.serializer_for(resource)
+            parent_serializer.serializer_for(resource)
           end
 
           if serializer_class.nil?
