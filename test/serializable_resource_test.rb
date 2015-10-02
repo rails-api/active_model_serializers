@@ -2,8 +2,13 @@ require 'test_helper'
 
 module ActiveModel
   class SerializableResourceTest < Minitest::Test
+    class Profile < ::Model
+    end
+    class ProfileSerializer < ActiveModel::Serializer
+      attributes :name, :description, :comments
+    end
     def setup
-      @resource = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+      @resource = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
       @serializer = ProfileSerializer.new(@resource)
       @adapter = ActiveModel::Serializer::Adapter.create(@serializer)
       @serializable_resource = ActiveModel::SerializableResource.new(@resource)
