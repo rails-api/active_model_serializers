@@ -27,8 +27,19 @@ module ActiveModel
       end
 
       class SerializerTest < Minitest::Test
+        module ResourceNamespace
+          Post    = Class.new(::Model)
+          Comment = Class.new(::Model)
+
+          class PostSerializer < ActiveModel::Serializer
+            class CommentSerializer < ActiveModel::Serializer
+            end
+          end
+        end
+
         class MyProfile < Profile
         end
+
         class CustomProfile
           def serializer_class; ProfileSerializer; end
         end
@@ -58,6 +69,18 @@ module ActiveModel
         def test_serializer_custom_serializer
           serializer = ActiveModel::Serializer.serializer_for(@custom_profile)
           assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_for_namespaced_resource
+          post = ResourceNamespace::Post.new
+          serializer = ActiveModel::Serializer.serializer_for(post)
+          assert_equal(ResourceNamespace::PostSerializer, serializer)
+        end
+
+        def test_serializer_for_nested_resource
+          comment = ResourceNamespace::Comment.new
+          serializer = ResourceNamespace::PostSerializer.serializer_for(comment)
+          assert_equal(ResourceNamespace::PostSerializer::CommentSerializer, serializer)
         end
       end
     end
