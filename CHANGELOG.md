@@ -17,6 +17,7 @@ Features:
 - [#1158](https://github.com/rails-api/active_model_serializers/pull/1158) Add support for wildcards in `include` option (@beauby)
 - [#1127](https://github.com/rails-api/active_model_serializers/pull/1127) Add support for nested
     associations for JSON and Attributes adapters via the `include` option (@NullVoxPopuli, @beauby).
+- [#1050](https://github.com/rails-api/active_model_serializers/pull/1050) Add support for toplevel jsonapi member (@beauby, @bf4)
 
 Fixes:
 

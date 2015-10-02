@@ -1,5 +1,4 @@
 require 'thread_safe'
-require 'active_model/serializer/adapter'
 require 'active_model/serializer/array_serializer'
 require 'active_model/serializer/include_tree'
 require 'active_model/serializer/associations'
@@ -11,6 +10,7 @@ module ActiveModel
   class Serializer
     include Configuration
     include Associations
+    require 'active_model/serializer/adapter'
 
     # Matches
     #  "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
