@@ -34,10 +34,14 @@ module ActiveModel
 
         # @param [Symbol] name of the association
         # @param [Hash<Symbol => any>] options for the reflection
+        # @param [Block] optional inline definition of the serializer for this association
         # @return [void]
         #
         # @example
         #  has_many :comments, serializer: CommentSummarySerializer
+        #  has_many :comments do
+        #    attributes :id, :content
+        #  end
         #
         def has_many(name, options = {}, &block)
           associate(HasManyReflection.new(name, options), &block)
@@ -45,10 +49,14 @@ module ActiveModel
 
         # @param [Symbol] name of the association
         # @param [Hash<Symbol => any>] options for the reflection
+        # @param [Block] optional inline definition of the serializer for this association
         # @return [void]
         #
         # @example
         #  belongs_to :author, serializer: AuthorSerializer
+        #  belongs_to :author do
+        #    attributes :id, :name
+        #  end
         #
         def belongs_to(name, options = {}, &block)
           associate(BelongsToReflection.new(name, options), &block)
@@ -56,10 +64,14 @@ module ActiveModel
 
         # @param [Symbol] name of the association
         # @param [Hash<Symbol => any>] options for the reflection
+        # @param [Block] optional inline definition of the serializer for this association
         # @return [void]
         #
         # @example
         #  has_one :author, serializer: AuthorSerializer
+        #  has_one :author do
+        #    attributes :id, :name
+        #  end
         #
         def has_one(name, options = {}, &block)
           associate(HasOneReflection.new(name, options), &block)
@@ -69,6 +81,7 @@ module ActiveModel
 
         # Add reflection and define {name} accessor and nested serializer.
         # @param [ActiveModel::Serializer::Reflection] reflection
+        # @param [Block] optional inline definition of the serializer for this association
         # @return [void]
         #
         # @api private
@@ -87,6 +100,7 @@ module ActiveModel
 
         # Define a nested serializer
         # @param [String] resource_name The name of the association
+        # @param [Block] inline definition of the serializer for this association
         # @return [void]
         #
         # @api private
