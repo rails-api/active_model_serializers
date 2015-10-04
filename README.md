@@ -348,7 +348,7 @@ On this example every ```Post``` object will be cached with
 the key ```"post/#{post.id}-#{post.updated_at}"```. You can use this key to expire it as you want,
 but in this case it will be automatically expired after 3 hours.
 
-### Fragmenting Caching
+### Fragment Caching
 
 If there is some API endpoint that shouldn't be fully cached, you can still optimise it, using Fragment Cache on the attributes and relationships that you want to cache.
 
