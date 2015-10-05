@@ -21,6 +21,7 @@ Features:
 - [#1050](https://github.com/rails-api/active_model_serializers/pull/1050) Add support for toplevel jsonapi member (@beauby, @bf4)
 
 Fixes:
+- [#1239](https://github.com/rails-api/active_model_serializers/pull/1239) Fix duplicates in JSON API compound documents (@beauby)
 - [#1214](https://github.com/rails-api/active_model_serializers/pull/1214) retrieve the key from the reflection options when building associations (@NullVoxPopuli, @hut8)
 
 Misc:

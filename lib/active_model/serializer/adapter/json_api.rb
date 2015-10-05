@@ -81,15 +81,17 @@ module ActiveModel
 
         def serializable_hash_for_collection(options)
           hash = { data: [] }
+          included = []
           serializer.each do |s|
             result = self.class.new(s, instance_options.merge(fieldset: fieldset)).serializable_hash(options)
             hash[:data] << result[:data]
+            next unless result[:included]
 
-            if result[:included]
-              hash[:included] ||= []
-              hash[:included] |= result[:included]
-            end
+            included |= result[:included]
           end
+
+          included.delete_if { |resource| hash[:data].include?(resource) }
+          hash[:included] = included if included.any?
 
           if serializer.paginated?
             hash[:links] ||= {}
@@ -102,9 +104,10 @@ module ActiveModel
         def serializable_hash_for_single_resource
           primary_data = primary_data_for(serializer)
           relationships = relationships_for(serializer)
-          included = included_resources(@include_tree)
+          primary_data[:relationships] = relationships if relationships.any?
           hash = { data: primary_data }
-          hash[:data][:relationships] = relationships if relationships.any?
+
+          included = included_resources(@include_tree, [primary_data])
           hash[:included] = included if included.any?
 
           hash
@@ -171,31 +174,31 @@ module ActiveModel
           end
         end
 
-        def included_resources(include_tree)
+        def included_resources(include_tree, primary_data)
           included = []
 
           serializer.associations(include_tree).each do |association|
-            add_included_resources_for(association.serializer, include_tree[association.key], included)
+            add_included_resources_for(association.serializer, include_tree[association.key], primary_data, included)
           end
 
           included
         end
 
-        def add_included_resources_for(serializer, include_tree, included)
+        def add_included_resources_for(serializer, include_tree, primary_data, included)
           if serializer.respond_to?(:each)
-            serializer.each { |s| add_included_resources_for(s, include_tree, included) }
+            serializer.each { |s| add_included_resources_for(s, include_tree, primary_data, included) }
           else
             return unless serializer && serializer.object
 
-            primary_data = primary_data_for(serializer)
+            resource_object = primary_data_for(serializer)
             relationships = relationships_for(serializer)
-            primary_data[:relationships] = relationships if relationships.any?
+            resource_object[:relationships] = relationships if relationships.any?
 
-            return if included.include?(primary_data)
-            included.push(primary_data)
+            return if included.include?(resource_object) || primary_data.include?(resource_object)
+            included.push(resource_object)
 
             serializer.associations(include_tree).each do |association|
-              add_included_resources_for(association.serializer, include_tree[association.key], included)
+              add_included_resources_for(association.serializer, include_tree[association.key], primary_data, included)
             end
           end
         end

@@ -1,11 +1,16 @@
 require 'test_helper'
+
+NestedPost = Class.new(Model)
+class NestedPostSerializer < ActiveModel::Serializer
+  has_many :nested_posts
+end
+
 module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
         class LinkedTest < Minitest::Test
           def setup
-            ActionController::Base.cache_store.clear
             @author1 = Author.new(id: 1, name: 'Steve K.')
             @author2 = Author.new(id: 2, name: 'Tenderlove')
             @bio1 = Bio.new(id: 1, content: 'AMS Contributor')
@@ -275,6 +280,113 @@ module ActiveModel
               }
             }
             assert_equal expected, adapter.serializable_hash
+          end
+        end
+
+        class NoDuplicatesTest < Minitest::Test
+          Post = Class.new(::Model)
+          Author = Class.new(::Model)
+
+          class PostSerializer < ActiveModel::Serializer
+            type 'posts'
+            class AuthorSerializer < ActiveModel::Serializer
+              type 'authors'
+              has_many :posts, serializer: PostSerializer
+            end
+            belongs_to :author, serializer: AuthorSerializer
+          end
+
+          def setup
+            @author = Author.new(id: 1, posts: [], roles: [], bio: nil)
+            @post1 = Post.new(id: 1, author: @author)
+            @post2 = Post.new(id: 2, author: @author)
+            @author.posts << @post1
+            @author.posts << @post2
+
+            @nestedpost1 = ::NestedPost.new(id: 1, nested_posts: [])
+            @nestedpost2 = ::NestedPost.new(id: 2, nested_posts: [])
+            @nestedpost1.nested_posts << @nestedpost1
+            @nestedpost1.nested_posts << @nestedpost2
+            @nestedpost2.nested_posts << @nestedpost1
+            @nestedpost2.nested_posts << @nestedpost2
+          end
+
+          def test_no_duplicates
+            hash = ActiveModel::SerializableResource.new(@post1, adapter: :json_api,
+                                                                 serializer: PostSerializer,
+                                                                 include: '*.*')
+                   .serializable_hash
+            expected = [
+              {
+                type: 'authors', id: '1',
+                relationships: {
+                  posts: {
+                    data: [
+                      { type: 'posts', id: '1' },
+                      { type: 'posts', id: '2' }
+                    ]
+                  }
+                }
+              },
+              {
+                type: 'posts', id: '2',
+                relationships: {
+                  author: {
+                    data: { type: 'authors', id: '1' }
+                  }
+                }
+              }
+            ]
+            assert_equal(expected, hash[:included])
+          end
+
+          def test_no_duplicates_collection
+            hash = ActiveModel::SerializableResource.new(
+              [@post1, @post2], adapter: :json_api,
+                                each_serializer: PostSerializer,
+                                include: '*.*')
+                   .serializable_hash
+            expected = [
+              {
+                type: 'authors', id: '1',
+                relationships: {
+                  posts: {
+                    data: [
+                      { type: 'posts', id: '1' },
+                      { type: 'posts', id: '2' }
+                    ]
+                  }
+                }
+              }
+            ]
+            assert_equal(expected, hash[:included])
+          end
+
+          def test_no_duplicates_global
+            hash = ActiveModel::SerializableResource.new(
+              @nestedpost1,
+              adapter: :json_api,
+              include: '*').serializable_hash
+            expected = [
+              type: 'nested_posts', id: '2',
+              relationships: {
+                nested_posts: {
+                  data: [
+                    { type: 'nested_posts', id: '1' },
+                    { type: 'nested_posts', id: '2' }
+                  ]
+                }
+              }
+            ]
+            assert_equal(expected, hash[:included])
+          end
+
+          def test_no_duplicates_collection_global
+            hash = ActiveModel::SerializableResource.new(
+              [@nestedpost1, @nestedpost2],
+              adapter: :json_api,
+              include: '*').serializable_hash
+            assert_nil(hash[:included])
           end
         end
       end
