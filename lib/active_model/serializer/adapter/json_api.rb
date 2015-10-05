@@ -47,7 +47,7 @@ module ActiveModel
 
           fields = options.delete(:fields)
           if fields
-            @fieldset = ActiveModel::Serializer::Fieldset.new(fields, serializer.json_key)
+            @fieldset = ActiveModel::Serializer::Fieldset.new(fields)
           else
             @fieldset = options[:fieldset]
           end
@@ -60,7 +60,7 @@ module ActiveModel
             if serializer.respond_to?(:each)
               serializable_hash_for_collection(options)
             else
-              serializable_hash_for_single_resource(options)
+              serializable_hash_for_single_resource
             end
 
           ApiObjects::JsonApi.add!(hash)
@@ -99,8 +99,8 @@ module ActiveModel
           hash
         end
 
-        def serializable_hash_for_single_resource(options)
-          primary_data = primary_data_for(serializer, options)
+        def serializable_hash_for_single_resource
+          primary_data = primary_data_for(serializer)
           relationships = relationships_for(serializer)
           included = included_resources(@include_tree)
           hash = { data: primary_data }
@@ -134,22 +134,22 @@ module ActiveModel
           { id: id.to_s, type: type }
         end
 
-        def resource_object_for(serializer, options = {})
-          options[:fields] = fieldset && fieldset.fields_for(serializer)
-
+        def resource_object_for(serializer)
           cache_check(serializer) do
-            result = resource_identifier_for(serializer)
-            attributes = serializer.attributes(options).except(:id)
-            result[:attributes] = attributes if attributes.any?
-            result
+            resource_object = resource_identifier_for(serializer)
+            requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
+            attributes = serializer.attributes.except(:id)
+            attributes.slice!(*requested_fields) if requested_fields
+            resource_object[:attributes] = attributes if attributes.any?
+            resource_object
           end
         end
 
-        def primary_data_for(serializer, options)
+        def primary_data_for(serializer)
           if serializer.respond_to?(:each)
-            serializer.map { |s| resource_object_for(s, options) }
+            serializer.map { |s| resource_object_for(s) }
           else
-            resource_object_for(serializer, options)
+            resource_object_for(serializer)
           end
         end
 
@@ -187,7 +187,7 @@ module ActiveModel
           else
             return unless serializer && serializer.object
 
-            primary_data = primary_data_for(serializer, instance_options)
+            primary_data = primary_data_for(serializer)
             relationships = relationships_for(serializer)
             primary_data[:relationships] = relationships if relationships.any?
 

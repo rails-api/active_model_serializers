@@ -148,13 +148,8 @@ module ActiveModel
       root || object.class.model_name.to_s.underscore
     end
 
-    def attributes(options = {})
-      attributes =
-        if options[:fields]
-          self.class._attributes & options[:fields]
-        else
-          self.class._attributes.dup
-        end
+    def attributes
+      attributes = self.class._attributes.dup
 
       attributes.each_with_object({}) do |name, hash|
         unless self.class._fragmented
