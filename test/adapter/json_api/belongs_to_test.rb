@@ -38,7 +38,11 @@ module ActiveModel
           end
 
           def test_includes_linked_post
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:post])
+            actual = ActiveModel::SerializableResource.new(
+              @comment,
+              adapter: :json_api,
+              include: [:post])
+                     .serializable_hash
             expected = [{
               id: '42',
               type: 'posts',
@@ -52,11 +56,16 @@ module ActiveModel
                 author: { data: { type: 'authors', id: '1' } }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:included]
+            assert_equal expected, actual[:included]
           end
 
           def test_limiting_linked_post_fields
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:post], fields: { post: [:title] })
+            actual = ActiveModel::SerializableResource.new(
+              @comment,
+              adapter: :json_api,
+              include: [:post],
+              fields: { post: [:title] })
+                     .serializable_hash
             expected = [{
               id: '42',
               type: 'posts',
@@ -69,7 +78,7 @@ module ActiveModel
                 author: { data: { type: 'authors', id: '1' } }
               }
             }]
-            assert_equal expected, @adapter.serializable_hash[:included]
+            assert_equal expected, actual[:included]
           end
 
           def test_include_nil_author

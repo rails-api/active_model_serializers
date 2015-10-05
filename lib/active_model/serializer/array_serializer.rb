@@ -5,10 +5,9 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@serializers
 
-      attr_reader :object, :root
+      attr_reader :object
 
       def initialize(resources, options = {})
-        @root = options[:root]
         @object = resources
         @serializers = resources.map do |resource|
           serializer_context_class = options.fetch(:serializer_context_class, ActiveModel::Serializer)
@@ -20,11 +19,6 @@ module ActiveModel
             serializer_class.new(resource, options.except(:serializer))
           end
         end
-      end
-
-      def json_key
-        key = root || serializers.first.try(:json_key) || object.try(:name).try(:underscore)
-        key.try(:pluralize)
       end
 
       def paginated?
