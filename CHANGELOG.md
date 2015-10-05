@@ -24,6 +24,7 @@ Fixes:
 - [#1214](https://github.com/rails-api/active_model_serializers/pull/1214) retrieve the key from the reflection options when building associations (@NullVoxPopuli, @hut8)
 
 Misc:
+- [#1232](https://github.com/rails-api/active_model_serializers/pull/1232) fields option no longer handled at serializer level (@beauby)
 - [#1178](https://github.com/rails-api/active_model_serializers/pull/1178) env CAPTURE_STDERR=false lets devs see hard failures (@bf4)
 - [#1177](https://github.com/rails-api/active_model_serializers/pull/1177) Remove Adapter autoloads in favor of require (@bf4)
 - [#1117](https://github.com/rails-api/active_model_serializers/pull/1117) FlattenJson adapter no longer inherits Json adapter, renamed to Attributes (@bf4)

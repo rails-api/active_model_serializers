@@ -58,8 +58,10 @@ module ActiveModel
           end
 
           def test_limiting_fields
-            @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, fields: ['title'])
-
+            actual = ActiveModel::SerializableResource.new(
+              [@first_post, @second_post], adapter: :json_api,
+                                           fields: { posts: ['title'] })
+                     .serializable_hash
             expected = [
               {
                 id: '1',
@@ -86,7 +88,7 @@ module ActiveModel
                 }
               }
             ]
-            assert_equal(expected, @adapter.serializable_hash[:data])
+            assert_equal(expected, actual[:data])
           end
         end
       end
