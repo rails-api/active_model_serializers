@@ -98,10 +98,6 @@ module ActiveModel
       ActiveModel::Serializer::Adapter.lookup(config.adapter)
     end
 
-    def self.root_name
-      name.demodulize.underscore.sub(/_serializer$/, '') if name
-    end
-
     def self.serializers_cache
       @serializers_cache ||= ThreadSafe::Cache.new
     end
