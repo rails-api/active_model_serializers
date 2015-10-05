@@ -24,6 +24,7 @@ Fixes:
 - [#1214](https://github.com/rails-api/active_model_serializers/pull/1214) retrieve the key from the reflection options when building associations (@NullVoxPopuli, @hut8)
 
 Misc:
+- [#1241](https://github.com/rails-api/active_model_serializers/pull/1241) Add docs for using AMS outside of ActiveRecord
 - [#1233](https://github.com/rails-api/active_model_serializers/pull/1233) Top-level meta and meta_key options no longer handled at serializer level (@beauby)
 - [#1232](https://github.com/rails-api/active_model_serializers/pull/1232) fields option no longer handled at serializer level (@beauby)
 - [#1178](https://github.com/rails-api/active_model_serializers/pull/1178) env CAPTURE_STDERR=false lets devs see hard failures (@bf4)
