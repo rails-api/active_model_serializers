@@ -37,11 +37,11 @@ module ActiveModel
         private
 
         def meta
-          serializer.meta if serializer.respond_to?(:meta)
+          instance_options.fetch(:meta, nil)
         end
 
         def meta_key
-          serializer.meta_key || 'meta'.freeze
+          instance_options.fetch(:meta_key, 'meta'.freeze)
         end
 
         def root

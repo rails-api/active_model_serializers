@@ -121,15 +121,13 @@ module ActiveModel
       end
     end
 
-    attr_accessor :object, :root, :meta, :meta_key, :scope
+    attr_accessor :object, :root, :scope
     class_attribute :_type, instance_writer: false
 
     def initialize(object, options = {})
       self.object = object
       self.instance_options = options
       self.root = instance_options[:root]
-      self.meta = instance_options[:meta]
-      self.meta_key = instance_options[:meta_key]
       self.scope = instance_options[:scope]
 
       scope_name = instance_options[:scope_name]
