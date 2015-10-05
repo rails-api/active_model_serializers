@@ -4,7 +4,6 @@ module ActiveModel
   class Serializer
     class MetaTest < Minitest::Test
       def setup
-        ActionController::Base.cache_store.clear
         @blog = Blog.new(id: 1,
                          name: 'AMS Hints',
                          writer: Author.new(id: 2, name: 'Steve'),
@@ -12,8 +11,11 @@ module ActiveModel
       end
 
       def test_meta_is_present_with_root
-        serializer = AlternateBlogSerializer.new(@blog, meta: { total: 10 })
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+        actual = ActiveModel::SerializableResource.new(
+          @blog,
+          adapter: :json,
+          serializer: AlternateBlogSerializer,
+          meta: { total: 10 }).as_json
         expected = {
           blog: {
             id: 1,
@@ -23,22 +25,29 @@ module ActiveModel
             total: 10
           }
         }
-        assert_equal expected, adapter.as_json
+        assert_equal(expected, actual)
       end
 
       def test_meta_is_not_included_when_root_is_missing
-        # load_adapter uses Attributes Adapter
-        adapter = load_adapter(meta: { total: 10 })
+        actual = ActiveModel::SerializableResource.new(
+          @blog,
+          adapter: :attributes,
+          serializer: AlternateBlogSerializer,
+          meta: { total: 10 }).as_json
         expected = {
           id: 1,
           title: 'AMS Hints'
         }
-        assert_equal expected, adapter.as_json
+        assert_equal(expected, actual)
       end
 
       def test_meta_key_is_used
-        serializer = AlternateBlogSerializer.new(@blog, meta: { total: 10 }, meta_key: 'haha_meta')
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+        actual = ActiveModel::SerializableResource.new(
+          @blog,
+          adapter: :json,
+          serializer: AlternateBlogSerializer,
+          meta: { total: 10 },
+          meta_key: 'haha_meta').as_json
         expected = {
           blog: {
             id: 1,
@@ -48,12 +57,16 @@ module ActiveModel
             total: 10
           }
         }
-        assert_equal expected, adapter.as_json
+        assert_equal(expected, actual)
       end
 
       def test_meta_key_is_used_with_json_api
-        serializer = AlternateBlogSerializer.new(@blog, meta: { total: 10 }, meta_key: 'haha_meta')
-        adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+        actual = ActiveModel::SerializableResource.new(
+          @blog,
+          adapter: :json_api,
+          serializer: AlternateBlogSerializer,
+          meta: { total: 10 },
+          meta_key: 'haha_meta').as_json
         expected = {
           data: {
             id: '1',
@@ -62,13 +75,14 @@ module ActiveModel
           },
           'haha_meta' => { total: 10 }
         }
-        assert_equal expected, adapter.as_json
+        assert_equal(expected, actual)
       end
 
       def test_meta_is_not_present_on_arrays_without_root
-        serializer = ArraySerializer.new([@blog], meta: { total: 10 })
-        # Attributes doesn't have support to root
-        adapter = ActiveModel::Serializer::Adapter::Attributes.new(serializer)
+        actual = ActiveModel::SerializableResource.new(
+          [@blog],
+          adapter: :attributes,
+          meta: { total: 10 }).as_json
         expected = [{
           id: 1,
           name: 'AMS Hints',
@@ -82,13 +96,15 @@ module ActiveModel
             body: nil
           }]
         }]
-        assert_equal expected, adapter.as_json
+        assert_equal(expected, actual)
       end
 
       def test_meta_is_present_on_arrays_with_root
-        serializer = ArraySerializer.new([@blog], meta: { total: 10 }, meta_key: 'haha_meta')
-        # JSON adapter adds root by default
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+        actual = ActiveModel::SerializableResource.new(
+          [@blog],
+          adapter: :json,
+          meta: { total: 10 },
+          meta_key: 'haha_meta').as_json
         expected = {
           blogs: [{
             id: 1,
@@ -107,14 +123,7 @@ module ActiveModel
             total: 10
           }
         }
-        assert_equal expected, adapter.as_json
-      end
-
-      private
-
-      def load_adapter(options)
-        options = options.merge(adapter: :attributes, serializer: AlternateBlogSerializer)
-        ActiveModel::SerializableResource.new(@blog, options)
+        assert_equal(expected, actual)
       end
     end
   end

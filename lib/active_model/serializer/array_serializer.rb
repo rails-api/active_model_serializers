@@ -5,7 +5,7 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@serializers
 
-      attr_reader :object, :root, :meta, :meta_key
+      attr_reader :object, :root
 
       def initialize(resources, options = {})
         @root = options[:root]
@@ -21,8 +21,6 @@ module ActiveModel
             serializer_class.new(resource, options.except(:serializer))
           end
         end
-        @meta     = options[:meta]
-        @meta_key = options[:meta_key]
       end
 
       def json_key
