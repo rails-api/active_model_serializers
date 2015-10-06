@@ -50,6 +50,9 @@ module ActiveModel
       self._attributes ||= []
       class_attribute :_attributes_keys          # @api private : maps attribute value to explict key name, @see Serializer#attribute
       self._attributes_keys ||= {}
+      class_attribute :_links                    # @api private : links definitions, @see Serializer#link
+      self._links ||= {}
+
       serializer.class_attribute :_cache         # @api private : the cache object
       serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
       serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
@@ -72,6 +75,7 @@ module ActiveModel
       caller_line = caller.first
       base._attributes = _attributes.dup
       base._attributes_keys = _attributes_keys.dup
+      base._links = _links.dup
       base._cache_digest = digest_caller_file(caller_line)
       super
     end
@@ -81,6 +85,10 @@ module ActiveModel
     #     type 'authors'
     def self.type(type)
       self._type = type
+    end
+
+    def self.link(name, value = nil, &block)
+      _links[name] = block || value
     end
 
     # @example
@@ -247,6 +255,12 @@ module ActiveModel
           hash[name] = send(name)
         end
       end
+    end
+
+    # @api private
+    # Used by JsonApi adapter to build resource links.
+    def links
+      self.class._links
     end
 
     protected
