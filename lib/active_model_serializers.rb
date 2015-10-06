@@ -12,6 +12,7 @@ module ActiveModelSerializers
   extend ActiveSupport::Autoload
   autoload :Model
   autoload :Callbacks
+  autoload :Deserialization
   autoload :Logging
 end
 

@@ -6,6 +6,7 @@ module ActiveModel
         autoload :PaginationLinks
         autoload :FragmentCache
         autoload :Link
+        autoload :Deserialization
 
         # TODO: if we like this abstraction and other API objects to it,
         # then extract to its own file and require it.
