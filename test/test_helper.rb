@@ -22,6 +22,8 @@ FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
+require 'minitest/reporters'
+Minitest::Reporters.use!
 if defined?(Minitest::Test)
   # Minitest 5
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
