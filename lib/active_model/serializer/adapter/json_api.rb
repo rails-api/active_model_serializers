@@ -65,6 +65,11 @@ module ActiveModel
 
           ApiObjects::JsonApi.add!(hash)
 
+          if instance_options[:links]
+            hash[:links] ||= {}
+            hash[:links].update(instance_options[:links])
+          end
+
           hash
         end
 
