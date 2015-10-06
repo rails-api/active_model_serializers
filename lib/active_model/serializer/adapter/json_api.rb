@@ -41,6 +41,38 @@ module ActiveModel
           end
         end
 
+        # Parse a Hash or ActionController::Parameters representing a JSON API document
+        # into an ActiveRecord-ready hash.
+        # NOTE(beauby): Currently this does not handle relationships with modified keys.
+        #
+        # @param [Hash|ActionController::Parameters] document
+        # @return [Hash] ActiveRecord-ready hash
+        #
+        def self.parse(document)
+          hash = {}
+
+          hash[:id] = document['data']['id'] if document['data']['id']
+
+          if document['data']['attributes']
+            document['data']['attributes'].each do |name, value|
+              hash[name.to_sym] = value
+            end
+          end
+
+          document['data']['relationships'].each do |name, value|
+            data = value['data']
+            if data.is_a? Array
+              key = "#{name.singularize}_ids".to_sym
+              hash[key] = data.map { |ri| ri['id'] }
+            else
+              key = "#{name.singularize}_id".to_sym
+              hash[key] = data ? data['id'] : nil
+            end
+          end
+
+          hash
+        end
+
         def initialize(serializer, options = {})
           super
           @include_tree = IncludeTree.from_include_args(options[:include])
