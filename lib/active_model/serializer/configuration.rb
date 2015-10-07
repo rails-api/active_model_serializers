@@ -7,9 +7,19 @@ module ActiveModel
       # Configuration options may also be set in
       # Serializers and Adapters
       included do |base|
-        base.config.array_serializer = ActiveModel::Serializer::ArraySerializer
-        base.config.adapter = :attributes
-        base.config.jsonapi_resource_type = :plural
+        config = base.config
+        config.collection_serializer = ActiveModel::Serializer::CollectionSerializer
+
+        def config.array_serializer=(collection_serializer)
+          self.collection_serializer = collection_serializer
+        end
+
+        def config.array_serializer
+          collection_serializer
+        end
+
+        config.adapter = :attributes
+        config.jsonapi_resource_type = :plural
       end
     end
   end

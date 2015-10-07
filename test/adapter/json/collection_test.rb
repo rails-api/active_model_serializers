@@ -23,7 +23,7 @@ module ActiveModel
           def test_with_serializer_option
             @blog.special_attribute = 'Special'
             @blog.articles = [@first_post, @second_post]
-            serializer = ArraySerializer.new([@blog], serializer: CustomBlogSerializer)
+            serializer = CollectionSerializer.new([@blog], serializer: CustomBlogSerializer)
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
             expected = { blogs: [{
@@ -35,7 +35,7 @@ module ActiveModel
           end
 
           def test_include_multiple_posts
-            serializer = ArraySerializer.new([@first_post, @second_post])
+            serializer = CollectionSerializer.new([@first_post, @second_post])
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
             expected = { posts: [{
@@ -70,14 +70,14 @@ module ActiveModel
 
           def test_root_is_underscored
             virtual_value = VirtualValue.new(id: 1)
-            serializer = ArraySerializer.new([virtual_value])
+            serializer = CollectionSerializer.new([virtual_value])
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
 
             assert_equal 1, adapter.serializable_hash[:virtual_values].length
           end
 
           def test_include_option
-            serializer = ArraySerializer.new([@first_post, @second_post])
+            serializer = CollectionSerializer.new([@first_post, @second_post])
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include: '')
             actual = adapter.serializable_hash
             expected = { posts: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' },

@@ -31,7 +31,7 @@ module ActionController
         serializable_resource.serialization_scope_name = _serialization_scope
         begin
           serializable_resource.adapter
-        rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
+        rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
           resource
         end
       else

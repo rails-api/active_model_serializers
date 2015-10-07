@@ -45,7 +45,7 @@ module ActiveModel
           end
 
           def test_include_multiple_posts_and_linked_array
-            serializer = ArraySerializer.new([@first_post, @second_post])
+            serializer = CollectionSerializer.new([@first_post, @second_post])
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
               include: [:comments, author: [:bio]]
@@ -226,7 +226,7 @@ module ActiveModel
           end
 
           def test_multiple_references_to_same_resource
-            serializer = ArraySerializer.new([@first_comment, @second_comment])
+            serializer = CollectionSerializer.new([@first_comment, @second_comment])
             adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
               serializer,
               include: [:post]

@@ -75,7 +75,7 @@ render json: @posts, serializer: PaginatedSerializer, each_serializer: PostPrevi
 
 And then, you could do something like the following class.
 ```ruby
-class PaginatedSerializer < ActiveModel::Serializer::ArraySerializer
+class PaginatedSerializer < ActiveModel::Serializer::CollectionSerializer
   def initialize(object, options={})
     meta_key = options[:meta_key] || :meta
     options[meta_key] ||= {}

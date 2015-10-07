@@ -71,7 +71,7 @@ Style/BracesAroundHashParameters:
     - 'test/adapter/json_api/pagination_links_test.rb'
     - 'test/adapter/null_test.rb'
     - 'test/adapter_test.rb'
-    - 'test/array_serializer_test.rb'
+    - 'test/collection_serializer_test.rb'
     - 'test/serializable_resource_test.rb'
     - 'test/serializers/associations_test.rb'
     - 'test/serializers/attribute_test.rb'

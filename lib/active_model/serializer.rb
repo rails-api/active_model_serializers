@@ -1,4 +1,5 @@
 require 'thread_safe'
+require 'active_model/serializer/collection_serializer'
 require 'active_model/serializer/array_serializer'
 require 'active_model/serializer/include_tree'
 require 'active_model/serializer/associations'
@@ -105,7 +106,7 @@ module ActiveModel
       if resource.respond_to?(:serializer_class)
         resource.serializer_class
       elsif resource.respond_to?(:to_ary)
-        config.array_serializer
+        config.collection_serializer
       else
         options.fetch(:serializer) { get_serializer_for(resource.class) }
       end
