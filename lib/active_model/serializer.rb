@@ -154,10 +154,8 @@ module ActiveModel
       end
     end
 
-    private # rubocop:disable Lint/UselessAccessModifier
+    protected
 
-    ActiveModelSerializers.silence_warnings do
-      attr_accessor :instance_options
-    end
+    attr_accessor :instance_options
   end
 end

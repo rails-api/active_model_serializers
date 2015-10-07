@@ -13,11 +13,11 @@ module ActiveModel
         fields[type.singularize.to_sym] || fields[type.pluralize.to_sym]
       end
 
-      private
+      protected
 
-      ActiveModelSerializers.silence_warnings do
-        attr_reader :raw_fields
-      end
+      attr_reader :raw_fields
+
+      private
 
       def parsed_fields
         if raw_fields.is_a?(Hash)

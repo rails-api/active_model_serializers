@@ -26,11 +26,6 @@ Lint/UnusedMethodArgument:
     - 'test/fixtures/poro.rb'
     - 'test/lint_test.rb'
 
-# Offense count: 1
-Lint/UselessAccessModifier:
-  Exclude:
-    - 'lib/active_model/serializable_resource.rb'
-
 # Offense count: 2
 Lint/UselessAssignment:
   Exclude:

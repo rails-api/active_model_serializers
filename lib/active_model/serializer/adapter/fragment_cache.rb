@@ -30,11 +30,11 @@ module ActiveModel
           adapter.fragment_cache(cached_hash, non_cached_hash)
         end
 
-        private
+        protected
 
-        ActiveModelSerializers.silence_warnings do
-          attr_reader :instance_options, :adapter
-        end
+        attr_reader :instance_options, :adapter
+
+        private
 
         def cached_attributes(klass, serializers)
           attributes            = serializer.class._attributes

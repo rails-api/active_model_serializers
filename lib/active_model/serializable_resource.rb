@@ -61,10 +61,8 @@ module ActiveModel
       use_adapter? && !!(serializer)
     end
 
-    private
+    protected
 
-    ActiveModelSerializers.silence_warnings do
-      attr_reader :resource, :adapter_opts, :serializer_opts
-    end
+    attr_reader :resource, :adapter_opts, :serializer_opts
   end
 end

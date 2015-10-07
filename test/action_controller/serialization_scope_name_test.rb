@@ -3,12 +3,10 @@ require 'pathname'
 
 class DefaultScopeNameTest < ActionController::TestCase
   class UserSerializer < ActiveModel::Serializer
-    attributes :admin?
-    ActiveModelSerializers.silence_warnings do
-      def admin?
-        current_user.admin
-      end
+    def admin?
+      current_user.admin
     end
+    attributes :admin?
   end
 
   class UserTestController < ActionController::Base
@@ -35,12 +33,10 @@ end
 
 class SerializationScopeNameTest < ActionController::TestCase
   class AdminUserSerializer < ActiveModel::Serializer
-    attributes :admin?
-    ActiveModelSerializers.silence_warnings do
-      def admin?
-        current_admin.admin
-      end
+    def admin?
+      current_admin.admin
     end
+    attributes :admin?
   end
 
   class AdminUserTestController < ActionController::Base

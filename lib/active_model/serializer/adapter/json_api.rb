@@ -73,11 +73,11 @@ module ActiveModel
           ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
         end
 
-        private
+        protected
 
-        ActiveModel.silence_warnings do
-          attr_reader :fieldset
-        end
+        attr_reader :fieldset
+
+        private
 
         def serializable_hash_for_collection(options)
           hash = { data: [] }
