@@ -34,6 +34,22 @@ module ActiveModel
         @blog_serializer     = BlogSerializer.new(@blog)
       end
 
+      def test_inherited_cache_configuration
+        inherited_serializer = Class.new(PostSerializer)
+
+        assert_equal PostSerializer._cache_key, inherited_serializer._cache_key
+        assert_equal PostSerializer._cache_options, inherited_serializer._cache_options
+      end
+
+      def test_override_cache_configuration
+        inherited_serializer = Class.new(PostSerializer) do
+          cache key: 'new-key'
+        end
+
+        assert_equal PostSerializer._cache_key, 'post'
+        assert_equal inherited_serializer._cache_key, 'new-key'
+      end
+
       def test_cache_definition
         assert_equal(ActionController::Base.cache_store, @post_serializer.class._cache)
         assert_equal(ActionController::Base.cache_store, @author_serializer.class._cache)
