@@ -30,13 +30,16 @@ module ActiveModel
     class << self
       attr_accessor :_attributes
       attr_accessor :_attributes_keys
-      attr_accessor :_cache
-      attr_accessor :_fragmented
-      attr_accessor :_cache_key
-      attr_accessor :_cache_only
-      attr_accessor :_cache_except
-      attr_accessor :_cache_options
-      attr_accessor :_cache_digest
+    end
+
+    with_options instance_writer: false, instance_reader: false do |serializer|
+      serializer.class_attribute :_cache
+      serializer.class_attribute :_fragmented
+      serializer.class_attribute :_cache_key
+      serializer.class_attribute :_cache_only
+      serializer.class_attribute :_cache_except
+      serializer.class_attribute :_cache_options
+      serializer.class_attribute :_cache_digest
     end
 
     def self.inherited(base)
