@@ -30,6 +30,8 @@ module ActiveModelSerializers
   #     attr_reader :resource, :adapter_opts, :serializer_opts
   #   end
   #   ```
+  #
+  #   or, as specific stopgap, define the attrs in the protected scope.
   def silence_warnings
     verbose = $VERBOSE
     $VERBOSE = nil

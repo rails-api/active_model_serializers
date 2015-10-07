@@ -34,11 +34,9 @@ module ActiveModel
           object.respond_to?(:size)
       end
 
-      private # rubocop:disable Lint/UselessAccessModifier
+      protected
 
-      ActiveModelSerializers.silence_warnings do
-        attr_reader :serializers
-      end
+      attr_reader :serializers
     end
   end
 end
