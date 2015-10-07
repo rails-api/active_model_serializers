@@ -46,8 +46,8 @@ module ActiveModel
           cache key: 'new-key'
         end
 
-        assert PostSerializer._cache_key == 'post'
-        assert inherited_serializer._cache_key == 'new-key'
+        assert_equal PostSerializer._cache_key, 'post'
+        assert_equal inherited_serializer._cache_key, 'new-key'
       end
 
       def test_cache_definition
