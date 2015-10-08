@@ -17,10 +17,10 @@ Check how to change the adapter in the sections bellow.
 
 # Documentation
 
-AMS has two main sets of documentation: the
-[Docs](https://github.com/rails-api/active_model_serializers/tree/master/docs),
-which is a comprehensive guide and in
-[RDoc](http://www.rubydoc.info/github/rails-api/active_model_serializers) format.
+Master
+
+- [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers)
+- [Guides](https://github.com/rails-api/active_model_serializers/tree/master/docs)
 
 # RELEASE CANDIDATE, PLEASE READ
 
