@@ -289,11 +289,12 @@ module ActiveModel
 
           class PostSerializer < ActiveModel::Serializer
             type 'posts'
-            class AuthorSerializer < ActiveModel::Serializer
-              type 'authors'
-              has_many :posts, serializer: PostSerializer
-            end
-            belongs_to :author, serializer: AuthorSerializer
+            belongs_to :author
+          end
+
+          class AuthorSerializer < ActiveModel::Serializer
+            type 'authors'
+            has_many :posts
           end
 
           def setup
@@ -313,7 +314,6 @@ module ActiveModel
 
           def test_no_duplicates
             hash = ActiveModel::SerializableResource.new(@post1, adapter: :json_api,
-                                                                 serializer: PostSerializer,
                                                                  include: '*.*')
                    .serializable_hash
             expected = [
@@ -343,7 +343,6 @@ module ActiveModel
           def test_no_duplicates_collection
             hash = ActiveModel::SerializableResource.new(
               [@post1, @post2], adapter: :json_api,
-                                each_serializer: PostSerializer,
                                 include: '*.*')
                    .serializable_hash
             expected = [
