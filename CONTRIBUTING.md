@@ -27,6 +27,11 @@ AMS uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIs
 5. Commit your changes (`git commit -am 'Add some feature'`)
 6. Push to the branch (`git push origin my-new-feature`)
 7. Create a new Pull Request
+8. Update [CHANGELOG.md](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
+with a brief description of any breaking changes, fixes, features, or
+miscellaneous changes under the proper version section.
+9. Iterate on feedback given by the community (fix syntax, modify bits of code, add
+tests), pushing the new commits to the PR each time
 
 Remember to squash your commits and rebase off `master`.
 
