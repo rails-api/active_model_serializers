@@ -9,7 +9,7 @@ module ActiveModel
       end
 
       def test_attributes_definition
-        assert_equal([:id, :title],
+        assert_equal([:id, :name],
           @blog_serializer.class._attributes)
       end
 
