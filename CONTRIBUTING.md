@@ -1,3 +1,6 @@
+![Commit Strip
+http://www.commitstrip.com/en/2014/05/07/the-truth-behind-open-source-apps/](docs/how-open-source-maintained.jpg)
+
 ## How can I help?
 
 Everyone is encouraged to open issues that are affecting you: bugs, ideas, performance problems – everything helps!
