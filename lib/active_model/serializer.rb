@@ -101,15 +101,25 @@ module ActiveModel
     #
     #     def recent_edits
     #       object.edits.last(5)
-    #     enr
-    def self.attribute(attr, options = {})
+    #     end
+    #
+    # @example
+    #   class AdminAuthorSerializer < ActiveModel::Serializer
+    #     attribute :name do
+    #       "#{object.first_name} #{object.last_name}"
+    #     end
+    def self.attribute(attr, options = {}, &block)
       key = options.fetch(:key, attr)
       _attributes_keys[attr] = { key: key } if key != attr
       _attributes << key unless _attributes.include?(key)
 
       ActiveModelSerializers.silence_warnings do
         define_method key do
-          object.read_attribute_for_serialization(attr)
+          if block_given?
+            instance_eval(&block)
+          else
+            object.read_attribute_for_serialization(attr)
+          end
         end unless method_defined?(key) || _fragmented.respond_to?(attr)
       end
     end

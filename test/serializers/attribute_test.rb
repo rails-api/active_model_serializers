@@ -71,6 +71,21 @@ module ActiveModel
 
         assert_equal('custom', hash[:blog][:id])
       end
+
+      PostWithVirtualAttribute = Class.new(::Model)
+      class PostWithVirtualAttributeSerializer < ActiveModel::Serializer
+        attribute :name do
+          "#{object.first_name} #{object.last_name}"
+        end
+      end
+
+      def test_virtual_attribute_block
+        post = PostWithVirtualAttribute.new(first_name: 'Lucas', last_name: 'Hosseini')
+        hash = serializable(post).serializable_hash
+        expected = { name: 'Lucas Hosseini' }
+
+        assert_equal(expected, hash)
+      end
     end
   end
 end
