@@ -54,7 +54,7 @@ module ActiveModel
 
           assert_equal key, :tags
           assert_equal serializer, nil
-          assert_equal [{ attributes: { name: '#hashtagged' } }].to_json, options[:virtual_value].to_json
+          assert_equal [{ name: '#hashtagged' }].to_json, options[:virtual_value].to_json
         end
       end
 

@@ -24,6 +24,9 @@ module ActiveModel
         def id
         end
 
+        def updated_at
+        end
+
         def self.model_name
           @_model_name ||= ActiveModel::Name.new(self)
         end

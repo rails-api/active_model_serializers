@@ -1,44 +1,16 @@
 verbose = $VERBOSE
 $VERBOSE = nil
-class Model
+class Model < ActiveModelSerializers::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
-  def self.model_name
-    @_model_name ||= ActiveModel::Name.new(self)
-  end
-
-  def initialize(hash = {})
-    @attributes = hash
-  end
-
-  def cache_key
-    "#{self.class.name.downcase}/#{self.id}-#{self.updated_at.strftime("%Y%m%d%H%M%S%9N")}"
-  end
-
-  def serializable_hash(options = nil)
-    @attributes
-  end
-
-  def read_attribute_for_serialization(name)
-    if name == :id || name == 'id'
-      id
-    else
-      @attributes[name]
-    end
-  end
-
-  def id
-    @attributes[:id] || @attributes['id'] || object_id
-  end
-
   ### Helper methods, not required to be serializable
-  #
-  # Convenience for adding @attributes readers and writers
+
+  # Convenience when not adding @attributes readers and writers
   def method_missing(meth, *args)
     if meth.to_s =~ /^(.*)=$/
-      @attributes[$1.to_sym] = args[0]
-    elsif @attributes.key?(meth)
-      @attributes[meth]
+      attributes[$1.to_sym] = args[0]
+    elsif attributes.key?(meth)
+      attributes[meth]
     else
       super
     end
@@ -46,10 +18,6 @@ class Model
 
   def cache_key_with_digest
     "#{cache_key}/#{FILE_DIGEST}"
-  end
-
-  def updated_at
-    @attributes[:updated_at] ||= DateTime.now.to_time
   end
 end
 

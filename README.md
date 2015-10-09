@@ -374,6 +374,13 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+## Serializing non-ActiveRecord objects
+
+All serializable resources must pass the ActiveModel::Serializer::Lint::Tests.
+
+See the ActiveModelSerializers::Model for a base class that implements the full
+API for a plain-old Ruby object (PORO).
+
 ## Getting Help
 
 If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).

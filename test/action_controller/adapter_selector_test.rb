@@ -46,7 +46,7 @@ module ActionController
 
       def test_render_skipping_adapter
         get :render_skipping_adapter
-        assert_equal '{"attributes":{"name":"Name 1","description":"Description 1","comments":"Comments 1"}}', response.body
+        assert_equal '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}', response.body
       end
     end
   end

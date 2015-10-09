@@ -36,7 +36,7 @@ module ActiveModel
             assert_equal({
               id: 42,
               tags: [
-                { 'attributes' => { 'id' => 1, 'name' => '#hash_tag' } }
+                { 'id' => 1, 'name' => '#hash_tag' }
               ]
             }.to_json, adapter.serializable_hash[:post].to_json)
           end
