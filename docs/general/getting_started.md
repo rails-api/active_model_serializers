@@ -61,7 +61,7 @@ end
 
 When serializing a model inside a namespace, such as `Api::V1::Post`, AMS will expect the corresponding serializer to be inside the same namespace (namely `Api::V1::PostSerializer`).
 
-### Model Associations and Nested Serializers
+### Model Associations and Inline serializers
 
 When declaring a serializer for a model with associations, such as:
 ```ruby
@@ -69,24 +69,19 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 end
 ```
-AMS will look for `PostSerializer::CommentSerializer` in priority, and fall back to `::CommentSerializer` in case the former does not exist. This allows for more control over the way a model gets serialized as an association of an other model.
-
-For example, in the following situation:
-
+AMS offers the possibility to define a single-purpose inline serializer as follows:
 ```ruby
-class CommentSerializer < ActiveModel::Serializer
-  attributes :body, :date, :nb_likes
-end
-
 class PostSerializer < ActiveModel::Serializer
-  has_many :comments
-  class CommentSerializer < ActiveModel::Serializer
-    attributes :body_short
+  has_many :comments do
+    ...
   end
 end
 ```
+The block given to the association is then used to define a serializer that will be used only when serializing a `Comment` as an association of a `Post`.
 
-AMS will use `PostSerializer::CommentSerializer` (thus including only the `:body_short` attribute) when serializing a `Comment` as part of a `Post`, but use `::CommentSerializer` when serializing a `Comment` directly (thus including `:body, :date, :nb_likes`).
+In case no block is given, AMS will look for a serializer for `Comment`s in the usual way (i.e. in the namespace of the resource).
+
+This allows for finer control over the way associations as serialized.
 
 ## Rails Integration
 
