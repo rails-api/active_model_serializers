@@ -111,10 +111,25 @@ module ActiveModel
       Digest::MD5.hexdigest(serializer_file_contents)
     end
 
+    # @api private
+    def self.serializer_lookup_chain_for(klass)
+      chain = []
+
+      resource_class_name = klass.name.demodulize
+      resource_namespace = klass.name.deconstantize
+      serializer_class_name = "#{resource_class_name}Serializer"
+
+      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
+      chain.push("#{resource_namespace}::#{serializer_class_name}")
+
+      chain
+    end
+
+    # @api private
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
-        serializer_class_name = "#{klass.name}Serializer"
-        serializer_class = serializer_class_name.safe_constantize
+        # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
+        serializer_class = serializer_lookup_chain_for(klass).map(&:safe_constantize).find { |x| x }
 
         if serializer_class
           serializer_class

@@ -125,6 +125,88 @@ module ActiveModel
         assert expected_association_keys.include? :writer
         assert expected_association_keys.include? :site
       end
+
+      class NamespacedResourcesTest < Minitest::Test
+        class ResourceNamespace
+          Post    = Class.new(::Model)
+          Comment = Class.new(::Model)
+          Author  = Class.new(::Model)
+          Description = Class.new(::Model)
+          class PostSerializer < ActiveModel::Serializer
+            has_many :comments
+            belongs_to :author
+            has_one :description
+          end
+          CommentSerializer     = Class.new(ActiveModel::Serializer)
+          AuthorSerializer      = Class.new(ActiveModel::Serializer)
+          DescriptionSerializer = Class.new(ActiveModel::Serializer)
+        end
+
+        def setup
+          @comment = ResourceNamespace::Comment.new
+          @author = ResourceNamespace::Author.new
+          @description = ResourceNamespace::Description.new
+          @post = ResourceNamespace::Post.new(comments: [@comment],
+                                              author: @author,
+                                              description: @description)
+          @post_serializer = ResourceNamespace::PostSerializer.new(@post)
+        end
+
+        def test_associations_namespaced_resources
+          @post_serializer.associations.each do |association|
+            case association.key
+            when :comments
+              assert_instance_of(ResourceNamespace::CommentSerializer, association.serializer.first)
+            when :author
+              assert_instance_of(ResourceNamespace::AuthorSerializer, association.serializer)
+            when :description
+              assert_instance_of(ResourceNamespace::DescriptionSerializer, association.serializer)
+            else
+              flunk "Unknown association: #{key}"
+            end
+          end
+        end
+      end
+
+      class NestedSerializersTest < Minitest::Test
+        Post    = Class.new(::Model)
+        Comment = Class.new(::Model)
+        Author  = Class.new(::Model)
+        Description = Class.new(::Model)
+        class PostSerializer < ActiveModel::Serializer
+          has_many :comments
+          CommentSerializer = Class.new(ActiveModel::Serializer)
+          belongs_to :author
+          AuthorSerializer = Class.new(ActiveModel::Serializer)
+          has_one :description
+          DescriptionSerializer = Class.new(ActiveModel::Serializer)
+        end
+
+        def setup
+          @comment = Comment.new
+          @author = Author.new
+          @description = Description.new
+          @post = Post.new(comments: [@comment],
+                           author: @author,
+                           description: @description)
+          @post_serializer = PostSerializer.new(@post)
+        end
+
+        def test_associations_namespaced_resources
+          @post_serializer.associations.each do |association|
+            case association.key
+            when :comments
+              assert_instance_of(PostSerializer::CommentSerializer, association.serializer.first)
+            when :author
+              assert_instance_of(PostSerializer::AuthorSerializer, association.serializer)
+            when :description
+              assert_instance_of(PostSerializer::DescriptionSerializer, association.serializer)
+            else
+              flunk "Unknown association: #{key}"
+            end
+          end
+        end
+      end
     end
   end
 end
