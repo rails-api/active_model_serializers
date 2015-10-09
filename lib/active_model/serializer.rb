@@ -27,12 +27,12 @@ module ActiveModel
       )
     /x
 
-    class << self
-      attr_accessor :_attributes
-      attr_accessor :_attributes_keys
-    end
-
     with_options instance_writer: false, instance_reader: false do |serializer|
+      class_attribute :_type, instance_reader: true
+      class_attribute :_attributes
+      self._attributes ||= []
+      class_attribute :_attributes_keys
+      self._attributes_keys ||= {}
       serializer.class_attribute :_cache
       serializer.class_attribute :_fragmented
       serializer.class_attribute :_cache_key
@@ -43,8 +43,8 @@ module ActiveModel
     end
 
     def self.inherited(base)
-      base._attributes = _attributes.try(:dup) || []
-      base._attributes_keys = _attributes_keys.try(:dup) || {}
+      base._attributes = _attributes.dup
+      base._attributes_keys = _attributes_keys.dup
       base._cache_digest = digest_caller_file(caller.first)
       super
     end
@@ -125,7 +125,6 @@ module ActiveModel
     end
 
     attr_accessor :object, :root, :scope
-    class_attribute :_type, instance_writer: false
 
     def initialize(object, options = {})
       self.object = object
@@ -149,10 +148,10 @@ module ActiveModel
       attributes = self.class._attributes.dup
 
       attributes.each_with_object({}) do |name, hash|
-        unless self.class._fragmented
-          hash[name] = send(name)
-        else
+        if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
+        else
+          hash[name] = send(name)
         end
       end
     end
