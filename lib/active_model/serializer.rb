@@ -27,6 +27,20 @@ module ActiveModel
       )
     /x
 
+    # Hashes contents of file for +_cache_digest+
+    def self.digest_caller_file(caller_line)
+      serializer_file_path = caller_line[CALLER_FILE]
+      serializer_file_contents = IO.read(serializer_file_path)
+      Digest::MD5.hexdigest(serializer_file_contents)
+    rescue TypeError, Errno::ENOENT
+      warn <<-EOF.strip_heredoc
+       Cannot digest non-existent file: '#{caller_line}'.
+       Please set `::_cache_digest` of the serializer
+       if you'd like to cache it.
+       EOF
+      ''.freeze
+    end
+
     with_options instance_writer: false, instance_reader: false do |serializer|
       class_attribute :_type, instance_reader: true
       class_attribute :_attributes
@@ -43,9 +57,10 @@ module ActiveModel
     end
 
     def self.inherited(base)
+      caller_line = caller.first
       base._attributes = _attributes.dup
       base._attributes_keys = _attributes_keys.dup
-      base._cache_digest = digest_caller_file(caller.first)
+      base._cache_digest = digest_caller_file(caller_line)
       super
     end
 
@@ -103,12 +118,6 @@ module ActiveModel
 
     def self.serializers_cache
       @serializers_cache ||= ThreadSafe::Cache.new
-    end
-
-    def self.digest_caller_file(caller_line)
-      serializer_file_path = caller_line[CALLER_FILE]
-      serializer_file_contents = IO.read(serializer_file_path)
-      Digest::MD5.hexdigest(serializer_file_contents)
     end
 
     # @api private
