@@ -86,6 +86,23 @@ module ActiveModel
 
         assert_equal(expected, hash)
       end
+
+      PostWithSelectAndTest = Class.new(::Model)
+      class PostWithSelectAndTestSerializer < ActiveModel::Serializer
+        attribute :select do
+          'select'
+        end
+        attribute :test do
+          'test'
+        end
+      end
+      def test_reserved_works_attribute
+        post = PostWithSelectAndTest.new
+        hash = serializable(post).serializable_hash
+        expected = { select: 'select', test: 'test' }
+
+        assert_equal(expected, hash)
+      end
     end
   end
 end

@@ -33,7 +33,7 @@ module ActiveModel
       self._attributes ||= []
       class_attribute :_attributes_keys
       self._attributes_keys ||= {}
-      class_attribute :_attributes_values, instance_reader: true
+      class_attribute :_attributes_values
       self._attributes_values ||= {}
       serializer.class_attribute :_cache
       serializer.class_attribute :_fragmented
@@ -158,8 +158,8 @@ module ActiveModel
     end
 
     def attribute_value(name)
-      if _attributes_values[name]
-        instance_eval(&_attributes_values[name])
+      if self.class._attributes_values[name]
+        instance_eval(&self.class._attributes_values[name])
       elsif respond_to?(name) # To handle legacy method-based attr overriding
         warn 'Overriding attributes by defining a method on the serializer is deprecated. Please use the block syntax.'
         public_send(name)
