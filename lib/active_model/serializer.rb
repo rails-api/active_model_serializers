@@ -92,7 +92,7 @@ module ActiveModel
       elsif resource.respond_to?(:to_ary)
         config.array_serializer
       else
-        options.fetch(:serializer) { get_serializer_for(resource.class) }
+        options.fetch(:serializer) { get_serializer_for(resource.class, options[:_controller_class_name]) }
       end
     end
 
@@ -112,7 +112,7 @@ module ActiveModel
     end
 
     # @api private
-    def self.serializer_lookup_chain_for(klass)
+    def self.serializer_lookup_chain_for(klass, controller_class_name = nil)
       chain = []
 
       resource_class_name = klass.name.demodulize
@@ -120,16 +120,18 @@ module ActiveModel
       serializer_class_name = "#{resource_class_name}Serializer"
 
       chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
+      chain.push("#{controller_class_name.deconstantize}::#{serializer_class_name}") if controller_class_name
       chain.push("#{resource_namespace}::#{serializer_class_name}")
 
       chain
     end
 
     # @api private
-    def self.get_serializer_for(klass)
-      serializers_cache.fetch_or_store(klass) do
+    def self.get_serializer_for(klass, controller_class_name = nil)
+      serializers_cache.fetch_or_store([klass, controller_class_name]) do
         # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
-        serializer_class = serializer_lookup_chain_for(klass).map(&:safe_constantize).find { |x| x }
+        serializer_class = serializer_lookup_chain_for(klass, controller_class_name)
+                           .map(&:safe_constantize).find { |x| x }
 
         if serializer_class
           serializer_class
