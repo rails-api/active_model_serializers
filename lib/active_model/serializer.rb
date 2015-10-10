@@ -116,7 +116,7 @@ module ActiveModel
 
     # @api private
     # Used by FragmentCache on the CachedSerializer
-    #  to call attribute methods on the fragmented cached serializer
+    #  to call attribute methods on the fragmented cached serializer.
     def self.fragmented(serializer)
       self._fragmented = serializer
     end
@@ -174,7 +174,7 @@ module ActiveModel
     end
 
     # Used to cache serializer name => serializer class
-    # when looked up by Serializer.get_serializer_for
+    # when looked up by Serializer.get_serializer_for.
     def self.serializers_cache
       @serializers_cache ||= ThreadSafe::Cache.new
     end
@@ -215,8 +215,8 @@ module ActiveModel
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
-    # If the instance does not have a method nameed `scope_name`, it
-    # defines the method so that calls the +scope+.
+    # If the instance does not have a method named `scope_name`, it
+    # defines the method so that it calls the +scope+.
     def initialize(object, options = {})
       self.object = object
       self.instance_options = options
@@ -231,7 +231,7 @@ module ActiveModel
       end
     end
 
-    # Used by adapter as resource root
+    # Used by adapter as resource root.
     def json_key
       root || object.class.model_name.to_s.underscore
     end

@@ -12,12 +12,12 @@ module ActiveModel
 
         # TODO: Use Serializable::Resource
         # TODO: call +constantize+ less
-        # 1. Create a CachedSerializer and NonCachedSerializer from the serializer class.
-        # 2. Serialize the above two with the given adapter.
-        # 3. Pass their serializations to the adapter +::fragment_cache+.
+        # 1. Create a CachedSerializer and NonCachedSerializer from the serializer class
+        # 2. Serialize the above two with the given adapter
+        # 3. Pass their serializations to the adapter +::fragment_cache+
         def fetch
           klass = serializer.class
-          # It will split the serializer into two, one that will be cached and other wont
+          # It will split the serializer into two, one that will be cached and one that will not
           serializers = fragment_serializer(serializer.object.class.name, klass)
 
           # Instantiate both serializers
@@ -41,9 +41,9 @@ module ActiveModel
 
         private
 
-        # Given a serializer class and a hash of its cached and non0cached serializers
-        # 1. Determine cached attributes from serializer class options.
-        # 2. Add cached attributes to cached Serializer.
+        # Given a serializer class and a hash of its cached and non-cached serializers
+        # 1. Determine cached attributes from serializer class options
+        # 2. Add cached attributes to cached Serializer
         # 3. Add non-cached attributes to non-cached Serializer
         def cached_attributes(klass, serializers)
           attributes            = serializer.class._attributes
@@ -66,8 +66,8 @@ module ActiveModel
         end
 
         # Given a resource name and its serializer's class
-        # 1.  Dyanmically creates a CachedSerializer and NonCachedSerializer
-        #   for a given class 'name'.
+        # 1. Dyanmically creates a CachedSerializer and NonCachedSerializer
+        #   for a given class 'name'
         # 2. Call
         #       CachedSerializer.cache(serializer._cache_options)
         #       CachedSerializer.fragmented(serializer)
