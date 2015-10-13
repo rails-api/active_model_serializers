@@ -52,7 +52,8 @@ module ActiveModel
       self._attributes_keys ||= {}
       class_attribute :_links                    # @api private : links definitions, @see Serializer#link
       self._links ||= {}
-
+      class_attribute :_attributes_conditions    # @api private : maps condition of attributes
+      self._attributes_conditions ||= {}
       serializer.class_attribute :_cache         # @api private : the cache object
       serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
       serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
@@ -76,6 +77,7 @@ module ActiveModel
       base._attributes = _attributes.dup
       base._attributes_keys = _attributes_keys.dup
       base._links = _links.dup
+      base._attributes_conditions = _attributes_conditions.dup
       base._cache_digest = digest_caller_file(caller_line)
       super
     end
@@ -95,10 +97,11 @@ module ActiveModel
     #   class AdminAuthorSerializer < ActiveModel::Serializer
     #     attributes :id, :name, :recent_edits
     def self.attributes(*attrs)
+      options = attrs.last.class == Hash ? attrs.pop : {}
       attrs = attrs.first if attrs.first.class == Array
 
       attrs.each do |attr|
-        attribute(attr)
+        attribute(attr, options)
       end
     end
 
@@ -114,6 +117,17 @@ module ActiveModel
       key = options.fetch(:key, attr)
       _attributes_keys[attr] = { key: key } if key != attr
       _attributes << key unless _attributes.include?(key)
+
+      [:if, :unless].each do |switch|
+        next unless options.key?(switch)
+        condition = [switch, options]
+
+        if _attributes_conditions[condition]
+          _attributes_conditions[condition] << key
+        else
+          _attributes_conditions[condition] = [key]
+        end
+      end
 
       ActiveModelSerializers.silence_warnings do
         define_method key do
@@ -247,7 +261,9 @@ module ActiveModel
     # Return the +attributes+ of +object+ as presented
     # by the serializer.
     def attributes(requested_attrs = nil)
-      self.class._attributes.each_with_object({}) do |name, hash|
+      attributes = self.class._attributes - excluded_attribute_keys
+
+      attributes.each_with_object({}) do |name, hash|
         next unless requested_attrs.nil? || requested_attrs.include?(name)
         if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
@@ -263,8 +279,36 @@ module ActiveModel
       self.class._links
     end
 
+    def excluded_attribute_keys
+      self.class
+        ._attributes_conditions
+        .each_with_object([]) do |((switch, condition), keys), excluded_keys|
+        case switch
+        when :if
+          excluded_keys << keys unless eval_attribute_condition(condition[:if])
+        when :unless
+          excluded_keys << keys if eval_attribute_condition(condition[:unless])
+        else
+          excluded_keys
+        end
+      end.flatten
+    end
+
     protected
 
     attr_accessor :instance_options
+
+    private
+
+    def eval_attribute_condition(condition)
+      case
+      when condition.is_a?(Symbol)
+        send(condition)
+      when condition.respond_to?(:call)
+        instance_eval(&condition)
+      else
+        warn 'The condition is invalid'
+      end
+    end
   end
 end

@@ -71,6 +71,22 @@ module ActiveModel
 
         assert_equal('custom', hash[:blog][:id])
       end
+
+      def test_attributes_conditions
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          attribute :id
+          attributes :name, :title, if: :admin?
+          attribute :type, unless: proc { true }
+
+          def admin?
+            false
+          end
+        end
+        serializer = serializer_class.new(@blog)
+
+        assert_equal([:name, :title, :type], serializer.excluded_attribute_keys)
+        assert_equal({ id: 1 }, serializer.attributes)
+      end
     end
   end
 end
