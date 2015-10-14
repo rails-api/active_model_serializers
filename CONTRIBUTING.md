@@ -47,8 +47,8 @@ Rake can be found at http://docs.seattlerb.org/rake/.
 
 To run a single test suite
 
-   rake test TEST=path/to/test.rb
+`$ rake test TEST=path/to/test.rb`
 
-which can be further narrowed down to one test:
+Which can be further narrowed down to one test:
 
-   rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"
+`$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
