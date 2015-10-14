@@ -200,12 +200,12 @@ end
 #### Attributes
 
 It's the default adapter, it generates a json response without a root key.
-Doesn't follow any specifc convention.
+Doesn't follow any specific convention.
 
 #### JSON
 
 It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly with the objects being serialized.
-Doesn't follow any specifc convention.
+Doesn't follow any specific convention.
 
 #### JSON API
 
@@ -271,7 +271,7 @@ the serializer generator:
 $ rails g serializer post
 ```
 
-The generated seralizer will contain basic `attributes` and
+The generated serializer will contain basic `attributes` and
 `has_many`/`has_one`/`belongs_to` declarations, based on the model. For example:
 
 ```ruby
