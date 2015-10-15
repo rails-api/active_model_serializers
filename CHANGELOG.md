@@ -14,6 +14,7 @@ Breaking changes:
 
 Features:
 
+- [#1336](https://github.com/rails-api/active_model_serializers/pull/1336) Added support for Grape >= 0.13, < 1.0
 - [#1291](https://github.com/rails-api/active_model_serializers/pull/1291) Add logging (@maurogeorge)
 - [#1225](https://github.com/rails-api/active_model_serializers/pull/1225) Better serializer lookup, use nested serializer when it exists (@beauby)
 - [#1172](https://github.com/rails-api/active_model_serializers/pull/1172) Better serializer registration, get more than just the first module (@bf4)
