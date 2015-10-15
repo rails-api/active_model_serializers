@@ -40,6 +40,7 @@ group :test do
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 
+  gem 'minitest-reporters', require: false, group: :development
   gem 'codeclimate-test-reporter', require: false
   gem 'simplecov', '~> 0.10', require: false, group: :development
 end
