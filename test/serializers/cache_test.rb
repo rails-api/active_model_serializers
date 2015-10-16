@@ -3,6 +3,8 @@ require 'tempfile'
 module ActiveModel
   class Serializer
     class CacheTest < Minitest::Test
+      include ActiveSupport::Testing::Stream
+
       def setup
         ActionController::Base.cache_store.clear
         @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
@@ -168,6 +170,16 @@ module ActiveModel
         assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
       ensure
         file.unlink
+      end
+
+      def test_warn_on_serializer_not_defined_in_file
+        called = false
+        serializer = Class.new(ActiveModel::Serializer)
+        assert_match(/_cache_digest/, (capture(:stderr) do
+          serializer.digest_caller_file('')
+          called = true
+        end))
+        assert called
       end
 
       private
