@@ -33,6 +33,8 @@ module ActiveModel
       self._attributes ||= []
       class_attribute :_attributes_keys
       self._attributes_keys ||= {}
+      class_attribute :_attributes_values
+      self._attributes_values ||= {}
       serializer.class_attribute :_cache
       serializer.class_attribute :_fragmented
       serializer.class_attribute :_cache_key
@@ -45,6 +47,7 @@ module ActiveModel
     def self.inherited(base)
       base._attributes = _attributes.dup
       base._attributes_keys = _attributes_keys.dup
+      base._attributes_values = _attributes_values.dup
       base._cache_digest = digest_caller_file(caller.first)
       super
     end
@@ -61,16 +64,11 @@ module ActiveModel
       end
     end
 
-    def self.attribute(attr, options = {})
+    def self.attribute(attr, options = {}, &block)
       key = options.fetch(:key, attr)
-      _attributes_keys[attr] = { key: key } if key != attr
-      _attributes << key unless _attributes.include?(key)
-
-      ActiveModelSerializers.silence_warnings do
-        define_method key do
-          object.read_attribute_for_serialization(attr)
-        end unless method_defined?(key) || _fragmented.respond_to?(attr)
-      end
+      _attributes_keys[attr] = { key: key }
+      _attributes << attr unless _attributes.include?(key)
+      _attributes_values[attr] = block if block_given?
     end
 
     def self.fragmented(serializer)
@@ -159,15 +157,24 @@ module ActiveModel
       root || object.class.model_name.to_s.underscore
     end
 
+    def attribute_value(name)
+      if self.class._attributes_values[name]
+        instance_eval(&self.class._attributes_values[name])
+      elsif respond_to?(name) # To handle legacy method-based attr overriding
+        warn 'Overriding attributes by defining a method on the serializer is deprecated. Please use the block syntax.'
+        public_send(name)
+      else
+        object.read_attribute_for_serialization(name)
+      end
+    end
+
     def attributes
       attributes = self.class._attributes.dup
 
       attributes.each_with_object({}) do |name, hash|
-        if self.class._fragmented
-          hash[name] = self.class._fragmented.public_send(name)
-        else
-          hash[name] = send(name)
-        end
+        key = self.class._attributes_keys[name][:key]
+        klass = self.class._fragmented || self
+        hash[key] = klass.attribute_value(name)
       end
     end
 

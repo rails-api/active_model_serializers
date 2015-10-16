@@ -9,7 +9,7 @@ module ActiveModel
       end
 
       def test_attributes_definition
-        assert_equal([:id, :title],
+        assert_equal([:id, :name],
           @blog_serializer.class._attributes)
       end
 
@@ -70,6 +70,38 @@ module ActiveModel
         hash = ActiveModel::SerializableResource.new(@blog, adapter: :json, serializer: serializer).serializable_hash
 
         assert_equal('custom', hash[:blog][:id])
+      end
+
+      PostWithVirtualAttribute = Class.new(::Model)
+      class PostWithVirtualAttributeSerializer < ActiveModel::Serializer
+        attribute :name do
+          "#{object.first_name} #{object.last_name}"
+        end
+      end
+
+      def test_virtual_attribute_block
+        post = PostWithVirtualAttribute.new(first_name: 'Lucas', last_name: 'Hosseini')
+        hash = serializable(post).serializable_hash
+        expected = { name: 'Lucas Hosseini' }
+
+        assert_equal(expected, hash)
+      end
+
+      PostWithSelectAndTest = Class.new(::Model)
+      class PostWithSelectAndTestSerializer < ActiveModel::Serializer
+        attribute :select do
+          'select'
+        end
+        attribute :test do
+          'test'
+        end
+      end
+      def test_reserved_works_attribute
+        post = PostWithSelectAndTest.new
+        hash = serializable(post).serializable_hash
+        expected = { select: 'select', test: 'test' }
+
+        assert_equal(expected, hash)
       end
     end
   end
