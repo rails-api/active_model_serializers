@@ -18,27 +18,37 @@ module ActiveModel
             @post.blog = @blog
             @anonymous_post.blog = nil
 
-            @serializer = CommentSerializer.new(@comment)
-            @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
             ActionController::Base.cache_store.clear
           end
 
           def test_includes_post
-            assert_equal({ id: 42, title: 'New Post', body: 'Body' }, @adapter.serializable_hash[:comment][:post])
+            resource = SerializableResource.new(@comment, adapter: :json, serializer: CommentSerializer)
+            expected = { id: 42, title: 'New Post', body: 'Body' }
+            actual = resource.serializable_hash[:comment][:post]
+
+            assert_equal(expected, actual)
           end
 
           def test_include_nil_author
-            serializer = PostSerializer.new(@anonymous_post)
-            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+            resource = SerializableResource.new(@anonymous_post, adapter: :json, serializer: PostSerializer)
+            expected = {
+              post: {
+                title: 'Hello!!', body: 'Hello, world!!', id: 43,
+                comments: [],
+                blog: { id: 999, name: 'Custom blog' }, author: nil
+              }
+            }
+            actual = resource.serializable_hash
 
-            assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], blog: { id: 999, name: 'Custom blog' }, author: nil } }, adapter.serializable_hash)
+            assert_equal(expected, actual)
           end
 
           def test_include_nil_author_with_specified_serializer
-            serializer = PostPreviewSerializer.new(@anonymous_post)
-            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+            resource = SerializableResource.new(@anonymous_post, adapter: :json, serializer: PostPreviewSerializer)
+            expected = { post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil } }
+            actual = resource.serializable_hash
 
-            assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil } }, adapter.serializable_hash)
+            assert_equal(expected, actual)
           end
         end
       end

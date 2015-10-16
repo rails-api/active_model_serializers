@@ -22,23 +22,37 @@ module ActiveModel
           end
 
           def test_has_many
-            serializer = PostSerializer.new(@post)
-            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
-            assert_equal([
-                           { id: 1, body: 'ZOMG A COMMENT' },
-                           { id: 2, body: 'ZOMG ANOTHER COMMENT' }
-                         ], adapter.serializable_hash[:post][:comments])
+            resource = SerializableResource.new(
+              @post,
+              adapter: :json,
+              serializer: PostSerializer
+            )
+
+            expected = [
+              { id: 1, body: 'ZOMG A COMMENT' },
+              { id: 2, body: 'ZOMG ANOTHER COMMENT' }
+            ]
+            actual = resource.serializable_hash[:post][:comments]
+
+            assert_equal(expected, actual)
           end
 
           def test_has_many_with_no_serializer
-            serializer = PostWithTagsSerializer.new(@post)
-            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
-            assert_equal({
+            resource = SerializableResource.new(
+              @post,
+              adapter: :json,
+              serializer: PostWithTagsSerializer
+            )
+
+            expected = {
               id: 42,
               tags: [
                 { 'attributes' => { 'id' => 1, 'name' => '#hash_tag' } }
               ]
-            }.to_json, adapter.serializable_hash[:post].to_json)
+            }.to_json
+            actual = resource.serializable_hash[:post].to_json
+
+            assert_equal(expected, actual)
           end
         end
       end

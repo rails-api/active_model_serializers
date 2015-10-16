@@ -3,14 +3,57 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssociationsTest < Minitest::Test
+      Post    = Class.new(::Model)
+      Author  = Class.new(::Model)
+      Tag     = Class.new(::Model)
+      Comment = Class.new(::Model)
+      Blog    = Class.new(::Model)
+
+      class PostSerializer < ActiveModel::Serializer
+        attributes :id, :title, :body
+
+        has_many :comments
+        belongs_to :blog
+        belongs_to :author
+      end
+
+      class PostWithTagsSerializer < ActiveModel::Serializer
+        attributes :id
+
+        has_many :tags
+      end
+
+      class PostWithCustomKeysSerializer < ActiveModel::Serializer
+        attributes :id
+
+        has_many :comments, key: :reviews
+        belongs_to :author, key: :writer
+        has_one :blog, key: :site
+      end
+
+      class AuthorSerializer < ActiveModel::Serializer
+        attributes :id, :name
+        has_many :posts
+        has_many :roles
+        has_one :bio
+      end
+
+      class CommentSerializer < ActiveModel::Serializer
+        attributes :id, :body
+
+        def custom_options
+          instance_options
+        end
+      end
+
       def setup
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
         @author.roles = []
-        @blog = Blog.new({ name: 'AMS Blog' })
-        @post = Post.new({ title: 'New Post', body: 'Body' })
-        @tag = Tag.new({ name: '#hashtagged' })
-        @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+        @blog = Blog.new(name: 'AMS Blog')
+        @post = Post.new(title: 'New Post', body: 'Body')
+        @tag = Tag.new(name: '#hashtagged')
+        @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
         @post.comments = [@comment]
         @post.tags = [@tag]
         @post.blog = @blog
@@ -19,7 +62,7 @@ module ActiveModel
         @post.author = @author
         @author.posts = [@post]
 
-        @post_serializer = PostSerializer.new(@post, { custom_options: true })
+        @post_serializer = PostSerializer.new(@post, custom_options: true)
         @author_serializer = AuthorSerializer.new(@author)
         @comment_serializer = CommentSerializer.new(@comment)
       end
@@ -52,9 +95,12 @@ module ActiveModel
           serializer = association.serializer
           options = association.options
 
-          assert_equal key, :tags
-          assert_equal serializer, nil
-          assert_equal [{ attributes: { name: '#hashtagged' } }].to_json, options[:virtual_value].to_json
+          assert_equal(key, :tags)
+          assert_nil(serializer)
+
+          expected = [{ attributes: { name: '#hashtagged' } }].to_json
+          actual = options[:virtual_value].to_json
+          assert_equal(expected, actual)
         end
       end
 
@@ -63,7 +109,7 @@ module ActiveModel
                         .associations
                         .detect { |assoc| assoc.key == :comments }
 
-        assert association.serializer.first.custom_options[:custom_options]
+        assert(association.serializer.first.custom_options[:custom_options])
       end
 
       def test_belongs_to
@@ -121,9 +167,9 @@ module ActiveModel
 
         expected_association_keys = serializer.associations.map(&:key)
 
-        assert expected_association_keys.include? :reviews
-        assert expected_association_keys.include? :writer
-        assert expected_association_keys.include? :site
+        assert_includes(expected_association_keys, :reviews)
+        assert_includes(expected_association_keys, :writer)
+        assert_includes(expected_association_keys, :site)
       end
 
       class NamespacedResourcesTest < Minitest::Test
