@@ -49,6 +49,11 @@ module ActiveModel
             parsed_hash = ActiveModel::Serializer::Adapter::JsonApi.parse(parameters)
             assert_equal(@expected, parsed_hash)
           end
+
+          def test_illformed_payload
+            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi.parse({})
+            assert_equal({}, parsed_hash)
+          end
         end
       end
     end

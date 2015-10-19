@@ -51,22 +51,25 @@ module ActiveModel
         def self.parse(document)
           hash = {}
 
-          hash[:id] = document['data']['id'] if document['data']['id']
+          primary_data = document.fetch('data', {})
+          hash[:id] = primary_data['id'] if primary_data['id']
 
-          if document['data']['attributes']
-            document['data']['attributes'].each do |name, value|
+          if primary_data['attributes']
+            primary_data['attributes'].each do |name, value|
               hash[name.to_sym] = value
             end
           end
 
-          document['data']['relationships'].each do |name, value|
-            data = value['data']
-            if data.is_a? Array
-              key = "#{name.singularize}_ids".to_sym
-              hash[key] = data.map { |ri| ri['id'] }
-            else
-              key = "#{name.singularize}_id".to_sym
-              hash[key] = data ? data['id'] : nil
+          if primary_data['relationships']
+            primary_data['relationships'].each do |name, value|
+              data = value['data']
+              if data.is_a?(Array)
+                key = "#{name.singularize}_ids".to_sym
+                hash[key] = data.map { |ri| ri['id'] }
+              else
+                key = "#{name.singularize}_id".to_sym
+                hash[key] = data ? data['id'] : nil
+              end
             end
           end
 
