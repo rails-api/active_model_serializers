@@ -2,6 +2,7 @@ require 'thread_safe'
 require 'active_model/serializer/collection_serializer'
 require 'active_model/serializer/array_serializer'
 require 'active_model/serializer/include_tree'
+require 'active_model/serializer/attributes'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
@@ -12,7 +13,9 @@ require 'active_model/serializer/lint'
 module ActiveModel
   class Serializer
     include Configuration
+    include Attributes
     include Associations
+
     require 'active_model/serializer/adapter'
 
     # Matches
@@ -46,10 +49,6 @@ module ActiveModel
 
     with_options instance_writer: false, instance_reader: false do |serializer|
       class_attribute :_type, instance_reader: true
-      class_attribute :_attributes               # @api private : names of attribute methods, @see Serializer#attribute
-      self._attributes ||= []
-      class_attribute :_attributes_keys          # @api private : maps attribute value to explict key name, @see Serializer#attribute
-      self._attributes_keys ||= {}
       serializer.class_attribute :_cache         # @api private : the cache object
       serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
       serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
@@ -66,12 +65,12 @@ module ActiveModel
       serializer.class_attribute :_cache_digest # @api private : Generated
     end
 
-    # Serializers inherit _attributes and _attributes_keys.
+    # Serializers inherit _attributes, _attributes_keys and _reflections.
     # Generates a unique digest for each serializer at load.
     def self.inherited(base)
+      inherit_attributes(base)
+      inherit_associations(base)
       caller_line = caller.first
-      base._attributes = _attributes.dup
-      base._attributes_keys = _attributes_keys.dup
       base._cache_digest = digest_caller_file(caller_line)
       super
     end
@@ -81,47 +80,6 @@ module ActiveModel
     #     type 'authors'
     def self.type(type)
       self._type = type
-    end
-
-    # @example
-    #   class AdminAuthorSerializer < ActiveModel::Serializer
-    #     attributes :id, :name, :recent_edits
-    def self.attributes(*attrs)
-      attrs = attrs.first if attrs.first.class == Array
-
-      attrs.each do |attr|
-        attribute(attr)
-      end
-    end
-
-    # @example
-    #   class AdminAuthorSerializer < ActiveModel::Serializer
-    #     attributes :id, :recent_edits
-    #     attribute :name, key: :title
-    #
-    #     def recent_edits
-    #       object.edits.last(5)
-    #     end
-    #
-    # @example
-    #   class AdminAuthorSerializer < ActiveModel::Serializer
-    #     attribute :name do
-    #       "#{object.first_name} #{object.last_name}"
-    #     end
-    def self.attribute(attr, options = {}, &block)
-      key = options.fetch(:key, attr)
-      _attributes_keys[attr] = { key: key } if key != attr
-      _attributes << key unless _attributes.include?(key)
-
-      ActiveModelSerializers.silence_warnings do
-        define_method key do
-          if block_given?
-            instance_eval(&block)
-          else
-            object.read_attribute_for_serialization(attr)
-          end
-        end unless method_defined?(key) || _fragmented.respond_to?(attr)
-      end
     end
 
     # @api private
@@ -244,20 +202,6 @@ module ActiveModel
     # Used by adapter as resource root.
     def json_key
       root || object.class.model_name.to_s.underscore
-    end
-
-    # Return the +attributes+ of +object+ as presented
-    # by the serializer.
-    def attributes
-      attributes = self.class._attributes.dup
-
-      attributes.each_with_object({}) do |name, hash|
-        if self.class._fragmented
-          hash[name] = self.class._fragmented.public_send(name)
-        else
-          hash[name] = send(name)
-        end
-      end
     end
 
     protected

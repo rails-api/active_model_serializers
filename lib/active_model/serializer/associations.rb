@@ -13,9 +13,8 @@ module ActiveModel
       DEFAULT_INCLUDE_TREE = ActiveModel::Serializer::IncludeTree.from_string('*')
 
       included do |base|
-        class << base
-          attr_accessor :_reflections
-        end
+        base.class_attribute :_reflections
+        base._reflections ||= []
 
         extend ActiveSupport::Autoload
         autoload :Association
@@ -28,8 +27,8 @@ module ActiveModel
       end
 
       module ClassMethods
-        def inherited(base)
-          base._reflections = self._reflections.try(:dup) || []
+        def inherit_associations(base)
+          base._reflections = _reflections.dup
         end
 
         # @param [Symbol] name of the association
@@ -39,8 +38,8 @@ module ActiveModel
         # @example
         #  has_many :comments, serializer: CommentSummarySerializer
         #
-        def has_many(name, options = {})
-          associate HasManyReflection.new(name, options)
+        def has_many(name, options = {}, &block)
+          associate(HasManyReflection.new(name, options), block)
         end
 
         # @param [Symbol] name of the association
@@ -50,8 +49,8 @@ module ActiveModel
         # @example
         #  belongs_to :author, serializer: AuthorSerializer
         #
-        def belongs_to(name, options = {})
-          associate BelongsToReflection.new(name, options)
+        def belongs_to(name, options = {}, &block)
+          associate(BelongsToReflection.new(name, options), block)
         end
 
         # @param [Symbol] name of the association
@@ -61,8 +60,8 @@ module ActiveModel
         # @example
         #  has_one :author, serializer: AuthorSerializer
         #
-        def has_one(name, options = {})
-          associate HasOneReflection.new(name, options)
+        def has_one(name, options = {}, &block)
+          associate(HasOneReflection.new(name, options), block)
         end
 
         private
@@ -73,11 +72,15 @@ module ActiveModel
         #
         # @api private
         #
-        def associate(reflection)
+        def associate(reflection, block)
           self._reflections = _reflections.dup
 
           define_method reflection.name do
-            object.send reflection.name
+            if block_given?
+              instance_eval(&block)
+            else
+              object.send reflection.name
+            end
           end unless method_defined?(reflection.name)
 
           self._reflections << reflection
