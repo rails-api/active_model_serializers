@@ -40,54 +40,6 @@ module ActiveModel
 
         refute serializers.first.custom_options.key?(:serializer)
       end
-
-      def test_root_default
-        @serializer = ArraySerializer.new([@comment, @post])
-        assert_equal @serializer.root, nil
-      end
-
-      def test_root
-        expected =  'custom_root'
-        @serializer = ArraySerializer.new([@comment, @post], root: expected)
-        assert_equal @serializer.root, expected
-      end
-
-      def test_root_with_no_serializers
-        expected =  'custom_root'
-        @serializer = ArraySerializer.new([], root: expected)
-        assert_equal @serializer.root, expected
-      end
-
-      def test_json_key
-        assert_equal @serializer.json_key, 'comments'
-      end
-
-      def test_json_key_with_resource_with_name_and_no_serializers
-        serializer = ArraySerializer.new(build_named_collection)
-        assert_equal serializer.json_key, 'me_resources'
-      end
-
-      def test_json_key_with_resource_with_nil_name_and_no_serializers
-        resource = []
-        resource.define_singleton_method(:name) { nil }
-        serializer = ArraySerializer.new(resource)
-        assert_equal serializer.json_key, nil
-      end
-
-      def test_json_key_with_resource_without_name_and_no_serializers
-        serializer = ArraySerializer.new([])
-        assert_equal serializer.json_key, nil
-      end
-
-      def test_json_key_with_root
-        serializer = ArraySerializer.new(@resource, root: 'custom_root')
-        assert_equal serializer.json_key, 'custom_roots'
-      end
-
-      def test_json_key_with_root_and_no_serializers
-        serializer = ArraySerializer.new(build_named_collection, root: 'custom_root')
-        assert_equal serializer.json_key, 'custom_roots'
-      end
     end
   end
 end

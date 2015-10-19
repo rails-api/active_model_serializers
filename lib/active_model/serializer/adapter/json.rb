@@ -19,13 +19,19 @@ module ActiveModel
         def root
           root = instance_options.fetch(:root) do
             if serializer.respond_to?(:each)
-              serializer.first.object.class.model_name.to_s.pluralize
+              key =
+                if serializer.first
+                  serializer.first.object.class.model_name
+                else
+                  serializer.object.try(:name)
+                end
+              key.to_s.pluralize
             else
               serializer.object.class.model_name.to_s
             end
           end
 
-          root.underscore.to_sym
+          root.to_s.underscore.to_sym
         end
       end
     end

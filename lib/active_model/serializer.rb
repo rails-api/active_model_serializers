@@ -164,10 +164,6 @@ module ActiveModel
       end
     end
 
-    def json_key
-      root || object.class.model_name.to_s.underscore
-    end
-
     def attributes
       attributes = self.class._attributes.dup
 
