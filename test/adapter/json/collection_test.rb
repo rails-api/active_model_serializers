@@ -85,6 +85,20 @@ module ActiveModel
 
             assert_equal(expected, actual)
           end
+
+          def test_fields_with_no_associations_include_option
+            actual = ActiveModel::SerializableResource.new(
+              [@first_post, @second_post], adapter: :json, fields: [:id]
+            ).as_json
+
+            expected = { posts: [{
+              id: 1,
+            }, {
+              id: 2,
+            }] }
+
+            assert_equal(expected, actual)
+          end
         end
       end
     end
