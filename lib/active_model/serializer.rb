@@ -361,7 +361,7 @@ module ActiveModel
         _serializable_hash
       end
 
-      include_associations! if _embed
+      include_associations! if @object.present? && _embed
       @node
     end
 
