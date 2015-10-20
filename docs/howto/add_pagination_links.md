@@ -110,6 +110,26 @@ ex.
 }
 ```
 
+You can also achieve the same result if you have a helper method that adds the pagination info in the meta tag. For instance, in your action specify a custom serializer.
+
+```ruby
+render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attributes(@post)
+```
+
+```ruby
+#expects pagination!
+def meta_attributes(resource, extra_meta = {})
+  {
+    current_page: resource.current_page,
+    next_page: resource.next_page,
+    prev_page: resource.prev_page,
+    total_pages: resource.total_pages,
+    total_count: resource.total_count
+  }.merge(extra_meta)
+end
+```
+
+
 ### Attributes adapter
 
 This adapter does not allow us to use `meta` key, due to that it is not possible to add pagination links.
