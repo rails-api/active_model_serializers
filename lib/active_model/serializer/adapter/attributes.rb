@@ -35,8 +35,19 @@ module ActiveModel
 
         def resource_relationships(options)
           relationships = {}
+
+          association_fields_hash = {}
+          if options[:fields]
+            association_fields_hash = Hash[
+              *options[:fields].select { |s| s.is_a? Hash }
+            ]
+          end
+
           serializer.associations(@include_tree).each do |association|
-            relationships[association.key] = relationship_value_for(association, options)
+            relationships[association.key] = relationship_value_for(
+              association,
+              options.merge(fields: association_fields_hash[association.name])
+            )
           end
 
           relationships
