@@ -11,7 +11,7 @@ http://www.commitstrip.com/en/2014/05/07/the-truth-behind-open-source-apps/](doc
 ### Filing an issue
 
 Everyone is encouraged to open issues that are affecting them:
-bugs, ideas, documentation, performance problems – everything helps!
+bugs, ideas, documentation (`/docs`), performance problems – everything helps!
 
 #### Before
 
@@ -55,8 +55,6 @@ If you encounter multiple, unrelated issues, please report them as such.
 Simon Tatham has written an excellent on article on
 [How to Report Bugs Effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
 which is well worth reading, although it is not specific to ActiveModelSerializers.
-
-
 
 1. What have you tried?
 
@@ -129,6 +127,8 @@ To fetch & test the library for development, do:
 1. Create a new Pull Request
   - Include links to any relevant github issues.
   - *Don't* change the VERSION file.
+  - Update `/docs` to include, whenever possible, a new, suitable recommendation about how to use
+    the feature.
   - Extra Credit: [Confirm it runs and tests pass on the rubies specified in the travis
     config](.travis.yml). A maintainer will otherwise confirm it runs on these.
 
