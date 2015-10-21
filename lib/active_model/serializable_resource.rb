@@ -11,7 +11,23 @@ module ActiveModel
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
     end
 
-    delegate :serializable_hash, :as_json, :to_json, to: :adapter
+    def serializable_hash(*args)
+      notify_active_support do
+        adapter.serializable_hash(*args)
+      end
+    end
+
+    def as_json(*args)
+      notify_active_support do
+        adapter.as_json(*args)
+      end
+    end
+
+    def to_json(*args)
+      notify_active_support do
+        adapter.to_json(*args)
+      end
+    end
 
     def serialization_scope=(scope)
       serializer_opts[:scope] = scope
@@ -64,5 +80,14 @@ module ActiveModel
     protected
 
     attr_reader :resource, :adapter_opts, :serializer_opts
+
+    def notify_active_support(&block)
+      return unless serializer?
+      event_name = 'render.active_model_serializers'
+      payload = { serializer: serializer, adapter: adapter }
+      ActiveSupport::Notifications.instrument(event_name, payload) do
+        block.call
+      end
+    end
   end
 end
