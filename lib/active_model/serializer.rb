@@ -51,11 +51,11 @@ module ActiveModel
       class_attribute :_attributes_keys          # @api private : maps attribute value to explict key name, @see Serializer#attribute
       self._attributes_keys ||= {}
       serializer.class_attribute :_cache         # @api private : the cache object
-      serializer.class_attribute :_fragmented    # @api private :
+      serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
       serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
       serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists cached_attributes. Cannot combine with except
       serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists cached_attributes. Cannot combine with only
-      serializer.class_attribute :_cache_options # @api private : Used by CachedSerializer, passed to _cache.fetch
+      serializer.class_attribute :_cache_options # @api private : used by CachedSerializer, passed to _cache.fetch
       #  _cache_options include:
       #    expires_in
       #    compress
@@ -153,11 +153,11 @@ module ActiveModel
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
-    #   Preferentially retuns
+    #   Preferentially returns
     #   1. resource.serializer
-    #   2. ArraySerializer for a collection
+    #   2. ArraySerializer when resource is a collection
     #   3. options[:serializer]
-    #   4. lookup serializer by class (i.e. resource is a class)
+    #   4. lookup serializer when resource is a Class
     def self.serializer_for(resource, options = {})
       if resource.respond_to?(:serializer_class)
         resource.serializer_class
