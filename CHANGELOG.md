@@ -14,6 +14,7 @@ Breaking changes:
 
 Features:
 
+- [#1291](https://github.com/rails-api/active_model_serializers/pull/1291) Add logging (@maurogeorge)
 - [#1225](https://github.com/rails-api/active_model_serializers/pull/1125) Better serializer lookup, use nested serializer when it exists (@beauby)
 - [#1172](https://github.com/rails-api/active_model_serializers/pull/1172) Better serializer registration, get more than just the first module (@bf4)
 - [#1158](https://github.com/rails-api/active_model_serializers/pull/1158) Add support for wildcards in `include` option (@beauby)
