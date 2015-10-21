@@ -44,10 +44,6 @@ module ActiveModel
           instance_options.fetch(:meta_key, 'meta'.freeze)
         end
 
-        def root
-          serializer.json_key.to_sym if serializer.json_key
-        end
-
         def include_meta(json)
           json[meta_key] = meta if meta
           json

@@ -15,6 +15,24 @@ module ActiveModel
         def fragment_cache(cached_hash, non_cached_hash)
           ActiveModel::Serializer::Adapter::Json::FragmentCache.new.fragment_cache(cached_hash, non_cached_hash)
         end
+
+        def root
+          root = instance_options.fetch(:root) do
+            if serializer.respond_to?(:each)
+              key =
+                if serializer.first
+                  serializer.first.object.class.model_name
+                else
+                  serializer.object.try(:name)
+                end
+              key.to_s.pluralize
+            else
+              serializer.object.class.model_name.to_s
+            end
+          end
+
+          root.to_s.underscore.to_sym
+        end
       end
     end
   end

@@ -171,7 +171,7 @@ module ActionController
         with_adapter :json do
           get :render_array_using_custom_root
         end
-        expected = { custom_roots: [{ name: 'Name 1', description: 'Description 1' }] }
+        expected = { custom_root: [{ name: 'Name 1', description: 'Description 1' }] }
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
@@ -181,7 +181,7 @@ module ActionController
           get :render_array_that_is_empty_using_custom_root
         end
 
-        expected = { custom_roots: [] }
+        expected = { custom_root: [] }
         assert_equal 'application/json', @response.content_type
         assert_equal expected.to_json, @response.body
       end
