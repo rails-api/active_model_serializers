@@ -22,10 +22,10 @@ module ActiveModel
 
           def mock_request(query_parameters = {}, original_url = URI)
             context = Minitest::Mock.new
-            context.expect(:original_url, original_url)
+            context.expect(:request_url, original_url)
             context.expect(:query_parameters, query_parameters)
             @options = {}
-            @options[:context] = context
+            @options[:serialization_context] = context
           end
 
           def load_adapter(paginated_collection, options = {})

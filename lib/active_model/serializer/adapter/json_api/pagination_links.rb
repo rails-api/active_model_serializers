@@ -41,11 +41,11 @@ module ActiveModel
           end
 
           def url(options)
-            @url ||= options.fetch(:links, {}).fetch(:self, nil) || original_url
+            @url ||= options.fetch(:links, {}).fetch(:self, nil) || request_url
           end
 
-          def original_url
-            @original_url ||= context.original_url[/\A[^?]+/]
+          def request_url
+            @request_url ||= context.request_url
           end
 
           def query_parameters

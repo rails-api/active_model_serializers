@@ -7,6 +7,8 @@ module ActiveModelSerializers
   mattr_accessor :logger
   self.logger = Rails.logger || Logger.new(IO::NULL)
 
+  mattr_accessor :url_helpers
+
   extend ActiveSupport::Autoload
   autoload :Model
 
