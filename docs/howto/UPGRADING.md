@@ -8,7 +8,7 @@ emulate the response that your application currently serves.
 ###### Base Adapter
 
 A base adapter takes a ``ActiveModel::Serializer`` instance, and creates a hash
-used for serialization in its ``serializeable_hash`` method. A base adapter
+used for serialization in its ``serializable_hash`` method. A base adapter
 could look like this:
 
 ```ruby
