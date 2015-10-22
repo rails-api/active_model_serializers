@@ -7,6 +7,8 @@ require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
 
+# ActiveModel::Serializer is an abstract class that is
+# reified when subclassed to decorate a resource.
 module ActiveModel
   class Serializer
     include Configuration
@@ -44,19 +46,28 @@ module ActiveModel
 
     with_options instance_writer: false, instance_reader: false do |serializer|
       class_attribute :_type, instance_reader: true
-      class_attribute :_attributes
+      class_attribute :_attributes               # @api private : names of attribute methods, @see Serializer#attribute
       self._attributes ||= []
-      class_attribute :_attributes_keys
+      class_attribute :_attributes_keys          # @api private : maps attribute value to explict key name, @see Serializer#attribute
       self._attributes_keys ||= {}
-      serializer.class_attribute :_cache
-      serializer.class_attribute :_fragmented
-      serializer.class_attribute :_cache_key
-      serializer.class_attribute :_cache_only
-      serializer.class_attribute :_cache_except
-      serializer.class_attribute :_cache_options
-      serializer.class_attribute :_cache_digest
+      serializer.class_attribute :_cache         # @api private : the cache object
+      serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
+      serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
+      serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists cached_attributes. Cannot combine with except
+      serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists cached_attributes. Cannot combine with only
+      serializer.class_attribute :_cache_options # @api private : used by CachedSerializer, passed to _cache.fetch
+      #  _cache_options include:
+      #    expires_in
+      #    compress
+      #    force
+      #    race_condition_ttl
+      #  Passed to ::_cache as
+      #    serializer._cache.fetch(cache_key, @klass._cache_options)
+      serializer.class_attribute :_cache_digest # @api private : Generated
     end
 
+    # Serializers inherit _attributes and _attributes_keys.
+    # Generates a unique digest for each serializer at load.
     def self.inherited(base)
       caller_line = caller.first
       base._attributes = _attributes.dup
@@ -65,10 +76,16 @@ module ActiveModel
       super
     end
 
+    # @example
+    #   class AdminAuthorSerializer < ActiveModel::Serializer
+    #     type 'authors'
     def self.type(type)
       self._type = type
     end
 
+    # @example
+    #   class AdminAuthorSerializer < ActiveModel::Serializer
+    #     attributes :id, :name, :recent_edits
     def self.attributes(*attrs)
       attrs = attrs.first if attrs.first.class == Array
 
@@ -77,6 +94,14 @@ module ActiveModel
       end
     end
 
+    # @example
+    #   class AdminAuthorSerializer < ActiveModel::Serializer
+    #     attributes :id, :recent_edits
+    #     attribute :name, key: :title
+    #
+    #     def recent_edits
+    #       object.edits.last(5)
+    #     enr
     def self.attribute(attr, options = {})
       key = options.fetch(:key, attr)
       _attributes_keys[attr] = { key: key } if key != attr
@@ -89,11 +114,35 @@ module ActiveModel
       end
     end
 
+    # @api private
+    # Used by FragmentCache on the CachedSerializer
+    #  to call attribute methods on the fragmented cached serializer.
     def self.fragmented(serializer)
       self._fragmented = serializer
     end
 
     # Enables a serializer to be automatically cached
+    #
+    # Sets +::_cache+ object to <tt>ActionController::Base.cache_store</tt>
+    #   when Rails.configuration.action_controller.perform_caching
+    #
+    # @params options [Hash] with valid keys:
+    #   key            : @see ::_cache_key
+    #   only           : @see ::_cache_only
+    #   except         : @see ::_cache_except
+    #   skip_digest    : does not include digest in cache_key
+    #   all else       : @see ::_cache_options
+    #
+    # @example
+    #   class PostSerializer < ActiveModel::Serializer
+    #     cache key: 'post', expires_in: 3.hours
+    #     attributes :title, :body
+    #
+    #     has_many :comments
+    #   end
+    #
+    # @todo require less code comments. See
+    # https://github.com/rails-api/active_model_serializers/pull/1249#issuecomment-146567837
     def self.cache(options = {})
       self._cache = ActionController::Base.cache_store if Rails.configuration.action_controller.perform_caching
       self._cache_key = options.delete(:key)
@@ -102,6 +151,13 @@ module ActiveModel
       self._cache_options = (options.empty?) ? nil : options
     end
 
+    # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
+    # @return [ActiveModel::Serializer]
+    #   Preferentially returns
+    #   1. resource.serializer
+    #   2. ArraySerializer when resource is a collection
+    #   3. options[:serializer]
+    #   4. lookup serializer when resource is a Class
     def self.serializer_for(resource, options = {})
       if resource.respond_to?(:serializer_class)
         resource.serializer_class
@@ -117,6 +173,8 @@ module ActiveModel
       ActiveModel::Serializer::Adapter.lookup(config.adapter)
     end
 
+    # Used to cache serializer name => serializer class
+    # when looked up by Serializer.get_serializer_for.
     def self.serializers_cache
       @serializers_cache ||= ThreadSafe::Cache.new
     end
@@ -136,6 +194,11 @@ module ActiveModel
     end
 
     # @api private
+    # Find a serializer from a class and caches the lookup.
+    # Preferentially retuns:
+    #   1. class name appended with "Serializer"
+    #   2. try again with superclass, if present
+    #   3. nil
     def self.get_serializer_for(klass)
       serializers_cache.fetch_or_store(klass) do
         # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
@@ -151,6 +214,9 @@ module ActiveModel
 
     attr_accessor :object, :root, :scope
 
+    # `scope_name` is set as :current_user by default in the controller.
+    # If the instance does not have a method named `scope_name`, it
+    # defines the method so that it calls the +scope+.
     def initialize(object, options = {})
       self.object = object
       self.instance_options = options
@@ -165,10 +231,13 @@ module ActiveModel
       end
     end
 
+    # Used by adapter as resource root.
     def json_key
       root || object.class.model_name.to_s.underscore
     end
 
+    # Return the +attributes+ of +object+ as presented
+    # by the serializer.
     def attributes
       attributes = self.class._attributes.dup
 
