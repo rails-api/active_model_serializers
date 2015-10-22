@@ -1,6 +1,6 @@
 # How to upgrade from previous versions
 
-### Creating a Base and Collection Adapter
+### Creating a Custom Base Adapter
 
 You can upgrade to ams ``.10`` by creating a custom Base Adapter to
 emulate the response that your application currently serves.
