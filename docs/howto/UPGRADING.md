@@ -70,7 +70,7 @@ end
 let(:index_json) do
   MyApp::CollectionAdapter.new(
     ActiveModel::Serializer::ArraySerializer.new(
-      post
+      [post]
     )
   ).to_json
 end
