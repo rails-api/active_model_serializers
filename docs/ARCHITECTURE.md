@@ -2,7 +2,7 @@
 
 An **`ActiveModel::Serializer`** wraps a [serializable resource](https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/serialization.rb)
 and exposes an `attributes` method, among a few others.
-It allows you to specify which attributes and associations should represent the serialization of the resource.
+It allows you to specify which attributes and associations should be represented in the serializatation of the resource.
 It requires an adapter to transform its attributes into a JSON document; it cannot be serialized itself.
 It may be useful to think of it as a
 [presenter](http://blog.steveklabnik.com/posts/2011-09-09-better-ruby-presenters).
@@ -12,12 +12,12 @@ and, if there is no serializer, primitives.
 
 The **`ActiveModel::Adapter`** describes the structure of the JSON document generated from a
 serializer. For example, the `Attributes` example represents each serializer as its
-unmodified attributes.  The `JsonApi` adatper represents the serializer as a [JSON
+unmodified attributes.  The `JsonApi` adapter represents the serializer as a [JSON
 API](jsonapi.org/) document.
 
 The **`ActiveModel::SerializableResource`** acts to coordinate the serializer(s) and adapter
 to an object that responds to `to_json`, and `as_json`.  It is used in the controller to
-encapsulate the serialization resource when rendered. Thus, it can be used on its own
+encapsulate the serialization resource when rendered. However, it can also be used on its own
 to serialize a resource outside of a controller, as well.
 
 ## Primitive handling
@@ -29,7 +29,7 @@ defined for them; they will be serialized when the resource is converted to JSON
 ActiveModelSerializers doesn't handle primitives passed to `render json:` at all.
 
 However, when a primitive value is an attribute or in a collection,
-it is is not modified.
+it is not modified.
 
 Internally, if no serializer can be found in the controller, the resource is not decorated by
 ActiveModelSerializers.
@@ -50,8 +50,8 @@ reflection_options[:virtual_value] = association_value.try(:as_json) || associat
 High-level overview:
 
 - For a collection
-  - the collection serializer is the `:serializer` option and
-  - `:each_serializer` is used as the serializer for each resource in the collection.
+  - `:serializer` specifies the collection serializer and
+  - `:each_serializer` specifies the serializer for each resource in the collection.
 - For a single resource, the `:serializer` option is the resource serializer.
 - Options are partitioned in serializer options and adapter options.  Keys for adapter options are specified by
     [`ADAPTER_OPTIONS`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializable_resource.rb#L4).
@@ -92,7 +92,7 @@ Details:
 
 ActiveModelSerializers provides a
 `[ActiveModelSerializers::Model](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/model.rb)`,
-which is a simple serializable PORO (plain-old Ruby object).
+which is a simple serializable PORO (Plain-Old Ruby Object).
 
 ActiveModelSerializers::Model may be used either as a template, or in production code.
 
