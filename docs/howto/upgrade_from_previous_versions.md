@@ -48,7 +48,7 @@ let(:json) do
 end
 
 it 'returns the expected json' do
-  get :index, format: :json
+  get :show, format: :json
   expect(response.body).to eq json
 end
 ```
