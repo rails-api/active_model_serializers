@@ -50,7 +50,7 @@ module ActiveModel
               association_value,
               serializer_options(subject, parent_serializer_options, reflection_options)
             )
-          rescue ActiveModel::Serializer::ArraySerializer::NoSerializerError
+          rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
           end
         elsif !association_value.nil? && !association_value.instance_of?(Object)

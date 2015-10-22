@@ -3,26 +3,26 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class SerializerForTest < Minitest::Test
-      class ArraySerializerTest < Minitest::Test
+      class CollectionSerializerTest < Minitest::Test
         def setup
           @array = [1, 2, 3]
-          @previous_array_serializer = ActiveModel::Serializer.config.array_serializer
+          @previous_collection_serializer = ActiveModel::Serializer.config.collection_serializer
         end
 
         def teardown
-          ActiveModel::Serializer.config.array_serializer = @previous_array_serializer
+          ActiveModel::Serializer.config.collection_serializer = @previous_collection_serializer
         end
 
         def test_serializer_for_array
           serializer = ActiveModel::Serializer.serializer_for(@array)
-          assert_equal ActiveModel::Serializer.config.array_serializer, serializer
+          assert_equal ActiveModel::Serializer.config.collection_serializer, serializer
         end
 
         def test_overwritten_serializer_for_array
-          new_array_serializer = Class.new
-          ActiveModel::Serializer.config.array_serializer = new_array_serializer
+          new_collection_serializer = Class.new
+          ActiveModel::Serializer.config.collection_serializer = new_collection_serializer
           serializer = ActiveModel::Serializer.serializer_for(@array)
-          assert_equal new_array_serializer, serializer
+          assert_equal new_collection_serializer, serializer
         end
       end
 

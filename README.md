@@ -120,7 +120,7 @@ If you wish to use a serializer other than the default, you can explicitly pass 
 #### 2. For an array resource:
 
 ```ruby
-# Use the default `ArraySerializer`, which will use `each_serializer` to
+# Use the default `CollectionSerializer`, which will use `each_serializer` to
 # serialize each element
 render json: @posts, each_serializer: PostPreviewSerializer
 

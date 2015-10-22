@@ -154,7 +154,7 @@ BlogSerializer = Class.new(ActiveModel::Serializer) do
   has_many :articles
 end
 
-PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
+PaginatedSerializer = Class.new(ActiveModel::Serializer::CollectionSerializer) do
   def json_key
     'paginated'
   end
