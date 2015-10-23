@@ -7,7 +7,7 @@ module Grape
     module ActiveModelSerializers
       class << self
         def call(resource, env)
-          return resource.to_json unless resource.is_a?(Enumerable) || resource.respond_to?(:model_name)
+          return resource.to_json unless resource.is_a?(Array) || resource.respond_to?(:model_name)
           serializer_options = {}
           serializer_options.merge!(env[:active_model_serializer_options]) if env[:active_model_serializer_options]
           ActiveModel::SerializableResource.new(resource, serializer_options).to_json
