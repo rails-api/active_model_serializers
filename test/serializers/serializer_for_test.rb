@@ -44,11 +44,20 @@ module ActiveModel
           def serializer_class; ProfileSerializer; end
         end
 
+        Tweet = Class.new(::Model)
+        TweetSerializer = Class.new
+
         def setup
           @profile = Profile.new
           @my_profile = MyProfile.new
           @custom_profile = CustomProfile.new
           @model = ::Model.new
+          @tweet = Tweet.new
+        end
+
+        def test_serializer_for_non_ams_serializer
+          serializer = ActiveModel::Serializer.serializer_for(@tweet)
+          assert_nil(serializer)
         end
 
         def test_serializer_for_existing_serializer
