@@ -32,7 +32,7 @@ issue](https://github.com/rails-api/active_model_serializers/issues/new):
   please specify in your report why you can't update to the latest version.
 - Operating system type + version.
 - Ruby version with patch level.  And whether you're using rvm, rbenv, etc.
-  - Include your ruby -e "puts RUBY_DESCRIPTION".
+  - Include `ruby -e "puts RUBY_DESCRIPTION"`.
 - Clearly-written steps to reproduce the issue (i.e. "Show me how to show myself." ), including:
   - What were you doing? Include code if possible.
     - Command line parameters used, if any.
@@ -44,7 +44,7 @@ issue](https://github.com/rails-api/active_model_serializers/issues/new):
     - The best help here is a failing test. Even better if it's a PR.
     - Then the steps to reproduce and/or a gist or repository that demonstrates the defect.
     - Then examples of the code you were using.
-    - Any error messages (including stacktrace, i.e. ""Show me the error.")
+    - Any error messages (including stacktrace, i.e. "Show me the error.")
   - Things you've tried.
   - A pull request for your fix would be great.  Code should have tests.
   - Link to source code, if available.
