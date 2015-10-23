@@ -15,6 +15,12 @@ module ActiveModel
       def key
         options.fetch(:key, name)
       end
+
+      # @return [Boolean]
+      #
+      def data?
+        @data ||= options.fetch(:data, true)
+      end
     end
   end
 end
