@@ -11,11 +11,11 @@ module ActiveModel
 
       class LogSubscriber < ActiveSupport::LogSubscriber
         def render(event)
-          serializer = event.payload[:serializer]
-          adapter = event.payload[:adapter]
-          duration = event.duration.round(2)
           logger.tagged('AMS') do
             info do
+              serializer = event.payload[:serializer]
+              adapter = event.payload[:adapter]
+              duration = event.duration.round(2)
               "Rendered #{serializer.name} with #{adapter.class} (#{duration}ms)"
             end
           end
