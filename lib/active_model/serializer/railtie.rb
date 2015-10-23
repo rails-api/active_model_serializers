@@ -2,9 +2,7 @@ require 'rails/railtie'
 module ActiveModel
   class Railtie < Rails::Railtie
     initializer 'active_model_serializers.logger' do
-      ActiveSupport.on_load(:action_controller) do
-        ActiveModelSerializers.logger = ActionController::Base.logger
-      end
+      ActiveSupport.on_load(:active_model_serializers) { self.logger ||= Rails.logger }
     end
 
     initializer 'generators' do |app|
