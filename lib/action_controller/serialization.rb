@@ -21,6 +21,10 @@ module ActionController
     end
 
     def get_serializer(resource, options = {})
+      unless options[:serializer] || options[:each_serializer] || ActiveModel::Serializer.config.automatic_lookup
+        return resource
+      end
+
       if !use_adapter?
         warn 'ActionController::Serialization#use_adapter? has been removed. '\
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
