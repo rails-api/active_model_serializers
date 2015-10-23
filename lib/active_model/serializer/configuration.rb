@@ -20,6 +20,7 @@ module ActiveModel
 
         config.adapter = :attributes
         config.jsonapi_resource_type = :plural
+        config.automatic_lookup = true
       end
     end
   end
