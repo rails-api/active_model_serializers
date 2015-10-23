@@ -54,9 +54,7 @@ If you encounter multiple, unrelated issues, please report them as such.
 
 Simon Tatham has written an excellent on article on
 [How to Report Bugs Effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
-which is well worth reading, although it is not specific to ActiveModelSerializers.
-
-1. What have you tried?
+which is [well worth reading](http://yourbugreportneedsmore.info/), although it is not specific to ActiveModelSerializers.
 
 Include as much sample code as you can to help us reproduce the issue. (Inline, repo link, or gist, are fine. A failing test would help the most.)
 
