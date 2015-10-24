@@ -1,6 +1,6 @@
 verbose = $VERBOSE
 $VERBOSE = nil
-class Model < ActiveModelSerializers::Model
+class Model < ActiveModel::Serializer::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
   ### Helper methods, not required to be serializable

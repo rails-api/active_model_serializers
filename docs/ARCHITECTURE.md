@@ -91,13 +91,13 @@ Details:
   [code](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer/lint.rb).
 
 ActiveModelSerializers provides a
-`[ActiveModelSerializers::Model](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/model.rb)`,
+`[ActiveModel::Serializer::Model](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer/model.rb)`,
 which is a simple serializable PORO (Plain-Old Ruby Object).
 
-ActiveModelSerializers::Model may be used either as a template, or in production code.
+ActiveModel::Serializer::Model may be used either as a template, or in production code.
 
 ```ruby
-class MyModel < ActiveModelSerializers::Model
+class MyModel < ActiveModel::Serializer::Model
   attr_accessor :id, :name, :level
 end
 ```
