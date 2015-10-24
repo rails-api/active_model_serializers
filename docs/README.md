@@ -9,6 +9,7 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 - [Getting Started](general/getting_started.md)
 - [Adapters](general/adapters.md)
 - [Configuration Options](general/configuration_options.md)
+- [Logging](general/logging.md)
 
 ## How to
 
