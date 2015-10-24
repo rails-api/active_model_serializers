@@ -82,7 +82,6 @@ module ActiveModel
     attr_reader :resource, :adapter_opts, :serializer_opts
 
     def notify_active_support
-      return unless serializer?
       event_name = 'render.active_model_serializers'.freeze
       payload = { serializer: serializer, adapter: adapter }
       ActiveSupport::Notifications.instrument(event_name, payload) do
