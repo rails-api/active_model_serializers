@@ -60,7 +60,7 @@ module ActiveModel
           def test_limiting_fields
             actual = ActiveModel::SerializableResource.new(
               [@first_post, @second_post], adapter: :json_api,
-                                           fields: { posts: ['title'] })
+                                           fields: { posts: %w(title comments blog author) })
                      .serializable_hash
             expected = [
               {

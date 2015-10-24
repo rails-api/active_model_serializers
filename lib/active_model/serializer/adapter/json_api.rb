@@ -174,7 +174,10 @@ module ActiveModel
         end
 
         def relationships_for(serializer)
-          serializer.associations.each_with_object({}) do |association, hash|
+          resource_type = resource_identifier_type_for(serializer)
+          requested_associations = fieldset.try(:fields_for, resource_type) || '*'
+          include_tree = IncludeTree.from_include_args(requested_associations)
+          serializer.associations(include_tree).each_with_object({}) do |association, hash|
             hash[association.key] = { data: relationship_value_for(association.serializer, association.options) }
           end
         end
