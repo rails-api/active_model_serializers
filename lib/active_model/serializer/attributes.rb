@@ -13,7 +13,9 @@ module ActiveModel
       end
 
       module ClassMethods
-        def inherit_attributes(base)
+        # Serializers inherit _attributes and _attributes_keys.
+        def inherited(base)
+          super
           base._attributes = _attributes.dup
           base._attributes_keys = _attributes_keys.dup
         end

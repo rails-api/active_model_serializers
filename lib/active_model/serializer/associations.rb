@@ -27,7 +27,9 @@ module ActiveModel
       end
 
       module ClassMethods
-        def inherit_associations(base)
+        # Serializers inherit _reflections.
+        def inherited(base)
+          super
           base._reflections = _reflections.dup
         end
 

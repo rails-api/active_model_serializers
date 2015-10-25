@@ -65,11 +65,8 @@ module ActiveModel
       serializer.class_attribute :_cache_digest # @api private : Generated
     end
 
-    # Serializers inherit _attributes, _attributes_keys and _reflections.
     # Generates a unique digest for each serializer at load.
     def self.inherited(base)
-      inherit_attributes(base)
-      inherit_associations(base)
       caller_line = caller.first
       base._cache_digest = digest_caller_file(caller_line)
       super
