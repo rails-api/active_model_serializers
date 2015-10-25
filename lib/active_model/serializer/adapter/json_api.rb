@@ -5,6 +5,7 @@ module ActiveModel
         extend ActiveSupport::Autoload
         autoload :PaginationLinks
         autoload :FragmentCache
+        autoload :Deserialization
 
         # TODO: if we like this abstraction and other API objects to it,
         # then extract to its own file and require it.
@@ -39,41 +40,6 @@ module ActiveModel
               object
             end
           end
-        end
-
-        # Parse a Hash or ActionController::Parameters representing a JSON API document
-        # into an ActiveRecord-ready hash.
-        # NOTE(beauby): Currently this does not handle relationships with modified keys.
-        #
-        # @param [Hash|ActionController::Parameters] document
-        # @return [Hash] ActiveRecord-ready hash
-        #
-        def self.parse(document)
-          hash = {}
-
-          primary_data = document.fetch('data', {})
-          hash[:id] = primary_data['id'] if primary_data['id']
-
-          if primary_data['attributes']
-            primary_data['attributes'].each do |name, value|
-              hash[name.to_sym] = value
-            end
-          end
-
-          if primary_data['relationships']
-            primary_data['relationships'].each do |name, value|
-              data = value['data']
-              if data.is_a?(Array)
-                key = "#{name.singularize}_ids".to_sym
-                hash[key] = data.map { |ri| ri['id'] }
-              else
-                key = "#{name.singularize}_id".to_sym
-                hash[key] = data ? data['id'] : nil
-              end
-            end
-          end
-
-          hash
         end
 
         def initialize(serializer, options = {})
