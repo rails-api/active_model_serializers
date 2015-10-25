@@ -2,7 +2,7 @@ module ActiveModel
   class Serializer
     class Fieldset
       def initialize(fields)
-        @raw_fields = fields
+        @raw_fields = fields || {}
       end
 
       def fields
@@ -21,7 +21,7 @@ module ActiveModel
 
       def parsed_fields
         if raw_fields.is_a?(Hash)
-          raw_fields.inject({}) { |h, (k, v)| h[k.to_sym] = v.map(&:to_sym); h }
+          raw_fields.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.map(&:to_sym) }
         else
           {}
         end
