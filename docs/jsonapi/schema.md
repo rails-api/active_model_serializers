@@ -26,7 +26,7 @@ Example supported requests
 - Relationships
   - GET /articles/1/relationships/comments
   - GET /articles/1/relationships/author
-- Optional: [Inclusion of related resources](http://jsonapi.org/format/#fetching-includes) `ActiveModel::Serializer::Fieldset`
+- Optional: [Inclusion of related resources](http://jsonapi.org/format/#fetching-includes) `ActiveModel::Serializer::IncludeTree`
   - GET /articles/1?`include`=comments
   - GET /articles/1?`include`=comments.author
   - GET /articles/1?`include`=author,comments.author
