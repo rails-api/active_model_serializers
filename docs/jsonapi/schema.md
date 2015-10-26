@@ -55,31 +55,31 @@ Example supported requests
 | JSON API object       | JSON API properties                                                                                | Required | ActiveModelSerializers representation |
 |-----------------------|----------------------------------------------------------------------------------------------------|----------|---------------------------------------|
 | schema                | oneOf (success, failure, info)                                                                     |          |
-| success               | data, included, meta, links, jsonapi                                                               |          | ActiveModel::SerializableResource
-| success.meta          | meta                                                                                               |          | ActiveModel::Serializer::Adapter::Base#meta
-| success.included      | UniqueArray(resource)                                                                              |          | ActiveModel::Serializer::Adapter::JsonApi#serializable_hash_for_collection
+| success               | data, included, meta, links, jsonapi                                                               |          | AM::SerializableResource
+| success.meta          | meta                                                                                               |          | AM::S::Adapter::Base#meta
+| success.included      | UniqueArray(resource)                                                                              |          | AM::S::Adapter::JsonApi#serializable_hash_for_collection
 | success.data          | data                                                                                               |          |
-| success.links         | allOf (links, pagination)                                                                          |          | ActiveModel::Serializer::Adapter::JsonApi#links_for
+| success.links         | allOf (links, pagination)                                                                          |          | AM::S::Adapter::JsonApi#links_for
 | success.jsonapi       | jsonapi                                                                                            |          |
 | failure               | errors, meta, jsonapi                                                                              | errors   |
 | failure.errors        | UniqueArray(error)                                                                                 |          | #1004
 | meta                  | Object                                                                                             |          |
-| data                  | oneOf (resource, UniqueArray(resource))                                                            |          | ActiveModel::Serializer::Adapter::JsonApi#serializable_hash_for_collection,#serializable_hash_for_single_resource
-| resource              | String(type), String(id),<br>attributes, relationships,<br>links, meta                                   | type, id | ActiveModel::Serializer::Adapter::JsonApi#primary_data_for
+| data                  | oneOf (resource, UniqueArray(resource))                                                            |          | AM::S::Adapter::JsonApi#serializable_hash_for_collection,#serializable_hash_for_single_resource
+| resource              | String(type), String(id),<br>attributes, relationships,<br>links, meta                                   | type, id | AM::S::Adapter::JsonApi#primary_data_for
 | links                 | Uri(self), Link(related)                                                                           |          | #1028, #1246, #1282
 | link                  | oneOf (linkString, linkObject)                                                                     |          |
 | link.linkString       | Uri                                                                                                |          |
 | link.linkObject       | Uri(href), meta                                                                                    | href     |
-| attributes            | patternProperties(<br>`"^(?!relationships$|links$)\\w[-\\w_]*$"`),<br>any valid JSON                      |          | ActiveModel::Serializer#attributes, ActiveModel::Serializer::Adapter::JsonApi#resource_object_for
-| relationships         | patternProperties(<br>`"^\\w[-\\w_]*$"`);<br>links, relationships.data, meta                              |          | ActiveModel::Serializer::Adapter::JsonApi#relationships_for
-| relationships.data    | oneOf (relationshipToOne, relationshipToMany)                                                      |          | ActiveModel::Serializer::Adapter::JsonApi#resource_identifier_for
+| attributes            | patternProperties(<br>`"^(?!relationships$|links$)\\w[-\\w_]*$"`),<br>any valid JSON                      |          | AM::Serializer#attributes, AM::S::Adapter::JsonApi#resource_object_for
+| relationships         | patternProperties(<br>`"^\\w[-\\w_]*$"`);<br>links, relationships.data, meta                              |          | AM::S::Adapter::JsonApi#relationships_for
+| relationships.data    | oneOf (relationshipToOne, relationshipToMany)                                                      |          | AM::S::Adapter::JsonApi#resource_identifier_for
 | relationshipToOne     | anyOf(empty, linkage)                                                                              |          |
 | relationshipToMany    | UniqueArray(linkage)                                                                               |          |
 | empty                 | null                                                                                               |          |
-| linkage               | String(type), String(id), meta                                                                     | type, id | ActiveModel::Serializer::Adapter::JsonApi#primary_data_for
-| pagination            | pageObject(first), pageObject(last),<br>pageObject(prev), pageObject(next)                            |          | ActiveModel::Serializer::Adapter::JsonApi::PaginationLinks#serializable_hash
+| linkage               | String(type), String(id), meta                                                                     | type, id | AM::S::Adapter::JsonApi#primary_data_for
+| pagination            | pageObject(first), pageObject(last),<br>pageObject(prev), pageObject(next)                            |          | AM::S::Adapter::JsonApi::PaginationLinks#serializable_hash
 | pagination.pageObject | oneOf(Uri, null)                                                                                   |          |
-| jsonapi               | String(version), meta                                                                              |          | ActiveModel::Serializer::Adapter::JsonApi::ApiObjects::JsonApi
+| jsonapi               | String(version), meta                                                                              |          | AM::S::Adapter::JsonApi::ApiObjects::JsonApi
 | error                 | String(id), links, String(status),<br>String(code), String(title),<br>String(detail), error.source, meta |          |
 | error.source          | String(pointer), String(parameter)                                                                 |          |
 | pointer               | [JSON Pointer RFC6901](https://tools.ietf.org/html/rfc6901)                                        |          |
