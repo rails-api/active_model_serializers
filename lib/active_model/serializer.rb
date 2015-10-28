@@ -107,9 +107,8 @@ module ActiveModel
         #  attributes are added later in a classes lifecycle
         # poison the cache
         define_method :_fast_attributes do
-          raise NameError
+          raise NameError, nil, []
         end
-
       end
 
       def associate(klass, attrs) #:nodoc:
