@@ -1,5 +1,4 @@
 require 'active_support/core_ext/class/attribute'
-require 'action_controller/serialization/context'
 
 module ActionController
   module Serialization
@@ -47,7 +46,7 @@ module ActionController
 
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
-        options.fetch(:serialization_context) { options[:serialization_context] = Context.new(request) }
+        options.fetch(:context) { options[:context] = request }
         serializable_resource = get_serializer(resource, options)
         super(serializable_resource, options)
       end
