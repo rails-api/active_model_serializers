@@ -206,7 +206,7 @@ module ActiveModel
         end
 
         def links_for(serializer, options)
-          JsonApi::PaginationLinks.new(serializer.object, options[:context]).serializable_hash(options)
+          JsonApi::PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
         end
       end
     end
