@@ -62,5 +62,3 @@ require 'support/serialization_testing'
 require 'fixtures/active_record'
 
 require 'fixtures/poro'
-
-ActiveModel::Serializer.logger = Logger.new(nil)

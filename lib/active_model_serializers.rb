@@ -4,6 +4,9 @@ require 'active_support'
 require 'action_controller'
 require 'action_controller/railtie'
 module ActiveModelSerializers
+  mattr_accessor :logger
+  self.logger = Rails.logger || Logger.new(IO::NULL)
+
   extend ActiveSupport::Autoload
   autoload :Model
 

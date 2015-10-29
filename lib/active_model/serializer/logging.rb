@@ -3,12 +3,6 @@ module ActiveModel
     module Logging
       extend ActiveSupport::Concern
 
-      included do
-        cattr_accessor(:logger) do
-          ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
-        end
-      end
-
       class LogSubscriber < ActiveSupport::LogSubscriber
         def render(event)
           logger.tagged('AMS') do
@@ -22,7 +16,7 @@ module ActiveModel
         end
 
         def logger
-          ActiveModel::Serializer.logger
+          ActiveModelSerializers.logger
         end
       end
     end

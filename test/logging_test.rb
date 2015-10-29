@@ -25,7 +25,7 @@ module ActiveModel
         @author.posts = [@post]
         @post_serializer = PostSerializer.new(@post, custom_options: true)
 
-        @old_logger = ActiveModel::Serializer.logger
+        @old_logger = ActiveModelSerializers.logger
         @logger = ActiveSupport::TaggedLogging.new(TestLogger.new)
         logger @logger
       end
@@ -35,7 +35,7 @@ module ActiveModel
       end
 
       def logger(logger)
-        ActiveModel::Serializer.logger = logger
+        ActiveModelSerializers.logger = logger
       end
 
       def test_uses_ams_as_tag
