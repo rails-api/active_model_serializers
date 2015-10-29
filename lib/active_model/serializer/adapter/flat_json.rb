@@ -9,10 +9,6 @@ module ActiveModel
           # convert back to a hash (but now the keys are strings)
           json_api_document = JSON.parse(json_api_document)
           # deserialize
-          puts json_api_document
-          puts json_api_document.keys
-          puts json_api_document['included']
-          puts 'ssssssssssssssssssssssss'
           Deserialization.parse(json_api_document, options)
         end
       end
