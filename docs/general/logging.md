@@ -1,6 +1,6 @@
 # Logging
 
-If we are using AMS on Rails app the `Rails.logger` will be used.
+If we are using AMS on Rails app by default the `Rails.logger` will be used.
 
 On a non Rails enviroment by default the `ActiveSupport::TaggedLogging` will be
 used.
