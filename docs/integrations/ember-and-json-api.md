@@ -1,4 +1,4 @@
-# How to use JSON API Query Parameters with Ember
+# Integrating with Ember and JSON API
 
  - [Preparation](./ember-and-json-api.md#preparation)
    - [Adapter Changes](./ember-and-json-api.md#adapter-changes)
