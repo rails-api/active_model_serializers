@@ -34,6 +34,8 @@ export default  DS.JSONAPIAdapter.extend({
 
   // allows queries to be sent along with a findRecord
   // hopefully Ember / EmberData will soon have this built in
+  // ember-data issue tracked here:
+  // https://github.com/emberjs/data/issues/3596
   urlForFindRecord(id, modelName, snapshot) {
     let url = this._super(...arguments);
     let query = Ember.get(snapshot, 'adapterOptions.query');
