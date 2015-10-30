@@ -15,7 +15,10 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 - [How to add root key](howto/add_root_key.md)
 - [How to add pagination links](howto/add_pagination_links.md)
 - [Using AMS Outside Of Controllers](howto/outside_controller_use.md)
-- [How to use JSON API with Ember](howto/ember-and-json-api.md)
+
+## Integrations
+- [Ember with JSON API](integrations/ember-and-json-api.md)
+- [Grape](integrations/grape.md)
 
 ## Getting Help
 
