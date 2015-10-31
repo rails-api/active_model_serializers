@@ -238,10 +238,9 @@ module ActiveModel
 
     # Return the +attributes+ of +object+ as presented
     # by the serializer.
-    def attributes
-      attributes = self.class._attributes.dup
-
-      attributes.each_with_object({}) do |name, hash|
+    def attributes(requested_attrs = nil)
+      self.class._attributes.each_with_object({}) do |name, hash|
+        next unless requested_attrs.nil? || requested_attrs.include?(name)
         if self.class._fragmented
           hash[name] = self.class._fragmented.public_send(name)
         else

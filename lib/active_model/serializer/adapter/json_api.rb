@@ -140,8 +140,7 @@ module ActiveModel
           cache_check(serializer) do
             resource_object = resource_identifier_for(serializer)
             requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
-            attributes = serializer.attributes.except(:id)
-            attributes.slice!(*requested_fields) if requested_fields
+            attributes = serializer.attributes(requested_fields).except(:id)
             resource_object[:attributes] = attributes if attributes.any?
             resource_object
           end
