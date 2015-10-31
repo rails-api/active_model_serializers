@@ -1,6 +1,6 @@
 # Adapters
 
-AMS does this through two components: **serializers** and **adapters**.
+AMS works through two components: **serializers** and **adapters**.
 Serializers describe _which_ attributes and relationships should be serialized.
 Adapters describe _how_ attributes and relationships should be serialized.
 You can use one of the built-in adapters (```Attributes``` is the default one) or create one by yourself, but you won't need to implement an adapter unless you wish to use a new format or media type with AMS.
@@ -10,12 +10,12 @@ You can use one of the built-in adapters (```Attributes``` is the default one) o
 ### Attributes - Default
 
 It's the default adapter, it generates a json response without a root key.
-Doesn't follow any specifc convention.
+Doesn't follow any specific convention.
 
 ### JSON
 
 It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly to the objects being serialized.
-Doesn't follow any specifc convention.
+Doesn't follow any specific convention.
 
 ### JSON API
 
