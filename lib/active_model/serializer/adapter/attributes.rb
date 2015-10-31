@@ -57,10 +57,7 @@ module ActiveModel
 
         def resource_object_for(options)
           cache_check(serializer) do
-            attributes = serializer.attributes
-            attributes.slice!(*options[:fields]) if options[:fields]
-
-            attributes
+            serializer.attributes(options[:fields])
           end
         end
       end
