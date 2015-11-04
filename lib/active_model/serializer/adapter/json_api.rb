@@ -5,6 +5,7 @@ module ActiveModel
         extend ActiveSupport::Autoload
         autoload :PaginationLinks
         autoload :FragmentCache
+        autoload :Link
 
         # TODO: if we like this abstraction and other API objects to it,
         # then extract to its own file and require it.
@@ -94,16 +95,15 @@ module ActiveModel
 
           if serializer.paginated?
             hash[:links] ||= {}
-            hash[:links].update(links_for(serializer, options))
+            hash[:links].update(pagination_links_for(serializer, options))
           end
 
           hash
         end
 
         def serializable_hash_for_single_resource
-          primary_data = primary_data_for(serializer)
-          relationships = relationships_for(serializer)
-          primary_data[:relationships] = relationships if relationships.any?
+          primary_data = resource_object_for(serializer)
+
           hash = { data: primary_data }
 
           included = included_resources(@include_tree, [primary_data])
@@ -136,22 +136,27 @@ module ActiveModel
           { id: id.to_s, type: type }
         end
 
+        def attributes_for(serializer, fields)
+          serializer.attributes(fields).except(:id)
+        end
+
         def resource_object_for(serializer)
-          cache_check(serializer) do
+          resource_object = cache_check(serializer) do
             resource_object = resource_identifier_for(serializer)
+
             requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
-            attributes = serializer.attributes(requested_fields).except(:id)
+            attributes = attributes_for(serializer, requested_fields)
             resource_object[:attributes] = attributes if attributes.any?
             resource_object
           end
-        end
 
-        def primary_data_for(serializer)
-          if serializer.respond_to?(:each)
-            serializer.map { |s| resource_object_for(s) }
-          else
-            resource_object_for(serializer)
-          end
+          relationships = relationships_for(serializer)
+          resource_object[:relationships] = relationships if relationships.any?
+
+          links = links_for(serializer)
+          resource_object[:links] = links if links.any?
+
+          resource_object
         end
 
         def relationship_value_for(serializer, options = {})
@@ -191,9 +196,7 @@ module ActiveModel
           else
             return unless serializer && serializer.object
 
-            resource_object = primary_data_for(serializer)
-            relationships = relationships_for(serializer)
-            resource_object[:relationships] = relationships if relationships.any?
+            resource_object = resource_object_for(serializer)
 
             return if included.include?(resource_object) || primary_data.include?(resource_object)
             included.push(resource_object)
@@ -204,7 +207,21 @@ module ActiveModel
           end
         end
 
-        def links_for(serializer, options)
+        def links_for(serializer)
+          serializer.links.each_with_object({}) do |(name, value), hash|
+            hash[name] =
+              if value.respond_to?(:call)
+                link = Link.new(serializer)
+                link.instance_eval(&value)
+
+                link.to_hash
+              else
+                value
+              end
+          end
+        end
+
+        def pagination_links_for(serializer, options)
           JsonApi::PaginationLinks.new(serializer.object, options[:context]).serializable_hash(options)
         end
       end
