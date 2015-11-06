@@ -44,6 +44,19 @@ module ActiveModel
 
             assert_equal(expected, actual)
           end
+
+          def test_array_of_string
+            expected = {
+              comments: { author: {}, attachment: {} }
+            }
+            input = [
+              'comments.author',
+              'comments.attachment'
+            ]
+            actual = Parsing.include_args_to_hash(input)
+
+            assert_equal(expected, actual)
+          end
         end
       end
     end
