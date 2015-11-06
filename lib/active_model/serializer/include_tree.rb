@@ -52,7 +52,7 @@ module ActiveModel
               hash[key] = include_args_to_hash(value)
             end
           when Array
-            included.reduce({}) { |a, e| a.merge!(include_args_to_hash(e)) }
+            included.reduce({}) { |a, e| a.deep_merge!(include_args_to_hash(e)) }
           when String
             include_string_to_hash(included)
           else
