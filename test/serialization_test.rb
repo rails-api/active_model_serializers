@@ -242,7 +242,7 @@ class RenderJsonTest < ActionController::TestCase
 
   def test_render_json_with_callback
     get :render_json_hello_world_with_callback
-    assert_equal 'alert({"hello":"world"})', @response.body
+    assert_equal '/**/alert({"hello":"world"})', @response.body
     # For JSONP, Rails 3 uses application/json, but Rails 4 uses text/javascript
     assert_match %r(application/json|text/javascript), @response.content_type.to_s
   end
