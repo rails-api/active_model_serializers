@@ -6,6 +6,7 @@ require 'active_model/serializer/associations'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
+require 'active_model/serializer/logging'
 
 # ActiveModel::Serializer is an abstract class that is
 # reified when subclassed to decorate a resource.
@@ -13,6 +14,7 @@ module ActiveModel
   class Serializer
     include Configuration
     include Associations
+    include Logging
     require 'active_model/serializer/adapter'
 
     # Matches

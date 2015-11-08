@@ -420,6 +420,16 @@ module ActionController
           controller.get_serializer(Profile.new)
         end)
       end
+
+      def test_render_event_is_emmited
+        ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
+          @name = name
+        end
+
+        get :render_using_implicit_serializer
+
+        assert_equal 'render.active_model_serializers', @name
+      end
     end
   end
 end

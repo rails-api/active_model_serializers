@@ -2,6 +2,15 @@ require 'set'
 module ActiveModel
   class SerializableResource
     ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter, :meta, :meta_key, :links])
+    extend ActiveModel::Callbacks
+
+    define_model_callbacks :render
+
+    around_render do |_, block, _|
+      notify_active_support do
+        block.call
+      end
+    end
 
     # Primary interface to composing a resource with a serializer and adapter.
     # @return the serializable_resource, ready for #as_json/#to_json/#serializable_hash.
@@ -11,7 +20,23 @@ module ActiveModel
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
     end
 
-    delegate :serializable_hash, :as_json, :to_json, to: :adapter
+    def serializable_hash(*args)
+      run_callbacks :render do
+        adapter.serializable_hash(*args)
+      end
+    end
+
+    def as_json(*args)
+      run_callbacks :render do
+        adapter.as_json(*args)
+      end
+    end
+
+    def to_json(*args)
+      run_callbacks :render do
+        adapter.to_json(*args)
+      end
+    end
 
     def serialization_scope=(scope)
       serializer_opts[:scope] = scope
@@ -64,5 +89,13 @@ module ActiveModel
     protected
 
     attr_reader :resource, :adapter_opts, :serializer_opts
+
+    def notify_active_support
+      event_name = 'render.active_model_serializers'.freeze
+      payload = { serializer: serializer, adapter: adapter }
+      ActiveSupport::Notifications.instrument(event_name, payload) do
+        yield
+      end
+    end
   end
 end
