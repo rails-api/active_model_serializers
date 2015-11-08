@@ -1,4 +1,3 @@
-require 'active_model_serializers'
 require 'rails/railtie'
 
 module ActiveModel

@@ -50,6 +50,7 @@ if ENV['CAPTURE_STDERR'] !~ /false|1/i
 end
 
 require 'active_model_serializers'
+require 'active_model/serializer/railtie'
 
 require 'support/stream_capture'
 

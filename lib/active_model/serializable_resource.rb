@@ -4,30 +4,17 @@ module ActiveModel
     ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter, :meta, :meta_key, :links])
     include ActiveModelSerializers::Logging
 
+    delegate :serializable_hash, :as_json, :to_json, to: :adapter
+    notify :serializable_hash, :render
+    notify :as_json, :render
+    notify :to_json, :render
+
     # Primary interface to composing a resource with a serializer and adapter.
     # @return the serializable_resource, ready for #as_json/#to_json/#serializable_hash.
     def initialize(resource, options = {})
       @resource = resource
       @adapter_opts, @serializer_opts =
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
-    end
-
-    def serializable_hash(*args)
-      run_callbacks :render do
-        adapter.serializable_hash(*args)
-      end
-    end
-
-    def as_json(*args)
-      run_callbacks :render do
-        adapter.as_json(*args)
-      end
-    end
-
-    def to_json(*args)
-      run_callbacks :render do
-        adapter.to_json(*args)
-      end
     end
 
     def serialization_scope=(scope)
