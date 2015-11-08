@@ -1,18 +1,19 @@
 # Instrumentation
 
-AMS uses the instrumentation API provided by Active Support this way we
-can choose to be notified when AMS events occur inside our application.
+ActiveModelSerializers uses the ActiveSupport::Notification API, which
+allows for subscribing to events, such as for logging.
 
-## render.active_model_serializers
+## Events
 
-|key          | value                |
-|-------------|----------------------|
-|:serializer  | The serializer class |
-|:adapter     | The adapter instance |
+Name:
+
+`render.active_model_serializers`
+
+Payload (example):
 
 ```ruby
 {
   serializer: PostSerializer,
-  adapter: #<ActiveModel::Serializer::Adapter::Attributes:0x007f96e81eb730>
+  adapter: ActiveModel::Serializer::Adapter::Attributes
 }
 ```
