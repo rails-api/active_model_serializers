@@ -5,11 +5,7 @@ module ActiveModel
         extend ActiveSupport::Autoload
         autoload :PaginationLinks
         autoload :FragmentCache
-        autoload :Link
-        autoload :Resource
-        autoload :ResourceIdentifier
-        autoload :Relationship
-        require 'active_model/serializer/adapter/json_api/json_api_object'
+        autoload :ApiObjects
 
         def initialize(serializer, options = {})
           super
@@ -32,7 +28,7 @@ module ActiveModel
 
           hash[:included] = included.map(&:to_h) if included.any?
 
-          JsonApiObject.add!(hash)
+          ApiObjects::JsonApiObject.add!(hash)
 
           if is_collection && serializer.paginated?
             hash[:links] ||= {}
@@ -83,13 +79,13 @@ module ActiveModel
 
           return hashes unless serializer && serializer.object
 
-          resource_identifier = ResourceIdentifier.from_serializer(serializer)
+          resource_identifier = ApiObjects::ResourceIdentifier.from_serializer(serializer)
           if hashes[resource_identifier]
             hashes[resource_identifier][:is_primary] ||= is_primary
             return hashes
           end
 
-          resource_object = Resource.new(
+          resource_object = ApiObjects::Resource.new(
             resource_identifier,
             attributes_for(serializer),
             relationships_for(serializer),
@@ -109,7 +105,7 @@ module ActiveModel
         # @api private
         def attributes_for(serializer)
           hash = cache_check(serializer) do
-            resource_type = ResourceIdentifier.type_for(serializer)
+            resource_type = ApiObjects::ResourceIdentifier.type_for(serializer)
             requested_fields = @fieldset.fields_for(resource_type)
             attributes = serializer.attributes(requested_fields).except(:id)
 
@@ -127,12 +123,12 @@ module ActiveModel
         # @api private
         def linkage_for(serializer, options = {})
           if serializer.respond_to?(:each)
-            serializer.map { |s| ResourceIdentifier.from_serializer(s) }
+            serializer.map { |s| ApiObjects::ResourceIdentifier.from_serializer(s) }
           else
             if options[:virtual_value]
               options[:virtual_value]
             elsif serializer && serializer.object
-              ResourceIdentifier.from_serializer(serializer)
+              ApiObjects::ResourceIdentifier.from_serializer(serializer)
             end
           end
         end
@@ -142,11 +138,11 @@ module ActiveModel
         #
         # @api private
         def relationships_for(serializer)
-          resource_type = ResourceIdentifier.type_for(serializer)
+          resource_type = ApiObjects::ResourceIdentifier.type_for(serializer)
           requested_associations = @fieldset.fields_for(resource_type) || '*'
           include_tree = IncludeTree.from_include_args(requested_associations)
           serializer.associations(include_tree).each_with_object({}) do |association, hash|
-            hash[association.key] = Relationship.new(data: linkage_for(association.serializer, association.options))
+            hash[association.key] = ApiObjects::Relationship.new(data: linkage_for(association.serializer, association.options))
           end
         end
 
@@ -157,7 +153,7 @@ module ActiveModel
           serializer.links.each_with_object({}) do |(name, value), hash|
             hash[name] =
               if value.respond_to?(:call)
-                link = Link.new(serializer)
+                link = ApiObjects::Link.new(serializer)
                 link.instance_eval(&value)
 
                 link.to_hash
@@ -171,7 +167,7 @@ module ActiveModel
         #
         # @api private
         def pagination_links_for(serializer, options)
-          JsonApi::PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+          PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
         end
       end
     end
