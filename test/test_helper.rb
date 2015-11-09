@@ -49,6 +49,8 @@ end
 if ENV['CAPTURE_STDERR'] !~ /false|1/i
   require 'capture_warnings'
   CaptureWarnings.new(_fail_build = true).execute!
+else
+  $VERBOSE = true
 end
 
 require 'active_model_serializers'
