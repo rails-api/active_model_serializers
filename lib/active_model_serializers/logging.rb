@@ -1,39 +1,19 @@
 ##
-# Adapted from:
-#   https://github.com/rubygems/rubygems/blob/cb28f5e991/lib/rubygems/deprecate.rb
+# ActiveModelSerializers::Logging
+#
 #   https://github.com/rails/rails/blob/280654ef88/activejob/lib/active_job/logging.rb
 #
-# Provides a single method +notify+ to be used to declare when
-# something a method notifies.
-#
-#     class Adapter
-#       def self.klass_method
-#         # ...
-#       end
-#
-#       def instance_method
-#         # ...
-#       end
-#
-#       extend ActiveModelSerializers::Logging
-#       notify :instance_method, :render
-#
-#       class << self
-#         extend ActiveModelSerializers::Logging
-#         notify :klass_method, :render
-#       end
-#     end
 module ActiveModelSerializers::Logging
   extend ActiveSupport::Concern
 
   included do
-    include ActiveSupport::Callbacks
-    instrument_around_render
+    include ActiveModelSerializers::Callbacks
+    extend NotificationMacro
+    instrument_rendering
   end
 
   module ClassMethods
-    def instrument_around_render
-      define_callbacks :render
+    def instrument_rendering
       around_render do |args, block|
         tag_logger do
           notify_render do
@@ -42,11 +22,31 @@ module ActiveModelSerializers::Logging
         end
       end
     end
+  end
 
-    def around_render(*filters, &blk)
-      set_callback(:render, :around, *filters, &blk)
-    end
-
+  # Adapted from:
+  #   https://github.com/rubygems/rubygems/blob/cb28f5e991/lib/rubygems/deprecate.rb
+  # Provides a single method +notify+ to be used to declare when
+  # something a method notifies, with the argument +callback_name+ of the notification callback.
+  #
+  #     class Adapter
+  #       def self.klass_method
+  #         # ...
+  #       end
+  #
+  #       def instance_method
+  #         # ...
+  #       end
+  #
+  #       include ActiveModelSerializers::Logging
+  #       notify :instance_method, :render
+  #
+  #       class << self
+  #         extend ActiveModelSerializers::Logging::NotificationMacro
+  #         notify :klass_method, :render
+  #       end
+  #     end
+  module NotificationMacro
     ##
     # Simple notify method that wraps up +name+
     # in a dummy method. It notifies on with the +callback_name+ notifier on
