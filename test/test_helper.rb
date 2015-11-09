@@ -63,3 +63,8 @@ require 'support/serialization_testing'
 require 'fixtures/active_record'
 
 require 'fixtures/poro'
+
+ActiveSupport.on_load(:active_model_serializers) do
+  $action_controller_logger = ActiveModelSerializers.logger # rubocop:disable Style/GlobalVars
+  ActiveModelSerializers.logger = Logger.new(IO::NULL)
+end
