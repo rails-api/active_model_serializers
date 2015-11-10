@@ -46,7 +46,11 @@ module ActiveModel
           return association.options[:virtual_value] if association.options[:virtual_value]
           return unless association.serializer && association.serializer.object
 
-          opts = instance_options.merge(include: @include_tree[association.key])
+          include_tree_hash        = @include_tree[association.key].instance_variable_get(:@hash)
+          include_association_hash = IncludeTree.from_include_args(association.options[:include]).instance_variable_get(:@hash)
+          include_tree = IncludeTree.from_include_args(include_association_hash.merge include_tree_hash)
+
+          opts = instance_options.merge(include: include_tree)
           Attributes.new(association.serializer, opts).serializable_hash(options)
         end
 
