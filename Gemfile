@@ -21,8 +21,6 @@ if version == 'master'
     # Rails 5
     gem 'actionview'
   end
-  # Rails 5
-  gem 'rails-controller-testing', github: 'rails/rails-controller-testing'
 else
   gem_version = "~> #{version}.0"
   gem 'railties', gem_version
