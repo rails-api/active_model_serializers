@@ -381,6 +381,10 @@ All serializable resources must pass the ActiveModel::Serializer::Lint::Tests.
 See the ActiveModelSerializers::Model for a base class that implements the full
 API for a plain-old Ruby object (PORO).
 
+## Hooks
+
+To run a hook when ActiveModelSerializers is loaded, use `ActiveSupport.on_load(:active_model_serializers) do end`
+
 ## Getting Help
 
 If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).

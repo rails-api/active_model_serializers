@@ -1,7 +1,5 @@
 require 'active_model'
 require 'active_support'
-require 'active_support/tagged_logging'
-require 'active_support/logger'
 require 'action_controller'
 require 'action_controller/railtie'
 module ActiveModelSerializers
