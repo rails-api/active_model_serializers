@@ -2,6 +2,9 @@
 
 Breaking changes:
 
+- [#1296](https://github.com/rails-api/active_model_serializers/pull/1296) Move
+  from `ActiveModelSerializers::Model` to `ActiveModel::Serializer::Model`
+  (@maurogeorge)
 - [#1131](https://github.com/rails-api/active_model_serializers/pull/1131) Remove Serializer#root_name (@beauby)
 - [#1138](https://github.com/rails-api/active_model_serializers/pull/1138) Introduce Adapter::Base (@bf4)
   * Adapters now inherit Adapter::Base. 'Adapter' is now a module, no longer a class.

@@ -5,6 +5,7 @@ require 'active_model/serializer/include_tree'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
+require 'active_model/serializer/model'
 require 'active_model/serializer/lint'
 
 # ActiveModel::Serializer is an abstract class that is
@@ -159,7 +160,7 @@ module ActiveModel
       self._cache_options = (options.empty?) ? nil : options
     end
 
-    # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
+    # @param resource [ActiveRecord::Base, ActiveModel::Serializer::Model]
     # @return [ActiveModel::Serializer]
     #   Preferentially returns
     #   1. resource.serializer

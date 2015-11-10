@@ -378,7 +378,7 @@ end
 
 All serializable resources must pass the ActiveModel::Serializer::Lint::Tests.
 
-See the ActiveModelSerializers::Model for a base class that implements the full
+See the ActiveModel::Serializer::Model for a base class that implements the full
 API for a plain-old Ruby object (PORO).
 
 ## Getting Help
