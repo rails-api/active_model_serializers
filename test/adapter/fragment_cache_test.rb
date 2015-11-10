@@ -4,6 +4,7 @@ module ActiveModel
     module Adapter
       class FragmentCacheTest < Minitest::Test
         def setup
+          super
           @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')
           @author          = Author.new(name: 'Joao M. D. Moura')
           @role            = Role.new(name: 'Great Author', description: nil)

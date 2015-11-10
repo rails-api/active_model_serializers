@@ -152,7 +152,7 @@ module ActiveModel
     # @todo require less code comments. See
     # https://github.com/rails-api/active_model_serializers/pull/1249#issuecomment-146567837
     def self.cache(options = {})
-      self._cache = ActionController::Base.cache_store if Rails.configuration.action_controller.perform_caching
+      self._cache = ActiveModelSerializers.config.cache_store if ActiveModelSerializers.config.perform_caching
       self._cache_key = options.delete(:key)
       self._cache_only = options.delete(:only)
       self._cache_except = options.delete(:except)

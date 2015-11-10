@@ -5,6 +5,10 @@ require 'action_controller/railtie'
 module ActiveModelSerializers
   mattr_accessor(:logger) { ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT)) }
 
+  def self.config
+    ActiveModel::Serializer.config
+  end
+
   extend ActiveSupport::Autoload
   autoload :Model
   autoload :Callbacks
