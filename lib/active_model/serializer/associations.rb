@@ -14,7 +14,7 @@ module ActiveModel
 
       included do |base|
         base.class_attribute :_reflections
-        self._reflections ||= []
+        base._reflections ||= []
 
         extend ActiveSupport::Autoload
         autoload :Association
