@@ -62,12 +62,10 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :title, :body
 
   has_many :comments
-  belongs_to :blog
-  belongs_to :author
-
-  def blog
+  belongs_to :blog do
     Blog.new(id: 999, name: 'Custom blog')
   end
+  belongs_to :author
 
   def custom_options
     instance_options
@@ -126,9 +124,7 @@ LocationSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:place], skip_digest: true
   attributes :id, :lat, :lng
 
-  belongs_to :place
-
-  def place
+  belongs_to :place do
     'Nowhere'
   end
 end
@@ -212,13 +208,11 @@ end
 VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
-  has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]
-  has_one :maker, virtual_value: { id: 1 }
-
-  def reviews
+  has_many :reviews do
+    [{ id: 1 }, { id: 2 }]
   end
-
-  def maker
+  has_one :maker do
+    { id: 1 }
   end
 end
 
