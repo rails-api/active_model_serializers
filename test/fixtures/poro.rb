@@ -122,9 +122,9 @@ end
 
 LocationSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:place], skip_digest: true
-  attributes :id, :lat, :lng
+  attributes :id, :lat, :lng, :place
 
-  belongs_to :place do
+  def place
     'Nowhere'
   end
 end
