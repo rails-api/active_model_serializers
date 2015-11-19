@@ -5,7 +5,8 @@ sudo: false
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.2
+  - 2.1
+  - 2.2.2
   - ruby-head
   - rbx-2
 
@@ -24,12 +25,18 @@ env:
   - "RAILS_VERSION=master"
 
 matrix:
-  include:
+  exclude:
+  - rvm: 1.9.3
+    env: RAILS_VERSION=master
+  - rvm: 2.0.0
+    env: RAILS_VERSION=master
   - rvm: 2.1
+    env: RAILS_VERSION=master
+  include:
+  - rvm: 2.2
     env: CAPTURE_STDERR=true
   - rvm: jruby-19mode
     env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
   allow_failures:
     - rvm: ruby-head
-    - env: "RAILS_VERSION=master"
   fast_finish: true
