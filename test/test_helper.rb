@@ -25,10 +25,12 @@ require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use!
 if defined?(Minitest::Test)
+  $minitest_version = 5 # rubocop:disable Style/GlobalVars
   # Minitest 5
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest.rb#L45-L59
 else
+  $minitest_version = 4 # rubocop:disable Style/GlobalVars
   # Minitest 4
   # https://github.com/seattlerb/minitest/blob/644a52fd0/lib/minitest/autorun.rb
   # https://github.com/seattlerb/minitest/blob/644a52fd0/lib/minitest/unit.rb#L768-L787
@@ -47,6 +49,8 @@ end
 if ENV['CAPTURE_STDERR'] !~ /false|1/i
   require 'capture_warnings'
   CaptureWarnings.new(_fail_build = true).execute!
+else
+  $VERBOSE = true
 end
 
 require 'active_model_serializers'

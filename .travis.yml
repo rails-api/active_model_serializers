@@ -8,7 +8,6 @@ cache:
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1
   - 2.2
   - ruby-head
   - rbx-2
@@ -17,7 +16,7 @@ install:
   - bundle install --retry=3
 
 script:
-  - env CAPTURE_STDERR=false bundle exec rake ci
+  - env CAPTURE_STDERR=${CAPTURE_STDERR:-false} bundle exec rake ci
 
 env:
   - "RAILS_VERSION=4.0"
@@ -27,6 +26,8 @@ env:
 
 matrix:
   include:
+  - rvm: 2.1
+    env: CAPTURE_STDERR=true
   - rvm: jruby-19mode
     env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
   allow_failures:
