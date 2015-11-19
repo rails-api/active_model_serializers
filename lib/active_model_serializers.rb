@@ -1,14 +1,14 @@
-require 'logger'
 require 'active_model'
 require 'active_support'
 require 'action_controller'
 require 'action_controller/railtie'
 module ActiveModelSerializers
-  mattr_accessor :logger
-  self.logger = Rails.logger || Logger.new(IO::NULL)
+  mattr_accessor(:logger) { ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT)) }
 
   extend ActiveSupport::Autoload
   autoload :Model
+  autoload :Callbacks
+  autoload :Logging
 
   module_function
 
@@ -50,6 +50,7 @@ require 'active_model/serializer/version'
 
 require 'action_controller/serialization'
 ActiveSupport.on_load(:action_controller) do
+  ActiveSupport.run_load_hooks(:active_model_serializers, ActiveModelSerializers)
   include ::ActionController::Serialization
   ActionDispatch::Reloader.to_prepare do
     ActiveModel::Serializer.serializers_cache.clear

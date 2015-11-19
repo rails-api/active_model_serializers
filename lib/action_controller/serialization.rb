@@ -31,7 +31,10 @@ module ActionController
         serializable_resource.serialization_scope ||= serialization_scope
         serializable_resource.serialization_scope_name = _serialization_scope
         begin
-          serializable_resource.adapter
+          # Necessary to ensure we have an adapter for the serializable resource
+          # after it has been figured.
+          # TODO: This logic should be less opaque and probably moved into the SerializableResource.
+          serializable_resource.tap(&:adapter)
         rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
           resource
         end

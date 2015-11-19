@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ActiveModelSerializers::LoggerTest < Minitest::Test
   def test_logger_is_set_to_action_controller_logger_when_initializer_runs
-    assert_equal ActiveModelSerializers.logger, ActionController::Base.logger
+    assert_equal $action_controller_logger, ActionController::Base.logger # rubocop:disable Style/GlobalVars
   end
 
   def test_logger_can_be_set
