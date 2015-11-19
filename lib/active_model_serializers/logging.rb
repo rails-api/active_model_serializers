@@ -87,7 +87,7 @@ module ActiveModelSerializers
 
     def tag_logger(*tags)
       if ActiveModelSerializers.logger.respond_to?(:tagged)
-        tags.unshift 'AMS'.freeze unless logger_tagged_by_active_model_serializers?
+        tags.unshift 'active_model_serializsers'.freeze unless logger_tagged_by_active_model_serializers?
         ActiveModelSerializers.logger.tagged(*tags) { yield }
       else
         yield
@@ -95,7 +95,7 @@ module ActiveModelSerializers
     end
 
     def logger_tagged_by_active_model_serializers?
-      ActiveModelSerializers.logger.formatter.current_tags.include?('AMS'.freeze)
+      ActiveModelSerializers.logger.formatter.current_tags.include?('active_model_serializsers'.freeze)
     end
 
     class LogSubscriber < ActiveSupport::LogSubscriber
