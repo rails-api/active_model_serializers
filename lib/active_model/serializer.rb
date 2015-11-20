@@ -53,7 +53,10 @@ module ActiveModel
       resource_namespace = klass.name.deconstantize
       serializer_class_name = "#{resource_class_name}Serializer"
 
-      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
+      if self != ActiveModel::Serializer
+        chain.push("#{name}::#{serializer_class_name}")
+        chain.push(*name.deconstantize.split('::').each_with_object([]) { |element, array| array.push((array.last ? array.last + '::' : '') + element) }.reverse.map { |k| k + "::#{serializer_class_name}" })
+      end
       chain.push("#{resource_namespace}::#{serializer_class_name}")
 
       chain
