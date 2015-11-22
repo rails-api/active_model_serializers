@@ -157,6 +157,9 @@ module ActiveModel
           links = links_for(serializer)
           resource_object[:links] = links if links.any?
 
+          meta = serializer.meta
+          resource_object[:meta] = meta unless meta.nil?
+
           resource_object
         end
 
