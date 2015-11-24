@@ -2,9 +2,6 @@ language: ruby
 
 sudo: false
 
-cache:
-  bundler: true
-
 rvm:
   - 1.9.3
   - 2.0.0
@@ -12,8 +9,10 @@ rvm:
   - ruby-head
   - rbx-2
 
-install:
-  - bundle install --retry=3
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+cache:
+  directories:
+    - vendor/bundle
 
 script:
   - env CAPTURE_STDERR=${CAPTURE_STDERR:-false} bundle exec rake ci
