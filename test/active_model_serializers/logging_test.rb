@@ -40,7 +40,7 @@ module ActiveModel
 
       def test_uses_ams_as_tag
         ActiveModel::SerializableResource.new(@post).serializable_hash
-        assert_match(/\[active_model_serializsers\]/, @logger.messages)
+        assert_match(/\[active_model_serializers\]/, @logger.messages)
       end
 
       def test_logs_when_call_serializable_hash
