@@ -51,18 +51,21 @@ module ActiveModel
           non_cached_attributes = attributes - cached_attributes
 
           cached_attributes.each do |attribute|
-            options = serializer.class._attributes_keys[attribute]
-            options ||= {}
-            # Add cached attributes to cached Serializer
-            serializers[:cached].constantize.attribute(attribute, options)
+            add_attribute_to_serializer(attribute, serializers, :cached)
           end
 
           non_cached_attributes.each do |attribute|
-            options = serializer.class._attributes_keys[attribute]
-            options ||= {}
-            # Add non-cached attributes to non-cached Serializer
-            serializers[:non_cached].constantize.attribute(attribute, options)
+            add_attribute_to_serializer(attribute, serializers, :non_cached)
           end
+        end
+
+        # Given an attribute and the key of its serializer
+        # 1. Add attribute to the appropriate cached or non-cached Serializer
+        def add_attribute_to_serializer(attribute, serializers, key)
+          options = serializer.class._attributes_keys[attribute]
+          options ||= {}
+          # Add attributes to Serializer
+          serializers[key].constantize.attribute(attribute, options)
         end
 
         # Given a resource name and its serializer's class
