@@ -91,18 +91,8 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-However, ```attribute``` method is deprecated in version ```0.9.x```. To alias your attribute in ```0.9.x```, use this instead
-
-```Ruby
-class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body, :subject
-  has_many :comments
-
-  def subject
-    object.title
-  end
-end
-```
+If you are encountering `undefined method ‘attribute’ for ActiveModel::Serializer class` error, you might be using version `0.9.x`.
+Please see [How to Alias Attribute in 0.9.x](#/tree/0-9-stable#alias-attribute)
 
 In your controllers, when you use `render :json`, Rails will now first search
 for a serializer for the object and use it if available.
