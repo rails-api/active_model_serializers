@@ -4,6 +4,21 @@ require 'tempfile'
 
 module ActiveModelSerializers
   class CacheTest < ActiveSupport::TestCase
+    UncachedAuthor = Class.new(Author) do
+      # To confirm cache_key is set using updated_at and cache_key option passed to cache
+      undef_method :cache_key
+    end
+
+    Article = Class.new(::Model) do
+      # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
+      undef_method :cache_key
+    end
+
+    ArticleSerializer = Class.new(ActiveModel::Serializer) do
+      cache only: [:place], skip_digest: true
+      attributes :title
+    end
+
     InheritedRoleSerializer = Class.new(RoleSerializer) do
       cache key: 'inherited_role', only: [:name, :special_attribute]
       attribute :special_attribute
@@ -81,15 +96,26 @@ module ActiveModelSerializers
       assert_equal(nil, @comment_serializer.class._cache_key)
     end
 
-    def test_cache_key_interpolation_with_updated_at
-      render_object_with_cache(@author)
-      assert_equal(nil, cache_store.fetch(@author.cache_key))
-      assert_equal(@author_serializer.attributes.to_json, cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}").to_json)
+
+    def test_error_is_raised_if_cache_key_is_not_defined_on_object_or_passed_as_cache_option
+      article = Article.new(title: 'Must Read')
+      assert_raises ActiveModel::Serializer::Adapter::CachedSerializer::UndefinedCacheKey do
+        render_object_with_cache(article)
+      end
+    end
+
+    def test_cache_key_interpolation_with_updated_at_when_cache_key_is_not_defined_on_object
+      uncached_author            = UncachedAuthor.new(name: 'Joao M. D. Moura')
+      uncached_author_serializer = AuthorSerializer.new(uncached_author)
+
+      render_object_with_cache(uncached_author)
+      key = cache_key_with_adapter("#{uncached_author_serializer.class._cache_key}/#{uncached_author_serializer.object.id}-#{uncached_author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}")
+      assert_equal(uncached_author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(key).to_json)
     end
 
     def test_default_cache_key_fallback
       render_object_with_cache(@comment)
-      assert_equal(@comment_serializer.attributes.to_json, cache_store.fetch(@comment.cache_key).to_json)
+      assert_equal(@comment_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@comment.cache_key)).to_json)
     end
 
     def test_cache_options_definition
@@ -111,8 +137,8 @@ module ActiveModelSerializers
       Timecop.freeze(Time.current) do
         render_object_with_cache(@post)
 
-        assert_equal(@post_serializer.attributes, cache_store.fetch(@post.cache_key))
-        assert_equal(@comment_serializer.attributes, cache_store.fetch(@comment.cache_key))
+        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@post.cache_key)))
+        assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@comment.cache_key)))
       end
     end
 
@@ -122,8 +148,9 @@ module ActiveModelSerializers
         render_object_with_cache(@post)
 
         # Check if it cached the objects separately
-        assert_equal(@post_serializer.attributes,    cached_serialization(@post_serializer))
-        assert_equal(@comment_serializer.attributes, cached_serialization(@comment_serializer))
+        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@post.cache_key)))
+        assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@comment.cache_key)))
+
 
         # Simulating update on comments relationship with Post
         new_comment            = Comment.new(id: 2567, body: 'ZOMG A NEW COMMENT')
@@ -134,8 +161,8 @@ module ActiveModelSerializers
         render_object_with_cache(@post)
 
         # Check if the the new comment was cached
-        assert_equal(new_comment_serializer.attributes, cached_serialization(new_comment_serializer))
-        assert_equal(@post_serializer.attributes, cached_serialization(@post_serializer))
+        assert_equal(new_comment_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(new_comment.cache_key)))
+        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@post.cache_key)))
       end
     end
 
@@ -150,7 +177,7 @@ module ActiveModelSerializers
       hash = render_object_with_cache(@location)
 
       assert_equal(hash, expected_result)
-      assert_equal({ place: 'Nowhere' }, cache_store.fetch(@location.cache_key))
+      assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@location.cache_key)))
     end
 
     def test_fragment_cache_with_inheritance
@@ -161,9 +188,14 @@ module ActiveModelSerializers
       refute_includes(base.keys, :special_attribute)
     end
 
+    def test_uses_adapter_in_cache_key
+      render_object_with_cache(@post)
+      assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch("#{@post.cache_key}/#{adapter.class.to_s.demodulize.underscore}"))
+    end
+
     def test_uses_file_digest_in_cache_key
       render_object_with_cache(@blog)
-      assert_equal(@blog_serializer.attributes, cache_store.fetch(@blog.cache_key_with_digest))
+      assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch("#{cache_key_with_adapter(@blog.cache_key)}/#{@blog.class::FILE_DIGEST}"))
     end
 
     def test_cache_digest_definition
@@ -254,7 +286,16 @@ module ActiveModelSerializers
     private
 
     def render_object_with_cache(obj, options = {})
-      serializable(obj, options).serializable_hash
+      @serializable_resource = serializable(obj, options).serializable_hash
+      @serializable_resource.serializable_hash
+    end
+
+    def adapter
+      @serializable_resource.adapter
+    end
+
+    def cache_key_with_adapter(key)
+      "#{key}/#{adapter.name.underscore}"
     end
 
     def cache_store

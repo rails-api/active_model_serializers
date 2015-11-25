@@ -55,8 +55,8 @@ Bio      = Class.new(Model)
 Blog     = Class.new(Model) do
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
-  def cache_key_with_digest
-    "#{cache_key}/#{FILE_DIGEST}"
+  def digest
+    FILE_DIGEST
   end
 end
 Role     = Class.new(Model)

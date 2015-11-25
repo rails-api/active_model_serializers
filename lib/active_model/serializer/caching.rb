@@ -7,7 +7,7 @@ module ActiveModel
         with_options instance_writer: false, instance_reader: false do |serializer|
           serializer.class_attribute :_cache         # @api private : the cache store
           serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
-          serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
+          serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key.  Ignored if the serializable object defines #cache_key.
           serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists cached_attributes. Cannot combine with except
           serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists cached_attributes. Cannot combine with only
           serializer.class_attribute :_cache_options # @api private : used by CachedSerializer, passed to _cache.fetch
@@ -56,6 +56,10 @@ module ActiveModel
             if you'd like to cache it.
             EOF
           ''.freeze
+        end
+
+        def _skip_digest?
+          _cache_options && _cache_options[:skip_digest]
         end
 
         # @api private
@@ -140,6 +144,18 @@ module ActiveModel
         def fragment_cache_enabled?
           perform_caching? && cache_store &&
             (_cache_only && !_cache_except || !_cache_only && _cache_except)
+        end
+      end
+
+      # Use object's cache_key if available, else derive a key from the object
+      # Pass the `key` option to the `cache` declaration or override this method to customize the cache key
+      def cache_key
+        if object.respond_to?(:cache_key)
+          object.cache_key
+        else
+          object_time_safe = object.updated_at
+          object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
+          "#{self.class._cache_key}/#{object.id}-#{object_time_safe}"
         end
       end
     end

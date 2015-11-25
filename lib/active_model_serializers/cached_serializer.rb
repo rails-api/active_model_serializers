@@ -1,13 +1,16 @@
 module ActiveModelSerializers
   class CachedSerializer
+    UndefinedCacheKey = Class.new(StandardError)
+
     def initialize(serializer)
       @cached_serializer = serializer
-      @klass             = @cached_serializer.class
+      return unless cached? && !@cached_serializer.object.respond_to?(:cache_key) && @klass._cache_key.blank?
+      fail(UndefinedCacheKey, "#{@cached_serializer.object} must define #cache_key, or the cache_key option must be passed into cache on #{@cached_serializer}")
     end
 
     def cache_check(adapter_instance)
       if cached?
-        @klass._cache.fetch(cache_key, @klass._cache_options) do
+        @klass._cache.fetch(cache_key(adapter_instance), @klass._cache_options) do
           yield
         end
       elsif fragment_cached?
@@ -25,19 +28,14 @@ module ActiveModelSerializers
       @klass.fragment_cache_enabled?
     end
 
-    def cache_key
+    def cache_key(adapter_instance)
       return @cache_key if defined?(@cache_key)
 
       parts = []
-      parts << object_cache_key
-      parts << @klass._cache_digest unless @klass._cache_options && @klass._cache_options[:skip_digest]
+      parts << @cached_serializer.cache_key
+      parts << adapter_instance.name.underscore
+      parts << @klass._cache_digest unless @klass._skip_digest?
       @cache_key = parts.join('/')
-    end
-
-    def object_cache_key
-      object_time_safe = @cached_serializer.object.updated_at
-      object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
-      @klass._cache_key ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}" : @cached_serializer.object.cache_key
     end
 
     # find all cache_key for the collection_serializer
