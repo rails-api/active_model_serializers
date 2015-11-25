@@ -46,10 +46,8 @@ module ActiveModel
 
     with_options instance_writer: false, instance_reader: false do |serializer|
       class_attribute :_type, instance_reader: true
-      class_attribute :serialized_attributes, instance_writer: false # @api public: maps attribute name to 'Attribute' function
-      self.serialized_attributes ||= {}
-      class_attribute :_attributes_keys          # @api private : maps attribute value to explict key name, @see Serializer#attribute
-      self._attributes_keys ||= {}
+      class_attribute :_attributes_map           # @api private : maps attribute key names to names to names of implementing methods, @see Serializer#attribute
+      self._attributes_map ||= {}
       class_attribute :_links                    # @api private : links definitions, @see Serializer#link
       self._links ||= {}
 
@@ -73,8 +71,7 @@ module ActiveModel
     # Generates a unique digest for each serializer at load.
     def self.inherited(base)
       caller_line = caller.first
-      base.serialized_attributes = serialized_attributes.dup
-      base._attributes_keys = _attributes_keys.dup
+      base._attributes_map = _attributes_map.dup
       base._links = _links.dup
       base._cache_digest = digest_caller_file(caller_line)
       super
@@ -89,10 +86,6 @@ module ActiveModel
 
     def self.link(name, value = nil, &block)
       _links[name] = block || value
-    end
-
-    def self._attributes
-      serialized_attributes.keys
     end
 
     # @example
@@ -121,19 +114,33 @@ module ActiveModel
     #     end
     def self.attribute(attr, options = {}, &block)
       key = options.fetch(:key, attr)
-      _attributes_keys[attr] = { key: key } if key != attr
+      reader = if block
+                 ->(instance) { instance.instance_eval(&block) }
+               else
+                 ->(instance) { instance.send(attr) }
+               end
 
-      if block_given?
-        serialized_attributes[key] = ->(instance) { instance.instance_eval(&block) }
-      else
-        serialized_attributes[key] = ->(instance) { instance.object.read_attribute_for_serialization(attr) }
-      end
+      _attributes_map[key] = { attr: attr, reader: reader }
 
       ActiveModelSerializers.silence_warnings do
-        define_method key do
-          serialized_attributes[key].call(self)
-        end unless method_defined?(key) || _fragmented.respond_to?(attr)
+        define_method attr do
+          object.read_attribute_for_serialization(attr)
+        end unless method_defined?(attr) || _fragmented.respond_to?(attr)
       end
+    end
+
+    # @api private
+    # An accessor for the old _attributes internal API
+    def self._attributes
+      _attributes_map.keys
+    end
+
+    # @api private
+    # An accessor for the old _attributes_keys internal API
+    def self._attributes_keys
+      _attributes_map
+        .select { |key, details| key != details[:attr] }
+        .each_with_object({}) { |(key, details), acc| acc[details[:attr]] = { key: key } }
     end
 
     # @api private
@@ -261,14 +268,14 @@ module ActiveModel
     # Return the +attributes+ of +object+ as presented
     # by the serializer.
     def attributes(requested_attrs = nil)
-      self.class._attributes.each_with_object({}) do |name, hash|
-        next unless requested_attrs.nil? || requested_attrs.include?(name)
-        hash[name] = read_attribute_for_serialization(name)
+      self.class._attributes_map.each_with_object({}) do |(key, details), hash|
+        next unless requested_attrs.nil? || requested_attrs.include?(key)
+        if self.class._fragmented
+          hash[key] = self.class._fragmented.public_send(details[:attr])
+        else
+          hash[key] = details[:reader].call(self)
+        end
       end
-    end
-
-    def read_attribute_for_serialization(key)
-      self.class._fragmented ? self.class._fragmented.public_send(key) : send(key)
     end
 
     # @api private
