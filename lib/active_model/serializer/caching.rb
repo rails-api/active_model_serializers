@@ -58,6 +58,10 @@ module ActiveModel
           ''.freeze
         end
 
+        def _skip_digest?
+          _cache_options && _cache_options[:skip_digest]
+        end
+
         # @api private
         # Used by FragmentCache on the CachedSerializer
         #  to call attribute methods on the fragmented cached serializer.
