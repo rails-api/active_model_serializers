@@ -16,8 +16,8 @@ class Model < ActiveModelSerializers::Model
     end
   end
 
-  def cache_key_with_digest
-    "#{cache_key}/#{FILE_DIGEST}"
+  def digest
+    FILE_DIGEST
   end
 end
 
@@ -38,9 +38,16 @@ end
 
 Post     = Class.new(Model)
 Like     = Class.new(Model)
-Author   = Class.new(Model)
+Author   = Class.new(Model) do
+  # To confirm cache_key is set using updated_at and cache_key option passed to cache
+  undef_method :cache_key
+end
 Bio      = Class.new(Model)
 Blog     = Class.new(Model)
+Article  = Class.new(Model) do
+  # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
+  undef_method :cache_key
+end
 Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)
@@ -152,6 +159,11 @@ BlogSerializer = Class.new(ActiveModel::Serializer) do
 
   belongs_to :writer
   has_many :articles
+end
+
+ArticleSerializer = Class.new(ActiveModel::Serializer) do
+  cache only: [:place], skip_digest: true
+  attributes :title
 end
 
 PaginatedSerializer = Class.new(ActiveModel::Serializer::CollectionSerializer) do
