@@ -13,6 +13,7 @@ module ActiveModel
         @bio            = Bio.new(id: 1, content: 'AMS Contributor')
         @author         = Author.new(name: 'Joao M. D. Moura')
         @blog           = Blog.new(id: 999, name: 'Custom blog', writer: @author, articles: [])
+        @article = Article.new(title: 'Must Read')
         @role           = Role.new(name: 'Great Author')
         @location       = Location.new(lat: '-23.550520', lng: '-46.633309')
         @place          = Place.new(name: 'Amazing Place')
@@ -35,6 +36,7 @@ module ActiveModel
         @author_serializer   = AuthorSerializer.new(@author)
         @comment_serializer  = CommentSerializer.new(@comment)
         @blog_serializer     = BlogSerializer.new(@blog)
+        @article_serializer = ArticleSerializer.new(@article)
       end
 
       def test_inherited_cache_configuration
@@ -65,15 +67,21 @@ module ActiveModel
         assert_equal(nil, @comment_serializer.class._cache_key)
       end
 
-      def test_cache_key_interpolation_with_updated_at
+      def test_error_is_raised_if_cache_key_is_not_defined_on_object_or_passed_as_cache_option
+        assert_raises ActiveModel::Serializer::Adapter::CachedSerializer::UndefinedCacheKey do
+          render_object_with_cache(@article)
+        end
+      end
+
+      def test_cache_key_interpolation_with_updated_at_when_cache_key_is_not_defined_on_object
         render_object_with_cache(@author)
-        assert_equal(nil, ActionController::Base.cache_store.fetch(@author.cache_key))
-        assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}").to_json)
+        key = cache_key_with_adapter("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}")
+        assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(key).to_json)
       end
 
       def test_default_cache_key_fallback
         render_object_with_cache(@comment)
-        assert_equal(@comment_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(@comment.cache_key).to_json)
+        assert_equal(@comment_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@comment.cache_key)).to_json)
       end
 
       def test_cache_options_definition
@@ -95,8 +103,8 @@ module ActiveModel
         Timecop.freeze(Time.now) do
           render_object_with_cache(@post)
 
-          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
-          assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@post.cache_key)))
+          assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@comment.cache_key)))
         end
       end
 
@@ -109,8 +117,8 @@ module ActiveModel
           render_object_with_cache(@post)
 
           # Check if it cached the objects separately
-          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
-          assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@post.cache_key)))
+          assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@comment.cache_key)))
 
           # Simulating update on comments relationship with Post
           new_comment            = Comment.new(id: 2, body: 'ZOMG A NEW COMMENT')
@@ -121,8 +129,8 @@ module ActiveModel
           render_object_with_cache(@post)
 
           # Check if the the new comment was cached
-          assert_equal(new_comment_serializer.attributes, ActionController::Base.cache_store.fetch(new_comment.cache_key))
-          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
+          assert_equal(new_comment_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(new_comment.cache_key)))
+          assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@post.cache_key)))
         end
       end
 
@@ -137,12 +145,17 @@ module ActiveModel
         hash = render_object_with_cache(@location)
 
         assert_equal(hash, expected_result)
-        assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(@location.cache_key))
+        assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(cache_key_with_adapter(@location.cache_key)))
+      end
+
+      def test_uses_adapter_in_cache_key
+        render_object_with_cache(@post)
+        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch("#{@post.cache_key}/#{adapter.class.to_s.demodulize.underscore}"))
       end
 
       def test_uses_file_digest_in_cache_key
         render_object_with_cache(@blog)
-        assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
+        assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch("#{cache_key_with_adapter(@blog.cache_key)}/#{@blog.digest}"))
       end
 
       def test_cache_digest_definition
@@ -201,7 +214,16 @@ module ActiveModel
       private
 
       def render_object_with_cache(obj)
-        ActiveModel::SerializableResource.new(obj).serializable_hash
+        @serializable_resource = ActiveModel::SerializableResource.new(obj)
+        @serializable_resource.serializable_hash
+      end
+
+      def adapter
+        @serializable_resource.adapter
+      end
+
+      def cache_key_with_adapter(key)
+        "#{key}/#{adapter.class.to_s.demodulize.underscore}"
       end
     end
   end
