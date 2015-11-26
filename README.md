@@ -22,6 +22,11 @@ Master
 - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers)
 - [Guides](https://github.com/rails-api/active_model_serializers/tree/master/docs)
 
+Older Versions
+
+- [0.9.x](#/tree/0-9-stable)
+- [0.8.x](#/tree/0-8-stable)
+
 # RELEASE CANDIDATE, PLEASE READ
 
 This is the master branch of AMS. It will become the `0.10.0` release when it's
