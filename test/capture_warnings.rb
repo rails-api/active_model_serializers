@@ -9,7 +9,11 @@ class CaptureWarnings
     @app_root ||= Dir.pwd
     @output_dir = File.join(app_root, 'tmp')
     FileUtils.mkdir_p(output_dir)
-    @bundle_dir = File.join(app_root, 'bundle')
+    @ignore_dirs = [
+      File.join(app_root, '.bundle'),
+      File.join(app_root, 'bundle'),
+      File.join(app_root, 'vendor')
+    ]
     @output = STDOUT
   end
 
@@ -28,7 +32,7 @@ class CaptureWarnings
 
   def after_tests(lines)
     app_warnings, other_warnings = lines.partition do |line|
-      line.include?(app_root) && !line.include?(bundle_dir)
+      line.include?(app_root) && ignore_dirs.none? { |ignore_dir| line.include?(ignore_dir) }
     end
 
     if app_warnings.any?
@@ -67,5 +71,5 @@ class CaptureWarnings
 
   private
 
-  attr_reader :stderr_file, :app_root, :output_dir, :bundle_dir, :fail_on_warnings, :output
+  attr_reader :stderr_file, :app_root, :output_dir, :ignore_dirs, :fail_on_warnings, :output
 end
