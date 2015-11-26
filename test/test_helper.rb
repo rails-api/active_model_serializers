@@ -64,6 +64,8 @@ require 'support/test_case'
 
 require 'support/serialization_testing'
 
+require 'support/rails5_shims'
+
 require 'fixtures/active_record'
 
 require 'fixtures/poro'

@@ -12,7 +12,7 @@ class DefaultScopeNameTest < ActionController::TestCase
   class UserTestController < ActionController::Base
     protect_from_forgery
 
-    before_filter { request.format = :json }
+    before_action { request.format = :json }
 
     def current_user
       User.new(id: 1, name: 'Pete', admin: false)
@@ -43,7 +43,7 @@ class SerializationScopeNameTest < ActionController::TestCase
     protect_from_forgery
 
     serialization_scope :current_admin
-    before_filter { request.format = :json }
+    before_action { request.format = :json }
 
     def current_admin
       User.new(id: 2, name: 'Bob', admin: true)
