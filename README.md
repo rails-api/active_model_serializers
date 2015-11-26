@@ -24,8 +24,8 @@ Master
 
 Older Versions
 
-- [0.9.x](#/tree/0-9-stable)
-- [0.8.x](#/tree/0-8-stable)
+- [0.9.x](#/blob/0-9-stable/README.md)
+- [0.8.x](#/blob/0-8-stable/README.md)
 
 # RELEASE CANDIDATE, PLEASE READ
 
@@ -95,9 +95,6 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 end
 ```
-
-If you are encountering `undefined method ‘attribute’ for ActiveModel::Serializer class` error, you might be using version `0.9.x`.
-Please see [How to Alias Attribute in 0.9.x](#/tree/0-9-stable#alias-attribute)
 
 In your controllers, when you use `render :json`, Rails will now first search
 for a serializer for the object and use it if available.
