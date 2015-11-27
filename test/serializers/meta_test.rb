@@ -3,6 +3,8 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class MetaTest < ActiveSupport::TestCase
+      MetaBlogSerializer = Class.new(ActiveModel::Serializer)
+
       def setup
         @blog = Blog.new(id: 1,
                          name: 'AMS Hints',
@@ -124,6 +126,20 @@ module ActiveModel
           }
         }
         assert_equal(expected, actual)
+      end
+
+      def test_meta_is_set_with_direct_attributes
+        MetaBlogSerializer.meta stuff: 'value'
+        blog_meta_serializer = MetaBlogSerializer.new(@blog)
+        assert_equal(blog_meta_serializer.meta, stuff: 'value')
+      end
+
+      def test_meta_is_set_with_block
+        MetaBlogSerializer.meta do
+          { articles_count: object.articles.count }
+        end
+        blog_meta_serializer = MetaBlogSerializer.new(@blog)
+        assert_equal(blog_meta_serializer.meta, articles_count: @blog.articles.count)
       end
     end
   end
