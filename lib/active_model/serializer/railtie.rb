@@ -19,5 +19,7 @@ module ActiveModel
       app.load_generators
       require 'generators/serializer/resource_override'
     end
+
+    ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Serializer)
   end
 end

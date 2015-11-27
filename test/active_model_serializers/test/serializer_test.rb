@@ -1,8 +1,8 @@
 require 'test_helper'
 
-module ActiveModel
-  class Serializer
-    class AssertionsTest < ActionController::TestCase
+module ActiveModelSerializers
+  module Test
+    class SerializerTest < ActionController::TestCase
       class MyController < ActionController::Base
         def render_using_serializer
           render json: Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')

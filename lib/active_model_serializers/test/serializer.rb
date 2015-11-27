@@ -1,6 +1,6 @@
-module ActiveModel
-  class Serializer
-    module Assertions
+module ActiveModelSerializers
+  module Test
+    module Serializer
       extend ActiveSupport::Concern
 
       included do
@@ -60,7 +60,7 @@ module ActiveModel
       def setup_serialization_subscriptions
         @serializers = []
         ActiveSupport::Notifications.subscribe(event_name) do |_name, _start, _finish, _id, payload|
-          serializer = payload[:serializer]
+          serializer = payload[:serializer].name
           serializers << serializer
         end
       end
@@ -70,7 +70,7 @@ module ActiveModel
       end
 
       def event_name
-        'serialize.active_model_serializers'
+        'render.active_model_serializers'
       end
 
       def matches_class?(expectation)
