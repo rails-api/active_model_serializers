@@ -21,7 +21,7 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 |----|-----|----
 | Ember.js | 0.9.x | [active-model-adapter](https://github.com/ember-data/active-model-adapter)
 | Ember.js | 0.10.x + |  [docs/integrations/ember-and-json-api.md](integrations/ember-and-json-api.md)
-| Grape | 0.10.x + | #1258  |
+| Grape | 0.10.x + | [#1258](https://github.com/rails-api/active_model_serializers/issues/1258)  |
 | Grape | 0.9.x | https://github.com/jrhe/grape-active_model_serializers/ |
 | Sinatra | 0.9.x | https://github.com/SauloSilva/sinatra-active-model-serializers/
 
