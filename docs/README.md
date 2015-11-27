@@ -19,8 +19,13 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 - [Using AMS Outside Of Controllers](howto/outside_controller_use.md)
 
 ## Integrations
-- [Ember with JSON API](integrations/ember-and-json-api.md)
-- [Grape](integrations/grape.md)
+| Integration | Supported AMS versions |  Gem name and/or link
+|----|-----|----
+| Ember.js | 0.9.x | [active-model-adapter](https://github.com/ember-data/active-model-adapter)
+| Ember.js | 0.10.x + |  [docs/integrations/ember-and-json-api.md](integrations/ember-and-json-api.md)
+| Grape | 0.10.x + | #1258  |
+| Grape | 0.9.x | https://github.com/jrhe/grape-active_model_serializers/ |
+| Sinatra | 0.9.x | https://github.com/SauloSilva/sinatra-active-model-serializers/
 
 ## Getting Help
 
