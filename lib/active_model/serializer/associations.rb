@@ -13,7 +13,9 @@ module ActiveModel
       DEFAULT_INCLUDE_TREE = ActiveModel::Serializer::IncludeTree.from_string('*')
 
       included do |base|
-        base.class_attribute :_reflections
+        base.class_attribute :serialized_associations, instance_writer: false # @api public: maps association name to 'Reflection' instance
+        base.serialized_associations ||= {}
+        base.class_attribute :_reflections, instance_writer: false
         base._reflections ||= []
 
         extend ActiveSupport::Autoload
@@ -77,13 +79,16 @@ module ActiveModel
         def associate(reflection, block)
           self._reflections = _reflections.dup
 
-          define_method reflection.name do
-            if block_given?
-              instance_eval(&block)
-            else
-              object.send reflection.name
-            end
-          end unless method_defined?(reflection.name)
+          reflection_name = reflection.name
+          if block
+            serialized_associations[reflection_name] = ->(instance) { instance.instance_eval(&block) }
+          else
+            serialized_associations[reflection_name] = ->(instance) { instance.object.send(reflection_name) }
+          end
+
+          define_method reflection_name do
+            serialized_associations[reflection_name].call(self)
+          end unless method_defined?(reflection_name)
 
           self._reflections << reflection
         end
