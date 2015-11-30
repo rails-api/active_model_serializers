@@ -112,19 +112,26 @@ module ActiveModel
     #     attributes :id, :recent_edits
     #     attribute :name, key: :title
     #
+    #     attribute :full_name do
+    #       "#{object.first_name} #{object.last_name}"
+    #     end
+    #
     #     def recent_edits
     #       object.edits.last(5)
     #     end
-    def self.attribute(attr, options = {})
+    def self.attribute(attr, options = {}, &block)
       key = options.fetch(:key, attr)
       _attributes_keys[attr] = { key: key } if key != attr
-      _attributes << key unless _attributes.include?(key)
 
-      serialized_attributes[key] = ->(object) { object.read_attribute_for_serialization(attr) }
+      if block_given?
+        serialized_attributes[key] = ->(instance) { instance.instance_eval(&block) }
+      else
+        serialized_attributes[key] = ->(instance) { instance.object.read_attribute_for_serialization(attr) }
+      end
 
       ActiveModelSerializers.silence_warnings do
         define_method key do
-          serialized_attributes[key].call(object)
+          serialized_attributes[key].call(self)
         end unless method_defined?(key) || _fragmented.respond_to?(attr)
       end
     end
