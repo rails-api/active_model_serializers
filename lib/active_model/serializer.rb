@@ -208,6 +208,7 @@ module ActiveModel
     #   2. try again with superclass, if present
     #   3. nil
     def self.get_serializer_for(klass)
+      return nil unless config.serializer_lookup_enabled
       serializers_cache.fetch_or_store(klass) do
         # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
         serializer_class = serializer_lookup_chain_for(klass).map(&:safe_constantize).find { |x| x && x < ActiveModel::Serializer }

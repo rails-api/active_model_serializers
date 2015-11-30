@@ -21,8 +21,10 @@ Features:
 - [#1127](https://github.com/rails-api/active_model_serializers/pull/1127) Add support for nested
     associations for JSON and Attributes adapters via the `include` option (@NullVoxPopuli, @beauby).
 - [#1050](https://github.com/rails-api/active_model_serializers/pull/1050) Add support for toplevel jsonapi member (@beauby, @bf4)
-- [#tbd](https://github.com/rails-api/active_model_serializers/pull/tbd) Rename ArraySerializer to
+- [#1251](https://github.com/rails-api/active_model_serializers/pull/1251) Rename ArraySerializer to
     CollectionSerializer for clarity, add ActiveModelSerializers.config.collection_serializer (@bf4)
+- [#1295](https://github.com/rails-api/active_model_serializers/pull/1295) Add config `serializer_lookup_enabled` that,
+  when disabled, requires serializers to explicitly specified. (@trek)
 
 Fixes:
 - [#1239](https://github.com/rails-api/active_model_serializers/pull/1239) Fix duplicates in JSON API compound documents (@beauby)

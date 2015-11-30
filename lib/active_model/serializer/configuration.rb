@@ -9,6 +9,7 @@ module ActiveModel
       included do |base|
         config = base.config
         config.collection_serializer = ActiveModel::Serializer::CollectionSerializer
+        config.serializer_lookup_enabled = true
 
         def config.array_serializer=(collection_serializer)
           self.collection_serializer = collection_serializer
@@ -20,7 +21,6 @@ module ActiveModel
 
         config.adapter = :attributes
         config.jsonapi_resource_type = :plural
-        config.automatic_lookup = true
       end
     end
   end
