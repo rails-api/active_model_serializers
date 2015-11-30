@@ -129,8 +129,7 @@ module ActiveModel
     def self._attributes_keys
       _attributes_map
         .select { |key, impl| key != impl }
-        .map { |key, impl| [impl, { key: key }] }
-        .to_h
+        .each_with_object({}) { |(key, impl), acc| acc[impl] = { key: key } }
     end
 
     # @api private
