@@ -17,6 +17,7 @@ require 'action_controller'
 require 'action_controller/test_case'
 require 'action_controller/railtie'
 require 'active_support/json'
+require 'active_model_serializers'
 require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 
@@ -41,9 +42,6 @@ else
 end
 require 'minitest/reporters'
 Minitest::Reporters.use!
-
-require 'active_model_serializers'
-require 'active_model/serializer/railtie'
 
 require 'support/stream_capture'
 
