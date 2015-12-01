@@ -16,14 +16,14 @@ module ActiveModel
     require 'active_model/serializer/adapter'
 
     # Matches
-    #  "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
+    #  "c:/git/ember js/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
     #  AND
-    #  "/c/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
+    #  "/c/git/ember js/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
     #  AS
-    #  c/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb
+    #  c/git/ember js/ember-crm-backend/app/serializers/lead_serializer.rb
     CALLER_FILE = /
       \A       # start of string
-      \S+      # one or more non-spaces
+      .+       # one or more characters
       (?=      # stop previous match when
         :\d+     # a colon is followed by one or more digits
         :in      # followed by a colon followed by in

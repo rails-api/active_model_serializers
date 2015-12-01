@@ -160,6 +160,12 @@ module ActiveModel
         assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
       end
 
+      def test_serializer_file_path_with_space
+        path = '/Users/git/ember js/ember-crm-backend/app/serializers/lead_serializer.rb'
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
       def test_digest_caller_file
         contents = "puts 'AMS rocks'!"
         file = Tempfile.new('some_ruby.rb')
