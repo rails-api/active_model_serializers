@@ -23,7 +23,7 @@ module ActiveModel
     #  c/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb
     CALLER_FILE = /
       \A       # start of string
-      \S+      # one or more non-spaces
+      .+       # file path (one or more characters)
       (?=      # stop previous match when
         :\d+     # a colon is followed by one or more digits
         :in      # followed by a colon followed by in
