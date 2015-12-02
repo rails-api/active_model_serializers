@@ -14,6 +14,9 @@ module ActiveModel
     include Configuration
     include Associations
     require 'active_model/serializer/adapter'
+    Attribute = Struct.new(:name, :reader) do
+      delegate :call, to: :reader
+    end
 
     # Matches
     #  "c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb:1:in `<top (required)>'"
@@ -46,8 +49,8 @@ module ActiveModel
 
     with_options instance_writer: false, instance_reader: false do |serializer|
       class_attribute :_type, instance_reader: true
-      class_attribute :_attributes_map           # @api private : maps attribute key names to names to names of implementing methods, @see Serializer#attribute
-      self._attributes_map ||= {}
+      class_attribute :_attribute_mappings # @api private : maps attribute key names to names to names of implementing methods, @see Serializer#attribute
+      self._attribute_mappings ||= {}
       class_attribute :_links                    # @api private : links definitions, @see Serializer#link
       self._links ||= {}
 
@@ -71,7 +74,7 @@ module ActiveModel
     # Generates a unique digest for each serializer at load.
     def self.inherited(base)
       caller_line = caller.first
-      base._attributes_map = _attributes_map.dup
+      base._attribute_mappings = _attribute_mappings.dup
       base._links = _links.dup
       base._cache_digest = digest_caller_file(caller_line)
       super
@@ -120,7 +123,7 @@ module ActiveModel
                  ->(instance) { instance.send(attr) }
                end
 
-      _attributes_map[key] = { attr: attr, reader: reader }
+      _attribute_mappings[key] = Attribute.new(attr, reader)
 
       ActiveModelSerializers.silence_warnings do
         define_method attr do
@@ -130,17 +133,22 @@ module ActiveModel
     end
 
     # @api private
-    # An accessor for the old _attributes internal API
+    # names of attribute methods
+    # @see Serializer::attribute
     def self._attributes
-      _attributes_map.keys
+      _attribute_mappings.keys
     end
 
     # @api private
-    # An accessor for the old _attributes_keys internal API
+    # maps attribute value to explict key name
+    # @see Serializer::attribute
+    # @see Adapter::FragmentCache#fragment_serializer
     def self._attributes_keys
-      _attributes_map
-        .select { |key, details| key != details[:attr] }
-        .each_with_object({}) { |(key, details), acc| acc[details[:attr]] = { key: key } }
+      _attribute_mappings
+        .each_with_object({}) do |(key, attribute_mapping), hash|
+          next if key == attribute_mapping.name
+          hash[attribute_mapping.name] = { key: key }
+        end
     end
 
     # @api private
@@ -268,12 +276,12 @@ module ActiveModel
     # Return the +attributes+ of +object+ as presented
     # by the serializer.
     def attributes(requested_attrs = nil)
-      self.class._attributes_map.each_with_object({}) do |(key, details), hash|
+      self.class._attribute_mappings.each_with_object({}) do |(key, attribute_mapping), hash|
         next unless requested_attrs.nil? || requested_attrs.include?(key)
         if self.class._fragmented
-          hash[key] = self.class._fragmented.public_send(details[:attr])
+          hash[key] = self.class._fragmented.public_send(attribute_mapping.name)
         else
-          hash[key] = details[:reader].call(self)
+          hash[key] = attribute_mapping.call(self)
         end
       end
     end
