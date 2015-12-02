@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tmpdir'
 require 'tempfile'
 module ActiveModel
   class Serializer
@@ -160,9 +161,23 @@ module ActiveModel
         assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
       end
 
+      def test_serializer_file_path_with_space
+        path = '/Users/git/ember js/ember-crm-backend/app/serializers/lead_serializer.rb'
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
+      def test_serializer_file_path_with_submatch
+        # The submatch in the path ensures we're using a correctly greedy regexp.
+        path = '/Users/git/ember js/ember:123:in x/app/serializers/lead_serializer.rb'
+        caller_line = "#{path}:1:in `<top (required)>'"
+        assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
+      end
+
       def test_digest_caller_file
         contents = "puts 'AMS rocks'!"
-        file = Tempfile.new('some_ruby.rb')
+        dir = Dir.mktmpdir('space char')
+        file = Tempfile.new('some_ruby.rb', dir)
         file.write(contents)
         path = file.path
         caller_line = "#{path}:1:in `<top (required)>'"
@@ -170,6 +185,7 @@ module ActiveModel
         assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
       ensure
         file.unlink
+        FileUtils.remove_entry dir
       end
 
       def test_warn_on_serializer_not_defined_in_file
