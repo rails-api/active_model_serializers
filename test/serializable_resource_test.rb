@@ -37,9 +37,13 @@ module ActiveModel
         options = nil
         resource = ModelWithErrors.new
         resource.errors.add(:name, 'must be awesome')
-        serializable_resource = ActiveModel::SerializableResource.new(resource)
+        serializable_resource = ActiveModel::SerializableResource.new(
+          resource, {
+            serializer: ActiveModel::Serializer::ErrorSerializer,
+            adapter: 'json_api/error'
+          })
         expected_response_document =
-          { 'errors'.freeze =>
+          { :errors =>
             [
               { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be awesome' }
             ]
@@ -53,9 +57,14 @@ module ActiveModel
         resources << resource = ModelWithErrors.new
         resource.errors.add(:title, 'must be amazing')
         resources << ModelWithErrors.new
-        serializable_resource = ActiveModel::SerializableResource.new(resources)
+        serializable_resource = ActiveModel::SerializableResource.new(
+          resources, {
+            serializer: ActiveModel::Serializer::ErrorsSerializer,
+            each_serializer: ActiveModel::Serializer::ErrorSerializer,
+            adapter: 'json_api/error'
+          })
         expected_response_document =
-          { 'errors'.freeze =>
+          { :errors =>
             [
               { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be amazing' }
             ]

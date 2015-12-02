@@ -8,7 +8,7 @@ module ActionController
           get :render_resource_with_errors
 
           expected_errors_object =
-            { 'errors'.freeze =>
+            { :errors =>
               [
                 { :source => { :pointer => '/data/attributes/name' }, :detail => 'cannot be nil' },
                 { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be longer' },
@@ -30,7 +30,7 @@ module ActionController
             resource.errors.add(:name, 'cannot be nil')
             resource.errors.add(:name, 'must be longer')
             resource.errors.add(:id, 'must be a uuid')
-            render json: resource, adapter: :json_api
+            render json: resource, adapter: 'json_api/error', serializer: ActiveModel::Serializer::ErrorSerializer
           end
         end
 

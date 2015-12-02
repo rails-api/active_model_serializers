@@ -18,14 +18,6 @@ module ActiveModel
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
     end
 
-    def errors?
-      if resource.respond_to?(:each)
-        resource.any? { |elem| elem.respond_to?(:errors) && !elem.errors.empty? }
-      else
-        resource.respond_to?(:errors) && !resource.errors.empty?
-      end
-    end
-
     def serialization_scope=(scope)
       serializer_opts[:scope] = scope
     end
@@ -39,11 +31,7 @@ module ActiveModel
     end
 
     def adapter
-      @adapter ||=
-        begin
-          adapter_opts[:adapter] = :'json_api/error' if errors?
-          ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
-        end
+      @adapter ||= ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
     end
     alias_method :adapter_instance, :adapter
 
@@ -58,7 +46,6 @@ module ActiveModel
       @serializer ||=
         begin
           @serializer = serializer_opts.delete(:serializer)
-          @serializer = ActiveModel::Serializer::ErrorSerializer if errors?
           @serializer ||= ActiveModel::Serializer.serializer_for(resource)
 
           if serializer_opts.key?(:each_serializer)

@@ -13,7 +13,7 @@ module ActiveModelSerializers
       # TODO: if we like this abstraction and other API objects to it,
       # then extract to its own file and require it.
       module ApiObjects
-        module JsonApi
+        module Jsonapi
           ActiveModelSerializers.config.jsonapi_version = '1.0'
           ActiveModelSerializers.config.jsonapi_toplevel_meta = {}
           # Make JSON API top-level jsonapi member opt-in
@@ -62,7 +62,7 @@ module ActiveModelSerializers
         hash[:data] = is_collection ? primary_data : primary_data[0]
         hash[:included] = included if included.any?
 
-        ApiObjects::JsonApi.add!(hash)
+        ApiObjects::Jsonapi.add!(hash)
 
         if instance_options[:links]
           hash[:links] ||= {}
