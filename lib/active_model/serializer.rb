@@ -119,17 +119,13 @@ module ActiveModel
       key = options.fetch(:key, attr)
       reader = if block
                  ->(instance) { instance.instance_eval(&block) }
+               elsif _fragmented
+                 ->(instance) { instance.class._fragmented.read_attribute_for_serialization(attr) }
                else
-                 ->(instance) { instance.send(attr) }
+                 ->(instance) { instance.read_attribute_for_serialization(attr) }
                end
 
       _attribute_mappings[key] = Attribute.new(attr, reader)
-
-      ActiveModelSerializers.silence_warnings do
-        define_method attr do
-          object.read_attribute_for_serialization(attr)
-        end unless method_defined?(attr) || _fragmented.respond_to?(attr)
-      end
     end
 
     # @api private
@@ -278,11 +274,15 @@ module ActiveModel
     def attributes(requested_attrs = nil)
       self.class._attribute_mappings.each_with_object({}) do |(key, attribute_mapping), hash|
         next unless requested_attrs.nil? || requested_attrs.include?(key)
-        if self.class._fragmented
-          hash[key] = self.class._fragmented.public_send(attribute_mapping.name)
-        else
-          hash[key] = attribute_mapping.call(self)
-        end
+        hash[key] = attribute_mapping.call(self)
+      end
+    end
+
+    def read_attribute_for_serialization(attr)
+      if _serializer_method_defined?(attr)
+        send(attr)
+      else
+        object.read_attribute_for_serialization(attr)
       end
     end
 
@@ -295,5 +295,15 @@ module ActiveModel
     protected
 
     attr_accessor :instance_options
+
+    private
+
+    def _serializer_instance_methods
+      @_serializer_instance_methods ||= (public_methods - Object.public_instance_methods).to_set
+    end
+
+    def _serializer_method_defined?(name)
+      _serializer_instance_methods.include?(name)
+    end
   end
 end
