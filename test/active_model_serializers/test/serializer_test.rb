@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'rails-controller-testing' if Rails::VERSION::MAJOR >= 5
 
 module ActiveModelSerializers
   module Test
