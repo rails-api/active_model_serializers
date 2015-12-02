@@ -14,8 +14,33 @@ module ActiveModel
     include Configuration
     include Associations
     require 'active_model/serializer/adapter'
-    Attribute = Struct.new(:name, :reader) do
+    class Attribute
       delegate :call, to: :reader
+      attr_reader :name, :reader
+      def initialize(name)
+        @name = name
+        @reader = nil
+      end
+
+      def self.build(name, block)
+        if block
+          AttributeBlock.new(name, block)
+        else
+          AttributeReader.new(name)
+        end
+      end
+    end
+    class AttributeReader < Attribute
+      def initialize(name)
+        super(name)
+        @reader = ->(instance) { instance.read_attribute_for_serialization(name) }
+      end
+    end
+    class AttributeBlock < Attribute
+      def initialize(name, block)
+        super(name)
+        @reader = ->(instance) { instance.instance_eval(&block) }
+      end
     end
 
     # Matches
@@ -117,15 +142,7 @@ module ActiveModel
     #     end
     def self.attribute(attr, options = {}, &block)
       key = options.fetch(:key, attr)
-      reader = if block
-                 ->(instance) { instance.instance_eval(&block) }
-               elsif _fragmented
-                 ->(instance) { instance.class._fragmented.read_attribute_for_serialization(attr) }
-               else
-                 ->(instance) { instance.read_attribute_for_serialization(attr) }
-               end
-
-      _attribute_mappings[key] = Attribute.new(attr, reader)
+      _attribute_mappings[key] = Attribute.build(attr, block)
     end
 
     # @api private
@@ -281,6 +298,8 @@ module ActiveModel
     def read_attribute_for_serialization(attr)
       if _serializer_method_defined?(attr)
         send(attr)
+      elsif self.class._fragmented
+        self.class._fragmented.read_attribute_for_serialization(attr)
       else
         object.read_attribute_for_serialization(attr)
       end
