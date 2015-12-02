@@ -40,8 +40,9 @@ module ActiveModel
 
         # Return the +attributes+ of +object+ as presented
         # by the serializer.
-        def attributes(requested_attrs = nil)
-          self.class._attribute_mappings.each_with_object({}) do |(key, attribute_mapping), hash|
+        def attributes(requested_attrs = nil, reload = false)
+          @attributes = nil if reload
+          @attributes ||= self.class._attribute_mappings.each_with_object({}) do |(key, attribute_mapping), hash|
             next unless requested_attrs.nil? || requested_attrs.include?(key)
             hash[key] = attribute_mapping.call(self)
           end
@@ -65,7 +66,6 @@ module ActiveModel
           end
         end
 
-        # TODO: remove the dynamic method definition
         # @example
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     attributes :id, :recent_edits
