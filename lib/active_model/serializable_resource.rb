@@ -16,18 +16,13 @@ module ActiveModel
       @resource = resource
       @adapter_opts, @serializer_opts =
         options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
+    end
 
-      # TECHDEBT: clean up single vs. collection of resources
+    def errors?
       if resource.respond_to?(:each)
-        if resource.any? { |elem| elem.respond_to?(:errors) && !elem.errors.empty? }
-          @serializer_opts[:serializer] = ActiveModel::Serializer::ErrorSerializer
-          @adapter_opts[:adapter] = :'json_api/error'
-        end
+        resource.any? { |elem| elem.respond_to?(:errors) && !elem.errors.empty? }
       else
-        if resource.respond_to?(:errors) && !resource.errors.empty?
-          @serializer_opts[:serializer] = ActiveModel::Serializer::ErrorSerializer
-          @adapter_opts[:adapter] = :'json_api/error'
-        end
+        resource.respond_to?(:errors) && !resource.errors.empty?
       end
     end
 
@@ -44,7 +39,11 @@ module ActiveModel
     end
 
     def adapter
-      @adapter ||= ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
+      @adapter ||=
+        begin
+          adapter_opts[:adapter] = :'json_api/error' if errors?
+          ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
+        end
     end
     alias_method :adapter_instance, :adapter
 
@@ -59,6 +58,7 @@ module ActiveModel
       @serializer ||=
         begin
           @serializer = serializer_opts.delete(:serializer)
+          @serializer = ActiveModel::Serializer::ErrorSerializer if errors?
           @serializer ||= ActiveModel::Serializer.serializer_for(resource)
 
           if serializer_opts.key?(:each_serializer)
