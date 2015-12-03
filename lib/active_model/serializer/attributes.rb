@@ -3,10 +3,12 @@ module ActiveModel
     module Attributes
       class Attribute
         delegate :call, to: :reader
+
         attr_reader :name, :reader
+
         def initialize(name)
           @name = name
-          @reader = nil
+          @reader = :no_reader
         end
 
         def self.build(name, block)

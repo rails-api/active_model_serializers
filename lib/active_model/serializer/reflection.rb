@@ -17,7 +17,28 @@ module ActiveModel
     #
     # So you can inspect reflections in your Adapters.
     #
-    Reflection = Struct.new(:name, :options) do
+    Reflection = Struct.new(:name, :options, :block) do
+      delegate :call, to: :reader
+
+      attr_reader :reader
+
+      def initialize(*)
+        super
+        @reader = self.class.build_reader(name, block)
+      end
+
+      def value(instance)
+        call(instance)
+      end
+
+      def self.build_reader(name, block)
+        if block
+          ->(instance) { instance.instance_eval(&block) }
+        else
+          ->(instance) { instance.read_attribute_for_serialization(name) }
+        end
+      end
+
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -40,7 +61,7 @@ module ActiveModel
       # @api private
       #
       def build_association(subject, parent_serializer_options)
-        association_value = subject.send(name)
+        association_value = value(subject)
         reflection_options = options.dup
         serializer_class = subject.class.serializer_for(association_value, reflection_options)
 

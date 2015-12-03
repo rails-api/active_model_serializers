@@ -12,11 +12,11 @@ module ActiveModel
 
       DEFAULT_INCLUDE_TREE = ActiveModel::Serializer::IncludeTree.from_string('*')
 
-      included do |base|
-        base.class_attribute :serialized_associations, instance_writer: false # @api public: maps association name to 'Reflection' instance
-        base.serialized_associations ||= {}
-        base.class_attribute :_reflections, instance_writer: false
-        base._reflections ||= []
+      included do
+        with_options instance_writer: false, instance_reader: true do |serializer|
+          serializer.class_attribute :_reflections
+          self._reflections ||= []
+        end
 
         extend ActiveSupport::Autoload
         autoload :Association
@@ -29,7 +29,6 @@ module ActiveModel
       end
 
       module ClassMethods
-        # Serializers inherit _reflections.
         def inherited(base)
           super
           base._reflections = _reflections.dup
@@ -43,7 +42,7 @@ module ActiveModel
         #  has_many :comments, serializer: CommentSummarySerializer
         #
         def has_many(name, options = {}, &block)
-          associate(HasManyReflection.new(name, options), block)
+          associate(HasManyReflection.new(name, options, block))
         end
 
         # @param [Symbol] name of the association
@@ -54,7 +53,7 @@ module ActiveModel
         #  belongs_to :author, serializer: AuthorSerializer
         #
         def belongs_to(name, options = {}, &block)
-          associate(BelongsToReflection.new(name, options), block)
+          associate(BelongsToReflection.new(name, options, block))
         end
 
         # @param [Symbol] name of the association
@@ -65,7 +64,7 @@ module ActiveModel
         #  has_one :author, serializer: AuthorSerializer
         #
         def has_one(name, options = {}, &block)
-          associate(HasOneReflection.new(name, options), block)
+          associate(HasOneReflection.new(name, options, block))
         end
 
         private
@@ -76,19 +75,8 @@ module ActiveModel
         #
         # @api private
         #
-        def associate(reflection, block)
+        def associate(reflection)
           self._reflections = _reflections.dup
-
-          reflection_name = reflection.name
-          if block
-            serialized_associations[reflection_name] = ->(instance) { instance.instance_eval(&block) }
-          else
-            serialized_associations[reflection_name] = ->(instance) { instance.object.send(reflection_name) }
-          end
-
-          define_method reflection_name do
-            serialized_associations[reflection_name].call(self)
-          end unless method_defined?(reflection_name)
 
           self._reflections << reflection
         end
