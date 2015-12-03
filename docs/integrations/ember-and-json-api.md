@@ -1,7 +1,8 @@
-# How to use JSON API Query Parameters with Ember
+# Integrating with Ember and JSON API
 
  - [Preparation](./ember-and-json-api.md#preparation)
-   - [Adapter Changes](./ember-and-json-api.md#adapter-changes)
+ - [Server-Side Changes](./ember-and-json-api.md#server-side-changes)
+ - [Adapter Changes](./ember-and-json-api.md#adapter-changes)
    - [Serializer Changes](./ember-and-json-api.md#serializer-changes)
  - [Including Nested Resources](./ember-and-json-api.md#including-nested-resources)
 
@@ -11,6 +12,21 @@ Note: This guide assumes that `ember-cli` is used for your ember app.
 
 The JSON API specification calls for hyphens for multi-word separators. AMS uses underscores.
 To solve this, in Ember, both the adapter and the serializer will need some modifications:
+
+### Server-Side Changes
+
+there are multiple mimetypes for json that should all be parsed similarly, so
+in `config/initializers/mime_types.rb`:
+```ruby
+api_mime_types = %W(
+  application/vnd.api+json
+  text/x-json
+  application/json
+)
+
+Mime::Type.unregister :json
+Mime::Type.register 'application/json', :json, api_mime_types
+```
 
 ### Adapter Changes
 
@@ -34,6 +50,8 @@ export default  DS.JSONAPIAdapter.extend({
 
   // allows queries to be sent along with a findRecord
   // hopefully Ember / EmberData will soon have this built in
+  // ember-data issue tracked here:
+  // https://github.com/emberjs/data/issues/3596
   urlForFindRecord(id, modelName, snapshot) {
     let url = this._super(...arguments);
     let query = Ember.get(snapshot, 'adapterOptions.query');
