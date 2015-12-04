@@ -184,6 +184,15 @@ module ActiveModel
       end
     end
 
+    def self._serializer_instance_method_defined?(name)
+      _serializer_instance_methods.include?(name)
+    end
+
+    def self._serializer_instance_methods
+      @_serializer_instance_methods ||= (public_instance_methods - Object.public_instance_methods).to_set
+    end
+    private_class_method :_serializer_instance_methods
+
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -209,7 +218,7 @@ module ActiveModel
     end
 
     def read_attribute_for_serialization(attr)
-      if _serializer_method_defined?(attr)
+      if self.class._serializer_instance_method_defined?(attr)
         send(attr)
       elsif self.class._fragmented
         self.class._fragmented.read_attribute_for_serialization(attr)
@@ -227,15 +236,5 @@ module ActiveModel
     protected
 
     attr_accessor :instance_options
-
-    private
-
-    def _serializer_instance_methods
-      @_serializer_instance_methods ||= (public_methods - Object.public_instance_methods).to_set
-    end
-
-    def _serializer_method_defined?(name)
-      _serializer_instance_methods.include?(name)
-    end
   end
 end
