@@ -15,13 +15,13 @@ Breaking changes:
 Features:
 
 - [#1291](https://github.com/rails-api/active_model_serializers/pull/1291) Add logging (@maurogeorge)
-- [#1225](https://github.com/rails-api/active_model_serializers/pull/1125) Better serializer lookup, use nested serializer when it exists (@beauby)
+- [#1225](https://github.com/rails-api/active_model_serializers/pull/1225) Better serializer lookup, use nested serializer when it exists (@beauby)
 - [#1172](https://github.com/rails-api/active_model_serializers/pull/1172) Better serializer registration, get more than just the first module (@bf4)
 - [#1158](https://github.com/rails-api/active_model_serializers/pull/1158) Add support for wildcards in `include` option (@beauby)
 - [#1127](https://github.com/rails-api/active_model_serializers/pull/1127) Add support for nested
     associations for JSON and Attributes adapters via the `include` option (@NullVoxPopuli, @beauby).
 - [#1050](https://github.com/rails-api/active_model_serializers/pull/1050) Add support for toplevel jsonapi member (@beauby, @bf4)
-- [#tbd](https://github.com/rails-api/active_model_serializers/pull/tbd) Rename ArraySerializer to
+- [#1251](https://github.com/rails-api/active_model_serializers/pull/1251) Rename ArraySerializer to
     CollectionSerializer for clarity, add ActiveModelSerializers.config.collection_serializer (@bf4)
 
 Fixes:
