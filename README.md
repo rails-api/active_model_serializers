@@ -61,13 +61,9 @@ serializer classes. If you want to use a different adapter, such as a JsonApi, y
 change this in an initializer:
 
 ```ruby
-ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
-```
-
-or
-
-```ruby
-ActiveModel::Serializer.config.adapter = :json_api
+ActiveModel::Serializer.setup do |config|
+  config.adapter = :json_api
+end
 ```
 
 You won't need to implement an adapter unless you wish to use a new format or
@@ -76,7 +72,9 @@ media type with AMS.
 If you want to have a root key on your responses you should use the Json adapter, instead of the default Attributes:
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :json
+ActiveModel::Serializer.setup do |config|
+  config.adapter = :json
+end
 ```
 
 If you would like the key in the outputted JSON to be different from its name in ActiveRecord, you can use the :key option to customize it:
