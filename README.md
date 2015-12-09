@@ -339,6 +339,7 @@ And it's also safe to mutate keys argument by doing keys.delete(:author)
 in case you want to avoid creating two extra arrays. Note that if you do an
 in-place modification, you still need to return the modified array.
 
+### Alias Attribute
 If you would like the key in the outputted JSON to be different from its name
 in ActiveRecord, you can declare the attribute with the different name
 and redefine that method:
