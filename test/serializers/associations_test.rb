@@ -126,6 +126,35 @@ module ActiveModel
         assert expected_association_keys.include? :site
       end
 
+      class InlineAssociationTestPostSerializer < ActiveModel::Serializer
+        has_many :comments
+        has_many :comments, key: :last_comments do
+          last(1)
+        end
+      end
+
+      def test_virtual_attribute_block
+        comment1 = ::ARModels::Comment.create!(contents: 'first comment')
+        comment2 = ::ARModels::Comment.create!(contents: 'last comment')
+        post = ::ARModels::Post.create!(
+          title: 'inline association test',
+          body: 'etc',
+          comments: [comment1, comment2]
+        )
+        actual = serializable(post, adapter: :attributes, serializer: InlineAssociationTestPostSerializer).as_json
+        expected = {
+          :comments =>           [
+            { :id => 1, :contents => 'first comment' },
+            { :id => 2, :contents => 'last comment' }
+          ],
+          :last_comments =>           [
+            { :id => 2, :contents => 'last comment' }
+          ]
+        }
+
+        assert_equal expected, actual
+      end
+
       class NamespacedResourcesTest < Minitest::Test
         class ResourceNamespace
           Post    = Class.new(::Model)

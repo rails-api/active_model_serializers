@@ -116,7 +116,7 @@ RoleSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :name, :description, :slug
 
   def slug
-    "#{name}-#{id}"
+    "#{object.name}-#{object.id}"
   end
 
   belongs_to :author

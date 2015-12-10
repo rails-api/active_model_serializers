@@ -43,6 +43,15 @@ module ActiveModel
         assert_equal({ blog: { id: 'AMS Hints' } }, adapter.serializable_hash)
       end
 
+      def test_object_attribute_override
+        serializer = Class.new(ActiveModel::Serializer) do
+          attribute :name, key: :object
+        end
+
+        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer.new(@blog))
+        assert_equal({ blog: { object: 'AMS Hints' } }, adapter.serializable_hash)
+      end
+
       def test_type_attribute
         attribute_serializer = Class.new(ActiveModel::Serializer) do
           attribute :id, key: :type
@@ -70,6 +79,21 @@ module ActiveModel
         hash = ActiveModel::SerializableResource.new(@blog, adapter: :json, serializer: serializer).serializable_hash
 
         assert_equal('custom', hash[:blog][:id])
+      end
+
+      PostWithVirtualAttribute = Class.new(::Model)
+      class PostWithVirtualAttributeSerializer < ActiveModel::Serializer
+        attribute :name do
+          "#{object.first_name} #{object.last_name}"
+        end
+      end
+
+      def test_virtual_attribute_block
+        post = PostWithVirtualAttribute.new(first_name: 'Lucas', last_name: 'Hosseini')
+        hash = serializable(post).serializable_hash
+        expected = { name: 'Lucas Hosseini' }
+
+        assert_equal(expected, hash)
       end
     end
   end

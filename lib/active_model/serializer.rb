@@ -3,6 +3,7 @@ require 'active_model/serializer/collection_serializer'
 require 'active_model/serializer/array_serializer'
 require 'active_model/serializer/include_tree'
 require 'active_model/serializer/associations'
+require 'active_model/serializer/attributes'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
@@ -13,6 +14,7 @@ module ActiveModel
   class Serializer
     include Configuration
     include Associations
+    include Attributes
     require 'active_model/serializer/adapter'
 
     # Matches
@@ -45,14 +47,9 @@ module ActiveModel
     end
 
     with_options instance_writer: false, instance_reader: false do |serializer|
-      class_attribute :_type, instance_reader: true
-      class_attribute :_attributes               # @api private : names of attribute methods, @see Serializer#attribute
-      self._attributes ||= []
-      class_attribute :_attributes_keys          # @api private : maps attribute value to explict key name, @see Serializer#attribute
-      self._attributes_keys ||= {}
-      class_attribute :_links                    # @api private : links definitions, @see Serializer#link
+      serializer.class_attribute :_type, instance_reader: true
+      serializer.class_attribute :_links         # @api private : links definitions, @see Serializer#link
       self._links ||= {}
-
       serializer.class_attribute :_cache         # @api private : the cache object
       serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
       serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
@@ -69,12 +66,10 @@ module ActiveModel
       serializer.class_attribute :_cache_digest # @api private : Generated
     end
 
-    # Serializers inherit _attributes and _attributes_keys.
+    # Serializers inherit _attribute_mappings, _reflections, and _links.
     # Generates a unique digest for each serializer at load.
     def self.inherited(base)
       caller_line = caller.first
-      base._attributes = _attributes.dup
-      base._attributes_keys = _attributes_keys.dup
       base._links = _links.dup
       base._cache_digest = digest_caller_file(caller_line)
       super
@@ -89,37 +84,6 @@ module ActiveModel
 
     def self.link(name, value = nil, &block)
       _links[name] = block || value
-    end
-
-    # @example
-    #   class AdminAuthorSerializer < ActiveModel::Serializer
-    #     attributes :id, :name, :recent_edits
-    def self.attributes(*attrs)
-      attrs = attrs.first if attrs.first.class == Array
-
-      attrs.each do |attr|
-        attribute(attr)
-      end
-    end
-
-    # @example
-    #   class AdminAuthorSerializer < ActiveModel::Serializer
-    #     attributes :id, :recent_edits
-    #     attribute :name, key: :title
-    #
-    #     def recent_edits
-    #       object.edits.last(5)
-    #     enr
-    def self.attribute(attr, options = {})
-      key = options.fetch(:key, attr)
-      _attributes_keys[attr] = { key: key } if key != attr
-      _attributes << key unless _attributes.include?(key)
-
-      ActiveModelSerializers.silence_warnings do
-        define_method key do
-          object.read_attribute_for_serialization(attr)
-        end unless method_defined?(key) || _fragmented.respond_to?(attr)
-      end
     end
 
     # @api private
@@ -220,6 +184,15 @@ module ActiveModel
       end
     end
 
+    def self._serializer_instance_method_defined?(name)
+      _serializer_instance_methods.include?(name)
+    end
+
+    def self._serializer_instance_methods
+      @_serializer_instance_methods ||= (public_instance_methods - Object.public_instance_methods).to_set
+    end
+    private_class_method :_serializer_instance_methods
+
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -244,16 +217,13 @@ module ActiveModel
       root || object.class.model_name.to_s.underscore
     end
 
-    # Return the +attributes+ of +object+ as presented
-    # by the serializer.
-    def attributes(requested_attrs = nil)
-      self.class._attributes.each_with_object({}) do |name, hash|
-        next unless requested_attrs.nil? || requested_attrs.include?(name)
-        if self.class._fragmented
-          hash[name] = self.class._fragmented.public_send(name)
-        else
-          hash[name] = send(name)
-        end
+    def read_attribute_for_serialization(attr)
+      if self.class._serializer_instance_method_defined?(attr)
+        send(attr)
+      elsif self.class._fragmented
+        self.class._fragmented.read_attribute_for_serialization(attr)
+      else
+        object.read_attribute_for_serialization(attr)
       end
     end
 

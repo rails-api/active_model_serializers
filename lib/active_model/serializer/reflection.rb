@@ -7,7 +7,15 @@ module ActiveModel
     #  class PostSerializer < ActiveModel::Serializer
     #     has_one :author, serializer: AuthorSerializer
     #     has_many :comments
+    #     has_many :comments, key: :last_comments do
+    #       last(1)
+    #     end
     #  end
+    #
+    #  Notice that the association block is evaluated in the context of the association.
+    #  Specifically, the association 'comments' is evaluated two different ways:
+    #  1) as 'comments' and named 'comments'.
+    #  2) as 'comments.last(1)' and named 'last_comments'.
     #
     #  PostSerializer._reflections #=>
     #    # [
@@ -17,7 +25,30 @@ module ActiveModel
     #
     # So you can inspect reflections in your Adapters.
     #
-    Reflection = Struct.new(:name, :options) do
+    Reflection = Struct.new(:name, :options, :block) do
+      delegate :call, to: :reader
+
+      attr_reader :reader
+
+      def initialize(*)
+        super
+        @reader = self.class.build_reader(name, block)
+      end
+
+      # @api private
+      def value(instance)
+        call(instance)
+      end
+
+      # @api private
+      def self.build_reader(name, block)
+        if block
+          ->(instance) { instance.read_attribute_for_serialization(name).instance_eval(&block) }
+        else
+          ->(instance) { instance.read_attribute_for_serialization(name) }
+        end
+      end
+
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -40,7 +71,7 @@ module ActiveModel
       # @api private
       #
       def build_association(subject, parent_serializer_options)
-        association_value = subject.send(name)
+        association_value = value(subject)
         reflection_options = options.dup
         serializer_class = subject.class.serializer_for(association_value, reflection_options)
 
