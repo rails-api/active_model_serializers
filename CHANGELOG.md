@@ -2,6 +2,7 @@
 
 Breaking changes:
 
+- Drop support to Ruby 1.9.3 (@maurogeorge)
 - [#1131](https://github.com/rails-api/active_model_serializers/pull/1131) Remove Serializer#root_name (@beauby)
 - [#1138](https://github.com/rails-api/active_model_serializers/pull/1138) Introduce Adapter::Base (@bf4)
   * Adapters now inherit Adapter::Base. 'Adapter' is now a module, no longer a class.
