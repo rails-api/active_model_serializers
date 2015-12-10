@@ -17,7 +17,7 @@ module ActiveModel
     #
     # So you can inspect reflections in your Adapters.
     #
-    Reflection = Struct.new(:name, :options) do
+    Reflection = Struct.new(:name, :options, :proc) do
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -40,7 +40,11 @@ module ActiveModel
       # @api private
       #
       def build_association(subject, parent_serializer_options)
-        association_value = subject.send(name)
+        association_value = if proc.nil?
+                              subject.object.send(name)
+                            else
+                              subject.instance_eval(&proc)
+                            end
         reflection_options = options.dup
         serializer_class = subject.class.serializer_for(association_value, reflection_options)
 
@@ -54,7 +58,7 @@ module ActiveModel
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
           end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
-          reflection_options[:virtual_value] = association_value
+          reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
         end
 
         Association.new(name, serializer, reflection_options)

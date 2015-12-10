@@ -132,8 +132,8 @@ module ActiveModel
                 id: '1',
                 type: 'virtual_values',
                 relationships: {
-                  maker: { data: { id: 1 } },
-                  reviews: { data: [{ id: 1 }, { id: 2 }] }
+                  maker: { data: { 'id' => 1 } },
+                  reviews: { data: [{ 'id' => 1 }, { 'id' => 2 }] }
                 }
               }
             }, adapter.serializable_hash)
