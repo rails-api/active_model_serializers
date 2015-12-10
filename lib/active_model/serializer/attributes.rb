@@ -1,6 +1,7 @@
 module ActiveModel
   class Serializer
     module Attributes
+      # @api private
       class Attribute
         delegate :call, to: :reader
 
@@ -19,12 +20,14 @@ module ActiveModel
           end
         end
       end
+      # @api private
       class AttributeReader < Attribute
         def initialize(name)
           super(name)
           @reader = ->(instance) { instance.read_attribute_for_serialization(name) }
         end
       end
+      # @api private
       class AttributeBlock < Attribute
         def initialize(name, block)
           super(name)

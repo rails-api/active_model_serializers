@@ -35,10 +35,12 @@ module ActiveModel
         @reader = self.class.build_reader(name, block)
       end
 
+      # @api private
       def value(instance)
         call(instance)
       end
 
+      # @api private
       def self.build_reader(name, block)
         if block
           ->(instance) { instance.read_attribute_for_serialization(name).instance_eval(&block) }
