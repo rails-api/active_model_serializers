@@ -1,3 +1,5 @@
+[Back to Guides](../README.md)
+
 [![JSON API 1.0](https://img.shields.io/badge/JSON%20API-1.0-lightgrey.svg)](http://jsonapi.org/)
 
 ## JSON API Requests

@@ -7,12 +7,12 @@ Breaking changes:
 - [#1131](https://github.com/rails-api/active_model_serializers/pull/1131) Remove Serializer#root_name (@beauby)
 - [#1138](https://github.com/rails-api/active_model_serializers/pull/1138) Introduce Adapter::Base (@bf4)
   * Adapters now inherit Adapter::Base. 'Adapter' is now a module, no longer a class.
-    * using a class as a namespace that you also inherit from is complicated and circular at time i.e.
+    * using a class as a namespace that you also inherit from is complicated and circular at times i.e.
       buggy (see https://github.com/rails-api/active_model_serializers/pull/1177)
     * The class methods on Adapter aren't necessarily related to the instance methods, they're more
-        Adapter functions
-    * named `Base` because it's a Rails-ism
-    * It helps to isolate and highlight what the Adapter interface actually is
+        Adapter functions.
+    * named `Base` because it's a Rails-ism.
+    * It helps to isolate and highlight what the Adapter interface actually is.
 
 Features:
 
@@ -45,6 +45,7 @@ Misc:
 - [#1168](https://github.com/rails-api/active_model_serializers/pull/1168) Fix appveyor failure cache not being expired (@bf4)
 - [#1161](https://github.com/rails-api/active_model_serializers/pull/1161) Remove duplicate test helper (@bf4)
 - [#1360](https://github.com/rails-api/active_model_serializers/pull/1360) Update CI to test 2.2.2 -> 2.2.3 (@karaAJC)
+- [#1371](https://github.com/rails-api/active_model_serializers/pull/1371) Refactor, update, create documentation (@bf4)
 
 ### v0.10.0.rc3 (2015/09/16 15:19 +00:00)
 - [#1129](https://github.com/rails-api/active_model_serializers/pull/1129) Remove SerializableResource.serialize in favor of `.new` (@bf4)

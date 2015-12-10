@@ -1,3 +1,5 @@
+[Back to Guides](../README.md)
+
 # Integrating with Ember and JSON API
 
  - [Preparation](./ember-and-json-api.md#preparation)
@@ -10,7 +12,7 @@
 
 Note: This guide assumes that `ember-cli` is used for your ember app.
 
-The JSON API specification calls for hyphens for multi-word separators. AMS uses underscores.
+The JSON API specification calls for hyphens for multi-word separators. ActiveModelSerializers uses underscores.
 To solve this, in Ember, both the adapter and the serializer will need some modifications:
 
 ### Server-Side Changes
@@ -86,7 +88,7 @@ export default DS.JSONAPISerializer.extend({
 ## Including Nested Resources
 
 Previously, `store.find` and `store.findRecord` did not allow specification of any query params.
-The AMS default for the `include` parameter is to be `nil` meaning that if any associations are defined in your serializer, only the `id` and `type` will be in the `relationships` structure of the JSON API response.
+The ActiveModelSerializers default for the `include` parameter is to be `nil` meaning that if any associations are defined in your serializer, only the `id` and `type` will be in the `relationships` structure of the JSON API response.
 For more on `include` usage, see: [The JSON API include examples](./../general/adapters.md#JSON-API)
 
 With the above modifications, you can execute code as below in order to include nested resources while doing a find query.

@@ -6,21 +6,21 @@ module ActiveModel
       class CollectionSerializerTest < Minitest::Test
         def setup
           @array = [1, 2, 3]
-          @previous_collection_serializer = ActiveModel::Serializer.config.collection_serializer
+          @previous_collection_serializer = ActiveModelSerializers.config.collection_serializer
         end
 
         def teardown
-          ActiveModel::Serializer.config.collection_serializer = @previous_collection_serializer
+          ActiveModelSerializers.config.collection_serializer = @previous_collection_serializer
         end
 
         def test_serializer_for_array
           serializer = ActiveModel::Serializer.serializer_for(@array)
-          assert_equal ActiveModel::Serializer.config.collection_serializer, serializer
+          assert_equal ActiveModelSerializers.config.collection_serializer, serializer
         end
 
         def test_overwritten_serializer_for_array
           new_collection_serializer = Class.new
-          ActiveModel::Serializer.config.collection_serializer = new_collection_serializer
+          ActiveModelSerializers.config.collection_serializer = new_collection_serializer
           serializer = ActiveModel::Serializer.serializer_for(@array)
           assert_equal new_collection_serializer, serializer
         end

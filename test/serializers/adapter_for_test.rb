@@ -4,11 +4,11 @@ module ActiveModel
       UnknownAdapterError = ::ActiveModel::Serializer::Adapter::UnknownAdapterError
 
       def setup
-        @previous_adapter = ActiveModel::Serializer.config.adapter
+        @previous_adapter = ActiveModelSerializers.config.adapter
       end
 
       def teardown
-        ActiveModel::Serializer.config.adapter = @previous_adapter
+        ActiveModelSerializers.config.adapter = @previous_adapter
       end
 
       def test_returns_default_adapter
@@ -17,23 +17,23 @@ module ActiveModel
       end
 
       def test_overwrite_adapter_with_symbol
-        ActiveModel::Serializer.config.adapter = :null
+        ActiveModelSerializers.config.adapter = :null
 
         adapter = ActiveModel::Serializer.adapter
         assert_equal ActiveModel::Serializer::Adapter::Null, adapter
       ensure
-        ActiveModel::Serializer.config.adapter = @previous_adapter
+        ActiveModelSerializers.config.adapter = @previous_adapter
       end
 
       def test_overwrite_adapter_with_class
-        ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::Null
+        ActiveModelSerializers.config.adapter = ActiveModel::Serializer::Adapter::Null
 
         adapter = ActiveModel::Serializer.adapter
         assert_equal ActiveModel::Serializer::Adapter::Null, adapter
       end
 
       def test_raises_exception_if_invalid_symbol_given
-        ActiveModel::Serializer.config.adapter = :unknown
+        ActiveModelSerializers.config.adapter = :unknown
 
         assert_raises UnknownAdapterError do
           ActiveModel::Serializer.adapter
@@ -41,7 +41,7 @@ module ActiveModel
       end
 
       def test_raises_exception_if_it_does_not_know_hot_to_infer_adapter
-        ActiveModel::Serializer.config.adapter = 42
+        ActiveModelSerializers.config.adapter = 42
 
         assert_raises UnknownAdapterError do
           ActiveModel::Serializer.adapter
@@ -110,7 +110,7 @@ module ActiveModel
       end
 
       def test_adapter
-        assert_equal ActiveModel::Serializer.config.adapter, :attributes
+        assert_equal ActiveModelSerializers.config.adapter, :attributes
         assert_equal ActiveModel::Serializer.adapter, ActiveModel::Serializer::Adapter::Attributes
       end
 

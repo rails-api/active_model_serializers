@@ -1,3 +1,5 @@
+[Back to Guides](README.md)
+
 # ARCHITECTURE
 
 An **`ActiveModel::Serializer`** wraps a [serializable resource](https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/serialization.rb)

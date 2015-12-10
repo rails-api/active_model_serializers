@@ -43,7 +43,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'activerecord', rails_versions
     # arel
-    # activesuport
+    # activesupport
     # activemodel
 
   # Soft dependency for pagination

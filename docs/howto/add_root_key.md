@@ -1,6 +1,6 @@
 # How to add root key
 
-Add the root key to your API is quite simple with AMS. The **Adapter** is what determines the format of your JSON response. The default adapter is the ```Attributes``` which doesn't have the root key, so your response is something similar to:
+Add the root key to your API is quite simple with ActiveModelSerializers. The **Adapter** is what determines the format of your JSON response. The default adapter is the ```Attributes``` which doesn't have the root key, so your response is something similar to:
 
 ```json
 {
@@ -13,10 +13,10 @@ Add the root key to your API is quite simple with AMS. The **Adapter** is what d
 In order to add the root key you need to use the ```JSON``` Adapter, you can change this in an initializer:
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :json
+ActiveModelSerializers.config.adapter = :json
 ```
 
-You can also specify a class as adapter, as long as it complies with the AMS adapters interface.
+You can also specify a class as adapter, as long as it complies with the ActiveModelSerializers adapters interface.
 It will add the root key to all your serialized endpoints.
 
 ex:

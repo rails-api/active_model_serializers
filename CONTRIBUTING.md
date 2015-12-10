@@ -8,6 +8,9 @@ http://www.commitstrip.com/en/2014/05/07/the-truth-behind-open-source-apps/](doc
 
 ## How can I help?
 
+- [Filing an issue](CONTRIBUTING.md#filing-an-issue)
+- [Writing code and comments](CONTRIBUTING#writing-code-and-comments)
+
 ### Filing an issue
 
 Everyone is encouraged to open issues that are affecting them:
@@ -19,7 +22,6 @@ bugs, ideas, documentation (`/docs`), performance problems – everything helps!
 
   - Check if your issue has already been reported.
   - If you find an existing issue report, feel free to add further information to that report.
-
 
 #### Writing
 
@@ -82,22 +84,27 @@ And please don't forget to stay involved in the issue until it is closed! Thanks
 
 - We are actively working to identify tasks under the label [**Good for New
   Contributors**](https://github.com/rails-api/active_model_serializers/labels/Good%20for%20New%20Contributors).
-  Some bugs are expressly not good for new contributors, so don't expect 100% overlap between the two.
   - [Changelog
       Missing](https://github.com/rails-api/active_model_serializers/issues?q=label%3A%22Changelog+Missing%22+is%3Aclosed) is
     an easy way to help out.
 
-- If you want to work on new feature development, look for the label [**Feature**](https://github.com/rails-api/active_model_serializers/labels/Feature).
+- [Fix a bug](https://github.com/rails-api/active_model_serializers/labels/Ready%20for%20PR).
+  - Ready for PR - A well defined bug, needs someone to PR a fix.
+  - Bug - Anything that is broken.
+  - Regression - A bug that did not exist in previous versions and isn't a new feature (applied in tandem with Bug).
+  - Performance - A performance related issue. We could track this as a bug, but usually these would have slightly lower priority than standard bugs.
+
+- [Develop new features](https://github.com/rails-api/active_model_serializers/labels/Feature).
+
+- [Improve code quality](https://codeclimate.com/github/rails-api/active_model_serializers/code?sort=smell_count&sort_direction=desc).
+
+- [Improve amount of code exercised by tests](https://codeclimate.com/github/rails-api/active_model_serializers/coverage?sort=covered_percent&sort_direction=asc).
 
 - We are also encouraging comments to substantial changes (larger than bugfixes and simple features) under an
   "RFC" (Request for Comments) process before we start active development.
    Look for the [**RFC**](https://github.com/rails-api/active_model_serializers/labels/RFC) label.
 
-## Issue Labeling
-
-ActiveModelSerializers uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIssueLabels) for Github Issues. You can [see our labels here](https://github.com/rails-api/active_model_serializers/labels).
-
-## Submitting a pull request (PR)
+#### Submitting a pull request (PR)
 
 1. The vast majority of development is happening under the `master` branch.
   This is where we would suggest you start.
@@ -147,13 +154,13 @@ Remember to [squash your commits](CONTRIBUTING.md#about-pull-requests-prs) and r
     - by force pushing to it
   - A maintainer can make any changes themselves and manually merge the code in.
 
-### Commit Messages
+#### Commit Messages
 
 - [A Note About Git Commit Messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
 - [http://stopwritingramblingcommitmessages.com/](http://stopwritingramblingcommitmessages.com/)
 - [ThoughtBot style guide](https://github.com/thoughtbot/guides/tree/master/style#git)
 
-### About Pull Requests (PR's)
+#### About Pull Requests (PR's)
 
 - [Using Pull Requests](https://help.github.com/articles/using-pull-requests)
 - [Github pull requests made easy](http://www.element84.com/github-pull-requests-made-easy.html)
@@ -161,9 +168,34 @@ Remember to [squash your commits](CONTRIBUTING.md#about-pull-requests-prs) and r
 - [Level up your Git](http://rakeroutes.com/blog/deliberate-git/)
 - [All Your Open Source Code Are Belong To Us](http://www.benjaminfleischer.com/2013/07/30/all-your-open-source-code-are-belong-to-us/)
 
-### Running tests
+## Issue Labeling
 
-#### Running with Rake
+ActiveModelSerializers uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIssueLabels) for Github Issues. You can [see our labels here](https://github.com/rails-api/active_model_serializers/labels).
+
+## Running tests
+
+Run tests against different Rails versions by setting the RAILS_VERSION variable
+and bundling gems.  To test against all versions, you can do something like:
+
+```bash
+for version in 4.0 4.1 4.2 master; do
+  export RAILS_VERSION="$version"
+  rm -f Gemfile.lock
+  bundle check || bundle --local || bundle
+  bundle exec rake test
+  if [ "$?" -eq 0 ]; then
+    # green in ANSI
+    echo -e "\033[32m **** Tests passed against Rails ${RAILS_VERSION} **** \033[0m"
+  else
+    # red in ANSI
+    echo -e "\033[31m **** Tests failed against Rails ${RAILS_VERSION} **** \033[0m"
+  fi
+  unset RAILS_VERSION
+done
+```
+
+
+### Running with Rake
 
 The easiest way to run the unit tests is through Rake. The default task runs
 the entire test suite for all classes. For more information, checkout the

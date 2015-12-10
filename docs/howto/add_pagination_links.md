@@ -1,3 +1,5 @@
+[Back to Guides](../README.md)
+
 # How to add pagination links
 
 ### JSON API adapter
@@ -7,6 +9,10 @@ the resource is paginated and if you are using the ```JsonApi``` adapter.
 
 If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari)
 or [WillPaginate](https://github.com/mislav/will_paginate).
+
+Although the others adapters does not have this feature, it is possible to
+implement pagination links to `JSON` adapter. For more information about it,
+please see in our docs 
 
 ###### Kaminari examples
 
@@ -33,7 +39,7 @@ render json: @posts
 ```
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :json_api
+ActiveModelSerializers.config.adapter = :json_api
 ```
 
 ex:
@@ -61,7 +67,7 @@ ex:
 }
 ```
 
-AMS pagination relies on a paginated collection with the methods `current_page`, `total_pages`, and `size`, such as are supported by both [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
+ActiveModelSerializers pagination relies on a paginated collection with the methods `current_page`, `total_pages`, and `size`, such as are supported by both [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
 
 
 ### JSON adapter
