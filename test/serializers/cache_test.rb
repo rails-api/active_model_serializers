@@ -149,6 +149,38 @@ module ActiveModel
         assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
       end
 
+      def test_object_cache_keys
+        serializer = CollectionSerializer.new([@comment, @comment])
+        include_tree = IncludeTree.from_include_args('*')
+
+        actual = Serializer::Adapter::CachedSerializer.object_cache_keys(serializer, include_tree)
+
+        assert_equal actual.size, 3
+        assert actual.any? { |key| key == 'comment/1' }
+        assert actual.any? { |key| key =~ %r{post/post-\d+} }
+        assert actual.any? { |key| key =~ %r{writer/author-\d+} }
+      end
+
+      def test_cached_attributes
+        serializer = CollectionSerializer.new([@comment, @comment])
+
+        Timecop.freeze(Time.now) do
+          render_object_with_cache(@comment)
+
+          attributes = ActiveModel::Serializer::Adapter::Attributes.new(serializer)
+          attributes.send(:cache_attributes)
+          cached_attributes = attributes.instance_variable_get(:@cached_attributes)
+
+          assert_equal cached_attributes[@comment.cache_key], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
+          assert_equal cached_attributes[@comment.post.cache_key], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
+
+          writer = @comment.post.blog.writer
+          writer_cache_key = "writer/#{writer.id}-#{writer.updated_at.strftime("%Y%m%d%H%M%S%9N")}"
+
+          assert_equal cached_attributes[writer_cache_key], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
+        end
+      end
+
       def test_serializer_file_path_on_nix
         path = '/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb'
         caller_line = "#{path}:1:in `<top (required)>'"
