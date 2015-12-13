@@ -2,13 +2,14 @@ require 'rails/railtie'
 
 module ActiveModelSerializers
   class Railtie < Rails::Railtie
+    config.to_prepare do
+      ActiveModel::Serializer.serializers_cache.clear
+    end
+
     initializer 'active_model_serializers.action_controller' do
       ActiveSupport.on_load(:action_controller) do
         ActiveSupport.run_load_hooks(:active_model_serializers, ActiveModelSerializers)
         include ::ActionController::Serialization
-        ActionDispatch::Reloader.to_prepare do
-          ActiveModel::Serializer.serializers_cache.clear
-        end
       end
     end
 
@@ -25,9 +26,8 @@ module ActiveModelSerializers
       end
     end
 
-    initializer 'active_model_serializers.generators' do |app|
-      app.load_generators
-      require 'generators/serializer/resource_override'
+    generators do
+      require 'generators/rails/resource_override'
     end
 
     if Rails.env.test?

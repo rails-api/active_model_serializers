@@ -1,5 +1,6 @@
 require 'test_helper'
-require 'generators/serializer/serializer_generator'
+require 'generators/rails/resource_override'
+require 'generators/rails/serializer_generator'
 
 class SerializerGeneratorTest < Rails::Generators::TestCase
   destination File.expand_path('../../../tmp/generators', __FILE__)
