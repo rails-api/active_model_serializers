@@ -16,7 +16,7 @@ module ActiveModel
     end
 
     generators do
-      require 'generators/serializer/resource_override'
+      require 'generators/rails/resource_override'
     end
   end
 end
