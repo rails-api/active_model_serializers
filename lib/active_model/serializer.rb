@@ -338,7 +338,7 @@ module ActiveModel
     # object including the root.
     def as_json(options={})
       options ||= {}
-      if root = options.fetch(:root, @options.fetch(:root, root_name))
+      if root = options.to_hash.fetch(:root, @options.fetch(:root, root_name))
         @options[:hash] = hash = {}
         @options[:unique_values] = {}
 

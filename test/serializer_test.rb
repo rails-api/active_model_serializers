@@ -1363,6 +1363,7 @@ class SerializerTest < ActiveModel::TestCase
   def test_inheritance_does_not_used_cached_attributes
     parent = Class.new(ActiveModel::Serializer) do
       attributes :title
+      alias :read_attribute_for_serialization :send
     end
 
     child = Class.new(parent) do
@@ -1371,6 +1372,7 @@ class SerializerTest < ActiveModel::TestCase
 
     data_class = Class.new do
       attr_accessor :title, :body
+      alias :read_attribute_for_serialization :send
     end
 
     item = data_class.new

@@ -199,6 +199,7 @@ class SomeSerializer < ActiveModel::Serializer
 end
 
 class SomeObject < Struct.new(:some)
+  alias :read_attribute_for_serialization :send
 end
 
 # Set up some classes for polymorphic testing
