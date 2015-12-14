@@ -27,6 +27,7 @@ Features:
     CollectionSerializer for clarity, add ActiveModelSerializers.config.collection_serializer (@bf4)
 
 Fixes:
+- [#1360](https://github.com/rails-api/active_model_serializers/pull/1360) Update Travis CI build matrix with ruby 2.2.3 supporting rails5 (@karaAJC)
 - [#1239](https://github.com/rails-api/active_model_serializers/pull/1239) Fix duplicates in JSON API compound documents (@beauby)
 - [#1214](https://github.com/rails-api/active_model_serializers/pull/1214) retrieve the key from the reflection options when building associations (@NullVoxPopuli, @hut8)
 - [#1358](https://github.com/rails-api/active_model_serializers/pull/1358) Handle serializer file paths with spaces (@rwstauner, @bf4)
