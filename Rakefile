@@ -16,3 +16,6 @@ task :bench do
 end
 
 task :default => :test
+
+desc 'CI test task'
+task :ci => :default
