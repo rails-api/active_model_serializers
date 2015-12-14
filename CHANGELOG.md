@@ -2,6 +2,8 @@
 
 Breaking changes:
 
+- [#1360](https://github.com/rails-api/active_model_serializers/pull/1360)
+  [#1369](https://github.com/rails-api/active_model_serializers/pull/1369) Drop support for Ruby 1.9.3 (@karaAJC, @maurogeorge)
 - [#1131](https://github.com/rails-api/active_model_serializers/pull/1131) Remove Serializer#root_name (@beauby)
 - [#1138](https://github.com/rails-api/active_model_serializers/pull/1138) Introduce Adapter::Base (@bf4)
   * Adapters now inherit Adapter::Base. 'Adapter' is now a module, no longer a class.
@@ -42,6 +44,7 @@ Misc:
 - [#1166](https://github.com/rails-api/active_model_serializers/pull/1166) Prefer methods over instance variables (@bf4)
 - [#1168](https://github.com/rails-api/active_model_serializers/pull/1168) Fix appveyor failure cache not being expired (@bf4)
 - [#1161](https://github.com/rails-api/active_model_serializers/pull/1161) Remove duplicate test helper (@bf4)
+- [#1360](https://github.com/rails-api/active_model_serializers/pull/1360) Update CI to test 2.2.2 -> 2.2.3 (@karaAJC)
 
 ### v0.10.0.rc3 (2015/09/16 15:19 +00:00)
 - [#1129](https://github.com/rails-api/active_model_serializers/pull/1129) Remove SerializableResource.serialize in favor of `.new` (@bf4)
