@@ -1370,6 +1370,7 @@ class SerializerTest < ActiveModel::TestCase
     end
 
     data_class = Class.new do
+      include ActiveModel::Serializers::JSON
       attr_accessor :title, :body
     end
 

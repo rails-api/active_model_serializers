@@ -199,6 +199,7 @@ class SomeSerializer < ActiveModel::Serializer
 end
 
 class SomeObject < Struct.new(:some)
+  include ActiveModel::Serializers::JSON
 end
 
 # Set up some classes for polymorphic testing

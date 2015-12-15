@@ -1,28 +1,46 @@
 language: ruby
+sudo: false
 rvm:
-  - 1.8.7
-  - 1.9.2
-  - 1.9.3
-  - 2.0.0
-  - ree
-  - jruby-18mode
+  # - 1.8.7
+  # - ree
+  # - jruby-18mode
+  # - 1.9.2
+  # - 1.9.3
   - jruby-19mode
+  - 2.0.0
+  - 2.1
+  - 2.2
   - rbx-2
-gemfile:
-  - Gemfile
-  - Gemfile.edge
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+cache:
+  directories:
+    - vendor/bundle
+script:
+  - bundle exec rake ci
+env:
+  # - "RAILS_VERSION=3.0"
+  # - "RAILS_VERSION=3.1"
+  # - "RAILS_VERSION=3.2"
+  - "RAILS_VERSION=4.0"
+  - "RAILS_VERSION=4.1"
+  - "RAILS_VERSION=4.2"
+  - "RAILS_VERSION=master"
 matrix:
-  allow_failures:
-    - gemfile: Gemfile.edge
   exclude:
-    # Edge Rails is only compatible with 1.9.3
-    - gemfile: Gemfile.edge
-      rvm: 1.8.7
-    - gemfile: Gemfile.edge
-      rvm: 1.9.2
-    - gemfile: Gemfile.edge
-      rvm: ree
-    - gemfile: Gemfile.edge
-      rvm: jruby-18mode
-    - gemfile: Gemfile.edge
-      rvm: rbx-18mode
+  # - rvm: 1.8.7
+  # - ree
+  # - jruby-18mode
+  # - rvm: 1.9.2
+  - rvm: 1.9.3
+    env: RAILS_VERSION=master
+  - rvm: jruby-19mode
+    env: RAILS_VERSION=master
+  - rvm: 2.0.0
+    env: RAILS_VERSION=master
+  - rvm: 2.1
+    env: RAILS_VERSION=master
+  - rvm: 2.2
+    env: RAILS_VERSION=master
+  - rvm: rbx-2
+    env: RAILS_VERSION=master
+  fast_finish: true

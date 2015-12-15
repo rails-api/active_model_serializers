@@ -7,6 +7,7 @@ Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.libs << 'test'
   t.pattern = 'test/**/*_test.rb'
+  t.ruby_opts = ['-r./test/test_helper.rb']
   t.verbose = true
 end
 
@@ -16,3 +17,6 @@ task :bench do
 end
 
 task :default => :test
+
+desc 'CI test task'
+task :ci => :default
