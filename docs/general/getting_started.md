@@ -15,6 +15,12 @@ And then execute:
 ```
 $ bundle
 ```
+### Available Commands
+
+|command                               |Description                                                 |
+|--------------------------------------|------------------------------------------------------------|
+| rails g resource + `your model`      | Create a new serializer is to generate a new resource.     |
+| rails g serializer + `your model`    | Generate a serializer in  your new model.                  |
 
 ## Creating a Serializer
 
