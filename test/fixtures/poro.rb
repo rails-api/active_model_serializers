@@ -33,6 +33,7 @@ end
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 
+  # TODO: is this used anywhere?
   def arguments_passed_in?
     instance_options[:my_options] == :accessible
   end
@@ -75,6 +76,7 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
     Blog.new(id: 999, name: 'Custom blog')
   end
 
+  # TODO: is this used anywhere?
   def custom_options
     instance_options
   end

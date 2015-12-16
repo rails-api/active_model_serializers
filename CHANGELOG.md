@@ -16,7 +16,22 @@ Breaking changes:
 
 Features:
 
-- [#1336](https://github.com/rails-api/active_model_serializers/pull/1336) Added support for Grape >= 0.13, < 1.0
+- [#1378](https://github.com/rails-api/active_model_serializers/pull/1378) Change association blocks
+  to be evaluated in *serializer* scope, rather than *association* scope. (@bf4)
+    * Syntax changes from e.g.
+      `has_many :titles do customers.pluck(:title) end` (in #1356) to
+      `has_many :titles do object.customers.pluck(:title) end`
+- [#1356](https://github.com/rails-api/active_model_serializers/pull/1356) Add inline syntax for
+  attributes and associations (@bf4 @beauby @noahsilas)
+  * Allows defining attributes so that they don't conflict with existing methods. e.g. `attribute
+      :title do 'Mr. Topum Hat' end`
+  * Allows defining associations so that they don't conflict with existing methods. e.g. `has_many
+      :titles do customers.pluck(:title) end`
+    * Allows dynamic associations, as compared to compare to using
+        [`virtual_value`](https://github.com/rails-api/active_model_serializers/pull/1356#discussion_r47146466).
+        e.g. `has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]`
+  * Removes dynamically defined methods on the serializer
+- [#1336](https://github.com/rails-api/active_model_serializers/pull/1336) Added support for Grape >= 0.13, < 1.0 (@johnhamelink)
 - [#1291](https://github.com/rails-api/active_model_serializers/pull/1291) Add logging (@maurogeorge)
 - [#1225](https://github.com/rails-api/active_model_serializers/pull/1225) Better serializer lookup, use nested serializer when it exists (@beauby)
 - [#1172](https://github.com/rails-api/active_model_serializers/pull/1172) Better serializer registration, get more than just the first module (@bf4)
