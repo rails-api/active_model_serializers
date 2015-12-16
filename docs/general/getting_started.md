@@ -82,7 +82,9 @@ ActiveModelSerializers will use `PostSerializer::CommentSerializer` (thus includ
 
 ## Rails Integration
 
-ActiveModelSerializers will automatically integrate with you Rails app, you won't need to update your controller, this is a example of how it will look like:
+ActiveModelSerializers will automatically integrate with your Rails app,
+so you won't need to update your controller.
+This is a example of how the controller will look:
 
 ```ruby
 class PostsController < ApplicationController
