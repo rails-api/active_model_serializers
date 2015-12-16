@@ -46,6 +46,9 @@ architecture. We'd love your help. [Learn how you can help here.](CONTRIBUTING.m
 
 It is generally safe and recommended to use the master branch.
 
+For more information, see the post '[The future of
+AMS](https://medium.com/@joaomdmoura/the-future-of-ams-e5f9047ca7e9)'.
+
 ## Installation
 
 Note: *ActiveModelSerializers is already included on Rails >= 5*
@@ -71,9 +74,12 @@ More information is available in the [Guides](docs) and
 
 ## Getting Help
 
-If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new).
+If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new)
+and see our [contributing guide](CONTRIBUTING.md).
 
 If you have a question, please [post to Stack Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
+
+If you'd like to chat, we have a [community slack](http://amserializers.herokuapp.com).
 
 Thanks!
 
