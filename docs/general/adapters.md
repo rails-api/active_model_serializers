@@ -63,9 +63,9 @@ when the resource names are included in the `include` option.
 Including nested associated resources is also supported.
 
 ```ruby
-  render @posts, include: ['author', 'comments', 'comments.author']
+  render json: @posts, include: ['author', 'comments', 'comments.author']
   # or
-  render @posts, include: 'author,comments,comments.author'
+  render json: @posts, include: 'author,comments,comments.author'
 ```
 
 In addition, two types of wildcards may be used:
@@ -76,7 +76,7 @@ In addition, two types of wildcards may be used:
 These can be combined with other paths.
 
 ```ruby
-  render @posts, include: '**' # or '*' for a single layer
+  render json: @posts, include: '**' # or '*' for a single layer
 ```
 
 The format of the `include` option can be either:
@@ -94,7 +94,7 @@ The following would render posts and include:
 It could be combined, like above, with other paths in any combination desired.
 
 ```ruby
-  render @posts, include: 'author.comments.**'
+  render json: @posts, include: 'author.comments.**'
 ```
 
 ##### Security Considerations
@@ -102,7 +102,7 @@ It could be combined, like above, with other paths in any combination desired.
 Since the included options may come from the query params (i.e. user-controller):
 
 ```ruby
-  render @posts, include: params[:include]
+  render json: @posts, include: params[:include]
 ```
 
 The user could pass in `include=**`.
