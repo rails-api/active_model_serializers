@@ -116,6 +116,26 @@ module ActiveModel
         )
       end
 
+      def test_custom_options_for_reflections
+        inherited_klass = Class.new(ActiveModel::Serializer) do
+          belongs_to :author, serializer: AuthorSerializer, name: :author
+
+          has_many :comments, serializer: CommentSerializer, name: :comments
+        end
+
+        inherited_klass.new(@post).associations.each do |association|
+          serializer = association.serializer
+
+          if serializer.respond_to?(:each)
+            serializer.each do |sub_serializer|
+              assert_equal sub_serializer.send(:instance_options)[:reflection_options][:name], :comments
+            end
+          else
+            assert_equal serializer.send(:instance_options)[:reflection_options][:name], :author
+          end
+        end
+      end
+
       def test_associations_custom_keys
         serializer = PostWithCustomKeysSerializer.new(@post)
 

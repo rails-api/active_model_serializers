@@ -94,11 +94,13 @@ module ActiveModel
       private
 
       def serializer_options(subject, parent_serializer_options, reflection_options)
-        serializer = reflection_options.fetch(:serializer, nil)
+        serializer = reflection_options.delete(:serializer)
 
         serializer_options = parent_serializer_options.except(:serializer)
         serializer_options[:serializer] = serializer if serializer
         serializer_options[:serializer_context_class] = subject.class
+        serializer_options[:reflection_options] = reflection_options
+
         serializer_options
       end
     end
