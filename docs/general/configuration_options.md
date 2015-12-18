@@ -5,6 +5,7 @@ The following configuration options can be set on `ActiveModel::Serializer.confi
 ## General
 
 - `adapter`: The [adapter](adapters.md) to use. Possible values: `:attributes, :json, :json_api`. Default: `:attributes`.
+- `automatic_lookup`: Whether serializer should be automatically looked up or manually provided. Default: `true`
 
 ## JSON API
 
