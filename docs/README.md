@@ -17,6 +17,7 @@ This is the documentation of AMS, it's focused on the **0.10.x version.**
 - [How to add root key](howto/add_root_key.md)
 - [How to add pagination links](howto/add_pagination_links.md)
 - [Using AMS Outside Of Controllers](howto/outside_controller_use.md)
+- [Using AMS Without ActiveRecord](howto/without_active_record.md)
 
 ## Integrations
 | Integration | Supported AMS versions |  Gem name and/or link
