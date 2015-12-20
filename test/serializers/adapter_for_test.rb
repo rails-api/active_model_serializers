@@ -1,6 +1,6 @@
 module ActiveModel
   class Serializer
-    class AdapterForTest < Minitest::Test
+    class AdapterForTest < ActiveSupport::TestCase
       UnknownAdapterError = ::ActiveModel::Serializer::Adapter::UnknownAdapterError
 
       def setup

@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class Json
-        class HasManyTestTest < Minitest::Test
+        class HasManyTestTest < ActiveSupport::TestCase
           def setup
             ActionController::Base.cache_store.clear
             @author = Author.new(id: 1, name: 'Steve K.')

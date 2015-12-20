@@ -9,7 +9,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class LinkedTest < Minitest::Test
+        class LinkedTest < ActiveSupport::TestCase
           def setup
             @author1 = Author.new(id: 1, name: 'Steve K.')
             @author2 = Author.new(id: 2, name: 'Tenderlove')
@@ -283,7 +283,7 @@ module ActiveModel
           end
         end
 
-        class NoDuplicatesTest < Minitest::Test
+        class NoDuplicatesTest < ActiveSupport::TestCase
           Post = Class.new(::Model)
           Author = Class.new(::Model)
 

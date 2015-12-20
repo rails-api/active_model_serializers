@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class HasManyEmbedIdsTest < Minitest::Test
+        class HasManyEmbedIdsTest < ActiveSupport::TestCase
           def setup
             @author = Author.new(name: 'Steve K.')
             @author.bio = nil

@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class ConfigurationTest < Minitest::Test
+    class ConfigurationTest < ActiveSupport::TestCase
       def test_collection_serializer
         assert_equal ActiveModel::Serializer::CollectionSerializer, ActiveModelSerializers.config.collection_serializer
       end

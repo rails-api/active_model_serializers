@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class AttributeTest < Minitest::Test
+    class AttributeTest < ActiveSupport::TestCase
       def setup
         @blog = Blog.new({ id: 1, name: 'AMS Hints', type: 'stuff' })
         @blog_serializer = AlternateBlogSerializer.new(@blog)

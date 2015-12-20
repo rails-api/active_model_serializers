@@ -2,7 +2,7 @@ require 'test_helper'
 require 'grape'
 require 'grape/active_model_serializers'
 
-class ActiveModelSerializers::GrapeTest < Minitest::Test
+class ActiveModelSerializers::GrapeTest < ActiveSupport::TestCase
   include Rack::Test::Methods
   module Models
     def self.model1

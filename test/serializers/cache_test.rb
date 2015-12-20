@@ -3,7 +3,7 @@ require 'tmpdir'
 require 'tempfile'
 module ActiveModel
   class Serializer
-    class CacheTest < Minitest::Test
+    class CacheTest < ActiveSupport::TestCase
       include ActiveSupport::Testing::Stream
 
       def setup
