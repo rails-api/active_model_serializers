@@ -15,9 +15,8 @@ module ActiveModel
       end
     end
 
-    initializer 'generators' do |app|
-      app.load_generators
-      require 'generators/serializer/resource_override'
+    generators do
+      require 'generators/rails/resource_override'
     end
   end
 end

@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'generators/rails/resource_override'
 
 class ResourceGeneratorTest < Rails::Generators::TestCase
   destination File.expand_path('../../../tmp/generators', __FILE__)
