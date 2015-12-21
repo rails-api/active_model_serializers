@@ -17,16 +17,18 @@ class CaptureWarnings
     @output = STDOUT
   end
 
-  def execute!
+  def execute!(minitest_run)
     $VERBOSE = true
     $stderr.reopen(stderr_file.path)
-
-    Minitest.after_run do
+    at_exit do
       stderr_file.rewind
       lines = stderr_file.read.split("\n")
       stderr_file.close!
       $stderr.reopen(STDERR)
       after_tests(lines)
+    end
+    proc do |argv|
+      minitest_run.call(argv)
     end
   end
 
