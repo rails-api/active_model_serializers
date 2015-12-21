@@ -153,6 +153,9 @@ module ActiveModel
         }
 
         assert_equal expected, actual
+      ensure
+        ::ARModels::Post.delete_all
+        ::ARModels::Comment.delete_all
       end
 
       class NamespacedResourcesTest < Minitest::Test
