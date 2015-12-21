@@ -12,10 +12,146 @@ You can use one of the built-in adapters (```Attributes``` is the default one) o
 It's the default adapter, it generates a json response without a root key.
 Doesn't follow any specific convention.
 
+### Output example
+
+```json
+[
+  {
+    id: 1,
+    title: "My new post",
+    body: "Testing my blog.",
+    authors: [
+      {
+        id: 1,
+        name: "Jon Snow",
+        email: "jon@thewall.com",
+        created_at: "2015-12-15T00:14:41.149Z",
+        updated_at: "2015-12-15T00:14:41.149Z"
+      }
+    ],
+    comments: [
+      {
+        id: 1,
+        body: "Good post",
+        created_at: "2015-12-15T00:15:48.643Z",
+        updated_at: "2015-12-15T00:15:48.643Z",
+        post_id: 1
+      },
+      {
+      id: 2,
+      body: "Winter is Coming.",
+      created_at: "2015-12-15T00:16:21.578Z",
+      updated_at: "2015-12-15T00:16:21.578Z",
+      post_id: 1
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Another post",
+    body: "Just testing",
+    authors: [
+      {
+        id: 1,
+        name: "Jon Snow",
+        email: "jon@thewall.com",
+        created_at: "2015-12-15T00:14:41.149Z",
+        updated_at: "2015-12-15T00:14:41.149Z"
+      },
+      {
+        id: 2,
+        name: "Tyrion Lannister",
+        email: "theimp@lannister.com",
+        created_at: "2015-12-15T00:22:56.830Z",
+        updated_at: "2015-12-15T00:22:56.830Z"
+      }
+    ],
+    comments: [
+      {
+        id: 3,
+        body: "Just a comment",
+        created_at: "2015-12-15T00:23:55.545Z",
+        updated_at: "2015-12-15T00:23:55.545Z",
+        post_id: 2
+      }
+    ]
+  }
+]
+```
+
 ### JSON
 
 It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly to the objects being serialized.
 Doesn't follow any specific convention.
+
+### Output example
+
+```json
+{
+  posts: [
+    {
+      id: 1,
+      title: "My new post",
+      body: "Testing my blog.",
+      authors: [
+        {
+          id: 1,
+          name: "Jon Snow",
+          email: "jon@thewall.com",
+          created_at: "2015-12-15T00:14:41.149Z",
+          updated_at: "2015-12-15T00:14:41.149Z"
+        }
+      ],
+      comments: [
+        {
+        id: 1,
+        body: "Good post",
+        created_at: "2015-12-15T00:15:48.643Z",
+        updated_at: "2015-12-15T00:15:48.643Z",
+        post_id: 1
+        },
+        {
+        id: 2,
+        body: "Winter is Coming.",
+        created_at: "2015-12-15T00:16:21.578Z",
+        updated_at: "2015-12-15T00:16:21.578Z",
+        post_id: 1
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "Another post",
+      body: "Just testing",
+      authors: [
+        {
+          id: 1,
+          name: "Jon Snow",
+          email: "jon@thewall.com",
+          created_at: "2015-12-15T00:14:41.149Z",
+          updated_at: "2015-12-15T00:14:41.149Z"
+        },
+        {
+          id: 2,
+          name: "Tyrion Lannister",
+          email: "theimp@lannister.com",
+          created_at: "2015-12-15T00:22:56.830Z",
+          updated_at: "2015-12-15T00:22:56.830Z"
+        }
+      ],
+      comments: [
+        {
+          id: 3,
+          body: "Just a comment",
+          created_at: "2015-12-15T00:23:55.545Z",
+          updated_at: "2015-12-15T00:23:55.545Z",
+          post_id: 2
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### JSON API
 
@@ -35,6 +171,93 @@ render @posts, include: 'authors,comments'
 ```
 
 The format of the `include` option can be either a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes), an Array of Symbols and Hashes, or a mix of both.
+
+### Output example
+
+```json
+{
+  data: [
+    {
+      id: "1",
+      type: "posts",
+      attributes: {
+        title: "My new post",
+        body: "Testing my blog."
+      },
+      relationships: {
+        authors: {
+          data: [
+            {
+              id: 1,
+              name: "Jon Snow",
+              email: "jon@thewall.com",
+              created_at: "2015-12-15T00:14:41.149Z",
+              updated_at: "2015-12-15T00:14:41.149Z"
+            }
+          ]
+        },
+        comments: {
+          data: [
+            {
+              id: 1,
+              body: "Good post",
+              created_at: "2015-12-15T00:15:48.643Z",
+              updated_at: "2015-12-15T00:15:48.643Z",
+              post_id: 1
+            },
+            {
+              id: 2,
+              body: "Winter is Coming.",
+              created_at: "2015-12-15T00:16:21.578Z",
+              updated_at: "2015-12-15T00:16:21.578Z",
+              post_id: 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      id: "2",
+      type: "posts",
+      attributes: {
+        title: "Another post",
+        body: "Just testing"
+      },
+      relationships: {
+        authors: {
+          data: [
+            {
+              id: 1,
+              name: "Jon Snow",
+              email: "jon@thewall.com",
+              created_at: "2015-12-15T00:14:41.149Z",
+              updated_at: "2015-12-15T00:14:41.149Z"
+            },
+            {
+              id: 2,
+              name: "Tyrion Lannister",
+              email: "theimp@lannister.com",
+              created_at: "2015-12-15T00:22:56.830Z",
+              updated_at: "2015-12-15T00:22:56.830Z"
+            }
+          ]
+        },
+        comments: {
+          data: [
+            {
+              id: 3,
+              body: "Just a comment",
+              created_at: "2015-12-15T00:23:55.545Z",
+              updated_at: "2015-12-15T00:23:55.545Z",
+              post_id: 2
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
 
 ## Choosing an adapter
 
