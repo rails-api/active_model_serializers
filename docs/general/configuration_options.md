@@ -1,6 +1,9 @@
+[Back to Guides](../README.md)
+
 # Configuration Options
 
-The following configuration options can be set on `ActiveModel::Serializer.config` inside an initializer.
+The following configuration options can be set on `ActiveModelSerializers.config`,
+preferably inside an initializer.
 
 ## General
 
@@ -18,3 +21,7 @@ The following configuration options can be set on `ActiveModel::Serializer.confi
     Default: `'1.0'`.
   - `jsonapi_toplevel_meta`: Optional metadata. Not included if empty.
     Default: `{}`.
+
+## Hooks
+
+To run a hook when ActiveModelSerializers is loaded, use `ActiveSupport.on_load(:active_model_serializers) do end`

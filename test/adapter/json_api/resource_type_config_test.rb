@@ -33,11 +33,11 @@ module ActiveModel
           end
 
           def with_jsonapi_resource_type type
-            old_type = ActiveModel::Serializer.config.jsonapi_resource_type
-            ActiveModel::Serializer.config.jsonapi_resource_type = type
+            old_type = ActiveModelSerializers.config.jsonapi_resource_type
+            ActiveModelSerializers.config.jsonapi_resource_type = type
             yield
           ensure
-            ActiveModel::Serializer.config.jsonapi_resource_type = old_type
+            ActiveModelSerializers.config.jsonapi_resource_type = old_type
           end
 
           def test_config_plural

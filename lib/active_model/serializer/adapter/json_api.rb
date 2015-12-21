@@ -11,11 +11,11 @@ module ActiveModel
         # then extract to its own file and require it.
         module ApiObjects
           module JsonApi
-            ActiveModel::Serializer.config.jsonapi_version = '1.0'
-            ActiveModel::Serializer.config.jsonapi_toplevel_meta = {}
+            ActiveModelSerializers.config.jsonapi_version = '1.0'
+            ActiveModelSerializers.config.jsonapi_toplevel_meta = {}
             # Make JSON API top-level jsonapi member opt-in
             # ref: http://jsonapi.org/format/#document-top-level
-            ActiveModel::Serializer.config.jsonapi_include_toplevel_object = false
+            ActiveModelSerializers.config.jsonapi_include_toplevel_object = false
 
             module_function
 
@@ -24,15 +24,15 @@ module ActiveModel
             end
 
             def include_object?
-              ActiveModel::Serializer.config.jsonapi_include_toplevel_object
+              ActiveModelSerializers.config.jsonapi_include_toplevel_object
             end
 
             # TODO: see if we can cache this
             def object
               object = {
                 jsonapi: {
-                  version: ActiveModel::Serializer.config.jsonapi_version,
-                  meta: ActiveModel::Serializer.config.jsonapi_toplevel_meta
+                  version: ActiveModelSerializers.config.jsonapi_version,
+                  meta: ActiveModelSerializers.config.jsonapi_toplevel_meta
                 }
               }
               object[:jsonapi].reject! { |_, v| v.blank? }
@@ -114,7 +114,7 @@ module ActiveModel
 
         def resource_identifier_type_for(serializer)
           return serializer._type if serializer._type
-          if ActiveModel::Serializer.config.jsonapi_resource_type == :singular
+          if ActiveModelSerializers.config.jsonapi_resource_type == :singular
             serializer.object.class.model_name.singular
           else
             serializer.object.class.model_name.plural

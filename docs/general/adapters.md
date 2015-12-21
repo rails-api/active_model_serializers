@@ -1,9 +1,40 @@
+[Back to Guides](../README.md)
+
 # Adapters
 
-AMS works through two components: **serializers** and **adapters**.
-Serializers describe _which_ attributes and relationships should be serialized.
-Adapters describe _how_ attributes and relationships should be serialized.
-You can use one of the built-in adapters (```Attributes``` is the default one) or create one by yourself, but you won't need to implement an adapter unless you wish to use a new format or media type with AMS.
+ActiveModelSerializers offers the ability to configure which adapter
+to use both globally and/or when serializing (usually when rendering).
+
+The global adapter configuration is set on [`ActiveModelSerializers.config`](configuration_options.md).
+It should be set only once, preferably at initialization.
+
+For example:
+
+```ruby
+ActiveModelSerializers.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
+```
+
+or
+
+```ruby
+ActiveModelSerializers.config.adapter = :json_api
+```
+
+or
+
+```ruby
+ActiveModelSerializers.config.adapter = :json
+```
+
+The local adapter option is in the format `adapter: adapter`, where `adapter` is
+any of the same values as set globally.
+
+The configured adapter can be set as a symbol, class, or class name, as described in
+[Advanced adapter configuration](adapters.md#advanced-adapter-configuration).
+
+The `Attributes` adapter does not include a root key. It is just the serialized attributes.
+
+Use either the `JSON` or `JSON API` adapters if you want the response document to have a root key.
 
 ## Built in Adapters
 
@@ -14,48 +45,69 @@ Doesn't follow any specific convention.
 
 ### JSON
 
-It also generates a json response but always with a root key. The root key **can't be overridden**, and will be automatically defined accordingly to the objects being serialized.
+The response document always with a root key.
+
+The root key **can't be overridden**, and will be derived from the resource being serialized.
+
 Doesn't follow any specific convention.
 
 ### JSON API
 
-This adapter follows **version 1.0** of the format specified in
-[jsonapi.org/format](http://jsonapi.org/format). It will include the associated
-resources in the `"included"` member when the resource names are included in the
-`include` option.
+This adapter follows **version 1.0** of the [format specified](../jsonapi/schema.md) in
+[jsonapi.org/format](http://jsonapi.org/format).
+
+#### Included
+
+It will include the associated resources in the `"included"` member
+when the resource names are included in the `include` option.
+Including nested associated resources is also supported.
 
 ```ruby
-render @posts, include: ['authors', 'comments']
+  render json: @posts, include: ['author', 'comments', 'comments.author']
+  # or
+  render json: @posts, include: 'author,comments,comments.author'
 ```
 
-or
+In addition, two types of wildcards may be used:
+
+- `*` includes one level of associations.
+- `**` includes all recursively.
+
+These can be combined with other paths.
 
 ```ruby
-render @posts, include: 'authors,comments'
+  render json: @posts, include: '**' # or '*' for a single layer
 ```
 
-The format of the `include` option can be either a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes), an Array of Symbols and Hashes, or a mix of both.
+The format of the `include` option can be either:
 
-## Choosing an adapter
+- a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes).
+- an Array of Symbols and Hashes.
+- a mix of both.
 
-If you want to use a specify a default adapter, such as JsonApi, you can change this in an initializer:
+The following would render posts and include:
+
+- the author
+- the author's comments, and
+- every resource referenced by the author's comments (recursively).
+
+It could be combined, like above, with other paths in any combination desired.
 
 ```ruby
-ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
+  render json: @posts, include: 'author.comments.**'
 ```
 
-or
+##### Security Considerations
+
+Since the included options may come from the query params (i.e. user-controller):
 
 ```ruby
-ActiveModel::Serializer.config.adapter = :json_api
+  render json: @posts, include: params[:include]
 ```
 
-If you want to have a root key for each resource in your responses, you should use the Json or
-JsonApi adapters instead of the default Attributes:
+The user could pass in `include=**`.
 
-```ruby
-ActiveModel::Serializer.config.adapter = :json
-```
+We recommend filtering any user-supplied includes appropriately.
 
 ## Advanced adapter configuration
 
