@@ -2,7 +2,7 @@
 
 ## Test helpers
 
-AMS provides a `assert_serializer` method to be used on your controller tests to
+ActiveModelSerializers provides a `assert_serializer` method to be used on your controller tests to
 assert that a specific serializer was used.
 
 ```ruby
