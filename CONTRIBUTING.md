@@ -1,3 +1,5 @@
+First of all, **thank you**!
+
 ![Commit Strip
 http://www.commitstrip.com/en/2014/05/07/the-truth-behind-open-source-apps/](docs/how-open-source-maintained.jpg)
 
@@ -214,3 +216,5 @@ To run a single test suite
 Which can be further narrowed down to one test:
 
 `$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
+
+:heart: :sparkling_heart: :heart:

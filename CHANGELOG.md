@@ -226,6 +226,34 @@ Features:
 - [#653](https://github.com/rails-api/active_model_serializers/pull/653) Add "_test" suffix to JsonApi::HasManyTest filename. (@alexgenco)
 - [#631](https://github.com/rails-api/active_model_serializers/pull/631) Update build badge URL (@craiglittle)
 
+## 0.9.0.pre
+
+* The following methods were removed
+  - Model#active\_model\_serializer
+  - Serializer#include!
+  - Serializer#include?
+  - Serializer#attr\_disabled=
+  - Serializer#cache
+  - Serializer#perform\_caching
+  - Serializer#schema (needs more discussion)
+  - Serializer#attribute
+  - Serializer#include\_#{name}? (filter method added)
+  - Serializer#attributes (took a hash)
+
+* The following things were added
+  - Serializer#filter method
+  - CONFIG object
+
+* Remove support for ruby 1.8 versions.
+
+* Require rails >= 3.2.
+
+* Serializers for associations are being looked up in a parent serializer's namespace first. Same with controllers' namespaces.
+
+* Added a "prefix" option in case you want to use a different version of serializer.
+
+* Serializers default namespace can be set in `default_serializer_options` and inherited by associations.
+
 ## 0.08.x
 
 ### v0.8.3 (2014/12/10 14:45 +00:00)
