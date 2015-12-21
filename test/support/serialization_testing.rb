@@ -31,6 +31,14 @@ module SerializationTesting
     ActiveModel::Serializer.config.replace(old_config)
   end
 
+  def with_serializer_lookup_disabled
+    original_serializer_lookup = ActiveModelSerializers.config.serializer_lookup_enabled
+    ActiveModelSerializers.config.serializer_lookup_enabled = false
+    yield
+  ensure
+    ActiveModelSerializers.config.serializer_lookup_enabled = original_serializer_lookup
+  end
+
   def serializable(resource, options = {})
     ActiveModel::SerializableResource.new(resource, options)
   end

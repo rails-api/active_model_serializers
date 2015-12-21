@@ -10,6 +10,12 @@ module ActionController
     # Deprecated
     ADAPTER_OPTION_KEYS = ActiveModel::SerializableResource::ADAPTER_OPTION_KEYS
 
+    module ClassMethods
+      def serialization_scope(scope)
+        self._serialization_scope = scope
+      end
+    end
+
     included do
       class_attribute :_serialization_scope
       self._serialization_scope = :current_user
@@ -53,12 +59,6 @@ module ActionController
         options.fetch(:serialization_context) { options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(request) }
         serializable_resource = get_serializer(resource, options)
         super(serializable_resource, options)
-      end
-    end
-
-    module ClassMethods
-      def serialization_scope(scope)
-        self._serialization_scope = scope
       end
     end
   end

@@ -57,12 +57,19 @@ module ActiveModel
 
         def test_serializer_for_non_ams_serializer
           serializer = ActiveModel::Serializer.serializer_for(@tweet)
-          assert_nil(serializer)
+          assert_equal nil, serializer
         end
 
         def test_serializer_for_existing_serializer
           serializer = ActiveModel::Serializer.serializer_for(@profile)
           assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_for_existing_serializer_with_lookup_disabled
+          serializer = with_serializer_lookup_disabled do
+            ActiveModel::Serializer.serializer_for(@profile)
+          end
+          assert_equal nil, serializer
         end
 
         def test_serializer_for_not_existing_serializer
@@ -75,21 +82,51 @@ module ActiveModel
           assert_equal ProfileSerializer, serializer
         end
 
+        def test_serializer_inherited_serializer_with_lookup_disabled
+          serializer = with_serializer_lookup_disabled do
+            ActiveModel::Serializer.serializer_for(@my_profile)
+          end
+          assert_equal nil, serializer
+        end
+
         def test_serializer_custom_serializer
           serializer = ActiveModel::Serializer.serializer_for(@custom_profile)
+          assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_custom_serializer_with_lookup_disabled
+          serializer = with_serializer_lookup_disabled do
+            ActiveModel::Serializer.serializer_for(@custom_profile)
+          end
           assert_equal ProfileSerializer, serializer
         end
 
         def test_serializer_for_namespaced_resource
           post = ResourceNamespace::Post.new
           serializer = ActiveModel::Serializer.serializer_for(post)
-          assert_equal(ResourceNamespace::PostSerializer, serializer)
+          assert_equal ResourceNamespace::PostSerializer, serializer
+        end
+
+        def test_serializer_for_namespaced_resource_with_lookup_disabled
+          post = ResourceNamespace::Post.new
+          serializer = with_serializer_lookup_disabled do
+            ActiveModel::Serializer.serializer_for(post)
+          end
+          assert_equal nil, serializer
         end
 
         def test_serializer_for_nested_resource
           comment = ResourceNamespace::Comment.new
           serializer = ResourceNamespace::PostSerializer.serializer_for(comment)
-          assert_equal(ResourceNamespace::PostSerializer::CommentSerializer, serializer)
+          assert_equal ResourceNamespace::PostSerializer::CommentSerializer, serializer
+        end
+
+        def test_serializer_for_nested_resource_with_lookup_disabled
+          comment = ResourceNamespace::Comment.new
+          serializer = with_serializer_lookup_disabled do
+            ResourceNamespace::PostSerializer.serializer_for(comment)
+          end
+          assert_equal nil, serializer
         end
       end
     end
