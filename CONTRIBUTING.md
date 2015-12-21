@@ -9,7 +9,7 @@ http://www.commitstrip.com/en/2014/05/07/the-truth-behind-open-source-apps/](doc
 ## How can I help?
 
 - [Filing an issue](CONTRIBUTING.md#filing-an-issue)
-- [Writing code and comments](CONTRIBUTING#writing-code-and-comments)
+- [Writing code and comments](CONTRIBUTING.md#writing-code-and-comments)
 
 ### Filing an issue
 
@@ -100,6 +100,10 @@ And please don't forget to stay involved in the issue until it is closed! Thanks
 
 - [Improve amount of code exercised by tests](https://codeclimate.com/github/rails-api/active_model_serializers/coverage?sort=covered_percent&sort_direction=asc).
 
+- [Fix RuboCop (Style) TODOS](https://github.com/rails-api/active_model_serializers/blob/master/.rubocop_todo.yml).
+  - Delete and offsense, run `rake rubocop` (or possibly `rake rubocop:auto_correct`),
+    and [submit a PR](CONTRIBUTING.md#submitting-a-pull-request-pr).
+
 - We are also encouraging comments to substantial changes (larger than bugfixes and simple features) under an
   "RFC" (Request for Comments) process before we start active development.
    Look for the [**RFC**](https://github.com/rails-api/active_model_serializers/labels/RFC) label.
@@ -118,7 +122,7 @@ To fetch & test the library for development, do:
 1. `git clone https://github.com/{whoami}/active_model_serializers.git`
 1. `cd active_model_serializers`
 1. `bundle`
-  - To test against a particular rails version, 4.0 is usually the most buggy, set then
+  - To test against a particular rails version-- 4.0 is usually the most buggy-- set then
       RAILS_VERSION environment variable as described in the [.travis.yml](.travis.yml).
       e.g. `export RAILS_VERSION=4.0`.
 1. Create your PR branch (`git checkout -b my-helpful-pr`)
@@ -137,7 +141,7 @@ To fetch & test the library for development, do:
   - Extra Credit: [Confirm it runs and tests pass on the rubies specified in the travis
     config](.travis.yml). A maintainer will otherwise confirm it runs on these.
 
-1. *Bonus Points** Update [CHANGELOG.md](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
+1. *Bonus Points* Update [CHANGELOG.md](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
   with a brief description of any breaking changes, fixes, features, or
   miscellaneous changes under the proper version section.
 1. Iterate on feedback given by the community (fix syntax, modify bits of code, add
