@@ -13,6 +13,7 @@ module ActiveModelSerializers
   autoload :Model
   autoload :Callbacks
   autoload :Logging
+  autoload :Test
 
   module_function
 
@@ -51,7 +52,6 @@ end
 require 'active_model/serializer'
 require 'active_model/serializable_resource'
 require 'active_model/serializer/version'
-require 'active_model_serializers/test/serializer'
 
 require 'action_controller/serialization'
 ActiveSupport.on_load(:action_controller) do

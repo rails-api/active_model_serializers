@@ -20,6 +20,8 @@ module ActiveModel
       require 'generators/serializer/resource_override'
     end
 
-    ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Serializer)
+    if Rails.env.test?
+      ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Serializer)
+    end
   end
 end

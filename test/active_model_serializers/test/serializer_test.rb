@@ -4,6 +4,8 @@ require 'rails-controller-testing' if Rails::VERSION::MAJOR >= 5
 module ActiveModelSerializers
   module Test
     class SerializerTest < ActionController::TestCase
+      include ActiveModelSerializers::Test::Serializer
+
       class MyController < ActionController::Base
         def render_using_serializer
           render json: Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
