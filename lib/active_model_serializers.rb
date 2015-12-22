@@ -13,6 +13,7 @@ module ActiveModelSerializers
   autoload :Model
   autoload :Callbacks
   autoload :Logging
+  autoload :Test
 
   module_function
 
