@@ -32,8 +32,6 @@ matrix:
   include:
   - rvm: 2.2
     env: CAPTURE_STDERR=true
-  - rvm: jruby-19mode
-    env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
   allow_failures:
     - rvm: ruby-head
   fast_finish: true
