@@ -26,26 +26,12 @@ module ActiveModel
     # So you can inspect reflections in your Adapters.
     #
     Reflection = Struct.new(:name, :options, :block) do
-      delegate :call, to: :reader
-
-      attr_reader :reader
-
-      def initialize(*)
-        super
-        @reader = self.class.build_reader(name, block)
-      end
-
       # @api private
       def value(instance)
-        call(instance)
-      end
-
-      # @api private
-      def self.build_reader(name, block)
         if block
-          ->(instance) { instance.read_attribute_for_serialization(name).instance_eval(&block) }
+          instance.read_attribute_for_serialization(name).instance_eval(&block)
         else
-          ->(instance) { instance.read_attribute_for_serialization(name) }
+          instance.read_attribute_for_serialization(name)
         end
       end
 
