@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'rails-controller-testing' if Rails::VERSION::MAJOR >= 5
 
 module ActiveModelSerializers
   module Test
@@ -7,17 +6,19 @@ module ActiveModelSerializers
       include ActiveModelSerializers::Test::Serializer
 
       class MyController < ActionController::Base
+        TEMPLATE_NAME = 'template'
         def render_using_serializer
           render json: Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
         end
 
-        def render_text
-          render text: 'ok'
+        # For Rails4.0
+        def render_some_text
+          Rails.version > '4.1' ? render(plain: 'ok') : render(text: 'ok')
         end
 
-        def render_template
+        def render_a_template
           prepend_view_path './test/fixtures'
-          render template: 'template'
+          render template: TEMPLATE_NAME
         end
       end
 
@@ -44,7 +45,7 @@ module ActiveModelSerializers
       end
 
       def test_supports_specifying_serializers_with_a_nil
-        get :render_text
+        get :render_some_text
         assert_serializer nil
       end
 
@@ -65,8 +66,20 @@ module ActiveModelSerializers
       end
 
       def test_does_not_overwrite_notification_subscriptions
-        get :render_template
-        assert_template 'template'
+        payloads = []
+        event_name = '!render_template.action_view'
+        ActiveSupport::Notifications.subscribe(event_name) do |_name, _start, _finish, _id, payload|
+          payloads << payload
+        end
+
+        get :render_a_template
+
+        assert_equal 1, payloads.size, 'Only expected one template rendering to be registered'
+        payload = payloads.first
+        assert_equal MyController::TEMPLATE_NAME, payload[:virtual_path]
+        assert_match %r{test/fixtures/#{MyController::TEMPLATE_NAME}.html.erb}, payload[:identifier]
+      ensure
+        ActiveSupport::Notifications.unsubscribe(event_name)
       end
     end
   end
