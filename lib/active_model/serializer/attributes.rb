@@ -2,6 +2,46 @@ module ActiveModel
   class Serializer
     module Attributes
       # @api private
+      module AttrNames
+        def self.set_name_cache(name, value)
+          const_name = "ATTR_#{name}"
+          unless const_defined? const_name
+            const_set const_name, value.duplicable? ? value.dup.freeze : value
+          end
+        end
+      end
+
+      # @api private
+      class Cache
+        def initialize
+          @module = Module.new
+          @method_cache = ThreadSafe::Cache.new
+        end
+
+        def [](name)
+          @method_cache.compute_if_absent(name) do
+            safe_name = name.to_s.unpack('h*').first
+            temp_method = "__temp__#{safe_name}"
+            ActiveModel::Serializer::Attributes::AttrNames.set_name_cache safe_name, name
+            @module.module_eval method_body(temp_method, safe_name), __FILE__, __LINE__
+            @module.instance_method temp_method
+          end
+        end
+
+        private
+
+        def method_body(method_name, const_name)
+          <<-EOMETHOD
+          def #{method_name}(instance)
+            name = ::ActiveModel::Serializer::Attributes::AttrNames::ATTR_#{const_name}
+            instance.read_attribute_for_serialization(name)
+          end
+          EOMETHOD
+        end
+      end
+      # @api private
+      MethodCache = Cache.new
+      # @api private
       class Attribute
         delegate :call, to: :reader
 
@@ -24,7 +64,7 @@ module ActiveModel
       class AttributeReader < Attribute
         def initialize(name)
           super(name)
-          @reader = ->(instance) { instance.read_attribute_for_serialization(name) }
+          define_method(:call, MethodCache[name])
         end
       end
       # @api private
