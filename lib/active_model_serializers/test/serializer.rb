@@ -6,6 +6,7 @@ module ActiveModelSerializers
 
       included do
         setup :setup_serialization_subscriptions
+        teardown :teardown_serialization_subscriptions
       end
 
       # Asserts that the request was rendered with the appropriate serializers.
@@ -41,6 +42,7 @@ module ActiveModelSerializers
 
         def initialize
           @serializers = Set.new
+          @_subscribers = []
         end
 
         def message=(message)
@@ -62,9 +64,15 @@ module ActiveModelSerializers
         end
 
         def subscribe
-          ActiveSupport::Notifications.subscribe(event_name) do |_name, _start, _finish, _id, payload|
+          @_subscribers << ActiveSupport::Notifications.subscribe(event_name) do |_name, _start, _finish, _id, payload|
             serializer = payload[:serializer].name
             serializers << serializer
+          end
+        end
+
+        def unsubscribe
+          @_subscribers.each do |subscriber|
+            ActiveSupport::Notifications.unsubscribe(subscriber)
           end
         end
 
@@ -107,6 +115,10 @@ module ActiveModelSerializers
       def setup_serialization_subscriptions
         @assert_serializer = AssertSerializer.new
         @assert_serializer.subscribe
+      end
+
+      def teardown_serialization_subscriptions
+        @assert_serializer.unsubscribe
       end
     end
   end
