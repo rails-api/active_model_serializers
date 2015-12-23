@@ -1,3 +1,4 @@
+require 'set'
 module ActiveModelSerializers
   module Test
     module Serializer
@@ -35,15 +36,16 @@ module ActiveModelSerializers
       end
 
       class AssertSerializer
+        EVENT_NAME = 'render.active_model_serializers'
         attr_reader :serializers, :message
         attr_accessor :response, :expectation
 
         def initialize
-          @serializers = []
+          @serializers = Set.new
         end
 
         def message=(message)
-          @message = message || "expecting <#{expectation.inspect}> but rendering with <#{serializers}>"
+          @message = message || "expecting <#{expectation.inspect}> but rendering with <#{serializers.to_a}>"
         end
 
         def matches?
@@ -51,18 +53,12 @@ module ActiveModelSerializers
           response.body
 
           case expectation
-          when a_serializer?
-            matches_class?
-          when Symbol
-            matches_symbol?
-          when String
-            matches_string?
-          when Regexp
-            matches_regexp?
-          when NilClass
-            matches_nil?
-          else
-            fail ArgumentError, 'assert_serializer only accepts a String, Symbol, Regexp, ActiveModel::Serializer, or nil'
+          when a_serializer? then matches_class?
+          when Symbol        then matches_symbol?
+          when String        then matches_string?
+          when Regexp        then matches_regexp?
+          when NilClass      then matches_nil?
+          else fail ArgumentError, 'assert_serializer only accepts a String, Symbol, Regexp, ActiveModel::Serializer, or nil'
           end
         end
 
@@ -99,7 +95,7 @@ module ActiveModelSerializers
         end
 
         def matches_nil?
-          serializers.blank?
+          serializers.empty?
         end
 
         def a_serializer?
@@ -107,7 +103,7 @@ module ActiveModelSerializers
         end
 
         def event_name
-          'render.active_model_serializers'
+          EVENT_NAME
         end
       end
 
