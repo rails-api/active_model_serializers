@@ -36,7 +36,6 @@ module ActiveModelSerializers
       end
 
       class AssertSerializer
-        EVENT_NAME = 'render.active_model_serializers'
         attr_reader :serializers, :message
         attr_accessor :response, :expectation
 
@@ -99,7 +98,7 @@ module ActiveModelSerializers
         end
 
         def event_name
-          EVENT_NAME
+          ::ActiveModelSerializers::Logging::RENDER_EVENT
         end
       end
 
