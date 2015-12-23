@@ -69,10 +69,6 @@ module ActiveModelSerializers
           end
         end
 
-        def unsubscribe
-          ActiveSupport::Notifications.unsubscribe(event_name)
-        end
-
         private
 
         def matches_class?
