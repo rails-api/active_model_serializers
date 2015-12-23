@@ -47,6 +47,15 @@ module ActiveModel
             assert_equal(expected, hash[:links])
           end
 
+          def test_nil_toplevel_links
+            hash = ActiveModel::SerializableResource.new(
+              @post,
+              adapter: :json_api,
+              links: nil
+            ).serializable_hash
+            assert_equal(nil, hash[:links])
+          end
+
           def test_resource_links
             hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {

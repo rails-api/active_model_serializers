@@ -47,12 +47,11 @@ module ActionController
 
         def render_array_using_implicit_serializer_and_links
           with_adapter ActiveModel::Serializer::Adapter::JsonApi do
-
             @profiles = [
-              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+              Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
             ]
 
-            render json: @profiles, links: { self: "http://example.com/api/profiles/1" }
+            render json: @profiles, links: { self: 'http://example.com/api/profiles/1' }
           end
         end
 
@@ -272,15 +271,15 @@ module ActionController
           data: [
             {
               id: assigns(:profiles).first.id.to_s,
-              type: "profiles",
+              type: 'profiles',
               attributes: {
-                name: "Name 1",
-                description: "Description 1"
+                name: 'Name 1',
+                description: 'Description 1'
               }
             }
           ],
           links: {
-            self: "http://example.com/api/profiles/1"
+            self: 'http://example.com/api/profiles/1'
           }
         }
 
