@@ -34,4 +34,5 @@ matrix:
     env: CAPTURE_STDERR=true
   allow_failures:
     - rvm: ruby-head
+    - rvm: rbx-2
   fast_finish: true
