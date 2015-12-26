@@ -111,6 +111,10 @@ e.g.
 class UserProfileSerializer < ActiveModel::Serializer
   type 'profile'
 end
+
+class UserSerializer < ActiveModel::Serializer
+  type { object.type }
+end
 ```
 
 #### ::link
