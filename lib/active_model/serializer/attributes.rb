@@ -5,28 +5,19 @@ module ActiveModel
 
       included do
         with_options instance_writer: false, instance_reader: false do |serializer|
-          serializer.class_attribute :_attribute_procs # @api private : maps attribute key names to names to names of implementing methods, @see #attribute
-          self._attribute_procs ||= {}
-          serializer.class_attribute :_attribute_keys # @api private : maps attribute names to keys, @see #attribute
-          self._attribute_keys ||= {}
+          serializer.class_attribute :_attributes_data # @api private
+          self._attributes_data ||= {}
         end
+
+        autoload :Attribute
 
         # Return the +attributes+ of +object+ as presented
         # by the serializer.
         def attributes(requested_attrs = nil, reload = false)
           @attributes = nil if reload
-          @attributes ||= self.class._attribute_keys.each_with_object({}) do |(name, key), hash|
-            next unless requested_attrs.nil? || requested_attrs.include?(key)
-            hash[key] = _attribute_value(name)
-          end
-        end
-
-        # @api private
-        def _attribute_value(name)
-          if self.class._attribute_procs[name]
-            instance_eval(&self.class._attribute_procs[name])
-          else
-            read_attribute_for_serialization(name)
+          @attributes ||= self.class._attributes_data.values.each_with_object({}) do |attr, hash|
+            next unless requested_attrs.nil? || requested_attrs.include?(attr.key)
+            hash[attr.key] = attr.value(self)
           end
         end
       end
@@ -34,8 +25,7 @@ module ActiveModel
       module ClassMethods
         def inherited(base)
           super
-          base._attribute_procs = _attribute_procs.dup
-          base._attribute_keys = _attribute_keys.dup
+          base._attributes_data = _attributes_data.dup
         end
 
         # @example
@@ -62,15 +52,15 @@ module ActiveModel
         #       object.edits.last(5)
         #     end
         def attribute(attr, options = {}, &block)
-          _attribute_keys[attr] = options.fetch(:key, attr)
-          _attribute_procs[attr] = block
+          key = options.fetch(:key, attr)
+          _attributes_data[attr] = Attribute.new(attr, key, block)
         end
 
         # @api private
         # keys of attributes
         # @see Serializer::attribute
         def _attributes
-          _attribute_keys.values
+          _attributes_data.values.map(&:key)
         end
 
         # @api private
@@ -78,10 +68,10 @@ module ActiveModel
         # @see Serializer::attribute
         # @see Adapter::FragmentCache#fragment_serializer
         def _attributes_keys
-          _attribute_keys
-            .each_with_object({}) do |(name, key), hash|
-              next if key == name
-              hash[name] = { key: key }
+          _attributes_data.values
+            .each_with_object({}) do |attr, hash|
+              next if attr.key == attr.name
+              hash[attr.name] = { key: attr.key }
             end
         end
       end
