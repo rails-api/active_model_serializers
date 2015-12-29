@@ -3,29 +3,39 @@ module ActiveModel
     module Adapter
       class JsonApi
         class Link
-          def initialize(serializer)
+          def initialize(serializer, value)
             @object = serializer.object
             @scope = serializer.scope
+
+            # Use the return value of the block unless it is nil.
+            if value.respond_to?(:call)
+              @value = instance_eval(&value)
+            else
+              @value = value
+            end
           end
 
           def href(value)
-            self._href = value
+            @href = value
+            nil
           end
 
           def meta(value)
-            self._meta = value
+            @meta = value
+            nil
           end
 
-          def to_hash
-            hash = { href: _href }
-            hash.merge!(meta: _meta) if _meta
+          def as_json
+            return @value if @value
+
+            hash = { href: @href }
+            hash.merge!(meta: @meta) if @meta
 
             hash
           end
 
           protected
 
-          attr_accessor :_href, :_meta
           attr_reader :object, :scope
         end
       end

@@ -16,6 +16,7 @@ Breaking changes:
 
 Features:
 
+- [#1406](https://github.com/rails-api/active_model_serializers/pull/1406) Allow for custom dynamic values in JSON API links (@beauby)
 - [#1270](https://github.com/rails-api/active_model_serializers/pull/1270) Adds `assert_response_schema` test helper (@maurogeorge)
 - [#1099](https://github.com/rails-api/active_model_serializers/pull/1099) Adds `assert_serializer` test helper (@maurogeorge)
 - [#1403](https://github.com/rails-api/active_model_serializers/pull/1403) Add support for if/unless on attributes/associations (@beauby)
