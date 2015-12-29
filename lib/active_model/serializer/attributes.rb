@@ -15,9 +15,9 @@ module ActiveModel
         # by the serializer.
         def attributes(requested_attrs = nil, reload = false)
           @attributes = nil if reload
-          @attributes ||= self.class._attributes_data.values.each_with_object({}) do |attr, hash|
-            next unless requested_attrs.nil? || requested_attrs.include?(attr.key)
-            hash[attr.key] = attr.value(self)
+          @attributes ||= self.class._attributes_data.each_with_object({}) do |(key, attr), hash|
+            next unless requested_attrs.nil? || requested_attrs.include?(key)
+            hash[key] = attr.value(self)
           end
         end
       end
@@ -53,14 +53,14 @@ module ActiveModel
         #     end
         def attribute(attr, options = {}, &block)
           key = options.fetch(:key, attr)
-          _attributes_data[attr] = Attribute.new(attr, key, block)
+          _attributes_data[key] = Attribute.new(attr, block)
         end
 
         # @api private
         # keys of attributes
         # @see Serializer::attribute
         def _attributes
-          _attributes_data.values.map(&:key)
+          _attributes_data.keys
         end
 
         # @api private
@@ -68,10 +68,10 @@ module ActiveModel
         # @see Serializer::attribute
         # @see Adapter::FragmentCache#fragment_serializer
         def _attributes_keys
-          _attributes_data.values
-            .each_with_object({}) do |attr, hash|
-              next if attr.key == attr.name
-              hash[attr.name] = { key: attr.key }
+          _attributes_data
+            .each_with_object({}) do |(key, attr), hash|
+              next if key == attr.name
+              hash[attr.name] = { key: key }
             end
         end
       end

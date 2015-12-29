@@ -1,6 +1,6 @@
 module ActiveModel
   class Serializer
-    Attribute = Struct.new(:name, :key, :block) do
+    Attribute = Struct.new(:name, :block) do
       def value(serializer)
         if block
           serializer.instance_eval(&block)
