@@ -47,7 +47,7 @@ The `has_many`, `has_one`, and `belongs_to` declarations describe relationships 
 resources. By default, when you serialize a `Post`, you will get its `Comments`
 as well.
 
-For more information, see [Serializers](docs/general/serializers.md).
+For more information, see [Serializers](/docs/general/serializers.md).
 
 ### Namespaced Models
 
