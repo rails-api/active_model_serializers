@@ -9,6 +9,7 @@ module ActiveModel
           self._attributes_data ||= {}
         end
 
+        extend ActiveSupport::Autoload
         autoload :Attribute
 
         # Return the +attributes+ of +object+ as presented
