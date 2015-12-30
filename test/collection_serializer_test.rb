@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class CollectionSerializerTest < Minitest::Test
+    class CollectionSerializerTest < ActiveSupport::TestCase
       def setup
         @comment = Comment.new
         @post = Post.new

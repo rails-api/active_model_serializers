@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class Json
-        class BelongsToTest < Minitest::Test
+        class BelongsToTest < ActiveSupport::TestCase
           def setup
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')
             @anonymous_post = Post.new(id: 43, title: 'Hello!!', body: 'Hello, world!!')

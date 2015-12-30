@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class FieldsTest < Minitest::Test
+        class FieldsTest < ActiveSupport::TestCase
           Post = Class.new(::Model)
           class PostSerializer < ActiveModel::Serializer
             type 'posts'

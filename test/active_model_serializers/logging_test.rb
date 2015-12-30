@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class LoggingTest < Minitest::Test
+    class LoggingTest < ActiveSupport::TestCase
       class TestLogger < ActiveSupport::Logger
         def initialize
           @file = StringIO.new

@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class RootTest < Minitest::Test
+    class RootTest < ActiveSupport::TestCase
       def setup
         @virtual_value = VirtualValue.new(id: 1)
       end

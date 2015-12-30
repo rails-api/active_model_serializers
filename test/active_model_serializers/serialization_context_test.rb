@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ActiveModelSerializers::SerializationContextTest < Minitest::Test
+class ActiveModelSerializers::SerializationContextTest < ActiveSupport::TestCase
   def create_context
     request = Minitest::Mock.new
     request.expect(:original_url, 'original_url')

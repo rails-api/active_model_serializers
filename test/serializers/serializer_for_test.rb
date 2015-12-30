@@ -2,8 +2,8 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class SerializerForTest < Minitest::Test
-      class CollectionSerializerTest < Minitest::Test
+    class SerializerForTest < ActiveSupport::TestCase
+      class CollectionSerializerTest < ActiveSupport::TestCase
         def setup
           @array = [1, 2, 3]
           @previous_collection_serializer = ActiveModelSerializers.config.collection_serializer
@@ -26,7 +26,7 @@ module ActiveModel
         end
       end
 
-      class SerializerTest < Minitest::Test
+      class SerializerTest < ActiveSupport::TestCase
         module ResourceNamespace
           Post    = Class.new(::Model)
           Comment = Class.new(::Model)

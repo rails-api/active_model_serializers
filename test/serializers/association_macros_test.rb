@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class AssociationMacrosTest < Minitest::Test
+    class AssociationMacrosTest < ActiveSupport::TestCase
       AuthorSummarySerializer = Class.new
       class AssociationsTestSerializer < Serializer
         belongs_to :author, serializer: AuthorSummarySerializer

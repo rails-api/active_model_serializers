@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PoroTest < Minitest::Test
+class PoroTest < ActiveSupport::TestCase
   include ActiveModel::Serializer::Lint::Tests
 
   def setup

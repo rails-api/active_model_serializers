@@ -8,7 +8,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class PaginationLinksTest < Minitest::Test
+        class PaginationLinksTest < ActiveSupport::TestCase
           URI = 'http://example.com'
 
           def setup

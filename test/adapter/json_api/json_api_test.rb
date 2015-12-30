@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     module Adapter
-      class JsonApiTest < Minitest::Test
+      class JsonApiTest < ActiveSupport::TestCase
         def setup
           ActionController::Base.cache_store.clear
           @author = Author.new(id: 1, name: 'Steve K.')

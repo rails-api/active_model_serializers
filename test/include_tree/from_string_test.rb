@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class IncludeTree
-      class FromStringTest < Minitest::Test
+      class FromStringTest < ActiveSupport::TestCase
         def test_single_string
           input = 'author'
           actual = ActiveModel::Serializer::IncludeTree.from_string(input)

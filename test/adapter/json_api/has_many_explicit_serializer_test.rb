@@ -5,7 +5,7 @@ module ActiveModel
     module Adapter
       class JsonApi
         # Test 'has_many :assocs, serializer: AssocXSerializer'
-        class HasManyExplicitSerializerTest < Minitest::Test
+        class HasManyExplicitSerializerTest < ActiveSupport::TestCase
           def setup
             @post = Post.new(title: 'New Post', body: 'Body')
             @author = Author.new(name: 'Jane Blogger')
