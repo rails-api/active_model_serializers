@@ -35,6 +35,18 @@ module ActiveModel
         end
       end
 
+      # @api private
+      def included?(serializer)
+        case condition_type
+        when :if
+          serializer.public_send(condition)
+        when :unless
+          !serializer.public_send(condition)
+        else
+          true
+        end
+      end
+
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -78,6 +90,20 @@ module ActiveModel
       end
 
       private
+
+      def condition_type
+        if options.key?(:if)
+          :if
+        elsif options.key?(:unless)
+          :unless
+        else
+          :none
+        end
+      end
+
+      def condition
+        options[condition_type]
+      end
 
       def serializer_options(subject, parent_serializer_options, reflection_options)
         serializer = reflection_options.fetch(:serializer, nil)

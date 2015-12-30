@@ -16,6 +16,7 @@ Breaking changes:
 
 Features:
 
+- [#1403](https://github.com/rails-api/active_model_serializers/pull/1403) Add support for if/unless on attributes/associations (@beauby)
 - [#1248](https://github.com/rails-api/active_model_serializers/pull/1248) Experimental: Add support for JSON API deserialization (@beauby)
 - [#1378](https://github.com/rails-api/active_model_serializers/pull/1378) Change association blocks
   to be evaluated in *serializer* scope, rather than *association* scope. (@bf4)
