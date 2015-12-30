@@ -17,6 +17,7 @@ module ActiveModel
         def attributes(requested_attrs = nil, reload = false)
           @attributes = nil if reload
           @attributes ||= self.class._attributes_data.each_with_object({}) do |(key, attr), hash|
+            next unless attr.included?(self)
             next unless requested_attrs.nil? || requested_attrs.include?(key)
             hash[key] = attr.value(self)
           end
@@ -54,7 +55,7 @@ module ActiveModel
         #     end
         def attribute(attr, options = {}, &block)
           key = options.fetch(:key, attr)
-          _attributes_data[key] = Attribute.new(attr, block)
+          _attributes_data[key] = Attribute.new(attr, options, block)
         end
 
         # @api private
