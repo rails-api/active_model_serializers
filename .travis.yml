@@ -33,8 +33,8 @@ matrix:
   include:
   - rvm: 2.2
     env: CAPTURE_STDERR=true
-  - rvm: jruby-9000
-    env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
+  - rvm: jruby-9.0.4.0
+    env: JRUBY_OPTS='-Xcompat.version=2.0 --server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
   allow_failures:
     - rvm: ruby-head
     - rvm: rbx-2
