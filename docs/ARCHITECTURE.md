@@ -15,7 +15,7 @@ and, if there is no serializer, primitives.
 The **`ActiveModel::Adapter`** describes the structure of the JSON document generated from a
 serializer. For example, the `Attributes` example represents each serializer as its
 unmodified attributes.  The `JsonApi` adapter represents the serializer as a [JSON
-API](jsonapi.org/) document.
+API](http://jsonapi.org/) document.
 
 The **`ActiveModel::SerializableResource`** acts to coordinate the serializer(s) and adapter
 to an object that responds to `to_json`, and `as_json`.  It is used in the controller to
