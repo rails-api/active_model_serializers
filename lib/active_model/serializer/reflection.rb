@@ -1,18 +1,24 @@
+require 'active_model/serializer/field'
+
 module ActiveModel
   class Serializer
     # Holds all the meta-data about an association as it was specified in the
     # ActiveModel::Serializer class.
     #
     # @example
-    #  class PostSerializer < ActiveModel::Serializer
+    #   class PostSerializer < ActiveModel::Serializer
     #     has_one :author, serializer: AuthorSerializer
     #     has_many :comments
     #     has_many :comments, key: :last_comments do
     #       object.comments.last(1)
     #     end
-    #  end
+    #     has_many :secret_meta_data, if: :is_admin?
     #
-    #  Notice that the association block is evaluated in the context of the serializer.
+    #     def is_admin?
+    #       current_user.admin?
+    #     end
+    #   end
+    #
     #  Specifically, the association 'comments' is evaluated two different ways:
     #  1) as 'comments' and named 'comments'.
     #  2) as 'object.comments.last(1)' and named 'last_comments'.
@@ -21,32 +27,13 @@ module ActiveModel
     #    # [
     #    #   HasOneReflection.new(:author, serializer: AuthorSerializer),
     #    #   HasManyReflection.new(:comments)
+    #    #   HasManyReflection.new(:comments, { key: :last_comments }, #<Block>)
+    #    #   HasManyReflection.new(:secret_meta_data, { if: :is_admin? })
     #    # ]
     #
     # So you can inspect reflections in your Adapters.
     #
-    Reflection = Struct.new(:name, :options, :block) do
-      # @api private
-      def value(instance)
-        if block
-          instance.instance_eval(&block)
-        else
-          instance.read_attribute_for_serialization(name)
-        end
-      end
-
-      # @api private
-      def included?(serializer)
-        case condition_type
-        when :if
-          serializer.public_send(condition)
-        when :unless
-          !serializer.public_send(condition)
-        else
-          true
-        end
-      end
-
+    class Reflection < Field
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -90,20 +77,6 @@ module ActiveModel
       end
 
       private
-
-      def condition_type
-        if options.key?(:if)
-          :if
-        elsif options.key?(:unless)
-          :unless
-        else
-          :none
-        end
-      end
-
-      def condition
-        options[condition_type]
-      end
 
       def serializer_options(subject, parent_serializer_options, reflection_options)
         serializer = reflection_options.fetch(:serializer, nil)

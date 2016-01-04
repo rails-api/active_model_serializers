@@ -1,40 +1,25 @@
+require 'active_model/serializer/field'
+
 module ActiveModel
   class Serializer
-    Attribute = Struct.new(:name, :options, :block) do
-      def value(serializer)
-        if block
-          serializer.instance_eval(&block)
-        else
-          serializer.read_attribute_for_serialization(name)
-        end
-      end
-
-      def included?(serializer)
-        case condition
-        when :if
-          serializer.public_send(condition)
-        when :unless
-          !serializer.public_send(condition)
-        else
-          true
-        end
-      end
-
-      private
-
-      def condition_type
-        if options.key?(:if)
-          :if
-        elsif options.key?(:unless)
-          :unless
-        else
-          :none
-        end
-      end
-
-      def condition
-        options[condition_type]
-      end
+    # Holds all the meta-data about an attribute as it was specified in the
+    # ActiveModel::Serializer class.
+    #
+    # @example
+    #   class PostSerializer < ActiveModel::Serializer
+    #     attribute :content
+    #     attribute :name, key: :title
+    #     attribute :email, key: :author_email, if: :user_logged_in?
+    #     attribute :preview do
+    #       truncate(object.content)
+    #     end
+    #
+    #     def user_logged_in?
+    #       current_user.logged_in?
+    #     end
+    #   end
+    #
+    class Attribute < Field
     end
   end
 end
