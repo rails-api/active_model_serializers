@@ -8,14 +8,14 @@ module ActiveModel
     #     has_one :author, serializer: AuthorSerializer
     #     has_many :comments
     #     has_many :comments, key: :last_comments do
-    #       last(1)
+    #       object.comments.last(1)
     #     end
     #  end
     #
-    #  Notice that the association block is evaluated in the context of the association.
+    #  Notice that the association block is evaluated in the context of the serializer.
     #  Specifically, the association 'comments' is evaluated two different ways:
     #  1) as 'comments' and named 'comments'.
-    #  2) as 'comments.last(1)' and named 'last_comments'.
+    #  2) as 'object.comments.last(1)' and named 'last_comments'.
     #
     #  PostSerializer._reflections #=>
     #    # [
@@ -29,7 +29,7 @@ module ActiveModel
       # @api private
       def value(instance)
         if block
-          instance.read_attribute_for_serialization(name).instance_eval(&block)
+          instance.instance_eval(&block)
         else
           instance.read_attribute_for_serialization(name)
         end

@@ -16,6 +16,11 @@ Breaking changes:
 
 Features:
 
+- [#1378](https://github.com/rails-api/active_model_serializers/pull/1378) Change association blocks
+  to be evaluated in *serializer* scope, rather than *association* scope. (@bf4)
+    * Syntax changes from e.g.
+      `has_many :titles do customers.pluck(:title) end` (in #1356) to
+      `has_many :titles do object.customers.pluck(:title) end`
 - [#1356](https://github.com/rails-api/active_model_serializers/pull/1356) Add inline syntax for
   attributes and associations (@bf4 @beauby @noahsilas)
   * Allows defining attributes so that they don't conflict with existing methods. e.g. `attribute
