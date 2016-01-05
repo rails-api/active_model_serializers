@@ -2,6 +2,15 @@
 
 ### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.3...0-9-stable)
 
+- [#752](https://github.com/rails-api/active_model_serializers/pull/752) Tiny improvement of README 0-9-stable (@basiam)
+- [#749](https://github.com/rails-api/active_model_serializers/pull/749) remove trailing whitespace (@shwoodard)
+- [#717](https://github.com/rails-api/active_model_serializers/pull/717) fixed issue with rendering Hash which appears in rails 4.2.0.beta4 (@kurko, @greshny)
+- [#790](https://github.com/rails-api/active_model_serializers/pull/790) pass context to ArraySerializer (@lanej)
+- [#797](https://github.com/rails-api/active_model_serializers/pull/797) Fix and test for #490 (@afn)
+- [#813](https://github.com/rails-api/active_model_serializers/pull/813) Allow to define custom serializer for given class (@jtomaszewski)
+- [#841](https://github.com/rails-api/active_model_serializers/pull/841) Fix issue with embedding multiple associations under the same root key (@antstorm)
+- [#748](https://github.com/rails-api/active_model_serializers/pull/748) Propagate serialization_options across associations (@raphaelpereira)
+
 ### [v0.9.3 (2015/01/21 20:29 +00:00)](https://github.com/rails-api/active_model_serializers/compare/v0.9.2...v0.9.3)
 
 Features:
