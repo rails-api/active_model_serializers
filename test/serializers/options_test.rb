@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class OptionsTest < Minitest::Test
+    class OptionsTest < ActiveSupport::TestCase
       def setup
         @profile = Profile.new(name: 'Name 1', description: 'Description 1')
       end

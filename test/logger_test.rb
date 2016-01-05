@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ActiveModelSerializers::LoggerTest < Minitest::Test
+class ActiveModelSerializers::LoggerTest < ActiveSupport::TestCase
   def test_logger_is_set_to_action_controller_logger_when_initializer_runs
     assert_equal $action_controller_logger, ActionController::Base.logger # rubocop:disable Style/GlobalVars
   end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ActiveRecordTest < Minitest::Test
+class ActiveRecordTest < ActiveSupport::TestCase
   include ActiveModel::Serializer::Lint::Tests
 
   def setup

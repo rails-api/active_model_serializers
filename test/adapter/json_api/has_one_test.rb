@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class HasOneTest < Minitest::Test
+        class HasOneTest < ActiveSupport::TestCase
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
             @bio = Bio.new(id: 43, content: 'AMS Contributor')

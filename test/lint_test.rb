@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class LintTest < Minitest::Test
+    class LintTest < ActiveSupport::TestCase
       include ActiveModel::Serializer::Lint::Tests
 
       class CompliantResource

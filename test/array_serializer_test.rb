@@ -21,7 +21,7 @@ module ActiveModel
         end
       end
     else
-      class ArraySerializerTest < Minitest::Test
+      class ArraySerializerTest < ActiveSupport::TestCase
         extend ActiveSupport::Testing::Stream
         def test_json_key_with_root_warns_when_using_array_serializer
           stderr = (capture(:stderr) do

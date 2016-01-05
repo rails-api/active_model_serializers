@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class AssociationsTest < Minitest::Test
+    class AssociationsTest < ActiveSupport::TestCase
       def setup
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
@@ -129,7 +129,7 @@ module ActiveModel
       class InlineAssociationTestPostSerializer < ActiveModel::Serializer
         has_many :comments
         has_many :comments, key: :last_comments do
-          last(1)
+          object.comments.last(1)
         end
       end
 
@@ -158,7 +158,7 @@ module ActiveModel
         ::ARModels::Comment.delete_all
       end
 
-      class NamespacedResourcesTest < Minitest::Test
+      class NamespacedResourcesTest < ActiveSupport::TestCase
         class ResourceNamespace
           Post    = Class.new(::Model)
           Comment = Class.new(::Model)
@@ -200,7 +200,7 @@ module ActiveModel
         end
       end
 
-      class NestedSerializersTest < Minitest::Test
+      class NestedSerializersTest < ActiveSupport::TestCase
         Post    = Class.new(::Model)
         Comment = Class.new(::Model)
         Author  = Class.new(::Model)

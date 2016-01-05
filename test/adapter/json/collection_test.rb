@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class Json
-        class Collection < Minitest::Test
+        class Collection < ActiveSupport::TestCase
           def setup
             @author = Author.new(id: 1, name: 'Steve K.')
             @first_post = Post.new(id: 1, title: 'Hello!!', body: 'Hello, world!!')

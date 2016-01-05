@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class ResourceTypeConfigTest < Minitest::Test
+        class ResourceTypeConfigTest < ActiveSupport::TestCase
           class ProfileTypeSerializer < ActiveModel::Serializer
             attributes :name
             type 'profile'

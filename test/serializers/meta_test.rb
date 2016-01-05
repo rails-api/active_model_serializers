@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class MetaTest < Minitest::Test
+    class MetaTest < ActiveSupport::TestCase
       def setup
         @blog = Blog.new(id: 1,
                          name: 'AMS Hints',
