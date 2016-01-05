@@ -1,6 +1,8 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.3...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.4...0-9-stable)
+
+### [v0.9.4 (2015-01-05)](https://github.com/rails-api/active_model_serializers/compare/v0.9.3...v0.9.4)
 
 - [#752](https://github.com/rails-api/active_model_serializers/pull/752) Tiny improvement of README 0-9-stable (@basiam)
 - [#749](https://github.com/rails-api/active_model_serializers/pull/749) remove trailing whitespace (@shwoodard)
