@@ -32,7 +32,7 @@ module ActiveModel
         def cache_key(adapter_instance)
           parts = []
           parts << object_cache_key
-          parts << adapter_instance.class.to_s.demodulize.underscore
+          parts << adapter_instance.name.underscore
           parts << @klass._cache_digest unless @klass._cache_options && @klass._cache_options[:skip_digest]
           parts.join('/')
         end

@@ -61,12 +61,12 @@ module ActiveModel
 
       def test_adapter_map
         expected_adapter_map = {
-          'null'.freeze              => ActiveModel::Serializer::Adapter::Null,
-          'json'.freeze              => ActiveModel::Serializer::Adapter::Json,
+          'null'.freeze       => ActiveModel::Serializer::Adapter::Null,
+          'json'.freeze       => ActiveModel::Serializer::Adapter::Json,
           'attributes'.freeze => ActiveModel::Serializer::Adapter::Attributes,
-          'json_api'.freeze => ActiveModel::Serializer::Adapter::JsonApi
+          'json_api'.freeze   => ActiveModel::Serializer::Adapter::JsonApi
         }
-        actual = ActiveModel::Serializer::Adapter.adapter_map
+        actual               = ActiveModel::Serializer::Adapter.adapter_map
         assert_equal actual, expected_adapter_map
       end
 
@@ -97,9 +97,9 @@ module ActiveModel
         klass = ::ActiveModel::Serializer::Adapter::AdapterFromEnvironment
         name = 'adapter_from_environment'.freeze
         assert_equal ActiveModel::Serializer::Adapter.lookup(name), klass
-        assert ActiveModel::Serializer::Adapter.adapters.include?(name)
+        assert ActiveModel::Serializer::Adapter.adapters.include?(klass.name.underscore)
       ensure
-        ActiveModel::Serializer::Adapter.adapter_map.delete(name)
+        ActiveModel::Serializer::Adapter.adapter_map.delete(klass.name.underscore)
         ActiveModel::Serializer::Adapter.send(:remove_const, :AdapterFromEnvironment)
       end
 
@@ -115,13 +115,12 @@ module ActiveModel
       end
 
       def test_register_adapter
-        new_adapter_name  = :foo
-        new_adapter_klass = Class.new
-        ActiveModel::Serializer::Adapter.register(new_adapter_name, new_adapter_klass)
-        assert ActiveModel::Serializer::Adapter.adapters.include?('foo'.freeze)
-        assert ActiveModel::Serializer::Adapter.lookup(:foo), new_adapter_klass
+        new_adapter_klass = Class
+        ActiveModel::Serializer::Adapter.register(new_adapter_klass)
+        assert ActiveModel::Serializer::Adapter.adapters.include?(new_adapter_klass.name.underscore)
+        assert ActiveModel::Serializer::Adapter.lookup(new_adapter_klass.name), new_adapter_klass
       ensure
-        ActiveModel::Serializer::Adapter.adapter_map.delete(new_adapter_name.to_s)
+        ActiveModel::Serializer::Adapter.adapter_map.delete(new_adapter_klass.name.underscore)
       end
 
       def test_inherited_adapter_hooks_register_adapter
