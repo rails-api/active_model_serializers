@@ -36,6 +36,11 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
 
+group :bench do
+  # https://github.com/rails-api/active_model_serializers/commit/cb4459580a6f4f37f629bf3185a5224c8624ca76
+  gem 'benchmark-ips', require: false, group: :development
+end
+
 group :test do
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
@@ -45,5 +50,4 @@ end
 
 group :development, :test do
   gem 'rubocop', '~> 0.36', require: false
-  gem 'git'
 end
