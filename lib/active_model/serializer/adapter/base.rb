@@ -7,11 +7,19 @@ module ActiveModel
           ActiveModel::Serializer::Adapter.register(subclass)
         end
 
+        def self.name
+          self.to_s.demodulize
+        end
+
         attr_reader :serializer, :instance_options
 
         def initialize(serializer, options = {})
-          @serializer = serializer
+          @serializer       = serializer
           @instance_options = options
+        end
+
+        def name
+          self.class.name
         end
 
         def serializable_hash(_options = nil)

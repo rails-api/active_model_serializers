@@ -3,9 +3,9 @@ module ActiveModel
     module Adapter
       class JsonApi < Base
         extend ActiveSupport::Autoload
-        autoload :PaginationLinks
-        autoload :FragmentCache
-        autoload :Link
+        autoload :PaginationLinks, File.expand_path(File.dirname(__FILE__) + '/json_api/pagination_links')
+        autoload :FragmentCache, File.expand_path(File.dirname(__FILE__) + '/json_api/fragment_cache')
+        autoload :Link, File.expand_path(File.dirname(__FILE__) + '/json_api/link')
 
         # TODO: if we like this abstraction and other API objects to it,
         # then extract to its own file and require it.

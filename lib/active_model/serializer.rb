@@ -55,7 +55,7 @@ module ActiveModel
 
       serializer.class_attribute :_cache         # @api private : the cache object
       serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
-      serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key.  Ignored if the serialized object defines #cache_key.
+      serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key.  Ignored if the serializable object defines #cache_key.
       serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists cached_attributes. Cannot combine with except
       serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists cached_attributes. Cannot combine with only
       serializer.class_attribute :_cache_options # @api private : used by CachedSerializer, passed to _cache.fetch
