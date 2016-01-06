@@ -8,7 +8,7 @@ module ActiveModel
         end
 
         def self.name
-          self.to_s.demodulize
+          to_s.demodulize
         end
 
         attr_reader :serializer, :instance_options

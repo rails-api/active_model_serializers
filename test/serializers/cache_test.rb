@@ -6,6 +6,21 @@ module ActiveModel
     class CacheTest < ActiveSupport::TestCase
       include ActiveSupport::Testing::Stream
 
+      UncachedAuthor = Class.new(Author) do
+        # To confirm cache_key is set using updated_at and cache_key option passed to cache
+        undef_method :cache_key
+      end
+
+      Article = Class.new(::Model) do
+        # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
+        undef_method :cache_key
+      end
+
+      ArticleSerializer = Class.new(ActiveModel::Serializer) do
+        cache only: [:place], skip_digest: true
+        attributes :title
+      end
+
       def setup
         ActionController::Base.cache_store.clear
         @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
@@ -13,7 +28,6 @@ module ActiveModel
         @bio            = Bio.new(id: 1, content: 'AMS Contributor')
         @author         = Author.new(name: 'Joao M. D. Moura')
         @blog           = Blog.new(id: 999, name: 'Custom blog', writer: @author, articles: [])
-        @article = Article.new(title: 'Must Read')
         @role           = Role.new(name: 'Great Author')
         @location       = Location.new(lat: '-23.550520', lng: '-46.633309')
         @place          = Place.new(name: 'Amazing Place')
@@ -36,7 +50,6 @@ module ActiveModel
         @author_serializer   = AuthorSerializer.new(@author)
         @comment_serializer  = CommentSerializer.new(@comment)
         @blog_serializer     = BlogSerializer.new(@blog)
-        @article_serializer = ArticleSerializer.new(@article)
       end
 
       def test_inherited_cache_configuration
@@ -68,15 +81,19 @@ module ActiveModel
       end
 
       def test_error_is_raised_if_cache_key_is_not_defined_on_object_or_passed_as_cache_option
+        article = Article.new(title: 'Must Read')
         assert_raises ActiveModel::Serializer::Adapter::CachedSerializer::UndefinedCacheKey do
-          render_object_with_cache(@article)
+          render_object_with_cache(article)
         end
       end
 
       def test_cache_key_interpolation_with_updated_at_when_cache_key_is_not_defined_on_object
-        render_object_with_cache(@author)
-        key = cache_key_with_adapter("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}")
-        assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(key).to_json)
+        uncached_author            = UncachedAuthor.new(name: 'Joao M. D. Moura')
+        uncached_author_serializer = AuthorSerializer.new(uncached_author)
+
+        render_object_with_cache(uncached_author)
+        key = cache_key_with_adapter("#{uncached_author_serializer.class._cache_key}/#{uncached_author_serializer.object.id}-#{uncached_author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}")
+        assert_equal(uncached_author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(key).to_json)
       end
 
       def test_default_cache_key_fallback
@@ -155,7 +172,7 @@ module ActiveModel
 
       def test_uses_file_digest_in_cache_key
         render_object_with_cache(@blog)
-        assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch("#{cache_key_with_adapter(@blog.cache_key)}/#{@blog.digest}"))
+        assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch("#{cache_key_with_adapter(@blog.cache_key)}/#{@blog.class::FILE_DIGEST}"))
       end
 
       def test_cache_digest_definition
@@ -223,7 +240,7 @@ module ActiveModel
       end
 
       def cache_key_with_adapter(key)
-        "#{key}/#{adapter.class.to_s.demodulize.underscore}"
+        "#{key}/#{adapter.name.underscore}"
       end
     end
   end
