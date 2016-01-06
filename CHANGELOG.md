@@ -1,5 +1,6 @@
 ## 0.10.x
 
+
 Breaking changes:
 
 - [#1360](https://github.com/rails-api/active_model_serializers/pull/1360)
@@ -36,8 +37,15 @@ Features:
         e.g. `has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]`
   * Removes dynamically defined methods on the serializer
 - [#1336](https://github.com/rails-api/active_model_serializers/pull/1336) Added support for Grape >= 0.13, < 1.0 (@johnhamelink)
+- [#1322](https://github.com/rails-api/active_model_serializers/pull/1322) Instrumenting rendering of resources (@bf4)
 - [#1291](https://github.com/rails-api/active_model_serializers/pull/1291) Add logging (@maurogeorge)
+- [#1272](https://github.com/rails-api/active_model_serializers/pull/1272) Add PORO serializable base class: ActiveModelSerializers::Model (@bf4)
+- [#1255](https://github.com/rails-api/active_model_serializers/pull/1255) Make more class attributes inheritable(@bf4)
+- [#1249](https://github.com/rails-api/active_model_serializers/pull/1249) Inheritance of serializer inheriting the cache configuration(@Rodrigora)
+- [#1247](https://github.com/rails-api/active_model_serializers/pull/1247) Add support for toplevel JSON API links (@beauby)
+- [#1246](https://github.com/rails-api/active_model_serializers/pull/1246) Add support for resource-level JSON API links (@beauby)
 - [#1225](https://github.com/rails-api/active_model_serializers/pull/1225) Better serializer lookup, use nested serializer when it exists (@beauby)
+- [#1213](https://github.com/rails-api/active_model_serializers/pull/1213) `type` directive for serializer to control type field with json-api adapter (@youroff)
 - [#1172](https://github.com/rails-api/active_model_serializers/pull/1172) Better serializer registration, get more than just the first module (@bf4)
 - [#1158](https://github.com/rails-api/active_model_serializers/pull/1158) Add support for wildcards in `include` option (@beauby)
 - [#1127](https://github.com/rails-api/active_model_serializers/pull/1127) Add support for nested
@@ -49,14 +57,26 @@ Features:
   when disabled, requires serializers to explicitly specified. (@trek)
 
 Fixes:
+
+- [#1384](https://github.com/rails-api/active_model_serializers/pull/1384)Fix database state leaking across tests (@bf4)
+- [#1297](https://github.com/rails-api/active_model_serializers/pull/1297) Fix `fields` option to restrict relationships as well (@beauby)
 - [#1239](https://github.com/rails-api/active_model_serializers/pull/1239) Fix duplicates in JSON API compound documents (@beauby)
 - [#1214](https://github.com/rails-api/active_model_serializers/pull/1214) retrieve the key from the reflection options when building associations (@NullVoxPopuli, @hut8)
 - [#1358](https://github.com/rails-api/active_model_serializers/pull/1358) Handle serializer file paths with spaces (@rwstauner, @bf4)
+- [#1195](https://github.com/rails-api/active_model_serializers/pull/1195) Fix id override (@beauby)
+- [#1185](https://github.com/rails-api/active_model_serializers/pull/1185) Fix options passing in Json and Attributes adapters (@beauby)
 
 Misc:
+
+- [#1383](https://github.com/rails-api/active_model_serializers/pull/1383) Simplify reflections handling (@beauby)
 - [#1370](https://github.com/rails-api/active_model_serializers/pull/1370) Simplify attributes handling via a mixin (@beauby)
+- [#1301](https://github.com/rails-api/active_model_serializers/pull/1301) Mapping JSON API spec / schema to AMS (@bf4)
+- [#1271](https://github.com/rails-api/active_model_serializers/pull/1271) Handle no serializer source file to digest (@bf4)
+- [#1260](https://github.com/rails-api/active_model_serializers/pull/1260) Serialization and Cache Documentation (@bf4)
+- [#1259](https://github.com/rails-api/active_model_serializers/pull/1259) Add more info to CONTRIBUTING (@bf4)
 - [#1233](https://github.com/rails-api/active_model_serializers/pull/1233) Top-level meta and meta_key options no longer handled at serializer level (@beauby)
 - [#1232](https://github.com/rails-api/active_model_serializers/pull/1232) fields option no longer handled at serializer level (@beauby)
+- [#1220](https://github.com/rails-api/active_model_serializers/pull/1220) Remove empty rubocop.rake (@maurogeorge)
 - [#1178](https://github.com/rails-api/active_model_serializers/pull/1178) env CAPTURE_STDERR=false lets devs see hard failures (@bf4)
 - [#1177](https://github.com/rails-api/active_model_serializers/pull/1177) Remove Adapter autoloads in favor of require (@bf4)
 - [#1117](https://github.com/rails-api/active_model_serializers/pull/1117) FlattenJson adapter no longer inherits Json adapter, renamed to Attributes (@bf4)
