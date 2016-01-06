@@ -28,6 +28,7 @@ module ActiveModel
         @bio            = Bio.new(id: 1, content: 'AMS Contributor')
         @author         = Author.new(name: 'Joao M. D. Moura')
         @blog           = Blog.new(id: 999, name: 'Custom blog', writer: @author, articles: [])
+        @article = Article.new(title: 'Must Read')
         @role           = Role.new(name: 'Great Author')
         @location       = Location.new(lat: '-23.550520', lng: '-46.633309')
         @place          = Place.new(name: 'Amazing Place')
@@ -50,6 +51,7 @@ module ActiveModel
         @author_serializer   = AuthorSerializer.new(@author)
         @comment_serializer  = CommentSerializer.new(@comment)
         @blog_serializer     = BlogSerializer.new(@blog)
+        @article_serializer = ArticleSerializer.new(@article)
       end
 
       def test_inherited_cache_configuration
