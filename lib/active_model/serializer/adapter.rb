@@ -37,12 +37,16 @@ module ActiveModel
 
         # Adds an adapter 'klass' with 'name' to the 'adapter_map'
         # Names are stringified and underscored
-        # @param klass [Class] adapter class itself
+        # @param name [Symbol, String, Class] name of the registered adapter
+        # @param klass [Class] adapter class itself, optional if name is the class
         # @example
-        #     AMS::Adapter.register(MyAdapter)
+        #     AMS::Adapter.register(:my_adapter, MyAdapter)
         # @note The registered name strips out 'ActiveModel::Serializer::Adapter::'
-        def register(klass)
-          adapter_map.update(klass.name.underscore => klass)
+        #   so that registering 'ActiveModel::Serializer::Adapter::Json' and
+        #   'Json' will both register as 'json'.
+        def register(name, klass = name)
+          name = name.to_s.gsub(/\AActiveModel::Serializer::Adapter::/, ''.freeze)
+          adapter_map.update(name.underscore => klass)
           self
         end
 
@@ -57,7 +61,7 @@ module ActiveModel
           adapter_map.fetch(adapter_name) do
             # 3. try to find adapter class from environment
             adapter_class = find_by_name(adapter_name)
-            register(adapter_class)
+            register(adapter_name, adapter_class)
             adapter_class
           end
         rescue NameError, ArgumentError => e
