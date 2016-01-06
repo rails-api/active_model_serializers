@@ -113,8 +113,25 @@ PR please :)
 
 #### root
 
-PR please :)
+By default the Json Adapter `root` will follow snake case format, like so:
 
+| resource | single root | collection root |
+|----------|-------------|-----------------|
+| UserPost | user_posts  | user_post       |
+
+If you would like to change the `root` of your json, specify it in the render call:
+
+```ruby
+  render json: @user_post, root: "admin_post"
+```
+
+This will produce json like:
+```json
+  {"admin_post": {
+    "title": "how to do open source"
+    }
+  }
+```
 #### serializer
 
 PR please :)
