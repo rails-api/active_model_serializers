@@ -115,9 +115,9 @@ module ActiveModel
         def resource_identifier_type_for(serializer)
           return serializer._type if serializer._type
           if ActiveModelSerializers.config.jsonapi_resource_type == :singular
-            serializer.object.class.model_name.singular
+            serializer.model_name.singular
           else
-            serializer.object.class.model_name.plural
+            serializer.model_name.plural
           end
         end
 

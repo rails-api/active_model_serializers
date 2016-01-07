@@ -135,7 +135,7 @@ module ActiveModel
 
     # Used by adapter as resource root.
     def json_key
-      root || object.class.model_name.to_s.underscore
+      root || model_name.to_s.underscore
     end
 
     def read_attribute_for_serialization(attr)
@@ -152,6 +152,16 @@ module ActiveModel
     # Used by JsonApi adapter to build resource links.
     def links
       self.class._links
+    end
+
+    # @api private
+    # Returns an ActiveModel::Name for the serializer's object
+    def model_name
+      if object.class.respond_to?(:model_name)
+        object.class.model_name
+      else
+        ActiveModel::Name.new(object.class)
+      end
     end
 
     protected

@@ -116,19 +116,6 @@ module ActiveModel::Serializer::Lint
       assert_equal 0, resource.method(:id).arity
     end
 
-    # Passes if the object's class responds to <tt>model_name</tt> and if it
-    # is in an instance of +ActiveModel::Name+.
-    # Fails otherwise.
-    #
-    # <tt>model_name</tt> returns an ActiveModel::Name instance.
-    # It is used by the serializer to identify the object's type.
-    # It is not required unless caching is enabled.
-    def test_model_name
-      resource_class = resource.class
-      assert_respond_to resource_class, :model_name
-      assert_instance_of resource_class.model_name, ActiveModel::Name
-    end
-
     private
 
     def resource
