@@ -113,25 +113,24 @@ PR please :)
 
 #### root
 
-By default the Json Adapter `root` will follow snake case format, like so:
+The resource root is derived from the class name of the resource being serialized.
+e.g. `UserPostSerializer.new(UserPost.new)` will be serialized with the root `user_post` or `user_posts` according the adapter collection pluralization rules.
 
-| resource | single root | collection root |
-|----------|-------------|-----------------|
-| UserPost | user_posts  | user_post       |
-
-If you would like to change the `root` of your json, specify it in the render call:
+Specify the root by passing it as an argument to `render`. For example:
 
 ```ruby
-  render json: @user_post, root: "admin_post"
+  render json: @user_post, root: "admin_post", adapter: :json
 ```
 
-This will produce json like:
+This will produce serialize as:
 ```json
   {"admin_post": {
     "title": "how to do open source"
     }
   }
 ```
+`Note: the Attributes adapter (default) does not include a resource root.`
+
 #### serializer
 
 PR please :)
