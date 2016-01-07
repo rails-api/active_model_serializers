@@ -13,6 +13,9 @@ Breaking changes:
         Adapter functions.
     * named `Base` because it's a Rails-ism.
     * It helps to isolate and highlight what the Adapter interface actually is.
+- [#1418](https://github.com/rails-api/active_model_serializers/pull/1418)
+  serialized collections now use the root option as is; now, only the
+  root derived from the serializer or object is always pluralized.
 
 Features:
 
