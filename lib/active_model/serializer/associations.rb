@@ -76,8 +76,6 @@ module ActiveModel
         # @api private
         #
         def associate(reflection)
-          self._reflections = _reflections.dup
-
           self._reflections << reflection
         end
       end
