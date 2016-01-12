@@ -21,10 +21,6 @@ class Model < ActiveModelSerializers::Model
   def respond_to_missing?(method_name, _include_private = false)
     attributes.key?(method_name.to_s.tr('=', '').to_sym) || super
   end
-
-  def cache_key_with_digest
-    "#{cache_key}/#{FILE_DIGEST}"
-  end
 end
 
 class Profile < Model

@@ -3,7 +3,7 @@ module ActiveModel
     module Adapter
       class Json < Base
         extend ActiveSupport::Autoload
-        autoload :FragmentCache
+        autoload :FragmentCache, File.expand_path(File.dirname(__FILE__) + '/json/fragment_cache')
 
         def serializable_hash(options = nil)
           options ||= {}
