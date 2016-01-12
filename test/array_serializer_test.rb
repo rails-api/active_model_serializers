@@ -28,7 +28,7 @@ module ActiveModel
             comment = Comment.new
             post = Post.new
             serializer = ArraySerializer.new([comment, post])
-            assert_equal serializer.json_key, 'comments'
+            assert_equal 'comments', serializer.json_key
           end)
           assert_match(/Calling deprecated ArraySerializer/, stderr)
         end

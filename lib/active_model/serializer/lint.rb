@@ -102,7 +102,7 @@ module ActiveModel::Serializer::Lint
     def test_updated_at
       assert_respond_to resource, :updated_at
       actual_arity = resource.method(:updated_at).arity
-      assert_equal actual_arity, 0, "expected #{actual_arity.inspect} to be 0"
+      assert_equal 0, actual_arity
     end
 
     # Passes if the object responds to <tt>id</tt> and if it takes no
@@ -113,7 +113,7 @@ module ActiveModel::Serializer::Lint
     # It is not required unless caching is enabled.
     def test_id
       assert_respond_to resource, :id
-      assert_equal resource.method(:id).arity, 0
+      assert_equal 0, resource.method(:id).arity
     end
 
     # Passes if the object's class responds to <tt>model_name</tt> and if it

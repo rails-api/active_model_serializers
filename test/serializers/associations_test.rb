@@ -52,8 +52,8 @@ module ActiveModel
           serializer = association.serializer
           options = association.options
 
-          assert_equal key, :tags
-          assert_equal serializer, nil
+          assert_equal :tags, key
+          assert_nil serializer
           assert_equal [{ name: '#hashtagged' }].to_json, options[:virtual_value].to_json
         end
       end
