@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     class AttributeTest < ActiveSupport::TestCase
       def setup
-        @blog = Blog.new({ id: 1, name: 'AMS Hints', type: 'stuff' })
+        @blog = Blog.new(id: 1, name: 'AMS Hints', type: 'stuff')
         @blog_serializer = AlternateBlogSerializer.new(@blog)
       end
 
@@ -92,6 +92,29 @@ module ActiveModel
         post = PostWithVirtualAttribute.new(first_name: 'Lucas', last_name: 'Hosseini')
         hash = serializable(post).serializable_hash
         expected = { name: 'Lucas Hosseini' }
+
+        assert_equal(expected, hash)
+      end
+
+      def test_conditional_attributes
+        serializer = Class.new(ActiveModel::Serializer) do
+          attribute :if_attribute_included, if: :true
+          attribute :if_attribute_excluded, if: :false
+          attribute :unless_attribute_included, unless: :false
+          attribute :unless_attribute_excluded, unless: :true
+
+          def true
+            true
+          end
+
+          def false
+            false
+          end
+        end
+
+        model = ::Model.new
+        hash = serializable(model, serializer: serializer).serializable_hash
+        expected = { if_attribute_included: nil, unless_attribute_included: nil }
 
         assert_equal(expected, hash)
       end
