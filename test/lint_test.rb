@@ -26,10 +26,6 @@ module ActiveModel
 
         def updated_at
         end
-
-        def self.model_name
-          @_model_name ||= ActiveModel::Name.new(self)
-        end
       end
 
       def setup
