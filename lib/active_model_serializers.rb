@@ -31,6 +31,13 @@ module ActiveModelSerializers
     [file, lineno]
   end
 
+  # Memoized default include tree
+  # @return [ActiveModel::Serializer::IncludeTree]
+  def self.default_include_tree
+    @default_include_tree ||= ActiveModel::Serializer::IncludeTree
+                              .from_include_args(config.default_includes)
+  end
+
   require 'active_model/serializer/version'
   require 'active_model/serializer'
   require 'active_model/serializable_resource'

@@ -3,8 +3,13 @@ module ActiveModelSerializers
     class Attributes < Base
       def initialize(serializer, options = {})
         super
-        @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include] || '*')
         @cached_attributes = options[:cache_attributes] || {}
+        @include_tree =
+          if options[:include]
+            ActiveModel::Serializer::IncludeTree.from_include_args(options[:include])
+          else
+            ActiveModelSerializers.default_include_tree
+          end
       end
 
       def serializable_hash(options = nil)
