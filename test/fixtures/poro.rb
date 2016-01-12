@@ -85,10 +85,6 @@ end
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
   has_many :related
-
-  def self.root_name
-    'posts'
-  end
 end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
@@ -193,10 +189,6 @@ AuthorPreviewSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
-  def self.root_name
-    'posts'
-  end
-
   attributes :title, :body, :id
 
   has_many :comments, serializer: CommentPreviewSerializer
