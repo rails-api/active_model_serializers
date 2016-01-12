@@ -208,7 +208,7 @@ module ActiveModel
         end
 
         def links_for(serializer)
-          serializer.links.each_with_object({}) do |(name, value), hash|
+          serializer._links.each_with_object({}) do |(name, value), hash|
             hash[name] =
               if value.respond_to?(:call)
                 link = Link.new(serializer)

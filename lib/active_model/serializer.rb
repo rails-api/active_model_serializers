@@ -8,6 +8,8 @@ require 'active_model/serializer/caching'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
+require 'active_model/serializer/links'
+require 'active_model/serializer/type'
 
 # ActiveModel::Serializer is an abstract class that is
 # reified when subclassed to decorate a resource.
@@ -17,31 +19,9 @@ module ActiveModel
     include Associations
     include Attributes
     include Caching
+    include Links
+    include Type
     require 'active_model/serializer/adapter'
-
-    with_options instance_writer: false, instance_reader: false do |serializer|
-      serializer.class_attribute :_type, instance_reader: true
-      serializer.class_attribute :_links # @api private : links definitions, @see Serializer#link
-      self._links ||= {}
-    end
-
-    # Serializers inherit _attribute_mappings, _reflections, and _links.
-    # Generates a unique digest for each serializer at load.
-    def self.inherited(base)
-      base._links = _links.dup
-      super
-    end
-
-    # @example
-    #   class AdminAuthorSerializer < ActiveModel::Serializer
-    #     type 'authors'
-    def self.type(type)
-      self._type = type
-    end
-
-    def self.link(name, value = nil, &block)
-      _links[name] = block || value
-    end
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
@@ -146,12 +126,6 @@ module ActiveModel
       else
         object.read_attribute_for_serialization(attr)
       end
-    end
-
-    # @api private
-    # Used by JsonApi adapter to build resource links.
-    def links
-      self.class._links
     end
 
     protected
