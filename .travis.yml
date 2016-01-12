@@ -1,27 +1,20 @@
 language: ruby
-
 rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.1
-  - ruby-head
   - jruby-19mode
   - rbx-2
   - ruby-head
-
-sudo: false
-
 install:
   - bundle install --retry=3
-
 env:
-  - "RAILS_VERSION=3.2.17"
-  - "RAILS_VERSION=4.0.3"
-  - "RAILS_VERSION=4.1.0"
+  - "RAILS_VERSION=3.2"
+  - "RAILS_VERSION=4.0"
+  - "RAILS_VERSION=4.1"
   - "RAILS_VERSION=master"
-
 matrix:
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
-
+    - env: "RAILS_VERSION=3.2"
