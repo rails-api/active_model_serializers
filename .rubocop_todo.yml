@@ -98,7 +98,6 @@ Style/EachWithObject:
 Style/GuardClause:
   Exclude:
     - 'lib/active_model/serializer.rb'
-    - 'test/capture_warnings.rb'
 
 # Offense count: 12
 # Cop supports --auto-correct.

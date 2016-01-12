@@ -16,7 +16,7 @@ cache:
     - vendor/bundle
 
 script:
-  - env CAPTURE_STDERR=${CAPTURE_STDERR:-false} bundle exec rake ci
+  - bundle exec rake ci
 
 env:
   - "RAILS_VERSION=4.0"
@@ -31,8 +31,6 @@ matrix:
   - rvm: 2.1
     env: RAILS_VERSION=master
   include:
-  - rvm: 2.2
-    env: CAPTURE_STDERR=true
   - rvm: jruby-9.0.4.0
     env: JRUBY_OPTS='-Xcompat.version=2.0 --server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
   allow_failures:
