@@ -238,6 +238,29 @@ module ActiveModel
             end
           end
         end
+
+        def test_conditional_associations
+          serializer = Class.new(ActiveModel::Serializer) do
+            belongs_to :if_assoc_included, if: :true
+            belongs_to :if_assoc_excluded, if: :false
+            belongs_to :unless_assoc_included, unless: :false
+            belongs_to :unless_assoc_excluded, unless: :true
+
+            def true
+              true
+            end
+
+            def false
+              false
+            end
+          end
+
+          model = ::Model.new
+          hash = serializable(model, serializer: serializer).serializable_hash
+          expected = { if_assoc_included: nil, unless_assoc_included: nil }
+
+          assert_equal(expected, hash)
+        end
       end
     end
   end
