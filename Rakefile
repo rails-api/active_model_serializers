@@ -1,9 +1,29 @@
 begin
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
+begin
   require 'simplecov'
 rescue LoadError
 end
 
-require 'bundler/gem_tasks'
+require 'rdoc/task'
+
+RDoc::Task.new(:rdoc) do |rdoc|
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title    = 'ActiveModelSerializers'
+  rdoc.options << '--line-numbers'
+  rdoc.rdoc_files.include('README.md')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+# APP_RAKEFILE = File.expand_path('../test/dummy/Rakefile', __FILE__)
+# load 'rails/tasks/engine.rake'
+#
+# load 'rails/tasks/statistics.rake'
+
+Bundler::GemHelper.install_tasks
 
 begin
   require 'rubocop'
@@ -37,9 +57,10 @@ end
 
 require 'rake/testtask'
 
-Rake::TestTask.new do |t|
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib'
   t.libs << 'test'
-  t.test_files = FileList['test/**/*_test.rb']
+  t.pattern = 'test/**/*_test.rb'
   t.ruby_opts = ['-r./test/test_helper.rb']
   t.verbose = true
 end

@@ -1,3 +1,5 @@
+# Configure Rails Environment
+ENV['RAILS_ENV'] = 'test'
 require 'bundler/setup'
 
 begin
@@ -12,6 +14,10 @@ rescue LoadError
 end
 
 require 'timecop'
+# require File.expand_path("../../test/dummy/config/environment.rb", __FILE__)
+# ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
+# ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
+# require "rails/test_help"
 require 'rails'
 require 'action_controller'
 require 'action_controller/test_case'
@@ -29,6 +35,9 @@ if defined?(Minitest::Test)
   # Minitest 5
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest.rb#L45-L59
+  # Filter out Minitest backtrace while allowing backtrace from other libraries
+  # to be shown.
+  Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 else
   $minitest_version = 4 # rubocop:disable Style/GlobalVars
   # Minitest 4
@@ -41,6 +50,14 @@ else
     MiniTest::Unit.after_tests(&block)
   end
 end
+
+# # Load fixtures from the engine
+# if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+#   ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
+#   ActionDispatch::IntegrationTest.fixture_path = ActiveSupport::TestCase.fixture_path
+#   ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_path + "/files"
+#   ActiveSupport::TestCase.fixtures :all
+# end
 
 # If there's no failure info, try disabling capturing stderr:
 # `env CAPTURE_STDERR=false rake`

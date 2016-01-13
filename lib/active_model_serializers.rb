@@ -30,3 +30,4 @@ ActiveSupport.on_load(:action_controller) do
 end
 
 require 'active_model/serializer/railtie'
+# require "active_model_serializers/engine"

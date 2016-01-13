@@ -1,6 +1,5 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'active_model/serializer/version'
 
 Gem::Specification.new do |spec|
@@ -14,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/rails-api/active_model_serializers'
   spec.license       = 'MIT'
 
+  # spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   spec.files         = `git ls-files -z`.split("\x0")
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
@@ -45,6 +45,9 @@ Gem::Specification.new do |spec|
     # arel
     # activesupport
     # activemodel
+
+  # See Gemfile for JRuby compatible adapter
+  # s.add_development_dependency "sqlite3"
 
   # Soft dependency for pagination
   spec.add_development_dependency 'kaminari', ' ~> 0.16.3'
