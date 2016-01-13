@@ -24,14 +24,14 @@ module ActiveModel
       #
       # @api private
       #
-      def included?(serializer)
+      def excluded?(serializer)
         case condition_type
         when :if
-          serializer.public_send(condition)
-        when :unless
           !serializer.public_send(condition)
+        when :unless
+          serializer.public_send(condition)
         else
-          true
+          false
         end
       end
 
