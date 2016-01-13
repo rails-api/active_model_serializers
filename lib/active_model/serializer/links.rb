@@ -20,9 +20,9 @@ module ActiveModel
 
         # Define a link on a serializer.
         # @example
-        #   link :self { "/posts/#{object.id}" }
+        #   link :self { "//example.com/posts/#{object.id}" }
         # @example
-        #   link :self, "/user"
+        #   link :self, "//example.com/user"
         #
         def link(name, value = nil, &block)
           _links[name] = block || value
