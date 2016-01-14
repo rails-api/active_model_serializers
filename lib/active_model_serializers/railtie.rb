@@ -10,14 +10,13 @@ module ActiveModelSerializers
     end
 
     initializer 'active_model_serializers.action_controller' do
-      ActiveSupport.run_load_hooks(:active_model_serializers, ActiveModelSerializers)
-      ActionController::Base.send(:include, ::ActionController::Serialization)
+      ActiveSupport.on_load(:action_controller) do
+        ActionController::Base.send(:include, ::ActionController::Serialization)
+      end
     end
 
-    initializer 'active_model_serializers.logger' do
-      ActiveSupport.on_load(:active_model_serializers) do
-        self.logger = ActionController::Base.logger
-      end
+    initializer 'active_model_serializers.logger', :after => 'action_controller.set_configs' do
+      ActiveModelSerializers.logger = Rails.configuration.action_controller.logger
     end
 
     # To be useful, this hook must run after Rails has initialized,
@@ -30,8 +29,8 @@ module ActiveModelSerializers
     # inheritable, we don't want to set it on `ActiveModel::Serializer` directly unless
     # we want *every* serializer to be considered cacheable, regardless of specifying
     # `cache # some options` in a serializer or not.
-    initializer 'active_model_serializers.caching' => :after_initialize do
-      ActiveModelSerializers.config.cache_store     = ActionController::Base.cache_store
+    initializer 'active_model_serializers.caching', :after => 'action_controller.set_configs' do
+      ActiveModelSerializers.config.cache_store     = Rails.configuration.action_controller.cache_store
       ActiveModelSerializers.config.perform_caching = Rails.configuration.action_controller.perform_caching
     end
 

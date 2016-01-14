@@ -57,7 +57,7 @@ require 'fixtures/active_record'
 
 require 'fixtures/poro'
 
-ActiveSupport.on_load(:active_model_serializers) do
+ActiveSupport.on_load(:action_controller) do
   $action_controller_logger = ActiveModelSerializers.logger
   ActiveModelSerializers.logger = Logger.new(IO::NULL)
 end
