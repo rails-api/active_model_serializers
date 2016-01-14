@@ -53,13 +53,6 @@ Style/AlignHash:
   Exclude:
     - 'test/action_controller/json_api/pagination_test.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/AndOr:
-  Exclude:
-    - 'lib/active_model/serializer/lint.rb'
-
 # Offense count: 25
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -105,7 +98,6 @@ Style/EachWithObject:
 Style/GuardClause:
   Exclude:
     - 'lib/active_model/serializer.rb'
-    - 'test/capture_warnings.rb'
 
 # Offense count: 12
 # Cop supports --auto-correct.
