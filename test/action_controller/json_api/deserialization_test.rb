@@ -39,7 +39,7 @@ module ActionController
             }
           }
 
-          post :render_parsed_payload, hash
+          post :render_parsed_payload, params: hash
 
           response = JSON.parse(@response.body)
           expected = {
