@@ -74,8 +74,11 @@ module ActiveModel
       controller_namespace = serialization_context.controller_namespace if serialization_context
       serializer_class_name = "#{resource_class_name}Serializer"
 
+      # Look for a nested serializer first.
       chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
+      # Then look for a serializer within the namespace of the calling controller if any.
       chain.push("#{controller_namespace}::#{serializer_class_name}") if controller_namespace
+      # Finally look for a serializer within the resource's namespace.
       chain.push("#{resource_namespace}::#{serializer_class_name}")
 
       chain
