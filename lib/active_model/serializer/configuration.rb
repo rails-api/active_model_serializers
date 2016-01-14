@@ -21,6 +21,7 @@ module ActiveModel
 
         config.adapter = :attributes
         config.jsonapi_resource_type = :plural
+        config.schema_path = 'test/support/schemas'
       end
     end
   end
