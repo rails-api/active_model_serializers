@@ -35,8 +35,9 @@ module ActiveModel
     # @example
     #   class AdminAuthorSerializer < ActiveModel::Serializer
     #     type 'authors'
-    def self.type(type)
-      self._type = type
+    #     type { object.type }
+    def self.type(type = nil, &block)
+      self._type = block || type
     end
 
     def self.link(name, value = nil, &block)
