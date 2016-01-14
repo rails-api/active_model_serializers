@@ -96,8 +96,8 @@ module ActiveModel
     def self.get_serializer_for(klass, serialization_context = nil)
       return nil unless config.serializer_lookup_enabled
       serializers_cache.fetch_or_store([klass, serialization_context]) do
-        # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
         serializer_class = serializer_lookup_chain_for(klass, serialization_context)
+                           .lazy
                            .map(&:safe_constantize)
                            .find { |x| x && x < ActiveModel::Serializer }
 
