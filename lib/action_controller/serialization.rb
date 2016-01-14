@@ -56,7 +56,7 @@ module ActionController
 
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
-        options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(self) unless options.key?(:serialization_context)
+        options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(controller: self) unless options.key?(:serialization_context)
         serializable_resource = get_serializer(resource, options)
         super(serializable_resource, options)
       end
