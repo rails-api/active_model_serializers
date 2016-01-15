@@ -24,4 +24,4 @@ preferably inside an initializer.
 
 ## Hooks
 
-To run a hook when ActiveModelSerializers is loaded, use `ActiveSupport.on_load(:active_model_serializers) do end`
+To run a hook when ActiveModelSerializers is loaded, use `ActiveSupport.on_load(:action_controller) do end`

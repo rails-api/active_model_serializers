@@ -28,12 +28,6 @@ class RailtieTest < ActiveSupport::TestCase
       assert_equal ActionController::Base.cache_store, ActiveModelSerializers.config.cache_store
       assert_equal Rails.configuration.action_controller.perform_caching, ActiveModelSerializers.config.perform_caching
     end
-
-    test 'it runs the load hook' do
-      loaded = false
-      ActiveSupport.on_load(:active_model_serializers) { loaded = true }
-      assert loaded
-    end
   end
 
   class WithoutRails < RailtieTest
@@ -58,12 +52,6 @@ class RailtieTest < ActiveSupport::TestCase
       assert_nil ActiveModelSerializers.config.cache_store
       refute Rails.configuration.action_controller.perform_caching
       refute ActiveModelSerializers.config.perform_caching
-    end
-
-    test "it hasn't run the load hook" do
-      loaded = false
-      ActiveSupport.on_load(:active_model_serializers) { loaded = true }
-      refute loaded
     end
   end
 end
