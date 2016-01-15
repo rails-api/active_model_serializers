@@ -1,6 +1,5 @@
 ## 0.10.x
 
-
 Breaking changes:
 
 - [#1360](https://github.com/rails-api/active_model_serializers/pull/1360)
@@ -37,10 +36,10 @@ Features:
         e.g. `has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]`
   * Removes dynamically defined methods on the serializer
 - [#1336](https://github.com/rails-api/active_model_serializers/pull/1336) Added support for Grape >= 0.13, < 1.0 (@johnhamelink)
-- [#1322](https://github.com/rails-api/active_model_serializers/pull/1322) Instrumenting rendering of resources (@bf4)
+- [#1322](https://github.com/rails-api/active_model_serializers/pull/1322) Instrumenting rendering of resources (@bf4, @maurogeorge)
 - [#1291](https://github.com/rails-api/active_model_serializers/pull/1291) Add logging (@maurogeorge)
 - [#1272](https://github.com/rails-api/active_model_serializers/pull/1272) Add PORO serializable base class: ActiveModelSerializers::Model (@bf4)
-- [#1255](https://github.com/rails-api/active_model_serializers/pull/1255) Make more class attributes inheritable(@bf4)
+- [#1255](https://github.com/rails-api/active_model_serializers/pull/1255) Make more class attributes inheritable (@bf4)
 - [#1249](https://github.com/rails-api/active_model_serializers/pull/1249) Inheritance of serializer inheriting the cache configuration(@Rodrigora)
 - [#1247](https://github.com/rails-api/active_model_serializers/pull/1247) Add support for toplevel JSON API links (@beauby)
 - [#1246](https://github.com/rails-api/active_model_serializers/pull/1246) Add support for resource-level JSON API links (@beauby)
