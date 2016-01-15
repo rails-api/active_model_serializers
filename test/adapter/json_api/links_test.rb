@@ -13,6 +13,10 @@ module ActiveModel
             end
 
             link :other, '//example.com/resource'
+
+            link :yet_another do
+              "//example.com/resource/#{object.id}"
+            end
           end
 
           def setup
@@ -52,7 +56,8 @@ module ActiveModel
                   stuff: 'value'
                 }
               },
-              other: '//example.com/resource'
+              other: '//example.com/resource',
+              yet_another: '//example.com/resource/1337'
             }
             assert_equal(expected, hash[:data][:links])
           end
