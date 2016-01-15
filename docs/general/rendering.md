@@ -113,7 +113,23 @@ PR please :)
 
 #### root
 
-PR please :)
+The resource root is derived from the class name of the resource being serialized.
+e.g. `UserPostSerializer.new(UserPost.new)` will be serialized with the root `user_post` or `user_posts` according the adapter collection pluralization rules.
+
+Specify the root by passing it as an argument to `render`. For example:
+
+```ruby
+  render json: @user_post, root: "admin_post", adapter: :json
+```
+
+This will produce serialize as:
+```json
+  {"admin_post": {
+    "title": "how to do open source"
+    }
+  }
+```
+`Note: the Attributes adapter (default) does not include a resource root.`
 
 #### serializer
 
