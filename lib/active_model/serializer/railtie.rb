@@ -21,6 +21,7 @@ module ActiveModel
     end
 
     if Rails.env.test?
+      ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Schema)
       ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Serializer)
     end
   end
