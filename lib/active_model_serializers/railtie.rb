@@ -11,25 +11,15 @@ module ActiveModelSerializers
 
     initializer 'active_model_serializers.action_controller' do
       ActiveSupport.on_load(:action_controller) do
-        ActionController::Base.send(:include, ::ActionController::Serialization)
+        include(::ActionController::Serialization)
       end
     end
 
-    initializer 'active_model_serializers.logger', :after => 'action_controller.set_configs' do
+    # This hook is run after the action_controller railtie has set the configuration
+    # based on the *environment* configuration and before any config/initializers are run
+    # and also before eager_loading (if enabled).
+    initializer 'active_model_serializers.set_configs', :after => 'action_controller.set_configs' do
       ActiveModelSerializers.logger = Rails.configuration.action_controller.logger
-    end
-
-    # To be useful, this hook must run after Rails has initialized,
-    # BUT before any serializers are loaded.
-    # Otherwise, the call to 'cache' won't find `cache_store` or `perform_caching`
-    # defined, and serializer's `_cache_store` will be nil.
-    # IF the load order cannot be changed, then in each serializer that that defines a `cache`,
-    # manually specify e.g. `PostSerializer._cache_store = Rails.cache` any time
-    # before the serializer is used.  (Even though `ActiveModel::Serializer._cache_store` is
-    # inheritable, we don't want to set it on `ActiveModel::Serializer` directly unless
-    # we want *every* serializer to be considered cacheable, regardless of specifying
-    # `cache # some options` in a serializer or not.
-    initializer 'active_model_serializers.caching', :after => 'action_controller.set_configs' do
       ActiveModelSerializers.config.cache_store     = Rails.configuration.action_controller.cache_store
       ActiveModelSerializers.config.perform_caching = Rails.configuration.action_controller.perform_caching
     end
