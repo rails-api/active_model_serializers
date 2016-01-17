@@ -122,14 +122,15 @@ Specify the root by passing it as an argument to `render`. For example:
   render json: @user_post, root: "admin_post", adapter: :json
 ```
 
-This will produce serialize as:
+This will be rendered as:
 ```json
-  {"admin_post": {
-    "title": "how to do open source"
+  {
+    "admin_post": {
+      "title": "how to do open source"
     }
   }
 ```
-`Note: the Attributes adapter (default) does not include a resource root.`
+Note: the `Attributes` adapter (default) does not include a resource root.
 
 #### serializer
 
