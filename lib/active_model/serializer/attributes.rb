@@ -14,10 +14,12 @@ module ActiveModel
 
         # Return the +attributes+ of +object+ as presented
         # by the serializer.
-        def attributes(requested_attrs = nil, reload = false)
+        def attributes(options = {}, reload = false)
+          requested_attrs = options[:only]
+          excepts = Array(options[:except])
           @attributes = nil if reload
           @attributes ||= self.class._attributes_data.each_with_object({}) do |(key, attr), hash|
-            next if attr.excluded?(self)
+            next if attr.excluded?(self) || excepts.include?(key)
             next unless requested_attrs.nil? || requested_attrs.include?(key)
             hash[key] = attr.value(self)
           end
