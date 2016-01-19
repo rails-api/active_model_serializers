@@ -33,12 +33,16 @@ class RevisionRunner
     refresh_temp_dir
   end
 
- def temp_dir_empty?
+  def refresh_temp_dir
+    empty_temp_dir
+    fill_temp_dir
+  end
+
+  def temp_dir_empty?
     Dir[File.join(TMP_DIR, '*')].none?
   end
 
   def empty_temp_dir
-    return if temp_dir_empty?
     FileUtils.mkdir_p(TMP_DIR)
     Dir[File.join(TMP_DIR, '*')].each do |file|
       if File.directory?(file)
@@ -58,10 +62,6 @@ class RevisionRunner
     at_exit { empty_temp_dir }
   end
 
-  def refresh_temp_dir
-    empty_temp_dir
-    fill_temp_dir
-  end
 
   module GitCommands
     module_function
@@ -92,6 +92,7 @@ class RevisionRunner
       system('git reset --hard --quiet')
     end
   end
+  include GitCommands
 
   def run_revisions(ref1: nil, ref2: nil)
     ref0 = current_branch
@@ -120,9 +121,11 @@ class RevisionRunner
     checkout_ref(ref)
     bundle
     restart_server
+    run_cmd
   end
 
   def run_cmd
+    debug { 'running' }
     assert_responses(get_caching, get_non_caching)
   rescue BadRevisionError => e
     debug { e.message }
@@ -194,7 +197,7 @@ class RevisionRunner
   end
 
   def debug(msg = '')
-    if block_given? && $DEBUG
+    if block_given? && ENV['DEBUG'] =~ /\Atrue|on|0\z/i
       STDOUT.puts yield
     else
       STDOUT.puts msg
