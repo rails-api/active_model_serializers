@@ -15,11 +15,11 @@ module Rails
       private
 
       def attributes_names
-        [:id] + attributes.select { |attr| !attr.reference? }.map { |a| a.name.to_sym }
+        [:id] + attributes.reject(&:reference?).map! { |a| a.name.to_sym }
       end
 
       def association_names
-        attributes.select { |attr| attr.reference? }.map { |a| a.name.to_sym }
+        attributes.select(&:reference?).map! { |a| a.name.to_sym }
       end
 
       def parent_class_name
@@ -34,4 +34,3 @@ module Rails
     end
   end
 end
-

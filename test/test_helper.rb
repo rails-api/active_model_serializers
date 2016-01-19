@@ -17,6 +17,7 @@ require 'action_controller'
 require 'action_controller/test_case'
 require 'action_controller/railtie'
 require 'active_support/json'
+require 'active_model_serializers'
 require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 
@@ -42,9 +43,6 @@ end
 require 'minitest/reporters'
 Minitest::Reporters.use!
 
-require 'active_model_serializers'
-require 'active_model/serializer/railtie'
-
 require 'support/stream_capture'
 
 require 'support/rails_app'
@@ -59,7 +57,7 @@ require 'fixtures/active_record'
 
 require 'fixtures/poro'
 
-ActiveSupport.on_load(:active_model_serializers) do
+ActiveSupport.on_load(:action_controller) do
   $action_controller_logger = ActiveModelSerializers.logger
   ActiveModelSerializers.logger = Logger.new(IO::NULL)
 end

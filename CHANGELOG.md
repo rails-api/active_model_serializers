@@ -58,6 +58,7 @@ Features:
 
 Fixes:
 
+- [#1352](https://github.com/rails-api/active_model_serializers/pull/1352) Fix generators; Isolate Rails-specifc code in Railties (@dgynn, @bf4)
 - [#1384](https://github.com/rails-api/active_model_serializers/pull/1384)Fix database state leaking across tests (@bf4)
 - [#1297](https://github.com/rails-api/active_model_serializers/pull/1297) Fix `fields` option to restrict relationships as well (@beauby)
 - [#1239](https://github.com/rails-api/active_model_serializers/pull/1239) Fix duplicates in JSON API compound documents (@beauby)
