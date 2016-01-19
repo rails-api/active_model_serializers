@@ -22,13 +22,13 @@ require 'json'
 
 class RevisionRunner
   BadRevisionError = Class.new(StandardError)
-  ROOT = Pathname File.join(File.dirname(__FILE__), '..')
+  ROOT = Pathname File.expand_path(['..', '..'].join(File::Separator), __FILE__)
   TMP_DIR_BASE = File.join('tmp', 'revision_runner')
   TMP_DIR = File.join(ROOT, TMP_DIR_BASE)
 
   attr_accessor :url_base
 
-  def initialize(prepend: '', append: '')
+  def initialize
     self.url_base = "http://localhost:9292"
     refresh_temp_dir
   end
