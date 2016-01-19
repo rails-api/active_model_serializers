@@ -13,6 +13,7 @@ abort "Rails application already defined: #{Rails.application.class}" if Rails.a
 
 # ref: https://gist.github.com/bf4/8744473
 class DummyApp < Rails::Application
+  # CONFIG: CACHE_ON={on,off}
   config.action_controller.perform_caching = ENV['CACHE_ON'] != 'off'
   config.action_controller.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
 
