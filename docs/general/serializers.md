@@ -122,7 +122,7 @@ e.g.
 ```ruby
 link :other, 'https://example.com/resource'
 link :self do
- href "https://example.com/link_author/#{object.id}"
+  href "https://example.com/link_author/#{object.id}"
 end
 ```
 
@@ -197,20 +197,18 @@ class PostSerializer < ActiveModel::Serializer
   end
 end
 ```
-<!--
+
 Or if you want to override association in block format, you can use:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :body
 
-  has_many :comments
-
-  def comments
-      "#{object.title} #{object.body}"
+  has_many :comments do
+    "#{object.comments.active}"
   end
 end
-``` -->
+```
 
 ## Overriding attribute methods
 
@@ -237,7 +235,7 @@ class PostSerializer < ActiveModel::Serializer
   has_many :comments
 
   attributes :body do
-      "#{object.body.downcase}"
+    "#{object.body.downcase}"
   end
 end
 ```
