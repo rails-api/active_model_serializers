@@ -6,6 +6,7 @@ module ActiveModel
         autoload :PaginationLinks
         autoload :FragmentCache
         autoload :Link
+        autoload :Meta
         autoload :Deserialization
 
         # TODO: if we like this abstraction and other API objects to it,
@@ -157,7 +158,7 @@ module ActiveModel
           links = links_for(serializer)
           resource_object[:links] = links if links.any?
 
-          meta = serializer.meta
+          meta = meta_for(serializer)
           resource_object[:meta] = meta unless meta.nil?
 
           resource_object
@@ -219,6 +220,10 @@ module ActiveModel
 
         def pagination_links_for(serializer, options)
           JsonApi::PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+        end
+
+        def meta_for(serializer)
+          Meta.new(serializer).as_json
         end
       end
     end

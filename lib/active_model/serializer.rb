@@ -9,6 +9,7 @@ require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
 require 'active_model/serializer/links'
+require 'active_model/serializer/meta'
 require 'active_model/serializer/type'
 
 # ActiveModel::Serializer is an abstract class that is
@@ -20,25 +21,9 @@ module ActiveModel
     include Attributes
     include Caching
     include Links
+    include Meta
     include Type
     require 'active_model/serializer/adapter'
-
-    with_options instance_writer: false, instance_reader: false do |serializer|
-      serializer.class_attribute :_meta # @api private : meta definition, @see Serializer#meta
-    end
-
-    # Register a meta attribute for the corresponding resource.
-    #
-    # @param [Hash] hash Optional hash
-    # @param [Block] block Optional block
-    def self.meta(hash = nil, &block)
-      self._meta =
-        if !block.nil?
-          block
-        else
-          hash
-        end
-    end
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
@@ -142,14 +127,6 @@ module ActiveModel
         self.class._fragmented.read_attribute_for_serialization(attr)
       else
         object.read_attribute_for_serialization(attr)
-      end
-    end
-
-    def meta
-      if self.class._meta.respond_to?(:call)
-        instance_eval(&self.class._meta)
-      else
-        self.class._meta
       end
     end
 
