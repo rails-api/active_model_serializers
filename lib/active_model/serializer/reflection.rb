@@ -57,7 +57,7 @@ module ActiveModel
       #
       def build_association(subject, parent_serializer_options)
         association_value = value(subject)
-        reflection_options = options.dup
+        reflection_options = reflection_options(association_value, options)
         serializer_class = subject.class.serializer_for(association_value, reflection_options)
 
         if serializer_class
@@ -77,6 +77,17 @@ module ActiveModel
       end
 
       private
+
+      def polymorphic_key(assoc_value)
+        reflection_key = assoc_value.class.model_name
+        assoc_value.respond_to?(:each) ? reflection_key.plural : reflection_key.singular
+      end
+
+      def reflection_options(assoc_value, options)
+        reflection_options = options.dup
+        reflection_options[:key] = polymorphic_key(assoc_value) if options[:polymorphic] && !options.key?(:key)
+        reflection_options
+      end
 
       def serializer_options(subject, parent_serializer_options, reflection_options)
         serializer = reflection_options.fetch(:serializer, nil)
