@@ -6,6 +6,8 @@ module ActiveModel
         autoload :PaginationLinks
         autoload :FragmentCache
         autoload :Link
+        autoload :Association
+        autoload :ResourceIdentifier
         autoload :Deserialization
 
         # TODO: if we like this abstraction and other API objects to it,
@@ -97,7 +99,7 @@ module ActiveModel
         end
 
         def process_resource(serializer, primary)
-          resource_identifier = resource_identifier_for(serializer)
+          resource_identifier = JsonApi::ResourceIdentifier.new(serializer).as_json
           return false unless @resource_identifiers.add?(resource_identifier)
 
           resource_object = resource_object_for(serializer)
@@ -127,37 +129,13 @@ module ActiveModel
           process_relationships(serializer, include_tree)
         end
 
-        def resource_identifier_type_for(serializer)
-          return serializer._type if serializer._type
-          if ActiveModelSerializers.config.jsonapi_resource_type == :singular
-            serializer.object.class.model_name.singular
-          else
-            serializer.object.class.model_name.plural
-          end
-        end
-
-        def resource_identifier_id_for(serializer)
-          if serializer.respond_to?(:id)
-            serializer.id
-          else
-            serializer.object.id
-          end
-        end
-
-        def resource_identifier_for(serializer)
-          type = resource_identifier_type_for(serializer)
-          id   = resource_identifier_id_for(serializer)
-
-          { id: id.to_s, type: type }
-        end
-
         def attributes_for(serializer, fields)
           serializer.attributes(fields).except(:id)
         end
 
         def resource_object_for(serializer)
           resource_object = cache_check(serializer) do
-            resource_object = resource_identifier_for(serializer)
+            resource_object = JsonApi::ResourceIdentifier.new(serializer).as_json
 
             requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
             attributes = attributes_for(serializer, requested_fields)
@@ -165,7 +143,8 @@ module ActiveModel
             resource_object
           end
 
-          relationships = relationships_for(serializer)
+          requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
+          relationships = relationships_for(serializer, requested_associations)
           resource_object[:relationships] = relationships if relationships.any?
 
           links = links_for(serializer)
@@ -174,24 +153,15 @@ module ActiveModel
           resource_object
         end
 
-        def relationship_value_for(serializer, options = {})
-          if serializer.respond_to?(:each)
-            serializer.map { |s| resource_identifier_for(s) }
-          else
-            if options[:virtual_value]
-              options[:virtual_value]
-            elsif serializer && serializer.object
-              resource_identifier_for(serializer)
-            end
-          end
-        end
-
-        def relationships_for(serializer)
-          resource_type = resource_identifier_type_for(serializer)
-          requested_associations = fieldset.fields_for(resource_type) || '*'
+        def relationships_for(serializer, requested_associations)
           include_tree = IncludeTree.from_include_args(requested_associations)
           serializer.associations(include_tree).each_with_object({}) do |association, hash|
-            hash[association.key] = { data: relationship_value_for(association.serializer, association.options) }
+            hash[association.key] = JsonApi::Association.new(serializer,
+                                                             association.serializer,
+                                                             association.options,
+                                                             association.links,
+                                                             association.meta)
+                                    .as_json
           end
         end
 
