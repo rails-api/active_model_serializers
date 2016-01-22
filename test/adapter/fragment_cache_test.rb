@@ -31,8 +31,13 @@ module ActiveModel
           }
           assert_equal(@spam_hash.fetch, expected_result)
         end
+
+        def test_fragment_fetch_with_type_override
+          type_serializer = TypedRoleSerializer.new(Role.new(name: 'Another Author'))
+          type_hash       = ActiveModel::Serializer::Adapter::JsonApi.new(type_serializer).serializable_hash
+          assert_equal(type_hash[:data][:type], TypedRoleSerializer._type)
+        end
       end
     end
   end
 end
-

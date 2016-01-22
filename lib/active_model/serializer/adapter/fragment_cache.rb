@@ -94,6 +94,10 @@ module ActiveModel
 
           cached.constantize.cache(klass._cache_options)
 
+          # Preserve the type setting in the cached/non-cached serializer classes
+          cached.constantize.type(klass._type)
+          non_cached.constantize.type(klass._type)
+
           cached.constantize.fragmented(serializer)
           non_cached.constantize.fragmented(serializer)
 

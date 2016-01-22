@@ -222,6 +222,18 @@ VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
+TypedRoleSerializer = Class.new(ActiveModel::Serializer) do
+  type 'my-roles'
+  cache only: [:name], skip_digest: true
+  attributes :id, :name, :description, :slug
+
+  def slug
+    "#{object.name}-#{object.id}"
+  end
+
+  belongs_to :author
+end
+
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:id]
   attributes :id
