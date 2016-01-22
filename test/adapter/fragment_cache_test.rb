@@ -3,6 +3,14 @@ module ActiveModel
   class Serializer
     module Adapter
       class FragmentCacheTest < ActiveSupport::TestCase
+        TypedRoleSerializer = Class.new(ActiveModel::Serializer) do
+          type 'my-roles'
+          cache only: [:name], skip_digest: true
+          attributes :id, :name, :description
+
+          belongs_to :author
+        end
+
         def setup
           super
           @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')
@@ -31,8 +39,12 @@ module ActiveModel
           }
           assert_equal(@spam_hash.fetch, expected_result)
         end
+
+        def test_fragment_fetch_with_type_override
+          serialization = serializable(Role.new(name: 'Another Author'), serializer: TypedRoleSerializer, adapter: :json_api).serializable_hash
+          assert_equal(TypedRoleSerializer._type, serialization.fetch(:data).fetch(:type))
+        end
       end
     end
   end
 end
-
