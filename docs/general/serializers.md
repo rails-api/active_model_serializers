@@ -184,15 +184,11 @@ For more information, see [the Serializer class on GitHub](https://github.com/ra
 
 ## Overriding association methods
 
-If you want to override any association, you can use:
+To override an association, call `has_many`, `has_one` or `belongs_to` with a block:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body
-
-  has_many :comments
-
-  def comments
+  has_many :comments do
     object.comments.active
   end
 end
@@ -200,15 +196,11 @@ end
 
 ## Overriding attribute methods
 
-If you want to override any attribute, you can use:
+To override an attribute, call `attribute` with a block:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body
-
-  has_many :comments
-
-  def body
+  attribute :body do
     object.body.downcase
   end
 end
