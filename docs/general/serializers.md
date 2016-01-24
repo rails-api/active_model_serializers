@@ -188,8 +188,6 @@ If you want to override any association, you can use:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body
-
   has_many :comments
 
   def comments
@@ -204,9 +202,7 @@ If you want to override any attribute, you can use:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :body
-
-  has_many :comments
+  attributes :body
 
   def body
     object.body.downcase
