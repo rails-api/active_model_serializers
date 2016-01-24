@@ -69,17 +69,24 @@ module ActiveModel
     def self.serializer_lookup_chain_for(klass, serialization_context = nil)
       chain = []
 
-      resource_class_name = klass.name.demodulize
-      resource_namespace = klass.name.deconstantize
       controller_namespace = serialization_context.controller_namespace if serialization_context
-      serializer_class_name = "#{resource_class_name}Serializer"
+      serializer_class_name = "#{klass.name}Serializer"
 
       # Look for a nested serializer first.
-      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
-      # Then look for a serializer within the namespace of the calling controller if any.
-      chain.push("#{controller_namespace}::#{serializer_class_name}") if controller_namespace
-      # Finally look for a serializer within the resource's namespace.
-      chain.push("#{resource_namespace}::#{serializer_class_name}")
+      chain.push("::#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
+
+      # Then look for a serializer within the prefix namespaces of the calling controller, if any.
+      if controller_namespace
+        controller_chain = controller_namespace.to_s
+          .split('::')
+          .reduce([]) { |a, e| a + ["#{a.last}::#{e}"] }
+          .reverse
+          .map { |path| "#{path}::#{serializer_class_name}" }
+        chain.push(*controller_chain)
+      end
+
+      # Finally, look for a serializer in the root namespace.
+      chain.push("::#{serializer_class_name}")
 
       chain
     end

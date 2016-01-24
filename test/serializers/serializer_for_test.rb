@@ -115,18 +115,54 @@ module ActiveModel
           assert_equal nil, serializer
         end
 
-        def test_serializer_for_nested_resource
-          comment = ResourceNamespace::Comment.new
-          serializer = ResourceNamespace::PostSerializer.serializer_for(comment)
-          assert_equal ResourceNamespace::PostSerializer::CommentSerializer, serializer
-        end
-
         def test_serializer_for_nested_resource_with_lookup_disabled
           comment = ResourceNamespace::Comment.new
           serializer = with_serializer_lookup_disabled do
             ResourceNamespace::PostSerializer.serializer_for(comment)
           end
           assert_equal nil, serializer
+        end
+
+        module ::ResourceNamespace
+          class Resource; end
+        end
+
+        def test_serializer_lookup_chain
+          chain = ActiveModel::Serializer.serializer_lookup_chain_for(::ResourceNamespace::Resource)
+          expected = ['::ResourceNamespace::ResourceSerializer']
+          assert_equal(expected, chain)
+        end
+
+        def test_serializer_lookup_chain_nested
+          chain = ::PostSerializer.serializer_lookup_chain_for(::ResourceNamespace::Resource)
+          expected = ['::PostSerializer::ResourceNamespace::ResourceSerializer',
+                      '::ResourceNamespace::ResourceSerializer']
+          assert_equal(expected, chain)
+        end
+
+        def test_serializer_lookup_chain_controller
+          context = ActiveModelSerializers::SerializationContext.new
+          context.instance_variable_set(:@controller_namespace, 'Api::V1')
+          assert_equal('Api::V1', context.controller_namespace)
+
+          chain = ActiveModel::Serializer.serializer_lookup_chain_for(::ResourceNamespace::Resource, context)
+          expected = ['::Api::V1::ResourceNamespace::ResourceSerializer',
+                      '::Api::ResourceNamespace::ResourceSerializer',
+                      '::ResourceNamespace::ResourceSerializer']
+          assert_equal(expected, chain)
+        end
+
+        def test_serializer_lookup_chain_controller_nested
+          context = ActiveModelSerializers::SerializationContext.new
+          context.instance_variable_set(:@controller_namespace, 'Api::V1')
+          assert_equal('Api::V1', context.controller_namespace)
+
+          chain = ::PostSerializer.serializer_lookup_chain_for(::ResourceNamespace::Resource, context)
+          expected = ['::PostSerializer::ResourceNamespace::ResourceSerializer',
+                      '::Api::V1::ResourceNamespace::ResourceSerializer',
+                      '::Api::ResourceNamespace::ResourceSerializer',
+                      '::ResourceNamespace::ResourceSerializer']
+          assert_equal(expected, chain)
         end
       end
     end

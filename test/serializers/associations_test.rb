@@ -202,9 +202,7 @@ module ActiveModel
 
       class NestedSerializersTest < ActiveSupport::TestCase
         Post    = Class.new(::Model)
-        Comment = Class.new(::Model)
-        Author  = Class.new(::Model)
-        Description = Class.new(::Model)
+        ::Description = Class.new(::Model)
         class PostSerializer < ActiveModel::Serializer
           has_many :comments
           CommentSerializer = Class.new(ActiveModel::Serializer)
@@ -215,9 +213,9 @@ module ActiveModel
         end
 
         def setup
-          @comment = Comment.new
-          @author = Author.new
-          @description = Description.new
+          @comment = ::Comment.new
+          @author = ::Author.new
+          @description = ::Description.new
           @post = Post.new(comments: [@comment],
                            author: @author,
                            description: @description)
