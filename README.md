@@ -51,8 +51,6 @@ AMS](https://medium.com/@joaomdmoura/the-future-of-ams-e5f9047ca7e9)'.
 
 ## Installation
 
-Note: *ActiveModelSerializers is already included on Rails >= 5*
-
 Add this line to your application's Gemfile:
 
 ```
