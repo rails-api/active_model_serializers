@@ -23,8 +23,7 @@ module ActiveModel
       end
 
       def json_key
-        key = root || serializers.first.try(:json_key) || object.try(:name).try(:underscore)
-        key.try(:pluralize)
+        root || derived_root
       end
 
       def paginated?
@@ -36,6 +35,13 @@ module ActiveModel
       protected
 
       attr_reader :serializers
+
+      private
+
+      def derived_root
+        key = serializers.first.try(:json_key) || object.try(:name).try(:underscore)
+        key.try(:pluralize)
+      end
     end
   end
 end

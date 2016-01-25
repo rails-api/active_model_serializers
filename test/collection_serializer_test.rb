@@ -62,8 +62,9 @@ module ActiveModel
         assert_equal expected, @serializer.root
       end
 
-      def test_json_key
-        assert_equal 'comments', @serializer.json_key
+      def test_json_key_with_resource_with_serializer
+        singular_key = @serializer.send(:serializers).first.json_key
+        assert_equal singular_key.pluralize, @serializer.json_key
       end
 
       def test_json_key_with_resource_with_name_and_no_serializers
@@ -84,13 +85,15 @@ module ActiveModel
       end
 
       def test_json_key_with_root
-        serializer = collection_serializer.new(@resource, root: 'custom_root')
-        assert_equal 'custom_roots', serializer.json_key
+        expected = 'custom_root'
+        serializer = collection_serializer.new(@resource, root: expected)
+        assert_equal expected, serializer.json_key
       end
 
       def test_json_key_with_root_and_no_serializers
-        serializer = collection_serializer.new(build_named_collection, root: 'custom_root')
-        assert_equal 'custom_roots', serializer.json_key
+        expected = 'custom_root'
+        serializer = collection_serializer.new(build_named_collection, root: expected)
+        assert_equal expected, serializer.json_key
       end
     end
   end
