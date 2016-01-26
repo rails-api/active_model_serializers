@@ -24,7 +24,9 @@ module ActiveModelSerializers
       ActiveModelSerializers.config.perform_caching = Rails.configuration.action_controller.perform_caching
     end
 
-    generators do
+    generators do |app|
+      Rails::Generators.configure!(app.config.generators)
+      Rails::Generators.hidden_namespaces.uniq!
       require 'generators/rails/resource_override'
     end
 
