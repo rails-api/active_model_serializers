@@ -48,8 +48,11 @@ module ActiveModel
     # @see ActiveModelSerializers::Adapter.lookup
     # Deprecated
     def self.adapter
-      warn 'Calling adapter method in Serializer, please use the ActiveModelSerializers::Adapter.configured_adapter'
       ActiveModelSerializers::Adapter.lookup(config.adapter)
+    end
+    class << self
+      extend ActiveModelSerializers::Deprecate
+      deprecate :adapter, 'ActiveModelSerializers::Adapter.configured_adapter'
     end
 
     # @api private

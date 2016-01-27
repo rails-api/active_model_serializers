@@ -5,6 +5,8 @@ require 'active_support/core_ext/string/inflections'
 module ActiveModelSerializers
   extend ActiveSupport::Autoload
   autoload :Model
+  autoload :CachedSerializer
+  autoload :FragmentCache
   autoload :Callbacks
   autoload :Deserialization
   autoload :Logging
