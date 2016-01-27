@@ -1,5 +1,7 @@
 ## 0.10.x
 
+
+### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
 Breaking changes:
 
 - [#1360](https://github.com/rails-api/active_model_serializers/pull/1360)
