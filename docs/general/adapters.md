@@ -121,19 +121,19 @@ If a symbol, then the adapter must be, e.g. `:great_example`,
 
 There are two ways to register an adapter:
 
-1) The simplest, is to subclass `ActiveModel::Serializer::Adapter`, e.g. the below will
+1) The simplest, is to subclass `ActiveModel::Serializer::Adapter::Base`, e.g. the below will
 register the `Example::UsefulAdapter` as `:useful_adapter`.
 
 ```ruby
 module Example
-  class UsefulAdapter < ActiveModel::Serializer::Adapter
+  class UsefulAdapter < ActiveModel::Serializer::Adapter::Base
   end
 end
 ```
 
 You'll notice that the name it registers is the class name underscored, not the full namespace.
 
-Under the covers, when the `ActiveModel::Serializer::Adapter` is subclassed, it registers
+Under the covers, when the `ActiveModel::Serializer::Adapter::Base` is subclassed, it registers
 the subclass as `register(:useful_adapter, Example::UsefulAdapter)`
 
 2) Any class can be registered as an adapter by calling `register` directly on the
