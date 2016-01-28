@@ -24,7 +24,7 @@ module ActiveModel
         end
 
         def fragment_cached?
-          @klass._cache && (@klass._cache_only && !@klass._cache_except || !@klass._cache_only && @klass._cache_except)
+          @klass._cache_only && !@klass._cache_except || !@klass._cache_only && @klass._cache_except
         end
 
         def cache_key
