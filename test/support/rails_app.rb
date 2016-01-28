@@ -5,7 +5,6 @@ module ActiveModelSerializers
       config.secret_key_base = 'abc123'
       config.active_support.test_order = :random
       config.action_controller.perform_caching = true
-      ActionController::Base.cache_store = :memory_store
     end
 
     app.routes.default_url_options = { host: 'example.com' }

@@ -25,8 +25,11 @@ module ActiveModelSerializers
     # and also before eager_loading (if enabled).
     initializer 'active_model_serializers.set_configs', :after => 'action_controller.set_configs' do
       ActiveModelSerializers.logger = Rails.configuration.action_controller.logger
-      ActiveModelSerializers.config.cache_store     = Rails.configuration.action_controller.cache_store
       ActiveModelSerializers.config.perform_caching = Rails.configuration.action_controller.perform_caching
+      # We want this hook to run after the config has been set, even if ActionController has already loaded.
+      ActiveSupport.on_load(:action_controller) do
+        ActiveModelSerializers.config.cache_store = cache_store
+      end
     end
 
     generators do |app|
