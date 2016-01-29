@@ -1,6 +1,16 @@
 module ActiveModelSerializers
   module Adapter
     class JsonApi
+      # meta
+      # definition:
+      #   JSON Object
+      #
+      # description:
+      #   Non-standard meta-information that can not be represented as an attribute or relationship.
+      # structure:
+      #   {
+      #     attitude: 'adjustable'
+      #   }
       class Meta
         def initialize(serializer)
           @object = serializer.object
