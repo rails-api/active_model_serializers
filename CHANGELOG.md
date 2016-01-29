@@ -1,5 +1,9 @@
 ## 0.10.x
 
+Breaking changes:
+Features:
+Fixes:
+Misc:
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
 Breaking changes:
