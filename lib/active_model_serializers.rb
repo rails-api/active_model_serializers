@@ -1,6 +1,7 @@
 require 'active_model'
 require 'active_support'
 require 'active_support/core_ext/object/with_options'
+require 'active_support/core_ext/string/inflections'
 module ActiveModelSerializers
   extend ActiveSupport::Autoload
   autoload :Model
