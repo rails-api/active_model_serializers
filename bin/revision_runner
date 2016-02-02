@@ -120,6 +120,7 @@ class RevisionRunner
     bundle
     base = Shellwords.shellescape(TMP_DIR_BASE)
     cmd = "BASE=#{base} #{Shellwords.shelljoin(cmd)}"
+    cmd.sub('bin/bench', 'tmp/revision_runner/bench')
     debug { cmd }
     system(cmd)
     $CHILD_STATUS.exitstatus
