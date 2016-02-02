@@ -9,11 +9,11 @@ class ApiAssertion
     caching = get_caching
     caching[:body].delete('meta')
     non_caching = get_non_caching
-    caching[:body].delete('meta')
+    non_caching[:body].delete('meta')
     assert_responses(caching, non_caching)
   rescue BadRevisionError => e
     msg = e.message
-    STDOUT.puts msg.to_json
+    STDOUT.puts msg
     exit 1
   end
 
