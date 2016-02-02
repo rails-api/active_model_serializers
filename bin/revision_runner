@@ -121,7 +121,8 @@ class RevisionRunner
     base = Shellwords.shellescape(TMP_DIR_BASE)
     cmd = "BASE=#{base} #{Shellwords.shelljoin(cmd)}"
     debug { cmd }
-    `#{cmd}`
+    system(cmd)
+    $CHILD_STATUS.exitstatus
   end
 
   # TODO: useful?
