@@ -84,9 +84,7 @@ end
 options = {
   repeat_count: 1,
   pattern: [],
-  env: {
-    'CACHE_ON' => 'on'
-  }
+  env: "CACHE_ON=on"
 }
 
 OptionParser.new do |opts|
