@@ -17,14 +17,22 @@ class ApiAssertion
     exit 1
   end
 
-  private
-
-  def get_caching
-    get("/caching/on")
+  def get_status(on_off = 'on'.freeze)
+    get("/status/#{on_off}"
   end
 
-  def get_non_caching
-    get("/non_caching/on")
+  def clear
+    get("/clear")
+  end
+
+  private
+
+  def get_caching(on_off = 'on'.freeze)
+    get("/caching/#{on_off}")
+  end
+
+  def get_non_caching(on_off = 'on'.freeze)
+    get("/non_caching/#{on_off}")
   end
 
   def assert_responses(caching, non_caching)
@@ -79,17 +87,26 @@ class ApiAssertion
     end
   end
 end
-ApiAssertion.new.valid?
+assertion = ApiAssertion.new
+assertion.valid?
 
+STDERR.puts assertion.get_status
 Benchmark.ams("caching on: caching serializers") do
   request(:get, "/caching/on")
 end
+STDERR.puts assertion.get_status
+assertion.clear
 Benchmark.ams("caching off: caching serializers") do
   request(:get, "/caching/off")
 end
+STDERR.puts assertion.get_status
+assertion.clear
 Benchmark.ams("caching on: non-caching serializers") do
   request(:get, "/caching/on")
 end
+STDERR.puts assertion.get_status
+assertion.clear
 Benchmark.ams("caching off: non-caching serializers") do
   request(:get, "/caching/off")
 end
+STDERR.puts assertion.get_status
