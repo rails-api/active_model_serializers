@@ -34,7 +34,7 @@ end
 Rails.configuration.serializers << PostSerializer
 
 class CachingAuthorSerializer < AuthorSerializer
-  cache key: 'writer', only: [:body], skip_digest: true
+  cache key: 'writer', only: [:name], skip_digest: true
 end
 Rails.configuration.serializers << CachingAuthorSerializer
 

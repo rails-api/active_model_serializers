@@ -48,12 +48,16 @@ class BenchmarkDriver
     results.each do |json|
       result = {
         'name' => json['label'],
-        'time[user]' => Float(json['user']).round(5),
         'commit_hash' => commit_hash,
         'version' => json['version'],
-        "total_allocated_objects_per_iteration" => json["total_allocated_objects_per_iteration"],
+        "total_allocated_objects_per_measurement" => json["total_allocated_objects_per_measurement"],
         'environment' => environment
       }
+      if json['error']
+        result['error'] = json['error']
+      else
+        result['time[user]'] = Float(json['user']).round(5)
+      end
       puts result
     end
   end
@@ -70,7 +74,7 @@ class BenchmarkDriver
     end
 
     results.sort_by do |result|
-      result.first['iterations_per_second']
+      result.first['time[user]']
     end.last
   end
 end
