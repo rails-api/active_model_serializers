@@ -118,7 +118,7 @@ class RevisionRunner
   def run_at_ref(ref, cmd)
     checkout_ref(ref)
     bundle
-    system(cmd)
+    system("BASE=#{TMP_DIR_BASE}", cmd)
   end
 
   # TODO: useful?

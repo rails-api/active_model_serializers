@@ -9,7 +9,7 @@ require 'pathname'
 
 class BenchmarkDriver
   ROOT = Pathname File.expand_path(File.join('..', '..'), __FILE__)
-  BASE = ROOT.join('test', 'dummy')
+  BASE = ENV.fetch('BASE') { ROOT.join('test', 'dummy') }
 
   def self.benchmark(options)
     self.new(options).run
