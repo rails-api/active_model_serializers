@@ -12,7 +12,7 @@ module Benchmark
         response
       end
     end
-    def ams(label = nil, time: 5_000, warmup: 10, &block)
+    def ams(label = nil, time: 2_000, warmup: 10, &block)
       fail ArgumentError.new, 'block should be passed' unless block_given?
 
       # run_gc
