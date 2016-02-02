@@ -44,7 +44,7 @@ class BenchmarkDriver
     # "caching speedup (on / off)"
     commit_hash = ENV['COMMIT_HASH'] || `git rev-parse --short HEAD`.chomp
 
-    environment = `ruby -v`.chomp
+    environment = `ruby -v`.strip.chomp[/\W+/]
     results.each do |json|
       puts json.keys
       result = {
