@@ -79,7 +79,7 @@ class RevisionRunner
     end
 
     def revision_description(rev)
-      `git log --oneline -1 #{rev}`
+      `git log --oneline -1 #{rev}`.chomp
     end
 
     def bundle
