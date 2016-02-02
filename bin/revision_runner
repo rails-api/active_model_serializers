@@ -149,6 +149,6 @@ if $PROGRAM_NAME == __FILE__
   args = ARGV.dup
   reports = runner.run_revisions(ref1: args.shift, ref2: args.shift, cmd: args)
   reports.each do |name, value|
-    STDERR.puts "report #{name}\n\t#{value}"
+    STDERR.puts "revision: #{name}\n\t#{value}"
   end
 end
