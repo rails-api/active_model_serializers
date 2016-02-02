@@ -8,7 +8,7 @@ require 'json'
 
 ############################
 #
-# A wrapper around git-bisect that stashes some code (test/dummy/*) for use in making requests
+# A wrapper around git-bisect that stashes some code (bin/bench,test/dummy/*) for use in making requests
 # running against each revision.
 #
 # USAGE
@@ -17,7 +17,11 @@ require 'json'
 #   <ref1> defaults to the current branch
 #   <ref2> defaults to the master branch
 # Runs <cmd> across every revisiion in the range, inclusive.
-# Aborts when <cmd> exit code is non-zero.
+# TODO: Aborts when <cmd> exit code is non-zero.
+#
+# EXAMPLE
+#
+# bin/revision_runner 792fb8a9053f8db3c562dae4f40907a582dd1720 master bin/bench -r 2 -e CACHE_ON=off
 ###########################
 
 class RevisionRunner
