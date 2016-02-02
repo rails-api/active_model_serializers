@@ -11,6 +11,24 @@ require 'action_controller/test_case'
 require 'action_controller/railtie'
 abort "Rails application already defined: #{Rails.application.class}" if Rails.application
 
+class NullLogger < Logger
+  def initialize(*args)
+  end
+
+  def add(*args, &block)
+  end
+end
+class DummyLogger < ActiveSupport::Logger
+  def initialize
+    @file = StringIO.new
+    super(@file)
+  end
+
+  def messages
+    @file.rewind
+    @file.read
+  end
+end
 # ref: https://gist.github.com/bf4/8744473
 class DummyApp < Rails::Application
   # CONFIG: CACHE_ON={on,off}
@@ -24,19 +42,8 @@ class DummyApp < Rails::Application
   config.active_support.test_order = :random
   config.secret_token = '1234'
   config.secret_key_base = 'abc123'
-  config.logger = Logger.new(IO::NULL)
+  config.logger = NullLogger.new
 
-  class DummyLogger < ActiveSupport::Logger
-    def initialize
-      @file = StringIO.new
-      super(@file)
-    end
-
-    def messages
-      @file.rewind
-      @file.read
-    end
-  end
 end
 
 require 'active_model_serializers'

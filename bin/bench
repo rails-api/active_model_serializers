@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby
+# ActiveModelSerializers Benchmark driver
+
+require 'json'
+require 'pathname'
+require 'optparse'
+require 'digest'
+require 'pathname'
+
+class BenchmarkDriver
+  ROOT = Pathname File.expand_path(File.join('..', '..'), __FILE__)
+  BASE = ROOT.join('test', 'dummy')
+
+  def self.benchmark(options)
+    self.new(options).run
+  end
+
+  def initialize(options)
+    @repeat_count = options[:repeat_count]
+    @pattern = options[:pattern]
+  end
+
+  def run
+    files.each do |path|
+      next if !@pattern.empty? && /#{@pattern.join('|')}/ !~ File.basename(path)
+      run_single(path)
+    end
+  end
+
+  private
+
+  def files
+    Dir[BASE.join('bm_*')]
+  end
+
+  def run_single(path)
+    script = "RAILS_ENV=production ruby #{path}"
+
+    # FIXME: ` provides the full output but it'll return failed output as well.
+    results = measure(script)
+
+    # TODO:
+    # "vs. earliest ref (#{first_entry_ref[0..8]}) (x faster)",
+    # "caching speedup (on / off)"
+    commit_hash = ENV['COMMIT_HASH'] || `git rev-parse --short HEAD`.chomp
+
+    environment = `ruby -v`.chomp
+    results.each do |json|
+      result = {
+        'name' => json['label'],
+        'time[user]' => Float(json['user']).round(5),
+        'commit_hash' => commit_hash,
+        'version' => json['version'],
+        "total_allocated_objects_per_iteration" => json["total_allocated_objects_per_iteration"],
+        'environment' => environment
+      }
+      puts result
+    end
+  end
+
+  def measure(script)
+    results = []
+
+    @repeat_count.times do
+      output = `#{script}`
+      result = output.split("\n").map {|line|
+        JSON.parse(line)
+      }
+      results << result
+    end
+
+    results.sort_by do |result|
+      result.first['iterations_per_second']
+    end.last
+  end
+end
+
+options = {
+  repeat_count: 1,
+  pattern: []
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/bench [options]"
+
+  opts.on("-r", "--repeat-count [NUM]", "Run benchmarks [NUM] times taking the best result") do |value|
+    options[:repeat_count] = value.to_i
+  end
+
+  opts.on("-p", "--pattern <PATTERN1,PATTERN2,PATTERN3>", "Benchmark name pattern") do |value|
+    options[:pattern] = value.split(',')
+  end
+end.parse!(ARGV)
+
+BenchmarkDriver.benchmark(options)

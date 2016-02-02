@@ -28,7 +28,7 @@ class PostController < ActionController::Base
   def clear
     ActionController::Base.cache_store.clear
     # Test caching is on
-    logger = DummyApp::DummyLogger.new
+    logger = DummyLogger.new
     ActiveSupport::Cache::Store.logger = logger # seems to be the best way
     # the below is used in some rails tests but isn't available/working in all versions, so far as I can tell
     # https://github.com/rails/rails/pull/15943
@@ -49,7 +49,7 @@ class PostController < ActionController::Base
   end
 
   def cache_messages
-    ActiveSupport::Cache::Store.logger.is_a?(DummyApp::DummyLogger) && ActiveSupport::Cache::Store.logger.messages.split("\n")
+    ActiveSupport::Cache::Store.logger.is_a?(DummyLogger) && ActiveSupport::Cache::Store.logger.messages.split("\n")
   end
 
   def toggle_cache_status
