@@ -118,7 +118,8 @@ class RevisionRunner
   def run_at_ref(ref, cmd)
     checkout_ref(ref)
     bundle
-    system("BASE=#{TMP_DIR_BASE}", cmd)
+    base = Shellwords.shellescape(TMP_DIR_BASE)
+    `BASE=#{base} #{Shellwords.shelljoin(cmd)}`
   end
 
   # TODO: useful?
@@ -148,6 +149,6 @@ if $PROGRAM_NAME == __FILE__
   args = ARGV.dup
   reports = runner.run_revisions(ref1: args.shift, ref2: args.shift, cmd: args)
   reports.each do |name, value|
-    STDERR.puts "#{name}\n\t#{value}"
+    STDERR.puts "report #{name}\n\t#{value}"
   end
 end

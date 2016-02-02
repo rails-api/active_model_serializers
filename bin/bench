@@ -30,7 +30,7 @@ class BenchmarkDriver
   private
 
   def files
-    Dir[BASE.join('bm_*')]
+    Dir[File.join(BASE, 'bm_*')]
   end
 
   def run_single(path)
