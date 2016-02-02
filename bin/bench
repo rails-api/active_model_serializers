@@ -45,8 +45,8 @@ class BenchmarkDriver
     commit_hash = ENV['COMMIT_HASH'] || `git rev-parse --short HEAD`.chomp
 
     environment = `ruby -v`.strip.chomp[/\W+/]
+    puts "Benchmark results:"
     results.each do |json|
-      puts json.keys
       result = {
         'name' => json['label'],
         'commit_hash' => commit_hash,
