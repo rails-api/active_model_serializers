@@ -1,4 +1,4 @@
-**This was the original design document for serializers.** It is useful mostly for historical purposes as the public API has changed.
+**This was the original design document for serializers. For Current Design Please look at Architecture doc.** It is useful mostly for historical purposes as the public API has changed.
 
 ## Rails Serializers
 
