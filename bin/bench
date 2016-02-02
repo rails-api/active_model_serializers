@@ -36,6 +36,8 @@ class BenchmarkDriver
 
   def run_single(path)
     script = "RAILS_ENV=production #{@env} ruby #{path}"
+    puts script
+    exit
 
     # FIXME: ` provides the full output but it'll return failed output as well.
     results = measure(script)
