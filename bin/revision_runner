@@ -119,7 +119,9 @@ class RevisionRunner
     checkout_ref(ref)
     bundle
     base = Shellwords.shellescape(TMP_DIR_BASE)
-    `BASE=#{base} #{Shellwords.shelljoin(cmd)}`
+    cmd = "BASE=#{base} #{Shellwords.shelljoin(cmd)}"
+    debug { cmd }
+    `#{cmd}`
   end
 
   # TODO: useful?
