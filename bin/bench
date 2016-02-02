@@ -18,7 +18,7 @@ class BenchmarkDriver
   def initialize(options)
     @repeat_count = options[:repeat_count]
     @pattern = options[:pattern]
-    @env = options[:env].join(' ')
+    @env = Array(options[:env]).join(' ')
   end
 
   def run
