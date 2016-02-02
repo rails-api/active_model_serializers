@@ -7,7 +7,7 @@ module Benchmark
       def request(method, path)
         response = Rack::MockRequest.new(DummyApp).send(method, path)
         if response.status.in?([404, 500])
-          fail "omg, #{method}, #{path}, #{response.status}, #{response.body}"
+          fail "omg, #{method}, #{path}, '#{response.status}', '#{response.body}'"
         end
         response
       end

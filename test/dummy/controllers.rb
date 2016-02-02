@@ -29,7 +29,7 @@ class PostController < ActionController::Base
     ActionController::Base.cache_store.clear
     # Test caching is on
     # logger = DummyLogger.new
-    logger = NullLogger.new
+    logger = Logger.new(IO::NULL)
     ActiveSupport::Cache::Store.logger = logger # seems to be the best way
     # the below is used in some rails tests but isn't available/working in all versions, so far as I can tell
     # https://github.com/rails/rails/pull/15943
