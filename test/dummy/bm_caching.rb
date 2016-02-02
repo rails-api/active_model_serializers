@@ -1,15 +1,15 @@
 require_relative './benchmarking_support'
 require_relative './app'
-include Benchmark::ActiveModelSerializers::TestMethods
 
 class ApiAssertion
+  include Benchmark::ActiveModelSerializers::TestMethods
   BadRevisionError = Class.new(StandardError)
 
   def valid?
     caching = get_caching
-    STDERR.puts caching[:body].delete('meta')
+    caching[:body].delete('meta')
     non_caching = get_non_caching
-    STDERR.puts non_caching[:body].delete('meta')
+    caching[:body].delete('meta')
     assert_responses(caching, non_caching)
   rescue BadRevisionError => e
     msg = e.message
@@ -25,8 +25,6 @@ class ApiAssertion
     get("/clear")
   end
 
-  private
-
   def get_caching(on_off = 'on'.freeze)
     get("/caching/#{on_off}")
   end
@@ -34,6 +32,8 @@ class ApiAssertion
   def get_non_caching(on_off = 'on'.freeze)
     get("/non_caching/#{on_off}")
   end
+
+  private
 
   def assert_responses(caching, non_caching)
     assert_equal(caching[:code], 200, "Caching response failed: #{caching}")
@@ -90,23 +90,23 @@ end
 assertion = ApiAssertion.new
 assertion.valid?
 
-STDERR.puts assertion.get_status
+# STDERR.puts assertion.get_status
 Benchmark.ams("caching on: caching serializers") do
-  request(:get, "/caching/on")
+  assertion.get_caching('on')
 end
-STDERR.puts assertion.get_status
+# STDERR.puts assertion.get_status
 assertion.clear
 Benchmark.ams("caching off: caching serializers") do
-  request(:get, "/caching/off")
+  assertion.get_caching('off')
 end
-STDERR.puts assertion.get_status
+# STDERR.puts assertion.get_status
 assertion.clear
 Benchmark.ams("caching on: non-caching serializers") do
-  request(:get, "/caching/on")
+  assertion.get_non_caching('on')
 end
-STDERR.puts assertion.get_status
+# STDERR.puts assertion.get_status
 assertion.clear
 Benchmark.ams("caching off: non-caching serializers") do
-  request(:get, "/caching/off")
+  assertion.get_non_caching('off')
 end
-STDERR.puts assertion.get_status
+# STDERR.puts assertion.get_status
