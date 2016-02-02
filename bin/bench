@@ -46,6 +46,7 @@ class BenchmarkDriver
 
     environment = `ruby -v`.chomp
     results.each do |json|
+      puts json.keys
       result = {
         'name' => json['label'],
         'commit_hash' => commit_hash,

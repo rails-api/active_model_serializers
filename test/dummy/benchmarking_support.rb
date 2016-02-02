@@ -41,7 +41,7 @@ module Benchmark
         user:  user,
         system: system,
         version: ::ActiveModel::Serializer::VERSION,
-        total_allocated_objects_per_iteration: get_total_allocated_objects(&block)
+        total_allocated_objects_per_measurement: get_total_allocated_objects(&block)
       }.to_json
 
       puts output
