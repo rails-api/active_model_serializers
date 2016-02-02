@@ -11,19 +11,19 @@ It should be set only once, preferably at initialization.
 For example:
 
 ```ruby
-ActiveModelSerializers.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
+ActiveModel::Serializer.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
 ```
 
 or
 
 ```ruby
-ActiveModelSerializers.config.adapter = :json_api
+ActiveModel::Serializer.config.adapter = :json_api
 ```
 
 or
 
 ```ruby
-ActiveModelSerializers.config.adapter = :json
+ActiveModel::Serializer.config.adapter = :json
 ```
 
 The local adapter option is in the format `adapter: adapter`, where `adapter` is
