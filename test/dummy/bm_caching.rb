@@ -7,9 +7,9 @@ class ApiAssertion
 
   def valid?
     caching = get_caching
-    caching[:body].delete('meta')
+    STDERR.puts caching[:body].delete('meta')
     non_caching = get_non_caching
-    non_caching[:body].delete('meta')
+    STDERR.puts non_caching[:body].delete('meta')
     assert_responses(caching, non_caching)
   rescue BadRevisionError => e
     msg = e.message
