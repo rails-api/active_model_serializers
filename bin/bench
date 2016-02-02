@@ -18,6 +18,7 @@ class BenchmarkDriver
   def initialize(options)
     @repeat_count = options[:repeat_count]
     @pattern = options[:pattern]
+    @env = options[:env].join(' ')
   end
 
   def run
@@ -34,7 +35,7 @@ class BenchmarkDriver
   end
 
   def run_single(path)
-    script = "RAILS_ENV=production ruby #{path}"
+    script = "RAILS_ENV=production #{@env} ruby #{path}"
 
     # FIXME: ` provides the full output but it'll return failed output as well.
     results = measure(script)
@@ -82,7 +83,10 @@ end
 
 options = {
   repeat_count: 1,
-  pattern: []
+  pattern: [],
+  env: {
+    'CACHE_ON' => 'on'
+  }
 }
 
 OptionParser.new do |opts|
@@ -94,6 +98,10 @@ OptionParser.new do |opts|
 
   opts.on("-p", "--pattern <PATTERN1,PATTERN2,PATTERN3>", "Benchmark name pattern") do |value|
     options[:pattern] = value.split(',')
+  end
+
+  opts.on("-e", "--env <var1=val1,var2=val2,var3=vale>", "ENV variables to pass in") do |value|
+    options[:env] = value.split(',')
   end
 end.parse!(ARGV)
 
