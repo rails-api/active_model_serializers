@@ -22,7 +22,7 @@ class ApiAssertion
   end
 
   def clear
-    get("/clear")
+    get('/clear')
   end
 
   def get_caching(on_off = 'on'.freeze)
@@ -52,23 +52,23 @@ class ApiAssertion
   def expected
     @expected ||=
       {
-        "post" =>  {
-          "id" =>  1,
-          "title" =>  "New Post",
-          "body" =>  "Body",
-          "comments" => [
+        'post' =>  {
+          'id' =>  1,
+          'title' =>  'New Post',
+          'body' =>  'Body',
+          'comments' => [
             {
-              "id" =>  1,
-              "body" =>  "ZOMG A COMMENT"
+              'id' =>  1,
+              'body' =>  'ZOMG A COMMENT'
             }
           ],
-          "blog" =>  {
-            "id" =>  999,
-            "name" =>  "Custom blog"
+          'blog' =>  {
+            'id' =>  999,
+            'name' =>  'Custom blog'
           },
-          "author" =>  {
-            "id" =>  1,
-            "name" =>  "Joao Moura."
+          'author' =>  {
+            'id' =>  1,
+            'name' =>  'Joao Moura.'
           }
         }
     }
@@ -91,22 +91,22 @@ assertion = ApiAssertion.new
 assertion.valid?
 
 # STDERR.puts assertion.get_status
-Benchmark.ams("caching on: caching serializers") do
+Benchmark.ams('caching on: caching serializers') do
   assertion.get_caching('on')
 end
 # STDERR.puts assertion.get_status
 assertion.clear
-Benchmark.ams("caching off: caching serializers") do
+Benchmark.ams('caching off: caching serializers') do
   assertion.get_caching('off')
 end
 # STDERR.puts assertion.get_status
 assertion.clear
-Benchmark.ams("caching on: non-caching serializers") do
+Benchmark.ams('caching on: non-caching serializers') do
   assertion.get_non_caching('on')
 end
 # STDERR.puts assertion.get_status
 assertion.clear
-Benchmark.ams("caching off: non-caching serializers") do
+Benchmark.ams('caching off: non-caching serializers') do
   assertion.get_non_caching('off')
 end
 # STDERR.puts assertion.get_status

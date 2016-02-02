@@ -22,7 +22,7 @@ class PostController < ActionController::Base
     # STDERR.puts cache_store.class
     # STDERR.puts cache_dependencies
     # ActiveSupport::Cache::Store.logger.debug [ActiveModelSerializers.config.cache_store, ActiveModelSerializers.config.perform_caching, CachingPostSerializer._cache, perform_caching, params].inspect
-    render json: { caching: perform_caching, meta: { cache_log: cache_messages, cache_status: cache_status }  }.to_json
+    render json: { caching: perform_caching, meta: { cache_log: cache_messages, cache_status: cache_status } }.to_json
   end
 
   def clear
@@ -44,7 +44,7 @@ class PostController < ActionController::Base
     {
       controller: perform_caching,
       app: Rails.configuration.action_controller.perform_caching,
-      serializers: Rails.configuration.serializers.each_with_object({}) {|serializer, data| data[serializer.name] = serializer._cache.present? }
+      serializers: Rails.configuration.serializers.each_with_object({}) { |serializer, data| data[serializer.name] = serializer._cache.present? }
     }
   end
 

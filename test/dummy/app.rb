@@ -12,10 +12,10 @@ require 'action_controller/railtie'
 abort "Rails application already defined: #{Rails.application.class}" if Rails.application
 
 class NullLogger < Logger
-  def initialize(*args)
+  def initialize(*_args)
   end
 
-  def add(*args, &block)
+  def add(*_args, &_block)
   end
 end
 class DummyLogger < ActiveSupport::Logger
@@ -43,7 +43,6 @@ class DummyApp < Rails::Application
   config.secret_token = '1234'
   config.secret_key_base = 'abc123'
   config.logger = NullLogger.new
-
 end
 
 require 'active_model_serializers'

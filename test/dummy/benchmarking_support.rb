@@ -12,10 +12,8 @@ module Benchmark
         response
       end
     end
-    def ams(label=nil, time: 5_000, warmup: 10, &block)
-      unless block_given?
-        raise ArgumentError.new, "block should be passed"
-      end
+    def ams(label = nil, time: 5_000, warmup: 10, &block)
+      fail ArgumentError.new, 'block should be passed' unless block_given?
 
       # run_gc
       GC.enable
@@ -41,26 +39,25 @@ module Benchmark
         user:  user,
         system: system,
         version: ::ActiveModel::Serializer::VERSION,
-        total_allocated_objects_per_measurement: get_total_allocated_objects(&block)
+        total_allocated_objects_per_measurement: total_allocated_objects(&block)
       }.to_json
 
       puts output
     end
 
-    def get_total_allocated_objects
-      if block_given?
-        key =
-          if RUBY_VERSION < '2.2'
-            :total_allocated_object
-          else
-            :total_allocated_objects
-          end
+    def total_allocated_objects
+      return unless block_given?
+      key =
+        if RUBY_VERSION < '2.2'
+          :total_allocated_object
+        else
+          :total_allocated_objects
+        end
 
-        before = GC.stat[key]
-        yield
-        after = GC.stat[key]
-        after - before
-      end
+      before = GC.stat[key]
+      yield
+      after = GC.stat[key]
+      after - before
     end
   end
 
