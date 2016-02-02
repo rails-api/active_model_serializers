@@ -55,9 +55,8 @@ class RevisionRunner
     Dir[File.join(ROOT, 'test', 'dummy', '*.{rb,ru}')].each do |file|
       FileUtils.cp(file, File.join(TMP_DIR, File.basename(file)))
     end
-    # TODO: useful?
-    # file = File.join('bin', 'serve_dummy')
-    # FileUtils.cp(file, File.join(TMP_DIR, File.basename(file)))
+    file = File.join('bin', 'bench')
+    FileUtils.cp(file, File.join(TMP_DIR, File.basename(file)))
     at_exit { empty_temp_dir }
   end
 
