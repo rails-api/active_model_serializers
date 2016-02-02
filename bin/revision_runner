@@ -78,7 +78,7 @@ class RevisionRunner
     end
 
     def checkout_ref(ref)
-      debug { `git checkout #{ref}`.chomp }
+      `git checkout #{ref}`.chomp
       abort "Checkout failed: #{ref}, #{$CHILD_STATUS.exitstatus}" unless $CHILD_STATUS.success?
     end
 
