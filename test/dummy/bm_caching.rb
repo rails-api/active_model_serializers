@@ -18,7 +18,7 @@ class ApiAssertion
   end
 
   def get_status(on_off = 'on'.freeze)
-    get("/status/#{on_off}"
+    get("/status/#{on_off}")
   end
 
   def clear
