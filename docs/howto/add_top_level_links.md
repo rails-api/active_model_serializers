@@ -3,7 +3,13 @@
 JsonApi supports a [links object](http://jsonapi.org/format/#document-links) to be specified at top-level, that you can specify in the `render`:
 
 ```ruby
-  render json: @posts, links: { "self": "http://example.com/api/posts" }
+  links_object = {
+    href: "http://example.com/api/posts",
+    meta: {
+      count: 10
+    }
+  }
+  render json: @posts, links: links_object
 ```
 
 That's the result:
@@ -23,7 +29,10 @@ That's the result:
     }
   ],
   "links": {
-    "self": "http://example.com/api/posts"
+    "href": "http://example.com/api/posts",
+    "meta": {
+      "count": 10
+    }
   }
 }
 ```
