@@ -126,6 +126,57 @@ module ActiveModel
       true
     end
 
+    # @return [Hash] containing the attributes and first level
+    # associations, similar to how ActiveModel::Serializers::JSON is used
+    # in ActiveRecord::Base.
+    #
+    # TODO: Move to here the Attributes adapter logic for
+    # +serializable_hash_for_single_resource(options)+
+    # and include <tt>ActiveModel::Serializers::JSON</tt>.
+    # So that the below is true:
+    #   @param options [nil, Hash] The same valid options passed to `serializable_hash`
+    #      (:only, :except, :methods, and :include).
+    #
+    #     See
+    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activemodel/lib/active_model/serializers/json.rb#L17-L101
+    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activemodel/lib/active_model/serialization.rb#L85-L123
+    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activerecord/lib/active_record/serialization.rb#L11-L17
+    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activesupport/lib/active_support/core_ext/object/json.rb#L147-L162
+    #
+    #   @example
+    #     # The :only and :except options can be used to limit the attributes included, and work
+    #     # similar to the attributes method.
+    #     serializer.as_json(only: [:id, :name])
+    #     serializer.as_json(except: [:id, :created_at, :age])
+    #
+    #     # To include the result of some method calls on the model use :methods:
+    #     serializer.as_json(methods: :permalink)
+    #
+    #     # To include associations use :include:
+    #     serializer.as_json(include: :posts)
+    #     # Second level and higher order associations work as well:
+    #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
+    def serializable_hash(adapter_opts = nil)
+      adapter_opts ||= {}
+      adapter_opts = { include: '*', adapter: :attributes }.merge!(adapter_opts)
+      adapter = ActiveModelSerializers::Adapter.create(self, adapter_opts)
+      adapter.serializable_hash(adapter_opts)
+    end
+    alias to_hash serializable_hash
+    alias to_h serializable_hash
+
+    # @see #serializable_hash
+    # TODO: When moving attributes adapter logic here, @see #serializable_hash
+    # So that the below is true:
+    #   @param options [nil, Hash] The same valid options passed to `as_json`
+    #      (:root, :only, :except, :methods, and :include).
+    #   The default for `root` is nil.
+    #   The default value for include_root is false. You can change it to true if the given
+    #   JSON string includes a single root node.
+    def as_json(adapter_opts = nil)
+      serializable_hash(adapter_opts)
+    end
+
     # Used by adapter as resource root.
     def json_key
       root || object.class.model_name.to_s.underscore
