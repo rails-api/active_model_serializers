@@ -9,6 +9,14 @@ rvm:
   - 2.3.0
   - ruby-head
   - rbx-2
+  - jruby-9.0.4.0
+  - jruby-head
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - '[ "$JRUBY_OPTS" != "" ] && export JRUBY_OPTS="--dev -Xcli.debug=true --debug"'
 
 install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 cache:
@@ -30,10 +38,16 @@ matrix:
     env: RAILS_VERSION=master
   - rvm: 2.1
     env: RAILS_VERSION=master
-  include:
   - rvm: jruby-9.0.4.0
-    env: JRUBY_OPTS='-Xcompat.version=2.0 --server -Xcompile.invokedynamic=false -Xcli.debug=true --debug'
+    env: RAILS_VERSION=master
+  - rvm: jruby-9.0.4.0
+    env: RAILS_VERSION=4.0
+  - rvm: jruby-head
+    env: RAILS_VERSION=master
+  - rvm: jruby-head
+    env: RAILS_VERSION=4.0
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-head
     - rvm: rbx-2
   fast_finish: true

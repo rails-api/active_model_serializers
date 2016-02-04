@@ -29,6 +29,7 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
+- [#1496](https://github.com/rails-api/active_model_serializers/pull/1496) Run all branches against JRuby on CI (@nadavshatz)
 - [#1559](https://github.com/rails-api/active_model_serializers/pull/1559) Add a deprecation DSL. (@bf4 @groyoh)
 - [#1543](https://github.com/rails-api/active_model_serializers/pull/1543) Add the changes missing from #1535. (@groyoh)
 - [#1535](https://github.com/rails-api/active_model_serializers/pull/1535) Move the adapter and adapter folder to
