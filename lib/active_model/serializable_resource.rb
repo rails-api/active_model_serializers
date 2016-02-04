@@ -1,4 +1,5 @@
 require 'set'
+require 'active_model_serializers/adapter'
 module ActiveModel
   class SerializableResource
     ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter, :meta, :meta_key, :links])
@@ -30,7 +31,7 @@ module ActiveModel
     end
 
     def adapter
-      @adapter ||= ActiveModel::Serializer::Adapter.create(serializer_instance, adapter_opts)
+      @adapter ||= ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
     end
     alias_method :adapter_instance, :adapter
 

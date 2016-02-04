@@ -3,6 +3,7 @@
 Breaking changes:
 Features:
 Fixes:
+- [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 Misc:
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
