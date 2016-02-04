@@ -21,7 +21,7 @@ module ActiveModel
     include Caching
     include Links
     include Type
-    require 'active_model/serializer/adapter'
+    require 'active_model_serializers/adapter'
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
@@ -40,9 +40,9 @@ module ActiveModel
       end
     end
 
-    # @see ActiveModel::Serializer::Adapter.lookup
+    # @see ActiveModelSerializers::Adapter.lookup
     def self.adapter
-      ActiveModel::Serializer::Adapter.lookup(config.adapter)
+      ActiveModelSerializers::Adapter.lookup(config.adapter)
     end
 
     # @api private
