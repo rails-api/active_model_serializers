@@ -44,7 +44,7 @@ module ActiveModelSerializers
 
       def initialize(serializer, options = {})
         super
-        @include_tree = IncludeTree.from_include_args(options[:include])
+        @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include])
         @fieldset = options[:fieldset] || ActiveModelSerializers::Fieldset.new(options.delete(:fields))
       end
 
@@ -188,7 +188,7 @@ module ActiveModelSerializers
       def relationships_for(serializer)
         resource_type = resource_identifier_type_for(serializer)
         requested_associations = fieldset.fields_for(resource_type) || '*'
-        include_tree = IncludeTree.from_include_args(requested_associations)
+        include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(requested_associations)
         serializer.associations(include_tree).each_with_object({}) do |association, hash|
           hash[association.key] = { data: relationship_value_for(association.serializer, association.options) }
         end
