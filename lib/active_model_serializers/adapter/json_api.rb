@@ -45,7 +45,7 @@ module ActiveModelSerializers
       def initialize(serializer, options = {})
         super
         @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include])
-        @fieldset = options[:fieldset] || ActiveModelSerializers::Fieldset.new(options.delete(:fields))
+        @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
       end
 
       def serializable_hash(options = nil)

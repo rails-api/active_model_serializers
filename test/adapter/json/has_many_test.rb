@@ -22,7 +22,7 @@ module ActiveModelSerializers
 
         def test_has_many
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
           assert_equal([
                          { id: 1, body: 'ZOMG A COMMENT' },
                          { id: 2, body: 'ZOMG ANOTHER COMMENT' }
@@ -31,7 +31,7 @@ module ActiveModelSerializers
 
         def test_has_many_with_no_serializer
           serializer = PostWithTagsSerializer.new(@post)
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
           assert_equal({
             id: 42,
             tags: [
