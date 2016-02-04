@@ -29,7 +29,7 @@ module ActiveModelSerializers
           @tag = Tag.new(id: 1, name: '#hash_tag')
           @post.tags = [@tag]
           @serializer = PostSerializer.new(@post)
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
 
           @virtual_value = VirtualValue.new(id: 1)
         end
@@ -41,7 +41,7 @@ module ActiveModelSerializers
         end
 
         def test_includes_linked_comments
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:comments])
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:comments])
           expected = [{
             id: '1',
             type: 'comments',
@@ -67,7 +67,7 @@ module ActiveModelSerializers
         end
 
         def test_limit_fields_of_linked_comments
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:comments], fields: { comment: [:id, :post, :author] })
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:comments], fields: { comment: [:id, :post, :author] })
           expected = [{
             id: '1',
             type: 'comments',
@@ -88,14 +88,14 @@ module ActiveModelSerializers
 
         def test_no_include_linked_if_comments_is_empty
           serializer = PostSerializer.new(@post_without_comments)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_nil adapter.serializable_hash[:linked]
         end
 
         def test_include_type_for_association_when_different_than_name
           serializer = BlogSerializer.new(@blog)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
           actual = adapter.serializable_hash[:data][:relationships][:articles]
 
           expected = {
@@ -109,7 +109,7 @@ module ActiveModelSerializers
 
         def test_has_many_with_no_serializer
           serializer = PostWithTagsSerializer.new(@post)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({
             data: {
@@ -124,7 +124,7 @@ module ActiveModelSerializers
 
         def test_has_many_with_virtual_value
           serializer = VirtualValueSerializer.new(@virtual_value)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({
             data: {

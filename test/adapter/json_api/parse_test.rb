@@ -59,19 +59,19 @@ module ActiveModelSerializers
           end
 
           def test_hash
-            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(@hash)
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash)
             assert_equal(@expected, parsed_hash)
           end
 
           def test_actioncontroller_parameters
             assert_equal(false, @params.permitted?)
-            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(@params)
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@params)
             assert_equal(@expected, parsed_hash)
           end
 
           def test_illformed_payloads_safe
             @illformed_payloads.each do |p|
-              parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse(p)
+              parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse(p)
               assert_equal({}, parsed_hash)
             end
           end
@@ -79,13 +79,13 @@ module ActiveModelSerializers
           def test_illformed_payloads_unsafe
             @illformed_payloads.each do |p|
               assert_raises(InvalidDocument) do
-                ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(p)
+                ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(p)
               end
             end
           end
 
           def test_filter_fields_only
-            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(@hash, only: [:id, :title, :author])
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, only: [:id, :title, :author])
             expected = {
               id: 'zorglub',
               title: 'Ember Hamster',
@@ -95,7 +95,7 @@ module ActiveModelSerializers
           end
 
           def test_filter_fields_except
-            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(@hash, except: [:id, :title, :author])
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, except: [:id, :title, :author])
             expected = {
               src: 'http://example.com/images/productivity.png',
               photographer_id: '9',
@@ -105,7 +105,7 @@ module ActiveModelSerializers
           end
 
           def test_keys
-            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(@hash, keys: { author: :user, title: :post_title })
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, keys: { author: :user, title: :post_title })
             expected = {
               id: 'zorglub',
               post_title: 'Ember Hamster',
@@ -118,7 +118,7 @@ module ActiveModelSerializers
           end
 
           def test_polymorphic
-            parsed_hash = ActiveModel::Serializer::Adapter::JsonApi::Deserialization.parse!(@hash, polymorphic: [:photographer])
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, polymorphic: [:photographer])
             expected = {
               id: 'zorglub',
               title: 'Ember Hamster',

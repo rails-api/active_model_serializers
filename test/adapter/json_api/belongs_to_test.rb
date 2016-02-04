@@ -26,7 +26,7 @@ module ActiveModelSerializers
           @author.posts = []
 
           @serializer = CommentSerializer.new(@comment)
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
           ActionController::Base.cache_store.clear
         end
 
@@ -37,7 +37,7 @@ module ActiveModelSerializers
         end
 
         def test_includes_linked_post
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:post])
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:post])
           expected = [{
             id: '42',
             type: 'posts',
@@ -55,7 +55,7 @@ module ActiveModelSerializers
         end
 
         def test_limiting_linked_post_fields
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer, include: [:post], fields: { post: [:title, :comments, :blog, :author] })
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:post], fields: { post: [:title, :comments, :blog, :author] })
           expected = [{
             id: '42',
             type: 'posts',
@@ -73,14 +73,14 @@ module ActiveModelSerializers
 
         def test_include_nil_author
           serializer = PostSerializer.new(@anonymous_post)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({ comments: { data: [] }, blog: { data: { type: 'blogs', id: '999' } }, author: { data: nil } }, adapter.serializable_hash[:data][:relationships])
         end
 
         def test_include_type_for_association_when_different_than_name
           serializer = BlogSerializer.new(@blog)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
           relationships = adapter.serializable_hash[:data][:relationships]
           expected = {
             writer: {
@@ -107,7 +107,7 @@ module ActiveModelSerializers
 
         def test_include_linked_resources_with_type_name
           serializer = BlogSerializer.new(@blog)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer, include: [:writer, :articles])
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, include: [:writer, :articles])
           linked = adapter.serializable_hash[:included]
           expected = [
             {

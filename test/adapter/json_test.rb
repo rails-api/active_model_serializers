@@ -17,7 +17,7 @@ module ActiveModelSerializers
         @post.blog = @blog
 
         @serializer = PostSerializer.new(@post)
-        @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
+        @adapter = ActiveModelSerializers::Adapter::Json.new(@serializer)
       end
 
       def test_has_many
@@ -29,7 +29,7 @@ module ActiveModelSerializers
 
       def test_custom_keys
         serializer = PostWithCustomKeysSerializer.new(@post)
-        adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+        adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
         assert_equal({
           id: 1,

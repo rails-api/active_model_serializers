@@ -45,11 +45,11 @@ module ActiveModelSerializers
 
         def test_include_multiple_posts_and_linked_array
           serializer = CollectionSerializer.new([@first_post, @second_post])
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
             include: [:comments, author: [:bio]]
           )
-          alt_adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+          alt_adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
             include: [:comments, author: [:bio]]
           )
@@ -155,11 +155,11 @@ module ActiveModelSerializers
 
         def test_include_multiple_posts_and_linked
           serializer = BioSerializer.new @bio1
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
             include: [author: [:posts]]
           )
-          alt_adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+          alt_adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
             include: [author: [:posts]]
           )
@@ -211,7 +211,7 @@ module ActiveModelSerializers
           spammy_post = Post.new(id: 123)
           spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
           serializer = SpammyPostSerializer.new(spammy_post)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
           relationships = adapter.serializable_hash[:data][:relationships]
           expected = {
             related: {
@@ -226,7 +226,7 @@ module ActiveModelSerializers
 
         def test_multiple_references_to_same_resource
           serializer = CollectionSerializer.new([@first_comment, @second_comment])
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
             include: [:post]
           )
@@ -259,7 +259,7 @@ module ActiveModelSerializers
         def test_nil_link_with_specified_serializer
           @first_post.author = nil
           serializer = PostPreviewSerializer.new(@first_post)
-          adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
             include: [:author]
           )

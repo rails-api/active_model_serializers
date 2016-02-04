@@ -20,7 +20,7 @@ module ActiveModelSerializers
           @second_post.blog = nil
 
           @serializer = AuthorSerializer.new(@author)
-          @adapter = ActiveModel::Serializer::Adapter::JsonApi.new(@serializer)
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
         end
 
         def test_includes_comment_ids

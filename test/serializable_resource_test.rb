@@ -5,7 +5,7 @@ module ActiveModel
     def setup
       @resource = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
       @serializer = ProfileSerializer.new(@resource)
-      @adapter = ActiveModel::Serializer::Adapter.create(@serializer)
+      @adapter = ActiveModelSerializers::Adapter.create(@serializer)
       @serializable_resource = ActiveModel::SerializableResource.new(@resource)
     end
 

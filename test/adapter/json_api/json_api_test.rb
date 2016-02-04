@@ -19,7 +19,7 @@ module ActiveModelSerializers
 
       def test_custom_keys
         serializer = PostWithCustomKeysSerializer.new(@post)
-        adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
+        adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
         assert_equal({
           reviews: { data: [
