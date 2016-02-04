@@ -3,7 +3,7 @@ module ActiveModelSerializers
     class Base
       # Automatically register adapters when subclassing
       def self.inherited(subclass)
-        ActiveModel::Serializer::Adapter.register(subclass)
+        ActiveModelSerializers::Adapter.register(subclass)
       end
 
       attr_reader :serializer, :instance_options

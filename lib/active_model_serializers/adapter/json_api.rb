@@ -70,7 +70,7 @@ module ActiveModelSerializers
 
       def fragment_cache(cached_hash, non_cached_hash)
         root = false if instance_options.include?(:include)
-        ActiveModel::Serializer::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
+        ActiveModelSerializers::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
       end
 
       protected

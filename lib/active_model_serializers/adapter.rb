@@ -3,8 +3,8 @@ module ActiveModelSerializers
     UnknownAdapterError = Class.new(ArgumentError)
     ADAPTER_MAP = {}
     private_constant :ADAPTER_MAP if defined?(private_constant)
-    require 'active_model/serializer/adapter/fragment_cache'
-    require 'active_model/serializer/adapter/cached_serializer'
+    require 'active_model_serializers/adapter/fragment_cache'
+    require 'active_model_serializers/adapter/cached_serializer'
 
     class << self # All methods are class functions
       def new(*args)
@@ -19,9 +19,9 @@ module ActiveModelSerializers
         klass.new(resource, options)
       end
 
-      # @see ActiveModel::Serializer::Adapter.lookup
+      # @see ActiveModelSerializers::Adapter.lookup
       def adapter_class(adapter)
-        ActiveModel::Serializer::Adapter.lookup(adapter)
+        ActiveModelSerializers::Adapter.lookup(adapter)
       end
 
       # @return Hash<adapter_name, adapter_class>
@@ -40,17 +40,17 @@ module ActiveModelSerializers
       # @param klass [Class] adapter class itself, optional if name is the class
       # @example
       #     AMS::Adapter.register(:my_adapter, MyAdapter)
-      # @note The registered name strips out 'ActiveModel::Serializer::Adapter::'
-      #   so that registering 'ActiveModel::Serializer::Adapter::Json' and
+      # @note The registered name strips out 'ActiveModelSerializers::Adapter::'
+      #   so that registering 'ActiveModelSerializers::Adapter::Json' and
       #   'Json' will both register as 'json'.
       def register(name, klass = name)
-        name = name.to_s.gsub(/\AActiveModel::Serializer::Adapter::/, ''.freeze)
+        name = name.to_s.gsub(/\AActiveModelSerializers::Adapter::/, ''.freeze)
         adapter_map.update(name.underscore => klass)
         self
       end
 
       # @param  adapter [String, Symbol, Class] name to fetch adapter by
-      # @return [ActiveModel::Serializer::Adapter] subclass of Adapter
+      # @return [ActiveModelSerializers::Adapter] subclass of Adapter
       # @raise  [UnknownAdapterError]
       def lookup(adapter)
         # 1. return if is a class
@@ -72,18 +72,18 @@ module ActiveModelSerializers
       # @api private
       def find_by_name(adapter_name)
         adapter_name = adapter_name.to_s.classify.tr('API', 'Api')
-        "ActiveModel::Serializer::Adapter::#{adapter_name}".safe_constantize ||
-          "ActiveModel::Serializer::Adapter::#{adapter_name.pluralize}".safe_constantize or # rubocop:disable Style/AndOr
+        "ActiveModelSerializers::Adapter::#{adapter_name}".safe_constantize ||
+          "ActiveModelSerializers::Adapter::#{adapter_name.pluralize}".safe_constantize or # rubocop:disable Style/AndOr
           fail UnknownAdapterError
       end
       private :find_by_name
     end
 
     # Gotta be at the bottom to use the code above it :(
-    require 'active_model/serializer/adapter/base'
-    require 'active_model/serializer/adapter/null'
-    require 'active_model/serializer/adapter/attributes'
-    require 'active_model/serializer/adapter/json'
-    require 'active_model/serializer/adapter/json_api'
+    require 'active_model_serializers/adapter/base'
+    require 'active_model_serializers/adapter/null'
+    require 'active_model_serializers/adapter/attributes'
+    require 'active_model_serializers/adapter/json'
+    require 'active_model_serializers/adapter/json_api'
   end
 end
