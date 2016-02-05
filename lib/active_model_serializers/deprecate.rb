@@ -33,7 +33,7 @@ module ActiveModelSerializers
       alias_method old, name
       class_eval do
         define_method(name) do |*args, &block|
-          target = self.is_a?(Module) ? "#{self}." : "#{self.class}#"
+          target = is_a?(Module) ? "#{self}." : "#{self.class}#"
           msg = ["NOTE: #{target}#{name} is deprecated",
                  replacement == :none ? ' with no replacement' : "; use #{replacement} instead",
                  "\n#{target}#{name} called from #{ActiveModelSerializers.location_of_caller.join(":")}"

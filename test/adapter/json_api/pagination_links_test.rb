@@ -8,7 +8,7 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class PaginationLinksTest < ActiveSupport::TestCase
-        URI = 'http://example.com'
+        URI = 'http://example.com'.freeze
 
         def setup
           ActionController::Base.cache_store.clear

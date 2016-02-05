@@ -91,7 +91,7 @@ module ActionController
 
           expires_in = [
             PostSerializer._cache_options[:expires_in],
-            CommentSerializer._cache_options[:expires_in],
+            CommentSerializer._cache_options[:expires_in]
           ].max + 200
 
           Timecop.travel(Time.zone.now + expires_in) do

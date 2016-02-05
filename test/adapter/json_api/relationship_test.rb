@@ -77,22 +77,22 @@ module ActiveModelSerializers
         end
 
         def test_relationship_block_link
-          links = { self: proc { "#{object.id}" } }
-          expected = { links: { self: "#{@blog.id}" } }
+          links = { self: proc { object.id.to_s } }
+          expected = { links: { self: @blog.id.to_s } }
           test_relationship(expected, links: links)
         end
 
         def test_relationship_block_link_with_meta
           links = {
             self: proc do
-              href "#{object.id}"
+              href object.id.to_s
               meta(id: object.id)
             end
           }
           expected = {
             links: {
               self: {
-                href: "#{@blog.id}",
+                href: @blog.id.to_s,
                 meta: { id: @blog.id }
               }
             }
@@ -122,7 +122,7 @@ module ActiveModelSerializers
           links = {
             self: 'a link',
             related: proc do
-              href "#{object.id}"
+              href object.id.to_s
               meta object.id
             end
 

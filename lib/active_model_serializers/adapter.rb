@@ -1,7 +1,7 @@
 module ActiveModelSerializers
   module Adapter
     UnknownAdapterError = Class.new(ArgumentError)
-    ADAPTER_MAP = {}
+    ADAPTER_MAP = {}.freeze
     private_constant :ADAPTER_MAP if defined?(private_constant)
     require 'active_model_serializers/adapter/fragment_cache'
     require 'active_model_serializers/adapter/cached_serializer'
@@ -49,7 +49,7 @@ module ActiveModelSerializers
       #   'Json' will both register as 'json'.
       def register(name, klass = name)
         name = name.to_s.gsub(/\AActiveModelSerializers::Adapter::/, ''.freeze)
-        adapter_map.update(name.underscore => klass)
+        adapter_map[name.underscore] = klass
         self
       end
 

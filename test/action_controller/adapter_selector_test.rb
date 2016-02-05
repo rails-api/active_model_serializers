@@ -36,7 +36,7 @@ module ActionController
             type: 'profiles',
             attributes: {
               name: 'Name 1',
-              description: 'Description 1',
+              description: 'Description 1'
             }
           }
         }

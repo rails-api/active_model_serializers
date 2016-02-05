@@ -8,8 +8,8 @@ module ActionController
   module Serialization
     class JsonApi
       class PaginationTest < ActionController::TestCase
-        KAMINARI_URI = 'http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari'
-        WILL_PAGINATE_URI = 'http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate'
+        KAMINARI_URI = 'http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_kaminari'.freeze
+        WILL_PAGINATE_URI = 'http://test.host/action_controller/serialization/json_api/pagination_test/pagination_test/render_pagination_using_will_paginate'.freeze
 
         class PaginationTestController < ActionController::Base
           def setup

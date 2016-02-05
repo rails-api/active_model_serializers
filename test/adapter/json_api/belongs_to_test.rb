@@ -43,7 +43,7 @@ module ActiveModelSerializers
             type: 'posts',
             attributes: {
               title: 'New Post',
-              body: 'Body',
+              body: 'Body'
             },
             relationships: {
               comments: { data: [{ type: 'comments', id: '1' }] },
