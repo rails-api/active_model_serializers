@@ -5,6 +5,7 @@ Features:
 Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 Misc:
+- [#1497](https://github.com/rails-api/active_model_serializers/pull/1497) Add JRuby-9000 to appveyor.yml(@corainchicago)
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
 Breaking changes:
