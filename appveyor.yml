@@ -8,6 +8,7 @@ environment:
     - ruby_version: "200-x64"
     - ruby_version: "21"
     - ruby_version: "21-x64"
+    - ruby_version: "jruby-9.0.4.0"
 
 cache:
   - vendor/bundle
