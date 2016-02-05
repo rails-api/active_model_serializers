@@ -25,10 +25,10 @@ module ActiveModel
           assert_equal({
             reviews: { data: [
                         { type: 'comments', id: '1' },
-                        { type: 'comments', id: '2' }
-                    ] },
+                        { type: 'comments', id: '2' },
+                    ], },
             writer: { data: { type: 'authors', id: '1' } },
-            site: { data: { type: 'blogs', id: '1' } }
+            site: { data: { type: 'blogs', id: '1' } },
             }, adapter.serializable_hash[:data][:relationships])
         end
       end

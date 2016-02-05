@@ -64,7 +64,7 @@ module ActiveModel
           'null'.freeze              => ActiveModel::Serializer::Adapter::Null,
           'json'.freeze              => ActiveModel::Serializer::Adapter::Json,
           'attributes'.freeze => ActiveModel::Serializer::Adapter::Attributes,
-          'json_api'.freeze => ActiveModel::Serializer::Adapter::JsonApi
+          'json_api'.freeze => ActiveModel::Serializer::Adapter::JsonApi,
         }
         actual = ActiveModel::Serializer::Adapter.adapter_map
         assert_equal actual, expected_adapter_map
@@ -75,7 +75,7 @@ module ActiveModel
           'attributes'.freeze,
           'json'.freeze,
           'json_api'.freeze,
-          'null'.freeze
+          'null'.freeze,
         ]
       end
 

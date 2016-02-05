@@ -33,8 +33,8 @@ module ActiveModel
               object = {
                 jsonapi: {
                   version: ActiveModelSerializers.config.jsonapi_version,
-                  meta: ActiveModelSerializers.config.jsonapi_toplevel_meta
-                }
+                  meta: ActiveModelSerializers.config.jsonapi_toplevel_meta,
+                },
               }
               object[:jsonapi].reject! { |_, v| v.blank? }
 

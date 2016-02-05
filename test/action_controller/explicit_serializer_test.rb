@@ -18,7 +18,7 @@ module ActionController
                         comments: 'Comments 1'),
             Profile.new(name: 'Name 2',
                         description: 'Description 2',
-                        comments: 'Comments 2')
+                        comments: 'Comments 2'),
           ]
           render json: array,
                  serializer: PaginatedSerializer,
@@ -32,7 +32,7 @@ module ActionController
                         comments: 'Comments 1'),
             Profile.new(name: 'Name 2',
                         description: 'Description 2',
-                        comments: 'Comments 2')
+                        comments: 'Comments 2'),
           ]
           render json: array,
                  each_serializer: ProfilePreviewSerializer
@@ -79,7 +79,7 @@ module ActionController
 
         expected = [
           { 'name' => 'Name 1' },
-          { 'name' => 'Name 2' }
+          { 'name' => 'Name 2' },
         ]
 
         assert_equal expected.to_json, @response.body
@@ -91,7 +91,7 @@ module ActionController
 
         expected = [
           { 'name' => 'Name 1' },
-          { 'name' => 'Name 2' }
+          { 'name' => 'Name 2' },
         ]
         assert_equal expected.to_json, @response.body
       end
@@ -104,8 +104,8 @@ module ActionController
             'body' => 'Body',
             'id' => assigns(:post).id,
             'comments' => [{ 'id' => 1 }, { 'id' => 2 }],
-            'author' => { 'id' => assigns(:author).id }
-          }
+            'author' => { 'id' => assigns(:author).id },
+          },
         ]
 
         assert_equal expected.to_json, @response.body
@@ -123,8 +123,8 @@ module ActionController
               lat: '-23.550520',
               lng: '-46.633309',
               place: 'Nowhere' # is a virtual attribute on LocationSerializer
-            }
-          ]
+            },
+          ],
         }
 
         assert_equal expected.to_json, response.body

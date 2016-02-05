@@ -28,8 +28,8 @@ module ActiveModel
             expected = {
               data: [
                 { type: 'posts', id: '1' },
-                { type: 'posts', id: '2' }
-              ]
+                { type: 'posts', id: '2' },
+              ],
             }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:posts])

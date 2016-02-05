@@ -12,23 +12,23 @@ module ActiveModel
                   'id' => 'zorglub',
                   'attributes' => {
                     'title' => 'Ember Hamster',
-                    'src' => 'http://example.com/images/productivity.png'
+                    'src' => 'http://example.com/images/productivity.png',
                   },
                   'relationships' => {
                     'author' => {
-                      'data' => nil
+                      'data' => nil,
                     },
                     'photographer' => {
-                      'data' => { 'type' => 'people', 'id' => '9' }
+                      'data' => { 'type' => 'people', 'id' => '9' },
                     },
                     'comments' => {
                       'data' => [
                         { 'type' => 'comments', 'id' => '1' },
-                        { 'type' => 'comments', 'id' => '2' }
-                      ]
-                    }
-                  }
-                }
+                        { 'type' => 'comments', 'id' => '2' },
+                      ],
+                    },
+                  },
+                },
               }
               @params = ActionController::Parameters.new(@hash)
               @expected = {
@@ -37,26 +37,26 @@ module ActiveModel
                 src: 'http://example.com/images/productivity.png',
                 author_id: nil,
                 photographer_id: '9',
-                comment_ids: %w(1 2)
+                comment_ids: %w(1 2),
               }
 
               @illformed_payloads = [nil,
                                      {},
                                      {
-                                       'data' => nil
+                                       'data' => nil,
                                      }, {
-                                       'data' => { 'attributes' => [] }
+                                       'data' => { 'attributes' => [] },
                                      }, {
-                                       'data' => { 'relationships' => [] }
-                                     }, {
-                                       'data' => {
-                                         'relationships' => { 'rel' => nil }
-                                       }
+                                       'data' => { 'relationships' => [] },
                                      }, {
                                        'data' => {
-                                         'relationships' => { 'rel' => {} }
-                                       }
-                                     }]
+                                         'relationships' => { 'rel' => nil },
+                                       },
+                                     }, {
+                                       'data' => {
+                                         'relationships' => { 'rel' => {} },
+                                       },
+                                     },]
             end
 
             def test_hash
@@ -90,7 +90,7 @@ module ActiveModel
               expected = {
                 id: 'zorglub',
                 title: 'Ember Hamster',
-                author_id: nil
+                author_id: nil,
               }
               assert_equal(expected, parsed_hash)
             end
@@ -100,7 +100,7 @@ module ActiveModel
               expected = {
                 src: 'http://example.com/images/productivity.png',
                 photographer_id: '9',
-                comment_ids: %w(1 2)
+                comment_ids: %w(1 2),
               }
               assert_equal(expected, parsed_hash)
             end
@@ -113,7 +113,7 @@ module ActiveModel
                 src: 'http://example.com/images/productivity.png',
                 user_id: nil,
                 photographer_id: '9',
-                comment_ids: %w(1 2)
+                comment_ids: %w(1 2),
               }
               assert_equal(expected, parsed_hash)
             end
@@ -127,7 +127,7 @@ module ActiveModel
                 author_id: nil,
                 photographer_id: '9',
                 photographer_type: 'people',
-                comment_ids: %w(1 2)
+                comment_ids: %w(1 2),
               }
               assert_equal(expected, parsed_hash)
             end

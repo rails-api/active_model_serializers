@@ -32,8 +32,8 @@ module ActiveModel
             expected = {
               data: [
                 { type: 'comments', id: '1' },
-                { type: 'comments', id: '2' }
-              ]
+                { type: 'comments', id: '2' },
+              ],
             }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
@@ -46,23 +46,23 @@ module ActiveModel
                 id: '1',
                 type: 'comments',
                 relationships: {
-                  post: { data: { type: 'posts', id: @post.id.to_s } }
-                }
+                  post: { data: { type: 'posts', id: @post.id.to_s } },
+                },
               },
               {
                 id: '2',
                 type: 'comments',
                 relationships: {
-                  post: { data: { type: 'posts', id: @post.id.to_s } }
-                }
+                  post: { data: { type: 'posts', id: @post.id.to_s } },
+                },
               },
               {
                 id: @author.id.to_s,
                 type: 'authors',
                 relationships: {
-                  posts: { data: [{ type: 'posts', id: @post.id.to_s }] }
-                }
-              }
+                  posts: { data: [{ type: 'posts', id: @post.id.to_s }] },
+                },
+              },
             ]
 
             assert_equal(expected, @adapter.serializable_hash[:included])
@@ -70,7 +70,7 @@ module ActiveModel
 
           def test_includes_author_id
             expected = {
-              data: { type: 'authors', id: @author.id.to_s }
+              data: { type: 'authors', id: @author.id.to_s },
             }
 
             assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:author])

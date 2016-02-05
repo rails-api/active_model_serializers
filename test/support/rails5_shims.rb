@@ -1,7 +1,7 @@
 module Rails5Shims
   module ControllerTests
     # https://github.com/rails/rails/blob/b217354/actionpack/lib/action_controller/test_case.rb
-    REQUEST_KWARGS = [:params, :session, :flash, :method, :body, :xhr]
+    REQUEST_KWARGS = [:params, :session, :flash, :method, :body, :xhr].freeze
 
     # Fold kwargs from test request into args
     # Band-aid for DEPRECATION WARNING

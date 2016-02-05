@@ -26,7 +26,7 @@ module ActiveModel
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
             assert_equal([
                            { id: 1, body: 'ZOMG A COMMENT' },
-                           { id: 2, body: 'ZOMG ANOTHER COMMENT' }
+                           { id: 2, body: 'ZOMG ANOTHER COMMENT' },
                          ], adapter.serializable_hash[:post][:comments])
           end
 
@@ -36,8 +36,8 @@ module ActiveModel
             assert_equal({
               id: 42,
               tags: [
-                { 'id' => 1, 'name' => '#hash_tag' }
-              ]
+                { 'id' => 1, 'name' => '#hash_tag' },
+              ],
             }.to_json, adapter.serializable_hash[:post].to_json)
           end
         end

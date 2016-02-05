@@ -20,14 +20,14 @@ module ActiveModel
             id: @role.id,
             description: @role.description,
             slug: "#{@role.name}-#{@role.id}",
-            name: @role.name
+            name: @role.name,
           }
           assert_equal(@role_hash.fetch, expected_result)
         end
 
         def test_fragment_fetch_with_namespaced_object
           expected_result = {
-            id: @spam.id
+            id: @spam.id,
           }
           assert_equal(@spam_hash.fetch, expected_result)
         end

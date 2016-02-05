@@ -19,11 +19,11 @@ module ActiveModel
         expected = {
           blog: {
             id: 1,
-            title: 'AMS Hints'
+            title: 'AMS Hints',
           },
           'meta' => {
-            total: 10
-          }
+            total: 10,
+          },
         }
         assert_equal(expected, actual)
       end
@@ -36,7 +36,7 @@ module ActiveModel
           meta: { total: 10 }).as_json
         expected = {
           id: 1,
-          title: 'AMS Hints'
+          title: 'AMS Hints',
         }
         assert_equal(expected, actual)
       end
@@ -51,11 +51,11 @@ module ActiveModel
         expected = {
           blog: {
             id: 1,
-            title: 'AMS Hints'
+            title: 'AMS Hints',
           },
           'haha_meta' => {
-            total: 10
-          }
+            total: 10,
+          },
         }
         assert_equal(expected, actual)
       end
@@ -71,9 +71,9 @@ module ActiveModel
           data: {
             id: '1',
             type: 'blogs',
-            attributes: { title: 'AMS Hints' }
+            attributes: { title: 'AMS Hints' },
           },
-          'haha_meta' => { total: 10 }
+          'haha_meta' => { total: 10 },
         }
         assert_equal(expected, actual)
       end
@@ -88,14 +88,14 @@ module ActiveModel
           name: 'AMS Hints',
           writer: {
             id: 2,
-            name: 'Steve'
+            name: 'Steve',
           },
           articles: [{
             id: 3,
             title: 'AMS',
-            body: nil
-          }]
-        }]
+            body: nil,
+          },],
+        },]
         assert_equal(expected, actual)
       end
 
@@ -111,17 +111,17 @@ module ActiveModel
             name: 'AMS Hints',
             writer: {
               id: 2,
-              name: 'Steve'
+              name: 'Steve',
             },
             articles: [{
               id: 3,
               title: 'AMS',
-              body: nil
-            }]
-          }],
+              body: nil,
+            },],
+          },],
           'haha_meta' => {
-            total: 10
-          }
+            total: 10,
+          },
         }
         assert_equal(expected, actual)
       end

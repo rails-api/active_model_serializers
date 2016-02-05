@@ -92,7 +92,7 @@ module ActiveModel
           self._cache_key = options.delete(:key)
           self._cache_only = options.delete(:only)
           self._cache_except = options.delete(:except)
-          self._cache_options = (options.empty?) ? nil : options
+          self._cache_options = options.empty? ? nil : options
         end
       end
     end

@@ -64,11 +64,11 @@ module ActionController
               'posts' => [
                 {
                   'id' => 42, 'title' => 'New Post', 'body' => 'Body'
-                }
+                },
               ],
               'roles' => [],
-              'bio' => {}
-            }
+              'bio' => {},
+            },
           }
 
           assert_equal(expected, response)
@@ -90,11 +90,11 @@ module ActionController
                     },
                     {
                       'id' => 2, 'body' => 'ZOMG ANOTHER COMMENT'
-                    }
-                  ]
-                }
-              ]
-            }
+                    },
+                  ],
+                },
+              ],
+            },
           }
 
           assert_equal(expected, response)
@@ -117,11 +117,11 @@ module ActionController
                     },
                     {
                       'id' => 2, 'body' => 'ZOMG ANOTHER COMMENT'
-                    }
-                  ]
-                }
-              ]
-            }
+                    },
+                  ],
+                },
+              ],
+            },
           }
 
           assert_equal(expected, response)
@@ -143,20 +143,20 @@ module ActionController
                       'id' => 1, 'body' => 'ZOMG A COMMENT',
                       'author' => {
                         'id' => 1,
-                        'name' => 'Steve K.'
-                      }
+                        'name' => 'Steve K.',
+                      },
                     },
                     {
                       'id' => 2, 'body' => 'ZOMG ANOTHER COMMENT',
                       'author' => {
                         'id' => 1,
-                        'name' => 'Steve K.'
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
+                        'name' => 'Steve K.',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
           }
 
           assert_equal(expected, response)

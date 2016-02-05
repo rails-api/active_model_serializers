@@ -31,27 +31,27 @@ module ActiveModel
                 type: 'posts',
                 attributes: {
                   title: 'Hello!!',
-                  body: 'Hello, world!!'
+                  body: 'Hello, world!!',
                 },
                 relationships: {
                   comments: { data: [] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
               },
               {
                 id: '2',
                 type: 'posts',
                 attributes: {
                   title: 'New Post',
-                  body: 'Body'
+                  body: 'Body',
                 },
                 relationships: {
                   comments: { data: [] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
-              }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
+              },
             ]
 
             assert_equal(expected, @adapter.serializable_hash[:data])
@@ -60,33 +60,33 @@ module ActiveModel
           def test_limiting_fields
             actual = ActiveModel::SerializableResource.new(
               [@first_post, @second_post], adapter: :json_api,
-                                           fields: { posts: %w(title comments blog author) })
-                     .serializable_hash
+                                           fields: { posts: %w(title comments blog author) }).
+                     serializable_hash
             expected = [
               {
                 id: '1',
                 type: 'posts',
                 attributes: {
-                  title: 'Hello!!'
+                  title: 'Hello!!',
                 },
                 relationships: {
                   comments: { data: [] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
               },
               {
                 id: '2',
                 type: 'posts',
                 attributes: {
-                  title: 'New Post'
+                  title: 'New Post',
                 },
                 relationships: {
                   comments: { data: [] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
-              }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
+              },
             ]
             assert_equal(expected, actual[:data])
           end

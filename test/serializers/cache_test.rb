@@ -131,7 +131,7 @@ module ActiveModel
           id: @location.id,
           lat: @location.lat,
           lng: @location.lng,
-          place: 'Nowhere'
+          place: 'Nowhere',
         }
 
         hash = render_object_with_cache(@location)

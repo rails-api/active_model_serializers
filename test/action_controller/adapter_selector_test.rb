@@ -37,8 +37,8 @@ module ActionController
             attributes: {
               name: 'Name 1',
               description: 'Description 1',
-            }
-          }
+            },
+          },
         }
 
         assert_equal expected.to_json, response.body

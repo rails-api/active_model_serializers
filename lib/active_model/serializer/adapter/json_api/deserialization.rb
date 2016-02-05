@@ -156,9 +156,9 @@ module ActiveModel
 
           # @api private
           def parse_attributes(attributes, options)
-            attributes
-              .map { |(k, v)| { field_key(k, options) => v } }
-              .reduce({}, :merge)
+            attributes.
+              map { |(k, v)| { field_key(k, options) => v } }.
+              reduce({}, :merge)
           end
 
           # Given an association name, and a relationship data attribute, build a hash
@@ -189,16 +189,16 @@ module ActiveModel
               end
 
             polymorphic = (options[:polymorphic] || []).include?(assoc_name.to_sym)
-            hash.merge!("#{prefix_key}_type".to_sym => assoc_data['type']) if polymorphic
+            hash["#{prefix_key}_type".to_sym] = assoc_data['type'] if polymorphic
 
             hash
           end
 
           # @api private
           def parse_relationships(relationships, options)
-            relationships
-              .map { |(k, v)| parse_relationship(k, v['data'], options) }
-              .reduce({}, :merge)
+            relationships.
+              map { |(k, v)| parse_relationship(k, v['data'], options) }.
+              reduce({}, :merge)
           end
         end
       end

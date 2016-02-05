@@ -46,12 +46,12 @@ module ActiveModel
                 type: 'bios',
                 attributes: {
                   content: 'AMS Contributor',
-                  rating: nil
+                  rating: nil,
                 },
                 relationships: {
-                  author: { data: { type: 'authors', id: '1' } }
-                }
-              }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
+              },
             ]
 
             assert_equal(expected, @adapter.serializable_hash[:included])
@@ -67,9 +67,9 @@ module ActiveModel
                 type: 'virtual_values',
                 relationships: {
                   maker: { data: { id: 1 } },
-                  reviews: { data: [{ id: 1 }, { id: 2 }] }
-                }
-              }
+                  reviews: { data: [{ id: 1 }, { id: 2 }] },
+                },
+              },
             }
 
             assert_equal(expected, adapter.serializable_hash)

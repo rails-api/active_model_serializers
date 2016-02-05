@@ -70,8 +70,8 @@ module ActiveModel
         # @see Serializer::attribute
         # @see Adapter::FragmentCache#fragment_serializer
         def _attributes_keys
-          _attributes_data
-            .each_with_object({}) do |(key, attr), hash|
+          _attributes_data.
+            each_with_object({}) do |(key, attr), hash|
               next if key == attr.name
               hash[attr.name] = { key: key }
             end

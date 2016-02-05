@@ -37,7 +37,7 @@ module ActiveModel
         def object_cache_key
           object_time_safe = @cached_serializer.object.updated_at
           object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
-          (@klass._cache_key) ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}" : @cached_serializer.object.cache_key
+          @klass._cache_key ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}" : @cached_serializer.object.cache_key
         end
       end
     end

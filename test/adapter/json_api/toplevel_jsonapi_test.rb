@@ -63,8 +63,8 @@ module ActiveModel
             new_config = {
               jsonapi_include_toplevel_object: true,
               jsonapi_toplevel_meta: {
-                'copyright' => 'Copyright 2015 Example Corp.'
-              }
+                'copyright' => 'Copyright 2015 Example Corp.',
+              },
             }
             with_config(new_config) do
               hash = serialize(@post)
