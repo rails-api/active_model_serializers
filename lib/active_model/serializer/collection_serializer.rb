@@ -14,7 +14,7 @@ module ActiveModel
           serializer_context_class = options.fetch(:serializer_context_class, ActiveModel::Serializer)
           serializer_class = options.fetch(:serializer) { serializer_context_class.serializer_for(resource) }
 
-          if serializer_class.nil?
+          if serializer_class.nil? # rubocop:disable Style/GuardClause
             fail NoSerializerError, "No serializer found for resource: #{resource.inspect}"
           else
             serializer_class.new(resource, options.except(:serializer))

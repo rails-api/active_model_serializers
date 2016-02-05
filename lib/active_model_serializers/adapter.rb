@@ -1,7 +1,7 @@
 module ActiveModelSerializers
   module Adapter
     UnknownAdapterError = Class.new(ArgumentError)
-    ADAPTER_MAP = {}.freeze
+    ADAPTER_MAP = {} # rubocop:disable Style/MutableConstant
     private_constant :ADAPTER_MAP if defined?(private_constant)
     require 'active_model_serializers/adapter/fragment_cache'
     require 'active_model_serializers/adapter/cached_serializer'

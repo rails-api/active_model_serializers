@@ -38,12 +38,10 @@ module ActiveModelSerializers
         def data_for(serializer, options)
           if serializer.respond_to?(:each)
             serializer.map { |s| ResourceIdentifier.new(s).as_json }
-          else
-            if options[:virtual_value]
-              options[:virtual_value]
-            elsif serializer && serializer.object
-              ResourceIdentifier.new(serializer).as_json
-            end
+          elsif options[:virtual_value]
+            options[:virtual_value]
+          elsif serializer && serializer.object
+            ResourceIdentifier.new(serializer).as_json
           end
         end
       end
