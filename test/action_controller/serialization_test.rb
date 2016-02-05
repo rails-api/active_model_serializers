@@ -399,6 +399,8 @@ module ActionController
         end
       end
 
+      # BUG in rubocop, thinks #use_adapter? is defined twice
+      # rubocop:disable Lint/DuplicateMethods
       def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
         controller = Class.new(ImplicitSerializationTestController) do
           def use_adapter?
@@ -420,6 +422,7 @@ module ActionController
           controller.get_serializer(Profile.new)
         end)
       end
+      # rubocop:enable Lint/DuplicateMethods
 
       def test_render_event_is_emmited
         ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
