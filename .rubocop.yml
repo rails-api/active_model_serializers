@@ -4,14 +4,19 @@ AllCops:
   Exclude:
     - config/initializers/forbidden_yaml.rb
     - !ruby/regexp /(vendor|bundle|bin|db|tmp)\/.*/
-  RunRailsCops: true
   DisplayCopNames: true
   DisplayStyleGuide: true
+
+Rails:
+  Enabled: true
 
 Lint/NestedMethodDefinition:
   Enabled: false
   Exclude:
     - test/action_controller/serialization_test.rb
+
+Style/Alias:
+  EnforcedStyle: prefer_alias
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
@@ -58,6 +63,18 @@ Style/MultilineOperationIndentation:
 Style/BlockDelimiters:
   Enabled: true
   EnforcedStyle: line_count_based
+
+Style/SignalException:
+  EnforcedStyle: semantic
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/DotPosition:
+  EnforcedStyle: trailing
 
 ########## test_helper.rb sanity
 Style/EndBlock:
