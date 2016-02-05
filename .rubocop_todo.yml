@@ -177,14 +177,6 @@ Style/Semicolon:
   Exclude:
     - 'lib/active_model/serializer/fieldset.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SignalException:
-  Exclude:
-    - 'lib/active_model/serializer/fieldset.rb'
-    - 'lib/active_model/serializer/pass_through_serializer.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: AllowIfMethodIsEmpty.
@@ -222,16 +214,6 @@ Style/TrailingBlankLines:
     - 'test/adapter/null_test.rb'
     - 'test/serializers/cache_test.rb'
     - 'test/serializers/fieldset_test.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
-Style/TrailingComma:
-  Exclude:
-    - 'test/action_controller/adapter_selector_test.rb'
-    - 'test/action_controller/serialization_test.rb'
-    - 'test/adapter/json_api/belongs_to_test.rb'
-    - 'test/adapter/json_api/linked_test.rb'
 
 # Offense count: 1
 Style/UnlessElse:
