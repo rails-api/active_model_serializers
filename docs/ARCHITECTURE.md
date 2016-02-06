@@ -56,7 +56,7 @@ High-level overview:
   - `:each_serializer` specifies the serializer for each resource in the collection.
 - For a single resource, the `:serializer` option is the resource serializer.
 - Options are partitioned in serializer options and adapter options.  Keys for adapter options are specified by
-    [`ADAPTER_OPTIONS`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializable_resource.rb#L4).
+    [`ADAPTER_OPTION_KEYS`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializable_resource.rb#L4).
     The remaining options are serializer options.
 
 Details:
@@ -64,7 +64,7 @@ Details:
 1. **ActionController::Serialization**
   1. `serializable_resource = ActiveModel::SerializableResource.new(resource, options)`
     1. `options` are partitioned into `adapter_opts` and everything else (`serializer_opts`).
-      The adapter options keys for the are defined by `ADAPTER_OPTIONS`.
+      The `adapter_opts`  keys are defined in `ActiveModel::SerializableResource::ADAPTER_OPTION_KEYS`.
 1. **ActiveModel::SerializableResource**
   1. `if serializable_resource.serializer?` (there is a serializer for the resource, and an adapter is used.)
     - Where `serializer?` is `use_adapter? && !!(serializer)`
