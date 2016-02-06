@@ -18,7 +18,7 @@ module ActiveModelSerializers
           @second_post.author = @author
           @author.posts = [@first_post, @second_post]
 
-          @serializer = CollectionSerializer.new([@first_post, @second_post])
+          @serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
           ActionController::Base.cache_store.clear
         end

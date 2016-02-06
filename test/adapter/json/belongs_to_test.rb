@@ -18,7 +18,7 @@ module ActiveModelSerializers
           @anonymous_post.blog = nil
 
           @serializer = CommentSerializer.new(@comment)
-          @adapter = ActiveModel::Serializer::Adapter::Json.new(@serializer)
+          @adapter = ActiveModelSerializers::Adapter::Json.new(@serializer)
           ActionController::Base.cache_store.clear
         end
 
@@ -28,14 +28,14 @@ module ActiveModelSerializers
 
         def test_include_nil_author
           serializer = PostSerializer.new(@anonymous_post)
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
           assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], blog: { id: 999, name: 'Custom blog' }, author: nil } }, adapter.serializable_hash)
         end
 
         def test_include_nil_author_with_specified_serializer
           serializer = PostPreviewSerializer.new(@anonymous_post)
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
           assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], author: nil } }, adapter.serializable_hash)
         end

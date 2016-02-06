@@ -22,8 +22,8 @@ module ActiveModelSerializers
         def test_with_serializer_option
           @blog.special_attribute = 'Special'
           @blog.articles = [@first_post, @second_post]
-          serializer = CollectionSerializer.new([@blog], serializer: CustomBlogSerializer)
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          serializer = ActiveModel::Serializer::CollectionSerializer.new([@blog], serializer: CustomBlogSerializer)
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
           expected = { blogs: [{
             id: 1,
@@ -34,8 +34,8 @@ module ActiveModelSerializers
         end
 
         def test_include_multiple_posts
-          serializer = CollectionSerializer.new([@first_post, @second_post])
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
           expected = { posts: [{
             title: 'Hello!!',
@@ -69,15 +69,15 @@ module ActiveModelSerializers
 
         def test_root_is_underscored
           virtual_value = VirtualValue.new(id: 1)
-          serializer = CollectionSerializer.new([virtual_value])
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+          serializer = ActiveModel::Serializer::CollectionSerializer.new([virtual_value])
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
           assert_equal 1, adapter.serializable_hash[:virtual_values].length
         end
 
         def test_include_option
-          serializer = CollectionSerializer.new([@first_post, @second_post])
-          adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include: '')
+          serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
+          adapter = ActiveModelSerializers::Adapter::Json.new(serializer, include: '')
           actual = adapter.serializable_hash
           expected = { posts: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' },
                                { id: 2, title: 'New Post', body: 'Body' }] }
