@@ -110,7 +110,7 @@ module ActiveModelSerializers
 
     def test_adapter
       assert_equal ActiveModelSerializers.config.adapter, :attributes
-      assert_equal ActiveModelSerializers.adapter, ActiveModelSerializers::Adapter::Attributes
+      assert_equal ActiveModel::Serializer.adapter, ActiveModelSerializers::Adapter::Attributes
     end
 
     def test_register_adapter

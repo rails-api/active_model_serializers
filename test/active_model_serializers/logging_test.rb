@@ -65,7 +65,7 @@ module ActiveModel
 
       def test_logs_correct_adapter
         ActiveModel::SerializableResource.new(@post).serializable_hash
-        assert_match(/ActiveModel::Serializer::Adapter::Attributes/, @logger.messages)
+        assert_match(/ActiveModelSerializers::Adapter::Attributes/, @logger.messages)
       end
 
       def test_logs_the_duration
