@@ -1,7 +1,8 @@
 module ActiveModelSerializers
   module Adapter
     class Null < Base
-      def serializable_hash(options = nil)
+      # Since options param is not being used, underscored naming of the param
+      def serializable_hash(_options = nil)
         {}
       end
     end
