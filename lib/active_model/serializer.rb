@@ -21,6 +21,7 @@ module ActiveModel
     include Caching
     include Links
     include Type
+    # Deprecated
     require 'active_model_serializers/adapter'
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
@@ -41,7 +42,9 @@ module ActiveModel
     end
 
     # @see ActiveModelSerializers::Adapter.lookup
+    # Deprecated
     def self.adapter
+      warn 'Calling adapter method in Serializer, please use the method loop from adapter module'
       ActiveModelSerializers::Adapter.lookup(config.adapter)
     end
 

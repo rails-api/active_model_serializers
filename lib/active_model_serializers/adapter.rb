@@ -13,9 +13,13 @@ module ActiveModelSerializers
           "'caller[0]'."
       end
 
+      def lookup_adapter_from_config
+          lookup(ActiveModelSerializers.config.adapter)
+      end
+
       def create(resource, options = {})
         override = options.delete(:adapter)
-        klass = override ? adapter_class(override) : ActiveModel::Serializer.adapter
+        klass = override ? adapter_class(override) : lookup_adapter_from_config
         klass.new(resource, options)
       end
 
