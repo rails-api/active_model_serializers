@@ -32,7 +32,7 @@ module ActiveModel
     def adapter
       @adapter ||= ActiveModel::Serializer::Adapter.create(serializer_instance, adapter_opts)
     end
-    alias_method :adapter_instance, :adapter
+    alias adapter_instance adapter
 
     def serializer_instance
       @serializer_instance ||= serializer.new(resource, serializer_opts)
@@ -53,7 +53,7 @@ module ActiveModel
           @serializer
         end
     end
-    alias_method :serializer_class, :serializer
+    alias serializer_class serializer
 
     # True when no explicit adapter given, or explicit appear is truthy (non-nil)
     # False when explicit adapter is falsy (nil or false)
@@ -62,7 +62,7 @@ module ActiveModel
     end
 
     def serializer?
-      use_adapter? && !!(serializer)
+      use_adapter? && !!serializer
     end
 
     protected

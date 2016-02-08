@@ -15,11 +15,11 @@ class ActiveModelSerializers::GrapeTest < ActiveSupport::TestCase
 
     def self.all
       @all ||=
-      begin
-        model1.save!
-        model2.save!
-        ARModels::Post.all
-      end
+        begin
+          model1.save!
+          model2.save!
+          ARModels::Post.all
+        end
     end
   end
 

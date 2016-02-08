@@ -32,17 +32,17 @@ module ActiveModel
                 self: {
                   href: '//example.com/posts',
                   meta: {
-                    stuff: 'value'
-                  }
-                }
+                    stuff: 'value',
+                  },
+                },
               }).serializable_hash
             expected = {
               self: {
                 href: '//example.com/posts',
                 meta: {
-                  stuff: 'value'
-                }
-              }
+                  stuff: 'value',
+                },
+              },
             }
             assert_equal(expected, hash[:links])
           end
@@ -53,11 +53,11 @@ module ActiveModel
               self: {
                 href: '//example.com/link_author/1337',
                 meta: {
-                  stuff: 'value'
-                }
+                  stuff: 'value',
+                },
               },
               other: '//example.com/resource',
-              yet_another: '//example.com/resource/1337'
+              yet_another: '//example.com/resource/1337',
             }
             assert_equal(expected, hash[:data][:links])
           end

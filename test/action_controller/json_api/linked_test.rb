@@ -108,35 +108,35 @@ module ActionController
               'id' => '1',
               'type' => 'authors',
               'attributes' => {
-                'name' => 'Steve K.'
+                'name' => 'Steve K.',
               },
               'relationships' => {
                 'posts' => { 'data' => [] },
                 'roles' => { 'data' => [{ 'type' => 'roles', 'id' => '1' }, { 'type' => 'roles', 'id' => '2' }] },
-                'bio' => { 'data' => nil }
-              }
+                'bio' => { 'data' => nil },
+              },
             }, {
               'id' => '1',
               'type' => 'roles',
               'attributes' => {
                 'name' => 'admin',
                 'description' => nil,
-                'slug' => 'admin-1'
+                'slug' => 'admin-1',
               },
               'relationships' => {
-                'author' => { 'data' => { 'type' => 'authors', 'id' => '1' } }
-              }
+                'author' => { 'data' => { 'type' => 'authors', 'id' => '1' } },
+              },
             }, {
               'id' => '2',
               'type' => 'roles',
               'attributes' => {
                 'name' => 'colab',
                 'description' => nil,
-                'slug' => 'colab-2'
+                'slug' => 'colab-2',
               },
               'relationships' => {
-                'author' => { 'data' => { 'type' => 'authors', 'id' => '1' } }
-              }
+                'author' => { 'data' => { 'type' => 'authors', 'id' => '1' } },
+              },
             }
           ]
           assert_equal expected_linked, response['included']

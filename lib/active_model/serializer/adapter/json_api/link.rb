@@ -29,7 +29,7 @@ module ActiveModel
             return @value if @value
 
             hash = { href: @href }
-            hash.merge!(meta: @meta) if @meta
+            hash[:meta] = @meta if @meta
 
             hash
           end

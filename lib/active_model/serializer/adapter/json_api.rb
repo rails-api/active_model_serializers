@@ -33,8 +33,8 @@ module ActiveModel
               object = {
                 jsonapi: {
                   version: ActiveModelSerializers.config.jsonapi_version,
-                  meta: ActiveModelSerializers.config.jsonapi_toplevel_meta
-                }
+                  meta: ActiveModelSerializers.config.jsonapi_toplevel_meta,
+                },
               }
               object[:jsonapi].reject! { |_, v| v.blank? }
 
@@ -174,6 +174,8 @@ module ActiveModel
           resource_object
         end
 
+        # Disabling cop to let us distinguish collection vs. single
+        # rubocop:disable Style/IfInsideElse
         def relationship_value_for(serializer, options = {})
           if serializer.respond_to?(:each)
             serializer.map { |s| resource_identifier_for(s) }
@@ -185,6 +187,7 @@ module ActiveModel
             end
           end
         end
+        # rubocop:enable Style/IfInsideElse
 
         def relationships_for(serializer)
           resource_type = resource_identifier_type_for(serializer)

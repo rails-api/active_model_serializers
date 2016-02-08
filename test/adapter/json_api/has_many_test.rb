@@ -47,22 +47,22 @@ module ActiveModel
               id: '1',
               type: 'comments',
               attributes: {
-                body: 'ZOMG A COMMENT'
+                body: 'ZOMG A COMMENT',
               },
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
-                author: { data: nil }
-              }
+                author: { data: nil },
+              },
             }, {
               id: '2',
               type: 'comments',
               attributes: {
-                body: 'ZOMG ANOTHER COMMENT'
+                body: 'ZOMG ANOTHER COMMENT',
               },
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
-                author: { data: nil }
-              }
+                author: { data: nil },
+              },
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
           end
@@ -74,15 +74,15 @@ module ActiveModel
               type: 'comments',
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
-                author: { data: nil }
-              }
+                author: { data: nil },
+              },
             }, {
               id: '2',
               type: 'comments',
               relationships: {
                 post: { data: { type: 'posts', id: '1' } },
-                author: { data: nil }
-              }
+                author: { data: nil },
+              },
             }]
             assert_equal expected, @adapter.serializable_hash[:included]
           end
@@ -102,8 +102,8 @@ module ActiveModel
             expected = {
               data: [{
                 type: 'posts',
-                id: '1'
-              }]
+                id: '1',
+              },],
             }
             assert_equal expected, actual
           end
@@ -117,9 +117,9 @@ module ActiveModel
                 id: '1',
                 type: 'posts',
                 relationships: {
-                  tags: { data: [@tag.as_json] }
-                }
-              }
+                  tags: { data: [@tag.as_json] },
+                },
+              },
             }, adapter.serializable_hash)
           end
 
@@ -133,9 +133,9 @@ module ActiveModel
                 type: 'virtual_values',
                 relationships: {
                   maker: { data: { id: 1 } },
-                  reviews: { data: [{ id: 1 }, { id: 2 }] }
-                }
-              }
+                  reviews: { data: [{ id: 1 }, { id: 2 }] },
+                },
+              },
             }, adapter.serializable_hash)
           end
         end

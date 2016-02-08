@@ -9,14 +9,14 @@ module ActiveModel
     module Adapter
       class JsonApi
         class PaginationLinksTest < ActiveSupport::TestCase
-          URI = 'http://example.com'
+          URI = 'http://example.com'.freeze
 
           def setup
             ActionController::Base.cache_store.clear
             @array = [
               Profile.new({ id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
               Profile.new({ id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2' }),
-              Profile.new({ id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3' })
+              Profile.new({ id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3' }),
             ]
           end
 
@@ -45,8 +45,8 @@ module ActiveModel
             { data: [
                 { id: '1', type: 'profiles', attributes: { name: 'Name 1', description: 'Description 1' } },
                 { id: '2', type: 'profiles', attributes: { name: 'Name 2', description: 'Description 2' } },
-                { id: '3', type: 'profiles', attributes: { name: 'Name 3', description: 'Description 3' } }
-              ]
+                { id: '3', type: 'profiles', attributes: { name: 'Name 3', description: 'Description 3' } },
+              ],
             }
           end
 
@@ -57,8 +57,8 @@ module ActiveModel
                 first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                 prev: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                 next: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1",
-                last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1"
-              }
+                last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1",
+              },
             }
           end
 

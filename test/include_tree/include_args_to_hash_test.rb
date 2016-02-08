@@ -33,12 +33,12 @@ module ActiveModel
             expected = {
               author: {},
               blogs: { posts: { contributors: {} } },
-              comments: { author: { blogs: { posts: {} } } }
+              comments: { author: { blogs: { posts: {} } } },
             }
             input = [
               :author,
               blogs: [posts: :contributors],
-              comments: { author: { blogs: :posts } }
+              comments: { author: { blogs: :posts } },
             ]
             actual = Parsing.include_args_to_hash(input)
 
@@ -47,11 +47,11 @@ module ActiveModel
 
           def test_array_of_string
             expected = {
-              comments: { author: {}, attachment: {} }
+              comments: { author: {}, attachment: {} },
             }
             input = [
               'comments.author',
-              'comments.attachment'
+              'comments.attachment',
             ]
             actual = Parsing.include_args_to_hash(input)
 

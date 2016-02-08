@@ -62,39 +62,39 @@ module ActiveModel
                   type: 'posts',
                   attributes: {
                     title: 'Hello!!',
-                    body: 'Hello, world!!'
+                    body: 'Hello, world!!',
                   },
                   relationships: {
                     comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
                     blog: { data: { type: 'blogs', id: '999' } },
-                    author: { data: { type: 'authors', id: '1' } }
-                  }
+                    author: { data: { type: 'authors', id: '1' } },
+                  },
                 },
                 {
                   id: '20',
                   type: 'posts',
                   attributes: {
                     title: 'New Post',
-                    body: 'Body'
+                    body: 'Body',
                   },
                   relationships: {
                     comments: { data: [] },
                     blog: { data: { type: 'blogs', id: '999' } },
-                    author: { data: { type: 'authors', id: '2' } }
-                  }
-                }
+                    author: { data: { type: 'authors', id: '2' } },
+                  },
+                },
               ],
               included: [
                 {
                   id: '1',
                   type: 'comments',
                   attributes: {
-                    body: 'ZOMG A COMMENT'
+                    body: 'ZOMG A COMMENT',
                   },
                   relationships: {
                     post: { data: { type: 'posts', id: '10' } },
-                    author: { data: nil }
-                  }
+                    author: { data: nil },
+                  },
                 }, {
                   id: '2',
                   type: 'comments',
@@ -103,40 +103,40 @@ module ActiveModel
                   },
                   relationships: {
                     post: { data: { type: 'posts', id: '10' } },
-                    author: { data: nil }
-                  }
+                    author: { data: nil },
+                  },
                 }, {
                   id: '1',
                   type: 'authors',
                   attributes: {
-                    name: 'Steve K.'
+                    name: 'Steve K.',
                   },
                   relationships: {
                     posts: { data: [{ type: 'posts', id: '10' }, { type: 'posts', id: '30' }] },
                     roles: { data: [] },
-                    bio: { data: { type: 'bios', id: '1' } }
-                  }
+                    bio: { data: { type: 'bios', id: '1' } },
+                  },
                 }, {
                   id: '1',
                   type: 'bios',
                   attributes: {
                     content: 'AMS Contributor',
-                    rating: nil
+                    rating: nil,
                   },
                   relationships: {
-                    author: { data: { type: 'authors', id: '1' } }
-                  }
+                    author: { data: { type: 'authors', id: '1' } },
+                  },
                 }, {
                   id: '2',
                   type: 'authors',
                   attributes: {
-                    name: 'Tenderlove'
+                    name: 'Tenderlove',
                   },
                   relationships: {
                     posts: { data: [{ type: 'posts', id: '20' }] },
                     roles: { data: [] },
-                    bio: { data: { type: 'bios', id: '2' } }
-                  }
+                    bio: { data: { type: 'bios', id: '2' } },
+                  },
                 }, {
                   id: '2',
                   type: 'bios',
@@ -145,10 +145,10 @@ module ActiveModel
                     content: 'Rails Contributor',
                   },
                   relationships: {
-                    author: { data: { type: 'authors', id: '2' } }
-                  }
+                    author: { data: { type: 'authors', id: '2' } },
+                  },
                 }
-              ]
+              ],
             }
             assert_equal expected, adapter.serializable_hash
             assert_equal expected, alt_adapter.serializable_hash
@@ -170,37 +170,37 @@ module ActiveModel
                 id: '1',
                 type: 'authors',
                 attributes: {
-                  name: 'Steve K.'
+                  name: 'Steve K.',
                 },
                 relationships: {
                   posts: { data: [{ type: 'posts', id: '10' }, { type: 'posts', id: '30' }] },
                   roles: { data: [] },
-                  bio: { data: { type: 'bios', id: '1' } }
-                }
+                  bio: { data: { type: 'bios', id: '1' } },
+                },
               }, {
                 id: '10',
                 type: 'posts',
                 attributes: {
                   title: 'Hello!!',
-                  body: 'Hello, world!!'
+                  body: 'Hello, world!!',
                 },
                 relationships: {
                   comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
               }, {
                 id: '30',
                 type: 'posts',
                 attributes: {
                   title: 'Yet Another Post',
-                  body: 'Body'
+                  body: 'Body',
                 },
                 relationships: {
                   comments: { data: [] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
               }
             ]
 
@@ -218,9 +218,9 @@ module ActiveModel
               related: {
                 data: [{
                   type: 'spam_unrelated_links',
-                  id: '456'
-                }]
-              }
+                  id: '456',
+                },],
+              },
             }
             assert_equal expected, relationships
           end
@@ -238,20 +238,20 @@ module ActiveModel
                 type: 'posts',
                 attributes: {
                   title: 'Hello!!',
-                  body: 'Hello, world!!'
+                  body: 'Hello, world!!',
                 },
                 relationships: {
                   comments: {
-                    data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }]
+                    data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }],
                   },
                   blog: {
-                    data: { type: 'blogs', id: '999' }
+                    data: { type: 'blogs', id: '999' },
                   },
                   author: {
-                    data: { type: 'authors', id: '1' }
-                  }
-                }
-              }
+                    data: { type: 'authors', id: '1' },
+                  },
+                },
+              },
             ]
 
             assert_equal expected, adapter.serializable_hash[:included]
@@ -271,13 +271,13 @@ module ActiveModel
                 type: 'posts',
                 attributes: {
                   title: 'Hello!!',
-                  body: 'Hello, world!!'
+                  body: 'Hello, world!!',
                 },
                 relationships: {
                   comments: { data: [{ type: 'comments', id: '1' }, { type: 'comments', id: '2' }] },
-                  author: { data: nil }
-                }
-              }
+                  author: { data: nil },
+                },
+              },
             }
             assert_equal expected, adapter.serializable_hash
           end
@@ -314,8 +314,8 @@ module ActiveModel
 
           def test_no_duplicates
             hash = ActiveModel::SerializableResource.new(@post1, adapter: :json_api,
-                                                                 include: '*.*')
-                   .serializable_hash
+                                                                 include: '*.*').
+                   serializable_hash
             expected = [
               {
                 type: 'authors', id: '1',
@@ -323,19 +323,19 @@ module ActiveModel
                   posts: {
                     data: [
                       { type: 'posts', id: '1' },
-                      { type: 'posts', id: '2' }
-                    ]
-                  }
-                }
+                      { type: 'posts', id: '2' },
+                    ],
+                  },
+                },
               },
               {
                 type: 'posts', id: '2',
                 relationships: {
                   author: {
-                    data: { type: 'authors', id: '1' }
-                  }
-                }
-              }
+                    data: { type: 'authors', id: '1' },
+                  },
+                },
+              },
             ]
             assert_equal(expected, hash[:included])
           end
@@ -343,8 +343,8 @@ module ActiveModel
           def test_no_duplicates_collection
             hash = ActiveModel::SerializableResource.new(
               [@post1, @post2], adapter: :json_api,
-                                include: '*.*')
-                   .serializable_hash
+                                include: '*.*').
+                   serializable_hash
             expected = [
               {
                 type: 'authors', id: '1',
@@ -352,11 +352,11 @@ module ActiveModel
                   posts: {
                     data: [
                       { type: 'posts', id: '1' },
-                      { type: 'posts', id: '2' }
-                    ]
-                  }
-                }
-              }
+                      { type: 'posts', id: '2' },
+                    ],
+                  },
+                },
+              },
             ]
             assert_equal(expected, hash[:included])
           end
@@ -372,10 +372,10 @@ module ActiveModel
                 nested_posts: {
                   data: [
                     { type: 'nested_posts', id: '1' },
-                    { type: 'nested_posts', id: '2' }
-                  ]
-                }
-              }
+                    { type: 'nested_posts', id: '2' },
+                  ],
+                },
+              },
             ]
             assert_equal(expected, hash[:included])
           end

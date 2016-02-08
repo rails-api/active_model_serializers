@@ -29,8 +29,8 @@ module ActiveModel
             expected = { blogs: [{
               id: 1,
               special_attribute: 'Special',
-              articles: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' }, { id: 2, title: 'New Post', body: 'Body' }]
-            }] }
+              articles: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' }, { id: 2, title: 'New Post', body: 'Body' }],
+            },], }
             assert_equal expected, adapter.serializable_hash
           end
 
@@ -45,12 +45,12 @@ module ActiveModel
               comments: [],
               author: {
                 id: 1,
-                name: 'Steve K.'
+                name: 'Steve K.',
               },
               blog: {
                 id: 999,
-                name: 'Custom blog'
-              }
+                name: 'Custom blog',
+              },
             }, {
               title: 'New Post',
               body: 'Body',
@@ -58,13 +58,13 @@ module ActiveModel
               comments: [],
               author: {
                 id: 1,
-                name: 'Steve K.'
+                name: 'Steve K.',
               },
               blog: {
                 id: 999,
-                name: 'Custom blog'
-              }
-            }] }
+                name: 'Custom blog',
+              },
+            }], }
             assert_equal expected, adapter.serializable_hash
           end
 
@@ -81,7 +81,7 @@ module ActiveModel
             adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include: '')
             actual = adapter.serializable_hash
             expected = { posts: [{ id: 1, title: 'Hello!!', body: 'Hello, world!!' },
-                                 { id: 2, title: 'New Post', body: 'Body' }] }
+                                 { id: 2, title: 'New Post', body: 'Body' },], }
 
             assert_equal(expected, actual)
           end

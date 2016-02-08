@@ -49,9 +49,9 @@ module ActiveModel
               relationships: {
                 comments: { data: [{ type: 'comments', id: '1' }] },
                 blog: { data: { type: 'blogs', id: '999' } },
-                author: { data: { type: 'authors', id: '1' } }
-              }
-            }]
+                author: { data: { type: 'authors', id: '1' } },
+              },
+            },]
             assert_equal expected, @adapter.serializable_hash[:included]
           end
 
@@ -61,14 +61,14 @@ module ActiveModel
               id: '42',
               type: 'posts',
               attributes: {
-                title: 'New Post'
+                title: 'New Post',
               },
               relationships: {
                 comments: { data: [{ type: 'comments', id: '1' }] },
                 blog: { data: { type: 'blogs', id: '999' } },
-                author: { data: { type: 'authors', id: '1' } }
-              }
-            }]
+                author: { data: { type: 'authors', id: '1' } },
+              },
+            },]
             assert_equal expected, @adapter.serializable_hash[:included]
           end
 
@@ -87,21 +87,21 @@ module ActiveModel
               writer: {
                 data: {
                   type: 'authors',
-                  id: '1'
-                }
+                  id: '1',
+                },
               },
               articles: {
                 data: [
                   {
                     type: 'posts',
-                    id: '42'
+                    id: '42',
                   },
                   {
                     type: 'posts',
-                    id: '43'
-                  }
-                ]
-              }
+                    id: '43',
+                  },
+                ],
+              },
             }
             assert_equal expected, relationships
           end
@@ -115,37 +115,37 @@ module ActiveModel
                 id: '1',
                 type: 'authors',
                 attributes: {
-                  name: 'Steve K.'
+                  name: 'Steve K.',
                 },
                 relationships: {
                   posts: { data: [] },
                   roles: { data: [] },
-                  bio: { data: nil }
-                }
+                  bio: { data: nil },
+                },
               }, {
                 id: '42',
                 type: 'posts',
                 attributes: {
                   title: 'New Post',
-                  body: 'Body'
+                  body: 'Body',
                 },
                 relationships: {
                   comments: { data: [{ type: 'comments', id: '1' }] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: { type: 'authors', id: '1' } }
-                }
+                  author: { data: { type: 'authors', id: '1' } },
+                },
               }, {
                 id: '43',
                 type: 'posts',
                 attributes: {
                   title: 'Hello!!',
-                  body: 'Hello, world!!'
+                  body: 'Hello, world!!',
                 },
                 relationships: {
                   comments: { data: [] },
                   blog: { data: { type: 'blogs', id: '999' } },
-                  author: { data: nil }
-                }
+                  author: { data: nil },
+                },
               }
             ]
             assert_equal expected, linked

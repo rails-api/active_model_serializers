@@ -20,23 +20,23 @@ module ActionController
               'id' => 'zorglub',
               'attributes' => {
                 'title' => 'Ember Hamster',
-                'src' => 'http://example.com/images/productivity.png'
+                'src' => 'http://example.com/images/productivity.png',
               },
               'relationships' => {
                 'author' => {
-                  'data' => nil
+                  'data' => nil,
                 },
                 'photographer' => {
-                  'data' => { 'type' => 'people', 'id' => '9' }
+                  'data' => { 'type' => 'people', 'id' => '9' },
                 },
                 'comments' => {
                   'data' => [
                     { 'type' => 'comments', 'id' => '1' },
-                    { 'type' => 'comments', 'id' => '2' }
-                  ]
-                }
-              }
-            }
+                    { 'type' => 'comments', 'id' => '2' },
+                  ],
+                },
+              },
+            },
           }
 
           post :render_parsed_payload, hash
@@ -48,7 +48,7 @@ module ActionController
             'src' => 'http://example.com/images/productivity.png',
             'author_id' => nil,
             'photographer_id' => '9',
-            'comment_ids' => %w(1 2)
+            'comment_ids' => %w(1 2),
           }
 
           assert_equal(expected, response)

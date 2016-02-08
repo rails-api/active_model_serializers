@@ -40,7 +40,7 @@ module ActiveModel
             fields = { posts: [:title] }
             hash = serializable(@post, adapter: :json_api, fields: fields).serializable_hash
             expected = {
-              title: 'Title 1'
+              title: 'Title 1',
             }
 
             assert_equal(expected, hash[:data][:attributes])
@@ -53,9 +53,9 @@ module ActiveModel
               author: {
                 data: {
                   type: 'authors',
-                  id: '1'
-                }
-              }
+                  id: '1',
+                },
+              },
             }
 
             assert_equal(expected, hash[:data][:relationships])
@@ -69,14 +69,14 @@ module ActiveModel
                 type: 'comments',
                 id: '7',
                 attributes: {
-                  body: 'cool'
-                }
+                  body: 'cool',
+                },
               }, {
                 type: 'comments',
                 id: '12',
                 attributes: {
-                  body: 'awesome'
-                }
+                  body: 'awesome',
+                },
               }
             ]
 

@@ -33,14 +33,14 @@ module ActionController
         def render_array_using_implicit_serializer
           array = [
             Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
-            Profile.new(name: 'Name 2', description: 'Description 2', comments: 'Comments 2')
+            Profile.new(name: 'Name 2', description: 'Description 2', comments: 'Comments 2'),
           ]
           render json: array
         end
 
         def render_array_using_implicit_serializer_and_meta
           @profiles = [
-            Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+            Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
           ]
           render json: @profiles, meta: { total: 10 }
         end
@@ -141,7 +141,7 @@ module ActionController
 
         expected = {
           name: 'Name 1',
-          description: 'Description 1'
+          description: 'Description 1',
         }
 
         assert_equal 'application/json', @response.content_type
@@ -158,9 +158,9 @@ module ActionController
             type: 'profiles',
             attributes: {
               name: 'Name 1',
-              description: 'Description 1'
-            }
-          }
+              description: 'Description 1',
+            },
+          },
         }
 
         assert_equal 'application/json', @response.content_type
@@ -219,12 +219,12 @@ module ActionController
         expected = [
           {
             name: 'Name 1',
-            description: 'Description 1'
+            description: 'Description 1',
           },
           {
             name: 'Name 2',
-            description: 'Description 2'
-          }
+            description: 'Description 2',
+          },
         ]
 
         assert_equal expected.to_json, @response.body
@@ -241,13 +241,13 @@ module ActionController
               type: 'profiles',
               attributes: {
                 name: 'Name 1',
-                description: 'Description 1'
-              }
-            }
+                description: 'Description 1',
+              },
+            },
           ],
           meta: {
-            total: 10
-          }
+            total: 10,
+          },
         }
 
         assert_equal 'application/json', @response.content_type
@@ -262,16 +262,16 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT', },
           ],
           blog: {
             id: 999,
-            name: 'Custom blog'
+            name: 'Custom blog',
           },
           author: {
             id: 1,
-            name: 'Joao Moura.'
-          }
+            name: 'Joao Moura.',
+          },
         }
 
         ActionController::Base.cache_store.clear
@@ -301,16 +301,16 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT', },
           ],
           blog: {
             id: 999,
-            name: 'Custom blog'
+            name: 'Custom blog',
           },
           author: {
             id: 1,
-            name: 'Joao Moura.'
-          }
+            name: 'Joao Moura.',
+          },
         }
 
         assert_equal 'application/json', @response.content_type
@@ -355,8 +355,8 @@ module ActionController
             'time' => Time.zone.now.to_s,
             'likeable' => {
               'id' => 1,
-              'body' => 'ZOMG A COMMENT'
-            }
+              'body' => 'ZOMG A COMMENT',
+            },
           }
 
           assert_equal 'application/json', @response.content_type
@@ -375,16 +375,16 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT', },
           ],
           blog: {
             id: 999,
-            name: 'Custom blog'
+            name: 'Custom blog',
           },
           author: {
             id: 1,
-            name: 'Joao Moura.'
-          }
+            name: 'Joao Moura.',
+          },
         }
 
         get :update_and_render_object_with_cache_enabled
@@ -399,6 +399,8 @@ module ActionController
         end
       end
 
+      # BUG in rubocop, thinks #use_adapter? is defined twice
+      # rubocop:disable Lint/DuplicateMethods
       def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
         controller = Class.new(ImplicitSerializationTestController) do
           def use_adapter?
@@ -420,6 +422,7 @@ module ActionController
           controller.get_serializer(Profile.new)
         end)
       end
+      # rubocop:enable Lint/DuplicateMethods
 
       def test_render_event_is_emmited
         ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
