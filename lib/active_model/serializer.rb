@@ -67,7 +67,7 @@ module ActiveModel
 
     # @api private
     # Find a serializer from a class and caches the lookup.
-    # Preferentially retuns:
+    # Preferentially returns:
     #   1. class name appended with "Serializer"
     #   2. try again with superclass, if present
     #   3. nil
