@@ -9,7 +9,7 @@ module ActiveModel
     # @example
     #  Association.new(:comments, CommentSummarySerializer)
     #
-    Association = Struct.new(:name, :serializer, :options) do
+    Association = Struct.new(:name, :serializer, :options, :links, :meta) do
       # @return [Symbol]
       #
       def key

@@ -32,13 +32,13 @@ module ActiveModel
 
           case key
           when :posts
-            assert_equal({}, options)
+            assert_equal({ include_data: true }, options)
             assert_kind_of(ActiveModelSerializers.config.collection_serializer, serializer)
           when :bio
-            assert_equal({}, options)
+            assert_equal({ include_data: true }, options)
             assert_nil serializer
           when :roles
-            assert_equal({}, options)
+            assert_equal({ include_data: true }, options)
             assert_kind_of(ActiveModelSerializers.config.collection_serializer, serializer)
           else
             flunk "Unknown association: #{key}"
@@ -80,7 +80,7 @@ module ActiveModel
             flunk "Unknown association: #{key}"
           end
 
-          assert_equal({}, association.options)
+          assert_equal({ include_data: true }, association.options)
         end
       end
 
