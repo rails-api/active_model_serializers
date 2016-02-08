@@ -65,7 +65,16 @@ module ActiveModel
               adapter: :json_api,
               links: nil
             ).serializable_hash
-            assert_equal(nil, hash[:links])
+            refute hash.key?(:links), 'No links key to be output'
+          end
+
+          def test_nil_toplevel_links_json_adapter
+            hash = ActiveModel::SerializableResource.new(
+              @post,
+              adapter: :json,
+              links: nil
+            ).serializable_hash
+            refute hash.key?(:links), 'No links key to be output'
           end
 
           def test_resource_links
