@@ -1,9 +1,9 @@
 require 'set'
+require 'active_model_serializers/adapter'
 module ActiveModel
   class SerializableResource
     ADAPTER_OPTION_KEYS = Set.new([:include, :fields, :adapter, :meta, :meta_key, :links])
     include ActiveModelSerializers::Logging
-    require 'active_model_serializers/adapter'
 
     delegate :serializable_hash, :as_json, :to_json, to: :adapter
     notify :serializable_hash, :render
