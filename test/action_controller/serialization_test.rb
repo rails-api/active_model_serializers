@@ -45,6 +45,16 @@ module ActionController
           render json: @profiles, meta: { total: 10 }
         end
 
+        def render_array_using_implicit_serializer_and_links
+          with_adapter ActiveModel::Serializer::Adapter::JsonApi do
+            @profiles = [
+              Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+            ]
+
+            render json: @profiles, links: { self: 'http://example.com/api/profiles/1' }
+          end
+        end
+
         def render_object_with_cache_enabled
           @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           @author  = Author.new(id: 1, name: 'Joao Moura.')
@@ -247,6 +257,29 @@ module ActionController
           ],
           meta: {
             total: 10
+          }
+        }
+
+        assert_equal 'application/json', @response.content_type
+        assert_equal expected.to_json, @response.body
+      end
+
+      def test_render_array_using_implicit_serializer_and_links
+        get :render_array_using_implicit_serializer_and_links
+
+        expected = {
+          data: [
+            {
+              id: assigns(:profiles).first.id.to_s,
+              type: 'profiles',
+              attributes: {
+                name: 'Name 1',
+                description: 'Description 1'
+              }
+            }
+          ],
+          links: {
+            self: 'http://example.com/api/profiles/1'
           }
         }
 
