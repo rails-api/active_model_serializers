@@ -157,10 +157,10 @@ module ActiveModel
           include_tree = IncludeTree.from_include_args(requested_associations)
           serializer.associations(include_tree).each_with_object({}) do |association, hash|
             hash[association.key] = JsonApi::Association.new(serializer,
-                                                             association.serializer,
-                                                             association.options,
-                                                             association.links,
-                                                             association.meta)
+              association.serializer,
+              association.options,
+              association.links,
+              association.meta)
                                     .as_json
           end
         end
