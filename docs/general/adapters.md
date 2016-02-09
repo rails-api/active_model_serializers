@@ -11,7 +11,7 @@ It should be set only once, preferably at initialization.
 For example:
 
 ```ruby
-ActiveModelSerializers.config.adapter = ActiveModel::Serializer::Adapter::JsonApi
+ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::JsonApi
 ```
 
 or
@@ -117,46 +117,46 @@ The default adapter can be configured, as above, to use any class given to it.
 
 An adapter may also be specified, e.g. when rendering, as a class or as a symbol.
 If a symbol, then the adapter must be, e.g. `:great_example`,
-`ActiveModel::Serializer::Adapter::GreatExample`, or registered.
+`ActiveModelSerializers::Adapter::GreatExample`, or registered.
 
 There are two ways to register an adapter:
 
-1) The simplest, is to subclass `ActiveModel::Serializer::Adapter::Base`, e.g. the below will
+1) The simplest, is to subclass `ActiveModelSerializers::Adapter::Base`, e.g. the below will
 register the `Example::UsefulAdapter` as `"example/useful_adapter"`.
 
 ```ruby
 module Example
-  class UsefulAdapter < ActiveModel::Serializer::Adapter::Base
+  class UsefulAdapter < ActiveModelSerializers::Adapter::Base
   end
 end
 ```
 
 You'll notice that the name it registers is the underscored namespace and class.
 
-Under the covers, when the `ActiveModel::Serializer::Adapter::Base` is subclassed, it registers
+Under the covers, when the `ActiveModelSerializers::Adapter::Base` is subclassed, it registers
 the subclass as `register("example/useful_adapter", Example::UsefulAdapter)`
 
 2) Any class can be registered as an adapter by calling `register` directly on the
-`ActiveModel::Serializer::Adapter` class. e.g., the below registers `MyAdapter` as
+`ActiveModelSerializers::Adapter` class. e.g., the below registers `MyAdapter` as
 `:special_adapter`.
 
 ```ruby
 class MyAdapter; end
-ActiveModel::Serializer::Adapter.register(:special_adapter, MyAdapter)
+ActiveModelSerializers::Adapter.register(:special_adapter, MyAdapter)
 ```
 
 ### Looking up an adapter
 
 | Method | Return value |
 | :------------ |:---------------|
-| `ActiveModel::Serializer::Adapter.adapter_map` | A Hash of all known adapters `{ adapter_name => adapter_class }` |
-| `ActiveModel::Serializer::Adapter.adapters` | A (sorted) Array of all known `adapter_names` |
-| `ActiveModel::Serializer::Adapter.lookup(name_or_klass)` |  The `adapter_class`, else raises an `ActiveModel::Serializer::Adapter::UnknownAdapter` error |
-| `ActiveModel::Serializer::Adapter.adapter_class(adapter)` | Delegates to `ActiveModel::Serializer::Adapter.lookup(adapter)` |
-| `ActiveModel::Serializer.adapter` | A convenience method for `ActiveModel::Serializer::Adapter.lookup(config.adapter)` |
+| `ActiveModelSerializers::Adapter.adapter_map` | A Hash of all known adapters `{ adapter_name => adapter_class }` |
+| `ActiveModelSerializers::Adapter.adapters` | A (sorted) Array of all known `adapter_names` |
+| `ActiveModelSerializers::Adapter.lookup(name_or_klass)` |  The `adapter_class`, else raises an `ActiveModelSerializers::Adapter::UnknownAdapter` error |
+| `ActiveModelSerializers::Adapter.adapter_class(adapter)` | Delegates to `ActiveModelSerializers::Adapter.lookup(adapter)` |
+| `ActiveModelSerializers::Adapter.configured_adapter` | A convenience method for `ActiveModelSerializers::Adapter.lookup(config.adapter)` |
 
 The registered adapter name is always a String, but may be looked up as a Symbol or String.
 Helpfully, the Symbol or String is underscored, so that `get(:my_adapter)` and `get("MyAdapter")`
 may both be used.
 
-For more information, see [the Adapter class on GitHub](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer/adapter.rb)
+For more information, see [the Adapter class on GitHub](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/adapter.rb)

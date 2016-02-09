@@ -17,7 +17,7 @@ Payload (example):
 ```ruby
 {
   serializer: PostSerializer,
-  adapter: ActiveModel::Serializer::Adapter::Attributes
+  adapter: ActiveModelSerializers::Adapter::Attributes
 }
 ```
 
