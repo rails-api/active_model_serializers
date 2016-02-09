@@ -9,6 +9,7 @@ require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
 require 'active_model/serializer/links'
+require 'active_model/serializer/meta'
 require 'active_model/serializer/type'
 
 # ActiveModel::Serializer is an abstract class that is
@@ -20,6 +21,7 @@ module ActiveModel
     include Attributes
     include Caching
     include Links
+    include Meta
     include Type
     require 'active_model/serializer/adapter'
 
