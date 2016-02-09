@@ -10,8 +10,8 @@ module ActiveModelSerializers
         @role.author     = [@author]
         @role_serializer = RoleSerializer.new(@role)
         @spam_serializer = Spam::UnrelatedLinkSerializer.new(@spam)
-        @role_hash       = FragmentCache.new(::ActiveModelSerializers::Adapter.lookup_adapter_from_config.new(@role_serializer), @role_serializer, {})
-        @spam_hash       = FragmentCache.new(::ActiveModelSerializers::Adapter.lookup_adapter_from_config.new(@spam_serializer), @spam_serializer, {})
+        @role_hash       = FragmentCache.new(::ActiveModelSerializers::Adapter.configured_adapter.new(@role_serializer), @role_serializer, {})
+        @spam_hash       = FragmentCache.new(::ActiveModelSerializers::Adapter.configured_adapter.new(@spam_serializer), @spam_serializer, {})
       end
 
       def test_fragment_fetch_with_virtual_attributes

@@ -44,7 +44,7 @@ module ActiveModel
     # @see ActiveModelSerializers::Adapter.lookup
     # Deprecated
     def self.adapter
-      warn 'Calling adapter method in Serializer, please use the method loop from adapter module'
+      warn 'Calling adapter method in Serializer, please use the ActiveModelSerializers::configured_adapter'
       ActiveModelSerializers::Adapter.lookup(config.adapter)
     end
 

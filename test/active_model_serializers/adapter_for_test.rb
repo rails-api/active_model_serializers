@@ -11,14 +11,14 @@ module ActiveModelSerializers
     end
 
     def test_returns_default_adapter
-      adapter = ActiveModelSerializers::Adapter.lookup_adapter_from_config
+      adapter = ActiveModelSerializers::Adapter.configured_adapter
       assert_equal ActiveModelSerializers::Adapter::Attributes, adapter
     end
 
     def test_overwrite_adapter_with_symbol
       ActiveModelSerializers.config.adapter = :null
 
-      adapter = ActiveModelSerializers::Adapter.lookup_adapter_from_config
+      adapter = ActiveModelSerializers::Adapter.configured_adapter
       assert_equal ActiveModelSerializers::Adapter::Null, adapter
     ensure
       ActiveModelSerializers.config.adapter = @previous_adapter
@@ -27,7 +27,7 @@ module ActiveModelSerializers
     def test_overwrite_adapter_with_class
       ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::Null
 
-      adapter = ActiveModelSerializers::Adapter.lookup_adapter_from_config
+      adapter = ActiveModelSerializers::Adapter.configured_adapter
       assert_equal ActiveModelSerializers::Adapter::Null, adapter
     end
 
@@ -35,7 +35,7 @@ module ActiveModelSerializers
       ActiveModelSerializers.config.adapter = :unknown
 
       assert_raises UnknownAdapterError do
-        ActiveModelSerializers::Adapter.lookup_adapter_from_config
+        ActiveModelSerializers::Adapter.configured_adapter
       end
     end
 
@@ -43,7 +43,7 @@ module ActiveModelSerializers
       ActiveModelSerializers.config.adapter = 42
 
       assert_raises UnknownAdapterError do
-        ActiveModelSerializers::Adapter.lookup_adapter_from_config
+        ActiveModelSerializers::Adapter.configured_adapter
       end
     end
 
@@ -110,7 +110,7 @@ module ActiveModelSerializers
 
     def test_adapter
       assert_equal ActiveModelSerializers.config.adapter, :attributes
-      assert_equal ActiveModelSerializers::Adapter.lookup_adapter_from_config, ActiveModelSerializers::Adapter::Attributes
+      assert_equal ActiveModelSerializers::Adapter.configured_adapter, ActiveModelSerializers::Adapter::Attributes
     end
 
     def test_register_adapter
