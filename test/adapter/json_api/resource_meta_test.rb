@@ -46,15 +46,20 @@ module ActiveModel
           end
 
           def test_meta_object_resource_in_array
+            post2 = Post.new(id: 1339, comments: [Comment.new])
+            posts = [@post, post2]
             hash = ActiveModel::SerializableResource.new(
-              [@post, @post],
+              posts,
               each_serializer: MetaBlockPostSerializer,
               adapter: :json_api
             ).serializable_hash
             expected = {
-              comments_count: @post.comments.count
+              :data => [
+                { :id => '1337', :type => 'posts', :meta => { :comments_count => 0 } },
+                { :id => '1339', :type => 'posts', :meta => { :comments_count => 1 } }
+              ]
             }
-            assert_equal([expected, expected], hash[:data].map { |obj| obj[:meta] })
+            assert_equal(expected, hash)
           end
         end
       end
