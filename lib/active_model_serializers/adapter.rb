@@ -14,7 +14,7 @@ module ActiveModelSerializers
       end
 
       def configured_adapter
-          lookup(ActiveModelSerializers.config.adapter)
+        lookup(ActiveModelSerializers.config.adapter)
       end
 
       def create(resource, options = {})
