@@ -7,8 +7,10 @@ Features:
   relationship-level links and meta attributes. (@beauby)
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 Fixes:
+- [#1458](https://github.com/rails-api/active_model_serializers/pull/1458) Preserve the serializer
+  type when fragment caching. (@bdmac)
 - [#1477](https://github.com/rails-api/active_model_serializers/pull/1477) Fix `fragment_cached?`
-  method to check if caching (@bdmac)
+  method to check if caching. (@bdmac)
 - [#1501](https://github.com/rails-api/active_model_serializers/pull/1501) Adds tests for SerializableResource::use_adapter?,doc typos (@domitian)
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 Misc:
