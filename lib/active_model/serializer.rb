@@ -96,6 +96,8 @@ module ActiveModel
       _serializer_instance_methods.include?(name)
     end
 
+    # TODO: Fix load-order failures when different serializer instances define different
+    # scope methods
     def self._serializer_instance_methods
       @_serializer_instance_methods ||= (public_instance_methods - Object.public_instance_methods).to_set
     end
