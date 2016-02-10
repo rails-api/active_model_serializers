@@ -1,14 +1,19 @@
 ## 0.10.x
 
 Breaking changes:
+
 Features:
+- [#1504](https://github.com/rails-api/active_model_serializers/pull/1504) Adds the changes missing from #1454
+  and add more tests for resource identifier and relationship objects. (@groyoh)
 - [#1018](https://github.com/rails-api/active_model_serializers/pull/1018) Add more tests and docs for top-level links. (@leandrocp)
 - [#1454](https://github.com/rails-api/active_model_serializers/pull/1454) Add support for
   relationship-level links and meta attributes. (@beauby)
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
+
 Fixes:
 - [#1501](https://github.com/rails-api/active_model_serializers/pull/1501) Adds tests for SerializableResource::use_adapter?,doc typos (@domitian)
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
+
 Misc:
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
