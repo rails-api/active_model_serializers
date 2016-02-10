@@ -28,8 +28,9 @@ module ActiveModel
           def as_json
             return @value if @value
 
-            hash = { href: @href }
-            hash.merge!(meta: @meta) if @meta
+            hash = {}
+            hash[:href] = @href if @href
+            hash[:meta] = @meta if @meta
 
             hash
           end

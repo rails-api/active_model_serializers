@@ -19,16 +19,22 @@ module ActiveModel
 
             has_many :locations do
               link :related do
-                ids = object.locations.map!(&:id).join(',')
+                ids = object.locations.map(&:id).join(',')
                 href "//example.com/locations/#{ids}"
               end
             end
 
             has_many :posts do
               link :related do
-                ids = object.posts.map!(&:id).join(',')
+                ids = object.posts.map(&:id).join(',')
                 href "//example.com/posts/#{ids}"
                 meta ids: ids
+              end
+            end
+
+            has_many :comments do
+              link :self do
+                meta ids: [1]
               end
             end
 
@@ -48,7 +54,7 @@ module ActiveModel
 
             has_many :likes do
               link :related do
-                ids = object.likes.map!(&:id).join(',')
+                ids = object.likes.map(&:id).join(',')
                 href "//example.com/likes/#{ids}"
                 meta ids: ids
               end
@@ -65,6 +71,7 @@ module ActiveModel
             @profile = Profile.new(id: 1337)
             @location = Location.new(id: 1337)
             @reviewer = Author.new(id: 1337)
+            @comment = Comment.new(id: 1337)
             @author = RelationshipAuthor.new(
               id: 1337,
               posts: [@post],
@@ -74,12 +81,12 @@ module ActiveModel
               likes: [@like],
               roles: [@role],
               locations: [@location],
-              profile: @profile
+              profile: @profile,
+              comments: [@comment]
             )
           end
 
           def test_relationship_simple_link
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               data: {
                 id: '1337',
@@ -89,31 +96,28 @@ module ActiveModel
                 self: '//example.com/link_author/relationships/bio'
               }
             }
-            assert_equal(expected, hash[:data][:relationships][:bio])
+            assert_relationship(:bio, expected)
           end
 
           def test_relationship_block_link
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               data: { id: '1337', type: 'profiles' },
               links: { related: '//example.com/profiles/1337' }
             }
-            assert_equal(expected, hash[:data][:relationships][:profile])
+            assert_relationship(:profile, expected)
           end
 
           def test_relationship_block_link_href
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               data: [{ id: '1337', type: 'locations' }],
               links: {
                 related: { href: '//example.com/locations/1337' }
               }
             }
-            assert_equal(expected, hash[:data][:relationships][:locations])
+            assert_relationship(:locations, expected)
           end
 
-          def test_relationship_block_link_meta
-            hash = serializable(@author, adapter: :json_api).serializable_hash
+          def test_relationship_block_link_href_and_meta
             expected = {
               data: [{ id: '1337', type: 'posts' }],
               links: {
@@ -123,37 +127,45 @@ module ActiveModel
                 }
               }
             }
-            assert_equal(expected, hash[:data][:relationships][:posts])
+            assert_relationship(:posts, expected)
+          end
+
+          def test_relationship_block_link_meta
+            expected = {
+              data: [{ id: '1337', type: 'comments' }],
+              links: {
+                self: {
+                  meta: { ids: [1] }
+                }
+              }
+            }
+            assert_relationship(:comments, expected)
           end
 
           def test_relationship_meta
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               data: [{ id: '1337', type: 'roles' }],
               meta: { count: 1 }
             }
-            assert_equal(expected, hash[:data][:relationships][:roles])
+            assert_relationship(:roles, expected)
           end
 
           def test_relationship_not_including_data
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               links: { self: '//example.com/link_author/relationships/blog' }
             }
-            assert_equal(expected, hash[:data][:relationships][:blog])
+            assert_relationship(:blog, expected)
           end
 
           def test_relationship_including_data_explicit
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               data: { id: '1337', type: 'authors' },
               meta: { name: 'Dan Brown' }
             }
-            assert_equal(expected, hash[:data][:relationships][:reviewer])
+            assert_relationship(:reviewer, expected)
           end
 
           def test_relationship_with_everything
-            hash = serializable(@author, adapter: :json_api).serializable_hash
             expected = {
               data: [{ id: '1337', type: 'likes' }],
               links: {
@@ -164,7 +176,14 @@ module ActiveModel
               },
               meta: { liked: true }
             }
-            assert_equal(expected, hash[:data][:relationships][:likes])
+            assert_relationship(:likes, expected)
+          end
+
+          private
+
+          def assert_relationship(relationship_name, expected)
+            hash = serializable(@author, adapter: :json_api).serializable_hash
+            assert_equal(expected, hash[:data][:relationships][relationship_name])
           end
         end
       end
