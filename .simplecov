@@ -19,7 +19,6 @@ ENV['FULL_BUILD'] ||= ENV['CI']
 # rubocop:enable Style/DoubleNegation
 
 ## CONFIGURE SIMPLECOV
-SimpleCov.pid = $$ # In case there's any forking
 
 SimpleCov.profiles.define 'app' do
   coverage_dir 'coverage'
