@@ -4,6 +4,7 @@
 (Windows: [![Build status](https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true)](https://ci.appveyor.com/project/joaomdmoura/active-model-serializers/branch/master))
 [![Code Quality](https://codeclimate.com/github/rails-api/active_model_serializers/badges/gpa.svg)](https://codeclimate.com/github/rails-api/active_model_serializers)
 [![Test Coverage](https://codeclimate.com/github/rails-api/active_model_serializers/badges/coverage.svg)](https://codeclimate.com/github/rails-api/active_model_serializers/coverage)
+[![Issue Stats](http://issuestats.com/github/rails-api/active_model_serializers/badge/pr)](http://issuestats.com/github/rails-api/active_model_serializers) [![Issue Stats](http://issuestats.com/github/rails-api/active_model_serializers/badge/issue)](http://issuestats.com/github/rails-api/active_model_serializers)
 
 ## Documentation
 
