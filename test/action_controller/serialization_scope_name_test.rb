@@ -158,6 +158,8 @@ module SerializationScopeTesting
       assert_equal expected_json, @response.body
     end
   end
+  # FIXME: Has bugs. See comments below and
+  #   https://github.com/rails-api/active_model_serializers/issues/1509
   class NilSerializationScopeTest < ActionController::TestCase
     class PostViewContextTestController < ActionController::Base
       serialization_scope nil
@@ -195,10 +197,17 @@ module SerializationScopeTesting
     # TODO: change to NoMethodError and match 'admin?' when the
     # global state in Serializer._serializer_instance_methods is fixed
     def test_nil_scope
-      exception = assert_raises(NameError) do
+      if Rails.version.start_with?('4.0')
+        exception_class = NoMethodError
+        exception_matcher = 'admin?'
+      else
+        exception_class = NameError
+        exception_matcher = /admin|current_user/
+      end
+      exception = assert_raises(exception_class) do
         get :render_post_with_no_scope
       end
-      assert_match(/admin|current_user/, exception.message)
+      assert_match exception_matcher, exception.message
     end
 
     # TODO: run test when
