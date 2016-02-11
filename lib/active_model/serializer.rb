@@ -118,6 +118,10 @@ module ActiveModel
       end
     end
 
+    def success?
+      true
+    end
+
     # Used by adapter as resource root.
     def json_key
       root || object.class.model_name.to_s.underscore

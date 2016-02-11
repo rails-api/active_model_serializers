@@ -2,9 +2,8 @@
 
 # JSON API Errors
 
-Rendering error documents requires specifying the serializer and the adapter:
+Rendering error documents requires specifying the error serializer(s):
 
-- `adapter: :'json_api/error'`
 - Serializer:
   - For a single resource: `serializer: ActiveModel::Serializer::ErrorSerializer`.
   - For a collection: `serializer: ActiveModel::Serializer::ErrorsSerializer`, `each_serializer: ActiveModel::Serializer::ErrorSerializer`.
@@ -23,7 +22,7 @@ resource.errors.add(:name, 'cannot be nil')
 resource.errors.add(:name, 'must be longer')
 resource.errors.add(:id, 'must be a uuid')
 
-render json: resource, status: 422, adapter: 'json_api/error', serializer: ActiveModel::Serializer::ErrorSerializer
+render json: resource, status: 422, adapter: :json_api, serializer: ActiveModel::Serializer::ErrorSerializer
 # #=>
 #  { :errors =>
 #    [
@@ -44,7 +43,7 @@ resource.errors.add(:name, 'must be awesome')
 serializable_resource = ActiveModel::SerializableResource.new(
   resource, {
     serializer: ActiveModel::Serializer::ErrorSerializer,
-    adapter: 'json_api/error'
+    adapter: :json_api
   })
 serializable_resource.as_json(options)
 # #=>

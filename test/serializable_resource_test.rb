@@ -40,7 +40,7 @@ module ActiveModel
         serializable_resource = ActiveModel::SerializableResource.new(
           resource, {
             serializer: ActiveModel::Serializer::ErrorSerializer,
-            adapter: 'json_api/error'
+            adapter: :json_api
           })
         expected_response_document =
           { :errors =>
@@ -61,7 +61,7 @@ module ActiveModel
           resources, {
             serializer: ActiveModel::Serializer::ErrorsSerializer,
             each_serializer: ActiveModel::Serializer::ErrorSerializer,
-            adapter: 'json_api/error'
+            adapter: :json_api
           })
         expected_response_document =
           { :errors =>

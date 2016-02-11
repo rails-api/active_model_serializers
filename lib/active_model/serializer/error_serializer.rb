@@ -3,4 +3,8 @@ class ActiveModel::Serializer::ErrorSerializer < ActiveModel::Serializer
   def as_json
     object.errors.messages
   end
+
+  def success?
+    false
+  end
 end

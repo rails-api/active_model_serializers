@@ -30,7 +30,7 @@ module ActionController
             resource.errors.add(:name, 'cannot be nil')
             resource.errors.add(:name, 'must be longer')
             resource.errors.add(:id, 'must be a uuid')
-            render json: resource, adapter: 'json_api/error', serializer: ActiveModel::Serializer::ErrorSerializer
+            render json: resource, adapter: :json_api, serializer: ActiveModel::Serializer::ErrorSerializer
           end
         end
 

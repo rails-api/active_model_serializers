@@ -1,29 +1,13 @@
 module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
-      class Error < Base
-        UnknownSourceTypeError = Class.new(ArgumentError)
+      module Error
         # rubocop:disable Style/AsciiComments
-        # TODO: look into caching
+        UnknownSourceTypeError = Class.new(ArgumentError)
 
-        # definition:
-        #   ☐ toplevel_errors array (required)
-        #   ☑ toplevel_meta
-        #   ☑ toplevel_jsonapi
-        def serializable_hash(*)
-          hash = {}
-          # PR Please :)
-          # Jsonapi.add!(hash)
-
-          # Checking object since we're not using an ArraySerializer
-          if serializer.object.respond_to?(:each)
-            hash[:errors] = collection_errors
-          else
-            hash[:errors] = Error.resource_errors(serializer)
-          end
-          hash
-        end
-
+        # Builds a JSON API Errors Object
+        # {http://jsonapi.org/format/#errors JSON API Errors}
+        #
         # @param [ActiveModel::Serializer::ErrorSerializer]
         # @return [Array<Symbol, Array<String>] i.e. attribute_name, [attribute_errors]
         def self.resource_errors(error_serializer)
@@ -86,16 +70,6 @@ module ActiveModelSerializers
             fail UnknownSourceTypeError, "Unknown source type '#{source_type}' for attribute_name '#{attribute_name}'"
           end
         end
-
-        private
-
-        # @return [Array<#object_errors>]
-        def collection_errors
-          serializer.flat_map do |error_serializer|
-            Error.resource_errors(error_serializer)
-          end
-        end
-
         # rubocop:enable Style/AsciiComments
       end
     end

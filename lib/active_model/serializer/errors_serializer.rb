@@ -1,5 +1,5 @@
 require 'active_model/serializer/error_serializer'
-class ActiveModel::Serializer::ErrorsSerializer < ActiveModel::Serializer
+class ActiveModel::Serializer::ErrorsSerializer
   include Enumerable
   delegate :each, to: :@serializers
   attr_reader :object, :root
@@ -11,6 +11,10 @@ class ActiveModel::Serializer::ErrorsSerializer < ActiveModel::Serializer
       serializer_class = options.fetch(:serializer) { ActiveModel::Serializer::ErrorSerializer }
       serializer_class.new(resource, options.except(:serializer))
     end
+  end
+
+  def success?
+    false
   end
 
   def json_key

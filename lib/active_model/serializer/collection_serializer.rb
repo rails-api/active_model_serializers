@@ -22,6 +22,10 @@ module ActiveModel
         end
       end
 
+      def success?
+        true
+      end
+
       def json_key
         root || derived_root
       end
