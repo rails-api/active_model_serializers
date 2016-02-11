@@ -2,6 +2,8 @@
 
 Breaking changes:
 Features:
+- [#1372](https://github.com/rails-api/active_model_serializers/pull/1372) Support
+  cache_store.read_multi. (@LcpMarvel)
 - [#1018](https://github.com/rails-api/active_model_serializers/pull/1018) Add more tests and docs for top-level links. (@leandrocp)
 - [#1454](https://github.com/rails-api/active_model_serializers/pull/1454) Add support for
   relationship-level links and meta attributes. (@beauby)
