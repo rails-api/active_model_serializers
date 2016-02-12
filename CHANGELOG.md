@@ -1,5 +1,7 @@
 # UNRELEASED
 
+* Add documentation with example to `README` for POROs and alternative ORMs
+
 # VERSION 0.8.1
 
 * Fix bug whereby a serializer using 'options' would blow up.
