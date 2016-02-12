@@ -17,18 +17,6 @@ module ActiveModel
             link :yet_another do
               "//example.com/resource/#{object.id}"
             end
-
-            has_many :posts do
-              link :self do
-                href '//example.com/link_author/relationships/posts'
-                meta stuff: 'value'
-              end
-              link :related do
-                href '//example.com/link_author/posts'
-                meta count: object.posts.count
-              end
-              include_data false
-            end
           end
 
           def setup
@@ -90,23 +78,6 @@ module ActiveModel
               yet_another: '//example.com/resource/1337'
             }
             assert_equal(expected, hash[:data][:links])
-          end
-
-          def test_relationship_links
-            hash = serializable(@author, adapter: :json_api).serializable_hash
-            expected = {
-              links: {
-                self: {
-                  href: '//example.com/link_author/relationships/posts',
-                  meta: { stuff: 'value' }
-                },
-                related: {
-                  href: '//example.com/link_author/posts',
-                  meta: { count: 1 }
-                }
-              }
-            }
-            assert_equal(expected, hash[:data][:relationships][:posts])
           end
         end
       end

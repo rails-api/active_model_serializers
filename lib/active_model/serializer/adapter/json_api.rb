@@ -6,10 +6,9 @@ module ActiveModel
         autoload :PaginationLinks
         autoload :FragmentCache
         autoload :Link
-        autoload :Association
-        autoload :ResourceIdentifier
         autoload :Meta
         autoload :Deserialization
+        require 'active_model/serializer/adapter/json_api/api_objects'
 
         # TODO: if we like this abstraction and other API objects to it,
         # then extract to its own file and require it.
@@ -100,7 +99,7 @@ module ActiveModel
         end
 
         def process_resource(serializer, primary)
-          resource_identifier = JsonApi::ResourceIdentifier.new(serializer).as_json
+          resource_identifier = ApiObjects::ResourceIdentifier.new(serializer).as_json
           return false unless @resource_identifiers.add?(resource_identifier)
 
           resource_object = resource_object_for(serializer)
@@ -136,7 +135,7 @@ module ActiveModel
 
         def resource_object_for(serializer)
           resource_object = cache_check(serializer) do
-            resource_object = JsonApi::ResourceIdentifier.new(serializer).as_json
+            resource_object = ApiObjects::ResourceIdentifier.new(serializer).as_json
 
             requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
             attributes = attributes_for(serializer, requested_fields)
@@ -160,12 +159,13 @@ module ActiveModel
         def relationships_for(serializer, requested_associations)
           include_tree = IncludeTree.from_include_args(requested_associations)
           serializer.associations(include_tree).each_with_object({}) do |association, hash|
-            hash[association.key] = JsonApi::Association.new(serializer,
+            hash[association.key] = ApiObjects::Relationship.new(
+              serializer,
               association.serializer,
               association.options,
               association.links,
-              association.meta)
-                                    .as_json
+              association.meta
+            ).as_json
           end
         end
 

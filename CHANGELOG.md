@@ -1,13 +1,18 @@
 ## 0.10.x
 
 Breaking changes:
+
 Features:
+- [#1504](https://github.com/rails-api/active_model_serializers/pull/1504) Adds the changes missing from #1454
+  and add more tests for resource identifier and relationship objects. Fix association block with link
+  returning `data: nil`.(@groyoh)
 - [#1372](https://github.com/rails-api/active_model_serializers/pull/1372) Support
   cache_store.read_multi. (@LcpMarvel)
 - [#1018](https://github.com/rails-api/active_model_serializers/pull/1018) Add more tests and docs for top-level links. (@leandrocp)
 - [#1454](https://github.com/rails-api/active_model_serializers/pull/1454) Add support for
   relationship-level links and meta attributes. (@beauby)
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
+
 Fixes:
 - [#1458](https://github.com/rails-api/active_model_serializers/pull/1458) Preserve the serializer
   type when fragment caching. (@bdmac)
@@ -15,6 +20,7 @@ Fixes:
   method to check if caching. (@bdmac)
 - [#1501](https://github.com/rails-api/active_model_serializers/pull/1501) Adds tests for SerializableResource::use_adapter?,doc typos (@domitian)
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
+
 Misc:
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)

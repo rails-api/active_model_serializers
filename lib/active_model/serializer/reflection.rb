@@ -42,17 +42,17 @@ module ActiveModel
 
       def link(name, value = nil, &block)
         @_links[name] = block || value
-        nil
+        :nil
       end
 
       def meta(value = nil, &block)
         @_meta = block || value
-        nil
+        :nil
       end
 
       def include_data(value = true)
         @_include_data = value
-        nil
+        :nil
       end
 
       def value(serializer)
@@ -60,7 +60,12 @@ module ActiveModel
         @scope = serializer.scope
 
         if block
-          instance_eval(&block)
+          block_value = instance_eval(&block)
+          if block_value == :nil
+            serializer.read_attribute_for_serialization(name)
+          else
+            block_value
+          end
         else
           serializer.read_attribute_for_serialization(name)
         end
