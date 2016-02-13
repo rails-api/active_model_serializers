@@ -17,7 +17,7 @@ module ActiveModel
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     type 'authors'
         def type(type)
-          self._type = type
+          self._type = type && type.to_s
         end
       end
     end

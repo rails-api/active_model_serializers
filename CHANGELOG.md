@@ -3,6 +3,8 @@
 Breaking changes:
 
 Features:
+- [#1515](https://github.com/rails-api/active_model_serializers/pull/1515) Adds support for symbols to the
+  `ActiveModel::Serializer.type` method. (@groyoh)
 - [#1504](https://github.com/rails-api/active_model_serializers/pull/1504) Adds the changes missing from #1454
   and add more tests for resource identifier and relationship objects. Fix association block with link
   returning `data: nil`.(@groyoh)
