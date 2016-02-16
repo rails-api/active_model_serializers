@@ -96,3 +96,12 @@ class PostsController < ApplicationController
 
 end
 ```
+
+Do note when using Rails 5 API mode (or when you're not using `ActionController::Base` as the base controller class), you'll need to include `ActionController::Serialization` in your `ApplicationController`
+
+```ruby
+class ApplicationController < ActionController::API
+  include ActionController::Serialization
+end
+```
+
