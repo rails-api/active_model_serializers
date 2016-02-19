@@ -37,7 +37,7 @@ module ActiveModel
 
             def test_relationship_with_data_array
               posts = [Post.new(id: 1), Post.new(id: 2)]
-              @serializer = ActiveModel::Serializer::ArraySerializer.new(posts)
+              @serializer = ActiveModel::Serializer::CollectionSerializer.new(posts)
               @author.posts = posts
               @author.blog = nil
               expected = {
