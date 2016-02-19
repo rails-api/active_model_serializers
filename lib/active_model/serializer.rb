@@ -205,7 +205,11 @@ end
           # we must do this always because even if the current association is not
           # embeded in root, it might have its own associations that are embeded in root
           hash.merge!(association_serializer.embedded_in_root_associations) do |key, oldval, newval|
-            oldval.merge(newval) { |_, oldval, newval| [oldval, newval].flatten.uniq }
+            if oldval.respond_to?(:to_ary)
+              [oldval, newval].flatten.uniq
+            else
+              oldval.merge(newval) { |_, oldval, newval| [oldval, newval].flatten.uniq }
+            end
           end
 
           if association.embed_in_root?
