@@ -9,26 +9,18 @@ module ActiveModelSerializers
         @serializer = serializer
       end
 
-      # TODO: Use Serializable::Resource
-      # TODO: call +constantize+ less
       # 1. Create a CachedSerializer and NonCachedSerializer from the serializer class
       # 2. Serialize the above two with the given adapter
       # 3. Pass their serializations to the adapter +::fragment_cache+
       def fetch
-        klass = serializer.class
+        object = serializer.object
+
         # It will split the serializer into two, one that will be cached and one that will not
-        serializers = fragment_serializer(serializer.object.class.name, klass)
-
-        # Instantiate both serializers
-        cached_serializer     = serializers[:cached].constantize.new(serializer.object)
-        non_cached_serializer = serializers[:non_cached].constantize.new(serializer.object)
-
-        cached_adapter     = adapter.class.new(cached_serializer, instance_options)
-        non_cached_adapter = adapter.class.new(non_cached_serializer, instance_options)
+        serializers = fragment_serializer(object.class.name)
 
         # Get serializable hash from both
-        cached_hash     = cached_adapter.serializable_hash
-        non_cached_hash = non_cached_adapter.serializable_hash
+        cached_hash     = serialize(object, serializers[:cached])
+        non_cached_hash = serialize(object, serializers[:non_cached])
 
         # Merge both results
         adapter.fragment_cache(cached_hash, non_cached_hash)
@@ -40,31 +32,38 @@ module ActiveModelSerializers
 
       private
 
-      # Given a serializer class and a hash of its cached and non-cached serializers
+      def serialize(object, serializer_class)
+        ActiveModel::SerializableResource.new(
+          object,
+          serializer: serializer_class,
+          adapter: adapter.class
+        ).serializable_hash
+      end
+
+      # Given a hash of its cached and non-cached serializers
       # 1. Determine cached attributes from serializer class options
       # 2. Add cached attributes to cached Serializer
       # 3. Add non-cached attributes to non-cached Serializer
-      def cached_attributes(klass, serializers)
-        attributes            = serializer.class._attributes
-        cached_attributes     = klass._cache_only ? klass._cache_only : attributes.reject { |attr| klass._cache_except.include?(attr) }
+      def cache_attributes(serializers)
+        klass                 = serializer.class
+        attributes            = klass._attributes
+        cache_only            = klass._cache_only
+        cached_attributes     = cache_only ? cache_only : attributes - klass._cache_except
         non_cached_attributes = attributes - cached_attributes
+        attributes_keys       = klass._attributes_keys
 
-        cached_attributes.each do |attribute|
-          options = serializer.class._attributes_keys[attribute]
-          options ||= {}
-          # Add cached attributes to cached Serializer
-          serializers[:cached].constantize.attribute(attribute, options)
-        end
+        add_attributes_to_serializer(serializers[:cached], cached_attributes, attributes_keys)
+        add_attributes_to_serializer(serializers[:non_cached], non_cached_attributes, attributes_keys)
+      end
 
-        non_cached_attributes.each do |attribute|
-          options = serializer.class._attributes_keys[attribute]
-          options ||= {}
-          # Add non-cached attributes to non-cached Serializer
-          serializers[:non_cached].constantize.attribute(attribute, options)
+      def add_attributes_to_serializer(serializer, attributes, attributes_keys)
+        attributes.each do |attribute|
+          options = attributes_keys[attribute] || {}
+          serializer.attribute(attribute, options)
         end
       end
 
-      # Given a resource name and its serializer's class
+      # Given a resource name
       # 1. Dyanmically creates a CachedSerializer and NonCachedSerializer
       #   for a given class 'name'
       # 2. Call
@@ -81,28 +80,34 @@ module ActiveModelSerializers
       #     User_AdminCachedSerializer
       #     User_AdminNOnCachedSerializer
       #
-      def fragment_serializer(name, klass)
+      def fragment_serializer(name)
+        klass      = serializer.class
         cached     = "#{to_valid_const_name(name)}CachedSerializer"
         non_cached = "#{to_valid_const_name(name)}NonCachedSerializer"
 
-        Object.const_set cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(cached)
-        Object.const_set non_cached, Class.new(ActiveModel::Serializer) unless Object.const_defined?(non_cached)
+        cached_serializer     = get_or_create_serializer(cached)
+        non_cached_serializer = get_or_create_serializer(non_cached)
 
         klass._cache_options ||= {}
-        klass._cache_options[:key] = klass._cache_key if klass._cache_key
+        cache_key = klass._cache_key
+        klass._cache_options[:key] = cache_key if cache_key
+        cached_serializer.cache(klass._cache_options)
 
-        cached.constantize.cache(klass._cache_options)
+        type = klass._type
+        cached_serializer.type(type)
+        non_cached_serializer.type(type)
 
-        # Preserve the type setting in the cached/non-cached serializer classes
-        cached.constantize.type(klass._type)
-        non_cached.constantize.type(klass._type)
+        non_cached_serializer.fragmented(serializer)
+        cached_serializer.fragmented(serializer)
 
-        cached.constantize.fragmented(serializer)
-        non_cached.constantize.fragmented(serializer)
-
-        serializers = { cached: cached, non_cached: non_cached }
-        cached_attributes(klass, serializers)
+        serializers = { cached: cached_serializer, non_cached: non_cached_serializer }
+        cache_attributes(serializers)
         serializers
+      end
+
+      def get_or_create_serializer(name)
+        return Object.const_get(name) if Object.const_defined?(name)
+        Object.const_set(name, Class.new(ActiveModel::Serializer))
       end
 
       def to_valid_const_name(name)
