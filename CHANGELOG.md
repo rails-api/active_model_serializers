@@ -21,7 +21,7 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
-- [#1516](https://github.com/rails-api/active_model_serializers/pull/1501) No longer return a nil href when only
+- [#1516](https://github.com/rails-api/active_model_serializers/pull/1516) No longer return a nil href when only
   adding meta to a relationship link. (@groyoh)
 - [#1458](https://github.com/rails-api/active_model_serializers/pull/1458) Preserve the serializer
   type when fragment caching. (@bdmac)
@@ -31,6 +31,7 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
+- [#1527](https://github.com/rails-api/active_model_serializers/pull/1527) Refactor fragment cache class. (@groyoh)
 - [#1560](https://github.com/rails-api/active_model_serializers/pull/1560) Update rubocop and address its warnings. (@bf4 @groyoh)
 - [#1545](https://github.com/rails-api/active_model_serializers/pull/1545) Document how to pass arbitrary options to the
   serializer (@CodedBeardedSignedTaylor)
