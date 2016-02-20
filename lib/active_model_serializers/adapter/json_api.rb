@@ -7,7 +7,8 @@ module ActiveModelSerializers
       autoload :Link
       require 'active_model/serializer/adapter/json_api/meta'
       autoload :Deserialization
-      require 'active_model/serializer/adapter/json_api/api_objects'
+      autoload :ResourceIdentifier
+      autoload :Relationship
 
       # TODO: if we like this abstraction and other API objects to it,
       # then extract to its own file and require it.
@@ -98,7 +99,7 @@ module ActiveModelSerializers
       end
 
       def process_resource(serializer, primary)
-        resource_identifier = ActiveModel::Serializer::Adapter::JsonApi::ApiObjects::ResourceIdentifier.new(serializer).as_json
+        resource_identifier = ResourceIdentifier.new(serializer).as_json
         return false unless @resource_identifiers.add?(resource_identifier)
 
         resource_object = resource_object_for(serializer)
@@ -134,7 +135,7 @@ module ActiveModelSerializers
 
       def resource_object_for(serializer)
         resource_object = cache_check(serializer) do
-          resource_object = ActiveModel::Serializer::Adapter::JsonApi::ApiObjects::ResourceIdentifier.new(serializer).as_json
+          resource_object = ResourceIdentifier.new(serializer).as_json
 
           requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
           attributes = attributes_for(serializer, requested_fields)
@@ -158,7 +159,7 @@ module ActiveModelSerializers
       def relationships_for(serializer, requested_associations)
         include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(requested_associations)
         serializer.associations(include_tree).each_with_object({}) do |association, hash|
-          hash[association.key] = ActiveModel::Serializer::Adapter::JsonApi::ApiObjects::Relationship.new(
+          hash[association.key] = Relationship.new(
             serializer,
             association.serializer,
             association.options,
