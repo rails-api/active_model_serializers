@@ -14,6 +14,8 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1528](https://github.com/rails-api/active_model_serializers/pull/1528) Relationships are no longer included
+  in the "included" array if they are excluded by the :fields option. (@groyoh)
 - [#1516](https://github.com/rails-api/active_model_serializers/pull/1501) No longer return a nil href when only
   adding meta to a relationship link. (@groyoh)
 - [#1458](https://github.com/rails-api/active_model_serializers/pull/1458) Preserve the serializer

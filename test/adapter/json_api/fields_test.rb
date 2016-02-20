@@ -62,7 +62,7 @@ module ActiveModel
           end
 
           def test_fields_included
-            fields = { posts: [:author], comments: [:body] }
+            fields = { posts: [:author, :comments], comments: [:body] }
             hash = serializable(@post, adapter: :json_api, fields: fields, include: 'comments').serializable_hash
             expected = [
               {
