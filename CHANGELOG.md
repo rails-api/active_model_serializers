@@ -1,9 +1,30 @@
 ## 0.10.x
 
 Breaking changes:
+
 Features:
+- [#1515](https://github.com/rails-api/active_model_serializers/pull/1515) Adds support for symbols to the
+  `ActiveModel::Serializer.type` method. (@groyoh)
+- [#1504](https://github.com/rails-api/active_model_serializers/pull/1504) Adds the changes missing from #1454
+  and add more tests for resource identifier and relationship objects. Fix association block with link
+  returning `data: nil`.(@groyoh)
+- [#1372](https://github.com/rails-api/active_model_serializers/pull/1372) Support
+  cache_store.read_multi. (@LcpMarvel)
+- [#1018](https://github.com/rails-api/active_model_serializers/pull/1018) Add more tests and docs for top-level links. (@leandrocp)
+- [#1454](https://github.com/rails-api/active_model_serializers/pull/1454) Add support for
+  relationship-level links and meta attributes. (@beauby)
+- [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
+
 Fixes:
+- [#1516](https://github.com/rails-api/active_model_serializers/pull/1501) No longer return a nil href when only
+  adding meta to a relationship link. (@groyoh)
+- [#1458](https://github.com/rails-api/active_model_serializers/pull/1458) Preserve the serializer
+  type when fragment caching. (@bdmac)
+- [#1477](https://github.com/rails-api/active_model_serializers/pull/1477) Fix `fragment_cached?`
+  method to check if caching. (@bdmac)
+- [#1501](https://github.com/rails-api/active_model_serializers/pull/1501) Adds tests for SerializableResource::use_adapter?,doc typos (@domitian)
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
+
 Misc:
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
@@ -415,7 +436,7 @@ Features:
     '[Revert the serializers API as other alternatives are now also under discussion](https://github.com/rails/rails/commit/0a4035b12a6c59253cb60f9e3456513c6a6a9d33)'.
 - [Proposed Implementation to Rails 3.2 by @wycats and @josevalim (November 25, 2011)](https://github.com/rails/rails/pull/3753)
   - [Creation of `ActionController::Serialization`, initial serializer
-    support (September, 26 2011)](https://github.com/rails/rails/commit/8ff7693a8dc61f43fc4eaf72ed24d3b8699191fe0).
+    support (September, 26 2011)](https://github.com/rails/rails/commit/8ff7693a8dc61f43fc4eaf72ed24d3b8699191fe).
   - [Docs and CHANGELOG](https://github.com/rails/rails/commit/696d01f7f4a8ed787924a41cce6df836cd73c46f)
   - [Deprecation of ActiveModel::Serialization to ActiveModel::Serializable](https://github.com/rails/rails/blob/696d01f7f4a8ed787924a41cce6df836cd73c46f/activemodel/lib/active_model/serialization.rb)
 - [Creation of `ActiveModel::Serialization` from `ActiveModel::Serializer` in Rails (2009)](https://github.com/rails/rails/commit/c6bc8e662614be711f45a8d4b231d5f993b024a7#diff-d029b9768d8df0407a35804a468e3ae5)

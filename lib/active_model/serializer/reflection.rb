@@ -34,6 +34,43 @@ module ActiveModel
     # So you can inspect reflections in your Adapters.
     #
     class Reflection < Field
+      def initialize(*)
+        super
+        @_links = {}
+        @_include_data = true
+      end
+
+      def link(name, value = nil, &block)
+        @_links[name] = block || value
+        :nil
+      end
+
+      def meta(value = nil, &block)
+        @_meta = block || value
+        :nil
+      end
+
+      def include_data(value = true)
+        @_include_data = value
+        :nil
+      end
+
+      def value(serializer)
+        @object = serializer.object
+        @scope = serializer.scope
+
+        if block
+          block_value = instance_eval(&block)
+          if block_value == :nil
+            serializer.read_attribute_for_serialization(name)
+          else
+            block_value
+          end
+        else
+          serializer.read_attribute_for_serialization(name)
+        end
+      end
+
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -59,6 +96,7 @@ module ActiveModel
         association_value = value(subject)
         reflection_options = options.dup
         serializer_class = subject.class.serializer_for(association_value, reflection_options)
+        reflection_options[:include_data] = @_include_data
 
         if serializer_class
           begin
@@ -73,8 +111,12 @@ module ActiveModel
           reflection_options[:virtual_value] = association_value
         end
 
-        Association.new(name, serializer, reflection_options)
+        Association.new(name, serializer, reflection_options, @_links, @_meta)
       end
+
+      protected
+
+      attr_accessor :object, :scope
 
       private
 

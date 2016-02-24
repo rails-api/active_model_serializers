@@ -23,5 +23,13 @@ module ActiveModel
       options = nil
       assert_equal @adapter.as_json(options), @serializable_resource.as_json(options)
     end
+
+    def test_use_adapter_with_adapter_option
+      assert ActiveModel::SerializableResource.new(@resource, { adapter: 'json' }).use_adapter?
+    end
+
+    def test_use_adapter_with_adapter_option_as_false
+      refute ActiveModel::SerializableResource.new(@resource, { adapter: false }).use_adapter?
+    end
   end
 end
