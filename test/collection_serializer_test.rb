@@ -84,6 +84,12 @@ module ActiveModel
         assert_nil serializer.json_key
       end
 
+      def test_json_key_with_empty_resources_with_serializer
+        resource = []
+        serializer = collection_serializer.new(resource, serializer: MessagesSerializer)
+        assert_equal 'messages', serializer.json_key
+      end
+
       def test_json_key_with_root
         expected = 'custom_root'
         serializer = collection_serializer.new(@resource, root: expected)
