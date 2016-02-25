@@ -85,6 +85,72 @@ module ActiveModel
 
             assert_equal(expected, actual)
           end
+
+          def test_fields_option
+            serializer = ArraySerializer.new([@first_post, @second_post])
+            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer)
+            actual = adapter.serializable_hash(fields: [:id])
+
+            expected = { posts: [{
+              id: 1,
+              comments: [],
+              author: {
+                id: 1,
+                name: 'Steve K.'
+              },
+              blog: {
+                id: 999,
+                name: 'Custom blog'
+              }
+            }, {
+              id: 2,
+              comments: [],
+              author: {
+                id: 1,
+                name: 'Steve K.'
+              },
+              blog: {
+                id: 999,
+                name: 'Custom blog'
+              }
+            }] }
+
+            assert_equal(expected, actual)
+          end
+
+          def test_fields_with_no_associations_include_option
+            serializer = ArraySerializer.new([@first_post, @second_post])
+            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include: [])
+            actual = adapter.serializable_hash(fields: [:id])
+
+            expected = { posts: [{
+              id: 1
+            }, {
+              id: 2
+            }] }
+
+            assert_equal(expected, actual)
+          end
+
+          def test_fields_with_associations_fields_option
+            serializer = ArraySerializer.new([@first_post, @second_post])
+            adapter = ActiveModel::Serializer::Adapter::Json.new(serializer, include: [:author])
+            actual = adapter.serializable_hash(fields: [:id, author: [:name]])
+
+            expected = { posts: [{
+              id: 1,
+              author: {
+                name: 'Steve K.'
+              }
+            }, {
+              id: 2,
+              author: {
+                name: 'Steve K.'
+              }
+            }] }
+
+            assert_equal(expected, actual)
+          end
         end
       end
     end
