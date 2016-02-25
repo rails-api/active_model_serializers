@@ -10,6 +10,7 @@ module ActiveModel
 
         def serializable_hash(options = nil)
           options ||= {}
+          options[:fields] = instance_options[:fields] if options[:fields].nil?
 
           if serializer.respond_to?(:each)
             serializable_hash_for_collection(options)
