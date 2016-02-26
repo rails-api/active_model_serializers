@@ -50,8 +50,10 @@ namespace :test do
   namespace :isolated do
     desc 'Run isolated tests for Railtie'
     task :railtie do
+      require 'shellwords'
       dir = File.dirname(__FILE__)
-      file = "#{dir}/test/active_model_serializers/railtie_test_isolated.rb"
+      file = Shellwords.shellescape("#{dir}/test/active_model_serializers/railtie_test_isolated.rb")
+      dir = Shellwords.shellescape(dir)
 
       # https://github.com/rails/rails/blob/3d590add45/railties/lib/rails/generators/app_base.rb#L345-L363
       _bundle_command = Gem.bin_path('bundler', 'bundle')
@@ -59,7 +61,8 @@ namespace :test do
       Bundler.with_clean_env do
         command = "-w -I#{dir}/lib -I#{dir}/test #{file}"
         full_command = %("#{Gem.ruby}" #{command})
-        system(full_command) or fail 'Failures' # rubocop:disable Style/AndOr
+        system(full_command) or # rubocop:disable Style/AndOr
+          fail 'Failures'
       end
     end
   end
