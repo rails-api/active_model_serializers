@@ -180,12 +180,13 @@ module ActiveModel
           #
           # @api private
           def parse_relationship(assoc_name, assoc_data, options)
-            prefix_key = field_key(assoc_name, options).to_s.singularize
+            prefix_key = field_key(assoc_name, options).to_s
             hash =
-              if assoc_data.is_a?(Array)
-                { "#{prefix_key}_ids".to_sym => assoc_data.map { |ri| ri['id'] } }
+              if prefix_key == prefix_key.pluralize
+                assoc_data = [] unless assoc_data
+                { "#{prefix_key.singularize}_ids".to_sym => assoc_data.map { |ri| ri['id'] } }
               else
-                { "#{prefix_key}_id".to_sym => assoc_data ? assoc_data['id'] : nil }
+                { "#{prefix_key.singularize}_id".to_sym => assoc_data ? assoc_data['id'] : nil }
               end
 
             polymorphic = (options[:polymorphic] || []).include?(assoc_name.to_sym)
