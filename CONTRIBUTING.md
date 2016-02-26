@@ -1,159 +1,80 @@
-First of all, **thank you**!
+## Have an issue?
 
-![Commit Strip
-http://www.commitstrip.com/en/2014/05/07/the-truth-behind-open-source-apps/](docs/how-open-source-maintained.jpg)
+Before opening an issue, try the following:
 
-## Common issues and resolutions
+##### Consult the documentation
 
-- Using `grape-active_model_serializers`, or any non-Rails server. See
-    [issue](https://github.com/rails-api/active_model_serializers/issues/1258).
+See if your issue can be resolved by information in the documentation.
 
-## How can I help?
+- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0.rc4)
+  - [Guides](docs)
+- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
+- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
 
-- [Filing an issue](CONTRIBUTING.md#filing-an-issue)
-- [Writing code and comments](CONTRIBUTING.md#writing-code-and-comments)
+##### Check for an existing issue
 
-### Filing an issue
+Take a look at the issues to see if a similar one has already been created. If
+one exists, please add any additional information that might expedite
+resolution.
 
-Everyone is encouraged to open issues that are affecting them:
-bugs, ideas, documentation (`/docs`), performance problems – everything helps!
+#### Open an issue
 
-#### Before
+If the documentation wasn't able to help resolve the issue and no issue already
+exists, please open a new issue with the following in mind:
 
-1. Start by looking at our [GitHub Issues](https://github.com/rails-api/active_model_serializers/issues).
+- Please make sure only to include one issue per report. If you encounter
+  multiple, unrelated issues, please report them as such.
+- Be detailed. Provide backtraces and example code when possible. Provide
+  information about your environment. e.g., Ruby version, rails version, etc.
+- Own your issue. Actively participate in the discussion and help drive the
+  issue to closure.
+- If you resolve your own issue, please share the details on the issue and close
+  it out. Others might have the same issue and sharing solutions is helpful.
 
-  - Check if your issue has already been reported.
-  - If you find an existing issue report, feel free to add further information to that report.
+## Contributing
 
-#### Writing
+Contributing can be done in many ways and is not exclusive to code. If you have
+thoughts on a particular issue or feature, we encourage you to open new issues
+for discussion or add your comments to existing ones.
 
-If possible, please include the following information when [reporting an
-issue](https://github.com/rails-api/active_model_serializers/issues/new):
+#### Pull requests
 
-- ActiveModelSerializers version (0.8.x, 0.9.x, 0.10.x, commit ref).
-- What are you using ActiveModelSerializers with? Rails? Grape? Other? Which versions?
-- Operating system type + version.
-- Ruby version: `ruby -e "puts RUBY_DESCRIPTION"`.
-- Steps to reproduce the issue (i.e. "Show me how to show myself." ). What did you expect to happen? What happened? What did you try?
+We also gladly welcome pull requests. When preparing to work on pull request,
+please adhere to these standards:
 
-Simon Tatham has written an excellent on article on
-[How to Report Bugs Effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
-which is [well worth reading](http://yourbugreportneedsmore.info/), although it is not specific to ActiveModelSerializers.
+- Base work on the master branch unless fixing an issue with
+  [0.9-stable](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
+  or
+  [0.8-stable](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
+- Squash your commits and regularly rebase off master.
+- Provide a description of the changes contained in the pull request.
+- Note any specific areas that should be reviewed.
+- Include tests.
+- The test suite must pass on [supported Ruby versions](.travis.yml)
+- Include updates to the [documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
+  where applicable.
+- Update the
+  [CHANGELOG](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
+  to the appropriate sections with a brief description of the changes.
+- Do not change the VERSION file.
 
-Thanks!
+#### Running tests
 
-#### After
+Run all tests
 
-Thanks to everyone involved!
+`$ rake test`
 
-If you get help, sharing it back in the form of a pull-request or making an issue to document
-what you've found is *extremely* helpful.
+Run a single test suite
 
-If you solve your issue, stop working on it, or realize the problem was something else,
-please share that in a comment to an issue and close it.  That way, everyone can learn and
-we don't have closed issues without a clear resolution. Even if it's just a stackoverflow link :)
-And please don't forget to stay involved in the issue until it is closed! Thanks to all!
+`$ rake test TEST=path/to/test.rb`
 
-### Writing code and comments
+Run a single test
 
-- We are actively working to identify tasks under the label [**Good for New
-  Contributors**](https://github.com/rails-api/active_model_serializers/labels/Good%20for%20New%20Contributors).
-  - [Changelog
-      Missing](https://github.com/rails-api/active_model_serializers/issues?q=label%3A%22Changelog+Missing%22+is%3Aclosed) is
-    an easy way to help out.
-
-- [Fix a bug](https://github.com/rails-api/active_model_serializers/labels/Ready%20for%20PR).
-  - Ready for PR - A well defined bug, needs someone to PR a fix.
-  - Bug - Anything that is broken.
-  - Regression - A bug that did not exist in previous versions and isn't a new feature (applied in tandem with Bug).
-  - Performance - A performance related issue. We could track this as a bug, but usually these would have slightly lower priority than standard bugs.
-
-- [Develop new features](https://github.com/rails-api/active_model_serializers/labels/Feature).
-
-- [Improve code quality](https://codeclimate.com/github/rails-api/active_model_serializers/code?sort=smell_count&sort_direction=desc).
-
-- [Improve amount of code exercised by tests](https://codeclimate.com/github/rails-api/active_model_serializers/coverage?sort=covered_percent&sort_direction=asc).
-
-- [Fix RuboCop (Style) TODOS](https://github.com/rails-api/active_model_serializers/blob/master/.rubocop_todo.yml).
-  - Delete and offsense, run `rake rubocop` (or possibly `rake rubocop:auto_correct`),
-    and [submit a PR](CONTRIBUTING.md#submitting-a-pull-request-pr).
-
-- We are also encouraging comments to substantial changes (larger than bugfixes and simple features) under an
-  "RFC" (Request for Comments) process before we start active development.
-   Look for the [**RFC**](https://github.com/rails-api/active_model_serializers/labels/RFC) label.
-
-#### Submitting a pull request (PR)
-
-1. The vast majority of development is happening under the `master` branch.
-  This is where we would suggest you start.
-1. Fixing bugs is extraordinarily helpful and requires the least familiarity with ActiveModelSerializers.
-  Look for issues labeled [**Needs Bug Verification**](https://github.com/rails-api/active_model_serializers/labels/Needs%20Bug%20Verification) and [**Bug**](https://github.com/rails-api/active_model_serializers/labels/bug).
-1. Adding or fixing documentation is also fantastic!
-
-To fetch & test the library for development, do:
-
-1. Fork the repository ( https://github.com/rails-api/active_model_serializers/fork )
-1. `git clone https://github.com/{whoami}/active_model_serializers.git`
-1. `cd active_model_serializers`
-1. `bundle`
-  - To test against a particular rails version-- 4.0 is usually the most buggy-- set then
-      RAILS_VERSION environment variable as described in the [.travis.yml](.travis.yml).
-      e.g. `export RAILS_VERSION=4.0`.
-1. Create your PR branch (`git checkout -b my-helpful-pr`)
-1. Write tests for your feature, or regression tests highlighting a bug.
-  This is important so ActiveModelSerializers doesn't break it in a future version unintentionally.
-1. Write the feature itself, or fix your bug
-1. `bundle exec rake`
-1. Commit your changes (`git commit -am 'Add some feature'`)
-  - Use well-described, small (atomic) commits.
-1. Push to the branch (`git push origin my-helpful-pr`)
-1. Create a new Pull Request
-  - Include links to any relevant github issues.
-  - *Don't* change the VERSION file.
-  - Update `/docs` to include, whenever possible, a new, suitable recommendation about how to use
-    the feature.
-  - Extra Credit: [Confirm it runs and tests pass on the rubies specified in the travis
-    config](.travis.yml). A maintainer will otherwise confirm it runs on these.
-
-1. *Bonus Points* Update [CHANGELOG.md](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
-  with a brief description of any breaking changes, fixes, features, or
-  miscellaneous changes under the proper version section.
-1. Iterate on feedback given by the community (fix syntax, modify bits of code, add
-tests), pushing the new commits to the PR each time
-
-Remember to [squash your commits](CONTRIBUTING.md#about-pull-requests-prs) and rebase off `master`.
-
-#### How maintainers handle pull requests:
-
-- If the tests pass and the pull request looks good, a maintainer will merge it.
-- If the pull request needs to be changed,
-  - you can change it by updating the branch you generated the pull request from
-    - either by adding more commits, or
-    - by force pushing to it
-  - A maintainer can make any changes themselves and manually merge the code in.
-
-#### Commit Messages
-
-- [A Note About Git Commit Messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
-- [http://stopwritingramblingcommitmessages.com/](http://stopwritingramblingcommitmessages.com/)
-- [ThoughtBot style guide](https://github.com/thoughtbot/guides/tree/master/style#git)
-
-#### About Pull Requests (PR's)
-
-- [Using Pull Requests](https://help.github.com/articles/using-pull-requests)
-- [Github pull requests made easy](http://www.element84.com/github-pull-requests-made-easy.html)
-- [Exercism Git Workflow](http://help.exercism.io/git-workflow.html).
-- [Level up your Git](http://rakeroutes.com/blog/deliberate-git/)
-- [All Your Open Source Code Are Belong To Us](http://www.benjaminfleischer.com/2013/07/30/all-your-open-source-code-are-belong-to-us/)
-
-## Issue Labeling
-
-ActiveModelSerializers uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIssueLabels) for Github Issues. You can [see our labels here](https://github.com/rails-api/active_model_serializers/labels).
-
-## Running tests
+`$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
 
 Run tests against different Rails versions by setting the RAILS_VERSION variable
-and bundling gems.  To test against all versions, you can do something like:
+and bundling gems.
 
 ```bash
 for version in 4.0 4.1 4.2 master; do
@@ -172,21 +93,3 @@ for version in 4.0 4.1 4.2 master; do
 done
 ```
 
-
-### Running with Rake
-
-The easiest way to run the unit tests is through Rake. The default task runs
-the entire test suite for all classes. For more information, checkout the
-full array of rake tasks with "rake -T"
-
-Rake can be found at http://docs.seattlerb.org/rake/.
-
-To run a single test suite
-
-`$ rake test TEST=path/to/test.rb`
-
-Which can be further narrowed down to one test:
-
-`$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
-
-:heart: :sparkling_heart: :heart:
