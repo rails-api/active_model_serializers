@@ -113,7 +113,10 @@ module ActiveModel
         end
 
         def process_relationships(serializer, include_tree)
+          resource_identifier    = ApiObjects::ResourceIdentifier.new(serializer).as_json
+          requested_associations = fieldset.fields_for(resource_identifier[:type])
           serializer.associations(include_tree).each do |association|
+            next unless requested_associations.nil? || requested_associations.include?(association.name)
             process_relationship(association.serializer, include_tree[association.key])
           end
         end

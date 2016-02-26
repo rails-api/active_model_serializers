@@ -208,21 +208,21 @@ module ActiveModel
             assert_equal expected, alt_adapter.serializable_hash[:included]
           end
 
-          def test_underscore_model_namespace_for_linked_resource_type
-            spammy_post = Post.new(id: 123)
-            spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
-            serializer = SpammyPostSerializer.new(spammy_post)
-            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(serializer)
-            relationships = adapter.serializable_hash[:data][:relationships]
+          def test_include_with_fieldset
+            serializer = AuthorSerializer.new(@author1)
+            adapter = ActiveModel::Serializer::Adapter::JsonApi.new(
+              serializer,
+              include: [:posts],
+              fields: { authors: [:name] }
+            )
             expected = {
-              related: {
-                data: [{
-                  type: 'spam_unrelated_links',
-                  id: '456'
-                }]
+              data: {
+                id: '1',
+                type: 'authors',
+                attributes: { name: 'Steve K.' }
               }
             }
-            assert_equal expected, relationships
+            assert_equal(expected, adapter.as_json)
           end
 
           def test_multiple_references_to_same_resource
