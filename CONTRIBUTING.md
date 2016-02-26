@@ -32,43 +32,15 @@ issue](https://github.com/rails-api/active_model_serializers/issues/new):
 
 - ActiveModelSerializers version (0.8.x, 0.9.x, 0.10.x, commit ref).
 - What are you using ActiveModelSerializers with? Rails? Grape? Other? Which versions?
-- If you are not running the latest version (please check), and you cannot update it,
-  please specify in your report why you can't update to the latest version.
 - Operating system type + version.
-- Ruby version with patch level.  And whether you're using rvm, rbenv, etc.
-  - Include `ruby -e "puts RUBY_DESCRIPTION"`.
-- Clearly-written steps to reproduce the issue (i.e. "Show me how to show myself." ), including:
-  - What were you doing? Include code if possible.
-    - Command line parameters used, if any.
-    - RubyGems code in your Gemfile, if any. Gemfile.lock, if possible.
-    - Any configuration you've made.
-  - What did you expect to happen?
-  - What happened? Include as much information as possible.
-    - Nature of reported defect (e.g. user name missing, not "It doesn't work."). Is it intermittent?
-    - The best help here is a failing test. Even better if it's a PR.
-    - Then the steps to reproduce and/or a gist or repository that demonstrates the defect.
-    - Then examples of the code you were using.
-    - Any error messages (including stacktrace, i.e. "Show me the error.")
-  - Things you've tried.
-  - A pull request for your fix would be great.  Code should have tests.
-  - Link to source code, if available.
-
-Please make sure only to include one issue per report.
-If you encounter multiple, unrelated issues, please report them as such.
+- Ruby version: `ruby -e "puts RUBY_DESCRIPTION"`.
+- Steps to reproduce the issue (i.e. "Show me how to show myself." ). What did you expect to happen? What happened? What did you try?
 
 Simon Tatham has written an excellent on article on
 [How to Report Bugs Effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
 which is [well worth reading](http://yourbugreportneedsmore.info/), although it is not specific to ActiveModelSerializers.
 
-Include as much sample code as you can to help us reproduce the issue. (Inline, repo link, or gist, are fine. A failing test would help the most.)
-
-This is extremely important for narrowing down the cause of your problem.
-
 Thanks!
-
-Sometimes an issue will be closed by a maintainer for various reasons.  In some cases, this is
-an invitation to make a better case for your issue or be able to reproduce a bug, and
-its being close is just an opportunity to help out some more, and then re-open.
 
 #### After
 
