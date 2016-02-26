@@ -70,7 +70,7 @@ at the first moment.
 ## Renaming of class and modules
 
 When moving some content to the new namespace we can find some names that does
-not make much sense like `ActiveModelSerializers::Adapter::JsonApi`.
+not make much sense like `ActiveModel::Serializer::Adapter::JsonApi`.
 Discussion of renaming existing classes / modules and JsonApi objects will
 happen in separate pull requests, and issues, and in the google doc
 https://docs.google.com/document/d/1rcrJr0sVcazY2Opd_6Kmv1iIwuHbI84s1P_NzFn-05c/edit?usp=sharing

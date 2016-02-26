@@ -9,6 +9,7 @@ module ActiveModelSerializers
   autoload :Deserialization
   autoload :Logging
   autoload :Test
+  autoload :Adapter
 
   class << self; attr_accessor :logger; end
   self.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))

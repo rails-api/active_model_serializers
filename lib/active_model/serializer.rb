@@ -23,8 +23,6 @@ module ActiveModel
     include Links
     include Meta
     include Type
-    # Deprecated
-    require 'active_model_serializers/adapter'
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
