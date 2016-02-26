@@ -1,0 +1,162 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+require 'pathname'
+require 'shellwords'
+require 'English'
+require 'net/http'
+require 'json'
+
+############################
+#
+# A wrapper around git-bisect that stashes some code (bin/bench,test/dummy/*) for use in making requests
+# running against each revision.
+#
+# USAGE
+#
+# bin/revision_runner <ref1> <ref2> <cmd>
+#   <ref1> defaults to the current branch
+#   <ref2> defaults to the master branch
+# Runs <cmd> across every revisiion in the range, inclusive.
+# TODO: Aborts when <cmd> exit code is non-zero.
+#
+# EXAMPLE
+#
+# bin/revision_runner 792fb8a9053f8db3c562dae4f40907a582dd1720 master bin/bench -r 2 -e CACHE_ON=off
+###########################
+
+class RevisionRunner
+  ROOT = Pathname File.expand_path(['..', '..'].join(File::Separator), __FILE__)
+  TMP_DIR_BASE = File.join('tmp', 'revision_runner')
+  TMP_DIR = File.join(ROOT, TMP_DIR_BASE)
+
+  attr_accessor :url_base
+
+  def initialize
+    refresh_temp_dir
+  end
+
+  def refresh_temp_dir
+    empty_temp_dir
+    fill_temp_dir
+  end
+
+  def temp_dir_empty?
+    Dir[File.join(TMP_DIR, '*')].none?
+  end
+
+  def empty_temp_dir
+    FileUtils.mkdir_p(TMP_DIR)
+    Dir[File.join(TMP_DIR, '*')].each do |file|
+      if File.directory?(file)
+        FileUtils.rm_rf(file)
+      else
+        FileUtils.rm(file)
+      end
+    end
+  end
+
+  def fill_temp_dir
+    Dir[File.join(ROOT, 'test', 'dummy', '*.{rb,ru}')].each do |file|
+      FileUtils.cp(file, File.join(TMP_DIR, File.basename(file)))
+    end
+    file = File.join('bin', 'bench')
+    FileUtils.cp(file, File.join(TMP_DIR, File.basename(file)))
+    at_exit { empty_temp_dir }
+  end
+
+
+  module GitCommands
+    module_function
+
+    def current_branch
+      @current_branch ||= `cat .git/HEAD | cut -d/ -f3,4,5`.chomp
+    end
+
+    def revisions(start_ref, end_ref)
+      cmd = "git rev-list --reverse #{start_ref}..#{end_ref}"
+      `#{cmd}`.chomp.split("\n")
+    end
+
+    def checkout_ref(ref)
+      `git checkout #{ref}`.chomp
+      abort "Checkout failed: #{ref}, #{$CHILD_STATUS.exitstatus}" unless $CHILD_STATUS.success?
+    end
+
+    def revision_description(rev)
+      `git log --oneline -1 #{rev}`.chomp
+    end
+
+    def bundle
+      `rm -f Gemfile.lock; bundle check || bundle --local --quiet || bundle --quiet`
+    end
+
+    def clean_head
+      system('git reset --hard --quiet')
+    end
+  end
+  include GitCommands
+
+  def run_revisions(ref1: nil, ref2: nil, cmd:)
+    ref0 = current_branch
+    ref1 ||= current_branch
+    ref2 ||= 'master'
+    reports = {}
+
+    revisions(ref1, ref2).each do |rev|
+      STDERR.puts "Checking out: #{revision_description(rev)}"
+
+      reports[rev] = run_at_ref(rev, cmd)
+      clean_head
+    end
+    checkout_ref(ref0)
+    debug { "OK for all revisions!" }
+    reports
+  rescue Exception # rubocop:disable Lint/RescueException
+    STDERR.puts $!.message
+    checkout_ref(ref0)
+    raise
+  ensure
+    return reports
+  end
+
+  def run_at_ref(ref, cmd)
+    checkout_ref(ref)
+    bundle
+    base = Shellwords.shellescape(TMP_DIR_BASE)
+    cmd = "COMMIT_HASH=#{ref} BASE=#{base} #{Shellwords.shelljoin(cmd)}"
+    cmd.sub('bin/bench', 'tmp/revision_runner/bench')
+    debug { cmd }
+    system(cmd)
+    $CHILD_STATUS.exitstatus
+  end
+
+  # TODO: useful?
+  # def restart_server
+  #   server_script = File.join(TMP_DIR_BASE, 'serve_dummy')
+  #   system("#{server_script} stop")
+  #   at_exit { system("#{server_script} stop") }
+  #   config_ru = Shellwords.shellescape(File.join(TMP_DIR_BASE, 'config.ru'))
+  #   pid = `CONFIG_RU=#{config_ru} #{server_script} start`.chomp
+  #   abort "No pid" if pid.empty?
+  #   pid = Integer(pid)
+  #   Process.kill(0, pid) # confirm running, else it raises
+  # end
+
+  def debug(msg = '')
+    if block_given? && ENV['DEBUG'] =~ /\Atrue|on|0\z/i
+      STDOUT.puts yield
+    else
+      STDOUT.puts msg
+    end
+  end
+
+end
+
+if $PROGRAM_NAME == __FILE__
+  runner = RevisionRunner.new
+  args = ARGV.dup
+  reports = runner.run_revisions(ref1: args.shift, ref2: args.shift, cmd: args)
+  reports.each do |name, value|
+    STDERR.puts "revision: #{name}\n\t#{value}"
+  end
+end
