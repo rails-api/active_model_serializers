@@ -1,6 +1,6 @@
 [Back to Guides](../README.md)
 
-# JSON API Errors
+# [JSON API Errors](http://jsonapi.org/format/#errors)
 
 Rendering error documents requires specifying the error serializer(s):
 
