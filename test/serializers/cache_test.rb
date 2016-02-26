@@ -3,8 +3,6 @@ require 'tmpdir'
 require 'tempfile'
 module ActiveModelSerializers
   class CacheTest < ActiveSupport::TestCase
-    include ActiveSupport::Testing::Stream
-
     def setup
       ActionController::Base.cache_store.clear
       @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
@@ -222,10 +220,10 @@ module ActiveModelSerializers
     def test_warn_on_serializer_not_defined_in_file
       called = false
       serializer = Class.new(ActiveModel::Serializer)
-      assert_match(/_cache_digest/, (capture(:stderr) do
+      assert_output(nil, /_cache_digest/) do
         serializer.digest_caller_file('')
         called = true
-      end))
+      end
       assert called
     end
 

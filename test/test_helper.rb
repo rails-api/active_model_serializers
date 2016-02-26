@@ -43,8 +43,6 @@ end
 require 'minitest/reporters'
 Minitest::Reporters.use!
 
-require 'support/stream_capture'
-
 require 'support/rails_app'
 
 require 'support/test_case'

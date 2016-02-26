@@ -3,7 +3,6 @@ require 'test_helper'
 module ActionController
   module Serialization
     class ImplicitSerializerTest < ActionController::TestCase
-      include ActiveSupport::Testing::Stream
       class ImplicitSerializationTestController < ActionController::Base
         include SerializationTesting
         def render_using_implicit_serializer
@@ -438,9 +437,9 @@ module ActionController
             false
           end
         end.new
-        assert_match(/adapter: false/, (capture(:stderr) do
+        assert_output(nil, /adapter: false/) do
           controller.get_serializer(Profile.new)
-        end))
+        end
       end
 
       def test_dont_warn_overridding_use_adapter_as_truthy_on_controller_instance
@@ -449,9 +448,9 @@ module ActionController
             true
           end
         end.new
-        assert_equal '', (capture(:stderr) do
+        assert_output(nil, '') do
           controller.get_serializer(Profile.new)
-        end)
+        end
       end
 
       def test_render_event_is_emmited

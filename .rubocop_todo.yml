@@ -222,7 +222,6 @@ Style/TrailingBlankLines:
     - 'test/adapter/null_test.rb'
     - 'test/serializers/cache_test.rb'
     - 'test/serializers/fieldset_test.rb'
-    - 'test/support/stream_capture.rb'
 
 # Offense count: 5
 # Cop supports --auto-correct.
