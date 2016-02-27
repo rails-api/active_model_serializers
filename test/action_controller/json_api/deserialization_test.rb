@@ -34,6 +34,9 @@ module ActionController
                     { 'type' => 'comments', 'id' => '1' },
                     { 'type' => 'comments', 'id' => '2' }
                   ]
+                },
+                'subscribers' => {
+                  'data' => nil
                 }
               }
             }
@@ -48,7 +51,8 @@ module ActionController
             'src' => 'http://example.com/images/productivity.png',
             'author_id' => nil,
             'photographer_id' => '9',
-            'comment_ids' => %w(1 2)
+            'comment_ids' => %w(1 2),
+            'subscriber_ids' => []
           }
 
           assert_equal(expected, response)
