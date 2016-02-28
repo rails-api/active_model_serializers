@@ -11,7 +11,7 @@ module ActiveModel
               @options = options
               @data = data_for(serializer, options)
               @links = links.each_with_object({}) do |(key, value), hash|
-                hash[key] = Link.new(parent_serializer, value).as_json
+                hash[key] = ActiveModelSerializers::Adapter::JsonApi::Link.new(parent_serializer, value).as_json
               end
               @meta = meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta
             end

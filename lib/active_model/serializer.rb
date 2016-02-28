@@ -23,7 +23,6 @@ module ActiveModel
     include Links
     include Meta
     include Type
-    require 'active_model/serializer/adapter'
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
@@ -42,9 +41,11 @@ module ActiveModel
       end
     end
 
-    # @see ActiveModel::Serializer::Adapter.lookup
+    # @see ActiveModelSerializers::Adapter.lookup
+    # Deprecated
     def self.adapter
-      ActiveModel::Serializer::Adapter.lookup(config.adapter)
+      warn 'Calling adapter method in Serializer, please use the ActiveModelSerializers::configured_adapter'
+      ActiveModelSerializers::Adapter.lookup(config.adapter)
     end
 
     # @api private
