@@ -1,190 +1,162 @@
 require 'test_helper'
 
-module ActiveModel
-  class Serializer
-    module Adapter
-      class JsonApi
-        class RelationshipTest < ActiveSupport::TestCase
-          RelationshipAuthor = Class.new(::Model)
-          class RelationshipAuthorSerializer < ActiveModel::Serializer
-            has_one :bio do
-              link :self, '//example.com/link_author/relationships/bio'
-            end
+module ActiveModelSerializers
+  module Adapter
+    class JsonApi
+      class RelationshipTest < ActiveSupport::TestCase
+        setup do
+          @blog = Blog.new(id: 1)
+          @author = Author.new(id: 1, name: 'Steve K.', blog: @blog)
+          @serializer = BlogSerializer.new(@blog)
+          ActionController::Base.cache_store.clear
+        end
 
-            has_one :profile do
-              link :related do
-                "//example.com/profiles/#{object.profile.id}"
-              end
-            end
+        def test_relationship_with_data
+          expected = {
+            data: {
+              id: '1',
+              type: 'blogs'
+            }
+          }
+          test_relationship(expected, options: { include_data: true })
+        end
 
-            has_many :locations do
-              link :related do
-                ids = object.locations.map(&:id).join(',')
-                href "//example.com/locations/#{ids}"
-              end
-            end
+        def test_relationship_with_nil_model
+          @serializer = BlogSerializer.new(nil)
+          expected = { data: nil }
+          test_relationship(expected, options: { include_data: true })
+        end
 
-            has_many :posts do
-              link :related do
-                ids = object.posts.map(&:id).join(',')
-                href "//example.com/posts/#{ids}"
-                meta ids: ids
-              end
-            end
+        def test_relationship_with_nil_serializer
+          @serializer = nil
+          expected = { data: nil }
+          test_relationship(expected, options: { include_data: true })
+        end
 
-            has_many :comments do
-              link :self do
-                meta ids: [1]
-              end
-            end
-
-            has_many :roles do
-              meta count: object.posts.count
-            end
-
-            has_one :blog do
-              link :self, '//example.com/link_author/relationships/blog'
-              include_data false
-            end
-
-            belongs_to :reviewer do
-              meta name: 'Dan Brown'
-              include_data true
-            end
-
-            has_many :likes do
-              link :related do
-                ids = object.likes.map(&:id).join(',')
-                href "//example.com/likes/#{ids}"
-                meta ids: ids
-              end
-              meta liked: object.likes.any?
-            end
-          end
-
-          def setup
-            @post = Post.new(id: 1337, comments: [], author: nil)
-            @blog = Blog.new(id: 1337, name: 'extra')
-            @bio = Bio.new(id: 1337)
-            @like = Like.new(id: 1337)
-            @role = Role.new(id: 1337)
-            @profile = Profile.new(id: 1337)
-            @location = Location.new(id: 1337)
-            @reviewer = Author.new(id: 1337)
-            @comment = Comment.new(id: 1337)
-            @author = RelationshipAuthor.new(
-              id: 1337,
-              posts: [@post],
-              blog: @blog,
-              reviewer: @reviewer,
-              bio: @bio,
-              likes: [@like],
-              roles: [@role],
-              locations: [@location],
-              profile: @profile,
-              comments: [@comment]
-            )
-          end
-
-          def test_relationship_simple_link
-            expected = {
-              data: {
-                id: '1337',
-                type: 'bios'
+        def test_relationship_with_data_array
+          posts = [Post.new(id: 1), Post.new(id: 2)]
+          @serializer = ActiveModel::Serializer::CollectionSerializer.new(posts)
+          @author.posts = posts
+          @author.blog = nil
+          expected = {
+            data: [
+              {
+                id: '1',
+                type: 'posts'
               },
-              links: {
-                self: '//example.com/link_author/relationships/bio'
+              {
+                id: '2',
+                type: 'posts'
+              }
+            ]
+          }
+          test_relationship(expected, options: { include_data: true })
+        end
+
+        def test_relationship_data_not_included
+          test_relationship({}, options: { include_data: false })
+        end
+
+        def test_relationship_simple_link
+          links = { self: 'a link' }
+          test_relationship({ links: { self: 'a link' } }, links: links)
+        end
+
+        def test_relationship_many_links
+          links = {
+            self: 'a link',
+            related: 'another link'
+          }
+          expected = {
+            links: {
+              self: 'a link',
+              related: 'another link'
+            }
+          }
+          test_relationship(expected, links: links)
+        end
+
+        def test_relationship_block_link
+          links = { self: proc { "#{object.id}" } }
+          expected = { links: { self: "#{@blog.id}" } }
+          test_relationship(expected, links: links)
+        end
+
+        def test_relationship_block_link_with_meta
+          links = {
+            self: proc do
+              href "#{object.id}"
+              meta(id: object.id)
+            end
+          }
+          expected = {
+            links: {
+              self: {
+                href: "#{@blog.id}",
+                meta: { id: @blog.id }
               }
             }
-            assert_relationship(:bio, expected)
-          end
+          }
+          test_relationship(expected, links: links)
+        end
 
-          def test_relationship_block_link
-            expected = {
-              data: { id: '1337', type: 'profiles' },
-              links: { related: '//example.com/profiles/1337' }
+        def test_relationship_simple_meta
+          meta = { id: '1' }
+          expected = { meta: meta }
+          test_relationship(expected, meta: meta)
+        end
+
+        def test_relationship_block_meta
+          meta =  proc do
+            { id: object.id }
+          end
+          expected = {
+            meta: {
+              id: @blog.id
             }
-            assert_relationship(:profile, expected)
-          end
+          }
+          test_relationship(expected, meta: meta)
+        end
 
-          def test_relationship_block_link_href
-            expected = {
-              data: [{ id: '1337', type: 'locations' }],
-              links: {
-                related: { href: '//example.com/locations/1337' }
+        def test_relationship_with_everything
+          links = {
+            self: 'a link',
+            related: proc do
+              href "#{object.id}"
+              meta object.id
+            end
+
+          }
+          meta = proc do
+            { id: object.id }
+          end
+          expected = {
+            data: {
+              id: '1',
+              type: 'blogs'
+            },
+            links: {
+              self: 'a link',
+              related: {
+                href: '1', meta: 1
               }
+            },
+            meta: {
+              id: @blog.id
             }
-            assert_relationship(:locations, expected)
-          end
+          }
+          test_relationship(expected, meta: meta, options: { include_data: true }, links: links)
+        end
 
-          def test_relationship_block_link_href_and_meta
-            expected = {
-              data: [{ id: '1337', type: 'posts' }],
-              links: {
-                related: {
-                  href: '//example.com/posts/1337',
-                  meta: { ids: '1337' }
-                }
-              }
-            }
-            assert_relationship(:posts, expected)
-          end
+        private
 
-          def test_relationship_block_link_meta
-            expected = {
-              data: [{ id: '1337', type: 'comments' }],
-              links: {
-                self: {
-                  meta: { ids: [1] }
-                }
-              }
-            }
-            assert_relationship(:comments, expected)
-          end
-
-          def test_relationship_meta
-            expected = {
-              data: [{ id: '1337', type: 'roles' }],
-              meta: { count: 1 }
-            }
-            assert_relationship(:roles, expected)
-          end
-
-          def test_relationship_not_including_data
-            expected = {
-              links: { self: '//example.com/link_author/relationships/blog' }
-            }
-            assert_relationship(:blog, expected)
-          end
-
-          def test_relationship_including_data_explicit
-            expected = {
-              data: { id: '1337', type: 'authors' },
-              meta: { name: 'Dan Brown' }
-            }
-            assert_relationship(:reviewer, expected)
-          end
-
-          def test_relationship_with_everything
-            expected = {
-              data: [{ id: '1337', type: 'likes' }],
-              links: {
-                related: {
-                  href: '//example.com/likes/1337',
-                  meta: { ids: '1337' }
-                }
-              },
-              meta: { liked: true }
-            }
-            assert_relationship(:likes, expected)
-          end
-
-          private
-
-          def assert_relationship(relationship_name, expected)
-            hash = serializable(@author, adapter: :json_api).serializable_hash
-            assert_equal(expected, hash[:data][:relationships][relationship_name])
-          end
+        def test_relationship(expected, params = {})
+          options = params.fetch(:options, {})
+          links = params.fetch(:links, {})
+          meta = params[:meta]
+          parent_serializer = AuthorSerializer.new(@author)
+          relationship = Relationship.new(parent_serializer, @serializer, options, links, meta)
+          assert_equal(expected, relationship.as_json)
         end
       end
     end
