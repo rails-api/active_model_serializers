@@ -5,6 +5,7 @@ module ActionController
     class JsonApi
       class LinkedTest < ActionController::TestCase
         class LinkedTestController < ActionController::Base
+          require 'active_model_serializers/register_jsonapi_renderer'
           def setup_post
             ActionController::Base.cache_store.clear
             @role1 = Role.new(id: 1, name: 'admin')
@@ -38,49 +39,49 @@ module ActionController
 
           def render_resource_without_include
             setup_post
-            render json: @post, adapter: :json_api
+            render jsonapi: @post
           end
 
           def render_resource_with_include
             setup_post
-            render json: @post, include: [:author], adapter: :json_api
+            render jsonapi: @post, include: [:author]
           end
 
           def render_resource_with_include_of_custom_key_by_original
             setup_post
-            render json: @post, include: [:reviews], adapter: :json_api, serializer: PostWithCustomKeysSerializer
+            render jsonapi: @post, include: [:reviews], serializer: PostWithCustomKeysSerializer
           end
 
           def render_resource_with_nested_include
             setup_post
-            render json: @post, include: [comments: [:author]], adapter: :json_api
+            render jsonapi: @post, include: [comments: [:author]]
           end
 
           def render_resource_with_nested_has_many_include_wildcard
             setup_post
-            render json: @post, include: 'author.*', adapter: :json_api
+            render jsonapi: @post, include: 'author.*'
           end
 
           def render_resource_with_missing_nested_has_many_include
             setup_post
             @post.author = @author2 # author2 has no roles.
-            render json: @post, include: [author: [:roles]], adapter: :json_api
+            render jsonapi: @post, include: [author: [:roles]]
           end
 
           def render_collection_with_missing_nested_has_many_include
             setup_post
             @post.author = @author2
-            render json: [@post, @post2], include: [author: [:roles]], adapter: :json_api
+            render jsonapi: [@post, @post2], include: [author: [:roles]]
           end
 
           def render_collection_without_include
             setup_post
-            render json: [@post], adapter: :json_api
+            render jsonapi: [@post]
           end
 
           def render_collection_with_include
             setup_post
-            render json: [@post], include: 'author, comments', adapter: :json_api
+            render jsonapi: [@post], include: 'author, comments'
           end
         end
 
