@@ -1,4 +1,4 @@
-## Passing Arbitrary Options to A Serializer
+## Passing Arbitrary Options To A Serializer
 
 Let's say you have a basic Post Controller:
 
@@ -18,7 +18,7 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-This works all fine and well, but maybe you passing in some "artibrary" options
+This works all fine and well, but maybe you passing in some "arbitrary" options
 into the serializer. Here's what you would do:
 
 ### posts_controller.rb
@@ -41,6 +41,5 @@ into the serializer. Here's what you would do:
 ...
 ```
 
-These options can be anything that isn't already reserved for use by AMS. For example,
-you won't be able to pass in a `meta` or `root` option like the example above. Those
-parameters are reserved for specific behavior within the app.
+These options can be anything that isn't already reserved for use by
+ActiveModelSerializers' adapter options.
