@@ -1,4 +1,6 @@
-## Passing Arbitrary Options To A Serializer
+[Back to Guides](../README.md)
+
+# Passing Arbitrary Options To A Serializer
 
 Let's say you have a basic Post Controller:
 
@@ -18,28 +20,26 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
-This works all fine and well, but maybe you passing in some "arbitrary" options
-into the serializer. Here's what you would do:
+This works all fine and well, but maybe you passing in some arbitrary options
+into the serializer. These options can be anything that isn't already reserved for use by
+ActiveModelSerializers' adapter options.
 
-### posts_controller.rb
+Here's an example:
 
 ```ruby
-...
+# posts_controller.rb
+class PostController < ApplicationController
   def dashboard  
     render json: @posts, user_id: 12
   end
-...
-```
+end
 
-### posts_serializer.rb
+# post_serializer.rb
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
 
-```ruby
-...
   def comments_by_me  
     Comments.where(user_id: instance_options[:user_id], post_id: object.id)
   end
-...
+end
 ```
-
-These options can be anything that isn't already reserved for use by
-ActiveModelSerializers' adapter options.

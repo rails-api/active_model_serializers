@@ -16,6 +16,7 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - [Instrumentation](general/instrumentation.md)
 - [JSON API Schema](jsonapi/schema.md)
 - [ARCHITECTURE](ARCHITECTURE.md)
+- [Passing Arbitrary Options](general/passing_arbitrary_options.md)
 
 ## How to
 
