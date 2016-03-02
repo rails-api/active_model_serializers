@@ -5,6 +5,7 @@
 [![Code Quality](https://codeclimate.com/github/rails-api/active_model_serializers/badges/gpa.svg)](https://codeclimate.com/github/rails-api/active_model_serializers)
 [![Test Coverage](https://codeclimate.com/github/rails-api/active_model_serializers/badges/coverage.svg)](https://codeclimate.com/github/rails-api/active_model_serializers/coverage)
 [![Issue Stats](http://issuestats.com/github/rails-api/active_model_serializers/badge/pr)](http://issuestats.com/github/rails-api/active_model_serializers) [![Issue Stats](http://issuestats.com/github/rails-api/active_model_serializers/badge/issue)](http://issuestats.com/github/rails-api/active_model_serializers)
+[![codebeat](https://codebeat.co/badges/a9ab35fa-8b5a-4680-9d4e-a81f9a55ebcd)](https://codebeat.co/projects/github-com-rails-api-active_model_serializers)
 
 ## Documentation
 
