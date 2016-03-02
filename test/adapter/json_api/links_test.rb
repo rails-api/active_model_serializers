@@ -7,18 +7,24 @@ module ActiveModelSerializers
         LinkAuthor = Class.new(::Model)
         class LinkAuthorSerializer < ActiveModel::Serializer
           link :self do
-            href "//example.com/link_author/#{object.id}"
+            href "http://example.com/link_author/#{object.id}"
             meta stuff: 'value'
           end
-
-          link :other, '//example.com/resource'
-
+          link(:author) { link_author_url(object.id) }
+          link(:link_authors) { url_for(controller: 'link_authors', action: 'index', only_path: false) }
+          link(:posts) { link_author_posts_url(object.id) }
+          link :resource, 'http://example.com/resource'
           link :yet_another do
-            "//example.com/resource/#{object.id}"
+            "http://example.com/resource/#{object.id}"
           end
         end
 
         def setup
+          Rails.application.routes.draw do
+            resources :link_authors do
+              resources :posts
+            end
+          end
           @post = Post.new(id: 1337, comments: [], author: nil)
           @author = LinkAuthor.new(id: 1337, posts: [@post])
         end
@@ -29,7 +35,7 @@ module ActiveModelSerializers
             adapter: :json_api,
             links: {
               self: {
-                href: '//example.com/posts',
+                href: 'http://example.com/posts',
                 meta: {
                   stuff: 'value'
                 }
@@ -37,7 +43,7 @@ module ActiveModelSerializers
             }).serializable_hash
           expected = {
             self: {
-              href: '//example.com/posts',
+              href: 'http://example.com/posts',
               meta: {
                 stuff: 'value'
               }
@@ -68,13 +74,16 @@ module ActiveModelSerializers
           hash = serializable(@author, adapter: :json_api).serializable_hash
           expected = {
             self: {
-              href: '//example.com/link_author/1337',
+              href: 'http://example.com/link_author/1337',
               meta: {
                 stuff: 'value'
               }
             },
-            other: '//example.com/resource',
-            yet_another: '//example.com/resource/1337'
+            author: 'http://example.com/link_authors/1337',
+            link_authors: 'http://example.com/link_authors',
+            resource: 'http://example.com/resource',
+            posts: 'http://example.com/link_authors/1337/posts',
+            yet_another: 'http://example.com/resource/1337'
           }
           assert_equal(expected, hash[:data][:links])
         end

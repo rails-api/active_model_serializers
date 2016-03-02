@@ -18,6 +18,12 @@ class RailtieTest < ActiveSupport::TestCase
         "ActionController::Serialization should be included in ActionController::Base, but isn't"
     end
 
+    test 'prepares url_helpers for SerializationContext' do
+      assert ActiveModelSerializers::SerializationContext.url_helpers.respond_to? :url_for
+      assert_equal Rails.application.routes.default_url_options,
+        ActiveModelSerializers::SerializationContext.default_url_options
+    end
+
     test 'sets the ActiveModelSerializers.logger to Rails.logger' do
       refute_nil Rails.logger
       refute_nil ActiveModelSerializers.logger

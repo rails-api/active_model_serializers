@@ -63,6 +63,7 @@ module TestHelpers
         # Set a fake logger to avoid creating the log directory automatically
         fake_logger = Logger.new(nil)
         config.logger = fake_logger
+        Rails.application.routes.default_url_options = { host: 'example.com' }
       end
       @app.respond_to?(:secrets) && @app.secrets.secret_key_base = '3b7cd727ee24e8444053437c36cc66c4'
 
