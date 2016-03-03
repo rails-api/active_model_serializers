@@ -1,5 +1,11 @@
 [Back to Guides](README.md)
 
+This document focuses on architecture the 0.10.x version of ActiveModelSerializers. If you are interested in the architecture of the 0.8 or 0.9 versions,
+please refer to the [0.8 README](https://github.com/rails-api/active_model_serializers/blob/0-8-stable/README.md) or
+[0.9 README](https://github.com/rails-api/active_model_serializers/blob/0-9-stable/README.md).
+
+The original design is also available [here](https://github.com/rails-api/active_model_serializers/blob/d72b66d4c5355b0ff0a75a04895fcc4ea5b0c65e/README.textile).
+
 # ARCHITECTURE
 
 An **`ActiveModel::Serializer`** wraps a [serializable resource](https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/serialization.rb)
