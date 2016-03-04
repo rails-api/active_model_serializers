@@ -25,6 +25,3 @@ class PostSerializer < ActiveModel::Serializer
   end
 end
 ```
-
-Since `user_id` isn't a reserved adapter option, we can process it via a serializer
-method. The option is passed via the `instance_options` hash.
