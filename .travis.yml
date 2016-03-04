@@ -3,7 +3,6 @@ language: ruby
 sudo: false
 
 rvm:
-  - 2.0.0
   - 2.1
   - 2.2.3
   - 2.3.0
@@ -26,25 +25,18 @@ env:
   global:
     - "JRUBY_OPTS='--dev -J-Xmx1024M --debug'"
   matrix:
-    - "RAILS_VERSION=4.0"
     - "RAILS_VERSION=4.1"
     - "RAILS_VERSION=4.2"
     - "RAILS_VERSION=master"
 
 matrix:
   exclude:
-  - rvm: 2.0.0
-    env: RAILS_VERSION=master
   - rvm: 2.1
     env: RAILS_VERSION=master
   - rvm: jruby-9.0.4.0
     env: RAILS_VERSION=master
-  - rvm: jruby-9.0.4.0
-    env: RAILS_VERSION=4.0
   - rvm: jruby-head
     env: RAILS_VERSION=master
-  - rvm: jruby-head
-    env: RAILS_VERSION=4.0
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
