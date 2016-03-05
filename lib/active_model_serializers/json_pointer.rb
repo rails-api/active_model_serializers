@@ -4,7 +4,7 @@ module ActiveModelSerializers
 
     POINTERS = {
       attribute:    '/data/attributes/%s'.freeze,
-      primary_data: '/data'.freeze
+      primary_data: '/data%s'.freeze
     }.freeze
 
     def new(pointer_type, value = nil)
