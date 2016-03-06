@@ -2,47 +2,34 @@
 
 # How to add pagination links
 
-### JSON API adapter
+## JSON API adapter
 
-Pagination links will be included in your response automatically as long as
-the resource is paginated and if you are using the ```JsonApi``` adapter.
+When using the `JsonApi` adapter, pagination links will be automatically included if you use [Kaminari](https://github.com/amatsuda/kaminari)
+or [WillPaginate](https://github.com/mislav/will_paginate) within a Rails controller:
 
-If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari)
-or [WillPaginate](https://github.com/mislav/will_paginate).
-
-Although the others adapters does not have this feature, it is possible to
-implement pagination links to `JSON` adapter. For more information about it,
-please see in our docs 
-
-###### Kaminari examples
+* Using Kaminari:
 
 ```ruby
-#array
-@posts = Kaminari.paginate_array([1, 2, 3]).page(3).per(1)
-render json: @posts
-
-#active_record
-@posts = Post.page(3).per(1)
-render json: @posts
+class PostsController < ApplicationController
+  def index
+    posts = Post.page(params[:page]).per(params[:per_page])
+    render json: posts
+  end
+end
 ```
 
-###### WillPaginate examples
+* Using WillPaginate:
 
 ```ruby
-#array
-@posts = [1,2,3].paginate(page: 3, per_page: 1)
-render json: @posts
-
-#active_record
-@posts = Post.page(3).per_page(1)
-render json: @posts
+class PostsController < ApplicationController
+  def index
+    posts = Post.page(params[:page]).per_page(params[:per_page])
+    render json: posts
+  end
+end
 ```
 
-```ruby
-ActiveModelSerializers.config.adapter = :json_api
-```
-
-ex:
+The response might look like:
 ```json
 {
   "data": [
@@ -67,34 +54,50 @@ ex:
 }
 ```
 
-ActiveModelSerializers pagination relies on a paginated collection with the methods `current_page`, `total_pages`, and `size`, such as are supported by both [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
+ActiveModelSerializers pagination relies on paginated collections which define the methods `#current_page`, `#total_pages`, and `#size`.
+Such methods are supported by both [Kaminari](https://github.com/amatsuda/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate),
+but you can also roll out your own paginated collection by defining these methods.
 
+If you do not want pagination links to be automatically rendered, you may disable it by setting the `ActiveModelSerializers.config.collection_serializer` config to
+`ActiveModel::Serializer::NonPaginatedCollectionSerializer`.
 
-### JSON adapter
+If you want to disable pagination links for a specific controller, you may set the `serializer` option to `ActiveModel::Serializer::NonPaginatedCollectionSerializer`:
 
-If you are using `JSON` adapter, pagination links will not be included automatically, but it is possible to do so using `meta` key.
-
-Add this method to your base API controller.
-
-```ruby
-def pagination_dict(object)
-  {
-    current_page: object.current_page,
-    next_page: object.next_page,
-    prev_page: object.prev_page,
-    total_pages: object.total_pages,
-    total_count: object.total_count
-  }
+``` ruby
+class PostsController < ApplicationController
+  def index
+    posts = Post.page(params[:page]).per_page(params[:per_page])
+    render json: posts, serializer: ActiveModel::Serializer::NonPaginatedCollectionSerializer
+  end
 end
 ```
 
-Then, use it on your render method.
+### Json adapter
+
+If you are using the `Json` adapter, pagination links will not be included automatically, but it is possible to handle pagination using the `meta` option:
 
 ```ruby
-render json: posts, meta: pagination_dict(posts)
+class PostsController < ApplicationController
+  def index
+    posts = Post.page(params[:page]).per_page(params[:per_page])
+    render json: posts, meta: pagination_dict(posts)
+  end
+
+  private
+
+  def pagination_dict(object)
+    {
+      current_page: object.current_page,
+      next_page: object.next_page,
+      prev_page: object.prev_page,
+      total_pages: object.total_pages,
+      total_count: object.total_count
+    }
+  end
+end
 ```
 
-ex.
+The response might look like:
 ```json
 {
   "posts": [
@@ -113,27 +116,3 @@ ex.
   }
 }
 ```
-
-You can also achieve the same result if you have a helper method that adds the pagination info in the meta tag. For instance, in your action specify a custom serializer.
-
-```ruby
-render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attributes(@post)
-```
-
-```ruby
-#expects pagination!
-def meta_attributes(resource, extra_meta = {})
-  {
-    current_page: resource.current_page,
-    next_page: resource.next_page,
-    prev_page: resource.prev_page,
-    total_pages: resource.total_pages,
-    total_count: resource.total_count
-  }.merge(extra_meta)
-end
-```
-
-
-### Attributes adapter
-
-This adapter does not allow us to use `meta` key, due to that it is not possible to add pagination links.

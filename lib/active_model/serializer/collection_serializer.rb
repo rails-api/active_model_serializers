@@ -32,8 +32,7 @@ module ActiveModel
 
       def paginated?
         object.respond_to?(:current_page) &&
-          object.respond_to?(:total_pages) &&
-          object.respond_to?(:size)
+          object.respond_to?(:total_pages)
       end
 
       protected

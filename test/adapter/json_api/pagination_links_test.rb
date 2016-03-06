@@ -10,7 +10,7 @@ module ActiveModelSerializers
       class PaginationLinksTest < ActiveSupport::TestCase
         URI = 'http://example.com'.freeze
 
-        def setup
+        setup do
           ActionController::Base.cache_store.clear
           @array = [
             Profile.new({ id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
@@ -21,30 +21,70 @@ module ActiveModelSerializers
           ]
         end
 
-        def mock_request(query_parameters = {}, original_url = URI)
+        def test_pagination_links_using_kaminari
+          assert_links_serialization(expected_response_with_pagination_links, kaminari_collection, options)
+        end
+
+        def test_pagination_links_using_will_paginate
+          assert_links_serialization(expected_response_with_pagination_links, will_paginate_collection, options)
+        end
+
+        def test_pagination_links_with_additional_params
+          assert_links_serialization(expected_response_with_pagination_links_and_additional_params, will_paginate_collection, options(test: 'test'))
+        end
+
+        def test_pagination_config_set_to_false
+          previous_config = ActiveModelSerializers.config.collection_serializer
+          ActiveModelSerializers.config.collection_serializer = ActiveModel::Serializer::NonPaginatedCollectionSerializer
+          assert_links_serialization(paginated_data, kaminari_collection, options)
+        ensure
+          ActiveModelSerializers.config.collection_serializer = previous_config
+        end
+
+        def test_not_showing_pagination_links
+          assert_links_serialization(non_paginated_data, @array)
+        end
+
+        def test_non_paginated_serializer
+          assert_links_serialization(paginated_data, kaminari_collection, options.merge(serializer: ActiveModel::Serializer::NonPaginatedCollectionSerializer))
+        end
+
+        def test_last_page_pagination_links_using_kaminari
+          assert_links_serialization(expected_response_with_last_page_pagination_links, kaminari_collection(3), options)
+        end
+
+        def test_last_page_pagination_links_using_will_paginate
+          assert_links_serialization(expected_response_with_last_page_pagination_links, will_paginate_collection(3), options)
+        end
+
+        private
+
+        def options(query_parameters = {}, original_url = URI)
           context = Minitest::Mock.new
+          context.expect(:nil?, false)
           context.expect(:request_url, original_url)
           context.expect(:query_parameters, query_parameters)
           context.expect(:key_transform, nil)
-          @options = {}
-          @options[:serialization_context] = context
+          { serialization_context: context }
         end
 
-        def load_adapter(paginated_collection, options = {})
+        def assert_links_serialization(expected_result, collection, options = {})
           options = options.merge(adapter: :json_api)
-          ActiveModel::SerializableResource.new(paginated_collection, options)
+          serialized_collection = ActiveModel::SerializableResource.new(collection, options).as_json
+          assert_equal expected_result, serialized_collection
         end
 
-        def using_kaminari(page = 2)
+        def kaminari_collection(page = 2)
           Kaminari.paginate_array(@array).page(page).per(2)
         end
 
-        def using_will_paginate(page = 2)
+        def will_paginate_collection(page = 2)
           @array.paginate(page: page, per_page: 2)
         end
 
-        def data
-          { data: [
+        def non_paginated_data
+          {
+            data: [
               { id: '1', type: 'profiles', attributes: { name: 'Name 1', description: 'Description 1' } },
               { id: '2', type: 'profiles', attributes: { name: 'Name 2', description: 'Description 2' } },
               { id: '3', type: 'profiles', attributes: { name: 'Name 3', description: 'Description 3' } },
@@ -52,6 +92,10 @@ module ActiveModelSerializers
               { id: '5', type: 'profiles', attributes: { name: 'Name 5', description: 'Description 5' } }
             ]
           }
+        end
+
+        def paginated_data(range = (2..3))
+          non_paginated_data.tap { |response| response[:data] = response[:data][range] }
         end
 
         def links
@@ -66,82 +110,25 @@ module ActiveModelSerializers
           }
         end
 
-        def last_page_links
-          {
+        def expected_response_with_last_page_pagination_links
+          links = {
             links: {
               self: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
               first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
               prev: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2"
             }
           }
-        end
-
-        def expected_response_without_pagination_links
-          data
+          paginated_data(4..4).merge! links
         end
 
         def expected_response_with_pagination_links
-          {}.tap do |hash|
-            hash[:data] = data.values.flatten[2..3]
-            hash.merge! links
-          end
+          paginated_data.merge!(links)
         end
 
         def expected_response_with_pagination_links_and_additional_params
-          new_links = links[:links].each_with_object({}) { |(key, value), hash| hash[key] = "#{value}&test=test" }
-          {}.tap do |hash|
-            hash[:data] = data.values.flatten[2..3]
-            hash.merge! links: new_links
-          end
-        end
-
-        def expected_response_with_last_page_pagination_links
-          {}.tap do |hash|
-            hash[:data] = [data.values.flatten.last]
-            hash.merge! last_page_links
-          end
-        end
-
-        def test_pagination_links_using_kaminari
-          adapter = load_adapter(using_kaminari)
-
-          mock_request
-          assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
-        end
-
-        def test_pagination_links_using_will_paginate
-          adapter = load_adapter(using_will_paginate)
-
-          mock_request
-          assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
-        end
-
-        def test_pagination_links_with_additional_params
-          adapter = load_adapter(using_will_paginate)
-
-          mock_request({ test: 'test' })
-          assert_equal expected_response_with_pagination_links_and_additional_params,
-            adapter.serializable_hash(@options)
-        end
-
-        def test_last_page_pagination_links_using_kaminari
-          adapter = load_adapter(using_kaminari(3))
-
-          mock_request
-          assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash(@options)
-        end
-
-        def test_last_page_pagination_links_using_will_paginate
-          adapter = load_adapter(using_will_paginate(3))
-
-          mock_request
-          assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash(@options)
-        end
-
-        def test_not_showing_pagination_links
-          adapter = load_adapter(@array)
-
-          assert_equal expected_response_without_pagination_links, adapter.serializable_hash
+          links_with_param = links
+          links_with_param[:links].each { |_, value| value << '&test=test' }
+          paginated_data.merge! links_with_param
         end
       end
     end

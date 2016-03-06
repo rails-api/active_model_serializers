@@ -38,6 +38,7 @@ module ActiveModel
         super
         @_links = {}
         @_include_data = true
+        @_meta = nil
       end
 
       def link(name, value = nil, &block)
