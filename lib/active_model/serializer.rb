@@ -18,6 +18,7 @@ require 'active_model/serializer/type'
 # reified when subclassed to decorate a resource.
 module ActiveModel
   class Serializer
+    extend ActiveSupport::Autoload
     include Configuration
     include Associations
     include Attributes
@@ -25,6 +26,7 @@ module ActiveModel
     include Links
     include Meta
     include Type
+    autoload :Adapter
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
@@ -46,7 +48,7 @@ module ActiveModel
     # @see ActiveModelSerializers::Adapter.lookup
     # Deprecated
     def self.adapter
-      warn 'Calling adapter method in Serializer, please use the ActiveModelSerializers::configured_adapter'
+      warn 'Calling adapter method in Serializer, please use the ActiveModelSerializers::Adapter.configured_adapter'
       ActiveModelSerializers::Adapter.lookup(config.adapter)
     end
 

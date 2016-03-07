@@ -2,88 +2,82 @@ module ActiveModelSerializers
   class AdapterForTest < ActiveSupport::TestCase
     UnknownAdapterError = ::ActiveModelSerializers::Adapter::UnknownAdapterError
 
-    def setup
-      @previous_adapter = ActiveModelSerializers.config.adapter
-    end
-
-    def teardown
-      ActiveModelSerializers.config.adapter = @previous_adapter
-    end
-
-    def test_serializer_adapter_returns_configured__adapter
-      assert_output(nil, /ActiveModelSerializers::configured_adapter/) do
+    def test_serializer_adapter_returns_configured_adapter
+      assert_output(nil, /ActiveModelSerializers::Adapter.configured_adapter/) do
         assert_equal ActiveModelSerializers::Adapter.configured_adapter, ActiveModel::Serializer.adapter
       end
     end
 
     def test_returns_default_adapter
-      adapter = ActiveModelSerializers::Adapter.configured_adapter
-      assert_equal ActiveModelSerializers::Adapter::Attributes, adapter
+      with_adapter_config_setup do
+        adapter = ActiveModelSerializers::Adapter.configured_adapter
+        assert_equal ActiveModelSerializers::Adapter::Attributes, adapter
+      end
     end
 
     def test_overwrite_adapter_with_symbol
-      ActiveModelSerializers.config.adapter = :null
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = :null
 
-      adapter = ActiveModelSerializers::Adapter.configured_adapter
-      assert_equal ActiveModelSerializers::Adapter::Null, adapter
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
+        adapter = ActiveModelSerializers::Adapter.configured_adapter
+        assert_equal ActiveModelSerializers::Adapter::Null, adapter
+      end
     end
 
     def test_overwrite_adapter_with_camelcased_symbol
-      ActiveModelSerializers.config.adapter = :JsonApi
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = :JsonApi
 
-      adapter = ActiveModelSerializers::Adapter.configured_adapter
-      assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
+        adapter = ActiveModelSerializers::Adapter.configured_adapter
+        assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter
+      end
     end
 
     def test_overwrite_adapter_with_string
-      ActiveModelSerializers.config.adapter = 'json_api'
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = 'json_api'
 
-      adapter = ActiveModelSerializers::Adapter.configured_adapter
-      assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
+        adapter = ActiveModelSerializers::Adapter.configured_adapter
+        assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter
+      end
     end
 
     def test_overwrite_adapter_with_a_camelcased_string
-      ActiveModelSerializers.config.adapter = 'JsonApi'
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = 'JsonApi'
 
-      adapter = ActiveModelSerializers::Adapter.configured_adapter
-      assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
+        adapter = ActiveModelSerializers::Adapter.configured_adapter
+        assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter
+      end
     end
 
     def test_overwrite_adapter_with_class
-      ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::Null
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::Null
 
-      adapter = ActiveModelSerializers::Adapter.configured_adapter
-      assert_equal ActiveModelSerializers::Adapter::Null, adapter
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
+        adapter = ActiveModelSerializers::Adapter.configured_adapter
+        assert_equal ActiveModelSerializers::Adapter::Null, adapter
+      end
     end
 
     def test_raises_exception_if_invalid_symbol_given
-      ActiveModelSerializers.config.adapter = :unknown
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = :unknown
 
-      assert_raises UnknownAdapterError do
-        ActiveModelSerializers::Adapter.configured_adapter
+        assert_raises UnknownAdapterError do
+          ActiveModelSerializers::Adapter.configured_adapter
+        end
       end
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
     end
 
     def test_raises_exception_if_it_does_not_know_hot_to_infer_adapter
-      ActiveModelSerializers.config.adapter = 42
+      with_adapter_config_setup do
+        ActiveModelSerializers.config.adapter = 42
 
-      assert_raises UnknownAdapterError do
-        ActiveModelSerializers::Adapter.configured_adapter
+        assert_raises UnknownAdapterError do
+          ActiveModelSerializers::Adapter.configured_adapter
+        end
       end
-    ensure
-      ActiveModelSerializers.config.adapter = @previous_adapter
     end
 
     def test_adapter_class_for_known_adapter
@@ -198,6 +192,15 @@ module ActiveModelSerializers
       ActiveModelSerializers::Adapter.adapter_map.delete('my_subclassed_adapter'.freeze)
       Object.send(:remove_const, :MyAdapter)
       Object.send(:remove_const, :MySubclassedAdapter)
+    end
+
+    private
+
+    def with_adapter_config_setup
+      previous_adapter = ActiveModelSerializers.config.adapter
+      yield
+    ensure
+      ActiveModelSerializers.config.adapter = previous_adapter
     end
   end
 end
