@@ -41,7 +41,7 @@ module ActiveModel
       elsif resource.respond_to?(:to_ary)
         config.collection_serializer
       else
-        options.fetch(:serializer) { get_serializer_for(resource.class) }
+        options.fetch(:serializer) { get_serializer_for(resource.class, options[:serialization_context]) }
       end
     end
 
@@ -53,15 +53,27 @@ module ActiveModel
     end
 
     # @api private
-    def self.serializer_lookup_chain_for(klass)
+    def self.serializer_lookup_chain_for(klass, serialization_context = nil)
       chain = []
 
-      resource_class_name = klass.name.demodulize
-      resource_namespace = klass.name.deconstantize
-      serializer_class_name = "#{resource_class_name}Serializer"
+      controller_namespace = serialization_context.controller_namespace if serialization_context
+      serializer_class_name = "#{klass.name}Serializer"
 
-      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
-      chain.push("#{resource_namespace}::#{serializer_class_name}")
+      # Look for a nested serializer first.
+      chain.push("::#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
+
+      # Then look for a serializer within the prefix namespaces of the calling controller, if any.
+      if controller_namespace
+        controller_chain = controller_namespace.to_s
+          .split('::')
+          .reduce([]) { |a, e| a + ["#{a.last}::#{e}"] }
+          .reverse
+          .map { |path| "#{path}::#{serializer_class_name}" }
+        chain.push(*controller_chain)
+      end
+
+      # Finally, look for a serializer in the root namespace.
+      chain.push("::#{serializer_class_name}")
 
       chain
     end
@@ -78,16 +90,18 @@ module ActiveModel
     #   1. class name appended with "Serializer"
     #   2. try again with superclass, if present
     #   3. nil
-    def self.get_serializer_for(klass)
+    def self.get_serializer_for(klass, serialization_context = nil)
       return nil unless config.serializer_lookup_enabled
-      serializers_cache.fetch_or_store(klass) do
-        # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
-        serializer_class = serializer_lookup_chain_for(klass).map(&:safe_constantize).find { |x| x && x < ActiveModel::Serializer }
+      serializers_cache.fetch_or_store([klass, serialization_context]) do
+        serializer_class = serializer_lookup_chain_for(klass, serialization_context)
+                           .lazy
+                           .map(&:safe_constantize)
+                           .find { |x| x && x < ActiveModel::Serializer }
 
         if serializer_class
           serializer_class
         elsif klass.superclass
-          get_serializer_for(klass.superclass)
+          get_serializer_for(klass.superclass, serialization_context)
         end
       end
     end
