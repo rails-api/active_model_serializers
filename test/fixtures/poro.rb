@@ -27,6 +27,17 @@ class Model < ActiveModelSerializers::Model
   end
 end
 
+# see
+# https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/errors.rb
+# The below allows you to do:
+#
+#   model = ModelWithErrors.new
+#   model.validate!            # => ["cannot be nil"]
+#   model.errors.full_messages # => ["name cannot be nil"]
+class ModelWithErrors < ::ActiveModelSerializers::Model
+  attr_accessor :name
+end
+
 class Profile < Model
 end
 

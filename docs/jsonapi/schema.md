@@ -58,33 +58,33 @@ Example supported requests
 |-----------------------|----------------------------------------------------------------------------------------------------|----------|---------------------------------------|
 | schema                | oneOf (success, failure, info)                                                                     |          |
 | success               | data, included, meta, links, jsonapi                                                               |          | AM::SerializableResource
-| success.meta          | meta                                                                                               |          | AM::S::Adapter::Base#meta
-| success.included      | UniqueArray(resource)                                                                              |          | AM::S::Adapter::JsonApi#serializable_hash_for_collection
+| success.meta          | meta                                                                                               |          | AMS::Adapter::Base#meta
+| success.included      | UniqueArray(resource)                                                                              |          | AMS::Adapter::JsonApi#serializable_hash_for_collection
 | success.data          | data                                                                                               |          |
-| success.links         | allOf (links, pagination)                                                                          |          | AM::S::Adapter::JsonApi#links_for
+| success.links         | allOf (links, pagination)                                                                          |          | AMS::Adapter::JsonApi#links_for
 | success.jsonapi       | jsonapi                                                                                            |          |
-| failure               | errors, meta, jsonapi                                                                              | errors   |
-| failure.errors        | UniqueArray(error)                                                                                 |          | #1004
-| meta                  | Object                                                                                             |          |
-| data                  | oneOf (resource, UniqueArray(resource))                                                            |          | AM::S::Adapter::JsonApi#serializable_hash_for_collection,#serializable_hash_for_single_resource
+| failure               | errors, meta, jsonapi                                                                              | errors   | AMS::Adapter::JsonApi#failure_document, #1004
+| failure.errors        | UniqueArray(error)                                                                                 |          | AM::S::ErrorSerializer, #1004
+| meta                  | Object                                                                                             |          | 
+| data                  | oneOf (resource, UniqueArray(resource))                                                            |          | AMS::Adapter::JsonApi#serializable_hash_for_collection,#serializable_hash_for_single_resource
 | resource              | String(type), String(id),<br>attributes, relationships,<br>links, meta                                   | type, id | AM::S::Adapter::JsonApi#primary_data_for
 | links                 | Uri(self), Link(related)                                                                           |          | #1028, #1246, #1282
 | link                  | oneOf (linkString, linkObject)                                                                     |          |
 | link.linkString       | Uri                                                                                                |          |
 | link.linkObject       | Uri(href), meta                                                                                    | href     |
-| attributes            | patternProperties(<br>`"^(?!relationships$|links$)\\w[-\\w_]*$"`),<br>any valid JSON                      |          | AM::Serializer#attributes, AM::S::Adapter::JsonApi#resource_object_for
-| relationships         | patternProperties(<br>`"^\\w[-\\w_]*$"`);<br>links, relationships.data, meta                              |          | AM::S::Adapter::JsonApi#relationships_for
-| relationships.data    | oneOf (relationshipToOne, relationshipToMany)                                                      |          | AM::S::Adapter::JsonApi#resource_identifier_for
+| attributes            | patternProperties(<br>`"^(?!relationships$|links$)\\w[-\\w_]*$"`),<br>any valid JSON                      |          | AM::Serializer#attributes, AMS::Adapter::JsonApi#resource_object_for
+| relationships         | patternProperties(<br>`"^\\w[-\\w_]*$"`);<br>links, relationships.data, meta                              |          | AMS::Adapter::JsonApi#relationships_for
+| relationships.data    | oneOf (relationshipToOne, relationshipToMany)                                                      |          | AMS::Adapter::JsonApi#resource_identifier_for
 | relationshipToOne     | anyOf(empty, linkage)                                                                              |          |
 | relationshipToMany    | UniqueArray(linkage)                                                                               |          |
 | empty                 | null                                                                                               |          |
-| linkage               | String(type), String(id), meta                                                                     | type, id | AM::S::Adapter::JsonApi#primary_data_for
-| pagination            | pageObject(first), pageObject(last),<br>pageObject(prev), pageObject(next)                            |          | AM::S::Adapter::JsonApi::PaginationLinks#serializable_hash
+| linkage               | String(type), String(id), meta                                                                     | type, id | AMS::Adapter::JsonApi#primary_data_for
+| pagination            | pageObject(first), pageObject(last),<br>pageObject(prev), pageObject(next)                            |          | AMS::Adapter::JsonApi::PaginationLinks#serializable_hash
 | pagination.pageObject | oneOf(Uri, null)                                                                                   |          |
-| jsonapi               | String(version), meta                                                                              |          | AM::S::Adapter::JsonApi::ApiObjects::JsonApi
-| error                 | String(id), links, String(status),<br>String(code), String(title),<br>String(detail), error.source, meta |          |
-| error.source          | String(pointer), String(parameter)                                                                 |          |
-| pointer               | [JSON Pointer RFC6901](https://tools.ietf.org/html/rfc6901)                                        |          |
+| jsonapi               | String(version), meta                                                                              |          | AMS::Adapter::JsonApi::ApiObjects::JsonApi#as_json
+| error                 | String(id), links, String(status),<br>String(code), String(title),<br>String(detail), error.source, meta |          | AM::S::ErrorSerializer, AMS::Adapter::JsonApi::Error.resource_errors
+| error.source          | String(pointer), String(parameter)                                                                 |          | AMS::Adapter::JsonApi::Error.error_source
+| pointer               | [JSON Pointer RFC6901](https://tools.ietf.org/html/rfc6901)                                        |          | AMS::JsonPointer
 
 
 The [http://jsonapi.org/schema](schema/schema.json) makes a nice roadmap.
@@ -102,7 +102,7 @@ The [http://jsonapi.org/schema](schema/schema.json) makes a nice roadmap.
 ### Failure Document
 
 - [ ] failure
-  - [ ] errors: array of unique items of type ` "$ref": "#/definitions/error"`
+  - [x] errors: array of unique items of type ` "$ref": "#/definitions/error"`
   - [ ] meta:  `"$ref": "#/definitions/meta"`
   - [ ] jsonapi: `"$ref": "#/definitions/jsonapi"`
 
@@ -137,4 +137,15 @@ The [http://jsonapi.org/schema](schema/schema.json) makes a nice roadmap.
   - [ ] pagination
   - [ ] jsonapi
     - [ ] meta
-  - [ ] error: id, links, status, code, title: detail: source [{pointer, type}, {parameter: {description, type}], meta
+  - [ ] error
+    - [ ] id: a unique identifier for this particular occurrence of the problem.
+    - [ ] links: a links object containing the following members:
+      - [ ] about: a link that leads to further details about this particular occurrence of the problem.
+    - [ ] status: the HTTP status code applicable to this problem, expressed as a string value.
+    - [ ] code: an application-specific error code, expressed as a string value.
+    - [ ] title: a short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.
+    - [x] detail: a human-readable explanation specific to this occurrence of the problem.
+    - [x] source: an object containing references to the source of the error, optionally including any of the following members:
+      -  [x] pointer: a JSON Pointer [RFC6901](https://tools.ietf.org/html/rfc6901) to the associated entity in the request document [e.g. "/data" for a primary data object, or "/data/attributes/title" for a specific attribute].
+      -  [x] parameter: a string indicating which query parameter caused the error.
+    - [ ] meta: a meta object containing non-standard meta-information about the error.

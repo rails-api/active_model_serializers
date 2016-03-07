@@ -4,6 +4,7 @@ module ActiveModel
       class JsonApi
         module ApiObjects
           class ResourceIdentifier
+            # {http://jsonapi.org/format/#document-resource-identifier-objects Resource Identifier Objects}
             def initialize(serializer)
               @id = id_for(serializer)
               @type = type_for(serializer)

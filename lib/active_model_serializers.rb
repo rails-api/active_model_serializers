@@ -10,6 +10,7 @@ module ActiveModelSerializers
   autoload :Logging
   autoload :Test
   autoload :Adapter
+  autoload :JsonPointer
 
   class << self; attr_accessor :logger; end
   self.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))

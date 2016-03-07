@@ -129,6 +129,20 @@ module ActiveModel::Serializer::Lint
       assert_instance_of resource_class.model_name, ActiveModel::Name
     end
 
+    def test_active_model_errors
+      assert_respond_to resource, :errors
+    end
+
+    def test_active_model_errors_human_attribute_name
+      assert_respond_to resource.class, :human_attribute_name
+      assert_equal(-2, resource.class.method(:human_attribute_name).arity)
+    end
+
+    def test_active_model_errors_lookup_ancestors
+      assert_respond_to resource.class, :lookup_ancestors
+      assert_equal 0, resource.class.method(:lookup_ancestors).arity
+    end
+
     private
 
     def resource

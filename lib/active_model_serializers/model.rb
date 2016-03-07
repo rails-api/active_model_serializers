@@ -6,10 +6,11 @@ module ActiveModelSerializers
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
-    attr_reader :attributes
+    attr_reader :attributes, :errors
 
     def initialize(attributes = {})
       @attributes = attributes
+      @errors = ActiveModel::Errors.new(self)
       super
     end
 
@@ -34,6 +35,15 @@ module ActiveModelSerializers
       else
         attributes[key]
       end
+    end
+
+    # The following methods are needed to be minimally implemented for ActiveModel::Errors
+    def self.human_attribute_name(attr, _options = {})
+      attr
+    end
+
+    def self.lookup_ancestors
+      [self]
     end
   end
 end

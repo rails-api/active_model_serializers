@@ -1,6 +1,8 @@
 require 'thread_safe'
 require 'active_model/serializer/collection_serializer'
 require 'active_model/serializer/array_serializer'
+require 'active_model/serializer/error_serializer'
+require 'active_model/serializer/errors_serializer'
 require 'active_model/serializer/include_tree'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/attributes'
@@ -114,6 +116,10 @@ module ActiveModel
           define_method scope_name, lambda { scope }
         end
       end
+    end
+
+    def success?
+      true
     end
 
     # Used by adapter as resource root.

@@ -4,6 +4,10 @@ module ActiveModel
       class JsonApi
         module ApiObjects
           class Relationship
+            # {http://jsonapi.org/format/#document-resource-object-related-resource-links Document Resource Object Related Resource Links}
+            # {http://jsonapi.org/format/#document-links Document Links}
+            # {http://jsonapi.org/format/#document-resource-object-linkage Document Resource Relationship Linkage}
+            # {http://jsonapi.org/format/#document-meta Docment Meta}
             def initialize(parent_serializer, serializer, options = {}, links = {}, meta = nil)
               @object = parent_serializer.object
               @scope = parent_serializer.scope

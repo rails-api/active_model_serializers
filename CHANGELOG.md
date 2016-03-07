@@ -3,6 +3,9 @@
 Breaking changes:
 
 Features:
+- [#1004](https://github.com/rails-api/active_model_serializers/pull/1004) JSON API errors object implementation.
+  - Only implements `detail` and `source` as derived from `ActiveModel::Error`
+  - Provides checklist of remaining questions and remaining parts of the spec.
 - [#1515](https://github.com/rails-api/active_model_serializers/pull/1515) Adds support for symbols to the
   `ActiveModel::Serializer.type` method. (@groyoh)
 - [#1504](https://github.com/rails-api/active_model_serializers/pull/1504) Adds the changes missing from #1454

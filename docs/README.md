@@ -14,7 +14,9 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - [Caching](general/caching.md)
 - [Logging](general/logging.md)
 - [Instrumentation](general/instrumentation.md)
-- [JSON API Schema](jsonapi/schema.md)
+- JSON API
+  - [Schema](jsonapi/schema.md)
+  - [Errors](jsonapi/errors.md)
 - [ARCHITECTURE](ARCHITECTURE.md)
 
 ## How to
