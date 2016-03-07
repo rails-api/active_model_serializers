@@ -21,6 +21,12 @@ module ActiveModel
 
         config.adapter = :attributes
         config.jsonapi_resource_type = :plural
+        config.jsonapi_version = '1.0'
+        config.jsonapi_toplevel_meta = {}
+        # Make JSON API top-level jsonapi member opt-in
+        # ref: http://jsonapi.org/format/#document-top-level
+        config.jsonapi_include_toplevel_object = false
+
         config.schema_path = 'test/support/schemas'
       end
     end

@@ -2,50 +2,15 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
       extend ActiveSupport::Autoload
-      autoload :PaginationLinks
       autoload :FragmentCache
-      autoload :Link
-      autoload :Meta
+      autoload :Jsonapi
       autoload :ResourceIdentifier
       autoload :Relationship
+      autoload :Link
+      autoload :PaginationLinks
+      autoload :Meta
       autoload :Error
       autoload :Deserialization
-
-      # TODO: if we like this abstraction and other API objects to it,
-      # then extract to its own file and require it.
-      module ApiObjects
-        # {http://jsonapi.org/format/#document-jsonapi-object Jsonapi Object}
-        module Jsonapi
-          ActiveModelSerializers.config.jsonapi_version = '1.0'
-          ActiveModelSerializers.config.jsonapi_toplevel_meta = {}
-          # Make JSON API top-level jsonapi member opt-in
-          # ref: http://jsonapi.org/format/#document-top-level
-          ActiveModelSerializers.config.jsonapi_include_toplevel_object = false
-
-          module_function
-
-          def add!(hash)
-            hash.merge!(object) if include_object?
-          end
-
-          def include_object?
-            ActiveModelSerializers.config.jsonapi_include_toplevel_object
-          end
-
-          # TODO: see if we can cache this
-          def object
-            object = {
-              jsonapi: {
-                version: ActiveModelSerializers.config.jsonapi_version,
-                meta: ActiveModelSerializers.config.jsonapi_toplevel_meta
-              }
-            }
-            object[:jsonapi].reject! { |_, v| v.blank? }
-
-            object
-          end
-        end
-      end
 
       def initialize(serializer, options = {})
         super
@@ -74,7 +39,7 @@ module ActiveModelSerializers
         hash[:data] = is_collection ? primary_data : primary_data[0]
         hash[:included] = included if included.any?
 
-        ApiObjects::Jsonapi.add!(hash)
+        Jsonapi.add!(hash)
 
         if instance_options[:links]
           hash[:links] ||= {}
@@ -100,7 +65,7 @@ module ActiveModelSerializers
       def failure_document
         hash = {}
         # PR Please :)
-        # ApiObjects::Jsonapi.add!(hash)
+        # Jsonapi.add!(hash)
 
         if serializer.respond_to?(:each)
           hash[:errors] = serializer.flat_map do |error_serializer|
@@ -114,7 +79,7 @@ module ActiveModelSerializers
 
       def fragment_cache(cached_hash, non_cached_hash)
         root = false if instance_options.include?(:include)
-        ActiveModelSerializers::Adapter::JsonApi::FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
+        FragmentCache.new.fragment_cache(root, cached_hash, non_cached_hash)
       end
 
       protected
@@ -217,7 +182,7 @@ module ActiveModelSerializers
 
       # {http://jsonapi.org/format/#fetching-pagination Pagination Links}
       def pagination_links_for(serializer, options)
-        JsonApi::PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+        PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
       end
 
       # {http://jsonapi.org/format/#document-meta Docment Meta}

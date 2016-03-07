@@ -81,7 +81,7 @@ Example supported requests
 | linkage               | String(type), String(id), meta                                                                     | type, id | AMS::Adapter::JsonApi#primary_data_for
 | pagination            | pageObject(first), pageObject(last),<br>pageObject(prev), pageObject(next)                            |          | AMS::Adapter::JsonApi::PaginationLinks#serializable_hash
 | pagination.pageObject | oneOf(Uri, null)                                                                                   |          |
-| jsonapi               | String(version), meta                                                                              |          | AMS::Adapter::JsonApi::ApiObjects::JsonApi#as_json
+| jsonapi               | String(version), meta                                                                              |          | AMS::Adapter::JsonApi::Jsonapi#as_json
 | error                 | String(id), links, String(status),<br>String(code), String(title),<br>String(detail), error.source, meta |          | AM::S::ErrorSerializer, AMS::Adapter::JsonApi::Error.resource_errors
 | error.source          | String(pointer), String(parameter)                                                                 |          | AMS::Adapter::JsonApi::Error.error_source
 | pointer               | [JSON Pointer RFC6901](https://tools.ietf.org/html/rfc6901)                                        |          | AMS::JsonPointer
