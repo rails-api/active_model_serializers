@@ -2,9 +2,9 @@ module ActiveModel
   class Serializer
     module Adapter
       class Base < DelegateClass(ActiveModelSerializers::Adapter::Base)
-        def self.inherited(base)
-          warn "Inheriting deprecated ActiveModel::Serializer::Adapter::Base in #{caller[0..2].join(', ')}. Please use ActiveModelSerializers::Adapter::Base"
-          super
+        class << self
+          extend ActiveModelSerializers::Deprecate
+          deprecate :inherited, 'ActiveModelSerializers::Adapter::Base.'
         end
 
         def initialize(serializer, options = {})
