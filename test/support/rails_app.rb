@@ -10,6 +10,8 @@ class ActiveModelSerializers::RailsApplication < Rails::Application
 
     config.action_controller.perform_caching = true
     ActionController::Base.cache_store = :memory_store
+
+    Rails.application.routes.default_url_options = { host: 'example.com' }
   end
 end
 ActiveModelSerializers::RailsApplication.initialize!

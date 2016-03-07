@@ -45,25 +45,23 @@ Rake::TestTask.new do |t|
 end
 
 desc 'Run isolated tests'
-task isolated: ['test:isolated:railtie']
+task isolated: ['test:isolated']
 namespace :test do
-  namespace :isolated do
+  task :isolated do
     desc 'Run isolated tests for Railtie'
-    task :railtie do
-      require 'shellwords'
-      dir = File.dirname(__FILE__)
-      file = Shellwords.shellescape("#{dir}/test/active_model_serializers/railtie_test_isolated.rb")
-      dir = Shellwords.shellescape(dir)
-
-      # https://github.com/rails/rails/blob/3d590add45/railties/lib/rails/generators/app_base.rb#L345-L363
-      _bundle_command = Gem.bin_path('bundler', 'bundle')
-      require 'bundler'
-      Bundler.with_clean_env do
-        command = "-w -I#{dir}/lib -I#{dir}/test #{file}"
+    require 'shellwords'
+    dir = File.dirname(__FILE__)
+    dir = Shellwords.shellescape(dir)
+    isolated_test_files = FileList['test/**/*_test_isolated.rb']
+    # https://github.com/rails/rails/blob/3d590add45/railties/lib/rails/generators/app_base.rb#L345-L363
+    _bundle_command = Gem.bin_path('bundler', 'bundle')
+    require 'bundler'
+    Bundler.with_clean_env do
+      isolated_test_files.all? do |test_file|
+        command = "-w -I#{dir}/lib -I#{dir}/test #{Shellwords.shellescape(test_file)}"
         full_command = %("#{Gem.ruby}" #{command})
-        system(full_command) or # rubocop:disable Style/AndOr
-          fail 'Failures'
-      end
+        system(full_command)
+      end or fail 'Failures' # rubocop:disable Style/AndOr
     end
   end
 end

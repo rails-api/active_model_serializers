@@ -20,9 +20,11 @@ module ActiveModel
 
         # Define a link on a serializer.
         # @example
-        #   link :self { "//example.com/posts/#{object.id}" }
+        #   link(:self) { resource_url(object) }
         # @example
-        #   link :self, "//example.com/user"
+        #   link(:self) { "http://example.com/resource/#{object.id}" }
+        # @example
+        #   link :resource, "http://example.com/resource"
         #
         def link(name, value = nil, &block)
           _links[name] = block || value

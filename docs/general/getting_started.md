@@ -96,3 +96,12 @@ class PostsController < ApplicationController
 
 end
 ```
+
+If you wish to use Rails url helpers for link generation, e.g., `link(:resources) { resources_url }`, ensure your application sets
+`Rails.application.routes.default_url_options`.
+
+```ruby
+Rails.application.routes.default_url_options = {
+    host: 'example.com'
+}
+```

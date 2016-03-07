@@ -1,7 +1,12 @@
+require 'active_support/core_ext/module/delegation'
+
 module ActiveModelSerializers
   module Adapter
     class JsonApi
       class Link
+        include SerializationContext.url_helpers
+        delegate :default_url_options, to: SerializationContext
+
         def initialize(serializer, value)
           @object = serializer.object
           @scope = serializer.scope
