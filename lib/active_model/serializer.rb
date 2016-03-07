@@ -19,6 +19,7 @@ require 'active_model/serializer/type'
 module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
+    autoload :Adapter
     include Configuration
     include Associations
     include Attributes
@@ -26,7 +27,6 @@ module ActiveModel
     include Links
     include Meta
     include Type
-    autoload :Adapter
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]

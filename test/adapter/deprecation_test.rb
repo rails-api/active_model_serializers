@@ -3,23 +3,29 @@ module ActiveModel
   class Serializer
     module Adapter
       class DeprecationTest < ActiveSupport::TestCase
-        class DeprecatedPostSerializer < ActiveModel::Serializer
+        class PostSerializer < ActiveModel::Serializer
           attribute :body
         end
         setup do
           post = Post.new(id: 1, body: 'Hello')
-          @serializer = DeprecatedPostSerializer.new(post)
+          @serializer = PostSerializer.new(post)
         end
 
-        def test_null_adapter_serialization
-          assert_equal({}, Null.new(@serializer).as_json)
+        def test_null_adapter_serialization_deprecation
+          expected = {}
+          assert_deprecated do
+            assert_equal(expected, Null.new(@serializer).as_json)
+          end
         end
 
-        def test_json_adapter_serialization
-          assert_equal({ post: { body: 'Hello' } }, Json.new(@serializer).as_json)
+        def test_json_adapter_serialization_deprecation
+          expected = { post: { body: 'Hello' } }
+          assert_deprecated do
+            assert_equal(expected, Json.new(@serializer).as_json)
+          end
         end
 
-        def test_jsonapi_adapter_serialization
+        def test_jsonapi_adapter_serialization_deprecation
           expected = {
             data: {
               id: '1',
@@ -29,27 +35,16 @@ module ActiveModel
               }
             }
           }
-          assert_equal(expected, JsonApi.new(@serializer).as_json)
+          assert_deprecated do
+            assert_equal(expected, JsonApi.new(@serializer).as_json)
+          end
         end
 
-        def test_attributes_adapter_serialization
-          assert_equal({ body: 'Hello' }, Attributes.new(@serializer).as_json)
-        end
-
-        def test_null_adapter_deprecation
-          assert_deprecated_adapter(Null)
-        end
-
-        def test_json_adapter_deprecation
-          assert_deprecated_adapter(Json)
-        end
-
-        def test_json_api_adapter_deprecation
-          assert_deprecated_adapter(JsonApi)
-        end
-
-        def test_attributes_adapter_deprecation
-          assert_deprecated_adapter(Attributes)
+        def test_attributes_adapter_serialization_deprecation
+          expected = { body: 'Hello' }
+          assert_deprecated do
+            assert_equal(expected, Attributes.new(@serializer).as_json)
+          end
         end
 
         def test_adapter_create_deprecation
@@ -78,8 +73,11 @@ module ActiveModel
 
         def test_adapter_register_deprecation
           assert_deprecated do
-            Adapter.register(:test, Class.new)
-            Adapter.adapter_map.delete('test')
+            begin
+              Adapter.register(:test, Class.new)
+            ensure
+              Adapter.adapter_map.delete('test')
+            end
           end
         end
 
@@ -91,15 +89,8 @@ module ActiveModel
 
         private
 
-        def assert_deprecated_adapter(adapter)
-          assert_deprecated do
-            adapter.new(@serializer)
-          end
-        end
-
         def assert_deprecated
-          message = /deprecated/
-          assert_output(nil, message) do
+          assert_output(nil, /deprecated/) do
             yield
           end
         end
