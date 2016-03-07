@@ -1,9 +1,9 @@
 require 'active_model/serializer/collection_serializer'
 class ActiveModel::Serializer
   class ArraySerializer < CollectionSerializer
-    def initialize(*)
-      warn "Calling deprecated ArraySerializer in #{caller[0..2].join(', ')}. Please use CollectionSerializer"
-      super
+    class << self
+      extend ActiveModelSerializers::Deprecate
+      deprecate :new, 'ActiveModel::CollectionSerializer.'
     end
   end
 end
