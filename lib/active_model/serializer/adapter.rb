@@ -3,40 +3,37 @@ module ActiveModel
     # @deprecated Use ActiveModelSerializers::Adapter instead
     module Adapter
       class << self
+        extend ActiveModelSerializers::Deprecate
+
         def create(resource, options = {})
-          warn_deprecation
           ActiveModelSerializers::Adapter.create(resource, options)
         end
+        deprecate :create, 'ActiveModelSerializers::Adapter.'
 
         def adapter_class(adapter)
-          warn_deprecation
           ActiveModelSerializers::Adapter.adapter_class(adapter)
         end
+        deprecate :adapter_class, 'ActiveModelSerializers::Adapter.'
 
         def adapter_map
-          warn_deprecation
           ActiveModelSerializers::Adapter.adapter_map
         end
+        deprecate :adapter_map, 'ActiveModelSerializers::Adapter.'
 
         def adapters
-          warn_deprecation
           ActiveModelSerializers::Adapter.adapters
         end
+        deprecate :adapters, 'ActiveModelSerializers::Adapter.'
 
         def register(name, klass = name)
-          warn_deprecation
           ActiveModelSerializers::Adapter.register(name, klass)
         end
+        deprecate :register, 'ActiveModelSerializers::Adapter.'
 
         def lookup(adapter)
-          warn_deprecation
           ActiveModelSerializers::Adapter.lookup(adapter)
         end
-
-        def warn_deprecation
-          warn "Calling deprecated #{name} (#{__FILE__}) from #{caller[1..3].join(', ')}. Please use ActiveModelSerializers::Adapter"
-        end
-        private :warn_deprecation
+        deprecate :lookup, 'ActiveModelSerializers::Adapter.'
       end
 
       require 'active_model/serializer/adapter/base'

@@ -11,7 +11,7 @@ module ActiveModel
           _, stderr = capture_io do
             super
           end
-          if stderr !~ /Calling deprecated ArraySerializer/
+          if stderr !~ /NOTE: ActiveModel::Serializer::ArraySerializer.new is deprecated/
             fail Minitest::Assertion, stderr
           end
         end
@@ -29,7 +29,7 @@ module ActiveModel
             serializer = ArraySerializer.new([comment, post])
             assert_equal 'comments', serializer.json_key
           end
-          assert_match(/Calling deprecated ArraySerializer/, stderr)
+          assert_match(/NOTE: ActiveModel::Serializer::ArraySerializer.new is deprecated/, stderr)
         end
       end
     end
