@@ -21,6 +21,7 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1563](https://github.com/rails-api/active_model_serializers/pull/1563) Remove '?' character from attribute keys' suffix. (@NullVoxPopuli)
 - [#1570](https://github.com/rails-api/active_model_serializers/pull/1570) Fixed pagination issue with last page size. (@bmorrall)
 - [#1516](https://github.com/rails-api/active_model_serializers/pull/1516) No longer return a nil href when only
   adding meta to a relationship link. (@groyoh)

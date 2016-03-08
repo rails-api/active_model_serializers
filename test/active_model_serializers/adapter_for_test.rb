@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ActiveModelSerializers
   class AdapterForTest < ActiveSupport::TestCase
     UnknownAdapterError = ::ActiveModelSerializers::Adapter::UnknownAdapterError

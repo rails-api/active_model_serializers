@@ -27,7 +27,7 @@ class DefaultScopeNameTest < ActionController::TestCase
 
   def test_default_scope_name
     get :render_new_user
-    assert_equal '{"data":{"id":"1","type":"users","attributes":{"admin?":false}}}', @response.body
+    assert_equal '{"data":{"id":"1","type":"users","attributes":{"admin":false}}}', @response.body
   end
 end
 
@@ -58,6 +58,6 @@ class SerializationScopeNameTest < ActionController::TestCase
 
   def test_override_scope_name_with_controller
     get :render_new_user
-    assert_equal '{"data":{"id":"1","type":"users","attributes":{"admin?":true}}}', @response.body
+    assert_equal '{"data":{"id":"1","type":"users","attributes":{"admin":true}}}', @response.body
   end
 end

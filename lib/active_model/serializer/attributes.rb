@@ -55,7 +55,15 @@ module ActiveModel
         #     end
         def attribute(attr, options = {}, &block)
           key = options.fetch(:key, attr)
+          key = _remove_question_mark(key)
           _attributes_data[key] = Attribute.new(attr, options, block)
+        end
+
+        # @api private
+        # replace ? at the end of an attribute,
+        # as JSON API disallows the use of ? at the end of keys.
+        def _remove_question_mark(key)
+          key.to_s.sub(/\?\z/, '').to_sym
         end
 
         # @api private
