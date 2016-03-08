@@ -98,7 +98,7 @@ module ActiveModelSerializers
                 id: '2',
                 type: 'comments',
                 attributes: {
-                  body: 'ZOMG ANOTHER COMMENT',
+                  body: 'ZOMG ANOTHER COMMENT'
                 },
                 relationships: {
                   post: { data: { type: 'posts', id: '10' } },
@@ -141,7 +141,7 @@ module ActiveModelSerializers
                 type: 'bios',
                 attributes: {
                   rating: nil,
-                  content: 'Rails Contributor',
+                  content: 'Rails Contributor'
                 },
                 relationships: {
                   author: { data: { type: 'authors', id: '2' } }
@@ -314,7 +314,7 @@ module ActiveModelSerializers
         def test_no_duplicates
           hash = ActiveModel::SerializableResource.new(@post1, adapter: :json_api,
                                                                include: '*.*')
-                 .serializable_hash
+                                                  .serializable_hash
           expected = [
             {
               type: 'authors', id: '1',
@@ -343,7 +343,7 @@ module ActiveModelSerializers
           hash = ActiveModel::SerializableResource.new(
             [@post1, @post2], adapter: :json_api,
                               include: '*.*')
-                 .serializable_hash
+                                                  .serializable_hash
           expected = [
             {
               type: 'authors', id: '1',

@@ -21,7 +21,7 @@ module SerializationTesting
   ensure
     ActiveModelSerializers.config.adapter = old_adapter
   end
-  alias_method :with_configured_adapter, :with_adapter
+  alias with_configured_adapter with_adapter
 
   def with_config(hash)
     old_config = config.dup

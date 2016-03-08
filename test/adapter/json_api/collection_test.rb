@@ -60,7 +60,7 @@ module ActiveModelSerializers
           actual = ActiveModel::SerializableResource.new(
             [@first_post, @second_post], adapter: :json_api,
                                          fields: { posts: %w(title comments blog author) })
-                   .serializable_hash
+                                                    .serializable_hash
           expected = [
             {
               id: '1',

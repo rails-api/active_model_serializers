@@ -60,8 +60,8 @@ module ActiveModel
 
       def test_serializer_options_are_passed_into_associations_serializers
         association = @post_serializer
-                        .associations
-                        .detect { |assoc| assoc.key == :comments }
+                      .associations
+                      .detect { |assoc| assoc.key == :comments }
 
         assert association.serializer.first.custom_options[:custom_options]
       end
@@ -143,11 +143,11 @@ module ActiveModel
         )
         actual = serializable(post, adapter: :attributes, serializer: InlineAssociationTestPostSerializer).as_json
         expected = {
-          :comments =>           [
+          :comments => [
             { :id => 1, :contents => 'first comment' },
             { :id => 2, :contents => 'last comment' }
           ],
-          :last_comments =>           [
+          :last_comments => [
             { :id => 2, :contents => 'last comment' }
           ]
         }

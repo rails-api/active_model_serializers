@@ -46,7 +46,7 @@ module ActiveModelSerializers
       # 3. Add non-cached attributes to non-cached Serializer
       def cached_attributes(klass, serializers)
         attributes            = serializer.class._attributes
-        cached_attributes     = (klass._cache_only) ? klass._cache_only : attributes.reject { |attr| klass._cache_except.include?(attr) }
+        cached_attributes     = klass._cache_only ? klass._cache_only : attributes.reject { |attr| klass._cache_except.include?(attr) }
         non_cached_attributes = attributes - cached_attributes
 
         cached_attributes.each do |attribute|
