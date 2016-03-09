@@ -352,6 +352,8 @@ Features:
 
 * Serializers default namespace can be set in `default_serializer_options` and inherited by associations.
 
+* [Beginning of rewrite: c65d387705ec534db171712671ba7fcda4f49f68](https://github.com/rails-api/active_model_serializers/commit/c65d387705ec534db171712671ba7fcda4f49f68)
+
 ## 0.08.x
 
 ### v0.8.3 (2014/12/10 14:45 +00:00)
