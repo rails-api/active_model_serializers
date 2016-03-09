@@ -81,8 +81,12 @@ PR please :)
 
 #### meta
 
-If you want a `meta` attribute in your response, specify it in the `render`
-call:
+A `meta` member can be used to include non-standard meta-information. `meta` can
+be utilized in several levels in a response.
+
+##### Top-level
+
+To set top-level `meta` in a response, specify it in the `render` call.
 
 ```ruby
 render json: @post, meta: { total: 10 }
@@ -94,12 +98,33 @@ The key can be customized using `meta_key` option.
 render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
 ```
 
-`meta` will only be included in your response if you are using an Adapter that supports `root`,
-as JsonAPI and Json adapters, the default adapter (Attributes) doesn't have `root`.
+`meta` will only be included in your response if you are using an Adapter that
+supports `root`, e.g., `JsonApi` and `Json` adapters. The default adapter,
+`Attributes` does not have `root`.
 
-#### meta_key
 
-PR please :)
+##### Resource-level
+
+To set resource-level `meta` in a response, define meta in a serializer with one
+of the following methods:
+
+As a single, static string.
+
+```ruby
+meta stuff: 'value'
+```
+
+As a block containing a Hash.
+
+```ruby
+meta do
+  {
+    rating: 4,
+    comments_count: object.comments.count
+  }
+end
+```
+
 
 #### links
 
