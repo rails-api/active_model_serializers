@@ -26,12 +26,18 @@ module ActiveModelSerializers
           context.expect(:request_url, original_url)
           context.expect(:query_parameters, query_parameters)
           context.expect(:key_transform, nil)
-          @options = {}
-          @options[:serialization_context] = context
+          @serializer_options = {
+            serialization_context: context,
+            adapter: :json_api
+          }
         end
 
         def load_adapter(paginated_collection, options = {})
-          options = options.merge(adapter: :json_api)
+          if options
+            options.merge!(@serializer_options)
+          else
+            options = @serializer_options
+          end
           ActiveModel::SerializableResource.new(paginated_collection, options)
         end
 
@@ -106,14 +112,14 @@ module ActiveModelSerializers
           adapter = load_adapter(using_kaminari)
 
           mock_request
-          assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
+          assert_equal expected_response_with_pagination_links, adapter.serializable_hash
         end
 
         def test_pagination_links_using_will_paginate
           adapter = load_adapter(using_will_paginate)
 
           mock_request
-          assert_equal expected_response_with_pagination_links, adapter.serializable_hash(@options)
+          assert_equal expected_response_with_pagination_links, adapter.serializable_hash
         end
 
         def test_pagination_links_with_additional_params
@@ -121,7 +127,7 @@ module ActiveModelSerializers
 
           mock_request({ test: 'test' })
           assert_equal expected_response_with_pagination_links_and_additional_params,
-            adapter.serializable_hash(@options)
+            adapter.serializable_hash
         end
 
         def test_last_page_pagination_links_using_kaminari
