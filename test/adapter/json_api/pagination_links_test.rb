@@ -21,9 +21,41 @@ module ActiveModelSerializers
           ]
         end
 
-        def mock_request(query_parameters = {}, original_url = URI)
+        def test_pagination_links_using_kaminari
+          actual_response = serialize_resource(using_kaminari, options)
+          assert_equal expected_response_with_pagination_links, actual_response
+        end
+
+        def test_pagination_links_using_will_paginate
+          actual_response = serialize_resource(using_will_paginate, options)
+          assert_equal expected_response_with_pagination_links, actual_response
+        end
+
+        def test_pagination_links_with_additional_params
+          actual_response = serialize_resource(using_will_paginate, options(test: 'test'))
+          assert_equal expected_response_with_pagination_links_and_additional_params, actual_response
+        end
+
+        def test_last_page_pagination_links_using_kaminari
+          actual_response = serialize_resource(using_kaminari(3), options)
+          assert_equal expected_response_with_last_page_pagination_links, actual_response
+        end
+
+        def test_last_page_pagination_links_using_will_paginate
+          actual_response = serialize_resource(using_will_paginate(3), options)
+          assert_equal expected_response_with_last_page_pagination_links, actual_response
+        end
+
+        def test_not_showing_pagination_links
+          actual_response = serialize_resource(@array)
+          assert_equal expected_response_without_pagination_links, actual_response
+        end
+
+        private
+
+        def options(query_parameters = {})
           context = Minitest::Mock.new
-          context.expect(:request_url, original_url)
+          context.expect(:request_url, URI)
           context.expect(:query_parameters, query_parameters)
           context.expect(:key_transform, nil)
           @serializer_options = {
@@ -32,13 +64,8 @@ module ActiveModelSerializers
           }
         end
 
-        def load_adapter(paginated_collection, options = {})
-          if options
-            options.merge!(@serializer_options)
-          else
-            options = @serializer_options
-          end
-          ActiveModel::SerializableResource.new(paginated_collection, options)
+        def serialize_resource(paginated_collection, options = { adapter: :json_api })
+          ActiveModel::SerializableResource.new(paginated_collection, options).as_json
         end
 
         def using_kaminari(page = 2)
@@ -106,48 +133,6 @@ module ActiveModelSerializers
             hash[:data] = [data.values.flatten.last]
             hash.merge! last_page_links
           end
-        end
-
-        def test_pagination_links_using_kaminari
-          adapter = load_adapter(using_kaminari)
-
-          mock_request
-          assert_equal expected_response_with_pagination_links, adapter.serializable_hash
-        end
-
-        def test_pagination_links_using_will_paginate
-          adapter = load_adapter(using_will_paginate)
-
-          mock_request
-          assert_equal expected_response_with_pagination_links, adapter.serializable_hash
-        end
-
-        def test_pagination_links_with_additional_params
-          adapter = load_adapter(using_will_paginate)
-
-          mock_request({ test: 'test' })
-          assert_equal expected_response_with_pagination_links_and_additional_params,
-            adapter.serializable_hash
-        end
-
-        def test_last_page_pagination_links_using_kaminari
-          adapter = load_adapter(using_kaminari(3))
-
-          mock_request
-          assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash(@options)
-        end
-
-        def test_last_page_pagination_links_using_will_paginate
-          adapter = load_adapter(using_will_paginate(3))
-
-          mock_request
-          assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash(@options)
-        end
-
-        def test_not_showing_pagination_links
-          adapter = load_adapter(@array)
-
-          assert_equal expected_response_without_pagination_links, adapter.serializable_hash
         end
       end
     end

@@ -26,13 +26,13 @@ module ActionController
         respond_to?(_serialization_scope, true)
     end
 
-    def get_serializer(resource, serializer_options = {})
+    def get_serializer(resource, serialization_options = {})
       if !use_adapter?
         warn 'ActionController::Serialization#use_adapter? has been removed. '\
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
-        serializer_options[:adapter] = false
+        serialization_options[:adapter] = false
       end
-      serializable_resource = ActiveModel::SerializableResource.new(resource, serializer_options)
+      serializable_resource = ActiveModel::SerializableResource.new(resource, serialization_options)
       if serializable_resource.serializer?
         serializable_resource.serialization_scope ||= serialization_scope
         serializable_resource.serialization_scope_name = _serialization_scope
@@ -57,11 +57,14 @@ module ActionController
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
         options.freeze
-        serializer_options = options.deep_dup
-        serializer_options.fetch(:serialization_context) do
-          serializer_options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(request, serializer_options)
+        serialization_options = options.deep_dup
+        if options.key?(:serializer)
+          serialization_options[:serializer] = options[:serializer]
         end
-        serializable_resource = get_serializer(resource, serializer_options)
+        unless serialization_options.key?(:serialization_context)
+          serialization_options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(request, serialization_options)
+        end
+        serializable_resource = get_serializer(resource, serialization_options)
         super(serializable_resource, options)
       end
     end

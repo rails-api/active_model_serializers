@@ -21,21 +21,19 @@ module ActiveModelSerializers
         def setup
           ActionController::Base.cache_store.clear
           @blog = Blog.new(id: 1, name: 'My Blog!!', special_attribute: 'neat')
-          serializer = CustomBlogSerializer.new(@blog)
-          @adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
         end
 
         def test_key_transform_default
           mock_request
           assert_equal({
             blog: { id: 1, special_attribute: 'neat', articles: nil }
-          }, @adapter.serializable_hash(@options))
+          }, adapter.serializable_hash)
         end
 
         def test_key_transform_global_config
           mock_request
           result = with_config(key_transform: :camel_lower) do
-            @adapter.serializable_hash(@options)
+            adapter.serializable_hash
           end
           assert_equal({
             blog: { id: 1, specialAttribute: 'neat', articles: nil }
@@ -45,7 +43,7 @@ module ActiveModelSerializers
         def test_key_transform_serialization_ctx_overrides_global_config
           mock_request(:camel)
           result = with_config(key_transform: :camel_lower) do
-            @adapter.serializable_hash(@options)
+            adapter.serializable_hash
           end
           assert_equal({
             Blog: { Id: 1, SpecialAttribute: 'neat', Articles: nil }
@@ -56,7 +54,7 @@ module ActiveModelSerializers
           mock_request(:blam)
           result = nil
           assert_raises NoMethodError do
-            result = @adapter.serializable_hash(@options)
+            result = adapter.serializable_hash
           end
         end
 
@@ -64,28 +62,33 @@ module ActiveModelSerializers
           mock_request(:dashed)
           assert_equal({
             blog: { id: 1, :"special-attribute" => 'neat', articles: nil }
-          }, @adapter.serializable_hash(@options))
+          }, adapter.serializable_hash)
         end
 
         def test_key_transform_unaltered
           mock_request(:unaltered)
           assert_equal({
             blog: { id: 1, special_attribute: 'neat', articles: nil }
-          }, @adapter.serializable_hash(@options))
+          }, adapter.serializable_hash)
         end
 
         def test_key_transform_camel
           mock_request(:camel)
           assert_equal({
             Blog: { Id: 1, SpecialAttribute: 'neat', Articles: nil }
-          }, @adapter.serializable_hash(@options))
+          }, adapter.serializable_hash)
         end
 
         def test_key_transform_camel_lower
           mock_request(:camel_lower)
           assert_equal({
             blog: { id: 1, specialAttribute: 'neat', articles: nil }
-          }, @adapter.serializable_hash(@options))
+          }, adapter.serializable_hash)
+        end
+
+        def adapter
+          serializer = CustomBlogSerializer.new(@blog)
+          ActiveModelSerializers::Adapter::Json.new(serializer, @options || {})
         end
       end
     end
