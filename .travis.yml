@@ -8,7 +8,6 @@ rvm:
   - 2.2.3
   - 2.3.0
   - ruby-head
-  - rbx-2
   - jruby-9.0.4.0
   - jruby-head
 
@@ -49,5 +48,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx-2
   fast_finish: true
