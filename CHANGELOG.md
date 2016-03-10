@@ -3,6 +3,7 @@
 Breaking changes:
 
 Features:
+- [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Provide key translation. (@remear)
 - [#1494](https://github.com/rails-api/active_model_serializers/pull/1494) Make serializers serializalbe
   (using the Attributes adapter by default). (@bf4)
 - [#1550](https://github.com/rails-api/active_model_serializers/pull/1550) Add

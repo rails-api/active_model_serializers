@@ -1,3 +1,5 @@
+require 'active_model_serializers/key_transform'
+
 module ActiveModelSerializers
   module Adapter
     class Base
@@ -50,6 +52,27 @@ module ActiveModelSerializers
       def include_meta(json)
         json[meta_key] = meta unless meta.blank?
         json
+      end
+
+      def default_key_transform
+        :unaltered
+      end
+
+      # Determines the transform to use in order of precedence:
+      #   serialization context, global config, adapter default.
+      #
+      # @param serialization_context [Object] the SerializationContext
+      # @return [Symbol] the transform to use
+      def key_transform(serialization_context)
+        serialization_context.key_transform ||
+        ActiveModelSerializers.config.key_transform ||
+        default_key_transform
+      end
+
+      def transform_key_casing!(value, serialization_context)
+        return value unless serialization_context
+        transform = key_transform(serialization_context)
+        KeyTransform.send(transform, value)
       end
     end
   end

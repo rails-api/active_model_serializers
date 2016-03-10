@@ -25,6 +25,7 @@ module ActiveModelSerializers
           context = Minitest::Mock.new
           context.expect(:request_url, original_url)
           context.expect(:query_parameters, query_parameters)
+          context.expect(:key_transform, nil)
           @options = {}
           @options[:serialization_context] = context
         end
