@@ -104,7 +104,7 @@ else
   # ActiveModelSerializers::Model is a convenient
   # serializable class to inherit from when making
   # serializable non-activerecord objects.
-  class DummyModel
+  class BenchmarkModel
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
@@ -139,19 +139,19 @@ else
     end
   end
 
-  class Comment < DummyModel
+  class Comment < BenchmarkModel
     attr_accessor :id, :body
   end
 
-  class Author < DummyModel
+  class Author < BenchmarkModel
     attr_accessor :id, :name, :posts
   end
 
-  class Post < DummyModel
+  class Post < BenchmarkModel
     attr_accessor :id, :title, :body, :comments, :blog, :author
   end
 
-  class Blog < DummyModel
+  class Blog < BenchmarkModel
     attr_accessor :id, :name
   end
 end
