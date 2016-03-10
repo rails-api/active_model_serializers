@@ -15,7 +15,7 @@ require 'English'
 
 class BenchmarkDriver
   ROOT = Pathname File.expand_path(File.join('..', '..'), __FILE__)
-  BASE = ENV.fetch('BASE') { ROOT.join('test', 'dummy') }
+  BASE = ENV.fetch('BASE') { ROOT.join('test', 'benchmark') }
   ESCAPED_BASE = Shellwords.shellescape(BASE)
 
   def self.benchmark(options)

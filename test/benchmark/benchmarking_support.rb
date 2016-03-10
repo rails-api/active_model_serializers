@@ -7,7 +7,7 @@ module Benchmark
   module ActiveModelSerializers
     module TestMethods
       def request(method, path)
-        response = Rack::MockRequest.new(DummyApp).send(method, path)
+        response = Rack::MockRequest.new(BenchmarkApp).send(method, path)
         if response.status.in?([404, 500])
           fail "omg, #{method}, #{path}, '#{response.status}', '#{response.body}'"
         end

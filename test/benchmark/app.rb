@@ -18,7 +18,7 @@ class NullLogger < Logger
   def add(*_args, &_block)
   end
 end
-class DummyLogger < ActiveSupport::Logger
+class BenchmarkLogger < ActiveSupport::Logger
   def initialize
     @file = StringIO.new
     super(@file)
@@ -30,7 +30,7 @@ class DummyLogger < ActiveSupport::Logger
   end
 end
 # ref: https://gist.github.com/bf4/8744473
-class DummyApp < Rails::Application
+class BenchmarkApp < Rails::Application
   # Set up production configuration
   config.eager_load = true
   config.cache_classes = true
