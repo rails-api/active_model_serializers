@@ -14,9 +14,6 @@ rvm:
 jdk:
   - oraclejdk8
 
-before_install:
-  - '[ "$JRUBY_OPTS" != "" ] && export JRUBY_OPTS="--dev -Xcli.debug=true --debug"'
-
 install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
@@ -26,10 +23,13 @@ script:
   - bundle exec rake ci
 
 env:
-  - "RAILS_VERSION=4.0"
-  - "RAILS_VERSION=4.1"
-  - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  global:
+    - "JRUBY_OPTS='--dev -J-Xmx1024M'"
+  matrix:
+    - "RAILS_VERSION=4.0"
+    - "RAILS_VERSION=4.1"
+    - "RAILS_VERSION=4.2"
+    - "RAILS_VERSION=master"
 
 matrix:
   exclude:
