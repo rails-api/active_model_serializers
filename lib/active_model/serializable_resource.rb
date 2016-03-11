@@ -36,7 +36,13 @@ module ActiveModel
     alias adapter_instance adapter
 
     def serializer_instance
-      @serializer_instance ||= serializer.new(resource, serializer_opts)
+      if @serializer_instance
+        @serializer_instance
+      else
+        # TODO define error to raise here
+        raise "No Serializer found" unless serializer
+        @serializer_instance = serializer.new(resource, serializer_opts)
+      end
     end
 
     # Get serializer either explicitly :serializer or implicitly from resource
