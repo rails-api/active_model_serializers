@@ -81,6 +81,17 @@ module ActiveModel
         assert_equal('custom', hash[:blog][:id])
       end
 
+      def test_id_with_question_mark_has_question_mark_removed
+        serializer = Class.new(ActiveModel::Serializer) do
+          attribute :boolean?
+        end
+
+        blog = Blog.new(boolean?: true)
+        hash = ActiveModel::SerializableResource.new(blog, adapter: :json, serializer: serializer).serializable_hash
+
+        assert_equal(true, hash[:blog][:boolean])
+      end
+
       PostWithVirtualAttribute = Class.new(::Model)
       class PostWithVirtualAttributeSerializer < ActiveModel::Serializer
         attribute :name do
