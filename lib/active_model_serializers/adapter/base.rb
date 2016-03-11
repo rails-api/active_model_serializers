@@ -48,7 +48,7 @@ module ActiveModelSerializers
       end
 
       def include_meta(json)
-        json[meta_key] = meta if meta
+        json[meta_key] = meta unless meta.blank?
         json
       end
     end
