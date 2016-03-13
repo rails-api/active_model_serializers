@@ -57,5 +57,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'minitest-reporters'
   spec.add_development_dependency 'grape', ['>= 0.13', '< 1.0']
   spec.add_development_dependency 'json_schema'
-  spec.add_development_dependency 'rake', ['>= 10.0', '< 12.0']
+  # https://stackoverflow.com/questions/35893584/nomethoderror-undefined-method-last-comment-after-upgrading-to-rake-11/35893625#35893625
+  spec.add_development_dependency 'rake', '< 11.0'
 end
