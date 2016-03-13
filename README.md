@@ -19,8 +19,7 @@
   <tr>
     <td>Issue Stats</td>
     <td>
-      <a href="http://issuestats.com/github/rails-api/active_model_serializers"><img src="http://issuestats.com/github/rails-api/active_model_serializers/badge/pr" alt="Issue Stats" ></a>
-      <a href="http://issuestats.com/github/rails-api/active_model_serializers"><img src="http://issuestats.com/github/rails-api/active_model_serializers/badge/issue" alt="Issue Stats" ></a>
+      <a href="https://github.com/rails-api/active_model_serializers/pulse/monthly">Pulse</a>
     </td>
   </tr>
 </table>
