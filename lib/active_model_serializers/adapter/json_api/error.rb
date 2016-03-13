@@ -36,6 +36,12 @@ module ActiveModelSerializers
         #   title  : A short, human-readable summary of the problem. It **SHOULD NOT** change from
         #     occurrence to occurrence of the problem, except for purposes of localization.
         #   detail : A human-readable explanation specific to this occurrence of the problem.
+        # structure:
+        #   {
+        #     title: 'SystemFailure',
+        #     detail: 'something went terribly wrong',
+        #     status: '500'
+        #   }.merge!(errorSource)
         def self.attribute_error_objects(attribute_name, attribute_errors)
           attribute_errors.map do |attribute_error|
             {
@@ -45,6 +51,7 @@ module ActiveModelSerializers
           end
         end
 
+        # errorSource
         # description:
         #   oneOf
         #     ☑ pointer   : String
@@ -56,6 +63,16 @@ module ActiveModelSerializers
         #   https://tools.ietf.org/html/rfc6901
         #
         #   parameter: A string indicating which query parameter caused the error
+        # structure:
+        #   if is_attribute?
+        #     {
+        #       pointer: '/data/attributes/red-button'
+        #     }
+        #   else
+        #     {
+        #       parameter: 'pres'
+        #     }
+        #   end
         def self.error_source(source_type, attribute_name)
           case source_type
           when :pointer

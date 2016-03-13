@@ -2,6 +2,24 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
       # {http://jsonapi.org/format/#document-jsonapi-object Jsonapi Object}
+
+      # toplevel_jsonapi
+      # definition:
+      #   JSON Object
+      #
+      # properties:
+      #   version : String
+      #   meta
+      #
+      # description:
+      #   An object describing the server's implementation
+      # structure:
+      #   {
+      #     version: ActiveModelSerializers.config.jsonapi_version,
+      #     meta: ActiveModelSerializers.config.jsonapi_toplevel_meta
+      #   }.reject! { |_, v| v.blank? }
+      # prs:
+      #   https://github.com/rails-api/active_model_serializers/pull/1050
       module Jsonapi
         module_function
 

@@ -34,6 +34,7 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
+- [#1482](https://github.com/rails-api/active_model_serializers/pull/1482) Document JSON API implementation defs and progress in class. (@bf4)
 - [#1551](https://github.com/rails-api/active_model_serializers/pull/1551) Added codebeat badge (@korzonek)
 - [#1527](https://github.com/rails-api/active_model_serializers/pull/1527) Refactor fragment cache class. (@groyoh)
 - [#1560](https://github.com/rails-api/active_model_serializers/pull/1560) Update rubocop and address its warnings. (@bf4 @groyoh)

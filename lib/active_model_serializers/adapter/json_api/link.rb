@@ -3,6 +3,43 @@ require 'active_support/core_ext/module/delegation'
 module ActiveModelSerializers
   module Adapter
     class JsonApi
+      # link
+      # definition:
+      #  oneOf
+      #    linkString
+      #    linkObject
+      #
+      # description:
+      #   A link **MUST** be represented as either: a string containing the link's URL or a link
+      #   object."
+      # structure:
+      #   if href?
+      #     linkString
+      #   else
+      #     linkObject
+      #   end
+      #
+      # linkString
+      # definition:
+      #   URI
+      #
+      # description:
+      #   A string containing the link's URL.
+      # structure:
+      #  'http://example.com/link-string'
+      #
+      # linkObject
+      # definition:
+      #   JSON Object
+      #
+      # properties:
+      #   href (required) : URI
+      #   meta
+      # structure:
+      #   {
+      #     href: 'http://example.com/link-object',
+      #     meta: meta,
+      #   }.reject! {|_,v| v.nil? }
       class Link
         include SerializationContext.url_helpers
         delegate :default_url_options, to: SerializationContext

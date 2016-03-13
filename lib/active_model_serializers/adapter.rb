@@ -84,10 +84,11 @@ module ActiveModelSerializers
     end
 
     # Gotta be at the bottom to use the code above it :(
-    require 'active_model_serializers/adapter/base'
-    require 'active_model_serializers/adapter/null'
-    require 'active_model_serializers/adapter/attributes'
-    require 'active_model_serializers/adapter/json'
-    require 'active_model_serializers/adapter/json_api'
+    extend ActiveSupport::Autoload
+    autoload :Base
+    autoload :Null
+    autoload :Attributes
+    autoload :Json
+    autoload :JsonApi
   end
 end
