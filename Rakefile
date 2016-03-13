@@ -3,6 +3,8 @@ begin
 rescue LoadError
 end
 
+require 'bundler'
+Bundler.setup
 require 'bundler/gem_tasks'
 
 begin
