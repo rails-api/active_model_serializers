@@ -156,7 +156,98 @@ PR please :)
 
 #### #scope
 
-PR please :)
+Allows you to include in the serializer access to an external method.
+
+It's intended to provide an authorization context to the serializer, so that
+you may e.g. show an admin all comments on a post, else only published comments.
+
+- `scope` is a method on the serializer instance that comes from `options[:scope]`. It may be nil.
+- `scope_name` is an option passed to the new serializer (`options[:scope_name]`).  The serializer
+  defines a method with that name that calls the `scope`, e.g. `def current_user; scope; end`.
+  Note: it does not define the method if the serializer instance responds to it.
+
+That's a lot of words, so here's some examples:
+
+First, let's assume the serializer is instantiated in the controller, since that's the usual scenario.
+We'll refer to the serialization context as `controller`.
+
+| options | `Serializer#scope` | method definition |
+|-------- | ------------------|--------------------|
+| `scope: current_user, scope_name: :current_user` | `current_user` | `Serializer#current_user` calls `controller.current_user`
+| `scope: view_context, scope_name: :view_context` | `view_context` | `Serializer#view_context` calls `controller.view_context`
+
+We can take advantage of the scope to customize the objects returned based
+on the current user (scope).
+
+For example, we can limit the posts the current user sees to those they created:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title, :body
+
+  # scope comments to those created_by the current user
+  has_many :comments do
+    object.comments.where(created_by: current_user)
+  end
+end
+```
+
+Whether you write the method as above or as `object.comments.where(created_by: scope)`
+is a matter of preference (assuming `scope_name` has been set).
+
+##### Controller Authorization Context
+
+In the controller, the scope/scope_name options are equal to
+the [`serialization_scope`method](https://github.com/rails-api/active_model_serializers/blob/d02cd30fe55a3ea85e1d351b6e039620903c1871/lib/action_controller/serialization.rb#L13-L20),
+which is `:current_user`, by default.
+
+Specfically, the `scope_name` is defaulted to `:current_user`, and may be set as
+`serialization_scope :view_context`.  The `scope` is set to `send(scope_name)` when `scope_name` is
+present and the controller responds to `scope_name`.
+
+Thus, in a serializer, the controller provides `current_user` as the
+current authorization scope when you call `render :json`.
+
+**IMPORTANT**: Since the scope is set at render, you may want to customize it so that `current_user` isn't
+called on every request.  This was [also a problem](https://github.com/rails-api/active_model_serializers/pull/1252#issuecomment-159810477)
+in [`0.9`](https://github.com/rails-api/active_model_serializers/tree/0-9-stable#customizing-scope).
+
+We can change the scope from `current_user` to `view_context`.
+
+```diff
+class SomeController < ActionController::Base
++  serialization_scope :view_context
+
+  def current_user
+    User.new(id: 2, name: 'Bob', admin: true)
+  end
+
+  def edit
+    user = User.new(id: 1, name: 'Pete')
+    render json: user, serializer: AdminUserSerializer, adapter: :json_api
+  end
+end
+```
+
+We could then use the controller method `view_context` in our serializer, like so:
+
+```diff
+class AdminUserSerializer < ActiveModel::Serializer
+  attributes :id, :name, :can_edit
+
+  def can_edit?
++    view_context.current_user.admin?
+  end
+end
+```
+
+So that when we render the `#edit` action, we'll get
+
+```json
+{"data":{"id":"1","type":"users","attributes":{"name":"Pete","can_edit":true}}}
+```
+
+Where `can_edit` is `view_context.current_user.admin?` (true).
 
 #### #read_attribute_for_serialization(key)
 
