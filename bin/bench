@@ -113,6 +113,7 @@ class BenchmarkDriver
     results = {}
     results['commit_hash'] = commit_hash
     results['version'] = runs_output.first['version']
+    results['rails_version'] = runs_output.first['rails_version']
     results['benchmark_run[environment]'] = environment
     results['runs'] = []
 

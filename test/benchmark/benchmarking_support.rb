@@ -34,6 +34,7 @@ module Benchmark
       output = {
         label: label,
         version: ::ActiveModel::Serializer::VERSION.to_s,
+        rails_version: ::Rails.version.to_s,
         iterations_per_second: entry.ips,
         iterations_per_second_standard_deviation: entry.stddev_percentage,
         total_allocated_objects_per_iteration: count_total_allocated_objects(&block)
