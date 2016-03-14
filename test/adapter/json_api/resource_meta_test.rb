@@ -17,6 +17,20 @@ module ActiveModel
             end
           end
 
+          class MetaBlockPostBlankMetaSerializer < ActiveModel::Serializer
+            attributes :id
+            meta do
+              {}
+            end
+          end
+
+          class MetaBlockPostEmptyStringSerializer < ActiveModel::Serializer
+            attributes :id
+            meta do
+              ''
+            end
+          end
+
           def setup
             @post = Post.new(id: 1337, comments: [], author: nil)
           end
@@ -60,6 +74,24 @@ module ActiveModel
               ]
             }
             assert_equal(expected, hash)
+          end
+
+          def test_meta_object_blank_omitted
+            hash = ActiveModel::SerializableResource.new(
+              @post,
+              serializer: MetaBlockPostBlankMetaSerializer,
+              adapter: :json_api
+            ).serializable_hash
+            refute hash[:data].key? :meta
+          end
+
+          def test_meta_object_empty_string_omitted
+            hash = ActiveModel::SerializableResource.new(
+              @post,
+              serializer: MetaBlockPostEmptyStringSerializer,
+              adapter: :json_api
+            ).serializable_hash
+            refute hash[:data].key? :meta
           end
         end
       end

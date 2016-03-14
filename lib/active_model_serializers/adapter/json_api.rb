@@ -320,7 +320,7 @@ module ActiveModelSerializers
         #     :'git-ref' => 'abc123'
         #   }
         meta = meta_for(serializer)
-        resource_object[:meta] = meta unless meta.nil?
+        resource_object[:meta] = meta unless meta.blank?
 
         resource_object
       end
