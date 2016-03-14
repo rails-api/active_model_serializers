@@ -144,7 +144,6 @@ link :link_authors { link_authors_url }
 link :other, 'https://example.com/resource'
 link :posts { link_author_posts_url(object) }
 ```
-```
 
 #### #object
 
