@@ -23,7 +23,7 @@ module ActiveModelSerializers
           if ActiveModelSerializers.config.jsonapi_resource_type == :singular
             serializer.object.class.model_name.singular
           else
-            serializer.object.class.model_name.plural
+            serializer.object.class.model_name.pluralize
           end
         end
 
