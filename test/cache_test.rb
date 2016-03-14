@@ -89,7 +89,7 @@ module ActiveModelSerializers
       assert_equal(nil, ActionController::Base.cache_store.fetch(@post.cache_key))
       assert_equal(nil, ActionController::Base.cache_store.fetch(@comment.cache_key))
 
-      Timecop.freeze(Time.now) do
+      Timecop.freeze(Time.current) do
         render_object_with_cache(@post)
 
         assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
@@ -101,7 +101,7 @@ module ActiveModelSerializers
       # Clean the Cache
       ActionController::Base.cache_store.clear
 
-      Timecop.freeze(Time.now) do
+      Timecop.freeze(Time.current) do
         # Generate a new Cache of Post object and each objects related to it.
         render_object_with_cache(@post)
 
@@ -150,7 +150,7 @@ module ActiveModelSerializers
       serializer = ActiveModel::Serializer::CollectionSerializer.new([@comment, @comment])
       include_tree = ActiveModel::Serializer::IncludeTree.from_include_args('*')
 
-      actual = Adapter::CachedSerializer.object_cache_keys(serializer, include_tree)
+      actual = CachedSerializer.object_cache_keys(serializer, include_tree)
 
       assert_equal actual.size, 3
       assert actual.any? { |key| key == 'comment/1' }
@@ -161,7 +161,7 @@ module ActiveModelSerializers
     def test_cached_attributes
       serializer = ActiveModel::Serializer::CollectionSerializer.new([@comment, @comment])
 
-      Timecop.freeze(Time.now) do
+      Timecop.freeze(Time.current) do
         render_object_with_cache(@comment)
 
         attributes = Adapter::Attributes.new(serializer)

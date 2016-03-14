@@ -17,10 +17,6 @@ module ActiveModelSerializers
         end
       end
 
-      def fragment_cache(cached_hash, non_cached_hash)
-        Json::FragmentCache.new.fragment_cache(cached_hash, non_cached_hash)
-      end
-
       private
 
       def serializable_hash_for_collection(options)
