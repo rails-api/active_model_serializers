@@ -150,12 +150,14 @@ This feature is specific to JsonApi, so you have to use the use the [JsonApi Ada
 
 PR please :)
 
-#### root
+#### Overriding the root key
 
-The resource root is derived from the class name of the resource being serialized.
+Overriding the resource root only applies when using the JSON adapter.
+
+Normally, the resource root is derived from the class name of the resource being serialized.
 e.g. `UserPostSerializer.new(UserPost.new)` will be serialized with the root `user_post` or `user_posts` according the adapter collection pluralization rules.
 
-When using the JSON adapter in your initializer (ActiveModelSerializers.config.adapter = :json), you can specify the root by passing it as an argument to `render`. For example:
+When using the JSON adapter in your initializer (ActiveModelSerializers.config.adapter = :json), or passing in the adapter in your render call, you can specify the root by passing it as an argument to `render`. For example:
 
 ```ruby
   render json: @user_post, root: "admin_post", adapter: :json
