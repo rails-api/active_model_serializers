@@ -18,6 +18,17 @@ ActiveRecord::Schema.define do
     t.references :post
     t.timestamp null: false
   end
+  create_table :employees, force: true do |t|
+    t.string :name
+    t.string :email
+    t.timestamp null: false
+  end
+  create_table :pictures, force: true do |t|
+    t.string :title
+    t.string :imageable_type
+    t.string :imageable_id
+    t.timestamp null: false
+  end
 end
 
 module ARModels

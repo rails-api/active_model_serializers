@@ -72,6 +72,14 @@ Comment = Class.new(Model) do
   end
 end
 
+class Employee < ActiveRecord::Base
+  has_many :pictures, as: :imageable
+end
+
+class Picture < ActiveRecord::Base
+  belongs_to :imageable, polymorphic: true
+end
+
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
@@ -231,6 +239,16 @@ VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
 
   def maker
   end
+end
+
+PolymorphicHasManySerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+end
+
+PolymorphicBelongsToSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :title
+
+  has_one :imageable, serializer: PolymorphicHasManySerializer
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do

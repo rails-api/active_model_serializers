@@ -76,6 +76,18 @@ def blog
 end
 ```
 
+### Polymorphic Relationships
+
+Polymorphic relationships are serialized by specifying the relationship, like any other association. For example:
+
+```ruby
+class PictureSerializer < ActiveModel::Serializer
+  has_one :imageable
+end
+```
+
+For more context, see the [tests](../../test/adapter/polymorphic_test.rb) for each adapter.
+
 ### Caching
 
 #### ::cache
