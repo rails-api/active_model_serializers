@@ -79,6 +79,12 @@ PR please :)
 
 PR please :)
 
+#### key_transform
+
+```render json: posts, each_serializer: PostSerializer, key_transform: :camel_lower```
+
+See [Key Transforms](key_transforms.md) for more informaiton.
+
 #### meta
 
 A `meta` member can be used to include non-standard meta-information. `meta` can

@@ -37,15 +37,20 @@ module ActiveModelSerializers
         @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
       end
 
+      def default_key_transform
+        :dashed
+      end
+
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
       # {http://jsonapi.org/format/#document-top-level data and errors MUST NOT coexist in the same document.}
       def serializable_hash(options = nil)
         options ||= {}
-        if serializer.success?
-          success_document(options)
-        else
-          failure_document
-        end
+        document = if serializer.success?
+                     success_document(options)
+                   else
+                     failure_document
+                   end
+        transform_key_casing!(document, options[:serialization_context])
       end
 
       # {http://jsonapi.org/format/#document-top-level Primary data}
