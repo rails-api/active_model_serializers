@@ -211,12 +211,14 @@ link(:link_name) { url_for(controller: 'controller_name', action: 'index', only_
 
 PR please :)
 
-#### root
+#### Overriding the root key
 
-The resource root is derived from the class name of the resource being serialized.
+Overriding the resource root only applies when using the JSON adapter.
+
+Normally, the resource root is derived from the class name of the resource being serialized.
 e.g. `UserPostSerializer.new(UserPost.new)` will be serialized with the root `user_post` or `user_posts` according the adapter collection pluralization rules.
 
-Specify the root by passing it as an argument to `render`. For example:
+When using the JSON adapter in your initializer (ActiveModelSerializers.config.adapter = :json), or passing in the adapter in your render call, you can specify the root by passing it as an argument to `render`. For example:
 
 ```ruby
   render json: @user_post, root: "admin_post", adapter: :json
@@ -230,7 +232,7 @@ This will be rendered as:
     }
   }
 ```
-Note: the `Attributes` adapter (default) does not include a resource root.
+Note: the `Attributes` adapter (default) does not include a resource root. You also will not be able to create a single top-level root if you are using the :json_api adapter.
 
 #### serializer
 
