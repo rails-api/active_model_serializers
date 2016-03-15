@@ -171,7 +171,7 @@ This will be rendered as:
     }
   }
 ```
-Note: the `Attributes` adapter (default) does not include a resource root. You also will not be able to override the 'data' root if you are using the :json_api adapter.
+Note: the `Attributes` adapter (default) does not include a resource root. You also will not be able to create a single top-level root if you are using the :json_api adapter.
 
 #### serializer
 
