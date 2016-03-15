@@ -47,6 +47,7 @@ Misc:
 - [#1535](https://github.com/rails-api/active_model_serializers/pull/1535) Move the adapter and adapter folder to
   active_model_serializers folder and changes the module namespace. (@domitian @bf4)
 - [#1497](https://github.com/rails-api/active_model_serializers/pull/1497) Add JRuby-9000 to appveyor.yml(@corainchicago)
+- [#1420](https://github.com/rails-api/active_model_serializers/pull/1420) Adds tests and documentation for polymorphism(@marcgarreau)
 
 ### v0.10.0.rc4 (2016/01/27 11:00 +00:00)
 Breaking changes:
