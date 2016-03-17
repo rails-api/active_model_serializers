@@ -2,10 +2,6 @@ require 'bundler/setup'
 
 begin
   require 'simplecov'
-  # HACK: till https://github.com/colszowka/simplecov/pull/400 is merged and released.
-  # Otherwise you may get:
-  # simplecov-0.10.0/lib/simplecov/defaults.rb:50: warning: global variable `$ERROR_INFO' not initialized
-  require 'support/simplecov'
   AppCoverage.start
 rescue LoadError
   STDERR.puts 'Running without SimpleCov'
