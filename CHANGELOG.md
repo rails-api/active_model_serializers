@@ -35,6 +35,7 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
+- [#1557](https://github.com/rails-api/active_model_serializers/pull/1557) Update docs regarding overriding the root key (@Jwan622)
 - [#1471](https://github.com/rails-api/active_model_serializers/pull/1471) [Cleanup] Serializer caching is its own concern. (@bf4)
 - [#1482](https://github.com/rails-api/active_model_serializers/pull/1482) Document JSON API implementation defs and progress in class. (@bf4)
 - [#1551](https://github.com/rails-api/active_model_serializers/pull/1551) Added codebeat badge (@korzonek)
