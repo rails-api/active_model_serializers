@@ -1,5 +1,7 @@
+require 'test_helper'
+
 module ActiveModelSerializers
-  class AdapterForTest < ActiveSupport::TestCase
+  class AdapterForTest < ::ActiveSupport::TestCase
     UnknownAdapterError = ::ActiveModelSerializers::Adapter::UnknownAdapterError
 
     def test_serializer_adapter_returns_configured_adapter
