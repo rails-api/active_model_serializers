@@ -43,6 +43,28 @@ Use either the `JSON` or `JSON API` adapters if you want the response document t
 It's the default adapter, it generates a json response without a root key.
 Doesn't follow any specific convention.
 
+##### Example output
+
+```json
+{
+  "title": "Title 1",
+  "body": "Body 1",
+  "publish_at": "2020-03-16T03:55:25.291Z",
+  "author": {
+    "first_name": "Bob",
+    "last_name": "Jones"
+  },
+  "comments": [
+    {
+      "body": "cool"
+    },
+    {
+      "body": "awesome"
+    }
+  ]
+}
+```
+
 ### JSON
 
 The response document always with a root key.
@@ -51,10 +73,71 @@ The root key **can't be overridden**, and will be derived from the resource bein
 
 Doesn't follow any specific convention.
 
+##### Example output
+
+```json
+{
+  "post": {
+    "title": "Title 1",
+    "body": "Body 1",
+    "publish_at": "2020-03-16T03:55:25.291Z",
+    "author": {
+      "first_name": "Bob",
+      "last_name": "Jones"
+    },
+    "comments": [{
+      "body": "cool"
+    }, {
+      "body": "awesome"
+    }]
+  }
+}
+```
+
 ### JSON API
 
 This adapter follows **version 1.0** of the [format specified](../jsonapi/schema.md) in
 [jsonapi.org/format](http://jsonapi.org/format).
+
+##### Example output
+
+```json
+{
+  "data": {
+    "id": "1337",
+    "type": "posts",
+    "attributes": {
+      "title": "Title 1",
+      "body": "Body 1",
+      "publish-at": "2020-03-16T03:55:25.291Z"
+    },
+    "relationships": {
+      "author": {
+        "data": {
+          "id": "1",
+          "type": "authors"
+        }
+      },
+      "comments": {
+        "data": [{
+          "id": "7",
+          "type": "comments"
+        }, {
+          "id": "12",
+          "type": "comments"
+        }]
+      }
+    },
+    "links": {
+      "post-authors": "https://example.com/post_authors"
+    },
+    "meta": {
+      "rating": 5,
+      "favorite-count": 10
+    }
+  }
+}
+```
 
 #### Included
 
