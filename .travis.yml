@@ -24,7 +24,7 @@ script:
 
 env:
   global:
-    - "JRUBY_OPTS='--dev -J-Xmx1024M'"
+    - "JRUBY_OPTS='--dev -J-Xmx1024M' -d"
   matrix:
     - "RAILS_VERSION=4.0"
     - "RAILS_VERSION=4.1"
