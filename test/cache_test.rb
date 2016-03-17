@@ -34,6 +34,19 @@ module ActiveModelSerializers
       @blog_serializer     = BlogSerializer.new(@blog)
     end
 
+    def test_explicit_cache_store
+      default_store = Class.new(ActiveModel::Serializer) do
+        cache
+      end
+      explicit_store = Class.new(ActiveModel::Serializer) do
+        cache cache_store: ActiveSupport::Cache::FileStore
+      end
+
+      assert ActiveSupport::Cache::MemoryStore, ActiveModelSerializers.config.cache_store
+      assert ActiveSupport::Cache::MemoryStore, default_store.cache_store
+      assert ActiveSupport::Cache::FileStore, explicit_store.cache_store
+    end
+
     def test_inherited_cache_configuration
       inherited_serializer = Class.new(PostSerializer)
 

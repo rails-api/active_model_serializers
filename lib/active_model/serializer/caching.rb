@@ -5,7 +5,7 @@ module ActiveModel
 
       included do
         with_options instance_writer: false, instance_reader: false do |serializer|
-          serializer.class_attribute :_cache         # @api private : the cache object
+          serializer.class_attribute :_cache         # @api private : the cache store
           serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
           serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key
           serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists cached_attributes. Cannot combine with except
@@ -71,6 +71,7 @@ module ActiveModel
         #   when Rails.configuration.action_controller.perform_caching
         #
         # @params options [Hash] with valid keys:
+        #   cache_store    : @see ::_cache
         #   key            : @see ::_cache_key
         #   only           : @see ::_cache_only
         #   except         : @see ::_cache_except
@@ -88,15 +89,73 @@ module ActiveModel
         # @todo require less code comments. See
         # https://github.com/rails-api/active_model_serializers/pull/1249#issuecomment-146567837
         def cache(options = {})
-          self._cache = ActiveModelSerializers.config.cache_store if ActiveModelSerializers.config.perform_caching
-          serializer = self
-          ActiveSupport.on_load(:action_controller) do
-            serializer._cache = ActiveModelSerializers.config.cache_store if ActiveModelSerializers.config.perform_caching
-          end
+          self._cache =
+            options.delete(:cache_store) ||
+            ActiveModelSerializers.config.cache_store ||
+            ActiveSupport::Cache.lookup_store(:null_store)
           self._cache_key = options.delete(:key)
           self._cache_only = options.delete(:only)
           self._cache_except = options.delete(:except)
           self._cache_options = options.empty? ? nil : options
+        end
+
+        # @return [true, false]
+        # We're using class variables here because it is a class attribute
+        # that is globally true for the `ActiveModel::Serializer` class; i.e. neither per subclass nor inherited.
+        #
+        # We're not using a class_attribute because of the special behavior in
+        # `perform_caching` setting itself to `ActiveModelSerializers.config.perform_caching`
+        # when first called if it wasn't first set.
+        #
+        # This is to allow us to have a global config that can be set any time before
+        # `perform_caching` is called.
+        #
+        # One downside of this, is that subsequent setting of the global config will not change
+        # `ActiveModel::Serializer.perform_caching`, but that should be an edge case that
+        # is easily handled.
+        #
+        # If you, reading this, can figure out how to have ActiveModel::Serializer always delegate
+        # `perform_caching` and `perform_caching=` to the global config, that would make a nice PR.
+        # rubocop:disable Style/ClassVars
+        def perform_caching
+          return @@perform_caching if defined?(@@perform_caching)
+          self.perform_caching = ActiveModelSerializers.config.perform_caching
+        end
+        alias perform_caching? perform_caching
+
+        # @param [true, false]
+        def perform_caching=(perform_caching)
+          @@perform_caching = perform_caching
+        end
+        # rubocop:enable Style/ClassVars
+
+        # The canonical method for getting the cache store for the serializer.
+        #
+        # @return [nil] when _cache is not set (i.e. when `cache` has not been called)
+        # @return [._cache] when _cache is not the NullStore
+        # @return [ActiveModelSerializers.config.cache_store] when _cache is the NullStore.
+        #   This is so we can use `cache` being called to mean the serializer should be cached
+        #   even if ActiveModelSerializers.config.cache_store has not yet been set.
+        #   That means that when _cache is the NullStore and ActiveModelSerializers.config.cache_store
+        #   is configured, `cache_store` becomes `ActiveModelSerializers.config.cache_store`.
+        # @return [nil] when _cache is the NullStore and ActiveModelSerializers.config.cache_store is nil.
+        def cache_store
+          return nil if _cache.nil?
+          return _cache if _cache.class != ActiveSupport::Cache::NullStore
+          if ActiveModelSerializers.config.cache_store
+            self._cache = ActiveModelSerializers.config.cache_store
+          else
+            nil
+          end
+        end
+
+        def cache_enabled?
+          perform_caching? && cache_store && !_cache_only && !_cache_except
+        end
+
+        def fragment_cache_enabled?
+          perform_caching? && cache_store &&
+            (_cache_only && !_cache_except || !_cache_only && _cache_except)
         end
       end
     end
