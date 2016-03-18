@@ -11,17 +11,18 @@ rvm:
 
 sudo: false
 
-install:
-  - bundle install --retry=3
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+cache:
+  directories:
+    - vendor/bundle
 
 env:
-  - "RAILS_VERSION=3.2.17"
-  - "RAILS_VERSION=4.0.3"
-  - "RAILS_VERSION=4.1.0"
+  - "RAILS_VERSION=4.0"
+  - "RAILS_VERSION=4.1"
+  - "RAILS_VERSION=4.2"
   - "RAILS_VERSION=master"
 
 matrix:
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
-
