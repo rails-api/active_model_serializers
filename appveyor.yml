@@ -19,10 +19,9 @@ install:
   - gem --version
   - gem install bundler
   - bundler --version
-  - bundle platform
   - bundle install --path=vendor/bundle --retry=3 --jobs=3
 
 test_script:
-  - bundle exec rake ci
+  - bundle exec rake
 
 build: off
