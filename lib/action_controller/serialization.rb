@@ -7,9 +7,6 @@ module ActionController
 
     include ActionController::Renderers
 
-    # Deprecated
-    ADAPTER_OPTION_KEYS = ActiveModel::SerializableResource::ADAPTER_OPTION_KEYS
-
     module ClassMethods
       def serialization_scope(scope)
         self._serialization_scope = scope
@@ -32,7 +29,7 @@ module ActionController
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
         options[:adapter] = false
       end
-      serializable_resource = ActiveModel::SerializableResource.new(resource, options)
+      serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options)
       serializable_resource.serialization_scope ||= serialization_scope
       serializable_resource.serialization_scope_name = _serialization_scope
       # For compatibility with the JSON renderer: `json.to_json(options) if json.is_a?(String)`.

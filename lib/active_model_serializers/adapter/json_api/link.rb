@@ -46,7 +46,6 @@ module ActiveModelSerializers
           # actionpack-4.0.13/lib/action_dispatch/routing/route_set.rb:417: warning: instance variable @_routes not initialized
           @object = serializer.object
           @scope = serializer.scope
-
           # Use the return value of the block unless it is nil.
           if value.respond_to?(:call)
             @value = instance_eval(&value)

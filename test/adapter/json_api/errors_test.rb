@@ -18,7 +18,7 @@ module ActiveModelSerializers
 
           @resource.errors.add(:name, 'cannot be nil')
 
-          serializable_resource = ActiveModel::SerializableResource.new(@resource, options)
+          serializable_resource = ActiveModelSerializers::SerializableResource.new(@resource, options)
           assert_equal serializable_resource.serializer_instance.attributes, {}
           assert_equal serializable_resource.serializer_instance.object, @resource
 
@@ -44,7 +44,7 @@ module ActiveModelSerializers
           @resource.errors.add(:name, 'must be longer')
           @resource.errors.add(:id, 'must be a uuid')
 
-          serializable_resource = ActiveModel::SerializableResource.new(@resource, options)
+          serializable_resource = ActiveModelSerializers::SerializableResource.new(@resource, options)
           assert_equal serializable_resource.serializer_instance.attributes, {}
           assert_equal serializable_resource.serializer_instance.object, @resource
 

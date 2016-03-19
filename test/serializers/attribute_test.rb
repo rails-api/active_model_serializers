@@ -76,7 +76,7 @@ module ActiveModel
           attribute :id
         end
 
-        hash = ActiveModel::SerializableResource.new(@blog, adapter: :json, serializer: serializer).serializable_hash
+        hash = ActiveModelSerializers::SerializableResource.new(@blog, adapter: :json, serializer: serializer).serializable_hash
 
         assert_equal('custom', hash[:blog][:id])
       end

@@ -56,11 +56,11 @@ API for a plain-old Ruby object (PORO).
 
 ## SerializableResource options
 
-The `options` hash passed to `render` or `ActiveModel::SerializableResource.new(resource, options)`
+The `options` hash passed to `render` or `ActiveModelSerializers::SerializableResource.new(resource, options)`
 are partitioned into `serializer_opts` and `adapter_opts`. `adapter_opts` are passed to new Adapters;
 `serializer_opts` are passed to new Serializers.
 
-The `adapter_opts` are specified in [ActiveModel::SerializableResource::ADAPTER_OPTIONS](../../lib/active_model/serializable_resource.rb#L4).
+The `adapter_opts` are specified in [ActiveModelSerializers::SerializableResource::ADAPTER_OPTIONS](../../lib/active_model_serializers/serializable_resource.rb#L5).
 The `serializer_opts` are the remaining options.
 
 (In Rails, the `options` are also passed to the `as_json(options)` or `to_json(options)`

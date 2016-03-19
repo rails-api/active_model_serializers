@@ -32,7 +32,7 @@ module ActiveModelSerializers
 
         def load_adapter(paginated_collection, options = {})
           options = options.merge(adapter: :json_api)
-          ActiveModel::SerializableResource.new(paginated_collection, options)
+          ActiveModelSerializers::SerializableResource.new(paginated_collection, options)
         end
 
         def using_kaminari(page = 2)

@@ -23,7 +23,7 @@ serializer. For example, the `Attributes` example represents each serializer as 
 unmodified attributes.  The `JsonApi` adapter represents the serializer as a [JSON
 API](http://jsonapi.org/) document.
 
-The **`ActiveModel::SerializableResource`** acts to coordinate the serializer(s) and adapter
+The **`ActiveModelSerializers::SerializableResource`** acts to coordinate the serializer(s) and adapter
 to an object that responds to `to_json`, and `as_json`.  It is used in the controller to
 encapsulate the serialization resource when rendered. However, it can also be used on its own
 to serialize a resource outside of a controller, as well.
@@ -62,16 +62,16 @@ High-level overview:
   - `:each_serializer` specifies the serializer for each resource in the collection.
 - For a single resource, the `:serializer` option is the resource serializer.
 - Options are partitioned in serializer options and adapter options.  Keys for adapter options are specified by
-    [`ADAPTER_OPTION_KEYS`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializable_resource.rb#L4).
+    [`ADAPTER_OPTION_KEYS`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/serializable_resource.rb#L5).
     The remaining options are serializer options.
 
 Details:
 
 1. **ActionController::Serialization**
-  1. `serializable_resource = ActiveModel::SerializableResource.new(resource, options)`
+  1. `serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options)`
     1. `options` are partitioned into `adapter_opts` and everything else (`serializer_opts`).
-      The `adapter_opts`  keys are defined in `ActiveModel::SerializableResource::ADAPTER_OPTION_KEYS`.
-1. **ActiveModel::SerializableResource**
+      The `adapter_opts`  keys are defined in `ActiveModelSerializers::SerializableResource::ADAPTER_OPTION_KEYS`.
+1. **ActiveModelSerializers::SerializableResource**
   1. `if serializable_resource.serializer?` (there is a serializer for the resource, and an adapter is used.)
     - Where `serializer?` is `use_adapter? && !!(serializer)`
       - Where `use_adapter?`: 'True when no explicit adapter given, or explicit value is truthy (non-nil);
@@ -122,5 +122,5 @@ render json: MyModel.new(level: 'awesome'), adapter: :json
 would be serialized the same as
 
 ```ruby
-ActiveModel::SerializableResource.new(MyModel.new(level: 'awesome'), adapter: :json).as_json
+ActiveModelSerializers::SerializableResource.new(MyModel.new(level: 'awesome'), adapter: :json).as_json
 ```

@@ -32,7 +32,7 @@ module ActiveModelSerializers
     private
 
     def serialize(object, serializer_class)
-      ActiveModel::SerializableResource.new(
+      SerializableResource.new(
         object,
         serializer: serializer_class,
         adapter: adapter.class

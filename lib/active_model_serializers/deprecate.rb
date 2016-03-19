@@ -44,6 +44,12 @@ module ActiveModelSerializers
       end
     end
 
+    def delegate_and_deprecate(method, delegee)
+      delegate method, to: delegee
+      deprecate method, "#{delegee.name}."
+    end
+
     module_function :deprecate
+    module_function :delegate_and_deprecate
   end
 end

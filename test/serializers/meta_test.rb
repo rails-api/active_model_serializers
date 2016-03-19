@@ -11,7 +11,7 @@ module ActiveModel
       end
 
       def test_meta_is_present_with_root
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
           serializer: AlternateBlogSerializer,
@@ -29,7 +29,7 @@ module ActiveModel
       end
 
       def test_meta_is_not_included_when_blank
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
           serializer: AlternateBlogSerializer,
@@ -45,7 +45,7 @@ module ActiveModel
       end
 
       def test_meta_is_not_included_when_empty_string
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
           serializer: AlternateBlogSerializer,
@@ -61,7 +61,7 @@ module ActiveModel
       end
 
       def test_meta_is_not_included_when_root_is_missing
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :attributes,
           serializer: AlternateBlogSerializer,
@@ -74,7 +74,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
           serializer: AlternateBlogSerializer,
@@ -93,7 +93,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_used_with_json_api
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
           serializer: AlternateBlogSerializer,
@@ -111,7 +111,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_not_present_when_blank_object_with_json_api
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
           serializer: AlternateBlogSerializer,
@@ -129,7 +129,7 @@ module ActiveModel
       end
 
       def test_meta_key_is_not_present_when_empty_string_with_json_api
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
           serializer: AlternateBlogSerializer,
@@ -147,7 +147,7 @@ module ActiveModel
       end
 
       def test_meta_is_not_present_on_arrays_without_root
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           [@blog],
           adapter: :attributes,
           meta: { total: 10 }).as_json
@@ -168,7 +168,7 @@ module ActiveModel
       end
 
       def test_meta_is_present_on_arrays_with_root
-        actual = ActiveModel::SerializableResource.new(
+        actual = ActiveModelSerializers::SerializableResource.new(
           [@blog],
           adapter: :json,
           meta: { total: 10 },
