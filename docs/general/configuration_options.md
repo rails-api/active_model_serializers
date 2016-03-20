@@ -63,6 +63,21 @@ Possible values:
 - `:singular`
 - `:plural` (default)
 
+##### jsonapi_namespace_separator
+
+Sets separator string for namespaced models to render `type` attribute. Default value is `--`.
+
+##### jsonapi_type_transform
+
+Provides transform for `type` attribute. Class name `NicePost` gets converted into `nice_post`, `nice-post`, `NicePost` or `nicePost` depending on selected setting.
+
+Possible values:
+
+- `:underscore` (default)
+- `:dashed`
+- `:camel`
+- `:snake`
+
 ##### jsonapi_include_toplevel_object
 
 Include a [top level jsonapi member](http://jsonapi.org/format/#document-jsonapi-object)
