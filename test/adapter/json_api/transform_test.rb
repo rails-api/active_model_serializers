@@ -255,38 +255,40 @@ module ActiveModelSerializers
         end
 
         def test_success_document_transform_camel
-          mock_request(:camel)
-          serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
-          result = adapter.serializable_hash
-          assert_equal({
-                         Data: {
-                           Id: '1337',
-                           Type: 'Posts',
-                           Attributes: {
-                             Title: 'Title 1',
-                             Body: 'Body 1',
-                             PublishAt: @publish_at
-                           },
-                           Relationships: {
-                             Author: {
-                               Data: { Id: '1', Type: 'Authors' }
+          with_type_transform :camel do
+            mock_request(:camel)
+            serializer = PostSerializer.new(@post)
+            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+            result = adapter.serializable_hash
+            assert_equal({
+                           Data: {
+                             Id: '1337',
+                             Type: 'Posts',
+                             Attributes: {
+                               Title: 'Title 1',
+                               Body: 'Body 1',
+                               PublishAt: @publish_at
                              },
-                             Comments: {
-                               Data: [
-                                 { Id: '7', Type: 'Comments' },
-                                 { Id: '12', Type: 'Comments' }
-                               ]
-                             }
-                           },
-                           Links: {
-                             Self: 'http://example.com/posts/1337',
-                             PostAuthors: 'http://example.com/posts/1337/authors',
-                             SubscriberComments: 'http://example.com/posts/1337/comments'
-                           },
-                           Meta: { Rating: 5, FavoriteCount: 10 }
-                         }
-                       }, result)
+                             Relationships: {
+                               Author: {
+                                 Data: { Id: '1', Type: 'Authors' }
+                               },
+                               Comments: {
+                                 Data: [
+                                   { Id: '7', Type: 'Comments' },
+                                   { Id: '12', Type: 'Comments' }
+                                 ]
+                               }
+                             },
+                             Links: {
+                               Self: 'http://example.com/posts/1337',
+                               PostAuthors: 'http://example.com/posts/1337/authors',
+                               SubscriberComments: 'http://example.com/posts/1337/comments'
+                             },
+                             Meta: { Rating: 5, FavoriteCount: 10 }
+                           }
+                         }, result)
+          end
         end
 
         def test_success_document_transform_camel_lower

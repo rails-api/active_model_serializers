@@ -27,62 +27,96 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
+        def type_for_defined_type
+          assert_type(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
+        end
+
+        def type_for_ignores_key_transform
+          # with_key_transform :camel_lower do
+            # with_type_transform :underscore do
+              assert_type(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
+            # end
+          # end
+        end
+
         def test_defined_type
-          test_type(WithDefinedTypeSerializer, 'with-defined-type')
+          with_key_transform :underscore do
+            assert_identifier(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
+          end
+        end
+
+        def test_defined_type_with_differing_transform_from_regular_key_transform
+          # with_type_transform :underscore do
+            assert_identifier(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
+          # end
         end
 
         def test_singular_type
-          test_type_inflection(AuthorSerializer, 'author', :singular)
+          assert_with_confing(AuthorSerializer.new(@model), type: 'author', inflection: :singular)
         end
 
         def test_plural_type
-          test_type_inflection(AuthorSerializer, 'authors', :plural)
+          assert_with_confing(AuthorSerializer.new(@model), type: 'authors', inflection: :plural)
+        end
+
+        def test_type_with_namespace
+          # with_namespace_seperator '--' do
+            with_type_transform :underscore do
+              spam = Spam::UnrelatedLink.new
+              assert_identifier(Spam::UnrelatedLinkSerializer.new(spam), type: 'spam--unrelated_links')
+            end
+          # end
+        end
+
+        def test_type_with_custom_namespace
+          # with_key_transform :underscore do
+            spam = Spam::UnrelatedLink.new
+            assert_with_confing(Spam::UnrelatedLinkSerializer.new(spam), type: 'spam/unrelated_links', namespace_separator: '/')
+          # end
         end
 
         def test_id_defined_on_object
-          test_id(AuthorSerializer, @model.id.to_s)
+          assert_identifier(AuthorSerializer.new(@model), id: @model.id.to_s)
         end
 
         def test_id_defined_on_serializer
-          test_id(WithDefinedIdSerializer, 'special_id')
+          assert_identifier(WithDefinedIdSerializer.new(@model), id: 'special_id')
         end
 
         def test_id_defined_on_fragmented
-          test_id(FragmentedSerializer, 'special_id')
+          assert_identifier(WithDefinedIdSerializer.new(@model), id: 'special_id')
         end
 
         private
 
-        def test_type_inflection(serializer_class, expected_type, inflection)
-          original_inflection = ActiveModelSerializers.config.jsonapi_resource_type
-          ActiveModelSerializers.config.jsonapi_resource_type = inflection
-          test_type(serializer_class, expected_type)
-        ensure
-          ActiveModelSerializers.config.jsonapi_resource_type = original_inflection
-        end
-
-        def test_type(serializer_class, expected_type)
-          serializer = serializer_class.new(@model)
-          resource_identifier = ResourceIdentifier.new(serializer, nil)
-          expected = {
-            id: @model.id.to_s,
-            type: expected_type
-          }
-
-          assert_equal(expected, resource_identifier.as_json)
-        end
-
-        def test_id(serializer_class, id)
-          serializer = serializer_class.new(@model)
-          resource_identifier = ResourceIdentifier.new(serializer, nil)
+        def assert_with_confing(serializer, opts = {})
           inflection = ActiveModelSerializers.config.jsonapi_resource_type
-          type = @model.class.model_name.send(inflection)
+          namespace_separator = ActiveModelSerializers.config.jsonapi_namespace_separator
+          ActiveModelSerializers.config.jsonapi_resource_type = opts.fetch(:inflection, inflection)
+          ActiveModelSerializers.config.jsonapi_namespace_separator = opts.fetch(:namespace_separator, namespace_separator)
+          assert_identifier(serializer, opts)
+        ensure
+          ActiveModelSerializers.config.jsonapi_resource_type = inflection
+        end
+
+        def assert_type(serializer, opts = {})
+          identifier = ResourceIdentifier.new(serializer, opts)
+
+          expected = opts[:type]
+          actual = identifier.send(:type_for, serializer)
+          assert_equal(expected, actual)
+        end
+
+        def assert_identifier(serializer, opts = {})
+          identifier = ResourceIdentifier.new(serializer, opts)
+
           expected = {
-            id: id,
-            type: type
+            id: opts.fetch(:id, identifier.as_json[:id]),
+            type: opts.fetch(:type, identifier.as_json[:type])
           }
 
-          assert_equal(expected, resource_identifier.as_json)
+          actual = identifier.as_json
+          assert_equal(expected, actual)
         end
       end
     end

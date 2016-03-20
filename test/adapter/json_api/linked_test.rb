@@ -207,20 +207,26 @@ module ActiveModelSerializers
         end
 
         def test_underscore_model_namespace_for_linked_resource_type
-          spammy_post = Post.new(id: 123)
-          spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
-          serializer = SpammyPostSerializer.new(spammy_post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          relationships = adapter.serializable_hash[:data][:relationships]
-          expected = {
-            related: {
-              data: [{
-                type: 'spam-unrelated-links',
-                id: '456'
-              }]
-            }
-          }
-          assert_equal expected, relationships
+          with_namespace_seperator '--' do
+            with_type_transform :underscore do
+              with_key_transform :underscore do
+                spammy_post = Post.new(id: 123)
+                spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
+                serializer = SpammyPostSerializer.new(spammy_post)
+                adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
+                relationships = adapter.serializable_hash[:data][:relationships]
+                expected = {
+                  related: {
+                    data: [{
+                      id: '456',
+                      type: 'spam--unrelated_links'
+                    }]
+                  }
+                }
+                assert_equal expected, relationships
+              end
+            end
+          end
         end
 
         def test_multiple_references_to_same_resource
@@ -367,12 +373,13 @@ module ActiveModelSerializers
             include: '*'
           ).serializable_hash
           expected = [
-            type: 'nested-posts', id: '2',
+            id: '2',
+            type: 'nested-posts',
             relationships: {
               :"nested-posts" => {
                 data: [
-                  { type: 'nested-posts', id: '1' },
-                  { type: 'nested-posts', id: '2' }
+                  { id: '1', type: 'nested-posts' },
+                  { id: '2', type: 'nested-posts' }
                 ]
               }
             }

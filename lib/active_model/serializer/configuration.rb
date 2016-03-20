@@ -21,13 +21,16 @@ module ActiveModel
 
         config.default_includes = '*'
         config.adapter = :attributes
+        config.key_transform = nil
         config.jsonapi_resource_type = :plural
+        config.jsonapi_namespace_separator = '--'.freeze
+        # http://jsonapi.org/recommendations/#naming
+        config.jsonapi_type_transform = :dashed
         config.jsonapi_version = '1.0'
         config.jsonapi_toplevel_meta = {}
         # Make JSON API top-level jsonapi member opt-in
         # ref: http://jsonapi.org/format/#document-top-level
         config.jsonapi_include_toplevel_object = false
-        config.key_transform = nil
 
         config.schema_path = 'test/support/schemas'
       end
