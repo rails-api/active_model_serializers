@@ -3,7 +3,9 @@ module ActiveModelSerializers
     class Attributes < Base
       def initialize(serializer, options = {})
         super
-        @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include] || '*')
+        @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(
+          options[:include] || ActiveModel::Serializer.config.attributes_adapter_include_default
+        )
         @cached_attributes = options[:cache_attributes] || {}
       end
 
@@ -60,8 +62,11 @@ module ActiveModelSerializers
 
       def resource_relationships(options)
         relationships = {}
+
         serializer.associations(@include_tree).each do |association|
-          relationships[association.key] = relationship_value_for(association, options)
+          relationships[association.key] = relationship_value_for(
+            association, options
+          )
         end
 
         relationships
@@ -71,8 +76,21 @@ module ActiveModelSerializers
         return association.options[:virtual_value] if association.options[:virtual_value]
         return unless association.serializer && association.serializer.object
 
+        if options[:fields].is_a? Array
+          fields = options[:fields].select do |k| #I would prefer using {...} here but RuboCop fails :/
+            k.is_a? Hash
+          end.try(:first).try(:[], association.name)
+        end
+
         opts = instance_options.merge(include: @include_tree[association.key])
-        Attributes.new(association.serializer, opts).serializable_hash(options)
+        options = options.merge(fields: fields)
+
+        Attributes.new(
+          association.serializer,
+          opts.merge(association.options)
+        ).serializable_hash(
+          options.merge(association.options)
+        )
       end
 
       # no-op: Attributes adapter does not include meta data, because it does not support root.
