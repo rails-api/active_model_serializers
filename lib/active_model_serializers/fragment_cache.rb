@@ -15,7 +15,7 @@ module ActiveModelSerializers
       object = serializer.object
 
       # It will split the serializer into two, one that will be cached and one that will not
-      serializers = fragment_serializer(object.class.name)
+      serializers = fragment_serializer
 
       # Get serializable hash from both
       cached_hash     = serialize(object, serializers[:cached])
@@ -79,10 +79,12 @@ module ActiveModelSerializers
     #     User_AdminCachedSerializer
     #     User_AdminNonCachedSerializer
     #
-    def fragment_serializer(name)
-      klass      = serializer.class
-      cached     = "#{to_valid_const_name(name)}CachedSerializer"
-      non_cached = "#{to_valid_const_name(name)}NonCachedSerializer"
+    def fragment_serializer
+      klass                 = serializer.class
+      serializer_class_name = to_valid_const_name(klass.name)
+
+      cached     = "Cached#{serializer_class_name}"
+      non_cached = "NonCached#{serializer_class_name}"
 
       cached_serializer     = get_or_create_serializer(cached)
       non_cached_serializer = get_or_create_serializer(non_cached)
