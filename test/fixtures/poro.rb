@@ -183,12 +183,6 @@ PaginatedSerializer = Class.new(ActiveModel::Serializer::CollectionSerializer) d
   end
 end
 
-MessagesSerializer = Class.new(ActiveModel::Serializer) do
-  def json_key
-    'messages'
-  end
-end
-
 AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
   attribute :id
   attribute :name, key: :title

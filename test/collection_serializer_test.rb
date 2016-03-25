@@ -3,6 +3,10 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class CollectionSerializerTest < ActiveSupport::TestCase
+      MessagesSerializer = Class.new(ActiveModel::Serializer) do
+        type 'messages'
+      end
+
       def setup
         @comment = Comment.new
         @post = Post.new
