@@ -1,5 +1,3 @@
-require 'active_support/core_ext/module/delegation'
-
 module ActiveModelSerializers
   module Adapter
     class JsonApi
@@ -41,8 +39,7 @@ module ActiveModelSerializers
       #     meta: meta,
       #   }.reject! {|_,v| v.nil? }
       class Link
-        include SerializationContext.url_helpers
-        delegate :default_url_options, to: SerializationContext
+        include SerializationContext::UrlHelpers
 
         def initialize(serializer, value)
           @object = serializer.object
@@ -70,8 +67,8 @@ module ActiveModelSerializers
           return @value if @value
 
           hash = {}
-          hash[:href] = @href if @href
-          hash[:meta] = @meta if @meta
+          hash[:href] = @href if defined?(@href)
+          hash[:meta] = @meta if defined?(@meta)
 
           hash
         end
