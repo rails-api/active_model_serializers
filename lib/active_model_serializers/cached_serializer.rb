@@ -18,11 +18,11 @@ module ActiveModelSerializers
     end
 
     def cached?
-      @klass._cache && !@klass._cache_only && !@klass._cache_except
+      @klass.cache_enabled?
     end
 
     def fragment_cached?
-      @klass._cache && (@klass._cache_only && !@klass._cache_except || !@klass._cache_only && @klass._cache_except)
+      @klass.fragment_cache_enabled?
     end
 
     def cache_key

@@ -24,6 +24,8 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1478](https://github.com/rails-api/active_model_serializers/pull/1478) Cache store will now be correctly set when serializers are
+  loaded *before* Rails initializes. (@bf4)
 - [#1570](https://github.com/rails-api/active_model_serializers/pull/1570) Fixed pagination issue with last page size. (@bmorrall)
 - [#1516](https://github.com/rails-api/active_model_serializers/pull/1516) No longer return a nil href when only
   adding meta to a relationship link. (@groyoh)
