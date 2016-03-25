@@ -30,10 +30,18 @@ module ActiveModel
       serializer_opts[:scope_name] = scope_name
     end
 
+    # NOTE: if no adapter is available, returns the resource itself. (i.e. adapter is a no-op)
     def adapter
-      @adapter ||= ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
+      @adapter ||= find_adapter
     end
     alias adapter_instance adapter
+
+    def find_adapter
+      return resource unless serializer?
+      ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
+    rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
+      resource
+    end
 
     def serializer_instance
       @serializer_instance ||= serializer.new(resource, serializer_opts)
