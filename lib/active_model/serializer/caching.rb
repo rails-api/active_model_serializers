@@ -99,34 +99,18 @@ module ActiveModel
           self._cache_options = options.empty? ? nil : options
         end
 
+        # Value is from ActiveModelSerializers.config.perform_caching. Is used to
+        # globally enable or disable all serializer caching, just like
+        # Rails.configuration.action_controller.perform_caching, which is its
+        # default value in a Rails application.
         # @return [true, false]
-        # We're using class variables here because it is a class attribute
-        # that is globally true for the `ActiveModel::Serializer` class; i.e. neither per subclass nor inherited.
-        #
-        # We're not using a class_attribute because of the special behavior in
-        # `perform_caching` setting itself to `ActiveModelSerializers.config.perform_caching`
-        # when first called if it wasn't first set.
-        #
-        # This is to allow us to have a global config that can be set any time before
-        # `perform_caching` is called.
-        #
-        # One downside of this, is that subsequent setting of the global config will not change
-        # `ActiveModel::Serializer.perform_caching`, but that should be an edge case that
-        # is easily handled.
-        #
-        # If you, reading this, can figure out how to have ActiveModel::Serializer always delegate
-        # `perform_caching` and `perform_caching=` to the global config, that would make a nice PR.
+        # Memoizes value of config first time it is called with a non-nil value.
         # rubocop:disable Style/ClassVars
         def perform_caching
-          return @@perform_caching if defined?(@@perform_caching)
-          self.perform_caching = ActiveModelSerializers.config.perform_caching
+          return @@perform_caching if defined?(@@perform_caching) && !@@perform_caching.nil?
+          @@perform_caching = ActiveModelSerializers.config.perform_caching
         end
         alias perform_caching? perform_caching
-
-        # @param [true, false]
-        def perform_caching=(perform_caching)
-          @@perform_caching = perform_caching
-        end
         # rubocop:enable Style/ClassVars
 
         # The canonical method for getting the cache store for the serializer.
