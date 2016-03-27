@@ -3,6 +3,10 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class CollectionSerializerTest < ActiveSupport::TestCase
+      MessagesSerializer = Class.new(ActiveModel::Serializer) do
+        type 'messages'
+      end
+
       def setup
         @comment = Comment.new
         @post = Post.new
@@ -82,6 +86,12 @@ module ActiveModel
       def test_json_key_with_resource_without_name_and_no_serializers
         serializer = collection_serializer.new([])
         assert_nil serializer.json_key
+      end
+
+      def test_json_key_with_empty_resources_with_serializer
+        resource = []
+        serializer = collection_serializer.new(resource, serializer: MessagesSerializer)
+        assert_equal 'messages', serializer.json_key
       end
 
       def test_json_key_with_root

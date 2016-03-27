@@ -182,7 +182,7 @@ module ActiveModel
 
     # Used by adapter as resource root.
     def json_key
-      root || object.class.model_name.to_s.underscore
+      root || _type || object.class.model_name.to_s.underscore
     end
 
     def read_attribute_for_serialization(attr)

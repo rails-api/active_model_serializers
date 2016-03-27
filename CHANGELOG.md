@@ -3,6 +3,8 @@
 Breaking changes:
 
 Features:
+- [#1618](https://github.com/rails-api/active_model_serializers/issues/1618) Get collection root key for
+  empty collection from explicit serializer option, when possible. (@bf4)
 - [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Provide key translation. (@remear)
 - [#1494](https://github.com/rails-api/active_model_serializers/pull/1494) Make serializers serializalbe
   (using the Attributes adapter by default). (@bf4)
