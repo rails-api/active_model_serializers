@@ -1,3 +1,4 @@
+# coding: utf-8
 # {http://jsonapi.org/format/ JSON API specification}
 # rubocop:disable Style/AsciiComments
 # TODO: implement!
@@ -35,6 +36,7 @@ module ActiveModelSerializers
         super
         @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include])
         @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
+        @serialization_context = options[:serialization_context]
       end
 
       def default_key_transform
@@ -126,7 +128,7 @@ module ActiveModelSerializers
           hash[:links].update(instance_options[:links])
         end
 
-        if is_collection && serializer.paginated?
+        if paginate?
           hash[:links] ||= {}
           hash[:links].update(pagination_links_for(serializer, options))
         end
@@ -185,7 +187,7 @@ module ActiveModelSerializers
 
       protected
 
-      attr_reader :fieldset
+      attr_reader :fieldset, :serialization_context
 
       private
 
@@ -232,6 +234,12 @@ module ActiveModelSerializers
         serializers.each { |serializer| process_relationships(serializer, @include_tree) }
 
         [@primary, @included]
+      end
+
+      def paginate?
+        !serialization_context.nil? &&
+          serializer.respond_to?(:paginated?) &&
+          serializer.paginated?
       end
 
       def process_resource(serializer, primary)
@@ -499,7 +507,7 @@ module ActiveModelSerializers
       # prs:
       #   https://github.com/rails-api/active_model_serializers/pull/1041
       def pagination_links_for(serializer, options)
-        PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+        PaginationLinks.new(serializer.object, serialization_context).serializable_hash(options)
       end
 
       # {http://jsonapi.org/format/#document-meta Docment Meta}
