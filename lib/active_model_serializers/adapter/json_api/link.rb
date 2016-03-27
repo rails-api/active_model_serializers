@@ -42,6 +42,8 @@ module ActiveModelSerializers
         include SerializationContext::UrlHelpers
 
         def initialize(serializer, value)
+          @_routes ||= nil # handles warning
+          # actionpack-4.0.13/lib/action_dispatch/routing/route_set.rb:417: warning: instance variable @_routes not initialized
           @object = serializer.object
           @scope = serializer.scope
 
