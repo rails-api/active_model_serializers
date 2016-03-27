@@ -36,8 +36,6 @@ else
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest.rb#L45-L59
 end
-require 'minitest/reporters'
-Minitest::Reporters.use!
 
 require 'support/rails_app'
 
