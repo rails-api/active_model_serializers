@@ -1,3 +1,4 @@
+# coding: utf-8
 # {http://jsonapi.org/format/ JSON API specification}
 # rubocop:disable Style/AsciiComments
 # TODO: implement!
@@ -43,14 +44,13 @@ module ActiveModelSerializers
 
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
       # {http://jsonapi.org/format/#document-top-level data and errors MUST NOT coexist in the same document.}
-      def serializable_hash(options = nil)
-        options ||= {}
+      def serializable_hash(_options = nil)
         document = if serializer.success?
-                     success_document(options)
+                     success_document
                    else
                      failure_document
                    end
-        transform_key_casing!(document, options[:serialization_context])
+        transform_key_casing!(document, instance_options[:serialization_context])
       end
 
       # {http://jsonapi.org/format/#document-top-level Primary data}
@@ -68,7 +68,7 @@ module ActiveModelSerializers
       #    links: toplevel_links,
       #    jsonapi: toplevel_jsonapi
       #  }.reject! {|_,v| v.nil? }
-      def success_document(options)
+      def success_document
         is_collection = serializer.respond_to?(:each)
         serializers = is_collection ? serializer : [serializer]
         primary_data, included = resource_objects_for(serializers)
@@ -128,7 +128,7 @@ module ActiveModelSerializers
 
         if is_collection && serializer.paginated?
           hash[:links] ||= {}
-          hash[:links].update(pagination_links_for(serializer, options))
+          hash[:links].update(pagination_links_for(serializer))
         end
 
         hash
@@ -498,8 +498,8 @@ module ActiveModelSerializers
       #   end
       # prs:
       #   https://github.com/rails-api/active_model_serializers/pull/1041
-      def pagination_links_for(serializer, options)
-        PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+      def pagination_links_for(serializer)
+        PaginationLinks.new(serializer.object, instance_options[:serialization_context]).as_json(instance_options)
       end
 
       # {http://jsonapi.org/format/#document-meta Docment Meta}

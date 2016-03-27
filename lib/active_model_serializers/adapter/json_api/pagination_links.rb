@@ -11,7 +11,7 @@ module ActiveModelSerializers
           @context = context
         end
 
-        def serializable_hash(options = {})
+        def as_json(options = {})
           per_page = collection.try(:per_page) || collection.try(:limit_value) || collection.size
           pages_from.each_with_object({}) do |(key, value), hash|
             params = query_parameters.merge(page: { number: value, size: per_page }).to_query

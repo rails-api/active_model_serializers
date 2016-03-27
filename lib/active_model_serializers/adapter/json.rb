@@ -4,7 +4,7 @@ module ActiveModelSerializers
       def serializable_hash(options = nil)
         options ||= {}
         serialized_hash = { root => Attributes.new(serializer, instance_options).serializable_hash(options) }
-        transform_key_casing!(serialized_hash, options[:serialization_context])
+        transform_key_casing!(serialized_hash, instance_options[:serialization_context])
       end
     end
   end
