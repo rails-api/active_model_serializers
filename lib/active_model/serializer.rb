@@ -10,7 +10,7 @@ require 'active_model/serializer/caching'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
-require 'active_model/serializer/links'
+require 'active_model_serializers/resource/links'
 require 'active_model/serializer/meta'
 require 'active_model/serializer/type'
 
@@ -25,7 +25,7 @@ module ActiveModel
     include Associations
     include Attributes
     include Caching
-    include Links
+    include ActiveModelSerializers::Resource::Links
     include Meta
     include Type
 

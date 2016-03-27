@@ -16,6 +16,7 @@ module ActiveModelSerializers
   autoload :Adapter
   autoload :JsonPointer
   autoload :Deprecate
+  autoload :Resource
 
   class << self; attr_accessor :logger; end
   self.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
