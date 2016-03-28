@@ -30,10 +30,14 @@ module ActiveModel
         module ResourceNamespace
           Post    = Class.new(::Model)
           Comment = Class.new(::Model)
+          Author  = Class.new(::Model)
 
           class PostSerializer < ActiveModel::Serializer
             class CommentSerializer < ActiveModel::Serializer
             end
+          end
+
+          class AuthorSerializer < ActiveModel::Serializer
           end
         end
 
@@ -127,6 +131,12 @@ module ActiveModel
             ResourceNamespace::PostSerializer.serializer_for(comment)
           end
           assert_equal nil, serializer
+        end
+
+        def test_serializer_for_namespace_nested_resource
+          author = ResourceNamespace::Author.new
+          serializer = ResourceNamespace::PostSerializer.serializer_for(author)
+          assert_equal(ResourceNamespace::AuthorSerializer, serializer)
         end
       end
     end
