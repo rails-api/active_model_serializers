@@ -69,7 +69,7 @@ module ActiveModelSerializers
         #     #   title: 'Title 1',
         #     #   published_at: '2015-12-20',
         #     #   author_id: '2',
-        #     #   author_type: 'people'
+        #     #   author_type: 'People'
         #     # }
         #
         def parse!(document, options = {})
@@ -188,7 +188,7 @@ module ActiveModelSerializers
             end
 
           polymorphic = (options[:polymorphic] || []).include?(assoc_name.to_sym)
-          hash["#{prefix_key}_type".to_sym] = assoc_data['type'] if polymorphic
+          hash["#{prefix_key}_type".to_sym] = assoc_data['type'].singularize.capitalize if polymorphic
 
           hash
         end

@@ -26,8 +26,10 @@ ActiveRecord::Schema.define do
   end
   create_table :pictures, force: true do |t|
     t.string :title
-    t.string :imageable_type
-    t.string :imageable_id
+    t.references :imageable, polymorphic: true
+    t.timestamp null: false
+  end
+  create_table :images, force: true do |t|
     t.timestamp null: false
   end
 end

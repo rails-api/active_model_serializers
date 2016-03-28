@@ -78,6 +78,12 @@ end
 
 class Picture < ActiveRecord::Base
   belongs_to :imageable, polymorphic: true
+
+  validates :imageable, presence: true
+end
+
+class Image < ActiveRecord::Base
+  has_many :pictures, as: :imageable
 end
 
 module Spam; end

@@ -26,6 +26,10 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1615](https://github.com/rails-api/active_model_serializers/pull/1615) Allow plural polymorphic relationship types when validating
+  presence. (@dpdawson)
+- [#1615](https://github.com/rails-api/active_model_serializers/pull/1615) Capitalize polymorphic association types to prevent error
+  when ActiveRecord constantizes them when validating presence. (@dpdawson)
 - [#1478](https://github.com/rails-api/active_model_serializers/pull/1478) Cache store will now be correctly set when serializers are
   loaded *before* Rails initializes. (@bf4)
 - [#1570](https://github.com/rails-api/active_model_serializers/pull/1570) Fixed pagination issue with last page size. (@bmorrall)
