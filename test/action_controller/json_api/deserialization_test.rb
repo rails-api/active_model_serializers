@@ -20,7 +20,10 @@ module ActionController
               'id' => 'zorglub',
               'attributes' => {
                 'title' => 'Ember Hamster',
-                'src' => 'http://example.com/images/productivity.png'
+                'src' => 'http://example.com/images/productivity.png',
+                'image-width' => '200',
+                'imageHeight' => '200',
+                'ImageSize' => '1024'
               },
               'relationships' => {
                 'author' => {
@@ -34,6 +37,12 @@ module ActionController
                     { 'type' => 'comments', 'id' => '1' },
                     { 'type' => 'comments', 'id' => '2' }
                   ]
+                },
+                'related-images' => {
+                  'data' => [
+                    { 'type' => 'image', 'id' => '7' },
+                    { 'type' => 'image', 'id' => '8' }
+                  ]
                 }
               }
             }
@@ -46,9 +55,13 @@ module ActionController
             'id' => 'zorglub',
             'title' => 'Ember Hamster',
             'src' => 'http://example.com/images/productivity.png',
+            'image_width' => '200',
+            'image_height' => '200',
+            'image_size' => '1024',
             'author_id' => nil,
             'photographer_id' => '9',
-            'comment_ids' => %w(1 2)
+            'comment_ids' => %w(1 2),
+            'related_image_ids' => %w(7 8)
           }
 
           assert_equal(expected, response)

@@ -32,6 +32,16 @@ module ActiveModelSerializers
       hash.deep_transform_keys! { |key| key.to_s.dasherize.to_sym }
     end
 
+    # Transforms keys to underscore.
+    # This is the default case for deserialization in the JsonApi adapter.
+    #
+    # @example:
+    #    "some-key" => "some_key",
+    # @see {https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector/methods.rb#L89-L98 ActiveSupport::Inflector.underscore}
+    def underscore(hash)
+      hash.deep_transform_keys! { |key| key.to_s.underscore.to_sym }
+    end
+
     # Returns the hash unaltered
     def unaltered(hash)
       hash
