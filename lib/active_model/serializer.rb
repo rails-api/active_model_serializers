@@ -20,6 +20,7 @@ module ActiveModel
   class Serializer
     extend ActiveSupport::Autoload
     autoload :Adapter
+    autoload :Null
     include Configuration
     include Associations
     include Attributes

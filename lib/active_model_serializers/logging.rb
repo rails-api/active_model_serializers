@@ -81,7 +81,10 @@ module ActiveModelSerializers
     end
 
     def notify_render_payload
-      { serializer: serializer, adapter: adapter }
+      {
+        serializer: serializer || ActiveModel::Serializer::Null,
+        adapter: adapter || ActiveModelSerializers::Adapter::Null
+      }
     end
 
     private
