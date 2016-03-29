@@ -71,6 +71,13 @@ module ActiveModel
         }
         assert_equal serializable_resource.as_json(options), expected_response_document
       end
+
+      def test_serializable_resource_when_no_serializer_found
+        resource = ModelWithErrors.new
+        serializable_resource = ActiveModel::SerializableResource.new(resource)
+        # TODO define error to raise here
+        assert_raises { serializable_resource.as_json }
+      end
     end
   end
 end
