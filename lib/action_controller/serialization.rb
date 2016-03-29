@@ -33,20 +33,12 @@ module ActionController
         options[:adapter] = false
       end
       serializable_resource = ActiveModel::SerializableResource.new(resource, options)
-      if serializable_resource.serializer?
-        serializable_resource.serialization_scope ||= serialization_scope
-        serializable_resource.serialization_scope_name = _serialization_scope
-        begin
-          # Necessary to ensure we have an adapter for the serializable resource
-          # after it has been figured.
-          # TODO: This logic should be less opaque and probably moved into the SerializableResource.
-          serializable_resource.tap(&:adapter)
-        rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
-          resource
-        end
-      else
-        resource
-      end
+      serializable_resource.serialization_scope ||= serialization_scope
+      serializable_resource.serialization_scope_name = _serialization_scope
+      # For compatibility with the JSON renderer: `json.to_json(options) if json.is_a?(String)`.
+      # Otherwise, since `serializable_resource` is not a string, the renderer would call
+      # `to_json` on a String and given odd results, such as `"".to_json #=> '""'`
+      serializable_resource.adapter.is_a?(String) ? serializable_resource.adapter : serializable_resource
     end
 
     # Deprecated

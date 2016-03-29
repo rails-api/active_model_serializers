@@ -3,6 +3,7 @@
 Breaking changes:
 
 Features:
+- [#1616](https://github.com/rails-api/active_model_serializers/pull/1616) SerializableResource handles no serializer like controller. (@bf4)
 - [#1618](https://github.com/rails-api/active_model_serializers/issues/1618) Get collection root key for
   empty collection from explicit serializer option, when possible. (@bf4)
 - [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Provide key translation. (@remear)
