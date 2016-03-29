@@ -91,7 +91,7 @@ ActiveModelSerializers::Deserialization
 #   title: 'Title 1',
 #   published_at: '2015-12-20',
 #   author_id: '2',
-#   author_type: 'user'
+#   author_type: 'User'
 # }
 ```
 
