@@ -56,14 +56,25 @@ module ActiveModel
         :nil
       end
 
+      # @param serializer [ActiveModel::Serializer]
+      # @yield [ActiveModel::Serializer]
+      # @return [:nil, associated resource or resource collection]
+      # @example
+      #   has_one :blog do |serializer|
+      #     serializer.cached_blog
+      #   end
+      #
+      #   def cached_blog
+      #     cache_store.fetch("cached_blog:#{object.updated_at}") do
+      #       Blog.find(object.blog_id)
+      #     end
+      #   end
       def value(serializer)
         @object = serializer.object
         @scope = serializer.scope
-        # Add '@serializer' to binding for use in association block as 'serializer'
-        @serializer = serializer
 
         if block
-          block_value = instance_eval(&block)
+          block_value = instance_exec(serializer, &block)
           if block_value == :nil
             serializer.read_attribute_for_serialization(name)
           else
@@ -119,7 +130,7 @@ module ActiveModel
 
       protected
 
-      attr_accessor :object, :scope, :serializer
+      attr_accessor :object, :scope
 
       private
 
