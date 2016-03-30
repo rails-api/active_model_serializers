@@ -257,7 +257,7 @@ module ActiveModelSerializers
     private
 
     def render_object_with_cache(obj, options = {})
-      ActiveModel::SerializableResource.new(obj, options).serializable_hash
+      SerializableResource.new(obj, options).serializable_hash
     end
   end
 end

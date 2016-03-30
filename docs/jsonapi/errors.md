@@ -40,7 +40,7 @@ options = nil
 resource = ModelWithErrors.new
 resource.errors.add(:name, 'must be awesome')
 
-serializable_resource = ActiveModel::SerializableResource.new(
+serializable_resource = ActiveModelSerializers::SerializableResource.new(
   resource, {
     serializer: ActiveModel::Serializer::ErrorSerializer,
     adapter: :json_api

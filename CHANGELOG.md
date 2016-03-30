@@ -42,6 +42,7 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
+- [#1608](https://github.com/rails-api/active_model_serializers/pull/1608) Move SerializableResource to ActiveModelSerializers (@groyoh)
 - [#1602](https://github.com/rails-api/active_model_serializers/pull/1602) Add output examples to Adapters docs (@remear)
 - [#1557](https://github.com/rails-api/active_model_serializers/pull/1557) Update docs regarding overriding the root key (@Jwan622)
 - [#1471](https://github.com/rails-api/active_model_serializers/pull/1471) [Cleanup] Serializer caching is its own concern. (@bf4)

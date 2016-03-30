@@ -24,7 +24,7 @@ module ActiveModelSerializers
       # Defines a callback that will get called around the render method,
       # whether it is as_json, to_json, or serializable_hash
       #
-      #   class ActiveModel::SerializableResource
+      #   class ActiveModelSerializers::SerializableResource
       #     include ActiveModelSerializers::Callbacks
       #
       #     around_render do |args, block|

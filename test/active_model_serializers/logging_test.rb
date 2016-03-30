@@ -39,37 +39,37 @@ module ActiveModel
       end
 
       def test_uses_ams_as_tag
-        ActiveModel::SerializableResource.new(@post).serializable_hash
+        ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/\[active_model_serializers\]/, @logger.messages)
       end
 
       def test_logs_when_call_serializable_hash
-        ActiveModel::SerializableResource.new(@post).serializable_hash
+        ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/Rendered/, @logger.messages)
       end
 
       def test_logs_when_call_as_json
-        ActiveModel::SerializableResource.new(@post).as_json
+        ActiveModelSerializers::SerializableResource.new(@post).as_json
         assert_match(/Rendered/, @logger.messages)
       end
 
       def test_logs_when_call_to_json
-        ActiveModel::SerializableResource.new(@post).to_json
+        ActiveModelSerializers::SerializableResource.new(@post).to_json
         assert_match(/Rendered/, @logger.messages)
       end
 
       def test_logs_correct_serializer
-        ActiveModel::SerializableResource.new(@post).serializable_hash
+        ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/PostSerializer/, @logger.messages)
       end
 
       def test_logs_correct_adapter
-        ActiveModel::SerializableResource.new(@post).serializable_hash
+        ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/ActiveModelSerializers::Adapter::Attributes/, @logger.messages)
       end
 
       def test_logs_the_duration
-        ActiveModel::SerializableResource.new(@post).serializable_hash
+        ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/\(\d+\.\d+ms\)/, @logger.messages)
       end
     end

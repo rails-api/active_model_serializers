@@ -312,9 +312,9 @@ module ActiveModelSerializers
         end
 
         def test_no_duplicates
-          hash = ActiveModel::SerializableResource.new(@post1, adapter: :json_api,
-                                                               include: '*.*')
-                                                  .serializable_hash
+          hash = ActiveModelSerializers::SerializableResource.new(@post1, adapter: :json_api,
+                                                                          include: '*.*')
+                                                             .serializable_hash
           expected = [
             {
               type: 'authors', id: '1',
@@ -340,10 +340,10 @@ module ActiveModelSerializers
         end
 
         def test_no_duplicates_collection
-          hash = ActiveModel::SerializableResource.new(
+          hash = ActiveModelSerializers::SerializableResource.new(
             [@post1, @post2], adapter: :json_api,
                               include: '*.*')
-                                                  .serializable_hash
+                                                             .serializable_hash
           expected = [
             {
               type: 'authors', id: '1',
@@ -361,7 +361,7 @@ module ActiveModelSerializers
         end
 
         def test_no_duplicates_global
-          hash = ActiveModel::SerializableResource.new(
+          hash = ActiveModelSerializers::SerializableResource.new(
             @nestedpost1,
             adapter: :json_api,
             include: '*').serializable_hash
@@ -380,7 +380,7 @@ module ActiveModelSerializers
         end
 
         def test_no_duplicates_collection_global
-          hash = ActiveModel::SerializableResource.new(
+          hash = ActiveModelSerializers::SerializableResource.new(
             [@nestedpost1, @nestedpost2],
             adapter: :json_api,
             include: '*').serializable_hash

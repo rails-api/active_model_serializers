@@ -36,7 +36,7 @@ module ActiveModel
           end
 
           def test_meta_hash_object_resource
-            hash = ActiveModel::SerializableResource.new(
+            hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaHashPostSerializer,
               adapter: :json_api
@@ -48,7 +48,7 @@ module ActiveModel
           end
 
           def test_meta_block_object_resource
-            hash = ActiveModel::SerializableResource.new(
+            hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostSerializer,
               adapter: :json_api
@@ -62,7 +62,7 @@ module ActiveModel
           def test_meta_object_resource_in_array
             post2 = Post.new(id: 1339, comments: [Comment.new])
             posts = [@post, post2]
-            hash = ActiveModel::SerializableResource.new(
+            hash = ActiveModelSerializers::SerializableResource.new(
               posts,
               each_serializer: MetaBlockPostSerializer,
               adapter: :json_api
@@ -77,7 +77,7 @@ module ActiveModel
           end
 
           def test_meta_object_blank_omitted
-            hash = ActiveModel::SerializableResource.new(
+            hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostBlankMetaSerializer,
               adapter: :json_api
@@ -86,7 +86,7 @@ module ActiveModel
           end
 
           def test_meta_object_empty_string_omitted
-            hash = ActiveModel::SerializableResource.new(
+            hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostEmptyStringSerializer,
               adapter: :json_api

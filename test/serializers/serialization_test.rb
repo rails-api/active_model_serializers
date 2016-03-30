@@ -21,7 +21,7 @@ module ActiveModel
         @authors = [Author.new(id: 1, name: 'Blog Author')]
         @blog = Blog.new(id: 2, name: 'The Blog', authors: @authors)
         @serializer_instance = BlogSerializer.new(@blog)
-        @serializable = ActiveModel::SerializableResource.new(@blog, serializer: BlogSerializer, adapter: :attributes)
+        @serializable = ActiveModelSerializers::SerializableResource.new(@blog, serializer: BlogSerializer, adapter: :attributes)
         @expected_hash = { id: 2, title: 'The Blog', authors: [{ id: 1, name: 'Blog Author' }] }
         @expected_json = '{"id":2,"title":"The Blog","authors":[{"id":1,"name":"Blog Author"}]}'
       end

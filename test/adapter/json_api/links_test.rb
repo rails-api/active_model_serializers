@@ -30,7 +30,7 @@ module ActiveModelSerializers
         end
 
         def test_toplevel_links
-          hash = ActiveModel::SerializableResource.new(
+          hash = ActiveModelSerializers::SerializableResource.new(
             @post,
             adapter: :json_api,
             links: {
@@ -53,7 +53,7 @@ module ActiveModelSerializers
         end
 
         def test_nil_toplevel_links
-          hash = ActiveModel::SerializableResource.new(
+          hash = ActiveModelSerializers::SerializableResource.new(
             @post,
             adapter: :json_api,
             links: nil
@@ -62,7 +62,7 @@ module ActiveModelSerializers
         end
 
         def test_nil_toplevel_links_json_adapter
-          hash = ActiveModel::SerializableResource.new(
+          hash = ActiveModelSerializers::SerializableResource.new(
             @post,
             adapter: :json,
             links: nil

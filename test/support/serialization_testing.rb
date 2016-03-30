@@ -6,14 +6,14 @@ module SerializationTesting
   private
 
   def generate_cached_serializer(obj)
-    ActiveModel::SerializableResource.new(obj).to_json
+    ActiveModelSerializers::SerializableResource.new(obj).to_json
   end
 
   # Aliased as :with_configured_adapter to clarify that
   # this method tests the configured adapter.
   # When not testing configuration, it may be preferable
-  # to pass in the +adapter+ option to <tt>ActiveModel::SerializableResource</tt>.
-  # e.g ActiveModel::SerializableResource.new(resource, adapter: :json_api)
+  # to pass in the +adapter+ option to <tt>ActiveModelSerializers::SerializableResource</tt>.
+  # e.g ActiveModelSerializers::SerializableResource.new(resource, adapter: :json_api)
   def with_adapter(adapter)
     old_adapter = ActiveModelSerializers.config.adapter
     ActiveModelSerializers.config.adapter = adapter
@@ -40,7 +40,7 @@ module SerializationTesting
   end
 
   def serializable(resource, options = {})
-    ActiveModel::SerializableResource.new(resource, options)
+    ActiveModelSerializers::SerializableResource.new(resource, options)
   end
 end
 

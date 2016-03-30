@@ -9,6 +9,7 @@ module ActiveModelSerializers
   autoload :FragmentCache
   autoload :Callbacks
   autoload :Deserialization
+  autoload :SerializableResource
   autoload :Logging
   autoload :Test
   autoload :Adapter
