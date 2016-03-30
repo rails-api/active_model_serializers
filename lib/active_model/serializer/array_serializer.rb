@@ -3,7 +3,7 @@ class ActiveModel::Serializer
   class ArraySerializer < CollectionSerializer
     class << self
       extend ActiveModelSerializers::Deprecate
-      deprecate :new, 'ActiveModel::CollectionSerializer.'
+      deprecate :new, 'ActiveModel::Serializer::CollectionSerializer.'
     end
   end
 end
