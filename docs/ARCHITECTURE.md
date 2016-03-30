@@ -94,7 +94,7 @@ Details:
 ## What does a 'serializable resource' look like?
 
 - An `ActiveRecord::Base` object.
-- Any Ruby object at passes or otherwise passes the
+- Any Ruby object that passes the
   [Lint](http://www.rubydoc.info/github/rails-api/active_model_serializers/ActiveModel/Serializer/Lint/Tests)
   [code](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer/lint.rb).
 
