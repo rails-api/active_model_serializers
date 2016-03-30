@@ -2,6 +2,10 @@
 
 ### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.4...0-9-stable)
 
+### [v0.9.5 (2016-03-30)](https://github.com/rails-api/active_model_serializers/compare/v0.9.4...v0.9.5)
+
+- [#1607](https://github.com/rails-api/active_model_serializers/pull/1607) Merge multiple nested associations. (@Hirtenknogger)
+
 ### [v0.9.4 (2016-01-05)](https://github.com/rails-api/active_model_serializers/compare/v0.9.3...v0.9.4)
 
 - [#752](https://github.com/rails-api/active_model_serializers/pull/752) Tiny improvement of README 0-9-stable (@basiam)
