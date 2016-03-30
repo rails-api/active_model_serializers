@@ -1,8 +1,14 @@
 require 'test_helper'
 require 'tmpdir'
 require 'tempfile'
+
 module ActiveModelSerializers
   class CacheTest < ActiveSupport::TestCase
+    InheritedRoleSerializer = Class.new(RoleSerializer) do
+      cache key: 'inherited_role', only: [:name, :special_attribute]
+      attribute :special_attribute
+    end
+
     def setup
       ActionController::Base.cache_store.clear
       @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
@@ -150,6 +156,14 @@ module ActiveModelSerializers
       assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(@location.cache_key))
     end
 
+    def test_fragment_cache_with_inheritance
+      inherited = render_object_with_cache(@role, serializer: InheritedRoleSerializer)
+      base = render_object_with_cache(@role)
+
+      assert_includes(inherited.keys, :special_attribute)
+      refute_includes(base.keys, :special_attribute)
+    end
+
     def test_uses_file_digest_in_cache_key
       render_object_with_cache(@blog)
       assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
@@ -242,8 +256,8 @@ module ActiveModelSerializers
 
     private
 
-    def render_object_with_cache(obj)
-      ActiveModel::SerializableResource.new(obj).serializable_hash
+    def render_object_with_cache(obj, options = {})
+      ActiveModel::SerializableResource.new(obj, options).serializable_hash
     end
   end
 end
