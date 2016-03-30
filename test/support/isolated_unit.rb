@@ -46,6 +46,8 @@ require 'active_support/testing/isolation'
 
 module TestHelpers
   module Generation
+    module_function
+
     # Make a very basic app, without creating the whole directory structure.
     # Is faster and simpler than generating a Rails app in a temp directory
     def make_basic_app

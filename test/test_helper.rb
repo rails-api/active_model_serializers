@@ -39,8 +39,6 @@ end
 
 require 'support/rails_app'
 
-require 'support/test_case'
-
 require 'support/serialization_testing'
 
 require 'support/rails5_shims'
