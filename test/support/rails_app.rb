@@ -5,6 +5,10 @@ module ActiveModelSerializers
       config.secret_key_base = 'abc123'
       config.active_support.test_order = :random
       config.action_controller.perform_caching = true
+      # TODO: figure out why turning on the memory cache changes
+      # the result of the CacheTest#test_associations_cache_when_updated
+      # and if it is more correct or less correct.
+      # config.action_controller.cache_store = :memory
     end
 
     app.routes.default_url_options = { host: 'example.com' }
