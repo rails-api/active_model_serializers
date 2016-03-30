@@ -55,7 +55,7 @@ module ActiveModelSerializers
       def serializable_hash_for_single_resource(options)
         resource = resource_object_for(options)
         relationships = resource_relationships(options)
-        resource.merge!(relationships)
+        resource.merge(relationships)
       end
 
       def resource_relationships(options)

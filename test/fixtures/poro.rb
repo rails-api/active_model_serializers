@@ -1,8 +1,6 @@
 verbose = $VERBOSE
 $VERBOSE = nil
 class Model < ActiveModelSerializers::Model
-  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
-
   ### Helper methods, not required to be serializable
 
   # Convenience when not adding @attributes readers and writers
@@ -20,10 +18,6 @@ class Model < ActiveModelSerializers::Model
   # in Rails 5
   def respond_to_missing?(method_name, _include_private = false)
     attributes.key?(method_name.to_s.tr('=', '').to_sym) || super
-  end
-
-  def cache_key_with_digest
-    "#{cache_key}/#{FILE_DIGEST}"
   end
 end
 
@@ -58,7 +52,13 @@ Post     = Class.new(Model)
 Like     = Class.new(Model)
 Author   = Class.new(Model)
 Bio      = Class.new(Model)
-Blog     = Class.new(Model)
+Blog     = Class.new(Model) do
+  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
+
+  def cache_key_with_digest
+    "#{cache_key}/#{FILE_DIGEST}"
+  end
+end
 Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)

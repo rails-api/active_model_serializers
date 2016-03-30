@@ -37,6 +37,7 @@ class CachingConfigurationTest < ActiveSupport::TestCase
         app.config.action_controller.perform_caching = true
         app.config.action_controller.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
       end
+      controller_cache_store # Force ActiveSupport.on_load(:action_controller) to run
     end
 
     test 'it sets perform_caching to true on AMS.config and serializers' do
@@ -103,6 +104,7 @@ class CachingConfigurationTest < ActiveSupport::TestCase
         app.config.action_controller.perform_caching = false
         app.config.action_controller.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
       end
+      controller_cache_store # Force ActiveSupport.on_load(:action_controller) to run
     end
 
     test 'it sets perform_caching to false on AMS.config and serializers' do

@@ -27,6 +27,8 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1480](https://github.com/rails-api/active_model_serializers/pull/1480) Fix setting of cache_store from Rails configuration. (@bf4)
+  Fix uninentional mutating of value in memory cache store. (@groyoh)
 - [#1622](https://github.com/rails-api/active_model_serializers/pull/1622) Fragment cache changed from per-record to per-serializer.
   Now, two serializers that use the same model may be separately cached. (@lserman)
 - [#1478](https://github.com/rails-api/active_model_serializers/pull/1478) Cache store will now be correctly set when serializers are

@@ -9,8 +9,8 @@ module ActiveModelSerializers
       attribute :special_attribute
     end
 
-    def setup
-      ActionController::Base.cache_store.clear
+    setup do
+      cache_store.clear
       @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
       @post           = Post.new(title: 'New Post', body: 'Body')
       @bio            = Bio.new(id: 1, content: 'AMS Contributor')
@@ -70,9 +70,9 @@ module ActiveModelSerializers
     end
 
     def test_cache_definition
-      assert_equal(ActionController::Base.cache_store, @post_serializer.class._cache)
-      assert_equal(ActionController::Base.cache_store, @author_serializer.class._cache)
-      assert_equal(ActionController::Base.cache_store, @comment_serializer.class._cache)
+      assert_equal(cache_store, @post_serializer.class._cache)
+      assert_equal(cache_store, @author_serializer.class._cache)
+      assert_equal(cache_store, @comment_serializer.class._cache)
     end
 
     def test_cache_key_definition
@@ -83,13 +83,13 @@ module ActiveModelSerializers
 
     def test_cache_key_interpolation_with_updated_at
       render_object_with_cache(@author)
-      assert_equal(nil, ActionController::Base.cache_store.fetch(@author.cache_key))
-      assert_equal(@author_serializer.attributes.to_json, ActionController::Base.cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}").to_json)
+      assert_equal(nil, cache_store.fetch(@author.cache_key))
+      assert_equal(@author_serializer.attributes.to_json, cache_store.fetch("#{@author_serializer.class._cache_key}/#{@author_serializer.object.id}-#{@author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}").to_json)
     end
 
     def test_default_cache_key_fallback
       render_object_with_cache(@comment)
-      assert_equal(@comment_serializer.attributes.to_json, ActionController::Base.cache_store.fetch(@comment.cache_key).to_json)
+      assert_equal(@comment_serializer.attributes.to_json, cache_store.fetch(@comment.cache_key).to_json)
     end
 
     def test_cache_options_definition
@@ -104,32 +104,29 @@ module ActiveModelSerializers
     end
 
     def test_associations_separately_cache
-      ActionController::Base.cache_store.clear
-      assert_equal(nil, ActionController::Base.cache_store.fetch(@post.cache_key))
-      assert_equal(nil, ActionController::Base.cache_store.fetch(@comment.cache_key))
+      cache_store.clear
+      assert_equal(nil, cache_store.fetch(@post.cache_key))
+      assert_equal(nil, cache_store.fetch(@comment.cache_key))
 
       Timecop.freeze(Time.current) do
         render_object_with_cache(@post)
 
-        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
-        assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+        assert_equal(@post_serializer.attributes, cache_store.fetch(@post.cache_key))
+        assert_equal(@comment_serializer.attributes, cache_store.fetch(@comment.cache_key))
       end
     end
 
     def test_associations_cache_when_updated
-      # Clean the Cache
-      ActionController::Base.cache_store.clear
-
       Timecop.freeze(Time.current) do
         # Generate a new Cache of Post object and each objects related to it.
         render_object_with_cache(@post)
 
         # Check if it cached the objects separately
-        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
-        assert_equal(@comment_serializer.attributes, ActionController::Base.cache_store.fetch(@comment.cache_key))
+        assert_equal(@post_serializer.attributes,    cached_serialization(@post_serializer))
+        assert_equal(@comment_serializer.attributes, cached_serialization(@comment_serializer))
 
         # Simulating update on comments relationship with Post
-        new_comment            = Comment.new(id: 2, body: 'ZOMG A NEW COMMENT')
+        new_comment            = Comment.new(id: 2567, body: 'ZOMG A NEW COMMENT')
         new_comment_serializer = CommentSerializer.new(new_comment)
         @post.comments         = [new_comment]
 
@@ -137,8 +134,8 @@ module ActiveModelSerializers
         render_object_with_cache(@post)
 
         # Check if the the new comment was cached
-        assert_equal(new_comment_serializer.attributes, ActionController::Base.cache_store.fetch(new_comment.cache_key))
-        assert_equal(@post_serializer.attributes, ActionController::Base.cache_store.fetch(@post.cache_key))
+        assert_equal(new_comment_serializer.attributes, cached_serialization(new_comment_serializer))
+        assert_equal(@post_serializer.attributes, cached_serialization(@post_serializer))
       end
     end
 
@@ -153,7 +150,7 @@ module ActiveModelSerializers
       hash = render_object_with_cache(@location)
 
       assert_equal(hash, expected_result)
-      assert_equal({ place: 'Nowhere' }, ActionController::Base.cache_store.fetch(@location.cache_key))
+      assert_equal({ place: 'Nowhere' }, cache_store.fetch(@location.cache_key))
     end
 
     def test_fragment_cache_with_inheritance
@@ -166,11 +163,11 @@ module ActiveModelSerializers
 
     def test_uses_file_digest_in_cache_key
       render_object_with_cache(@blog)
-      assert_equal(@blog_serializer.attributes, ActionController::Base.cache_store.fetch(@blog.cache_key_with_digest))
+      assert_equal(@blog_serializer.attributes, cache_store.fetch(@blog.cache_key_with_digest))
     end
 
     def test_cache_digest_definition
-      assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
+      assert_equal(FILE_DIGEST, @post_serializer.class._cache_digest)
     end
 
     def test_object_cache_keys
@@ -257,7 +254,16 @@ module ActiveModelSerializers
     private
 
     def render_object_with_cache(obj, options = {})
-      SerializableResource.new(obj, options).serializable_hash
+      serializable(obj, options).serializable_hash
+    end
+
+    def cache_store
+      ActiveModelSerializers.config.cache_store
+    end
+
+    def cached_serialization(serializer)
+      cache_key = CachedSerializer.new(serializer).cache_key
+      cache_store.fetch(cache_key)
     end
   end
 end
