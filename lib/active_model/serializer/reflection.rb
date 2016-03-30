@@ -59,6 +59,8 @@ module ActiveModel
       def value(serializer)
         @object = serializer.object
         @scope = serializer.scope
+        # Add '@serializer' to binding for use in association block as 'serializer'
+        @serializer = serializer
 
         if block
           block_value = instance_eval(&block)
@@ -117,7 +119,7 @@ module ActiveModel
 
       protected
 
-      attr_accessor :object, :scope
+      attr_accessor :object, :scope, :serializer
 
       private
 
