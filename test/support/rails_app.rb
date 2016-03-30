@@ -8,7 +8,7 @@ module ActiveModelSerializers
       # TODO: figure out why turning on the memory cache changes
       # the result of the CacheTest#test_associations_cache_when_updated
       # and if it is more correct or less correct.
-      # config.action_controller.cache_store = :memory
+      config.action_controller.cache_store = :memory_store
     end
 
     app.routes.default_url_options = { host: 'example.com' }
