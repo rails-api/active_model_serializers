@@ -9,12 +9,6 @@ module ActiveModelSerializers
       ActiveModel::Serializer.serializers_cache.clear
     end
 
-    initializer 'active_model_serializers.action_controller' do
-      ActiveSupport.on_load(:action_controller) do
-        include(::ActionController::Serialization)
-      end
-    end
-
     initializer 'active_model_serializers.prepare_serialization_context' do
       SerializationContext.url_helpers = Rails.application.routes.url_helpers
       SerializationContext.default_url_options = Rails.application.routes.default_url_options
@@ -29,6 +23,11 @@ module ActiveModelSerializers
       # We want this hook to run after the config has been set, even if ActionController has already loaded.
       ActiveSupport.on_load(:action_controller) do
         ActiveModelSerializers.config.cache_store = cache_store
+        # Only include controller mixin when enabled
+        # https://github.com/rails-api/active_model_serializers/issues/1500
+        # https://github.com/rails-api/active_model_serializers/pull/592
+        # Rails.configuration.action_controller.render_json_with_active_model_serializers
+        include ::ActionController::Serialization if ::ActionController::Serialization.enabled
       end
     end
 

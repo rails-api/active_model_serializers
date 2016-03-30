@@ -13,6 +13,11 @@ module ActionController
       end
     end
 
+    class << self
+      attr_accessor :enabled
+    end
+    self.enabled = true
+
     included do
       class_attribute :_serialization_scope
       self._serialization_scope = :current_user
