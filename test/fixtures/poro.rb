@@ -53,6 +53,26 @@ class SpecialPost < Post
   end
 end
 
+class Type < Model
+end
+
+class SelfReferencingUser < Model
+  def type
+    @type ||= Type.new(name: 'N1')
+  end
+  def parent
+    @parent ||= SelfReferencingUserParent.new(name: 'N1')
+  end
+end
+
+class SelfReferencingUserParent < Model
+  def type
+    @type ||= Type.new(name: 'N2')
+  end
+  def parent
+  end
+end
+
 class Comment < Model
 end
 
@@ -85,6 +105,22 @@ class UserSerializer < ActiveModel::Serializer
   attributes :name, :email
 
   has_one :profile
+end
+
+class TypeSerializer < ActiveModel::Serializer
+  attributes :name
+end
+
+class SelfReferencingUserParentSerializer < ActiveModel::Serializer
+  attributes :name
+  has_one :type, serializer: TypeSerializer, embed: :ids, include: true
+end
+
+class SelfReferencingUserSerializer < ActiveModel::Serializer
+  attributes :name
+
+  has_one :type, serializer: TypeSerializer, embed: :ids, include: true
+  has_one :parent, serializer: SelfReferencingUserSerializer, embed: :ids, include: true
 end
 
 class UserInfoSerializer < ActiveModel::Serializer
@@ -176,7 +212,7 @@ end
 
 class NameKeyPostSerializer < ActiveModel::Serializer
   attributes :title, :body
-  
+
   has_many :comments
 end
 
