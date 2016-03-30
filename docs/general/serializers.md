@@ -48,6 +48,18 @@ has_one :blog, key: :site
 has_one :maker, virtual_value: { id: 1 }
 ```
 
+``ruby
+has_one :blog do |serializer|
+  serializer.cached_blog
+end
+
+def cached_blog
+  cache_store.fetch("cached_blog:#{object.updated_at}") do
+    Blog.find(object.blog_id)
+  end
+end
+```
+
 #### ::has_many
 
 e.g.

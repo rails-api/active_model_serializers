@@ -38,8 +38,9 @@ module ActiveModel
               end
             end
 
-            has_many :roles do
+            has_many :roles do |serializer|
               meta count: object.posts.count
+              serializer.cached_roles
             end
 
             has_one :blog do
@@ -60,6 +61,12 @@ module ActiveModel
               end
               meta liked: object.likes.any?
             end
+
+            def cached_roles
+              [
+                Role.new(id: 'from-serializer-method')
+              ]
+            end
           end
 
           def setup
@@ -67,7 +74,7 @@ module ActiveModel
             @blog = Blog.new(id: 1337, name: 'extra')
             @bio = Bio.new(id: 1337)
             @like = Like.new(id: 1337)
-            @role = Role.new(id: 1337)
+            @role = Role.new(id: 'from-record')
             @profile = Profile.new(id: 1337)
             @location = Location.new(id: 1337)
             @reviewer = Author.new(id: 1337)
@@ -144,7 +151,7 @@ module ActiveModel
 
           def test_relationship_meta
             expected = {
-              data: [{ id: '1337', type: 'roles' }],
+              data: [{ id: 'from-serializer-method', type: 'roles' }],
               meta: { count: 1 }
             }
             assert_relationship(:roles, expected)
