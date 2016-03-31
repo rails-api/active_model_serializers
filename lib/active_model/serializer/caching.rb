@@ -63,6 +63,14 @@ module ActiveModel
           _cache_options && _cache_options[:skip_digest]
         end
 
+        def cached_attributes
+          _cache_only ? _cache_only : _attributes - _cache_except
+        end
+
+        def non_cached_attributes
+          _attributes - cached_attributes
+        end
+
         # @api private
         # Used by FragmentCache on the CachedSerializer
         #  to call attribute methods on the fragmented cached serializer.
@@ -245,33 +253,14 @@ module ActiveModel
         self.class._cache_options ||= {}
         self.class._cache_options[:key] = self.class._cache_key if self.class._cache_key
 
-        attributes            = self.class._attributes
-        cache_only            = self.class._cache_only
-        cached_attributes     = cache_only ? cache_only : attributes - self.class._cache_except
-        non_cached_attributes = attributes - cached_attributes
-        attributes_keys       = self.class._attributes_keys
-
-        cached_serializer     = _get_or_create_fragment_serializer "Cached#{serializer_class_name}"
-        cached_serializer.cache(self.class._cache_options)
-        cached_serializer.type(self.class._type)
-        cached_serializer.fragmented(self)
-        cached_attributes.each do |attribute|
-          options = attributes_keys[attribute] || {}
-          cached_serializer.attribute(attribute, options)
-        end
+        cached_serializer = _get_or_create_fragment_cached_serializer(serializer_class_name)
         cached_hash = ActiveModelSerializers::SerializableResource.new(
           object,
           serializer: cached_serializer,
           adapter: adapter_instance.class
         ).serializable_hash
 
-        non_cached_serializer = _get_or_create_fragment_serializer "NonCached#{serializer_class_name}"
-        non_cached_serializer.type(self.class._type)
-        non_cached_serializer.fragmented(self)
-        non_cached_attributes.each do |attribute|
-          options = attributes_keys[attribute] || {}
-          non_cached_serializer.attribute(attribute, options)
-        end
+        non_cached_serializer = _get_or_create_fragment_non_cached_serializer(serializer_class_name)
         non_cached_hash = ActiveModelSerializers::SerializableResource.new(
           object,
           serializer: non_cached_serializer,
@@ -280,6 +269,29 @@ module ActiveModel
 
         # Merge both results
         adapter_instance.fragment_cache(cached_hash, non_cached_hash)
+      end
+
+      def _get_or_create_fragment_cached_serializer(serializer_class_name)
+        cached_serializer = _get_or_create_fragment_serializer "Cached#{serializer_class_name}"
+        cached_serializer.cache(self.class._cache_options)
+        cached_serializer.type(self.class._type)
+        cached_serializer.fragmented(self)
+        self.class.cached_attributes.each do |attribute|
+          options = self.class._attributes_keys[attribute] || {}
+          cached_serializer.attribute(attribute, options)
+        end
+        cached_serializer
+      end
+
+      def _get_or_create_fragment_non_cached_serializer(serializer_class_name)
+        non_cached_serializer = _get_or_create_fragment_serializer "NonCached#{serializer_class_name}"
+        non_cached_serializer.type(self.class._type)
+        non_cached_serializer.fragmented(self)
+        self.class.non_cached_attributes.each do |attribute|
+          options = self.class._attributes_keys[attribute] || {}
+          non_cached_serializer.attribute(attribute, options)
+        end
+        non_cached_serializer
       end
 
       def _get_or_create_fragment_serializer(name)
