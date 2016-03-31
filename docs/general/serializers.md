@@ -46,9 +46,7 @@ e.g.
 has_one :bio
 has_one :blog, key: :site
 has_one :maker, virtual_value: { id: 1 }
-```
 
-``ruby
 has_one :blog do |serializer|
   serializer.cached_blog
 end
