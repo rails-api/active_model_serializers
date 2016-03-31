@@ -114,7 +114,7 @@ module ActiveModelSerializers
 
     def test_error_is_raised_if_cache_key_is_not_defined_on_object_or_passed_as_cache_option
       article = Article.new(title: 'Must Read')
-      e = assert_raises ActiveModelSerializers::CachedSerializer::UndefinedCacheKey do
+      e = assert_raises ActiveModel::Serializer::UndefinedCacheKey do
         render_object_with_cache(article)
       end
       assert_match(/ActiveModelSerializers::CacheTest::Article must define #cache_key, or the 'key:' option must be passed into 'CachedActiveModelSerializers_CacheTest_ArticleSerializer.cache'/, e.message)
@@ -252,11 +252,11 @@ module ActiveModelSerializers
       attributes_serialization = serializable_alert.as_json
       assert_equal expected_cached_attributes, alert.attributes
       assert_equal alert.attributes, attributes_serialization
-      attributes_cache_key = CachedSerializer.new(serializable_alert.adapter.serializer).cache_key(serializable_alert.adapter)
+      attributes_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
       assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key)
 
       serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :json_api)
-      jsonapi_cache_key = CachedSerializer.new(serializable_alert.adapter.serializer).cache_key(serializable_alert.adapter)
+      jsonapi_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
       # Assert cache keys differ
       refute_equal attributes_cache_key, jsonapi_cache_key
       # Assert (cached) serializations differ
@@ -288,9 +288,9 @@ module ActiveModelSerializers
       serializable = ActiveModelSerializers::SerializableResource.new([@comment, @comment])
       include_tree = ActiveModel::Serializer::IncludeTree.from_include_args('*')
 
-      actual = CachedSerializer.object_cache_keys(serializable.adapter.serializer, serializable.adapter, include_tree)
+      actual = ActiveModel::Serializer.object_cache_keys(serializable.adapter.serializer, serializable.adapter, include_tree)
 
-      assert_equal actual.size, 3
+      assert_equal 3, actual.size
       assert actual.any? { |key| key == "comment/1/#{serializable.adapter.cached_name}" }
       assert actual.any? { |key| key =~ %r{post/post-\d+} }
       assert actual.any? { |key| key =~ %r{author/author-\d+} }
@@ -365,10 +365,107 @@ module ActiveModelSerializers
       assert called
     end
 
+    def test_cached_false_without_cache_store
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = nil
+      end
+      refute cached_serializer.class.cache_enabled?
+    end
+
+    def test_cached_true_with_cache_store_and_without_cache_only_and_cache_except
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = Object
+      end
+      assert cached_serializer.class.cache_enabled?
+    end
+
+    def test_cached_false_with_cache_store_and_with_cache_only
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = Object
+        serializer._cache_only = [:name]
+      end
+      refute cached_serializer.class.cache_enabled?
+    end
+
+    def test_cached_false_with_cache_store_and_with_cache_except
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = Object
+        serializer._cache_except = [:content]
+      end
+      refute cached_serializer.class.cache_enabled?
+    end
+
+    def test_fragment_cached_false_without_cache_store
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = nil
+        serializer._cache_only = [:name]
+      end
+      refute cached_serializer.class.fragment_cache_enabled?
+    end
+
+    def test_fragment_cached_true_with_cache_store_and_cache_only
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = Object
+        serializer._cache_only = [:name]
+      end
+      assert cached_serializer.class.fragment_cache_enabled?
+    end
+
+    def test_fragment_cached_true_with_cache_store_and_cache_except
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = Object
+        serializer._cache_except = [:content]
+      end
+      assert cached_serializer.class.fragment_cache_enabled?
+    end
+
+    def test_fragment_cached_false_with_cache_store_and_cache_except_and_cache_only
+      cached_serializer = build_cached_serializer do |serializer|
+        serializer._cache = Object
+        serializer._cache_except = [:content]
+        serializer._cache_only = [:name]
+      end
+      refute cached_serializer.class.fragment_cache_enabled?
+    end
+
+    def test_fragment_fetch_with_virtual_attributes
+      @author          = Author.new(name: 'Joao M. D. Moura')
+      @role            = Role.new(name: 'Great Author', description: nil)
+      @role.author     = [@author]
+      @role_serializer = RoleSerializer.new(@role)
+      @role_hash       = @role_serializer.fetch_fragment_cache(ActiveModelSerializers::Adapter.configured_adapter.new(@role_serializer))
+
+      expected_result = {
+        id: @role.id,
+        description: @role.description,
+        slug: "#{@role.name}-#{@role.id}",
+        name: @role.name
+      }
+      assert_equal(@role_hash, expected_result)
+    end
+
+    def test_fragment_fetch_with_namespaced_object
+      @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')
+      @spam_serializer = Spam::UnrelatedLinkSerializer.new(@spam)
+      @spam_hash       = @spam_serializer.fetch_fragment_cache(ActiveModelSerializers::Adapter.configured_adapter.new(@spam_serializer))
+      expected_result = {
+        id: @spam.id
+      }
+      assert_equal(@spam_hash, expected_result)
+    end
+
     private
 
     def cache_store
       ActiveModelSerializers.config.cache_store
+    end
+
+    def build_cached_serializer
+      serializer = Class.new(ActiveModel::Serializer)
+      serializer._cache_key = nil
+      serializer._cache_options = nil
+      yield serializer if block_given?
+      serializer.new(Object)
     end
 
     def render_object_with_cache(obj, options = {})
@@ -381,7 +478,7 @@ module ActiveModelSerializers
     end
 
     def cached_serialization(serializer)
-      cache_key = CachedSerializer.new(serializer).cache_key(adapter)
+      cache_key = serializer.cache_key(adapter)
       cache_store.fetch(cache_key)
     end
   end

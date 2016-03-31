@@ -25,33 +25,6 @@ module ActiveModelSerializers
         serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
       end
 
-      # Read cache from cache_store
-      # @return [Hash]
-      def cache_read_multi
-        return {} if ActiveModelSerializers.config.cache_store.blank?
-
-        keys = CachedSerializer.object_cache_keys(serializer, self, @include_tree)
-
-        return {} if keys.blank?
-
-        ActiveModelSerializers.config.cache_store.read_multi(*keys)
-      end
-
-      # Set @cached_attributes
-      def cache_attributes
-        return if @cached_attributes.present?
-
-        @cached_attributes = cache_read_multi
-      end
-
-      # Get attributes from @cached_attributes
-      # @return [Hash] cached attributes
-      def cached_attributes(cached_serializer)
-        return yield unless cached_serializer.cached?
-
-        @cached_attributes.fetch(cached_serializer.cache_key(self)) { yield }
-      end
-
       def serializable_hash_for_single_resource(options)
         resource = resource_object_for(options)
         relationships = resource_relationships(options)
@@ -80,13 +53,20 @@ module ActiveModelSerializers
         json
       end
 
-      def resource_object_for(options)
-        cached_serializer = CachedSerializer.new(serializer)
+      # Set @cached_attributes
+      def cache_attributes
+        return if @cached_attributes.present?
 
-        cached_attributes(cached_serializer) do
-          cached_serializer.cache_check(self) do
-            serializer.attributes(options[:fields])
+        @cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
+      end
+
+      def resource_object_for(options)
+        if serializer.class.cache_enabled?
+          @cached_attributes.fetch(serializer.cache_key(self)) do
+            serializer.cached_fields(options[:fields], self)
           end
+        else
+          serializer.cached_fields(options[:fields], self)
         end
       end
     end
