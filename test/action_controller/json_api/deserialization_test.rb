@@ -20,7 +20,8 @@ module ActionController
               'id' => 'zorglub',
               'attributes' => {
                 'title' => 'Ember Hamster',
-                'src' => 'http://example.com/images/productivity.png'
+                'src' => 'http://example.com/images/productivity.png',
+                'photo-url' => 'http://placehold.it/350x150'
               },
               'relationships' => {
                 'author' => {
@@ -34,6 +35,11 @@ module ActionController
                     { 'type' => 'comments', 'id' => '1' },
                     { 'type' => 'comments', 'id' => '2' }
                   ]
+                },
+                'two-words' => {
+                  'data' => [
+                    { 'type' => 'two-words', 'id' => '1' }
+                  ]
                 }
               }
             }
@@ -43,12 +49,14 @@ module ActionController
 
           response = JSON.parse(@response.body)
           expected = {
-            'id' => 'zorglub',
             'title' => 'Ember Hamster',
             'src' => 'http://example.com/images/productivity.png',
+            'photo_url' => 'http://placehold.it/350x150',
+            'id' => 'zorglub',
             'author_id' => nil,
             'photographer_id' => '9',
-            'comment_ids' => %w(1 2)
+            'comment_ids' => %w(1 2),
+            'two_word_ids' => %w(1)
           }
 
           assert_equal(expected, response)

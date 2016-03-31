@@ -150,7 +150,7 @@ module ActiveModelSerializers
 
         # @api private
         def field_key(field, options)
-          (options[:keys] || {}).fetch(field.to_sym, field).to_sym
+          (options[:keys] || {}).fetch(field.to_sym, field).underscore.to_sym
         end
 
         # @api private
@@ -179,7 +179,7 @@ module ActiveModelSerializers
         #
         # @api private
         def parse_relationship(assoc_name, assoc_data, options)
-          prefix_key = field_key(assoc_name, options).to_s.singularize
+          prefix_key = field_key(assoc_name, options).to_s.underscore.singularize
           hash =
             if assoc_data.is_a?(Array)
               { "#{prefix_key}_ids".to_sym => assoc_data.map { |ri| ri['id'] } }
