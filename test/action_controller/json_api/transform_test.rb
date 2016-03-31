@@ -10,7 +10,7 @@ module ActionController
             type 'posts'
             attributes :title, :body, :publish_at
             belongs_to :author
-            has_many :comments
+            has_many :top_comments
 
             link(:post_authors) { 'https://example.com/post_authors' }
 
@@ -28,9 +28,9 @@ module ActionController
             attributes :first_name, :last_name
           end
 
-          Comment = Class.new(::Model)
-          class CommentSerializer < ActiveModel::Serializer
-            type 'comments'
+          TopComment = Class.new(::Model)
+          class TopCommentSerializer < ActiveModel::Serializer
+            type 'top_comments'
             attributes :body
             belongs_to :author
           end
@@ -38,28 +38,28 @@ module ActionController
           def setup_post
             ActionController::Base.cache_store.clear
             @author = Author.new(id: 1, first_name: 'Bob', last_name: 'Jones')
-            @comment1 = Comment.new(id: 7, body: 'cool', author: @author)
-            @comment2 = Comment.new(id: 12, body: 'awesome', author: @author)
+            @comment1 = TopComment.new(id: 7, body: 'cool', author: @author)
+            @comment2 = TopComment.new(id: 12, body: 'awesome', author: @author)
             @post = Post.new(id: 1337, title: 'Title 1', body: 'Body 1',
-                             author: @author, comments: [@comment1, @comment2],
+                             author: @author, top_comments: [@comment1, @comment2],
                              publish_at: '2020-03-16T03:55:25.291Z')
             @comment1.post = @post
             @comment2.post = @post
           end
 
-          def render_resource_with_key_transform
+          def render_resource_with_transform
             setup_post
             render json: @post, serializer: PostSerializer, adapter: :json_api,
                    key_transform: :camel
           end
 
-          def render_resource_with_key_transform_nil
+          def render_resource_with_transform_nil
             setup_post
             render json: @post, serializer: PostSerializer, adapter: :json_api,
                    key_transform: nil
           end
 
-          def render_resource_with_key_transform_with_global_config
+          def render_resource_with_transform_with_global_config
             setup_post
             old_transform = ActiveModelSerializers.config.key_transform
             ActiveModelSerializers.config.key_transform = :camel_lower
@@ -70,13 +70,13 @@ module ActionController
 
         tests KeyTransformTestController
 
-        def test_render_resource_with_key_transform
-          get :render_resource_with_key_transform
+        def test_render_resource_with_transform
+          get :render_resource_with_transform
           response = JSON.parse(@response.body)
           expected = {
             'Data' => {
               'Id' => '1337',
-              'Type' => 'posts',
+              'Type' => 'Posts',
               'Attributes' => {
                 'Title' => 'Title 1',
                 'Body' => 'Body 1',
@@ -86,13 +86,13 @@ module ActionController
                 'Author' => {
                   'Data' => {
                     'Id' => '1',
-                    'Type' => 'authors'
+                    'Type' => 'Authors'
                   }
                 },
-                'Comments' => {
+                'TopComments' => {
                   'Data' => [
-                    { 'Id' => '7', 'Type' => 'comments' },
-                    { 'Id' => '12', 'Type' => 'comments' }
+                    { 'Id' => '7', 'Type' => 'TopComments' },
+                    { 'Id' => '12', 'Type' => 'TopComments' }
                   ]
                 }
               },
@@ -105,8 +105,8 @@ module ActionController
           assert_equal expected, response
         end
 
-        def test_render_resource_with_key_transform_nil
-          get :render_resource_with_key_transform_nil
+        def test_render_resource_with_transform_nil
+          get :render_resource_with_transform_nil
           response = JSON.parse(@response.body)
           expected = {
             'data' => {
@@ -124,10 +124,10 @@ module ActionController
                     'type' => 'authors'
                   }
                 },
-                'comments' => {
+                'top-comments' => {
                   'data' => [
-                    { 'id' => '7', 'type' => 'comments' },
-                    { 'id' => '12', 'type' => 'comments' }
+                    { 'id' => '7', 'type' => 'top-comments' },
+                    { 'id' => '12', 'type' => 'top-comments' }
                   ]
                 }
               },
@@ -140,8 +140,8 @@ module ActionController
           assert_equal expected, response
         end
 
-        def test_render_resource_with_key_transform_with_global_config
-          get :render_resource_with_key_transform_with_global_config
+        def test_render_resource_with_transform_with_global_config
+          get :render_resource_with_transform_with_global_config
           response = JSON.parse(@response.body)
           expected =  {
             'data' => {
@@ -159,10 +159,10 @@ module ActionController
                     'type' => 'authors'
                   }
                 },
-                'comments' => {
+                'topComments' => {
                   'data' => [
-                    { 'id' => '7', 'type' => 'comments' },
-                    { 'id' => '12', 'type' => 'comments' }
+                    { 'id' => '7', 'type' => 'topComments' },
+                    { 'id' => '12', 'type' => 'topComments' }
                   ]
                 }
               },

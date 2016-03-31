@@ -30,20 +30,24 @@ When `false`, serializers must be explicitly specified.
 
 ##### key_transform
 
-The [key transform](key_transform.md) to use.
+The [key transform](key_transforms.md) to use.
 
-Possible values:
 
-- `:camel` - ExampleKey
-- `:camel_lower` - exampleKey
-- `:dashed` - example-key
-- `:unaltered` - the original, unaltered key
-- `nil` - use the adapter default
+| Option | Result |
+|----|----|
+| `:camel` | ExampleKey |
+| `:camel_lower` | exampleKey |
+| `:dash` | example-key |
+| `:unaltered` | the original, unaltered key |
+| `:underscore` | example_key |
+| `nil` | use the adapter default |
 
 Each adapter has a default key transform configured:
 
-- `Json` - `:unaltered`
-- `JsonApi` - `:dashed`
+| Adapter | Default Key Transform |
+|----|----|
+| `Json` | `:unaltered` |
+| `JsonApi` | `:dash` |
 
 `config.key_transform` is a global override of the adapter default. Adapters
 still prefer the render option `:key_transform` over this setting.

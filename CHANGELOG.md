@@ -2,7 +2,11 @@
 
 Breaking changes:
 
+- [#1645](https://github.com/rails-api/active_model_serializers/pull/1645) Changed :dashed key transform to :dash. (@remear)
+- [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Default key case for the JsonApi adapter changed to dashed. (@remear)
+
 Features:
+- [#1645](https://github.com/rails-api/active_model_serializers/pull/1645) Transform keys referenced in values. (@remear)
 - [#1650](https://github.com/rails-api/active_model_serializers/pull/1650) Fix serialization scope options `scope`, `scope_name`
   take precedence over `serialization_scope` in the controller.
   Fix tests that required tearing down dynamic methods. (@bf4)

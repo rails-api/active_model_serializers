@@ -27,7 +27,6 @@ module ActiveModelSerializers
       @query_parameters = request.query_parameters
       @url_helpers = options.delete(:url_helpers) || self.class.url_helpers
       @default_url_options = options.delete(:default_url_options) || self.class.default_url_options
-      @key_transform = options.delete(:key_transform)
     end
   end
 end

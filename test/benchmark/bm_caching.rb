@@ -70,7 +70,8 @@ class ApiAssertion
           },
           'author' => {
             'id' => 42,
-            'name' => 'Joao Moura.'
+            'first_name' => 'Joao',
+            'last_name' => 'Moura'
           }
         }
     }

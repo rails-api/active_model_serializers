@@ -58,25 +58,32 @@ module ActiveModelSerializers
         json
       end
 
-      def default_key_transform
-        :unaltered
-      end
+      class << self
+        # Sets the default transform for the adapter.
+        #
+        # @return [Symbol] the default transform for the adapter
+        def default_key_transform
+          :unaltered
+        end
 
-      # Determines the transform to use in order of precedence:
-      #   serialization context, global config, adapter default.
-      #
-      # @param serialization_context [Object] the SerializationContext
-      # @return [Symbol] the transform to use
-      def key_transform(serialization_context)
-        serialization_context.key_transform ||
-        ActiveModelSerializers.config.key_transform ||
-        default_key_transform
-      end
+        # Determines the transform to use in order of precedence:
+        #   adapter option, global config, adapter default.
+        #
+        # @param options [Object]
+        # @return [Symbol] the transform to use
+        def transform(options)
+          return options[:key_transform] if options && options[:key_transform]
+          ActiveModelSerializers.config.key_transform || default_key_transform
+        end
 
-      def transform_key_casing!(value, serialization_context)
-        return value unless serialization_context
-        transform = key_transform(serialization_context)
-        KeyTransform.send(transform, value)
+        # Transforms the casing of the supplied value.
+        #
+        # @param value [Object] the value to be transformed
+        # @param options [Object] serializable resource options
+        # @return [Symbol] the default transform for the adapter
+        def transform_key_casing!(value, options)
+          KeyTransform.send(transform(options), value)
+        end
       end
     end
   end

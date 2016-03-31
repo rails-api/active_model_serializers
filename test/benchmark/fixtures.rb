@@ -1,6 +1,6 @@
 Rails.configuration.serializers = []
 class AuthorSerializer < ActiveModel::Serializer
-  attributes :id, :name
+  attributes :id, :first_name, :last_name
 
   has_many :posts, embed: :ids
   has_one :bio
@@ -27,6 +27,15 @@ class PostSerializer < ActiveModel::Serializer
   belongs_to :blog, serializer: BlogSerializer
   belongs_to :author, serializer: AuthorSerializer
 
+  link(:post_authors) { 'https://example.com/post_authors' }
+
+  meta do
+    {
+      rating: 5,
+      favorite_count: 10
+    }
+  end
+
   def blog
     Blog.new(id: 999, name: 'Custom blog')
   end
@@ -34,7 +43,7 @@ end
 Rails.configuration.serializers << PostSerializer
 
 class CachingAuthorSerializer < AuthorSerializer
-  cache key: 'writer', only: [:name], skip_digest: true
+  cache key: 'writer', only: [:first_name, :last_name], skip_digest: true
 end
 Rails.configuration.serializers << CachingAuthorSerializer
 
@@ -63,7 +72,8 @@ if ENV['ENABLE_ACTIVE_RECORD'] == 'true'
       t.timestamps null: false
     end
     create_table :authors, force: true do |t|
-      t.string :name
+      t.string :first_name
+      t.string :last_name
       t.timestamps null: false
     end
     create_table :posts, force: true do |t|
@@ -144,7 +154,7 @@ else
   end
 
   class Author < BenchmarkModel
-    attr_accessor :id, :name, :posts
+    attr_accessor :id, :first_name, :last_name, :posts
   end
 
   class Post < BenchmarkModel

@@ -8,7 +8,7 @@ class PostController < ActionController::Base
       else
         comments = [Comment.new(id: 1, body: 'ZOMG A COMMENT')]
       end
-      author = Author.new(id: 42, name: 'Joao Moura.')
+      author = Author.new(id: 42, first_name: 'Joao', last_name: 'Moura')
       Post.new(id: 1337, title: 'New Post', blog: nil, body: 'Body', comments: comments, author: author)
     end
 
