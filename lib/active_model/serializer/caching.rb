@@ -58,10 +58,6 @@ module ActiveModel
           ''.freeze
         end
 
-        def _skip_digest?
-          _cache_options && _cache_options[:skip_digest]
-        end
-
         # @api private
         # Used by FragmentCache on the CachedSerializer
         #  to call attribute methods on the fragmented cached serializer.
@@ -144,18 +140,6 @@ module ActiveModel
         def fragment_cache_enabled?
           perform_caching? && cache_store &&
             (_cache_only && !_cache_except || !_cache_only && _cache_except)
-        end
-      end
-
-      # Use object's cache_key if available, else derive a key from the object
-      # Pass the `key` option to the `cache` declaration or override this method to customize the cache key
-      def cache_key
-        if object.respond_to?(:cache_key)
-          object.cache_key
-        else
-          object_time_safe = object.updated_at
-          object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
-          "#{self.class._cache_key}/#{object.id}-#{object_time_safe}"
         end
       end
     end

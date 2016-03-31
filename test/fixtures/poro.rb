@@ -1,6 +1,8 @@
 verbose = $VERBOSE
 $VERBOSE = nil
 class Model < ActiveModelSerializers::Model
+  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
+
   ### Helper methods, not required to be serializable
 
   # Convenience when not adding @attributes readers and writers
@@ -52,13 +54,7 @@ Post     = Class.new(Model)
 Like     = Class.new(Model)
 Author   = Class.new(Model)
 Bio      = Class.new(Model)
-Blog     = Class.new(Model) do
-  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
-
-  def digest
-    FILE_DIGEST
-  end
-end
+Blog     = Class.new(Model)
 Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)
