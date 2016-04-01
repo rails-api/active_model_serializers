@@ -3,6 +3,8 @@
 Breaking changes:
 
 Features:
+- [#1642](https://github.com/rails-api/active_model_serializers/pull/1642) Prefer object.cache_key over the generated
+  cache key. (@bf4 via #1346 by @kevintyll)
 - [#1637](https://github.com/rails-api/active_model_serializers/pull/1637) Make references to 'ActionController::Base.cache_store' explicit
   in order to avoid issues when application controllers inherit from 'ActionController::API'. (@ncuesta)
 - [#1633](https://github.com/rails-api/active_model_serializers/pull/1633) Yield 'serializer' to serializer association blocks. (@bf4)

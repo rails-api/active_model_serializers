@@ -1,5 +1,7 @@
 module ActiveModelSerializers
   class CachedSerializer
+    UndefinedCacheKey = Class.new(StandardError)
+
     def initialize(serializer)
       @cached_serializer = serializer
       @klass             = @cached_serializer.class
@@ -34,10 +36,18 @@ module ActiveModelSerializers
       @cache_key = parts.join('/')
     end
 
+    # Use object's cache_key if available, else derive a key from the object
+    # Pass the `key` option to the `cache` declaration or override this method to customize the cache key
     def object_cache_key
-      object_time_safe = @cached_serializer.object.updated_at
-      object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
-      @klass._cache_key ? "#{@klass._cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}" : @cached_serializer.object.cache_key
+      if @cached_serializer.object.respond_to?(:cache_key)
+        @cached_serializer.object.cache_key
+      elsif (cache_key = (@klass._cache_key || @klass._cache_options[:key]))
+        object_time_safe = @cached_serializer.object.updated_at
+        object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
+        "#{cache_key}/#{@cached_serializer.object.id}-#{object_time_safe}"
+      else
+        fail UndefinedCacheKey, "#{@cached_serializer.object.class} must define #cache_key, or the 'key:' option must be passed into '#{@klass}.cache'"
+      end
     end
 
     # find all cache_key for the collection_serializer
