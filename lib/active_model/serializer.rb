@@ -353,13 +353,16 @@ module ActiveModel
     # Returns a hash representation of the serializable
     # object without the root.
     def serializable_hash
-      if perform_caching?
+      @node = if perform_caching?
         cache.fetch expand_cache_key([self.class.to_s.underscore, cache_key, 'serializable-hash']) do
           _serializable_hash
         end
       else
         _serializable_hash
       end
+
+      include_associations! if @object.present? && _embed
+      @node
     end
 
     def include_associations!
@@ -476,9 +479,7 @@ module ActiveModel
 
     def _serializable_hash
       return nil if @object.nil?
-      @node = attributes
-      include_associations! if _embed
-      @node
+      attributes
     end
 
     def perform_caching?
