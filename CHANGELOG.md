@@ -3,6 +3,9 @@
 Breaking changes:
 
 Features:
+- [#1650](https://github.com/rails-api/active_model_serializers/pull/1650) Fix serialization scope options `scope`, `scope_name`
+  take precedence over `serialization_scope` in the controller.
+  Fix tests that required tearing down dynamic methods. (@bf4)
 - [#1644](https://github.com/rails-api/active_model_serializers/pull/1644) Include adapter name in cache key so
   that the same serializer can be cached per adapter. (@bf4 via #1346 by @kevintyll)
 - [#1642](https://github.com/rails-api/active_model_serializers/pull/1642) Prefer object.cache_key over the generated
