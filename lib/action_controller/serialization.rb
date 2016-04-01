@@ -30,8 +30,8 @@ module ActionController
         options[:adapter] = false
       end
       serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options)
-      serializable_resource.serialization_scope ||= serialization_scope
-      serializable_resource.serialization_scope_name = _serialization_scope
+      serializable_resource.serialization_scope ||= options.fetch(:scope) { serialization_scope }
+      serializable_resource.serialization_scope_name = options.fetch(:scope_name) { _serialization_scope }
       # For compatibility with the JSON renderer: `json.to_json(options) if json.is_a?(String)`.
       # Otherwise, since `serializable_resource` is not a string, the renderer would call
       # `to_json` on a String and given odd results, such as `"".to_json #=> '""'`

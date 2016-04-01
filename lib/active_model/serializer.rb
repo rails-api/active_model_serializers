@@ -96,16 +96,18 @@ module ActiveModel
       end
     end
 
-    def self._serializer_instance_method_defined?(name)
-      _serializer_instance_methods.include?(name)
+    # rubocop:disable Style/ClassVars
+    def self.method_added(method_name)
+      @@_serializer_instance_methods ||= Hash.new { |h, k| h[k] = Set.new }
+      @@_serializer_instance_methods[self] << method_name
     end
 
-    # TODO: Fix load-order failures when different serializer instances define different
-    # scope methods
-    def self._serializer_instance_methods
-      @_serializer_instance_methods ||= (public_instance_methods - Object.public_instance_methods).to_set
+    def self._serializer_instance_method_defined?(name)
+      @_serializer_instance_methods ||= (ActiveModel::Serializer.public_instance_methods - Object.public_instance_methods).to_set
+      @_serializer_instance_methods.include?(name) ||
+        @@_serializer_instance_methods[self].include?(name)
     end
-    private_class_method :_serializer_instance_methods
+    # rubocop:enable Style/ClassVars
 
     attr_accessor :object, :root, :scope
 
