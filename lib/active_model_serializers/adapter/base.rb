@@ -15,6 +15,10 @@ module ActiveModelSerializers
         @instance_options = options
       end
 
+      def cached_name
+        @cached_name ||= self.class.name.demodulize.underscore
+      end
+
       def serializable_hash(_options = nil)
         fail NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end

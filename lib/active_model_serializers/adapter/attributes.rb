@@ -30,7 +30,7 @@ module ActiveModelSerializers
       def cache_read_multi
         return {} if ActiveModelSerializers.config.cache_store.blank?
 
-        keys = CachedSerializer.object_cache_keys(serializer, @include_tree)
+        keys = CachedSerializer.object_cache_keys(serializer, self, @include_tree)
 
         return {} if keys.blank?
 
@@ -49,7 +49,7 @@ module ActiveModelSerializers
       def cached_attributes(cached_serializer)
         return yield unless cached_serializer.cached?
 
-        @cached_attributes.fetch(cached_serializer.cache_key) { yield }
+        @cached_attributes.fetch(cached_serializer.cache_key(self)) { yield }
       end
 
       def serializable_hash_for_single_resource(options)
