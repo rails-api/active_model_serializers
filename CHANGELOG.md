@@ -34,6 +34,7 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1651](https://github.com/rails-api/active_model_serializers/pull/1651) Fix deserialization of nil relationships. (@NullVoxPopuli)
 - [#1480](https://github.com/rails-api/active_model_serializers/pull/1480) Fix setting of cache_store from Rails configuration. (@bf4)
   Fix uninentional mutating of value in memory cache store. (@groyoh)
 - [#1622](https://github.com/rails-api/active_model_serializers/pull/1622) Fragment cache changed from per-record to per-serializer.

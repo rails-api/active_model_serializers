@@ -9,9 +9,49 @@ module ActionController
             parsed_hash = ActiveModelSerializers::Deserialization.jsonapi_parse(params)
             render json: parsed_hash
           end
+
+          def render_polymorphic_parsed_payload
+            parsed_hash = ActiveModelSerializers::Deserialization.jsonapi_parse(
+              params,
+              polymorphic: [:restriction_for, :restricted_to]
+            )
+            render json: parsed_hash
+          end
         end
 
         tests DeserializationTestController
+
+        def test_deserialization_of_relationship_only_object
+          hash = {
+            'data' => {
+              'type' => 'restraints',
+              'relationships' => {
+                'restriction_for' => {
+                  'data' => {
+                    'type' => 'discounts',
+                    'id' => '67'
+                  }
+                },
+                'restricted_to' => {
+                  'data' => nil
+                }
+              }
+            },
+            'restraint' => {}
+          }
+
+          post :render_polymorphic_parsed_payload, params: hash
+
+          response = JSON.parse(@response.body)
+          expected = {
+            'restriction_for_id' => '67',
+            'restriction_for_type' => 'discounts',
+            'restricted_to_id' => nil,
+            'restricted_to_type' => nil
+          }
+
+          assert_equal(expected, response)
+        end
 
         def test_deserialization
           hash = {
