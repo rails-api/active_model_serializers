@@ -52,8 +52,9 @@ module ActiveModelSerializers
     end
 
     # find all cache_key for the collection_serializer
-    # @param collection_serializer
-    # @param include_tree
+    # @param serializers [ActiveModel::Serializer::CollectionSerializer]
+    # @param adapter_instance [ActiveModelSerializers::Adapter::Base]
+    # @param include_tree [ActiveModel::Serializer::IncludeTree]
     # @return [Array] all cache_key of collection_serializer
     def self.object_cache_keys(serializers, adapter_instance, include_tree)
       cache_keys = []

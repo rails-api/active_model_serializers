@@ -1,11 +1,34 @@
 begin
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
+begin
   require 'simplecov'
 rescue LoadError
 end
 
-require 'bundler'
-Bundler.setup
-require 'bundler/gem_tasks'
+Bundler::GemHelper.install_tasks
+
+require 'yard'
+
+namespace :yard do
+  YARD::Rake::YardocTask.new(:doc) do |t|
+    t.stats_options = ['--list-undoc']
+  end
+
+  desc 'start a gem server'
+  task :server do
+    sh 'bundle exec yard server --gems'
+  end
+
+  desc 'use Graphviz to generate dot graph'
+  task :graph do
+    output_file = 'doc/erd.dot'
+    sh "bundle exec yard graph --protected --full --dependencies > #{output_file}"
+    puts 'open doc/erd.dot if you have graphviz installed'
+  end
+end
 
 begin
   require 'rubocop'
@@ -31,7 +54,7 @@ else
     Rake::Task[:rubocop].clear if Rake::Task.task_defined?(:rubocop)
     desc 'Execute rubocop'
     RuboCop::RakeTask.new(:rubocop) do |task|
-      task.options = ['--display-cop-names', '--display-style-guide']
+      task.options = ['--rails', '--display-cop-names', '--display-style-guide']
       task.fail_on_error = true
     end
   end
@@ -39,10 +62,10 @@ end
 
 require 'rake/testtask'
 
-Rake::TestTask.new do |t|
-  t.libs << 'test'
+Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
-  t.test_files = FileList['test/**/*_test.rb']
+  t.libs << 'test'
+  t.pattern = 'test/**/*_test.rb'
   t.ruby_opts = ['-r./test/test_helper.rb']
   t.ruby_opts << ' -w' unless ENV['NO_WARN'] == 'true'
   t.verbose = true

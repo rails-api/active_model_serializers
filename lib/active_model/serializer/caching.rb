@@ -74,7 +74,7 @@ module ActiveModel
         # Sets +::_cache+ object to <tt>ActionController::Base.cache_store</tt>
         #   when Rails.configuration.action_controller.perform_caching
         #
-        # @params options [Hash] with valid keys:
+        # @param options [Hash] with valid keys:
         #   cache_store    : @see ::_cache
         #   key            : @see ::_cache_key
         #   only           : @see ::_cache_only

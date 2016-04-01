@@ -8,8 +8,8 @@ module ActiveModelSerializers
         # Builds a JSON API Errors Object
         # {http://jsonapi.org/format/#errors JSON API Errors}
         #
-        # @param [ActiveModel::Serializer::ErrorSerializer]
-        # @return [Array<Symbol, Array<String>] i.e. attribute_name, [attribute_errors]
+        # @param [ActiveModel::Serializer::ErrorSerializer] error_serializer
+        # @return [Array<Symbol, Array<String>>] i.e. attribute_name, [attribute_errors]
         def self.resource_errors(error_serializer)
           error_serializer.as_json.flat_map do |attribute_name, attribute_errors|
             attribute_error_objects(attribute_name, attribute_errors)
