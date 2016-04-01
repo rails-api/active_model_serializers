@@ -26,7 +26,7 @@ module ActiveModelSerializers
         ActiveModelSerializers::Adapter.lookup(adapter)
       end
 
-      # @return Hash<adapter_name, adapter_class>
+      # @return [Hash<adapter_name, adapter_class>]
       def adapter_map
         ADAPTER_MAP
       end

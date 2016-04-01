@@ -1,3 +1,5 @@
+# Configure Rails Environment
+ENV['RAILS_ENV'] = 'test'
 require 'bundler/setup'
 
 begin
@@ -35,9 +37,14 @@ else
   $minitest_version = 5
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
   # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest.rb#L45-L59
+  # Filter out Minitest backtrace while allowing backtrace from other libraries
+  # to be shown.
+  Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 end
 
 require 'support/rails_app'
+
+# require "rails/test_help"
 
 require 'support/serialization_testing'
 
