@@ -80,6 +80,32 @@ end
 
 ActiveModelSerializers will use `PostSerializer::CommentSerializer` (thus including only the `:body_short` attribute) when serializing a `Comment` as part of a `Post`, but use `::CommentSerializer` when serializing a `Comment` directly (thus including `:body, :date, :nb_likes`).
 
+### Extending a Base `ApplicationSerializer`
+
+By default, new serializers descend from `ActiveModel::Serializer`. However, if
+you wish to share behavior across your serializers, you can create an
+`ApplicationSerializer` at `app/serializers/application_serializer.rb`:
+
+```ruby
+class ApplicationSerializer < ActiveModel::Serializer
+end
+```
+
+Then any newly-generated serializers will automatically descend from
+`ApplicationSerializer`.
+
+```
+$ rails g serializer post
+```
+
+Now generates:
+
+```ruby
+class PostSerializer < ApplicationSerializer
+  attributes :id
+end
+````
+
 ## Rails Integration
 
 ActiveModelSerializers will automatically integrate with your Rails app,
