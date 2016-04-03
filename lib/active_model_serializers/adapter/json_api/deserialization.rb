@@ -188,7 +188,9 @@ module ActiveModelSerializers
             end
 
           polymorphic = (options[:polymorphic] || []).include?(assoc_name.to_sym)
-          hash["#{prefix_key}_type".to_sym] = assoc_data[:type] if polymorphic
+          if polymorphic
+            hash["#{prefix_key}_type".to_sym] = assoc_data.present? ? assoc_data[:type] : nil
+          end
 
           hash
         end
