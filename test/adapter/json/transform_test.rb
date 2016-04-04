@@ -8,8 +8,8 @@ module ActiveModelSerializers
           context = Minitest::Mock.new
           context.expect(:request_url, URI)
           context.expect(:query_parameters, {})
-          context.expect(:key_transform, key_transform)
           @options = {}
+          @options[:key_transform] = key_transform if key_transform
           @options[:serialization_context] = context
         end
 
@@ -25,14 +25,14 @@ module ActiveModelSerializers
           @adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
         end
 
-        def test_key_transform_default
+        def test_transform_default
           mock_request
           assert_equal({
             blog: { id: 1, special_attribute: 'neat', articles: nil }
           }, @adapter.serializable_hash(@options))
         end
 
-        def test_key_transform_global_config
+        def test_transform_global_config
           mock_request
           result = with_config(key_transform: :camel_lower) do
             @adapter.serializable_hash(@options)
@@ -42,7 +42,7 @@ module ActiveModelSerializers
           }, result)
         end
 
-        def test_key_transform_serialization_ctx_overrides_global_config
+        def test_transform_serialization_ctx_overrides_global_config
           mock_request(:camel)
           result = with_config(key_transform: :camel_lower) do
             @adapter.serializable_hash(@options)
@@ -52,7 +52,7 @@ module ActiveModelSerializers
           }, result)
         end
 
-        def test_key_transform_undefined
+        def test_transform_undefined
           mock_request(:blam)
           result = nil
           assert_raises NoMethodError do
@@ -60,28 +60,28 @@ module ActiveModelSerializers
           end
         end
 
-        def test_key_transform_dashed
-          mock_request(:dashed)
+        def test_transform_dash
+          mock_request(:dash)
           assert_equal({
             blog: { id: 1, :"special-attribute" => 'neat', articles: nil }
           }, @adapter.serializable_hash(@options))
         end
 
-        def test_key_transform_unaltered
+        def test_transform_unaltered
           mock_request(:unaltered)
           assert_equal({
             blog: { id: 1, special_attribute: 'neat', articles: nil }
           }, @adapter.serializable_hash(@options))
         end
 
-        def test_key_transform_camel
+        def test_transform_camel
           mock_request(:camel)
           assert_equal({
             Blog: { Id: 1, SpecialAttribute: 'neat', Articles: nil }
           }, @adapter.serializable_hash(@options))
         end
 
-        def test_key_transform_camel_lower
+        def test_transform_camel_lower
           mock_request(:camel_lower)
           assert_equal({
             blog: { id: 1, specialAttribute: 'neat', articles: nil }

@@ -3,9 +3,10 @@ module ActiveModelSerializers
     class JsonApi
       class ResourceIdentifier
         # {http://jsonapi.org/format/#document-resource-identifier-objects Resource Identifier Objects}
-        def initialize(serializer)
+        def initialize(serializer, options)
           @id   = id_for(serializer)
-          @type = type_for(serializer)
+          @type = JsonApi.send(:transform_key_casing!, type_for(serializer),
+            options)
         end
 
         def as_json

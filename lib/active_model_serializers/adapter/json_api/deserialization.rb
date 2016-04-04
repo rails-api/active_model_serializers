@@ -182,14 +182,14 @@ module ActiveModelSerializers
           prefix_key = field_key(assoc_name, options).to_s.singularize
           hash =
             if assoc_data.is_a?(Array)
-              { "#{prefix_key}_ids".to_sym => assoc_data.map { |ri| ri[:id] } }
+              { "#{prefix_key}_ids".to_sym => assoc_data.map { |ri| ri['id'] } }
             else
-              { "#{prefix_key}_id".to_sym => assoc_data && assoc_data.is_a?(Hash) ? assoc_data[:id] : nil }
+              { "#{prefix_key}_id".to_sym => assoc_data ? assoc_data['id'] : nil }
             end
 
           polymorphic = (options[:polymorphic] || []).include?(assoc_name.to_sym)
           if polymorphic
-            hash["#{prefix_key}_type".to_sym] = assoc_data.present? ? assoc_data[:type] : nil
+            hash["#{prefix_key}_type".to_sym] = assoc_data.present? ? assoc_data['type'] : nil
           end
 
           hash
@@ -198,7 +198,7 @@ module ActiveModelSerializers
         # @api private
         def parse_relationships(relationships, options)
           transform_keys(relationships, options)
-            .map { |(k, v)| parse_relationship(k, v[:data], options) }
+            .map { |(k, v)| parse_relationship(k, v['data'], options) }
             .reduce({}, :merge)
         end
 

@@ -54,7 +54,7 @@ module ActiveModel
               adapter: :json_api
             ).serializable_hash
             expected = {
-              comments_count: @post.comments.count
+              :"comments-count" => @post.comments.count
             }
             assert_equal(expected, hash[:data][:meta])
           end
@@ -69,8 +69,8 @@ module ActiveModel
             ).serializable_hash
             expected = {
               :data => [
-                { :id => '1337', :type => 'posts', :meta => { :comments_count => 0 } },
-                { :id => '1339', :type => 'posts', :meta => { :comments_count => 1 } }
+                { :id => '1337', :type => 'posts', :meta => { :"comments-count" => 0 } },
+                { :id => '1339', :type => 'posts', :meta => { :"comments-count" => 1 } }
               ]
             }
             assert_equal(expected, hash)

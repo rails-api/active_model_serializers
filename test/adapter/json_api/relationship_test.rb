@@ -151,11 +151,8 @@ module ActiveModelSerializers
         private
 
         def test_relationship(expected, params = {})
-          options = params.fetch(:options, {})
-          links = params.fetch(:links, {})
-          meta = params[:meta]
           parent_serializer = AuthorSerializer.new(@author)
-          relationship = Relationship.new(parent_serializer, @serializer, options, links, meta)
+          relationship = Relationship.new(parent_serializer, @serializer, nil, params)
           assert_equal(expected, relationship.as_json)
         end
       end

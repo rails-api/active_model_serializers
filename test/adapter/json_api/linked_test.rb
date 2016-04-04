@@ -216,7 +216,7 @@ module ActiveModelSerializers
           expected = {
             related: {
               data: [{
-                type: 'spam_unrelated_links',
+                type: 'spam-unrelated-links',
                 id: '456'
               }]
             }
@@ -366,12 +366,12 @@ module ActiveModelSerializers
             adapter: :json_api,
             include: '*').serializable_hash
           expected = [
-            type: 'nested_posts', id: '2',
+            type: 'nested-posts', id: '2',
             relationships: {
-              nested_posts: {
+              :"nested-posts" => {
                 data: [
-                  { type: 'nested_posts', id: '1' },
-                  { type: 'nested_posts', id: '2' }
+                  { type: 'nested-posts', id: '1' },
+                  { type: 'nested-posts', id: '2' }
                 ]
               }
             }

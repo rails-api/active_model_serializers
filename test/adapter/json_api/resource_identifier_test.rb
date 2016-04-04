@@ -22,7 +22,7 @@ module ActiveModelSerializers
         end
 
         def test_defined_type
-          test_type(WithDefinedTypeSerializer, 'with_defined_type')
+          test_type(WithDefinedTypeSerializer, 'with-defined-type')
         end
 
         def test_singular_type
@@ -58,7 +58,7 @@ module ActiveModelSerializers
 
         def test_type(serializer_class, expected_type)
           serializer = serializer_class.new(@model)
-          resource_identifier = ResourceIdentifier.new(serializer)
+          resource_identifier = ResourceIdentifier.new(serializer, nil)
           expected = {
             id: @model.id.to_s,
             type: expected_type
@@ -69,7 +69,7 @@ module ActiveModelSerializers
 
         def test_id(serializer_class, id)
           serializer = serializer_class.new(@model)
-          resource_identifier = ResourceIdentifier.new(serializer)
+          resource_identifier = ResourceIdentifier.new(serializer, nil)
           inflection = ActiveModelSerializers.config.jsonapi_resource_type
           type = @model.class.model_name.send(inflection)
           expected = {
