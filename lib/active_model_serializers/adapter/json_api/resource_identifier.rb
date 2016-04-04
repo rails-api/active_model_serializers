@@ -20,11 +20,13 @@ module ActiveModelSerializers
 
         def type_for(serializer)
           return serializer._type if serializer._type
-          if ActiveModelSerializers.config.jsonapi_resource_type == :singular
-            serializer.object.class.model_name.singular
-          else
-            serializer.object.class.model_name.plural
+          type = serializer.object.class.to_s.split('::')
+          type.map! { |t| KeyTransform.transform(t, ActiveModelSerializers.config.jsonapi_type_transform) }
+          type = type.join ActiveModelSerializers.config.jsonapi_namespace_separator
+          if ActiveModelSerializers.config.jsonapi_resource_type == :plural
+            type = type.pluralize
           end
+          type
         end
 
         def id_for(serializer)

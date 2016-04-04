@@ -21,6 +21,8 @@ module ActiveModel
 
         config.adapter = :attributes
         config.jsonapi_resource_type = :plural
+        config.jsonapi_namespace_separator = '--'.freeze
+        config.jsonapi_type_transform = :underscore
         config.jsonapi_version = '1.0'
         config.jsonapi_toplevel_meta = {}
         # Make JSON API top-level jsonapi member opt-in
