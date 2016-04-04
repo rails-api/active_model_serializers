@@ -14,7 +14,6 @@ require 'rails'
 require 'action_controller'
 require 'action_controller/test_case'
 require 'action_controller/railtie'
-require 'active_support/json'
 require 'active_model_serializers'
 require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
