@@ -10,9 +10,8 @@ module ActiveModelSerializers
           render json: Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
         end
 
-        # For Rails4.0
         def render_some_text
-          Rails.version > '4.1' ? render(plain: 'ok') : render(text: 'ok')
+          render(plain: 'ok')
         end
       end
 

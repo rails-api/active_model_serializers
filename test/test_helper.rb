@@ -19,27 +19,9 @@ require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
 
 gem 'minitest'
-begin
-  require 'minitest'
-rescue LoadError
-  # Minitest 4
-  require 'minitest/autorun'
-  $minitest_version = 4
-  # https://github.com/seattlerb/minitest/blob/644a52fd0/lib/minitest/autorun.rb
-  # https://github.com/seattlerb/minitest/blob/644a52fd0/lib/minitest/unit.rb#L768-L787
-  # Ensure backward compatibility with Minitest 4
-  Minitest = MiniTest unless defined?(Minitest)
-  Minitest::Test = MiniTest::Unit::TestCase
-else
-  # Minitest 5
-  require 'minitest/autorun'
-  $minitest_version = 5
-  # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest/autorun.rb
-  # https://github.com/seattlerb/minitest/blob/e21fdda9d/lib/minitest.rb#L45-L59
-  # Filter out Minitest backtrace while allowing backtrace from other libraries
-  # to be shown.
-  Minitest.backtrace_filter = Minitest::BacktraceFilter.new
-end
+require 'minitest'
+require 'minitest/autorun'
+Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 require 'support/rails_app'
 

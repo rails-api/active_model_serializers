@@ -76,20 +76,17 @@ module ActiveModel::Serializer::Lint
       resource.to_json(nil)
     end
 
-    # Passes if the object responds to <tt>cache_key</tt> and if it takes no
-    # arguments (Rails 4.0) or a splat (Rails 4.1+).
+    # Passes if the object responds to <tt>cache_key</tt>
     # Fails otherwise.
     #
-    # <tt>cache_key</tt> returns a (self-expiring) unique key for the object, and
-    # is part of the (self-expiring) cache_key, which is used by the adapter.
-    # It is not required unless caching is enabled.
+    # <tt>cache_key</tt> returns a (self-expiring) unique key for the object,
+    # and is part of the (self-expiring) cache_key, which is used by the
+    # adapter. It is not required unless caching is enabled.
     def test_cache_key
       assert_respond_to resource, :cache_key
       actual_arity = resource.method(:cache_key).arity
-      # using absolute value since arity is:
-      #   0 for Rails 4.1+, *timestamp_names
-      #  -1 for Rails 4.0, no arguments
-      assert_includes [-1, 0], actual_arity, "expected #{actual_arity.inspect} to be 0 or -1"
+      assert_includes [-1, 0], actual_arity,
+        "expected #{actual_arity.inspect} to be 0 or -1"
     end
 
     # Passes if the object responds to <tt>updated_at</tt> and if it takes no
