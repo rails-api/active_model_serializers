@@ -96,19 +96,6 @@ module ActiveModel
       end
     end
 
-    # rubocop:disable Style/ClassVars
-    def self.method_added(method_name)
-      @@_serializer_instance_methods ||= Hash.new { |h, k| h[k] = Set.new }
-      @@_serializer_instance_methods[self] << method_name
-    end
-
-    def self._serializer_instance_method_defined?(name)
-      @_serializer_instance_methods ||= (ActiveModel::Serializer.public_instance_methods - Object.public_instance_methods).to_set
-      @_serializer_instance_methods.include?(name) ||
-        @@_serializer_instance_methods[self].include?(name)
-    end
-    # rubocop:enable Style/ClassVars
-
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -122,9 +109,7 @@ module ActiveModel
 
       scope_name = instance_options[:scope_name]
       if scope_name && !respond_to?(scope_name)
-        self.class.class_eval do
-          define_method scope_name, lambda { scope }
-        end
+        define_singleton_method scope_name, lambda { scope }
       end
     end
 
@@ -189,7 +174,7 @@ module ActiveModel
     end
 
     def read_attribute_for_serialization(attr)
-      if self.class._serializer_instance_method_defined?(attr)
+      if respond_to?(attr)
         send(attr)
       elsif self.class._fragmented
         self.class._fragmented.read_attribute_for_serialization(attr)
