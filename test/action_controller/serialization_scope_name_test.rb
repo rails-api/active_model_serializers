@@ -1,17 +1,6 @@
 require 'test_helper'
 
 module SerializationScopeTesting
-  def self.undef_serializer_dynamic_scope_methods
-    [PostSerializer, PostViewContextSerializer]. each do |serializer_class|
-      instance_method_cache = serializer_class.instance_variable_get(:@_serializer_instance_methods)
-      class_method_cache    = serializer_class.class_variable_get(:@@_serializer_instance_methods)[serializer_class]
-      [:view_context, :current_user].each do |scope_method|
-        serializer_class.send(:undef_method, scope_method) if serializer_class.method_defined?(scope_method)
-        instance_method_cache && instance_method_cache.delete(scope_method)
-        class_method_cache && class_method_cache.delete(scope_method)
-      end
-    end
-  end
   class User < ActiveModelSerializers::Model
     attr_accessor :id, :name, :admin
     def admin?
@@ -81,10 +70,6 @@ module SerializationScopeTesting
   class DefaultScopeTest < ActionController::TestCase
     tests PostTestController
 
-    teardown do
-      SerializationScopeTesting.undef_serializer_dynamic_scope_methods
-    end
-
     def test_default_serialization_scope
       assert_equal :current_user, @controller._serialization_scope
     end
@@ -134,10 +119,6 @@ module SerializationScopeTesting
       end
     end
     tests PostViewContextTestController
-
-    teardown do
-      SerializationScopeTesting.undef_serializer_dynamic_scope_methods
-    end
 
     def test_defined_serialization_scope
       assert_equal :view_context, @controller._serialization_scope
@@ -205,10 +186,6 @@ module SerializationScopeTesting
       end
     end
     tests PostViewContextTestController
-
-    teardown do
-      SerializationScopeTesting.undef_serializer_dynamic_scope_methods
-    end
 
     def test_nil_serialization_scope
       assert_nil @controller._serialization_scope

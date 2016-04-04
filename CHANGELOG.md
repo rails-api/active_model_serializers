@@ -41,9 +41,11 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
+- [#1661](https://github.com/rails-api/active_model_serializers/pull/1661) Fixes `read_attribute_for_serialization` not
+  seeing methods defined in serialization superclass (#1653, #1658, #1660), introduced in #1650. (@bf4)
 - [#1651](https://github.com/rails-api/active_model_serializers/pull/1651) Fix deserialization of nil relationships. (@NullVoxPopuli)
 - [#1480](https://github.com/rails-api/active_model_serializers/pull/1480) Fix setting of cache_store from Rails configuration. (@bf4)
-  Fix uninentional mutating of value in memory cache store. (@groyoh)
+  Fix unintentional mutating of value in memory cache store. (@groyoh)
 - [#1622](https://github.com/rails-api/active_model_serializers/pull/1622) Fragment cache changed from per-record to per-serializer.
   Now, two serializers that use the same model may be separately cached. (@lserman)
 - [#1478](https://github.com/rails-api/active_model_serializers/pull/1478) Cache store will now be correctly set when serializers are
