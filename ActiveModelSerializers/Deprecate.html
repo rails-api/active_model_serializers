@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: ActiveModelSerializers::Deprecate
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!ActiveModelSerializers/Deprecate.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (D)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../ActiveModelSerializers.html" title="ActiveModelSerializers (module)">ActiveModelSerializers</a></span></span>
+     &raquo; 
+    <span class="title">Deprecate</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Module: ActiveModelSerializers::Deprecate
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1">Included in:</dt>
+    <dd class="r1"><span class='object_link'><a href="../ActiveModel/SerializableResource.html" title="ActiveModel::SerializableResource (class)">ActiveModel::SerializableResource</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer.html" title="ActiveModel::Serializer (class)">ActiveModel::Serializer</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/Adapter.html" title="ActiveModel::Serializer::Adapter (module)">ActiveModel::Serializer::Adapter</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/Adapter/Attributes.html" title="ActiveModel::Serializer::Adapter::Attributes (class)">ActiveModel::Serializer::Adapter::Attributes</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/Adapter/Base.html" title="ActiveModel::Serializer::Adapter::Base (class)">ActiveModel::Serializer::Adapter::Base</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/Adapter/Json.html" title="ActiveModel::Serializer::Adapter::Json (class)">ActiveModel::Serializer::Adapter::Json</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/Adapter/JsonApi.html" title="ActiveModel::Serializer::Adapter::JsonApi (class)">ActiveModel::Serializer::Adapter::JsonApi</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/Adapter/Null.html" title="ActiveModel::Serializer::Adapter::Null (class)">ActiveModel::Serializer::Adapter::Null</a></span>, <span class='object_link'><a href="../ActiveModel/Serializer/ArraySerializer.html" title="ActiveModel::Serializer::ArraySerializer (class)">ActiveModel::Serializer::ArraySerializer</a></span></dd>
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/active_model_serializers/deprecate.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#delegate_and_deprecate-class_method" title="delegate_and_deprecate (class method)">+ (Object) <strong>delegate_and_deprecate</strong>(method, delegee) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deprecate-class_method" title="deprecate (class method)">+ (Object) <strong>deprecate</strong>(name, replacement) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Simple deprecation method that deprecates <code>name</code> by wrapping it
+up in a dummy method.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="delegate_and_deprecate-class_method">
+  
+    + (<tt>Object</tt>) <strong>delegate_and_deprecate</strong>(method, delegee) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+47
+48
+49
+50</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/deprecate.rb', line 47</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_delegate_and_deprecate'>delegate_and_deprecate</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='id identifier rubyid_delegee'>delegee</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_delegate'>delegate</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='label'>to:</span> <span class='id identifier rubyid_delegee'>delegee</span>
+  <span class='id identifier rubyid_deprecate'>deprecate</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_delegee'>delegee</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="deprecate-class_method">
+  
+    + (<tt>Object</tt>) <strong>deprecate</strong>(name, replacement) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Simple deprecation method that deprecates <code>name</code> by wrapping it
+up in a dummy method. It warns on each call to the dummy method telling the
+user of <code>replacement</code> (unless <code>replacement</code> is :none)
+that it is planned to go away.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/deprecate.rb', line 31</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_deprecate'>deprecate</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_old'>old</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>_deprecated_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_alias_method'>alias_method</span> <span class='id identifier rubyid_old'>old</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span>
+  <span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_define_method'>define_method</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='op'>|</span>
+      <span class='id identifier rubyid_target'>target</span> <span class='op'>=</span> <span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Module</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'>#</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>NOTE: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_target'>target</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> is deprecated</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+             <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>==</span> <span class='symbol'>:none</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> with no replacement</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>; use </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_replacement'>replacement</span><span class='embexpr_end'>}</span><span class='tstring_content'> instead</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+             <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_target'>target</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> called from </span><span class='embexpr_beg'>#{</span><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_location_of_caller'>location_of_caller</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+            <span class='rbracket'>]</span>
+      <span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_send'>send</span> <span class='id identifier rubyid_old'>old</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Apr  5 11:04:36 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>

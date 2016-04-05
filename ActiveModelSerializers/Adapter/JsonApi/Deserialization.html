@@ -1,0 +1,1059 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: ActiveModelSerializers::Adapter::JsonApi::Deserialization
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!ActiveModelSerializers/Adapter/JsonApi/Deserialization.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (D)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../ActiveModelSerializers.html" title="ActiveModelSerializers (module)">ActiveModelSerializers</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Adapter.html" title="ActiveModelSerializers::Adapter (module)">Adapter</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../JsonApi.html" title="ActiveModelSerializers::Adapter::JsonApi (class)">JsonApi</a></span></span>
+     &raquo; 
+    <span class="title">Deserialization</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Module: ActiveModelSerializers::Adapter::JsonApi::Deserialization
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/active_model_serializers/adapter/json_api/deserialization.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>NOTE(Experimental): This is an experimental feature. Both the interface and
+internals could be subject to changes.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="InvalidDocument-constant" class="">InvalidDocument =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>ArgumentError</span><span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#field_key-class_method" title="field_key (class method)">+ (Object) <strong>field_key</strong>(field, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#filter_fields-class_method" title="filter_fields (class method)">+ (Object) <strong>filter_fields</strong>(fields, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse-class_method" title="parse (class method)">+ (Object) <strong>parse</strong>(document, options = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Same as parse!, but returns an empty hash instead of raising
+InvalidDocument on invalid payloads.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse%21-class_method" title="parse! (class method)">+ (Hash) <strong>parse!</strong>(document, options = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Transform a JSON API document, containing a single data object, into a hash
+that is ready for ActiveRecord::Base.new() and such.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse_attributes-class_method" title="parse_attributes (class method)">+ (Object) <strong>parse_attributes</strong>(attributes, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse_relationship-class_method" title="parse_relationship (class method)">+ (Hash{Symbol, Object}) <strong>parse_relationship</strong>(assoc_name, assoc_data, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Given an association name, and a relationship data attribute, build a hash
+mapping the corresponding ActiveRecord attribute to the corresponding
+value.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse_relationships-class_method" title="parse_relationships (class method)">+ (Object) <strong>parse_relationships</strong>(relationships, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#transform_keys-class_method" title="transform_keys (class method)">+ (Object) <strong>transform_keys</strong>(hash, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_payload-class_method" title="validate_payload (class method)">+ (Object) <strong>validate_payload</strong>(payload) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Checks whether a payload is compliant with the JSON API spec.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="field_key-class_method">
+  
+    + (<tt>Object</tt>) <strong>field_key</strong>(field, options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+152
+153
+154</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 152</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_field_key'>field_key</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:keys</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_field'>field</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='comma'>,</span> <span class='id identifier rubyid_field'>field</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="filter_fields-class_method">
+  
+    + (<tt>Object</tt>) <strong>filter_fields</strong>(fields, options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+143
+144
+145
+146
+147
+148
+149</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 143</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_filter_fields'>filter_fields</span><span class='lparen'>(</span><span class='id identifier rubyid_fields'>fields</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_only'>only</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:only</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_fields'>fields</span><span class='period'>.</span><span class='id identifier rubyid_slice!'>slice!</span><span class='lparen'>(</span><span class='op'>*</span><span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_only'>only</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='kw'>elsif</span> <span class='lparen'>(</span><span class='id identifier rubyid_except'>except</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:except</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_fields'>fields</span><span class='period'>.</span><span class='id identifier rubyid_except!'>except!</span><span class='lparen'>(</span><span class='op'>*</span><span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_except'>except</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse-class_method">
+  
+    + (<tt>Object</tt>) <strong>parse</strong>(document, options = {}) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Same as parse!, but returns an empty hash instead of raising
+InvalidDocument on invalid payloads.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 83</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_document'>document</span> <span class='op'>=</span> <span class='id identifier rubyid_document'>document</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_permit!'>permit!</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span> <span class='kw'>if</span> <span class='id identifier rubyid_document'>document</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>ActionController</span><span class='op'>::</span><span class='const'>Parameters</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_validate_payload'>validate_payload</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_invalid_document'>invalid_document</span><span class='comma'>,</span> <span class='id identifier rubyid_reason'>reason</span><span class='op'>|</span>
+    <span class='kw'>yield</span> <span class='id identifier rubyid_invalid_document'>invalid_document</span><span class='comma'>,</span> <span class='id identifier rubyid_reason'>reason</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
+    <span class='kw'>return</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_primary_data'>primary_data</span> <span class='op'>=</span> <span class='id identifier rubyid_document'>document</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>attributes</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_attributes'>attributes</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_relationships'>relationships</span> <span class='op'>=</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>relationships</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+
+  <span class='id identifier rubyid_filter_fields'>filter_fields</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_filter_fields'>filter_fields</span><span class='lparen'>(</span><span class='id identifier rubyid_relationships'>relationships</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_parse_attributes'>parse_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_parse_relationships'>parse_relationships</span><span class='lparen'>(</span><span class='id identifier rubyid_relationships'>relationships</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_hash'>hash</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse!-class_method">
+  
+    + (<tt>Hash</tt>) <strong>parse!</strong>(document, options = {}) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Transform a JSON API document, containing a single data object, into a hash
+that is ready for ActiveRecord::Base.new() and such. Raises InvalidDocument
+if the payload is not properly formatted.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_document'>document</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+  <span class='label'>data:</span> <span class='lbrace'>{</span>
+    <span class='label'>id:</span> <span class='int'>1</span><span class='comma'>,</span>
+    <span class='label'>type:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>attributes:</span> <span class='lbrace'>{</span>
+      <span class='label'>title:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Title 1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>date:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2015-12-20</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>associations:</span> <span class='lbrace'>{</span>
+      <span class='label'>author:</span> <span class='lbrace'>{</span>
+        <span class='label'>data:</span> <span class='lbrace'>{</span>
+          <span class='label'>type:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>user</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+          <span class='label'>id:</span> <span class='int'>2</span>
+        <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>second_author:</span> <span class='lbrace'>{</span>
+        <span class='label'>data:</span> <span class='kw'>nil</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>comments:</span> <span class='lbrace'>{</span>
+        <span class='label'>data:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span>
+          <span class='label'>type:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comment</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+          <span class='label'>id:</span> <span class='int'>3</span>
+        <span class='rbrace'>}</span><span class='comma'>,</span><span class='lbrace'>{</span>
+          <span class='label'>type:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comment</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+          <span class='label'>id:</span> <span class='int'>4</span>
+        <span class='rbrace'>}</span><span class='rbracket'>]</span>
+      <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span>
+  <span class='rbrace'>}</span>
+<span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='rparen'>)</span> <span class='comment'>#=&gt;
+</span>  <span class='comment'># {
+</span>  <span class='comment'>#   title: &#39;Title 1&#39;,
+</span>  <span class='comment'>#   date: &#39;2015-12-20&#39;,
+</span>  <span class='comment'>#   author_id: 2,
+</span>  <span class='comment'>#   second_author_id: nil
+</span>  <span class='comment'>#   comment_ids: [3, 4]
+</span>  <span class='comment'># }
+</span>
+<span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='comma'>,</span> <span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:date</span><span class='comma'>,</span> <span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span>
+                <span class='label'>keys:</span> <span class='lbrace'>{</span> <span class='label'>date:</span> <span class='symbol'>:published_at</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+                <span class='label'>polymorphic:</span> <span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='comment'>#=&gt;
+</span>  <span class='comment'># {
+</span>  <span class='comment'>#   title: &#39;Title 1&#39;,
+</span>  <span class='comment'>#   published_at: &#39;2015-12-20&#39;,
+</span>  <span class='comment'>#   author_id: &#39;2&#39;,
+</span>  <span class='comment'>#   author_type: &#39;people&#39;
+</span>  <span class='comment'># }</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>document</span>
+      
+      
+        <span class='type'>(<tt>Hash|ActionController::Parameters</tt>)</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>only: Array of symbols of whitelisted fields. except: Array of symbols of
+blacklisted fields. keys: Hash of translated keys (e.g. :author =&gt;
+:user). polymorphic: Array of symbols of polymorphic fields.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+75
+76
+77
+78
+79</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 75</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse!'>parse!</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_invalid_payload'>invalid_payload</span><span class='comma'>,</span> <span class='id identifier rubyid_reason'>reason</span><span class='op'>|</span>
+    <span class='id identifier rubyid_fail'>fail</span> <span class='const'>InvalidDocument</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid payload (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_reason'>reason</span><span class='embexpr_end'>}</span><span class='tstring_content'>): </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_invalid_payload'>invalid_payload</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse_attributes-class_method">
+  
+    + (<tt>Object</tt>) <strong>parse_attributes</strong>(attributes, options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+157
+158
+159
+160
+161</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 157</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse_attributes'>parse_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_transform_keys'>transform_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_attributes'>attributes</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span><span class='op'>|</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_field_key'>field_key</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_v'>v</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+    <span class='period'>.</span><span class='id identifier rubyid_reduce'>reduce</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:merge</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse_relationship-class_method">
+  
+    + (<tt>Hash{Symbol, Object}</tt>) <strong>parse_relationship</strong>(assoc_name, assoc_data, options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Given an association name, and a relationship data attribute, build a hash
+mapping the corresponding ActiveRecord attribute to the corresponding
+value.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_parse_relationship'>parse_relationship</span><span class='lparen'>(</span><span class='symbol'>:comments</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='comma'>,</span>
+                               <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rbracket'>]</span><span class='comma'>,</span>
+                              <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+ <span class='comment'># =&gt; { :comment_ids =&gt; [&#39;1&#39;, &#39;2&#39;] }
+</span><span class='id identifier rubyid_parse_relationship'>parse_relationship</span><span class='lparen'>(</span><span class='symbol'>:author</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>users</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+ <span class='comment'># =&gt; { :author_id =&gt; &#39;1&#39; }
+</span><span class='id identifier rubyid_parse_relationship'>parse_relationship</span><span class='lparen'>(</span><span class='symbol'>:author</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+ <span class='comment'># =&gt; { :author_id =&gt; nil }</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>assoc_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>assoc_data</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash{Symbol, Object}</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 181</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse_relationship'>parse_relationship</span><span class='lparen'>(</span><span class='id identifier rubyid_assoc_name'>assoc_name</span><span class='comma'>,</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_prefix_key'>prefix_key</span> <span class='op'>=</span> <span class='id identifier rubyid_field_key'>field_key</span><span class='lparen'>(</span><span class='id identifier rubyid_assoc_name'>assoc_name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_singularize'>singularize</span>
+  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
+      <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_prefix_key'>prefix_key</span><span class='embexpr_end'>}</span><span class='tstring_content'>_ids</span><span class='tstring_end'>&quot;</span></span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_ri'>ri</span><span class='op'>|</span> <span class='id identifier rubyid_ri'>ri</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+    <span class='kw'>else</span>
+      <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_prefix_key'>prefix_key</span><span class='embexpr_end'>}</span><span class='tstring_content'>_id</span><span class='tstring_end'>&quot;</span></span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span> <span class='op'>?</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='kw'>nil</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_polymorphic'>polymorphic</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:polymorphic</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_assoc_name'>assoc_name</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_polymorphic'>polymorphic</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_prefix_key'>prefix_key</span><span class='embexpr_end'>}</span><span class='tstring_content'>_type</span><span class='tstring_end'>&quot;</span></span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span> <span class='op'>?</span> <span class='id identifier rubyid_assoc_data'>assoc_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='kw'>nil</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_hash'>hash</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse_relationships-class_method">
+  
+    + (<tt>Object</tt>) <strong>parse_relationships</strong>(relationships, options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+199
+200
+201
+202
+203</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 199</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse_relationships'>parse_relationships</span><span class='lparen'>(</span><span class='id identifier rubyid_relationships'>relationships</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_transform_keys'>transform_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_relationships'>relationships</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span><span class='op'>|</span> <span class='id identifier rubyid_parse_relationship'>parse_relationship</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='period'>.</span><span class='id identifier rubyid_reduce'>reduce</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:merge</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="transform_keys-class_method">
+  
+    + (<tt>Object</tt>) <strong>transform_keys</strong>(hash, options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+206
+207
+208
+209</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 206</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_transform_keys'>transform_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_hash'>hash</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_transform'>transform</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:key_transform</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='symbol'>:underscore</span>
+  <span class='const'>KeyTransform</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_transform'>transform</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_payload-class_method">
+  
+    + (<tt>Object</tt>) <strong>validate_payload</strong>(payload) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Checks whether a payload is compliant with the JSON API spec.</p>
+
+<p>rubocop:disable Metrics/CyclomaticComplexity</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/deserialization.rb', line 110</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_validate_payload'>validate_payload</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='kw'>yield</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Expected hash</span><span class='tstring_end'>&#39;</span></span>
+    <span class='kw'>return</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_primary_data'>primary_data</span> <span class='op'>=</span> <span class='id identifier rubyid_payload'>payload</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='kw'>yield</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Expected hash</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+    <span class='kw'>return</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='op'>=</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>attributes</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_attributes'>attributes</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='kw'>yield</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='lbrace'>{</span> <span class='label'>attributes:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Expected hash or nil</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+    <span class='kw'>return</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_relationships'>relationships</span> <span class='op'>=</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>relationships</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_relationships'>relationships</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='kw'>yield</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='lbrace'>{</span> <span class='label'>relationships:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Expected hash or nil</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+    <span class='kw'>return</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_relationships'>relationships</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='op'>|</span>
+    <span class='kw'>unless</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+      <span class='kw'>yield</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='lbrace'>{</span> <span class='label'>relationships:</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_key'>key</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Expected hash with :data key</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Apr  5 11:04:37 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>

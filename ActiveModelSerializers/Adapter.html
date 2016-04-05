@@ -1,0 +1,809 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: ActiveModelSerializers::Adapter
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!ActiveModelSerializers/Adapter.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (A)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../ActiveModelSerializers.html" title="ActiveModelSerializers (module)">ActiveModelSerializers</a></span></span>
+     &raquo; 
+    <span class="title">Adapter</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Module: ActiveModelSerializers::Adapter
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+      <dt class="r1">Extended by:</dt>
+      <dd class="r1">ActiveSupport::Autoload</dd>
+      
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/active_model_serializers/adapter.rb<span class="defines">,<br />
+  lib/active_model_serializers/adapter/null.rb,<br /> lib/active_model_serializers/adapter/base.rb,<br /> lib/active_model_serializers/adapter/json.rb,<br /> lib/active_model_serializers/adapter/json_api.rb,<br /> lib/active_model_serializers/adapter/attributes.rb,<br /> lib/active_model_serializers/adapter/json_api/meta.rb,<br /> lib/active_model_serializers/adapter/json_api/link.rb,<br /> lib/active_model_serializers/adapter/json_api/error.rb,<br /> lib/active_model_serializers/adapter/json_api/jsonapi.rb,<br /> lib/active_model_serializers/adapter/json_api/relationship.rb,<br /> lib/active_model_serializers/adapter/json_api/deserialization.rb,<br /> lib/active_model_serializers/adapter/json_api/pagination_links.rb,<br /> lib/active_model_serializers/adapter/json_api/resource_identifier.rb</span>
+</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Adapter/Attributes.html" title="ActiveModelSerializers::Adapter::Attributes (class)">Attributes</a></span>, <span class='object_link'><a href="Adapter/Base.html" title="ActiveModelSerializers::Adapter::Base (class)">Base</a></span>, <span class='object_link'><a href="Adapter/Json.html" title="ActiveModelSerializers::Adapter::Json (class)">Json</a></span>, <span class='object_link'><a href="Adapter/JsonApi.html" title="ActiveModelSerializers::Adapter::JsonApi (class)">JsonApi</a></span>, <span class='object_link'><a href="Adapter/Null.html" title="ActiveModelSerializers::Adapter::Null (class)">Null</a></span>
+    
+  
+</p>
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="UnknownAdapterError-constant" class="">UnknownAdapterError =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>ArgumentError</span><span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#adapter_class-class_method" title="adapter_class (class method)">+ (Object) <strong>adapter_class</strong>(adapter) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#adapter_map-class_method" title="adapter_map (class method)">+ (Hash&lt;adapter_name, adapter_class&gt;) <strong>adapter_map</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#adapters-class_method" title="adapters (class method)">+ (Array&lt;Symbol&gt;) <strong>adapters</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>List of adapter names.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#configured_adapter-class_method" title="configured_adapter (class method)">+ (Object) <strong>configured_adapter</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#create-class_method" title="create (class method)">+ (Object) <strong>create</strong>(resource, options = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#lookup-class_method" title="lookup (class method)">+ (ActiveModelSerializers::Adapter) <strong>lookup</strong>(adapter) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Subclass of Adapter.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#new-class_method" title="new (class method)">+ (Object) <strong>new</strong>(*args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#register-class_method" title="register (class method)">+ (Object) <strong>register</strong>(name, klass = name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Adds an adapter &#39;klass&#39; with &#39;name&#39; to the
+&#39;adapter_map&#39; Names are stringified and underscored.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="adapter_class-class_method">
+  
+    + (<tt>Object</tt>) <strong>adapter_class</strong>(adapter) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#lookup-class_method" title="ActiveModelSerializers::Adapter.lookup (method)">lookup</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 25</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_adapter_class'>adapter_class</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter'>adapter</span><span class='rparen'>)</span>
+  <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_lookup'>lookup</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter'>adapter</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="adapter_map-class_method">
+  
+    + (<tt>Hash&lt;adapter_name, <span class='object_link'><a href="#adapter_class-class_method" title="ActiveModelSerializers::Adapter.adapter_class (method)">adapter_class</a></span>&gt;</tt>) <strong>adapter_map</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash&lt;adapter_name, <span class='object_link'><a href="#adapter_class-class_method" title="ActiveModelSerializers::Adapter.adapter_class (method)">adapter_class</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_adapter_map'>adapter_map</span>
+  <span class='const'>ADAPTER_MAP</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="adapters-class_method">
+  
+    + (<tt>Array&lt;Symbol&gt;</tt>) <strong>adapters</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns list of adapter names</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>list of adapter names</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_adapters'>adapters</span>
+  <span class='id identifier rubyid_adapter_map'>adapter_map</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="configured_adapter-class_method">
+  
+    + (<tt>Object</tt>) <strong>configured_adapter</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+14
+15
+16</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 14</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_configured_adapter'>configured_adapter</span>
+  <span class='id identifier rubyid_lookup'>lookup</span><span class='lparen'>(</span><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="create-class_method">
+  
+    + (<tt>Object</tt>) <strong>create</strong>(resource, options = {}) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20
+21
+22</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 18</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_override'>override</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:adapter</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='id identifier rubyid_override'>override</span> <span class='op'>?</span> <span class='id identifier rubyid_adapter_class'>adapter_class</span><span class='lparen'>(</span><span class='id identifier rubyid_override'>override</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_configured_adapter'>configured_adapter</span>
+  <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="lookup-class_method">
+  
+    + (<tt><span class='object_link'><a href="" title="ActiveModelSerializers::Adapter (module)">ActiveModelSerializers::Adapter</a></span></tt>) <strong>lookup</strong>(adapter) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns subclass of Adapter</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>adapter</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>Symbol</tt>, <tt>Class</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>name to fetch adapter by</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="ActiveModelSerializers::Adapter (module)">ActiveModelSerializers::Adapter</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>subclass of Adapter</p>
+</div>
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="#UnknownAdapterError-constant" title="ActiveModelSerializers::Adapter::UnknownAdapterError (constant)">UnknownAdapterError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 57</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_lookup'>lookup</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter'>adapter</span><span class='rparen'>)</span>
+  <span class='comment'># 1. return if is a class
+</span>  <span class='kw'>return</span> <span class='id identifier rubyid_adapter'>adapter</span> <span class='kw'>if</span> <span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_adapter_name'>adapter_name</span> <span class='op'>=</span> <span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_underscore'>underscore</span>
+  <span class='comment'># 2. return if registered
+</span>  <span class='id identifier rubyid_adapter_map'>adapter_map</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter_name'>adapter_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='comment'># 3. try to find adapter class from environment
+</span>    <span class='id identifier rubyid_adapter_class'>adapter_class</span> <span class='op'>=</span> <span class='id identifier rubyid_find_by_name'>find_by_name</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter_name'>adapter_name</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter_name'>adapter_name</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_class'>adapter_class</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_adapter_class'>adapter_class</span>
+  <span class='kw'>end</span>
+<span class='kw'>rescue</span> <span class='const'>NameError</span><span class='comma'>,</span> <span class='const'>ArgumentError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
+  <span class='id identifier rubyid_failure_message'>failure_message</span> <span class='op'>=</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>NameError: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_content'>. Unknown adapter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>. Valid adapters are: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_adapters'>adapters</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>UnknownAdapterError</span><span class='comma'>,</span> <span class='id identifier rubyid_failure_message'>failure_message</span><span class='comma'>,</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_backtrace'>backtrace</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="new-class_method">
+  
+    + (<tt>Object</tt>) <strong>new</strong>(*args) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+8
+9
+10
+11
+12</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 8</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_fail'>fail</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Adapters inherit from Adapter::Base.</span><span class='tstring_end'>&#39;</span></span> \
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Adapter.new called with args: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;, from</span><span class='tstring_end'>&quot;</span></span> \
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&#39;caller[0]&#39;.</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="register-class_method">
+  
+    + (<tt>Object</tt>) <strong>register</strong>(name, klass = name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+  <div class="note notetag">
+    <strong>Note:</strong>
+    <div class='inline'>
+<p>The registered name strips out &#39;ActiveModelSerializers::Adapter::&#39;
+so that registering &#39;ActiveModelSerializers::Adapter::Json&#39; and
+&#39;Json&#39; will both register as &#39;json&#39;.</p>
+</div>
+  </div>
+
+
+<p>Adds an adapter &#39;klass&#39; with &#39;name&#39; to the
+&#39;adapter_map&#39; Names are stringified and underscored</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='const'>AMS</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='symbol'>:my_adapter</span><span class='comma'>,</span> <span class='const'>MyAdapter</span><span class='rparen'>)</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>, <tt>Class</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>name of the registered adapter</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>klass</span>
+      
+      
+        <span class='type'>(<tt>Class</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>name</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>adapter class itself, optional if name is the class</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+48
+49
+50
+51
+52</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter.rb', line 48</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\AActiveModelSerializers::Adapter::</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_adapter_map'>adapter_map</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_underscore'>underscore</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_klass'>klass</span>
+  <span class='kw'>self</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Apr  5 11:04:36 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>

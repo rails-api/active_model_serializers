@@ -1,0 +1,803 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: ActiveModelSerializers::Adapter::JsonApi
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!ActiveModelSerializers/Adapter/JsonApi.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (J)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../ActiveModelSerializers.html" title="ActiveModelSerializers (module)">ActiveModelSerializers</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Adapter.html" title="ActiveModelSerializers::Adapter (module)">Adapter</a></span></span>
+     &raquo; 
+    <span class="title">JsonApi</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: ActiveModelSerializers::Adapter::JsonApi
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName"><span class='object_link'><a href="Base.html" title="ActiveModelSerializers::Adapter::Base (class)">Base</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><span class='object_link'><a href="Base.html" title="ActiveModelSerializers::Adapter::Base (class)">Base</a></span></li>
+          
+            <li class="next">ActiveModelSerializers::Adapter::JsonApi</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+      <dt class="r2">Extended by:</dt>
+      <dd class="r2">ActiveSupport::Autoload</dd>
+      
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/active_model_serializers/adapter/json_api.rb<span class="defines">,<br />
+  lib/active_model_serializers/adapter/json_api/meta.rb,<br /> lib/active_model_serializers/adapter/json_api/link.rb,<br /> lib/active_model_serializers/adapter/json_api/error.rb,<br /> lib/active_model_serializers/adapter/json_api/jsonapi.rb,<br /> lib/active_model_serializers/adapter/json_api/relationship.rb,<br /> lib/active_model_serializers/adapter/json_api/deserialization.rb,<br /> lib/active_model_serializers/adapter/json_api/pagination_links.rb,<br /> lib/active_model_serializers/adapter/json_api/resource_identifier.rb</span>
+</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="../../ActiveModel/Serializer/Adapter/JsonApi.html" title="ActiveModel::Serializer::Adapter::JsonApi (class)">ActiveModel::Serializer::Adapter::JsonApi</a></span></p>
+</div>
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="JsonApi/Deserialization.html" title="ActiveModelSerializers::Adapter::JsonApi::Deserialization (module)">Deserialization</a></span>, <span class='object_link'><a href="JsonApi/Error.html" title="ActiveModelSerializers::Adapter::JsonApi::Error (module)">Error</a></span>, <span class='object_link'><a href="JsonApi/Jsonapi.html" title="ActiveModelSerializers::Adapter::JsonApi::Jsonapi (module)">Jsonapi</a></span>
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="JsonApi/Link.html" title="ActiveModelSerializers::Adapter::JsonApi::Link (class)">Link</a></span>, <span class='object_link'><a href="JsonApi/Meta.html" title="ActiveModelSerializers::Adapter::JsonApi::Meta (class)">Meta</a></span>, <span class='object_link'><a href="JsonApi/PaginationLinks.html" title="ActiveModelSerializers::Adapter::JsonApi::PaginationLinks (class)">PaginationLinks</a></span>, <span class='object_link'><a href="JsonApi/Relationship.html" title="ActiveModelSerializers::Adapter::JsonApi::Relationship (class)">Relationship</a></span>, <span class='object_link'><a href="JsonApi/ResourceIdentifier.html" title="ActiveModelSerializers::Adapter::JsonApi::ResourceIdentifier (class)">ResourceIdentifier</a></span>
+    
+  
+</p>
+
+
+
+
+
+
+  <h2>Instance Attribute Summary</h2>
+  
+  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Base.html" title="ActiveModelSerializers::Adapter::Base (class)">Base</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Base.html#instance_options-instance_method" title="ActiveModelSerializers::Adapter::Base#instance_options (method)">#instance_options</a></span>, <span class='object_link'><a href="Base.html#serializer-instance_method" title="ActiveModelSerializers::Adapter::Base#serializer (method)">#serializer</a></span></p>
+
+
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#default_key_transform-class_method" title="default_key_transform (class method)">+ (Object) <strong>default_key_transform</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#failure_document-instance_method" title="#failure_document (instance method)">- (Object) <strong>failure_document</strong>(options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p><a href="http://jsonapi.org/format/#errors" target="_parent" title="JSON API Errors">JSON API Errors</a> TODO: look into caching
+definition:   ☑ toplevel_errors array (required)   ☐ toplevel_meta   ☐
+toplevel_jsonapi structure:   {     errors: toplevel_errors,     meta:
+toplevel_meta,     jsonapi: toplevel_jsonapi   }.reject! {|_,v| v.nil? }
+prs:  https://github.com/rails-api/active_model_serializers/pull/1004.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fragment_cache-instance_method" title="#fragment_cache (instance method)">- (Object) <strong>fragment_cache</strong>(cached_hash, non_cached_hash) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (JsonApi) <strong>initialize</strong>(serializer, options = {}) </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of JsonApi.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serializable_hash-instance_method" title="#serializable_hash (instance method)">- (Object) <strong>serializable_hash</strong>(options = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p><a href="http://jsonapi.org/format/#crud" target="_parent" title="Requests are transactional, i.e. success or failure">Requests are transactional, i.e. success or failure</a> <a href="http://jsonapi.org/format/#document-top-level" target="_parent" title="data and errors MUST NOT coexist in the same document.">data and errors MUST NOT coexist in the same document.</a>.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#success_document-instance_method" title="#success_document (instance method)">- (Object) <strong>success_document</strong>(options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p><a href="http://jsonapi.org/format/#document-top-level" target="_parent" title="Primary data">Primary data</a> definition:  
+☐ toplevel_data (required)   ☐ toplevel_included   ☑ toplevel_meta   ☑
+toplevel_links   ☑ toplevel_jsonapi structure:  {    data: toplevel_data,  
+included: toplevel_included,    meta: toplevel_meta,    links:
+toplevel_links,    jsonapi: toplevel_jsonapi  }.reject! {|_,v| v.nil? }.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Base.html" title="ActiveModelSerializers::Adapter::Base (class)">Base</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Base.html#as_json-instance_method" title="ActiveModelSerializers::Adapter::Base#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="Base.html#cache_check-instance_method" title="ActiveModelSerializers::Adapter::Base#cache_check (method)">#cache_check</a></span>, <span class='object_link'><a href="Base.html#cached_name-instance_method" title="ActiveModelSerializers::Adapter::Base#cached_name (method)">#cached_name</a></span>, <span class='object_link'><a href="Base.html#inherited-class_method" title="ActiveModelSerializers::Adapter::Base.inherited (method)">inherited</a></span>, <span class='object_link'><a href="Base.html#transform-class_method" title="ActiveModelSerializers::Adapter::Base.transform (method)">transform</a></span>, <span class='object_link'><a href="Base.html#transform_key_casing%21-class_method" title="ActiveModelSerializers::Adapter::Base.transform_key_casing! (method)">transform_key_casing!</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="ActiveModelSerializers::Adapter::JsonApi (class)">JsonApi</a></span></tt>) <strong>initialize</strong>(serializer, options = {}) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of JsonApi</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='kw'>super</span>
+  <span class='ivar'>@include_tree</span> <span class='op'>=</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>IncludeTree</span><span class='period'>.</span><span class='id identifier rubyid_from_include_args'>from_include_args</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:include</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='ivar'>@fieldset</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:fieldset</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>Fieldset</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:fields</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="default_key_transform-class_method">
+  
+    + (<tt>Object</tt>) <strong>default_key_transform</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+40
+41
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api.rb', line 40</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_default_key_transform'>default_key_transform</span>
+  <span class='symbol'>:dash</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="failure_document-instance_method">
+  
+    - (<tt>Object</tt>) <strong>failure_document</strong>(options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p><a href="http://jsonapi.org/format/#errors" target="_parent" title="JSON API Errors">JSON API Errors</a> TODO: look into caching
+definition:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_☑'>☑</span> <span class='id identifier rubyid_toplevel_errors'>toplevel_errors</span> <span class='id identifier rubyid_array'>array</span> <span class='lparen'>(</span><span class='id identifier rubyid_required'>required</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_☐'>☐</span> <span class='id identifier rubyid_toplevel_meta'>toplevel_meta</span>
+<span class='id identifier rubyid_☐'>☐</span> <span class='id identifier rubyid_toplevel_jsonapi'>toplevel_jsonapi</span>
+</code></pre>
+
+<p>structure:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='label'>errors:</span> <span class='id identifier rubyid_toplevel_errors'>toplevel_errors</span><span class='comma'>,</span>
+  <span class='label'>meta:</span> <span class='id identifier rubyid_toplevel_meta'>toplevel_meta</span><span class='comma'>,</span>
+  <span class='label'>jsonapi:</span> <span class='id identifier rubyid_toplevel_jsonapi'>toplevel_jsonapi</span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
+</code></pre>
+
+<p>prs:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_https'>https</span><span class='symbol'>:/</span><span class='op'>/</span><span class='id identifier rubyid_github'>github</span><span class='period'>.</span><span class='id identifier rubyid_com'>com</span><span class='op'>/</span><span class='id identifier rubyid_rails'>rails</span><span class='op'>-</span><span class='id identifier rubyid_api'>api</span><span class='op'>/</span><span class='id identifier rubyid_active_model_serializers'>active_model_serializers</span><span class='op'>/</span><span class='id identifier rubyid_pull'>pull</span><span class='op'>/</span><span class='int'>1004</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api.rb', line 151</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_failure_document'>failure_document</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='comment'># PR Please :)
+</span>  <span class='comment'># Jsonapi.add!(hash)
+</span>
+  <span class='comment'># toplevel_errors
+</span>  <span class='comment'># definition:
+</span>  <span class='comment'>#   array of unique items of type &#39;error&#39;
+</span>  <span class='comment'># structure:
+</span>  <span class='comment'>#   [
+</span>  <span class='comment'>#     error,
+</span>  <span class='comment'>#     error
+</span>  <span class='comment'>#   ]
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:each</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:errors</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_flat_map'>flat_map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_error_serializer'>error_serializer</span><span class='op'>|</span>
+      <span class='const'>Error</span><span class='period'>.</span><span class='id identifier rubyid_resource_errors'>resource_errors</span><span class='lparen'>(</span><span class='id identifier rubyid_error_serializer'>error_serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:errors</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Error</span><span class='period'>.</span><span class='id identifier rubyid_resource_errors'>resource_errors</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_hash'>hash</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fragment_cache-instance_method">
+  
+    - (<tt>Object</tt>) <strong>fragment_cache</strong>(cached_hash, non_cached_hash) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api.rb', line 174</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fragment_cache'>fragment_cache</span><span class='lparen'>(</span><span class='id identifier rubyid_cached_hash'>cached_hash</span><span class='comma'>,</span> <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_root'>root</span> <span class='op'>=</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='id identifier rubyid_instance_options'>instance_options</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='symbol'>:include</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_core_cached'>core_cached</span>       <span class='op'>=</span> <span class='id identifier rubyid_cached_hash'>cached_hash</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
+  <span class='id identifier rubyid_core_non_cached'>core_non_cached</span>   <span class='op'>=</span> <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
+  <span class='id identifier rubyid_no_root_cache'>no_root_cache</span>     <span class='op'>=</span> <span class='id identifier rubyid_cached_hash'>cached_hash</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid__value'>_value</span><span class='op'>|</span> <span class='id identifier rubyid_key'>key</span> <span class='op'>==</span> <span class='id identifier rubyid_core_cached'>core_cached</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_no_root_non_cache'>no_root_non_cache</span> <span class='op'>=</span> <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid__value'>_value</span><span class='op'>|</span> <span class='id identifier rubyid_key'>key</span> <span class='op'>==</span> <span class='id identifier rubyid_core_non_cached'>core_non_cached</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_cached_resource'>cached_resource</span>   <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_core_cached'>core_cached</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_core_cached'>core_cached</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_deep_merge'>deep_merge</span><span class='lparen'>(</span><span class='id identifier rubyid_core_non_cached'>core_non_cached</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_core_non_cached'>core_non_cached</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='id identifier rubyid_root'>root</span> <span class='op'>?</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_root'>root</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_cached_resource'>cached_resource</span> <span class='rbrace'>}</span> <span class='op'>:</span> <span class='id identifier rubyid_cached_resource'>cached_resource</span>
+
+  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_deep_merge'>deep_merge</span> <span class='id identifier rubyid_no_root_non_cache'>no_root_non_cache</span><span class='period'>.</span><span class='id identifier rubyid_deep_merge'>deep_merge</span> <span class='id identifier rubyid_no_root_cache'>no_root_cache</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serializable_hash-instance_method">
+  
+    - (<tt>Object</tt>) <strong>serializable_hash</strong>(options = nil) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p><a href="http://jsonapi.org/format/#crud" target="_parent" title="Requests are transactional, i.e. success or failure">Requests are transactional, i.e. success or failure</a> <a href="http://jsonapi.org/format/#document-top-level" target="_parent" title="data and errors MUST NOT coexist in the same document.">data and errors MUST NOT coexist in the same document.</a></p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49
+50
+51
+52
+53
+54</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serializable_hash'>serializable_hash</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_options'>options</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_document'>document</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_success?'>success?</span>
+               <span class='id identifier rubyid_success_document'>success_document</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+             <span class='kw'>else</span>
+               <span class='id identifier rubyid_failure_document'>failure_document</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+             <span class='kw'>end</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_transform_key_casing!'>transform_key_casing!</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="success_document-instance_method">
+  
+    - (<tt>Object</tt>) <strong>success_document</strong>(options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p><a href="http://jsonapi.org/format/#document-top-level" target="_parent" title="Primary data">Primary data</a> definition:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_☐'>☐</span> <span class='id identifier rubyid_toplevel_data'>toplevel_data</span> <span class='lparen'>(</span><span class='id identifier rubyid_required'>required</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_☐'>☐</span> <span class='id identifier rubyid_toplevel_included'>toplevel_included</span>
+<span class='id identifier rubyid_☑'>☑</span> <span class='id identifier rubyid_toplevel_meta'>toplevel_meta</span>
+<span class='id identifier rubyid_☑'>☑</span> <span class='id identifier rubyid_toplevel_links'>toplevel_links</span>
+<span class='id identifier rubyid_☑'>☑</span> <span class='id identifier rubyid_toplevel_jsonapi'>toplevel_jsonapi</span>
+</code></pre>
+
+<p>structure:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='label'>data:</span> <span class='id identifier rubyid_toplevel_data'>toplevel_data</span><span class='comma'>,</span>
+  <span class='label'>included:</span> <span class='id identifier rubyid_toplevel_included'>toplevel_included</span><span class='comma'>,</span>
+  <span class='label'>meta:</span> <span class='id identifier rubyid_toplevel_meta'>toplevel_meta</span><span class='comma'>,</span>
+  <span class='label'>links:</span> <span class='id identifier rubyid_toplevel_links'>toplevel_links</span><span class='comma'>,</span>
+  <span class='label'>jsonapi:</span> <span class='id identifier rubyid_toplevel_jsonapi'>toplevel_jsonapi</span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api.rb', line 71</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_success_document'>success_document</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_is_collection'>is_collection</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:each</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_serializers'>serializers</span> <span class='op'>=</span> <span class='id identifier rubyid_is_collection'>is_collection</span> <span class='op'>?</span> <span class='id identifier rubyid_serializer'>serializer</span> <span class='op'>:</span> <span class='lbracket'>[</span><span class='id identifier rubyid_serializer'>serializer</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_primary_data'>primary_data</span><span class='comma'>,</span> <span class='id identifier rubyid_included'>included</span> <span class='op'>=</span> <span class='id identifier rubyid_resource_objects_for'>resource_objects_for</span><span class='lparen'>(</span><span class='id identifier rubyid_serializers'>serializers</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='comment'># toplevel_data
+</span>  <span class='comment'># definition:
+</span>  <span class='comment'>#   oneOf
+</span>  <span class='comment'>#     resource
+</span>  <span class='comment'>#     array of unique items of type &#39;resource&#39;
+</span>  <span class='comment'>#     null
+</span>  <span class='comment'>#
+</span>  <span class='comment'># description:
+</span>  <span class='comment'>#   The document&#39;s &quot;primary data&quot; is a representation of the resource or collection of resources
+</span>  <span class='comment'>#   targeted by a request.
+</span>  <span class='comment'>#
+</span>  <span class='comment'>#   Singular: the resource object.
+</span>  <span class='comment'>#
+</span>  <span class='comment'>#   Collection: one of an array of resource objects, an array of resource identifier objects, or
+</span>  <span class='comment'>#   an empty array ([]), for requests that target resource collections.
+</span>  <span class='comment'>#
+</span>  <span class='comment'>#   None: null if the request is one that might correspond to a single resource, but doesn&#39;t currently.
+</span>  <span class='comment'># structure:
+</span>  <span class='comment'>#  if serializable_resource.resource?
+</span>  <span class='comment'>#    resource
+</span>  <span class='comment'>#  elsif serializable_resource.collection?
+</span>  <span class='comment'>#    [
+</span>  <span class='comment'>#      resource,
+</span>  <span class='comment'>#      resource
+</span>  <span class='comment'>#    ]
+</span>  <span class='comment'>#  else
+</span>  <span class='comment'>#    nil
+</span>  <span class='comment'>#  end
+</span>  <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:data</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_is_collection'>is_collection</span> <span class='op'>?</span> <span class='id identifier rubyid_primary_data'>primary_data</span> <span class='op'>:</span> <span class='id identifier rubyid_primary_data'>primary_data</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
+  <span class='comment'># toplevel_included
+</span>  <span class='comment'>#   alias included
+</span>  <span class='comment'># definition:
+</span>  <span class='comment'>#   array of unique items of type &#39;resource&#39;
+</span>  <span class='comment'>#
+</span>  <span class='comment'># description:
+</span>  <span class='comment'>#   To reduce the number of HTTP requests, servers **MAY** allow
+</span>  <span class='comment'>#   responses that include related resources along with the requested primary
+</span>  <span class='comment'>#   resources. Such responses are called &quot;compound documents&quot;.
+</span>  <span class='comment'># structure:
+</span>  <span class='comment'>#     [
+</span>  <span class='comment'>#       resource,
+</span>  <span class='comment'>#       resource
+</span>  <span class='comment'>#     ]
+</span>  <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:included</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_included'>included</span> <span class='kw'>if</span> <span class='id identifier rubyid_included'>included</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
+
+  <span class='const'>Jsonapi</span><span class='period'>.</span><span class='id identifier rubyid_add!'>add!</span><span class='lparen'>(</span><span class='id identifier rubyid_hash'>hash</span><span class='rparen'>)</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_instance_options'>instance_options</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='id identifier rubyid_instance_options'>instance_options</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_is_collection'>is_collection</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_paginated?'>paginated?</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_update'>update</span><span class='lparen'>(</span><span class='id identifier rubyid_pagination_links_for'>pagination_links_for</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_hash'>hash</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Apr  5 11:04:40 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>

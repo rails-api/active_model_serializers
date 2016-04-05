@@ -1,0 +1,831 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: ActiveModelSerializers::SerializableResource
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!ActiveModelSerializers/SerializableResource.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (S)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../ActiveModelSerializers.html" title="ActiveModelSerializers (module)">ActiveModelSerializers</a></span></span>
+     &raquo; 
+    <span class="title">SerializableResource</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: ActiveModelSerializers::SerializableResource
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">ActiveModelSerializers::SerializableResource</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+      <dt class="r2">Includes:</dt>
+      <dd class="r2"><span class='object_link'><a href="Logging.html" title="ActiveModelSerializers::Logging (module)">Logging</a></span></dd>
+      
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/active_model_serializers/serializable_resource.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="ADAPTER_OPTION_KEYS-constant" class="">ADAPTER_OPTION_KEYS =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:include</span><span class='comma'>,</span> <span class='symbol'>:fields</span><span class='comma'>,</span> <span class='symbol'>:adapter</span><span class='comma'>,</span> <span class='symbol'>:meta</span><span class='comma'>,</span> <span class='symbol'>:meta_key</span><span class='comma'>,</span> <span class='symbol'>:links</span><span class='rbracket'>]</span><span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+  
+  
+  <h3 class="inherited">Constants included
+     from <span class='object_link'><a href="Logging.html" title="ActiveModelSerializers::Logging (module)">Logging</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Logging.html#RENDER_EVENT-constant" title="ActiveModelSerializers::Logging::RENDER_EVENT (constant)">Logging::RENDER_EVENT</a></span></p>
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#adapter-instance_method" title="#adapter (instance method)">- (Object) <strong>adapter</strong> </a>
+    
+
+    
+      (also: #adapter_instance)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>NOTE: if no adapter is available, returns the resource itself.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_adapter-instance_method" title="#find_adapter (instance method)">- (Object) <strong>find_adapter</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Object) <strong>initialize</strong>(resource, options = {}) </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Primary interface to composing a resource with a serializer and adapter.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serialization_scope-instance_method" title="#serialization_scope (instance method)">- (Object) <strong>serialization_scope</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serialization_scope%3D-instance_method" title="#serialization_scope= (instance method)">- (Object) <strong>serialization_scope=</strong>(scope) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serialization_scope_name%3D-instance_method" title="#serialization_scope_name= (instance method)">- (Object) <strong>serialization_scope_name=</strong>(scope_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serializer-instance_method" title="#serializer (instance method)">- (Object) <strong>serializer</strong> </a>
+    
+
+    
+      (also: #serializer_class)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Get serializer either explicitly :serializer or implicitly from resource
+Remove :serializer key from serializer_opts Replace :serializer key with
+:each_serializer if present.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serializer%3F-instance_method" title="#serializer? (instance method)">- (Boolean) <strong>serializer?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serializer_instance-instance_method" title="#serializer_instance (instance method)">- (Object) <strong>serializer_instance</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_adapter%3F-instance_method" title="#use_adapter? (instance method)">- (Boolean) <strong>use_adapter?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>True when no explicit adapter given, or explicit appear is truthy (non-nil)
+False when explicit adapter is falsy (nil or false).</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="Logging.html" title="ActiveModelSerializers::Logging (module)">Logging</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Logging.html#notify_render-instance_method" title="ActiveModelSerializers::Logging#notify_render (method)">#notify_render</a></span>, <span class='object_link'><a href="Logging.html#notify_render_payload-instance_method" title="ActiveModelSerializers::Logging#notify_render_payload (method)">#notify_render_payload</a></span></p>
+
+  <div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    - (<tt>Object</tt>) <strong>initialize</strong>(resource, options = {}) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Primary interface to composing a resource with a serializer and adapter.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+15
+16
+17
+18
+19</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 15</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@resource</span> <span class='op'>=</span> <span class='id identifier rubyid_resource'>resource</span>
+  <span class='ivar'>@adapter_opts</span><span class='comma'>,</span> <span class='ivar'>@serializer_opts</span> <span class='op'>=</span>
+    <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_partition'>partition</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='const'>ADAPTER_OPTION_KEYS</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_k'>k</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='op'>|</span> <span class='const'>Hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_h'>h</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="adapter-instance_method">
+  
+    - (<tt>Object</tt>) <strong>adapter</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='adapter_instance-instance_method'>adapter_instance</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>NOTE: if no adapter is available, returns the resource itself. (i.e.
+adapter is a no-op)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_adapter'>adapter</span>
+  <span class='ivar'>@adapter</span> <span class='op'>||=</span> <span class='id identifier rubyid_find_adapter'>find_adapter</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="find_adapter-instance_method">
+  
+    - (<tt>Object</tt>) <strong>find_adapter</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_find_adapter'>find_adapter</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_resource'>resource</span> <span class='kw'>unless</span> <span class='id identifier rubyid_serializer?'>serializer?</span>
+  <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer_instance'>serializer_instance</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_opts'>adapter_opts</span><span class='rparen'>)</span>
+<span class='kw'>rescue</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>CollectionSerializer</span><span class='op'>::</span><span class='const'>NoSerializerError</span>
+  <span class='id identifier rubyid_resource'>resource</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serialization_scope-instance_method">
+  
+    - (<tt>Object</tt>) <strong>serialization_scope</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 25</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serialization_scope'>serialization_scope</span>
+  <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='lbracket'>[</span><span class='symbol'>:scope</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serialization_scope=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>serialization_scope=</strong>(scope) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 21</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serialization_scope='>serialization_scope=</span><span class='lparen'>(</span><span class='id identifier rubyid_scope'>scope</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='lbracket'>[</span><span class='symbol'>:scope</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_scope'>scope</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serialization_scope_name=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>serialization_scope_name=</strong>(scope_name) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 29</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serialization_scope_name='>serialization_scope_name=</span><span class='lparen'>(</span><span class='id identifier rubyid_scope_name'>scope_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='lbracket'>[</span><span class='symbol'>:scope_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_scope_name'>scope_name</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serializer-instance_method">
+  
+    - (<tt>Object</tt>) <strong>serializer</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='serializer_class-instance_method'>serializer_class</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Get serializer either explicitly :serializer or implicitly from resource
+Remove :serializer key from serializer_opts Replace :serializer key with
+:each_serializer if present</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serializer'>serializer</span>
+  <span class='ivar'>@serializer</span> <span class='op'>||=</span>
+    <span class='kw'>begin</span>
+      <span class='ivar'>@serializer</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:serializer</span><span class='rparen'>)</span>
+      <span class='ivar'>@serializer</span> <span class='op'>||=</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='period'>.</span><span class='id identifier rubyid_serializer_for'>serializer_for</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='rparen'>)</span>
+
+      <span class='kw'>if</span> <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:each_serializer</span><span class='rparen'>)</span>
+        <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='lbracket'>[</span><span class='symbol'>:serializer</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:each_serializer</span><span class='rparen'>)</span>
+      <span class='kw'>end</span>
+      <span class='ivar'>@serializer</span>
+    <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serializer?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>serializer?</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+73
+74
+75</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 73</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serializer?'>serializer?</span>
+  <span class='id identifier rubyid_use_adapter?'>use_adapter?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serializer_instance-instance_method">
+  
+    - (<tt>Object</tt>) <strong>serializer_instance</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_serializer_instance'>serializer_instance</span>
+  <span class='ivar'>@serializer_instance</span> <span class='op'>||=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_serializer_opts'>serializer_opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_adapter?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>use_adapter?</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>True when no explicit adapter given, or explicit appear is truthy (non-nil)
+False when explicit adapter is falsy (nil or false)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+69
+70
+71</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serializable_resource.rb', line 69</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_use_adapter?'>use_adapter?</span>
+  <span class='op'>!</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter_opts'>adapter_opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:adapter</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_adapter_opts'>adapter_opts</span><span class='lbracket'>[</span><span class='symbol'>:adapter</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Apr  5 11:04:41 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>

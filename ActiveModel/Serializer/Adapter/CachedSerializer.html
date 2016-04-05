@@ -1,0 +1,540 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: ActiveModel::Serializer::Adapter::CachedSerializer
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!ActiveModel/Serializer/Adapter/CachedSerializer.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (C)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../ActiveModel.html" title="ActiveModel (module)">ActiveModel</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Serializer.html" title="ActiveModel::Serializer (class)">Serializer</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Adapter.html" title="ActiveModel::Serializer::Adapter (module)">Adapter</a></span></span>
+     &raquo; 
+    <span class="title">CachedSerializer</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: ActiveModel::Serializer::Adapter::CachedSerializer
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">ActiveModel::Serializer::Adapter::CachedSerializer</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/active_model/serializer/adapter/cached_serializer.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cache_check-instance_method" title="#cache_check (instance method)">- (Object) <strong>cache_check</strong>(adapter_instance) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cache_key-instance_method" title="#cache_key (instance method)">- (Object) <strong>cache_key</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cached%3F-instance_method" title="#cached? (instance method)">- (Boolean) <strong>cached?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fragment_cached%3F-instance_method" title="#fragment_cached? (instance method)">- (Boolean) <strong>fragment_cached?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (CachedSerializer) <strong>initialize</strong>(serializer) </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of CachedSerializer.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#object_cache_key-instance_method" title="#object_cache_key (instance method)">- (Object) <strong>object_cache_key</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="ActiveModel::Serializer::Adapter::CachedSerializer (class)">CachedSerializer</a></span></tt>) <strong>initialize</strong>(serializer) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of CachedSerializer</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+5
+6
+7
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/adapter/cached_serializer.rb', line 5</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='rparen'>)</span>
+  <span class='ivar'>@cached_serializer</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span>
+  <span class='ivar'>@klass</span>             <span class='op'>=</span> <span class='ivar'>@cached_serializer</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="cache_check-instance_method">
+  
+    - (<tt>Object</tt>) <strong>cache_check</strong>(adapter_instance) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/adapter/cached_serializer.rb', line 10</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cache_check'>cache_check</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter_instance'>adapter_instance</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_cached?'>cached?</span>
+    <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache'>_cache</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_cache_key'>cache_key</span><span class='comma'>,</span> <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_options'>_cache_options</span><span class='rparen'>)</span> <span class='kw'>do</span>
+      <span class='kw'>yield</span>
+    <span class='kw'>end</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_fragment_cached?'>fragment_cached?</span>
+    <span class='const'>FragmentCache</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_adapter_instance'>adapter_instance</span><span class='comma'>,</span> <span class='ivar'>@cached_serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_instance'>adapter_instance</span><span class='period'>.</span><span class='id identifier rubyid_instance_options'>instance_options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span>
+  <span class='kw'>else</span>
+    <span class='kw'>yield</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="cache_key-instance_method">
+  
+    - (<tt>Object</tt>) <strong>cache_key</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/adapter/cached_serializer.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cache_key'>cache_key</span>
+  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_object_cache_key'>object_cache_key</span>
+  <span class='id identifier rubyid_parts'>parts</span> <span class='op'>&lt;&lt;</span> <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_digest'>_cache_digest</span> <span class='kw'>unless</span> <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_options'>_cache_options</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_options'>_cache_options</span><span class='lbracket'>[</span><span class='symbol'>:skip_digest</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_parts'>parts</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="cached?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>cached?</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+22
+23
+24</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/adapter/cached_serializer.rb', line 22</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cached?'>cached?</span>
+  <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache'>_cache</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_only'>_cache_only</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_except'>_cache_except</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fragment_cached?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>fragment_cached?</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/adapter/cached_serializer.rb', line 26</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fragment_cached?'>fragment_cached?</span>
+  <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_only'>_cache_only</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_except'>_cache_except</span> <span class='op'>||</span> <span class='op'>!</span><span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_only'>_cache_only</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_except'>_cache_except</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="object_cache_key-instance_method">
+  
+    - (<tt>Object</tt>) <strong>object_cache_key</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/adapter/cached_serializer.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_object_cache_key'>object_cache_key</span>
+  <span class='id identifier rubyid_object_time_safe'>object_time_safe</span> <span class='op'>=</span> <span class='ivar'>@cached_serializer</span><span class='period'>.</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_updated_at'>updated_at</span>
+  <span class='id identifier rubyid_object_time_safe'>object_time_safe</span> <span class='op'>=</span> <span class='id identifier rubyid_object_time_safe'>object_time_safe</span><span class='period'>.</span><span class='id identifier rubyid_strftime'>strftime</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>%Y%m%d%H%M%S%9N</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_object_time_safe'>object_time_safe</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:strftime</span><span class='rparen'>)</span>
+  <span class='lparen'>(</span><span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_key'>_cache_key</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='ivar'>@klass</span><span class='period'>.</span><span class='id identifier rubyid__cache_key'>_cache_key</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='ivar'>@cached_serializer</span><span class='period'>.</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_object_time_safe'>object_time_safe</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='ivar'>@cached_serializer</span><span class='period'>.</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_cache_key'>cache_key</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Thu Oct  1 16:00:44 2015 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>

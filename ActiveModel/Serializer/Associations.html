@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: ActiveModel::Serializer::Associations
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!ActiveModel/Serializer/Associations.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (A)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../ActiveModel.html" title="ActiveModel (module)">ActiveModel</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">Serializer</a></span></span>
+     &raquo; 
+    <span class="title">Associations</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Module: ActiveModel::Serializer::Associations
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+      <dt class="r1">Extended by:</dt>
+      <dd class="r1">ActiveSupport::Concern</dd>
+      
+    
+  
+    
+  
+  
+    <dt class="r2">Included in:</dt>
+    <dd class="r2"><span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">ActiveModel::Serializer</a></span></dd>
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/active_model/serializer/associations.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Defines an association in the object should be rendered.</p>
+
+<p>The serializer object should implement the association name as a method
+which should return an array when invoked. If a method with the association
+name does not exist, the association name is dispatched to the serialized
+object.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Associations/ClassMethods.html" title="ActiveModel::Serializer::Associations::ClassMethods (module)">ClassMethods</a></span>
+    
+  
+    
+  
+</p>
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="DEFAULT_INCLUDE_TREE-constant" class="">DEFAULT_INCLUDE_TREE =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>IncludeTree</span><span class='period'>.</span><span class='id identifier rubyid_from_string'>from_string</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>*</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#associations-instance_method" title="#associations (instance method)">- (Enumerator&lt;Association&gt;) <strong>associations</strong>(include_tree = DEFAULT_INCLUDE_TREE) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="associations-instance_method">
+  
+    - (<tt>Enumerator&lt;<span class='object_link'><a href="Association.html" title="ActiveModel::Serializer::Association (class)">Association</a></span>&gt;</tt>) <strong>associations</strong>(include_tree = DEFAULT_INCLUDE_TREE) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>include_tree</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="IncludeTree.html" title="ActiveModel::Serializer::IncludeTree (class)">IncludeTree</a></span></tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>DEFAULT_INCLUDE_TREE</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>(defaults to all associations when not provided)</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Enumerator&lt;<span class='object_link'><a href="Association.html" title="ActiveModel::Serializer::Association (class)">Association</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/associations.rb', line 86</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_associations'>associations</span><span class='lparen'>(</span><span class='id identifier rubyid_include_tree'>include_tree</span> <span class='op'>=</span> <span class='const'>DEFAULT_INCLUDE_TREE</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_object'>object</span>
+
+  <span class='const'>Enumerator</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_y'>y</span><span class='op'>|</span>
+    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid__reflections'>_reflections</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_reflection'>reflection</span><span class='op'>|</span>
+      <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_excluded?'>excluded?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:key</span><span class='comma'>,</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+      <span class='kw'>next</span> <span class='kw'>unless</span> <span class='id identifier rubyid_include_tree'>include_tree</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_y'>y</span><span class='period'>.</span><span class='id identifier rubyid_yield'>yield</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_build_association'>build_association</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_instance_options'>instance_options</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Apr  5 11:04:36 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.2).
+</div>
+
+  </body>
+</html>
