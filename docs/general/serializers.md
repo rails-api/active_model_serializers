@@ -56,7 +56,7 @@ Where:
   - prevents `association_name` method from being called.
   - return value of block is used as the association value.
   - yields the `serializer` to the block.
-  - `include_data false` ignores the return value of the block.
+  - `include_data false` prevents the `data` key from being rendered in the JSON API relationship.
 
 #### ::has_one
 
