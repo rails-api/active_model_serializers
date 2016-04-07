@@ -71,6 +71,7 @@ module ActiveModelSerializers
           hash[:href] = @href if defined?(@href)
           hash[:meta] = @meta if defined?(@meta)
 
+          return nil if hash.empty?
           hash
         end
 
