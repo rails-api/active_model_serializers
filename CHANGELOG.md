@@ -1,5 +1,13 @@
 ## 0.10.x
 
+Features:
+- [#1674](https://github.com/rails-api/active_model_serializers/pull/1674) Make Deserialization support underscored symbols (@NullVoxPopuli)
+
+Fixes:
+
+Misc:
+- [#1673](https://github.com/rails-api/active_model_serializers/pull/1673) Adds "How to" guide on using AMS with POROs (@DrSayre)
+
 ### [v0.10.0.rc5 (2016-04-04)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0.rc4...v0.10.0.rc5)
 
 Breaking changes:
@@ -64,7 +72,6 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
-- [#1673](https://github.com/rails-api/active_model_serializers/pull/1673) Adds "How to" guide on using AMS with POROs (@DrSayre)
 - [#1608](https://github.com/rails-api/active_model_serializers/pull/1608) Move SerializableResource to ActiveModelSerializers (@groyoh)
 - [#1602](https://github.com/rails-api/active_model_serializers/pull/1602) Add output examples to Adapters docs (@remear)
 - [#1557](https://github.com/rails-api/active_model_serializers/pull/1557) Update docs regarding overriding the root key (@Jwan622)
