@@ -27,6 +27,7 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - [Using ActiveModelSerializers Outside Of Controllers](howto/outside_controller_use.md)
 - [Testing ActiveModelSerializers](howto/test.md)
 - [Passing Arbitrary Options](howto/passing_arbitrary_options.md)
+- [How to serialize a Plain-Old Ruby Object (PORO)](howto/serialize_poro.md)
 
 ## Integrations
 
