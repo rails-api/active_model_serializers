@@ -38,6 +38,26 @@ Serialization of the resource `title`
 
 ### Associations
 
+The interface for associations is, generically:
+
+> `association_type(association_name, options, &block)`
+
+Where:
+
+- `association_type` may be `has_one`, `has_many`, `belongs_to`.
+- `association_name` is a method name the serializer calls.
+- optional: `options` may be:
+  - `key:` The name used for the serialized association.
+  - `serializer:`
+  - `if:`
+  - `unless:`
+  - `virtual_value:`
+- optional: `&block` is a context that returns the association's attributes.
+  - prevents `association_name` method from being called.
+  - return value of block is used as the association value.
+  - yields the `serializer` to the block.
+  - `include_data false` prevents the `data` key from being rendered in the JSON API relationship.
+
 #### ::has_one
 
 e.g.
@@ -55,6 +75,14 @@ def cached_blog
   cache_store.fetch("cached_blog:#{object.updated_at}") do
     Blog.find(object.blog_id)
   end
+end
+```
+
+``ruby
+has_one :blog, if: :show_blog?
+
+def show_blog?
+  scope.admin?
 end
 ```
 
