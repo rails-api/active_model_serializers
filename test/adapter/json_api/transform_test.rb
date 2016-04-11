@@ -242,9 +242,10 @@ module ActiveModelSerializers
           mock_request(:zoot)
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
-          assert_raises NoMethodError do
+          exception = assert_raises NoMethodError do
             adapter.serializable_hash
           end
+          assert_match /undefined method.*zoot/, exception.message
         end
 
         def test_success_document_transform_camel
@@ -448,9 +449,10 @@ module ActiveModelSerializers
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
 
-          assert_raises NoMethodError do
+          exception = assert_raises NoMethodError do
             adapter.serializable_hash
           end
+          assert_match /undefined method.*krazy/, exception.message
         end
 
         def test_error_document_transform_camel
