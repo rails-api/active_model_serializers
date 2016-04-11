@@ -128,7 +128,7 @@ module ActiveModelSerializers
 
         if is_collection && serializer.paginated?
           hash[:links] ||= {}
-          hash[:links].update(pagination_links_for(serializer, options))
+          hash[:links].update(pagination_links_for(serializer))
         end
 
         hash
@@ -499,8 +499,8 @@ module ActiveModelSerializers
       #   end
       # prs:
       #   https://github.com/rails-api/active_model_serializers/pull/1041
-      def pagination_links_for(serializer, options)
-        PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+      def pagination_links_for(serializer)
+        PaginationLinks.new(serializer.object, instance_options).as_json
       end
 
       # {http://jsonapi.org/format/#document-meta Docment Meta}

@@ -8,6 +8,8 @@ Breaking changes:
 - [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Default key case for the JsonApi adapter changed to dashed. (@remear)
 
 Features:
+- [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
+  to the ActiveModel::Serialization and ActiveModel::Serializers::JSON interface. (@bf4)
 - [#1645](https://github.com/rails-api/active_model_serializers/pull/1645) Transform keys referenced in values. (@remear)
 - [#1650](https://github.com/rails-api/active_model_serializers/pull/1650) Fix serialization scope options `scope`, `scope_name`
   take precedence over `serialization_scope` in the controller.
