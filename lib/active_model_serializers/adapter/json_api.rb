@@ -43,14 +43,13 @@ module ActiveModelSerializers
 
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
       # {http://jsonapi.org/format/#document-top-level data and errors MUST NOT coexist in the same document.}
-      def serializable_hash(options = nil)
-        options ||= {}
+      def serializable_hash(*)
         document = if serializer.success?
-                     success_document(options)
+                     success_document(instance_options)
                    else
-                     failure_document(options)
+                     failure_document(instance_options)
                    end
-        self.class.transform_key_casing!(document, options)
+        self.class.transform_key_casing!(document, instance_options)
       end
 
       # {http://jsonapi.org/format/#document-top-level Primary data}
