@@ -245,7 +245,7 @@ module ActiveModelSerializers
           exception = assert_raises NoMethodError do
             adapter.serializable_hash
           end
-          assert_match /undefined method.*zoot/, exception.message
+          assert_match(/undefined method.*zoot/, exception.message)
         end
 
         def test_success_document_transform_camel
@@ -452,7 +452,7 @@ module ActiveModelSerializers
           exception = assert_raises NoMethodError do
             adapter.serializable_hash
           end
-          assert_match /undefined method.*krazy/, exception.message
+          assert_match(/undefined method.*krazy/, exception.message)
         end
 
         def test_error_document_transform_camel
