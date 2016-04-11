@@ -78,7 +78,7 @@ def cached_blog
 end
 ```
 
-``ruby
+```ruby
 has_one :blog, if: :show_blog?
 
 def show_blog?
