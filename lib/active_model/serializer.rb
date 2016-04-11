@@ -294,9 +294,7 @@ module ActiveModel
 
       scope_name = @options[:scope_name]
       if scope_name && !respond_to?(scope_name)
-        self.class.class_eval do
-          define_method scope_name, lambda { scope }
-        end
+        self.singleton_class.send :alias_method, scope_name, :scope
       end
     end
 
