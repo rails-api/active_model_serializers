@@ -67,8 +67,8 @@ module ActiveModelSerializers
         def test_success_document_transform_default
           mock_request
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
           assert_equal({
             data: {
               id: '1337',
@@ -102,8 +102,8 @@ module ActiveModelSerializers
           mock_request
           result = with_config(key_transform: :camel_lower) do
             serializer = PostSerializer.new(@post)
-            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-            adapter.serializable_hash(@options)
+            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+            adapter.serializable_hash
           end
           assert_equal({
             data: {
@@ -138,8 +138,8 @@ module ActiveModelSerializers
           mock_request(:camel)
           result = with_config(key_transform: :camel_lower) do
             serializer = PostSerializer.new(@post)
-            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-            adapter.serializable_hash(@options)
+            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+            adapter.serializable_hash
           end
           assert_equal({
             Data: {
@@ -173,8 +173,8 @@ module ActiveModelSerializers
         def test_success_document_transform_dash
           mock_request(:dash)
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
           assert_equal({
             data: {
               id: '1337',
@@ -207,8 +207,8 @@ module ActiveModelSerializers
         def test_success_document_transform_unaltered
           mock_request(:unaltered)
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
           assert_equal({
             data: {
               id: '1337',
@@ -241,17 +241,18 @@ module ActiveModelSerializers
         def test_success_document_transform_undefined
           mock_request(:zoot)
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          assert_raises NoMethodError do
-            adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          exception = assert_raises NoMethodError do
+            adapter.serializable_hash
           end
+          assert_match(/undefined method.*zoot/, exception.message)
         end
 
         def test_success_document_transform_camel
           mock_request(:camel)
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
           assert_equal({
             Data: {
               Id: '1337',
@@ -284,8 +285,8 @@ module ActiveModelSerializers
         def test_success_document_transform_camel_lower
           mock_request(:camel_lower)
           serializer = PostSerializer.new(@post)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
           assert_equal({
             data: {
               id: '1337',
@@ -321,8 +322,8 @@ module ActiveModelSerializers
           resource.errors.add(:published_at, 'must be in the future')
           resource.errors.add(:title, 'must be longer')
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
           expected_errors_object =
             { :errors =>
               [
@@ -345,8 +346,8 @@ module ActiveModelSerializers
             resource.errors.add(:published_at, 'must be in the future')
             resource.errors.add(:title, 'must be longer')
             serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-            adapter.serializable_hash(@options)
+            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+            adapter.serializable_hash
           end
           expected_errors_object =
             { :Errors =>
@@ -371,8 +372,8 @@ module ActiveModelSerializers
             resource.errors.add(:published_at, 'must be in the future')
             resource.errors.add(:title, 'must be longer')
             serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-            adapter.serializable_hash(@options)
+            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+            adapter.serializable_hash
           end
           expected_errors_object =
             { :Errors =>
@@ -398,8 +399,8 @@ module ActiveModelSerializers
           resource.errors.add(:title, 'must be longer')
 
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
 
           expected_errors_object =
             { :errors =>
@@ -425,8 +426,8 @@ module ActiveModelSerializers
           resource.errors.add(:title, 'must be longer')
 
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
 
           expected_errors_object =
             { :errors =>
@@ -446,11 +447,12 @@ module ActiveModelSerializers
           resource.errors.add(:title, 'must be longer')
 
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
 
-          assert_raises NoMethodError do
-            adapter.serializable_hash(@options)
+          exception = assert_raises NoMethodError do
+            adapter.serializable_hash
           end
+          assert_match(/undefined method.*krazy/, exception.message)
         end
 
         def test_error_document_transform_camel
@@ -461,8 +463,8 @@ module ActiveModelSerializers
           resource.errors.add(:title, 'must be longer')
 
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
 
           expected_errors_object =
             { :Errors =>
@@ -482,8 +484,8 @@ module ActiveModelSerializers
           resource.errors.add(:title, 'must be longer')
 
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
-          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
-          result = adapter.serializable_hash(@options)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
 
           expected_errors_object =
             { :errors =>

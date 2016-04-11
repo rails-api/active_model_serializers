@@ -43,14 +43,13 @@ module ActiveModelSerializers
 
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
       # {http://jsonapi.org/format/#document-top-level data and errors MUST NOT coexist in the same document.}
-      def serializable_hash(options = nil)
-        options ||= {}
+      def serializable_hash(*)
         document = if serializer.success?
-                     success_document(options)
+                     success_document
                    else
-                     failure_document(options)
+                     failure_document
                    end
-        self.class.transform_key_casing!(document, options)
+        self.class.transform_key_casing!(document, instance_options)
       end
 
       # {http://jsonapi.org/format/#document-top-level Primary data}
@@ -68,10 +67,10 @@ module ActiveModelSerializers
       #    links: toplevel_links,
       #    jsonapi: toplevel_jsonapi
       #  }.reject! {|_,v| v.nil? }
-      def success_document(options)
+      def success_document
         is_collection = serializer.respond_to?(:each)
         serializers = is_collection ? serializer : [serializer]
-        primary_data, included = resource_objects_for(serializers, options)
+        primary_data, included = resource_objects_for(serializers)
 
         hash = {}
         # toplevel_data
@@ -128,7 +127,7 @@ module ActiveModelSerializers
 
         if is_collection && serializer.paginated?
           hash[:links] ||= {}
-          hash[:links].update(pagination_links_for(serializer, options))
+          hash[:links].update(pagination_links_for(serializer))
         end
 
         hash
@@ -148,7 +147,7 @@ module ActiveModelSerializers
       #   }.reject! {|_,v| v.nil? }
       # prs:
       #  https://github.com/rails-api/active_model_serializers/pull/1004
-      def failure_document(options)
+      def failure_document
         hash = {}
         # PR Please :)
         # Jsonapi.add!(hash)
@@ -163,10 +162,10 @@ module ActiveModelSerializers
         #   ]
         if serializer.respond_to?(:each)
           hash[:errors] = serializer.flat_map do |error_serializer|
-            Error.resource_errors(error_serializer, options)
+            Error.resource_errors(error_serializer, instance_options)
           end
         else
-          hash[:errors] = Error.resource_errors(serializer, options)
+          hash[:errors] = Error.resource_errors(serializer, instance_options)
         end
         hash
       end
@@ -224,21 +223,21 @@ module ActiveModelSerializers
       #     [x] url helpers https://github.com/rails-api/active_model_serializers/issues/1269
       #   meta
       #     [x] https://github.com/rails-api/active_model_serializers/pull/1340
-      def resource_objects_for(serializers, options)
+      def resource_objects_for(serializers)
         @primary = []
         @included = []
         @resource_identifiers = Set.new
-        serializers.each { |serializer| process_resource(serializer, true, options) }
-        serializers.each { |serializer| process_relationships(serializer, @include_tree, options) }
+        serializers.each { |serializer| process_resource(serializer, true) }
+        serializers.each { |serializer| process_relationships(serializer, @include_tree) }
 
         [@primary, @included]
       end
 
-      def process_resource(serializer, primary, options)
-        resource_identifier = ResourceIdentifier.new(serializer, options).as_json
+      def process_resource(serializer, primary)
+        resource_identifier = ResourceIdentifier.new(serializer, instance_options).as_json
         return false unless @resource_identifiers.add?(resource_identifier)
 
-        resource_object = resource_object_for(serializer, options)
+        resource_object = resource_object_for(serializer)
         if primary
           @primary << resource_object
         else
@@ -248,21 +247,21 @@ module ActiveModelSerializers
         true
       end
 
-      def process_relationships(serializer, include_tree, options)
+      def process_relationships(serializer, include_tree)
         serializer.associations(include_tree).each do |association|
-          process_relationship(association.serializer, include_tree[association.key], options)
+          process_relationship(association.serializer, include_tree[association.key])
         end
       end
 
-      def process_relationship(serializer, include_tree, options)
+      def process_relationship(serializer, include_tree)
         if serializer.respond_to?(:each)
-          serializer.each { |s| process_relationship(s, include_tree, options) }
+          serializer.each { |s| process_relationship(s, include_tree) }
           return
         end
         return unless serializer && serializer.object
-        return unless process_resource(serializer, false, options)
+        return unless process_resource(serializer, false)
 
-        process_relationships(serializer, include_tree, options)
+        process_relationships(serializer, include_tree)
       end
 
       # {http://jsonapi.org/format/#document-resource-object-attributes Document Resource Object Attributes}
@@ -286,9 +285,9 @@ module ActiveModelSerializers
       end
 
       # {http://jsonapi.org/format/#document-resource-objects Document Resource Objects}
-      def resource_object_for(serializer, options)
+      def resource_object_for(serializer)
         resource_object = cache_check(serializer) do
-          resource_object = ResourceIdentifier.new(serializer, options).as_json
+          resource_object = ResourceIdentifier.new(serializer, instance_options).as_json
 
           requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
           attributes = attributes_for(serializer, requested_fields)
@@ -297,7 +296,7 @@ module ActiveModelSerializers
         end
 
         requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
-        relationships = relationships_for(serializer, requested_associations, options)
+        relationships = relationships_for(serializer, requested_associations)
         resource_object[:relationships] = relationships if relationships.any?
 
         links = links_for(serializer)
@@ -425,13 +424,13 @@ module ActiveModelSerializers
       #     id: 'required-id',
       #     meta: meta
       #   }.reject! {|_,v| v.nil? }
-      def relationships_for(serializer, requested_associations, options)
+      def relationships_for(serializer, requested_associations)
         include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(requested_associations)
         serializer.associations(include_tree).each_with_object({}) do |association, hash|
           hash[association.key] = Relationship.new(
             serializer,
             association.serializer,
-            options,
+            instance_options,
             options: association.options,
             links: association.links,
             meta: association.meta
@@ -499,8 +498,8 @@ module ActiveModelSerializers
       #   end
       # prs:
       #   https://github.com/rails-api/active_model_serializers/pull/1041
-      def pagination_links_for(serializer, options)
-        PaginationLinks.new(serializer.object, options[:serialization_context]).serializable_hash(options)
+      def pagination_links_for(serializer)
+        PaginationLinks.new(serializer.object, instance_options).as_json
       end
 
       # {http://jsonapi.org/format/#document-meta Docment Meta}

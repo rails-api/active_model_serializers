@@ -41,7 +41,6 @@ require 'active_support/core_ext/string/access'
 
 # These files do not require any others and are needed
 # to run the tests
-require 'active_support/testing/autorun'
 require 'active_support/testing/isolation'
 
 module TestHelpers
