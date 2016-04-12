@@ -31,3 +31,8 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
+
+# JRuby versions before 9.x report their version as "1.9.x" or lower, so lock these to an older version of mime-types
+if defined?(JRUBY_VERSION) and Gem::ruby_version < Gem::Version.new("2.0.0")
+  gem 'mime-types', '< 3'
+end
