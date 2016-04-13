@@ -60,10 +60,11 @@ module ActionController
           end
 
           def render_resource_with_transform_with_global_config
-            setup_post
             old_transform = ActiveModelSerializers.config.key_transform
+            setup_post
             ActiveModelSerializers.config.key_transform = :camel_lower
             render json: @post, serializer: PostSerializer, adapter: :json_api
+          ensure
             ActiveModelSerializers.config.key_transform = old_transform
           end
         end

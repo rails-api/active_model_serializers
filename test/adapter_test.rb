@@ -14,6 +14,33 @@ module ActiveModelSerializers
       end
     end
 
+    def test_serialization_options_ensures_option_is_a_hash
+      adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
+        def serializable_hash(options = nil)
+          serialization_options(options)
+        end
+      end.new(@serializer)
+      assert_equal({}, adapter.serializable_hash(nil))
+      assert_equal({}, adapter.serializable_hash({}))
+    ensure
+      ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
+    end
+
+    def test_serialization_options_ensures_option_is_one_of_valid_options
+      adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
+        def serializable_hash(options = nil)
+          serialization_options(options)
+        end
+      end.new(@serializer)
+      filtered_options = { now: :see_me, then: :not }
+      valid_options = ActiveModel::Serializer::SERIALIZABLE_HASH_VALID_KEYS.each_with_object({}) do |option, result|
+        result[option] = option
+      end
+      assert_equal(valid_options, adapter.serializable_hash(filtered_options.merge(valid_options)))
+    ensure
+      ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
+    end
+
     def test_serializer
       assert_equal @serializer, @adapter.serializer
     end
