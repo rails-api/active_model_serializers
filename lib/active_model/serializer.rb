@@ -18,6 +18,8 @@ require 'active_model/serializer/type'
 # reified when subclassed to decorate a resource.
 module ActiveModel
   class Serializer
+    # @see #serializable_hash for more details on these valid keys.
+    SERIALIZABLE_HASH_VALID_KEYS = [:only, :except, :methods, :include, :root].freeze
     extend ActiveSupport::Autoload
     autoload :Adapter
     autoload :Null

@@ -19,6 +19,8 @@ module ActiveModelSerializers
         @cached_name ||= self.class.name.demodulize.underscore
       end
 
+      # Subclasses that implement this method must first call
+      #   options = serialization_options(options)
       def serializable_hash(_options = nil)
         fail NotImplementedError, 'This is an abstract method. Should be implemented at the concrete adapter.'
       end
@@ -40,6 +42,12 @@ module ActiveModelSerializers
       end
 
       private
+
+      # see https://github.com/rails-api/active_model_serializers/pull/965
+      # When <tt>options</tt> is +nil+, sets it to +{}+
+      def serialization_options(options)
+        options ||= {} # rubocop:disable Lint/UselessAssignment
+      end
 
       def meta
         instance_options.fetch(:meta, nil)

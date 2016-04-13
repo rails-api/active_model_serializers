@@ -8,7 +8,7 @@ module ActiveModelSerializers
       end
 
       def serializable_hash(options = nil)
-        options ||= {}
+        options = serialization_options(options)
 
         if serializer.respond_to?(:each)
           serializable_hash_for_collection(options)
