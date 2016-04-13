@@ -137,7 +137,7 @@ The model can be serialized as:
 
 ```ruby
 options = {}
-serialization = SerializableResource.new(resource, options)
+serialization = ActiveModelSerializers::SerializableResource.new(resource, options)
 serialization.to_json
 serialization.as_json
 ```
@@ -146,7 +146,7 @@ SerializableResource delegates to the adapter, which it builds as:
 
 ```ruby
 adapter_options = {}
-adapter = Adapter.create(serializer, adapter_options)
+adapter = ActiveModelSerializers::Adapter.create(serializer, adapter_options)
 adapter.to_json
 adapter.as_json
 adapter.serializable_hash
