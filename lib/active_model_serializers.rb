@@ -31,11 +31,10 @@ module ActiveModelSerializers
     [file, lineno]
   end
 
-  # Memoized default include tree
-  # @return [ActiveModel::Serializer::IncludeTree]
-  def self.default_include_tree
-    @default_include_tree ||= ActiveModel::Serializer::IncludeTree
-                              .from_include_args(config.default_includes)
+  # Memoized default include directive
+  # @return [JSONAPI::IncludeDirective]
+  def self.default_include_directive
+    @default_include_directive ||= JSONAPI::IncludeDirective.new(config.default_includes, allow_wildcard: true)
   end
 
   require 'active_model/serializer/version'

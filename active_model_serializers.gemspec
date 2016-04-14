@@ -42,6 +42,8 @@ Gem::Specification.new do |spec|
     # 'minitest'
     # 'thread_safe'
 
+  spec.add_runtime_dependency 'jsonapi', '~> 0.1.1.beta2'
+
   spec.add_development_dependency 'activerecord', rails_versions
     # arel
     # activesupport

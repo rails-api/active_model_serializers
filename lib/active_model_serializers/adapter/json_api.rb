@@ -33,7 +33,7 @@ module ActiveModelSerializers
 
       def initialize(serializer, options = {})
         super
-        @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include])
+        @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
         @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
       end
 
@@ -232,7 +232,7 @@ module ActiveModelSerializers
         @included = []
         @resource_identifiers = Set.new
         serializers.each { |serializer| process_resource(serializer, true) }
-        serializers.each { |serializer| process_relationships(serializer, @include_tree) }
+        serializers.each { |serializer| process_relationships(serializer, @include_directive) }
 
         [@primary, @included]
       end
@@ -251,21 +251,21 @@ module ActiveModelSerializers
         true
       end
 
-      def process_relationships(serializer, include_tree)
-        serializer.associations(include_tree).each do |association|
-          process_relationship(association.serializer, include_tree[association.key])
+      def process_relationships(serializer, include_directive)
+        serializer.associations(include_directive).each do |association|
+          process_relationship(association.serializer, include_directive[association.key])
         end
       end
 
-      def process_relationship(serializer, include_tree)
+      def process_relationship(serializer, include_directive)
         if serializer.respond_to?(:each)
-          serializer.each { |s| process_relationship(s, include_tree) }
+          serializer.each { |s| process_relationship(s, include_directive) }
           return
         end
         return unless serializer && serializer.object
         return unless process_resource(serializer, false)
 
-        process_relationships(serializer, include_tree)
+        process_relationships(serializer, include_directive)
       end
 
       # {http://jsonapi.org/format/#document-resource-object-attributes Document Resource Object Attributes}
@@ -429,8 +429,10 @@ module ActiveModelSerializers
       #     meta: meta
       #   }.reject! {|_,v| v.nil? }
       def relationships_for(serializer, requested_associations)
-        include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(requested_associations)
-        serializer.associations(include_tree).each_with_object({}) do |association, hash|
+        include_directive = JSONAPI::IncludeDirective.new(
+          requested_associations,
+          allow_wildcard: true)
+        serializer.associations(include_directive).each_with_object({}) do |association, hash|
           hash[association.key] = Relationship.new(
             serializer,
             association.serializer,
