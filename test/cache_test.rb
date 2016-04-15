@@ -303,8 +303,8 @@ module ActiveModelSerializers
         render_object_with_cache(@comment)
 
         attributes = Adapter::Attributes.new(serializer)
-        attributes.send(:cache_attributes)
-        cached_attributes = attributes.instance_variable_get(:@cached_attributes)
+        include_tree = ActiveModel::Serializer::IncludeTree.from_include_args('*')
+        cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, attributes, include_tree)
 
         assert_equal cached_attributes["#{@comment.cache_key}/#{attributes.cached_name}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
         assert_equal cached_attributes["#{@comment.post.cache_key}/#{attributes.cached_name}"], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
