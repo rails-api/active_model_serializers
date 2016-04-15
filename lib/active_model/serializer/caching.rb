@@ -208,17 +208,17 @@ module ActiveModel
         end
       end
 
-      def cached_attributes(options, cached_attributes, adapter_instance)
+      def cached_attributes(fields, cached_attributes, adapter_instance)
         if self.class.cache_enabled?
           key = cache_key(adapter_instance)
           cached_attributes.fetch(key) do
             cache_check(adapter_instance) do
-              attributes(options[:fields])
+              attributes(fields)
             end
           end
         else
           cache_check(adapter_instance) do
-            attributes(options[:fields])
+            attributes(fields)
           end
         end
       end
