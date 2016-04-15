@@ -3,7 +3,6 @@ module ActiveModelSerializers
     class Attributes < Base
       def initialize(serializer, options = {})
         super
-        @cached_attributes = options[:cache_attributes] || {}
         @include_directive =
           if options[:include_directive]
             options[:include_directive]
@@ -27,7 +26,7 @@ module ActiveModelSerializers
       private
 
       def serializable_hash_for_collection(options)
-        cache_attributes
+        instance_options[:cached_attributes] ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_directive)
         opts = instance_options.merge(include_directive: @include_directive)
         serializer.map { |s| Attributes.new(s, opts).serializable_hash(options) }
       end
@@ -62,16 +61,11 @@ module ActiveModelSerializers
         relationship_value
       end
 
-      # Set @cached_attributes
-      def cache_attributes
-        return if @cached_attributes.present?
-
-        @cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, self, @include_directive)
-      end
-
       def resource_object_for(options)
         if serializer.class.cache_enabled?
-          @cached_attributes.fetch(serializer.cache_key(self)) do
+          cached_attributes = instance_options[:cached_attributes] || {}
+          key = serializer.cache_key(self)
+          cached_attributes.fetch(key) do
             serializer.cached_fields(options[:fields], self)
           end
         else
