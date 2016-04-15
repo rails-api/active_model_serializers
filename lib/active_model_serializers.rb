@@ -6,8 +6,6 @@ require 'active_support/json'
 module ActiveModelSerializers
   extend ActiveSupport::Autoload
   autoload :Model
-  autoload :CachedSerializer
-  autoload :FragmentCache
   autoload :Callbacks
   autoload :Deserialization
   autoload :SerializableResource

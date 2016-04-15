@@ -36,7 +36,7 @@ module ActiveModelSerializers
       end
 
       def cache_check(serializer)
-        CachedSerializer.new(serializer).cache_check(self) do
+        serializer.cache_check(self) do
           yield
         end
       end
