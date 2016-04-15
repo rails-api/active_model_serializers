@@ -19,6 +19,7 @@ module ActiveModelSerializers
       private
 
       def serializable_hash_for_collection(options)
+        instance_options[:cached_attributes] ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
         serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
       end
 

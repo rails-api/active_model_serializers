@@ -30,6 +30,9 @@ Metrics/ClassLength:
   Exclude:
     - test/**/*.rb
 
+Metrics/ModuleLength:
+  Max: 103 # TODO: Lower to 100
+
 Metrics/CyclomaticComplexity:
   Max: 7 # TODO: Lower to 6
 
