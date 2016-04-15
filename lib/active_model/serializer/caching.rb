@@ -206,17 +206,9 @@ module ActiveModel
         end
       end
 
-      def cached_attributes(options, cached_attributes, adapter_instance)
-        if self.class.cache_enabled?
-          cached_attributes.fetch(cache_key(adapter_instance)) do
-            cache_check(adapter_instance) do
-              attributes(options[:fields])
-            end
-          end
-        else
-          cache_check(adapter_instance) do
-            attributes(options[:fields])
-          end
+      def cached_attributes(fields, adapter_instance)
+        cache_check(adapter_instance) do
+          attributes(fields)
         end
       end
 

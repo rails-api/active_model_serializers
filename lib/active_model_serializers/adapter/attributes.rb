@@ -23,7 +23,7 @@ module ActiveModelSerializers
       end
 
       def serializable_hash_for_single_resource(options)
-        resource = serializer.cached_attributes(options, {}, self)
+        resource = serializer.cached_attributes(options[:fields], self)
         relationships = resource_relationships(options)
         resource.merge(relationships)
       end
