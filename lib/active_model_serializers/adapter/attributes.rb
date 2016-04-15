@@ -4,7 +4,6 @@ module ActiveModelSerializers
       def initialize(serializer, options = {})
         super
         @include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(options[:include] || '*')
-        @cached_attributes = options[:cache_attributes] || {}
       end
 
       def serializable_hash(options = nil)
@@ -20,14 +19,11 @@ module ActiveModelSerializers
       private
 
       def serializable_hash_for_collection(options)
-        @cached_attributes.present? ||
-          (@cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree))
-
         serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
       end
 
       def serializable_hash_for_single_resource(options)
-        resource = serializer.cached_attributes(options, @cached_attributes, self)
+        resource = serializer.cached_attributes(options, {}, self)
         relationships = resource_relationships(options)
         resource.merge(relationships)
       end
