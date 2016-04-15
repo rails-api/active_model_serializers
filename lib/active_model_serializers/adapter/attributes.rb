@@ -10,40 +10,12 @@ module ActiveModelSerializers
         options = serialization_options(options)
 
         if serializer.respond_to?(:each)
-          serializable_hash_for_collection(options)
+          serializer.map do |element|
+            element.serialize(options, instance_options, self, @include_tree)
+          end
         else
-          serializable_hash_for_single_resource(options)
+          serializer.serialize(options, instance_options, self, @include_tree)
         end
-      end
-
-      private
-
-      def serializable_hash_for_collection(options)
-        instance_options[:cached_attributes] ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
-        serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
-      end
-
-      def serializable_hash_for_single_resource(options)
-        resource = serializer.cached_attributes(options[:fields], self)
-        relationships = resource_relationships(options)
-        resource.merge(relationships)
-      end
-
-      def resource_relationships(options)
-        relationships = {}
-        serializer.associations(@include_tree).each do |association|
-          relationships[association.key] ||= relationship_value_for(association, options)
-        end
-
-        relationships
-      end
-
-      def relationship_value_for(association, options)
-        return association.options[:virtual_value] if association.options[:virtual_value]
-        return unless association.serializer && association.serializer.object
-
-        opts = instance_options.merge(include: @include_tree[association.key])
-        Attributes.new(association.serializer, opts).serializable_hash(options)
       end
     end
   end
