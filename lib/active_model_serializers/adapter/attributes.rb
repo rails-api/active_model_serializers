@@ -20,23 +20,14 @@ module ActiveModelSerializers
       private
 
       def serializable_hash_for_collection(options)
+        @cached_attributes.present? ||
+          (@cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree))
+
         serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
       end
 
       def serializable_hash_for_single_resource(options)
-        resource =
-          if serializer.class.cache_enabled?
-            @cached_attributes ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
-            @cached_attributes.fetch(serializer.cache_key(self)) do
-              serializer.cache_check(self) do
-                serializer.attributes(options[:fields])
-              end
-            end
-          else
-            serializer.cache_check(self) do
-              serializer.attributes(options[:fields])
-            end
-          end
+        resource = serializer.cached_attributes(options, @cached_attributes, self)
         relationships = resource_relationships(options)
         resource.merge(relationships)
       end
