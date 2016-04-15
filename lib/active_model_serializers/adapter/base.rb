@@ -33,12 +33,6 @@ module ActiveModelSerializers
         non_cached_hash.merge cached_hash
       end
 
-      def cache_check(serializer)
-        serializer.cache_check(self) do
-          yield
-        end
-      end
-
       private
 
       # see https://github.com/rails-api/active_model_serializers/pull/965
