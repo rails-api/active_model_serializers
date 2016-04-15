@@ -28,10 +28,14 @@ module ActiveModelSerializers
           if serializer.class.cache_enabled?
             @cached_attributes ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
             @cached_attributes.fetch(serializer.cache_key(self)) do
-              serializer.cached_fields(options[:fields], self)
+              serializer.cache_check(self) do
+                serializer.attributes(options[:fields])
+              end
             end
           else
-            serializer.cached_fields(options[:fields], self)
+            serializer.cache_check(self) do
+              serializer.attributes(options[:fields])
+            end
           end
         relationships = resource_relationships(options)
         resource.merge(relationships)
