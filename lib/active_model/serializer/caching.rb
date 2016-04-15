@@ -1,3 +1,5 @@
+# TODO(BF): refactor file to be smaller
+# rubocop:disable Metrics/ModuleLength
 module ActiveModel
   class Serializer
     UndefinedCacheKey = Class.new(StandardError)
@@ -206,6 +208,21 @@ module ActiveModel
         end
       end
 
+      def cached_attributes(options, cached_attributes, adapter_instance)
+        if self.class.cache_enabled?
+          key = cache_key(adapter_instance)
+          cached_attributes.fetch(key) do
+            cache_check(adapter_instance) do
+              attributes(options[:fields])
+            end
+          end
+        else
+          cache_check(adapter_instance) do
+            attributes(options[:fields])
+          end
+        end
+      end
+
       def cache_check(adapter_instance)
         if self.class.cache_enabled?
           self.class.cache_store.fetch(cache_key(adapter_instance), self.class._cache_options) do
@@ -322,3 +339,4 @@ module ActiveModel
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

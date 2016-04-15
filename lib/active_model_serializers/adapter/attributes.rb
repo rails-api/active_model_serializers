@@ -32,20 +32,8 @@ module ActiveModelSerializers
       end
 
       def serializable_hash_for_single_resource(options)
-        resource =
-          if serializer.class.cache_enabled?
-            cached_attributes = instance_options[:cached_attributes] || {}
-            key = serializer.cache_key(self)
-            cached_attributes.fetch(key) do
-              serializer.cache_check(self) do
-                serializer.attributes(options[:fields])
-              end
-            end
-          else
-            serializer.cache_check(self) do
-              serializer.attributes(options[:fields])
-            end
-          end
+        cached_attributes = instance_options[:cached_attributes] || {}
+        resource = serializer.cached_attributes(options, cached_attributes, self)
         relationships = resource_relationships(options)
         resource.merge(relationships)
       end
