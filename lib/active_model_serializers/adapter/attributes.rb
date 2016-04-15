@@ -24,7 +24,15 @@ module ActiveModelSerializers
       end
 
       def serializable_hash_for_single_resource(options)
-        resource = resource_object_for(options)
+        resource =
+          if serializer.class.cache_enabled?
+            @cached_attributes ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
+            @cached_attributes.fetch(serializer.cache_key(self)) do
+              serializer.cached_fields(options[:fields], self)
+            end
+          else
+            serializer.cached_fields(options[:fields], self)
+          end
         relationships = resource_relationships(options)
         resource.merge(relationships)
       end
@@ -44,17 +52,6 @@ module ActiveModelSerializers
 
         opts = instance_options.merge(include: @include_tree[association.key])
         Attributes.new(association.serializer, opts).serializable_hash(options)
-      end
-
-      def resource_object_for(options)
-        if serializer.class.cache_enabled?
-          @cached_attributes ||= ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
-          @cached_attributes.fetch(serializer.cache_key(self)) do
-            serializer.cached_fields(options[:fields], self)
-          end
-        else
-          serializer.cached_fields(options[:fields], self)
-        end
       end
     end
   end
