@@ -37,10 +37,14 @@ module ActiveModelSerializers
             cached_attributes = instance_options[:cached_attributes] || {}
             key = serializer.cache_key(self)
             cached_attributes.fetch(key) do
-              serializer.cached_fields(options[:fields], self)
+              serializer.cache_check(self) do
+                serializer.attributes(options[:fields])
+              end
             end
           else
-            serializer.cached_fields(options[:fields], self)
+            serializer.cache_check(self) do
+              serializer.attributes(options[:fields])
+            end
           end
         relationships = resource_relationships(options)
         resource.merge(relationships)
