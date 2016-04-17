@@ -8,6 +8,7 @@ Breaking changes:
 - [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Default key case for the JsonApi adapter changed to dashed. (@remear)
 
 Features:
+- [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
 - [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
   to the ActiveModel::Serialization and ActiveModel::Serializers::JSON interface. (@bf4)
 - [#1645](https://github.com/rails-api/active_model_serializers/pull/1645) Transform keys referenced in values. (@remear)
