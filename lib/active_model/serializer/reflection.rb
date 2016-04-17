@@ -116,7 +116,11 @@ module ActiveModel
           begin
             serializer = serializer_class.new(
               association_value,
-              serializer_options(subject, parent_serializer_options, reflection_options)
+              serializer_options(
+                subject,
+                parent_serializer_options,
+                reflection_options.merge(options)
+              )
             )
           rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
