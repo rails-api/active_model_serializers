@@ -454,13 +454,15 @@ module ActionController
       end
 
       def test_render_event_is_emmited
-        ::ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
+        subscriber = ::ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
           @name = name
         end
 
         get :render_using_implicit_serializer
 
         assert_equal 'render.active_model_serializers', @name
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
       end
     end
   end
