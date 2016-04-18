@@ -261,6 +261,30 @@ module ActiveModel
 
           assert_equal(expected, hash)
         end
+
+        def test_associations_yield_reflections
+          model = ModelWithAssociations::Model.new(
+            id: 1337,
+            title: 'New Post',
+            blog: nil,
+            body: 'Body',
+            comments: (0..50).map { |i| ModelWithAssociations::Comment.new(id: i, body: 'ZOMG A COMMENT') },
+            author: ModelWithAssociations::Author.new(id: 42, first_name: 'Joao', last_name: 'Moura')
+          )
+          include_tree = ActiveModel::Serializer::IncludeTree.from_include_args('*')
+
+          associations = []
+          ModelWithAssociations::ModelSerializer.new(model).associations(include_tree).each do |association|
+            associations << association
+          end
+          assert_equal [:author, :blog, :comments], associations.map(&:key).sort
+
+          associations = []
+          ModelWithAssociations::CachingModelSerializer.new(model).associations(include_tree).each do |association|
+            associations << association
+          end
+          assert_equal [:author, :blog, :comments], associations.map(&:key).sort
+        end
       end
     end
   end

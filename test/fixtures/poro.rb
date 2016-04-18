@@ -251,4 +251,69 @@ Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
   cache only: [:id]
   attributes :id
 end
+
+module ModelWithAssociations
+  class Model < ActiveModelSerializers::Model
+    attr_accessor :id, :title, :body, :comments, :blog, :author
+  end
+  class Comment < ActiveModelSerializers::Model
+    attr_accessor :id, :body
+  end
+  class Blog < ActiveModelSerializers::Model
+    attr_accessor :id, :name
+  end
+  class Author < ActiveModelSerializers::Model
+    attr_accessor :id, :first_name, :last_name, :models
+  end
+
+  class AuthorSerializer < ActiveModel::Serializer
+    attributes :id, :first_name, :last_name
+
+    has_many :models, embed: :ids
+    has_one :bio
+  end
+  class BlogSerializer < ActiveModel::Serializer
+    attributes :id, :name
+  end
+  class CommentSerializer < ActiveModel::Serializer
+    attributes :id, :body
+
+    belongs_to :model
+    belongs_to :author
+  end
+  class ModelSerializer < ActiveModel::Serializer
+    attributes :id, :title, :body
+
+    has_many :comments, serializer: CommentSerializer
+    belongs_to :blog, serializer: BlogSerializer
+    belongs_to :author, serializer: AuthorSerializer
+
+    link(:model_authors) { 'https://example.com/model_authors' }
+
+    meta do
+      {
+        rating: 5,
+        favorite_count: 10
+      }
+    end
+
+    def blog
+      Blog.new(id: 999, name: 'Custom blog')
+    end
+  end
+  class CachingAuthorSerializer < AuthorSerializer
+    cache key: 'writer', only: [:first_name, :last_name], skip_digest: true
+  end
+
+  class CachingCommentSerializer < CommentSerializer
+    cache expires_in: 1.day, skip_digest: true
+  end
+
+  class CachingModelSerializer < ModelSerializer
+    cache key: 'model', expires_in: 0.1, skip_digest: true
+    belongs_to :blog, serializer: BlogSerializer
+    belongs_to :author, serializer: CachingAuthorSerializer
+    has_many :comments, serializer: CachingCommentSerializer
+  end
+end
 $VERBOSE = verbose
