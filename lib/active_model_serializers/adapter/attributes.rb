@@ -34,7 +34,7 @@ module ActiveModelSerializers
       def resource_relationships(options)
         relationships = {}
         serializer.associations(@include_tree).each do |association|
-          relationships[association.key] = relationship_value_for(association, options)
+          relationships[association.key] ||= relationship_value_for(association, options)
         end
 
         relationships
