@@ -35,6 +35,14 @@ class ApiAssertion
     get("/non_caching/#{on_off}")
   end
 
+  def debug(msg = '')
+    if block_given? && ENV['DEBUG'] =~ /\Atrue|on|0\z/i
+      STDERR.puts yield
+    else
+      STDERR.puts msg
+    end
+  end
+
   private
 
   def assert_responses(caching, non_caching)
@@ -85,33 +93,21 @@ class ApiAssertion
       STDERR.puts message unless ENV['SUMMARIZE']
     end
   end
-
-  def debug(msg = '')
-    if block_given? && ENV['DEBUG'] =~ /\Atrue|on|0\z/i
-      STDERR.puts yield
-    else
-      STDERR.puts msg
-    end
-  end
 end
 assertion = ApiAssertion.new
 assertion.valid?
-# STDERR.puts assertion.get_status
+assertion.debug { assertion.get_status }
 
 time = 10
 {
   'caching on: caching serializers: gc off' => { disable_gc: true, send: [:get_caching, 'on'] },
-  # 'caching on: caching serializers: gc on' => { disable_gc: false, send: [:get_caching, 'on'] },
-  'caching off: caching serializers: gc off' => { disable_gc: true, send: [:get_caching, 'off'] },
-  # 'caching off: caching serializers: gc on' => { disable_gc: false, send: [:get_caching, 'off'] },
   'caching on: non-caching serializers: gc off' => { disable_gc: true, send: [:get_non_caching, 'on'] },
-  # 'caching on: non-caching serializers: gc on' => { disable_gc: false, send: [:get_non_caching, 'on'] },
+  'caching off: caching serializers: gc off' => { disable_gc: true, send: [:get_caching, 'off'] },
   'caching off: non-caching serializers: gc off' => { disable_gc: true, send: [:get_non_caching, 'off'] }
-  # 'caching off: non-caching serializers: gc on' => { disable_gc: false, send: [:get_non_caching, 'off'] }
 }.each do |label, options|
   assertion.clear
   Benchmark.ams(label, time: time, disable_gc: options[:disable_gc]) do
     assertion.send(*options[:send])
   end
-  # STDERR.puts assertion.get_status(options[:send][-1])
+  assertion.debug { assertion.get_status(options[:send][-1]) }
 end
