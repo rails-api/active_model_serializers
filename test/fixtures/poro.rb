@@ -309,11 +309,27 @@ module ModelWithAssociations
     cache expires_in: 1.day, skip_digest: true
   end
 
-  class CachingModelSerializer < ModelSerializer
+  class CachingModelSerializer < ActiveModel::Serializer
     cache key: 'model', expires_in: 0.1, skip_digest: true
+
+    attributes :id, :title, :body
+
     belongs_to :blog, serializer: BlogSerializer
     belongs_to :author, serializer: CachingAuthorSerializer
     has_many :comments, serializer: CachingCommentSerializer
+
+    link(:model_authors) { 'https://example.com/model_authors' }
+
+    meta do
+      {
+        rating: 5,
+        favorite_count: 10
+      }
+    end
+
+    def blog
+      Blog.new(id: 999, name: 'Custom blog')
+    end
   end
 end
 $VERBOSE = verbose
