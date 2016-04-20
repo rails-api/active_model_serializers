@@ -14,8 +14,8 @@ module ActiveModelSerializers
         assert(matcher.call, matcher.message)
       end
 
-      MissingSchema = Class.new(Errno::ENOENT)
-      InvalidSchemaError = Class.new(StandardError)
+      MissingSchema = Class.new(Minitest::Assertion)
+      InvalidSchemaError = Class.new(Minitest::Assertion)
 
       class AssertResponseSchema
         attr_reader :schema_path, :response, :message

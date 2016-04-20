@@ -102,14 +102,14 @@ module ActiveModelSerializers
       end
 
       def test_with_a_non_existent_file
-        message = %r{.* - No Schema file at test/support/schemas/non-existent.json}
+        expected_message = 'No Schema file at test/support/schemas/non-existent.json'
 
         get :show
 
         error = assert_raises ActiveModelSerializers::Test::Schema::MissingSchema do
           assert_response_schema('non-existent.json')
         end
-        assert_match(message, error.message)
+        assert_equal(expected_message, error.message)
       end
 
       def test_that_raises_with_a_invalid_json_body
