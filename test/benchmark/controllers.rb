@@ -1,12 +1,13 @@
 class PostController < ActionController::Base
   POST =
     begin
+      updated_at = Time.current
       if ENV['BENCH_STRESS']
         comments = (0..50).map do |i|
-          Comment.new(id: i, body: 'ZOMG A COMMENT')
+          Comment.new(id: i, body: 'ZOMG A COMMENT', updated_at: updated_at + i)
         end
       else
-        comments = [Comment.new(id: 1, body: 'ZOMG A COMMENT')]
+        comments = [Comment.new(id: 1, body: 'ZOMG A COMMENT', updated_at: updated_at)]
       end
       author = Author.new(id: 42, first_name: 'Joao', last_name: 'Moura')
       Post.new(id: 1337, title: 'New Post', blog: nil, body: 'Body', comments: comments, author: author)
@@ -15,6 +16,11 @@ class PostController < ActionController::Base
   def render_with_caching_serializer
     toggle_cache_status
     render json: POST, serializer: CachingPostSerializer, adapter: :json, meta: { caching: perform_caching }
+  end
+
+  def render_with_fragment_caching_serializer
+    toggle_cache_status
+    render json: POST, serializer: FragmentCachingPostSerializer, adapter: :json, meta: { caching: perform_caching }
   end
 
   def render_with_non_caching_serializer
@@ -73,5 +79,6 @@ Rails.application.routes.draw do
   get '/status(/:on)' => 'post#render_cache_status'
   get '/clear' => 'post#clear'
   get '/caching(/:on)' => 'post#render_with_caching_serializer'
+  get '/fragment_caching(/:on)' => 'post#render_with_fragment_caching_serializer'
   get '/non_caching(/:on)' => 'post#render_with_non_caching_serializer'
 end

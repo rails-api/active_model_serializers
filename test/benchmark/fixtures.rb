@@ -13,7 +13,7 @@ end
 Rails.configuration.serializers << BlogSerializer
 
 class CommentSerializer < ActiveModel::Serializer
-  attributes :id, :body
+  attributes :id, :body, :updated_at
 
   belongs_to :post
   belongs_to :author
@@ -43,7 +43,7 @@ end
 Rails.configuration.serializers << PostSerializer
 
 class CachingAuthorSerializer < AuthorSerializer
-  cache key: 'writer', only: [:first_name, :last_name], skip_digest: true
+  cache key: 'writer', skip_digest: true
 end
 Rails.configuration.serializers << CachingAuthorSerializer
 
@@ -58,9 +58,9 @@ class CachingPostSerializer < ActiveModel::Serializer
 
   attributes :id, :title, :body
 
-  has_many :comments, serializer: CommentSerializer
   belongs_to :blog, serializer: BlogSerializer
-  belongs_to :author, serializer: AuthorSerializer
+  belongs_to :author, serializer: CachingAuthorSerializer
+  has_many :comments, serializer: CachingCommentSerializer
 
   link(:post_authors) { 'https://example.com/post_authors' }
 
@@ -76,6 +76,41 @@ class CachingPostSerializer < ActiveModel::Serializer
   end
 end
 Rails.configuration.serializers << CachingPostSerializer
+
+class FragmentCachingAuthorSerializer < AuthorSerializer
+  cache key: 'writer', only: [:first_name, :last_name], skip_digest: true
+end
+Rails.configuration.serializers << FragmentCachingAuthorSerializer
+
+class FragmentCachingCommentSerializer < CommentSerializer
+  cache expires_in: 1.day, except: [:updated_at], skip_digest: true
+end
+Rails.configuration.serializers << CachingCommentSerializer
+
+# see https://github.com/rails-api/active_model_serializers/pull/1690/commits/68715b8f99bc29677e8a47bb3f305f23c077024b#r60344532
+class FragmentCachingPostSerializer < ActiveModel::Serializer
+  cache key: 'post', expires_in: 0.1, skip_digest: true
+
+  attributes :id, :title, :body
+
+  belongs_to :blog, serializer: BlogSerializer
+  belongs_to :author, serializer: FragmentCachingAuthorSerializer
+  has_many :comments, serializer: FragmentCachingCommentSerializer
+
+  link(:post_authors) { 'https://example.com/post_authors' }
+
+  meta do
+    {
+      rating: 5,
+      favorite_count: 10
+    }
+  end
+
+  def blog
+    Blog.new(id: 999, name: 'Custom blog')
+  end
+end
+Rails.configuration.serializers << FragmentCachingPostSerializer
 
 if ENV['ENABLE_ACTIVE_RECORD'] == 'true'
   require 'active_record'
@@ -167,7 +202,7 @@ else
   end
 
   class Comment < BenchmarkModel
-    attr_accessor :id, :body
+    attr_accessor :id, :body, :updated_at
   end
 
   class Author < BenchmarkModel
