@@ -52,11 +52,28 @@ class CachingCommentSerializer < CommentSerializer
 end
 Rails.configuration.serializers << CachingCommentSerializer
 
-class CachingPostSerializer < PostSerializer
+# see https://github.com/rails-api/active_model_serializers/pull/1690/commits/68715b8f99bc29677e8a47bb3f305f23c077024b#r60344532
+class CachingPostSerializer < ActiveModel::Serializer
   cache key: 'post', expires_in: 0.1, skip_digest: true
+
+  attributes :id, :title, :body
+
+  has_many :comments, serializer: CommentSerializer
   belongs_to :blog, serializer: BlogSerializer
-  belongs_to :author, serializer: CachingAuthorSerializer
-  has_many :comments, serializer: CachingCommentSerializer
+  belongs_to :author, serializer: AuthorSerializer
+
+  link(:post_authors) { 'https://example.com/post_authors' }
+
+  meta do
+    {
+      rating: 5,
+      favorite_count: 10
+    }
+  end
+
+  def blog
+    Blog.new(id: 999, name: 'Custom blog')
+  end
 end
 Rails.configuration.serializers << CachingPostSerializer
 
