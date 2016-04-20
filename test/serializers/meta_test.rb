@@ -92,7 +92,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_used_with_json_api
+      def test_meta_key_is_not_used_with_json_api
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
@@ -105,25 +105,25 @@ module ActiveModel
             type: 'blogs',
             attributes: { title: 'AMS Hints' }
           },
-          'haha_meta' => { total: 10 }
+          meta: { total: 10 }
         }
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_not_present_when_blank_object_with_json_api
+      def test_meta_key_is_present_when_empty_hash_with_json_api
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
           serializer: AlternateBlogSerializer,
-          meta: {},
-          meta_key: 'haha_meta'
+          meta: {}
         ).as_json
         expected = {
           data: {
             id: '1',
             type: 'blogs',
             attributes: { title: 'AMS Hints' }
-          }
+          },
+          meta: {}
         }
         assert_equal(expected, actual)
       end
@@ -133,8 +133,7 @@ module ActiveModel
           @blog,
           adapter: :json_api,
           serializer: AlternateBlogSerializer,
-          meta: '',
-          meta_key: 'haha_meta'
+          meta: ''
         ).as_json
         expected = {
           data: {

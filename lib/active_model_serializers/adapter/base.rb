@@ -26,9 +26,7 @@ module ActiveModelSerializers
       end
 
       def as_json(options = nil)
-        hash = serializable_hash(options)
-        include_meta(hash)
-        hash
+        serializable_hash(options)
       end
 
       def fragment_cache(cached_hash, non_cached_hash)
@@ -49,21 +47,8 @@ module ActiveModelSerializers
         options ||= {} # rubocop:disable Lint/UselessAssignment
       end
 
-      def meta
-        instance_options.fetch(:meta, nil)
-      end
-
-      def meta_key
-        instance_options.fetch(:meta_key, 'meta'.freeze)
-      end
-
       def root
         serializer.json_key.to_sym if serializer.json_key
-      end
-
-      def include_meta(json)
-        json[meta_key] = meta unless meta.blank?
-        json
       end
 
       class << self

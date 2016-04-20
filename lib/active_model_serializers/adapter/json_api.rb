@@ -67,6 +67,7 @@ module ActiveModelSerializers
       #    links: toplevel_links,
       #    jsonapi: toplevel_jsonapi
       #  }.reject! {|_,v| v.nil? }
+      # rubocop:disable Metrics/CyclomaticComplexity
       def success_document
         is_collection = serializer.respond_to?(:each)
         serializers = is_collection ? serializer : [serializer]
@@ -130,8 +131,11 @@ module ActiveModelSerializers
           hash[:links].update(pagination_links_for(serializer))
         end
 
+        hash[:meta] = instance_options[:meta] if instance_options[:meta].is_a?(Hash)
+
         hash
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       # {http://jsonapi.org/format/#errors JSON API Errors}
       # TODO: look into caching
