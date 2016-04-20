@@ -32,7 +32,7 @@ module ActiveModelSerializers
         def call
           json_schema.expand_references!(store: document_store)
           status, errors = json_schema.validate(response_body)
-          @message ||= errors.map(&:to_s).to_sentence
+          @message = [message, errors.map(&:to_s).to_sentence].compact.join(': ')
           status
         end
 

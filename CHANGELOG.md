@@ -6,6 +6,8 @@ Breaking changes:
 - [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0. (@remear)
 
 Features:
+- [#1697](https://github.com/rails-api/active_model_serializers/pull/1697) Include actual exception message with custom exceptions;
+  `Test::Schema` exceptions are now `Minitest::Assertion`s. (@bf4)
 - [#1699](https://github.com/rails-api/active_model_serializers/pull/1699) String/Lambda support for conditional attributes/associations (@mtsmfm)
 - [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
 - [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
