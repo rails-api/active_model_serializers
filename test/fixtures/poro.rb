@@ -227,8 +227,9 @@ end
 VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 
-  has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]
-  has_one :maker, virtual_value: { id: 1 }
+  has_many :reviews, virtual_value: [{ type: 'reviews', id: '1' },
+                                     { type: 'reviews', id: '2' }]
+  has_one :maker, virtual_value: { type: 'makers', id: '1' }
 
   def reviews
   end
