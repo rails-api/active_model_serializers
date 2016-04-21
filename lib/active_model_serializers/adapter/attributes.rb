@@ -48,11 +48,6 @@ module ActiveModelSerializers
         Attributes.new(association.serializer, opts).serializable_hash(options)
       end
 
-      # no-op: Attributes adapter does not include meta data, because it does not support root.
-      def include_meta(json)
-        json
-      end
-
       # Set @cached_attributes
       def cache_attributes
         return if @cached_attributes.present?
