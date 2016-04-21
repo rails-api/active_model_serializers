@@ -93,8 +93,11 @@ module ActiveModelSerializers
           attributes['id'] = primary_data['id'] if primary_data['id']
           relationships = primary_data['relationships'] || {}
 
-          filter_fields(attributes, options)
-          filter_fields(relationships, options)
+          attributes = transform_keys(attributes, options)
+          relationships = transform_keys(relationships, options)
+
+          attributes = filter_fields(attributes, options)
+          relationships = filter_fields(relationships, options)
 
           hash = {}
           hash.merge!(parse_attributes(attributes, options))
@@ -142,9 +145,13 @@ module ActiveModelSerializers
         # @api private
         def filter_fields(fields, options)
           if (only = options[:only])
-            fields.slice!(*Array(only).map(&:to_s))
+            only = Array(only).map { |o| o.to_s.underscore }
+            fields.select { |k, _v| only.include?(k) }
           elsif (except = options[:except])
-            fields.except!(*Array(except).map(&:to_s))
+            except = Array(except).map { |o| o.to_s.underscore }
+            fields.reject { |k, _v| except.include?(k) }
+          else
+            fields
           end
         end
 

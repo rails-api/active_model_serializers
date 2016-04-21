@@ -17,11 +17,19 @@ module ActionController
             )
             render json: parsed_hash
           end
+
+          def render_payload_with_only_filter
+            parsed_hash = ActiveModelSerializers::Deserialization.jsonapi_parse(
+              params,
+              only: [:image_height, :image_width]
+            )
+            render json: parsed_hash
+          end
         end
 
         tests DeserializationTestController
 
-        def test_deserialization_of_relationship_only_object
+        test 'deserialization of relationship only object' do
           hash = {
             'data' => {
               'type' => 'restraints',
@@ -53,7 +61,33 @@ module ActionController
           assert_equal(expected, response)
         end
 
-        def test_deserialization
+        test 'deserialization with the only filter' do
+          hash = {
+            'data' => {
+              'type' => 'photos',
+              'id' => 'zorglub',
+              'attributes' => {
+                'title' => 'Ember Hamster',
+                'src' => 'http://example.com/images/productivity.png',
+                'image-width' => '200',
+                'imageHeight' => '200',
+                'ImageSize' => '1024'
+              }
+            }
+          }
+
+          post :render_payload_with_only_filter, params: hash
+
+          response = JSON.parse(@response.body)
+          expected = {
+            'image_width' => '200',
+            'image_height' => '200'
+          }
+
+          assert_equal(expected, response)
+        end
+
+        test 'JSON API document is flattened' do
           hash = {
             'data' => {
               'type' => 'photos',
