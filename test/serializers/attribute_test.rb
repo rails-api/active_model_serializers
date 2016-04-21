@@ -96,27 +96,55 @@ module ActiveModel
         assert_equal(expected, hash)
       end
 
-      def test_conditional_attributes
-        serializer = Class.new(ActiveModel::Serializer) do
-          attribute :if_attribute_included, if: :true
-          attribute :if_attribute_excluded, if: :false
-          attribute :unless_attribute_included, unless: :false
-          attribute :unless_attribute_excluded, unless: :true
+      # rubocop:disable Metrics/AbcSize
+      def test_conditional_associations
+        model = ::Model.new(true: true, false: false)
 
-          def true
-            true
+        scenarios = [
+          { options: { if:     :true  }, included: true  },
+          { options: { if:     :false }, included: false },
+          { options: { unless: :false }, included: true  },
+          { options: { unless: :true  }, included: false },
+          { options: { if:     'object.true'  }, included: true  },
+          { options: { if:     'object.false' }, included: false },
+          { options: { unless: 'object.false' }, included: true  },
+          { options: { unless: 'object.true'  }, included: false },
+          { options: { if:     -> { object.true }  }, included: true  },
+          { options: { if:     -> { object.false } }, included: false },
+          { options: { unless: -> { object.false } }, included: true  },
+          { options: { unless: -> { object.true }  }, included: false },
+          { options: { if:     -> (s) { s.object.true }  }, included: true  },
+          { options: { if:     -> (s) { s.object.false } }, included: false },
+          { options: { unless: -> (s) { s.object.false } }, included: true  },
+          { options: { unless: -> (s) { s.object.true }  }, included: false }
+        ]
+
+        scenarios.each do |s|
+          serializer = Class.new(ActiveModel::Serializer) do
+            attribute :attribute, s[:options]
+
+            def true
+              true
+            end
+
+            def false
+              false
+            end
           end
 
-          def false
-            false
+          hash = serializable(model, serializer: serializer).serializable_hash
+          assert_equal(s[:included], hash.key?(:attribute), "Error with #{s[:options]}")
+        end
+      end
+
+      def test_illegal_conditional_attributes
+        exception = assert_raises(TypeError) do
+          Class.new(ActiveModel::Serializer) do
+            attribute :x, if: nil
           end
         end
 
-        model = ::Model.new
-        hash = serializable(model, serializer: serializer).serializable_hash
-        expected = { if_attribute_included: nil, unless_attribute_included: nil }
-
-        assert_equal(expected, hash)
+        assert_match(/:if should be a Symbol, String or Proc/, exception.message)
       end
     end
   end

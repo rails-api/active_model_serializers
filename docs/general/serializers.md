@@ -80,6 +80,10 @@ end
 
 ```ruby
 has_one :blog, if: :show_blog?
+# you can also use a string or lambda
+# has_one :blog, if: 'scope.admin?'
+# has_one :blog, if: -> (serializer) { serializer.scope.admin? }
+# has_one :blog, if: -> { scope.admin? }
 
 def show_blog?
   scope.admin?
