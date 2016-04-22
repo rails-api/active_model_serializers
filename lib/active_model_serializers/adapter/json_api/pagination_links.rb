@@ -28,7 +28,7 @@ module ActiveModelSerializers
         private
 
         def pages_from
-          return {} if collection.total_pages == FIRST_PAGE
+          return {} if collection.total_pages <= FIRST_PAGE
 
           {}.tap do |pages|
             pages[:self] = collection.current_page

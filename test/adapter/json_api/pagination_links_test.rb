@@ -101,6 +101,13 @@ module ActiveModelSerializers
           end
         end
 
+        def expected_response_with_no_data_pagination_links
+          {}.tap do |hash|
+            hash[:data] = []
+            hash[:links] = {}
+          end
+        end
+
         def test_pagination_links_using_kaminari
           adapter = load_adapter(using_kaminari, mock_request)
 
@@ -118,6 +125,22 @@ module ActiveModelSerializers
 
           assert_equal expected_response_with_pagination_links_and_additional_params,
             adapter.serializable_hash
+        end
+
+        def test_pagination_links_when_zero_results_kaminari
+          @array = []
+
+          adapter = load_adapter(using_kaminari(1), mock_request)
+
+          assert_equal expected_response_with_no_data_pagination_links, adapter.serializable_hash
+        end
+
+        def test_pagination_links_when_zero_results_will_paginate
+          @array = []
+
+          adapter = load_adapter(using_will_paginate(1), mock_request)
+
+          assert_equal expected_response_with_no_data_pagination_links, adapter.serializable_hash
         end
 
         def test_last_page_pagination_links_using_kaminari
