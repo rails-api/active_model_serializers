@@ -1,5 +1,20 @@
 ## 0.10.x
 
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0.rc5...master)
+
+Breaking changes:
+
+Features:
+- [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
+- [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
+  to the ActiveModel::Serialization and ActiveModel::Serializers::JSON interface. (@bf4)
+
+Fixes:
+- [#1700](https://github.com/rails-api/active_model_serializers/pull/1700) Support pagination link for Kaminari when no data is returned. (@iamnader)
+
+Misc:
+- [#1673](https://github.com/rails-api/active_model_serializers/pull/1673) Adds "How to" guide on using AMS with POROs (@DrSayre)
+
 ### [v0.10.0.rc5 (2016-04-04)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0.rc4...v0.10.0.rc5)
 
 Breaking changes:
@@ -8,9 +23,6 @@ Breaking changes:
 - [#1574](https://github.com/rails-api/active_model_serializers/pull/1574) Default key case for the JsonApi adapter changed to dashed. (@remear)
 
 Features:
-- [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
-- [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
-  to the ActiveModel::Serialization and ActiveModel::Serializers::JSON interface. (@bf4)
 - [#1645](https://github.com/rails-api/active_model_serializers/pull/1645) Transform keys referenced in values. (@remear)
 - [#1650](https://github.com/rails-api/active_model_serializers/pull/1650) Fix serialization scope options `scope`, `scope_name`
   take precedence over `serialization_scope` in the controller.
@@ -46,7 +58,6 @@ Features:
 - [#1340](https://github.com/rails-api/active_model_serializers/pull/1340) Add support for resource-level meta. (@beauby)
 
 Fixes:
-- [#1700](https://github.com/rails-api/active_model_serializers/pull/1700) Support pagination link for Kaminari when no data is returned
 - [#1657](https://github.com/rails-api/active_model_serializers/pull/1657) Add missing missing require "active_support/json". (@andreaseger)
 - [#1661](https://github.com/rails-api/active_model_serializers/pull/1661) Fixes `read_attribute_for_serialization` not
   seeing methods defined in serialization superclass (#1653, #1658, #1660), introduced in #1650. (@bf4)
@@ -68,7 +79,6 @@ Fixes:
 - [#1488](https://github.com/rails-api/active_model_serializers/pull/1488) Require ActiveSupport's string inflections (@nate00)
 
 Misc:
-- [#1673](https://github.com/rails-api/active_model_serializers/pull/1673) Adds "How to" guide on using AMS with POROs (@DrSayre)
 - [#1608](https://github.com/rails-api/active_model_serializers/pull/1608) Move SerializableResource to ActiveModelSerializers (@groyoh)
 - [#1602](https://github.com/rails-api/active_model_serializers/pull/1602) Add output examples to Adapters docs (@remear)
 - [#1557](https://github.com/rails-api/active_model_serializers/pull/1557) Update docs regarding overriding the root key (@Jwan622)
