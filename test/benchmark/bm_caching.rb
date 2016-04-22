@@ -31,6 +31,10 @@ class ApiAssertion
     get("/caching/#{on_off}")
   end
 
+  def get_fragment_caching(on_off = 'on'.freeze)
+    get("/fragment_caching/#{on_off}")
+  end
+
   def get_non_caching(on_off = 'on'.freeze)
     get("/non_caching/#{on_off}")
   end
@@ -101,8 +105,10 @@ assertion.debug { assertion.get_status }
 time = 10
 {
   'caching on: caching serializers: gc off' => { disable_gc: true, send: [:get_caching, 'on'] },
+  'caching on: fragment caching serializers: gc off' => { disable_gc: true, send: [:get_fragment_caching, 'on'] },
   'caching on: non-caching serializers: gc off' => { disable_gc: true, send: [:get_non_caching, 'on'] },
   'caching off: caching serializers: gc off' => { disable_gc: true, send: [:get_caching, 'off'] },
+  'caching off: fragment caching serializers: gc off' => { disable_gc: true, send: [:get_fragment_caching, 'off'] },
   'caching off: non-caching serializers: gc off' => { disable_gc: true, send: [:get_non_caching, 'off'] }
 }.each do |label, options|
   assertion.clear
