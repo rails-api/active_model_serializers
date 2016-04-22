@@ -3,6 +3,7 @@
 ### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0.rc5...master)
 
 Breaking changes:
+- [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0. (@remear)
 
 Features:
 - [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
