@@ -44,7 +44,7 @@ ActiveModelSerializers.
 
 If the collection serializer (ArraySerializer) cannot
 identify a serializer for a resource in its collection, it raises [`NoSerializerError`](https://github.com/rails-api/active_model_serializers/issues/1191#issuecomment-142327128)
-which is rescued in `AcitveModel::Serializer::Reflection#build_association` which sets
+which is rescued in `ActiveModel::Serializer::Reflection#build_association` which sets
 the association value directly:
 
 ```ruby
