@@ -4,6 +4,12 @@ module ActiveModel
     # specified in the ActiveModel::Serializer class.
     # Notice that the field block is evaluated in the context of the serializer.
     Field = Struct.new(:name, :options, :block) do
+      def initialize(*)
+        super
+
+        validate_condition!
+      end
+
       # Compute the actual value of a field for a given serializer instance.
       # @param [Serializer] The serializer instance for which the value is computed.
       # @return [Object] value
@@ -27,15 +33,43 @@ module ActiveModel
       def excluded?(serializer)
         case condition_type
         when :if
-          !serializer.public_send(condition)
+          !evaluate_condition(serializer)
         when :unless
-          serializer.public_send(condition)
+          evaluate_condition(serializer)
         else
           false
         end
       end
 
       private
+
+      def validate_condition!
+        return if condition_type == :none
+
+        case condition
+        when Symbol, String, Proc
+          # noop
+        else
+          fail TypeError, "#{condition_type.inspect} should be a Symbol, String or Proc"
+        end
+      end
+
+      def evaluate_condition(serializer)
+        case condition
+        when Symbol
+          serializer.public_send(condition)
+        when String
+          serializer.instance_eval(condition)
+        when Proc
+          if condition.arity.zero?
+            serializer.instance_exec(&condition)
+          else
+            serializer.instance_exec(serializer, &condition)
+          end
+        else
+          nil
+        end
+      end
 
       def condition_type
         @condition_type ||=
