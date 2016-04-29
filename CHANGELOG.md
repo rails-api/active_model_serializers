@@ -7,6 +7,8 @@ Breaking changes:
 Features:
 
 Fixes:
+- [#1710](https://github.com/rails-api/active_model_serializers/pull/1710) Prevent association loading when `include_data` option
+  is set to `false`. (@groyoh)
 
 Misc:
 - [#1734](https://github.com/rails-api/active_model_serializers/pull/1734) Adds documentation for conditional attribute (@lambda2)
