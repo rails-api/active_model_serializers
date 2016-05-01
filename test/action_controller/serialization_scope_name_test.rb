@@ -34,6 +34,12 @@ module SerializationScopeTesting
   end
   class PostTestController < ActionController::Base
     attr_accessor :current_user
+
+    def render_post
+      self.current_user = User.new(id: 3, name: 'Pete')
+      render json: new_post, serializer: serializer, adapter: :json
+    end
+
     def render_post_by_non_admin
       self.current_user = User.new(id: 3, name: 'Pete', admin: false)
       render json: new_post, serializer: serializer, adapter: :json
@@ -71,10 +77,12 @@ module SerializationScopeTesting
     tests PostTestController
 
     def test_default_serialization_scope
+      get :render_post
       assert_equal :current_user, @controller._serialization_scope
     end
 
     def test_default_serialization_scope_object
+      get :render_post
       assert_equal @controller.current_user, @controller.serialization_scope
     end
 
@@ -121,10 +129,12 @@ module SerializationScopeTesting
     tests PostViewContextTestController
 
     def test_defined_serialization_scope
+      get :render_post
       assert_equal :view_context, @controller._serialization_scope
     end
 
     def test_defined_serialization_scope_object
+      get :render_post
       assert_equal @controller.view_context.class, @controller.serialization_scope.class
     end
 
@@ -158,6 +168,42 @@ module SerializationScopeTesting
       assert_equal expected_json, @response.body
     end
   end
+  class ConditionalSerializationScopeTest < ActionController::TestCase
+    class PostConditionalViewContextTestController < PostTestController
+      serialization_scope :view_context, only: :render_post_by_admin
+
+      private
+
+      def serializer
+        PostViewContextSerializer
+      end
+    end
+
+    tests PostConditionalViewContextTestController
+
+    def test_conditional_serialization_scope_admin
+      get :render_post_by_admin
+      expected_json = {
+        post: {
+          id: 4,
+          title: 'Title',
+          body: "The 'scope' is the 'view_context': true",
+          comments: [
+            { id: 1, body: 'Admin' }
+          ]
+        }
+      }.to_json
+      assert_equal expected_json, @response.body
+    end
+
+    def test_conditional_serialization_scope_non_admin
+      exception_matcher = /view_context/
+      exception = assert_raises(NameError) do
+        get :render_post_by_non_admin
+      end
+      assert_match exception_matcher, exception.message
+    end
+  end
   class NilSerializationScopeTest < ActionController::TestCase
     class PostViewContextTestController < ActionController::Base
       serialization_scope nil
@@ -186,14 +232,6 @@ module SerializationScopeTesting
       end
     end
     tests PostViewContextTestController
-
-    def test_nil_serialization_scope
-      assert_nil @controller._serialization_scope
-    end
-
-    def test_nil_serialization_scope_object
-      assert_nil @controller.serialization_scope
-    end
 
     def test_nil_scope
       exception_matcher = /current_user/

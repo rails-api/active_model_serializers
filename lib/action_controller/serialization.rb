@@ -8,8 +8,10 @@ module ActionController
     include ActionController::Renderers
 
     module ClassMethods
-      def serialization_scope(scope)
-        self._serialization_scope = scope
+      def serialization_scope(scope, opts = {})
+        before_action(opts.slice(:only, :except, :if, :unless)) do
+          self._serialization_scope = scope
+        end
       end
     end
 
