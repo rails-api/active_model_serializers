@@ -57,7 +57,6 @@ end
 ActionController::Renderers.add :jsonapi do |json, options|
   json = serialize_jsonapi(json, options).to_json(options) unless json.is_a?(String)
   self.content_type ||= media_type
-  headers.merge! ActiveModelSerializers::Jsonapi::HEADERS[:response]
   self.response_body = json
 end
 
