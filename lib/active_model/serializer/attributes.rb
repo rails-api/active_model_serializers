@@ -34,10 +34,11 @@ module ActiveModel
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     attributes :id, :name, :recent_edits
         def attributes(*attrs)
+          options = attrs.pop if attrs.last.class == Hash
           attrs = attrs.first if attrs.first.class == Array
 
           attrs.each do |attr|
-            attribute(attr)
+            attribute(attr, options)
           end
         end
 
