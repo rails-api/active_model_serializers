@@ -110,7 +110,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_present_when_empty_hash_with_json_api
+      def test_meta_key_is_not_present_when_empty_hash_with_json_api
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
@@ -122,8 +122,7 @@ module ActiveModel
             id: '1',
             type: 'blogs',
             attributes: { title: 'AMS Hints' }
-          },
-          meta: {}
+          }
         }
         assert_equal(expected, actual)
       end

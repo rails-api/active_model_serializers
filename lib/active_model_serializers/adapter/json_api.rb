@@ -131,7 +131,7 @@ module ActiveModelSerializers
           hash[:links].update(pagination_links_for(serializer))
         end
 
-        hash[:meta] = instance_options[:meta] if instance_options[:meta].is_a?(Hash)
+        hash[:meta] = instance_options[:meta] unless instance_options[:meta].blank?
 
         hash
       end
