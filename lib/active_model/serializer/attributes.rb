@@ -38,7 +38,7 @@ module ActiveModel
           attrs = attrs.first if attrs.first.class == Array
 
           attrs.each do |attr|
-            attribute(attr, options)
+            attribute(attr, options || {})
           end
         end
 
