@@ -24,19 +24,47 @@
   </tr>
 </table>
 
+
+## Documentation
+
+- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
+[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0.rc5)
+  - [Guides](docs)      
+    - [Getting Started](docs/general/getting_started.md)
+    - [Configuration Options](docs/general/configuration_options.md)
+    - [Serializers](docs/general/serializers.md)
+    - [Adapters](docs/general/adapters.md)
+    - [Rendering](docs/general/rendering.md)
+    - [Caching](docs/general/caching.md)
+    - [Logging](docs/general/logging.md)
+    - [Deserialization](docs/general/deserialization.md)
+    - [Instrumentation](docs/general/instrumentation.md)
+    - JSON API
+      - [Schema](docs/jsonapi/schema.md)
+      - [Errors](docs/jsonapi/errors.md)
+    - How To
+      - [How to add root key](docs/howto/add_root_key.md)
+      - [How to add pagination links](docs/howto/add_pagination_links.md)
+      - [Using ActiveModelSerializers Outside Of Controllers](docs/howto/outside_controller_use.md)
+      - [Testing ActiveModelSerializers](docs/howto/test.md)
+      - [Passing Arbitrary Options](docs/howto/passing_arbitrary_options.md)
+      - [How to serialize a Plain-Old Ruby Object (PORO)](docs/howto/serialize_poro.md)
+      - [Integrations with Ember, Grape and Sinatra](docs#integrations)
+
+-------------------------------------------------------
+
 ## About
 
 ActiveModelSerializers brings convention over configuration to your JSON generation.
 
 ActiveModelSerializers works through two components: **serializers** and **adapters**.
 
-Serializers describe _which_ attributes and relationships should be serialized.
+ - **Serializers** describe _which_ attributes and relationships should be serialized.
+ - **Adapters** describe _how_ attributes and relationships should be serialized.
 
-Adapters describe _how_ attributes and relationships should be serialized.
-
-SerializableResource co-ordinates the resource, Adapter and Serializer to produce the
+`SerializableResource` co-ordinates the resource, Adapter and Serializer to produce the
 resource serialization. The serialization has the `#as_json`, `#to_json` and `#serializable_hash`
-methods used by the Rails JSON Renderer. (SerializableResource actually delegates
+methods used by the Rails JSON Renderer. (`SerializableResource` actually delegates
 these methods to the adapter.)
 
 By default ActiveModelSerializers will use the **Attributes Adapter** (no JSON root).
@@ -44,7 +72,11 @@ But we strongly advise you to use **JsonApi Adapter**, which
 follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections below.
 
-`0.10.x` is **not** backward compatible with `0.9.x` nor `0.8.x`.
+---------------------
+
+This is the **master** branch of ActiveModelSerializers.
+
+`0.10.x` is **not** backward compatible with `0.9.x` nor `0.8.x`. Both `0.9.x` and `0.8.x` are deprecated and unsupported, but submitted pull requests will be accepted to fix bugs.
 
 `0.10.x` is based on the `0.8.0` code, but with a more flexible
 architecture. We'd love your help. [Learn how you can help here.](CONTRIBUTING.md)
