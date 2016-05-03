@@ -97,7 +97,7 @@ module ActiveModel
       end
 
       # rubocop:disable Metrics/AbcSize
-      def test_conditional_associations
+      def test_conditional_attributes
         model = ::Model.new(true: true, false: false)
 
         scenarios = [
@@ -137,6 +137,26 @@ module ActiveModel
         end
       end
 
+      def test_conditional_attributes_on_shared_key_when_first_attribute_is_ignored
+        model = ::Model.new
+
+        serializer = conditional_attributes_with_shared_key_serializer(skip_first_attribute: true)
+
+        hash = serializable(model, serializer: serializer).serializable_hash
+        assert(hash.key?(:attribute), "attribute key was left out of serializable hash")
+        assert_equal("private", hash[:attribute])
+      end
+
+      def test_conditional_attributes_on_shared_key_when_second_attribute_is_ignored
+        model = ::Model.new
+
+        serializer = conditional_attributes_with_shared_key_serializer(skip_first_attribute: false)
+
+        hash = serializable(model, serializer: serializer).serializable_hash
+        assert(hash.key?(:attribute), "attribute key was left out of serializable hash")
+        assert_equal("public", hash[:attribute])
+      end
+
       def test_illegal_conditional_attributes
         exception = assert_raises(TypeError) do
           Class.new(ActiveModel::Serializer) do
@@ -145,6 +165,23 @@ module ActiveModel
         end
 
         assert_match(/:if should be a Symbol, String or Proc/, exception.message)
+      end
+
+      private
+
+      def conditional_attributes_with_shared_key_serializer(skip_first_attribute:)
+        Class.new(ActiveModel::Serializer) do
+          attribute :public_attribute, key: :attribute, unless: skip_first_attribute.to_s
+          attribute :private_attribute, key: :attribute, if: skip_first_attribute.to_s
+
+          def public_attribute
+            "public"
+          end
+
+          def private_attribute
+            "private"
+          end
+        end
       end
     end
   end
