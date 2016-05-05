@@ -47,6 +47,16 @@ module ActiveModel
 
         assert_equal([:id, :title, :body], serializer_class._attributes)
       end
+
+      def test_attributes_options_assignment
+        model = ::Model.new(name: 'Name 1')
+
+        serializer = Class.new(ActiveModel::Serializer) do
+          attributes :name, key: :title
+        end
+
+        assert_equal({ title: 'Name 1' }, serializer.new(model).serializable_hash)
+      end
     end
   end
 end
