@@ -269,7 +269,7 @@ We can change the scope from `current_user` to `view_context`.
 
 ```diff
 class SomeController < ActionController::Base
-+  serialization_scope :view_context
+  serialization_scope :view_context
 
   def current_user
     User.new(id: 2, name: 'Bob', admin: true)
@@ -289,7 +289,7 @@ class AdminUserSerializer < ActiveModel::Serializer
   attributes :id, :name, :can_edit
 
   def can_edit?
-+    view_context.current_user.admin?
+    view_context.current_user.admin?
   end
 end
 ```
