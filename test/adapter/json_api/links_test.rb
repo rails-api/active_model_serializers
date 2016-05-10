@@ -40,7 +40,8 @@ module ActiveModelSerializers
                   stuff: 'value'
                 }
               }
-            }).serializable_hash
+            }
+          ).serializable_hash
           expected = {
             self: {
               href: 'http://example.com/posts',

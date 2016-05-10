@@ -48,12 +48,12 @@ module ActiveModelSerializers
           resource, {
             serializer: ActiveModel::Serializer::ErrorSerializer,
             adapter: :json_api
-          })
-        expected_response_document =
-          { :errors =>
-            [
-              { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be awesome' }
-            ]
+          }
+        )
+        expected_response_document = {
+          :errors => [
+            { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be awesome' }
+          ]
         }
         assert_equal serializable_resource.as_json(options), expected_response_document
       end
@@ -69,12 +69,12 @@ module ActiveModelSerializers
             serializer: ActiveModel::Serializer::ErrorsSerializer,
             each_serializer: ActiveModel::Serializer::ErrorSerializer,
             adapter: :json_api
-          })
-        expected_response_document =
-          { :errors =>
-            [
-              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be amazing' }
-            ]
+          }
+        )
+        expected_response_document = {
+          :errors => [
+            { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be amazing' }
+          ]
         }
         assert_equal serializable_resource.as_json(options), expected_response_document
       end

@@ -7,8 +7,8 @@ module ActionController
         def test_active_model_with_multiple_errors
           get :render_resource_with_errors
 
-          expected_errors_object =
-            { :errors =>
+          expected_errors_object = {
+            :errors =>
               [
                 { :source => { :pointer => '/data/attributes/name' }, :detail => 'cannot be nil' },
                 { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be longer' },

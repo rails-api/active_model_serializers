@@ -33,9 +33,10 @@ module ActiveModelSerializers
 
         assert_equal({
           id: 1,
-          reviews: [{ id: 1, body: 'ZOMG A COMMENT' },
-                    { id: 2, body: 'ZOMG ANOTHER COMMENT' }
-                  ],
+          reviews: [
+            { id: 1, body: 'ZOMG A COMMENT' },
+            { id: 2, body: 'ZOMG ANOTHER COMMENT' }
+          ],
           writer: { id: 1, name: 'Steve K.' },
           site: { id: 1, name: 'My Blog!!' }
           }, adapter.serializable_hash[:post])
