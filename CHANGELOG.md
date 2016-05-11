@@ -6,6 +6,7 @@ Breaking changes:
 - [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0. (@remear)
 
 Features:
+- [#1711](https://github.com/rails-api/active_model_serializers/pull/1711) Set `serialization_scope` conditionally for specif actions in controller. (@yogeshjain999)
 - [#1699](https://github.com/rails-api/active_model_serializers/pull/1699) String/Lambda support for conditional attributes/associations (@mtsmfm)
 - [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
 - [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
