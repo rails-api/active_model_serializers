@@ -16,6 +16,7 @@ Features:
 
 Fixes:
 - [#1700](https://github.com/rails-api/active_model_serializers/pull/1700) Support pagination link for Kaminari when no data is returned. (@iamnader)
+- [#1726](https://github.com/rails-api/active_model_serializers/pull/1726) Adds polymorphic option to association definition which includes association type/nesting in serializer (@cgmckeever)
 
 Misc:
 - [#1673](https://github.com/rails-api/active_model_serializers/pull/1673) Adds "How to" guide on using AMS with POROs (@DrSayre)

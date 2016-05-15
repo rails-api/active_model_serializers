@@ -24,6 +24,16 @@ ActiveRecord::Schema.define do
     t.string :email
     t.timestamp null: false
   end
+  create_table :object_tags, force: true do |t|
+    t.string :poly_tag_id
+    t.string :taggable_type
+    t.string :taggable_id
+    t.timestamp null: false
+  end
+  create_table :poly_tags, force: true do |t|
+    t.string :phrase
+    t.timestamp null: false
+  end
   create_table :pictures, force: true do |t|
     t.string :title
     t.string :imageable_type

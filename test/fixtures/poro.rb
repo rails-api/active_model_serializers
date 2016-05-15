@@ -70,10 +70,21 @@ end
 
 class Employee < ActiveRecord::Base
   has_many :pictures, as: :imageable
+  has_many :object_tags, as: :taggable
+end
+
+class ObjectTag < ActiveRecord::Base
+  belongs_to :poly_tag
+  belongs_to :taggable, polymorphic: true
 end
 
 class Picture < ActiveRecord::Base
   belongs_to :imageable, polymorphic: true
+  has_many :object_tags, as: :taggable
+end
+
+class PolyTag < ActiveRecord::Base
+  has_many :object_tags
 end
 
 module Spam; end
@@ -245,7 +256,23 @@ end
 PolymorphicBelongsToSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :title
 
-  has_one :imageable, serializer: PolymorphicHasManySerializer
+  has_one :imageable, serializer: PolymorphicHasManySerializer, polymorphic: true
+end
+
+PolymorphicSimpleSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+end
+
+PolymorphicObjectTagSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :taggable, serializer: PolymorphicSimpleSerializer, polymorphic: true
+end
+
+PolymorphicTagSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :phrase
+
+  has_many :object_tags, serializer: PolymorphicObjectTagSerializer
 end
 
 Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
