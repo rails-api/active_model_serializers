@@ -74,10 +74,15 @@ Run a single test
 `$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
 
 Run tests against different Rails versions by setting the RAILS_VERSION variable
-and bundling gems.
+and bundling gems.  (save this script somewhere executable and run from top of AMS repository)
 
 ```bash
-for version in 4.0 4.1 4.2 master; do
+#!/usr/bin/env bash
+
+rcommand='puts YAML.load_file("./.travis.yml")["env"]["matrix"].join(" ").gsub("RAILS_VERSION=", "")'
+versions=$(ruby -ryaml -e "$rcommand")
+
+for version in ${versions[@]}; do
   export RAILS_VERSION="$version"
   rm -f Gemfile.lock
   bundle check || bundle --local || bundle
@@ -88,7 +93,12 @@ for version in 4.0 4.1 4.2 master; do
   else
     # red in ANSI
     echo -e "\033[31m **** Tests failed against Rails ${RAILS_VERSION} **** \033[0m"
-  fi
+    read -p '[Enter] any key to continue, [q] to quit...' prompt
+    if [ "$prompt" = 'q' ]; then
+      unset RAILS_VERSION
+      exit 1
+    fi
+fi
   unset RAILS_VERSION
 done
 ```
