@@ -19,6 +19,7 @@ Fixes:
 
 Misc:
 - [#1673](https://github.com/rails-api/active_model_serializers/pull/1673) Adds "How to" guide on using AMS with POROs (@DrSayre)
+- [#1730](https://github.com/rails-api/active_model_serializers/pull/1730) Adds documentation for overriding default serializer based on conditions (@groyoh/@cgmckeever)
 
 ### [v0.10.0.rc5 (2016-04-04)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0.rc4...v0.10.0.rc5)
 
