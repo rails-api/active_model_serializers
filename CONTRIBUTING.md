@@ -7,7 +7,7 @@ Before opening an issue, try the following:
 See if your issue can be resolved by information in the documentation.
 
 - [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0.rc5)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
   - [Guides](docs)
 - [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
 - [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)

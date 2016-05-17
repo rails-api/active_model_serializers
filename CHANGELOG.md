@@ -1,6 +1,8 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0.rc5...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0...master)
+
+### v0.10.0 (2016-05-17)
 
 Breaking changes:
 - [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0. (@remear)
