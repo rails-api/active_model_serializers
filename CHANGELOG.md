@@ -6,6 +6,7 @@ Breaking changes:
 - [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0. (@remear)
 
 Features:
+- [#1677](https://github.com/rails-api/active_model_serializers/pull/1677) Add `assert_schema`, `assert_request_schema`, `assert_request_response_schema`. (@bf4)
 - [#1697](https://github.com/rails-api/active_model_serializers/pull/1697) Include actual exception message with custom exceptions;
   `Test::Schema` exceptions are now `Minitest::Assertion`s. (@bf4)
 - [#1699](https://github.com/rails-api/active_model_serializers/pull/1699) String/Lambda support for conditional attributes/associations (@mtsmfm)

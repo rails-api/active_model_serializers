@@ -10,19 +10,38 @@ module ActiveModelSerializers
       #   get :index
       #   assert_response_schema
       def assert_response_schema(schema_path = nil, message = nil)
-        matcher = AssertResponseSchema.new(schema_path, response, message)
+        matcher = AssertResponseSchema.new(schema_path, request, response, message)
+        assert(matcher.call, matcher.message)
+      end
+
+      def assert_request_schema(schema_path = nil, message = nil)
+        matcher = AssertRequestSchema.new(schema_path, request, response, message)
+        assert(matcher.call, matcher.message)
+      end
+
+      # May be renamed
+      def assert_request_response_schema(schema_path = nil, message = nil)
+        assert_request_schema(schema_path, message)
+        assert_response_schema(schema_path, message)
+      end
+
+      def assert_schema(payload, schema_path = nil, message = nil)
+        matcher = AssertSchema.new(schema_path, request, response, message, payload)
         assert(matcher.call, matcher.message)
       end
 
       MissingSchema = Class.new(Minitest::Assertion)
       InvalidSchemaError = Class.new(Minitest::Assertion)
 
-      class AssertResponseSchema
-        attr_reader :schema_path, :response, :message
+      class AssertSchema
+        attr_reader :schema_path, :request, :response, :message, :payload
 
-        def initialize(schema_path, response, message)
+        # Interface may change.
+        def initialize(schema_path, request, response, message, payload = nil)
           require_json_schema!
+          @request = request
           @response = response
+          @payload = payload
           @schema_path = schema_path || schema_path_default
           @message = message
           @document_store = JsonSchema::DocumentStore.new
@@ -41,11 +60,11 @@ module ActiveModelSerializers
         attr_reader :document_store
 
         def controller_path
-          response.request.filtered_parameters[:controller]
+          request.filtered_parameters[:controller]
         end
 
         def action
-          response.request.filtered_parameters[:action]
+          request.filtered_parameters[:action]
         end
 
         def schema_directory
@@ -66,6 +85,10 @@ module ActiveModelSerializers
 
         def response_body
           load_json(response.body)
+        end
+
+        def request_params
+          request.env['action_dispatch.request.request_parameters']
         end
 
         def json_schema
@@ -96,6 +119,18 @@ module ActiveModelSerializers
           require 'json_schema'
         rescue LoadError
           raise LoadError, "You don't have json_schema installed in your application. Please add it to your Gemfile and run bundle install"
+        end
+      end
+      class AssertResponseSchema < AssertSchema
+        def initialize(*)
+          super
+          @payload = response_body
+        end
+      end
+      class AssertRequestSchema < AssertSchema
+        def initialize(*)
+          super
+          @payload = request_params
         end
       end
     end
