@@ -55,15 +55,9 @@ But we strongly advise you to use **JsonApi Adapter**, which
 follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections below.
 
-## RELEASE CANDIDATE, PLEASE READ
-
-This is the **master** branch of ActiveModelSerializers.
-
-It will become the `0.10.0` release when it's ready. Currently this is a release candidate.
-
 `0.10.x` is **not** backward compatible with `0.9.x` nor `0.8.x`.
 
-`0.10.x` will be based on the `0.8.0` code, but with a more flexible
+`0.10.x` is based on the `0.8.0` code, but with a more flexible
 architecture. We'd love your help. [Learn how you can help here.](CONTRIBUTING.md)
 
 It is generally safe and recommended to use the master branch.
