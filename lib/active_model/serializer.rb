@@ -185,6 +185,37 @@ module ActiveModel
       end
     end
 
+    def serialize(options, adapter_options, adapter_instance, include_tree)
+      cached_attributes(options[:fields], adapter_instance)
+        .merge(cached_relationships(adapter_options, adapter_instance, include_tree))
+    end
+
+    def cached_relationships(adapter_options, adapter_instance, include_tree)
+      relationships = {}
+      associations(include_tree).each do |association|
+        relationships[association.key] =
+          if association.options[:virtual_value]
+            association.options[:virtual_value]
+          elsif association.serializer && association.serializer.object
+            association_serializer = association.serializer
+            association_options = adapter_options.merge(include: include_tree[association.key])
+            association_include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(association_options[:include] || '*')
+            if association_serializer.respond_to?(:each)
+              association_options[:cached_attributes] ||= ActiveModel::Serializer.cache_read_multi(association_serializer, adapter_instance, association_include_tree)
+              association_serializer.map do |serializer|
+                serializer.serialize(association_options, adapter_options, adapter_instance, association_include_tree)
+              end
+            else
+              association_serializer.serialize(association_options, adapter_options, adapter_instance, association_include_tree)
+            end
+          else
+            nil
+          end
+      end
+
+      relationships
+    end
+
     protected
 
     attr_accessor :instance_options
