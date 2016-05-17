@@ -19,6 +19,7 @@ module ActiveModelSerializers
         assert(matcher.call, matcher.message)
       end
 
+      # May be renamed
       def assert_request_response_schema(schema_path = nil, message = nil)
         assert_request_schema(schema_path, message)
         assert_response_schema(schema_path, message)
@@ -35,6 +36,7 @@ module ActiveModelSerializers
       class AssertSchema
         attr_reader :schema_path, :request, :response, :message, :payload
 
+        # Interface may change.
         def initialize(schema_path, request, response, message, payload = nil)
           require_json_schema!
           @request = request
