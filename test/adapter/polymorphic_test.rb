@@ -8,10 +8,17 @@ module ActiveModel
           @employee = Employee.new(id: 42, name: 'Zoop Zoopler', email: 'zoop@example.com')
           @picture = @employee.pictures.new(id: 1, title: 'headshot-1.jpg')
           @picture.imageable = @employee
+        end
 
-          @attributes_serialization = serializable(@picture, serializer: PolymorphicBelongsToSerializer) # uses default adapter: attributes
-          @json_serialization = serializable(@picture, adapter: :json, serializer: PolymorphicBelongsToSerializer)
-          @json_api_serialization = serializable(@picture, adapter: :json_api, serializer: PolymorphicBelongsToSerializer)
+        def serialization(resource, adapter = :attributes)
+          serializable(resource, adapter: adapter, serializer: PolymorphicBelongsToSerializer).as_json
+        end
+
+        def tag_serialization(adapter = :attributes)
+          tag = PolyTag.new(id: 1, phrase: 'foo')
+          tag.object_tags << ObjectTag.new(id: 1, poly_tag_id: 1, taggable: @employee)
+          tag.object_tags << ObjectTag.new(id: 5, poly_tag_id: 1, taggable: @picture)
+          serializable(tag, adapter: adapter, serializer: PolymorphicTagSerializer, include: '*.*').as_json
         end
 
         def test_attributes_serialization
@@ -20,31 +27,123 @@ module ActiveModel
               id: 1,
               title: 'headshot-1.jpg',
               imageable: {
-                id: 42,
-                name: 'Zoop Zoopler'
+                  type: 'employee',
+                  employee: {
+                    id: 42,
+                    name: 'Zoop Zoopler'
+                  }
               }
             }
 
-          assert_equal(expected, @attributes_serialization.as_json)
+          assert_equal(expected, serialization(@picture))
         end
 
-        def test_json_serializer
+        def test_attributes_serialization_without_polymorphic_association
+          expected =
+            {
+              id: 2,
+              title: 'headshot-2.jpg',
+              imageable: nil
+            }
+
+          simple_picture = Picture.new(id: 2, title: 'headshot-2.jpg')
+          assert_equal(expected, serialization(simple_picture))
+        end
+
+        def test_attributes_serialization_with_polymorphic_has_many
+          expected =
+            {
+              id: 1,
+              phrase: 'foo',
+              object_tags: [
+                {
+                  id: 1,
+                  taggable: {
+                    type: 'employee',
+                    employee: {
+                      id: 42
+                    }
+                  }
+                },
+                {
+                  id: 5,
+                  taggable: {
+                    type: 'picture',
+                    picture: {
+                      id: 1
+                    }
+                  }
+                }
+              ]
+            }
+          assert_equal(expected, tag_serialization)
+        end
+
+        def test_json_serialization
           expected =
             {
               picture: {
                 id: 1,
                 title: 'headshot-1.jpg',
                 imageable: {
-                  id: 42,
-                  name: 'Zoop Zoopler'
+                  type: 'employee',
+                  employee: {
+                    id: 42,
+                    name: 'Zoop Zoopler'
+                  }
                 }
               }
             }
 
-          assert_equal(expected, @json_serialization.as_json)
+          assert_equal(expected, serialization(@picture, :json))
         end
 
-        def test_json_api_serializer
+        def test_json_serialization_without_polymorphic_association
+          expected =
+            {
+              picture: {
+                id: 2,
+                title: 'headshot-2.jpg',
+                imageable: nil
+              }
+            }
+
+          simple_picture = Picture.new(id: 2, title: 'headshot-2.jpg')
+          assert_equal(expected, serialization(simple_picture, :json))
+        end
+
+        def test_json_serialization_with_polymorphic_has_many
+          expected =
+            {
+              poly_tag: {
+                id: 1,
+                phrase: 'foo',
+                object_tags: [
+                  {
+                    id: 1,
+                    taggable: {
+                      type: 'employee',
+                      employee: {
+                        id: 42
+                      }
+                    }
+                  },
+                  {
+                    id: 5,
+                    taggable: {
+                      type: 'picture',
+                      picture: {
+                        id: 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          assert_equal(expected, tag_serialization(:json))
+        end
+
+        def test_json_api_serialization
           expected =
             {
               data: {
@@ -64,7 +163,7 @@ module ActiveModel
               }
             }
 
-          assert_equal(expected, @json_api_serialization.as_json)
+          assert_equal(expected, serialization(@picture, :json_api))
         end
       end
     end

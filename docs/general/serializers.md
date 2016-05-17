@@ -52,6 +52,7 @@ Where:
   - `if:`
   - `unless:`
   - `virtual_value:`
+  - `polymorphic:` defines if polymorphic relation type should be nested in serialized association.
 - optional: `&block` is a context that returns the association's attributes.
   - prevents `association_name` method from being called.
   - return value of block is used as the association value.

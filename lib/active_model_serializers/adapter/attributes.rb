@@ -45,7 +45,14 @@ module ActiveModelSerializers
         return unless association.serializer && association.serializer.object
 
         opts = instance_options.merge(include: @include_tree[association.key])
-        Attributes.new(association.serializer, opts).serializable_hash(options)
+        relationship_value = Attributes.new(association.serializer, opts).serializable_hash(options)
+
+        if association.options[:polymorphic] && relationship_value
+          polymorphic_type = association.serializer.object.class.name.underscore
+          relationship_value = { type: polymorphic_type, polymorphic_type.to_sym => relationship_value }
+        end
+
+        relationship_value
       end
 
       # Set @cached_attributes
