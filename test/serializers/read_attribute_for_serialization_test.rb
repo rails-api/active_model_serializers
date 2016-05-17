@@ -7,9 +7,11 @@ module ActiveModel
       class Parent < ActiveModelSerializers::Model
         attr_accessor :id
       end
+
       class Child < Parent
         attr_accessor :name
       end
+
       class ParentSerializer < ActiveModel::Serializer
         attributes :$id
 
@@ -17,8 +19,14 @@ module ActiveModel
           object.id
         end
       end
+
       class ChildSerializer < ParentSerializer
         attributes :name
+      end
+
+      def test_for_serializer_initialized_with_nil_object
+        child = ChildSerializer.new(nil)
+        assert_equal nil, child.read_attribute_for_serialization(:name)
       end
 
       def test_child_serializer_calls_dynamic_method_in_parent_serializer
@@ -32,6 +40,7 @@ module ActiveModel
       class ErrorResponse < ActiveModelSerializers::Model
         attr_accessor :error
       end
+
       class ApplicationSerializer < ActiveModel::Serializer
         attributes :status
 
@@ -39,9 +48,11 @@ module ActiveModel
           object.try(:errors).blank? && object.try(:error).blank?
         end
       end
+
       class ErrorResponseSerializer < ApplicationSerializer
         attributes :error
       end
+
       class ErrorResponseWithSuperSerializer < ApplicationSerializer
         attributes :error
 
