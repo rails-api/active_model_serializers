@@ -14,8 +14,8 @@ module ActiveModelSerializers
         assert(matcher.call, matcher.message)
       end
 
-      MissingSchema = Class.new(Errno::ENOENT)
-      InvalidSchemaError = Class.new(StandardError)
+      MissingSchema = Class.new(Minitest::Assertion)
+      InvalidSchemaError = Class.new(Minitest::Assertion)
 
       class AssertResponseSchema
         attr_reader :schema_path, :response, :message
@@ -32,7 +32,7 @@ module ActiveModelSerializers
         def call
           json_schema.expand_references!(store: document_store)
           status, errors = json_schema.validate(response_body)
-          @message ||= errors.map(&:to_s).to_sentence
+          @message = [message, errors.map(&:to_s).to_sentence].compact.join(': ')
           status
         end
 

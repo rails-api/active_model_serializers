@@ -54,13 +54,15 @@ module ActiveModelSerializers
 
       def test_that_raises_error_with_a_custom_message_with_a_invalid_schema
         message = 'oh boy the show is broken'
+        exception_message = "#/name: failed schema #/properties/name: For 'properties/name', \"Name 1\" is not an integer. and #/description: failed schema #/properties/description: For 'properties/description', \"Description 1\" is not a boolean."
+        expected_message = "#{message}: #{exception_message}"
 
         get :show
 
         error = assert_raises Minitest::Assertion do
           assert_response_schema(nil, message)
         end
-        assert_equal(message, error.message)
+        assert_equal(expected_message, error.message)
       end
 
       def test_that_assert_with_a_custom_schema
@@ -102,14 +104,14 @@ module ActiveModelSerializers
       end
 
       def test_with_a_non_existent_file
-        message = %r{.* - No Schema file at test/support/schemas/non-existent.json}
+        message = 'No Schema file at test/support/schemas/non-existent.json'
 
         get :show
 
         error = assert_raises ActiveModelSerializers::Test::Schema::MissingSchema do
           assert_response_schema('non-existent.json')
         end
-        assert_match(message, error.message)
+        assert_equal(message, error.message)
       end
 
       def test_that_raises_with_a_invalid_json_body
