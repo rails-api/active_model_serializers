@@ -23,3 +23,13 @@ tmp
 .ruby-gemset
 vendor/bundle
 tags
+
+# silly macs
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
