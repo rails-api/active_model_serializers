@@ -60,4 +60,6 @@ ActionController::Renderers.add :jsonapi do |json, options|
   self.response_body = json
 end
 
-ActionController::Base.send :include, ActiveModelSerializers::Jsonapi::ControllerSupport
+ActiveSupport.on_load(:action_controller) do
+  include ActiveModelSerializers::Jsonapi::ControllerSupport
+end
