@@ -370,3 +370,19 @@ class PostSerializer < ActiveModel::Serializer
   end
 end
 ```
+
+## Overriding association serializer lookup
+
+If you want to define a specific serializer lookup for your associations, you can override
+the `ActiveModel::Serializer.serializer_for` method to return a serializer class based on defined conditions.
+
+```ruby
+class MySerializer < ActiveModel::Serializer
+  def self.serializer_for(model, options)
+    return SparseAdminSerializer if model.class == 'Admin'
+    super
+  end
+
+  # the rest of the serializer
+end
+```
