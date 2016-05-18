@@ -180,7 +180,7 @@ module ActiveModel
         send(attr)
       elsif self.class._fragmented
         self.class._fragmented.read_attribute_for_serialization(attr)
-      else
+      elsif object
         object.read_attribute_for_serialization(attr)
       end
     end
