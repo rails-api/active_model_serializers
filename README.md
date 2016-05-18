@@ -24,17 +24,6 @@
   </tr>
 </table>
 
-
-## Documentation
-
-- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
-  - [Guides](docs)
-- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)
-- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable)
-
 ## About
 
 ActiveModelSerializers brings convention over configuration to your JSON generation.
@@ -50,7 +39,7 @@ resource serialization. The serialization has the `#as_json`, `#to_json` and `#s
 methods used by the Rails JSON Renderer. (SerializableResource actually delegates
 these methods to the adapter.)
 
-By default ActiveModelSerializers will use the **Attributes Adapter**.
+By default ActiveModelSerializers will use the **Attributes Adapter** (no JSON root).
 But we strongly advise you to use **JsonApi Adapter**, which
 follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
 Check how to change the adapter in the sections below.
@@ -61,9 +50,6 @@ Check how to change the adapter in the sections below.
 architecture. We'd love your help. [Learn how you can help here.](CONTRIBUTING.md)
 
 It is generally safe and recommended to use the master branch.
-
-For more information, see the post '[The future of
-AMS](https://medium.com/@joaomdmoura/the-future-of-ams-e5f9047ca7e9)'.
 
 ## Installation
 
@@ -96,6 +82,17 @@ If you have a question, please [post to Stack Overflow](http://stackoverflow.com
 If you'd like to chat, we have a [community slack](http://amserializers.herokuapp.com).
 
 Thanks!
+
+## Documentation
+
+- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
+  - [Guides](docs)
+- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)
+- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable)
+
 
 ## High-level behavior
 
@@ -156,6 +153,6 @@ serializer.associations
 ```
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for more information.
 
-# Contributing
+## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
