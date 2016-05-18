@@ -9,6 +9,7 @@ Features:
 Fixes:
 
 Misc:
+- [#1734](https://github.com/rails-api/active_model_serializers/pull/1734) Adds documentation for conditional attribute (@lambda2)
 
 ### [v0.10.0 (2016-05-17)](https://github.com/rails-api/active_model_serializers/compare/4a2d9853ba7...v0.10.0)
 

@@ -34,7 +34,18 @@ Serialization of the resource `title`
 | `attribute :title { 'A Different Title'}` | `{ title: 'A Different Title' } `
 | `attribute :title`<br>`def title 'A Different Title' end` | `{ title: 'A Different Title' }`
 
-[PR please for conditional attributes:)](https://github.com/rails-api/active_model_serializers/pull/1403)
+An `if` or `unless` option can make an attribute conditional. It takes a symbol of a method name on the serializer, or a lambda literal.
+
+e.g.
+
+```ruby
+attribute :private_data, if: :is_current_user?
+attribute :another_private_data, if: -> { scope.admin? }
+
+def is_current_user?
+  object.id == current_user.id
+end
+```
 
 ### Associations
 
