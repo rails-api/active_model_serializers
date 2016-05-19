@@ -48,14 +48,45 @@ module ActiveModel
         assert_equal([:id, :title, :body], serializer_class._attributes)
       end
 
-      def test_attributes_options_assignment
-        model = ::Model.new(name: 'Name 1')
+      def test_multiple_conditional_attributes
+        model = ::Model.new(true: true, false: false)
 
-        serializer = Class.new(ActiveModel::Serializer) do
-          attributes :name, key: :title
+        scenarios = [
+          { options: { if:     :true  }, included: true  },
+          { options: { if:     :false }, included: false },
+          { options: { unless: :false }, included: true  },
+          { options: { unless: :true  }, included: false },
+          { options: { if:     'object.true'  }, included: true  },
+          { options: { if:     'object.false' }, included: false },
+          { options: { unless: 'object.false' }, included: true  },
+          { options: { unless: 'object.true'  }, included: false },
+          { options: { if:     -> { object.true }  }, included: true  },
+          { options: { if:     -> { object.false } }, included: false },
+          { options: { unless: -> { object.false } }, included: true  },
+          { options: { unless: -> { object.true }  }, included: false },
+          { options: { if:     -> (s) { s.object.true }  }, included: true  },
+          { options: { if:     -> (s) { s.object.false } }, included: false },
+          { options: { unless: -> (s) { s.object.false } }, included: true  },
+          { options: { unless: -> (s) { s.object.true }  }, included: false }
+        ]
+
+        scenarios.each do |s|
+          serializer = Class.new(ActiveModel::Serializer) do
+            attributes :attribute1, :attribute2, s[:options]
+
+            def true
+              true
+            end
+
+            def false
+              false
+            end
+          end
+
+          hash = serializable(model, serializer: serializer).serializable_hash
+          assert_equal(s[:included], hash.key?(:attribute1), "Error with #{s[:options]}")
+          assert_equal(s[:included], hash.key?(:attribute2), "Error with #{s[:options]}")
         end
-
-        assert_equal({ title: 'Name 1' }, serializer.new(model).serializable_hash)
       end
     end
   end
