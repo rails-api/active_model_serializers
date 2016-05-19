@@ -48,6 +48,7 @@ module ActiveModel
         assert_equal([:id, :title, :body], serializer_class._attributes)
       end
 
+      # rubocop:disable Metrics/AbcSize
       def test_multiple_conditional_attributes
         model = ::Model.new(true: true, false: false)
 
