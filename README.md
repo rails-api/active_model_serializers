@@ -56,7 +56,7 @@ It is generally safe and recommended to use the master branch.
 Add this line to your application's Gemfile:
 
 ```
-gem 'active_model_serializers'
+gem 'active_model_serializers', '~> 0.10.0'
 ```
 
 And then execute:
