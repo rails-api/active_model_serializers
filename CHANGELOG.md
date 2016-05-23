@@ -14,7 +14,7 @@ Misc:
 ### [v0.10.0 (2016-05-17)](https://github.com/rails-api/active_model_serializers/compare/4a2d9853ba7...v0.10.0)
 
 Breaking changes:
-- [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0. (@remear)
+- [#1662](https://github.com/rails-api/active_model_serializers/pull/1662) Drop support for Rails 4.0 and Ruby 2.0.0 (Rails 4.1 and 4.2 is still supported). (@remear)
 
 Features:
 - [#1677](https://github.com/rails-api/active_model_serializers/pull/1677) Add `assert_schema`, `assert_request_schema`, `assert_request_response_schema`. (@bf4)
