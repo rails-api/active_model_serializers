@@ -24,7 +24,7 @@ module ActiveModel
         end
       end
 
-      module ClassMethods
+      class_methods do
         def inherited(base)
           super
           base._attributes_data = _attributes_data.dup
@@ -72,9 +72,9 @@ module ActiveModel
         def _attributes_keys
           _attributes_data
             .each_with_object({}) do |(key, attr), hash|
-              next if key == attr.name
-              hash[attr.name] = { key: key }
-            end
+            next if key == attr.name
+            hash[attr.name] = { key: key }
+          end
         end
       end
     end

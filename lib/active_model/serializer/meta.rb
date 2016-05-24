@@ -11,7 +11,7 @@ module ActiveModel
         extend ActiveSupport::Autoload
       end
 
-      module ClassMethods
+      class_methods do
         # Set the JSON API meta attribute of a serializer.
         # @example
         #   class AdminAuthorSerializer < ActiveModel::Serializer
