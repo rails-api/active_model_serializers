@@ -7,7 +7,7 @@ module ActionController
 
     include ActionController::Renderers
 
-    module ClassMethods
+    class_methods do
       def serialization_scope(scope)
         self._serialization_scope = scope
       end

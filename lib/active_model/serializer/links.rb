@@ -12,7 +12,7 @@ module ActiveModel
         extend ActiveSupport::Autoload
       end
 
-      module ClassMethods
+      class_methods do
         def inherited(base)
           super
           base._links = _links.dup

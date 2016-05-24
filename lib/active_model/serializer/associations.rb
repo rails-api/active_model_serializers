@@ -28,7 +28,7 @@ module ActiveModel
         autoload :HasManyReflection
       end
 
-      module ClassMethods
+      class_methods do
         def inherited(base)
           super
           base._reflections = _reflections.dup

@@ -14,7 +14,7 @@ module ActiveModelSerializers
       instrument_rendering
     end
 
-    module ClassMethods
+    class_methods do
       def instrument_rendering
         around_render do |args, block|
           tag_logger do
