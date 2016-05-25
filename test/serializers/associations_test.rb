@@ -126,6 +126,26 @@ module ActiveModel
         assert expected_association_keys.include? :site
       end
 
+      class BelongsToTestPostSerializer < ActiveModel::Serializer
+        belongs_to :blog
+      end
+
+      def test_belongs_to_doesnt_load_record
+        post = Post.new
+        post.blog_id = 'blog'
+
+        class << post
+          def blog
+            fail 'should use blog_id'
+          end
+        end
+
+        actual = serializable(post, adapter: :json_api, serializer: BelongsToTestPostSerializer).as_json
+        expected = { data: { id: 'post', type: 'posts', relationships: { blog: { data: { id: 'blog', type: 'blogs' } } } } }
+
+        assert_equal expected, actual
+      end
+
       class InlineAssociationTestPostSerializer < ActiveModel::Serializer
         has_many :comments
         has_many :comments, key: :last_comments do
