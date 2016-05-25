@@ -5,7 +5,8 @@ module ActiveModel
     module Adapter
       class JsonApi
         class RelationshipTest < ActiveSupport::TestCase
-          RelationshipAuthor = Class.new(::Model)
+          class RelationshipAuthor < ::Model; end
+
           class RelationshipAuthorSerializer < ActiveModel::Serializer
             has_one :bio do
               link :self, '//example.com/link_author/relationships/bio'
@@ -71,7 +72,6 @@ module ActiveModel
 
           def setup
             @post = Post.new(id: 1337, comments: [], author: nil)
-            @blog = Blog.new(id: 1337, name: 'extra')
             @bio = Bio.new(id: 1337)
             @like = Like.new(id: 1337)
             @role = Role.new(id: 'from-record')
@@ -82,7 +82,6 @@ module ActiveModel
             @author = RelationshipAuthor.new(
               id: 1337,
               posts: [@post],
-              blog: @blog,
               reviewer: @reviewer,
               bio: @bio,
               likes: [@like],
@@ -158,10 +157,16 @@ module ActiveModel
           end
 
           def test_relationship_not_including_data
+            @author.define_singleton_method(:read_attribute_for_serialization) do |attr|
+              fail 'should not be called' if attr == :blog
+              super(attr)
+            end
             expected = {
               links: { self: '//example.com/link_author/relationships/blog' }
             }
-            assert_relationship(:blog, expected)
+            assert_nothing_raised do
+              assert_relationship(:blog, expected)
+            end
           end
 
           def test_relationship_including_data_explicit

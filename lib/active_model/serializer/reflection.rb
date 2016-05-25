@@ -75,10 +75,10 @@ module ActiveModel
 
         if block
           block_value = instance_exec(serializer, &block)
-          if block_value == :nil
-            serializer.read_attribute_for_serialization(name)
-          else
+          if block_value != :nil
             block_value
+          elsif @_include_data
+            serializer.read_attribute_for_serialization(name)
           end
         else
           serializer.read_attribute_for_serialization(name)
