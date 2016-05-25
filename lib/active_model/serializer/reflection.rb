@@ -56,6 +56,11 @@ module ActiveModel
         :nil
       end
 
+      # This gets the value of the reflection.
+      # this needs to be avoided if we have a belongs_to relationship
+      # because we only care about the id and type, and not about the object.
+      # This causes n+1 queries unnecessarily
+      #
       # @param serializer [ActiveModel::Serializer]
       # @yield [ActiveModel::Serializer]
       # @return [:nil, associated resource or resource collection]
@@ -70,6 +75,9 @@ module ActiveModel
       #     end
       #   end
       def value(serializer)
+        require 'pry-byebug'
+        binding.pry
+
         @object = serializer.object
         @scope = serializer.scope
 
@@ -78,9 +86,15 @@ module ActiveModel
           if block_value != :nil
             block_value
           elsif @_include_data
+            # this is what needs to be avoided in the case of belongs_to.
+            # should an id and type hash just be returned?
+            # maybe how associations work in general needs to be re-looked at
             serializer.read_attribute_for_serialization(name)
           end
         else
+          # this is what needs to be avoided in the case of belongs_to.
+          # should an id and type hash just be returned?
+          # maybe how associations work in general needs to be re-looked at
           serializer.read_attribute_for_serialization(name)
         end
       end
