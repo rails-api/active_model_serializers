@@ -95,12 +95,11 @@ module ActiveModel
 
       def [](key)
         # TODO(beauby): Adopt a lazy caching strategy for generating subtrees.
-        case
-        when @hash.key?(key)
+        if @hash.key?(key)
           self.class.new(@hash[key])
-        when @hash.key?(:*)
+        elsif @hash.key?(:*)
           self.class.new(@hash[:*])
-        when @hash.key?(:**)
+        elsif @hash.key?(:**)
           self.class.new(:** => {})
         else
           nil

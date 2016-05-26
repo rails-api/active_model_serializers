@@ -43,7 +43,8 @@ module ActiveModelSerializers
         end
 
         def data
-          { data: [
+          {
+            data: [
               { id: '1', type: 'profiles', attributes: { name: 'Name 1', description: 'Description 1' } },
               { id: '2', type: 'profiles', attributes: { name: 'Name 2', description: 'Description 2' } },
               { id: '3', type: 'profiles', attributes: { name: 'Name 3', description: 'Description 3' } },

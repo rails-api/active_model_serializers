@@ -86,7 +86,8 @@ module ActiveModelSerializers
                   data: [
                     { id: '7', type: 'comments' },
                     { id: '12', type: 'comments' }
-                ] }
+                  ]
+                }
               },
               links: {
                 self: 'http://example.com/posts/1337',
@@ -122,7 +123,8 @@ module ActiveModelSerializers
                   data: [
                     { id: '7', type: 'comments' },
                     { id: '12', type: 'comments' }
-                ] }
+                  ]
+                }
               },
               links: {
                 self: 'http://example.com/posts/1337',
@@ -158,7 +160,8 @@ module ActiveModelSerializers
                   Data: [
                     { Id: '7', Type: 'Comments' },
                     { Id: '12', Type: 'Comments' }
-                ] }
+                  ]
+                }
               },
               Links: {
                 Self: 'http://example.com/posts/1337',
@@ -192,7 +195,8 @@ module ActiveModelSerializers
                   data: [
                     { id: '7', type: 'comments' },
                     { id: '12', type: 'comments' }
-                ] }
+                  ]
+                }
               },
               links: {
                 self: 'http://example.com/posts/1337',
@@ -226,7 +230,8 @@ module ActiveModelSerializers
                   data: [
                     { id: '7', type: 'comments' },
                     { id: '12', type: 'comments' }
-                ] }
+                  ]
+                }
               },
               links: {
                 self: 'http://example.com/posts/1337',
@@ -270,7 +275,8 @@ module ActiveModelSerializers
                   Data: [
                     { Id: '7', Type: 'Comments' },
                     { Id: '12', Type: 'Comments' }
-                ] }
+                  ]
+                }
               },
               Links: {
                 Self: 'http://example.com/posts/1337',
@@ -304,7 +310,8 @@ module ActiveModelSerializers
                   data: [
                     { id: '7', type: 'comments' },
                     { id: '12', type: 'comments' }
-                ] }
+                  ]
+                }
               },
               links: {
                 self: 'http://example.com/posts/1337',
@@ -324,18 +331,18 @@ module ActiveModelSerializers
           serializer = ActiveModel::Serializer::ErrorSerializer.new(resource)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
-          expected_errors_object =
-            { :errors =>
-              [
-                {
-                  :source => { :pointer => '/data/attributes/published-at' },
-                  :detail => 'must be in the future' },
-                {
-                  :source => { :pointer => '/data/attributes/title' },
-                  :detail => 'must be longer'
-                }
-              ]
-            }
+          expected_errors_object = {
+            :errors => [
+              {
+                :source => { :pointer => '/data/attributes/published-at' },
+                :detail => 'must be in the future'
+              },
+              {
+                :source => { :pointer => '/data/attributes/title' },
+                :detail => 'must be longer'
+              }
+            ]
+          }
           assert_equal expected_errors_object, result
         end
 
@@ -349,19 +356,18 @@ module ActiveModelSerializers
             adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
             adapter.serializable_hash
           end
-          expected_errors_object =
-            { :Errors =>
-              [
-                {
-                  :Source => { :Pointer => '/data/attributes/PublishedAt' },
-                  :Detail => 'must be in the future'
-                },
-                {
-                  :Source => { :Pointer => '/data/attributes/Title' },
-                  :Detail => 'must be longer'
-                }
-              ]
-            }
+          expected_errors_object = {
+            :Errors => [
+              {
+                :Source => { :Pointer => '/data/attributes/PublishedAt' },
+                :Detail => 'must be in the future'
+              },
+              {
+                :Source => { :Pointer => '/data/attributes/Title' },
+                :Detail => 'must be longer'
+              }
+            ]
+          }
           assert_equal expected_errors_object, result
         end
 
@@ -375,19 +381,18 @@ module ActiveModelSerializers
             adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
             adapter.serializable_hash
           end
-          expected_errors_object =
-            { :Errors =>
-              [
-                {
-                  :Source => { :Pointer => '/data/attributes/PublishedAt' },
-                  :Detail => 'must be in the future'
-                },
-                {
-                  :Source => { :Pointer => '/data/attributes/Title' },
-                  :Detail => 'must be longer'
-                }
-              ]
-            }
+          expected_errors_object = {
+            :Errors => [
+              {
+                :Source => { :Pointer => '/data/attributes/PublishedAt' },
+                :Detail => 'must be in the future'
+              },
+              {
+                :Source => { :Pointer => '/data/attributes/Title' },
+                :Detail => 'must be longer'
+              }
+            ]
+          }
           assert_equal expected_errors_object, result
         end
 
@@ -402,18 +407,17 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
 
-          expected_errors_object =
-            { :errors =>
-              [
-                {
-                  :source => { :pointer => '/data/attributes/published-at' },
-                  :detail => 'must be in the future'
-                },
-                {
-                  :source => { :pointer => '/data/attributes/title' },
-                  :detail => 'must be longer'
-                }
-              ]
+          expected_errors_object = {
+            :errors => [
+              {
+                :source => { :pointer => '/data/attributes/published-at' },
+                :detail => 'must be in the future'
+              },
+              {
+                :source => { :pointer => '/data/attributes/title' },
+                :detail => 'must be longer'
+              }
+            ]
           }
           assert_equal expected_errors_object, result
         end
@@ -429,12 +433,11 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
 
-          expected_errors_object =
-            { :errors =>
-              [
-                { :source => { :pointer => '/data/attributes/published_at' }, :detail => 'must be in the future' },
-                { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
-              ]
+          expected_errors_object = {
+            :errors => [
+              { :source => { :pointer => '/data/attributes/published_at' }, :detail => 'must be in the future' },
+              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
+            ]
           }
           assert_equal expected_errors_object, result
         end
@@ -466,12 +469,11 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
 
-          expected_errors_object =
-            { :Errors =>
-              [
-                { :Source => { :Pointer => '/data/attributes/PublishedAt' }, :Detail => 'must be in the future' },
-                { :Source => { :Pointer => '/data/attributes/Title' }, :Detail => 'must be longer' }
-              ]
+          expected_errors_object = {
+            :Errors => [
+              { :Source => { :Pointer => '/data/attributes/PublishedAt' }, :Detail => 'must be in the future' },
+              { :Source => { :Pointer => '/data/attributes/Title' }, :Detail => 'must be longer' }
+            ]
           }
           assert_equal expected_errors_object, result
         end
@@ -487,12 +489,11 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
 
-          expected_errors_object =
-            { :errors =>
-              [
-                { :source => { :pointer => '/data/attributes/publishedAt' }, :detail => 'must be in the future' },
-                { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
-              ]
+          expected_errors_object = {
+            :errors => [
+              { :source => { :pointer => '/data/attributes/publishedAt' }, :detail => 'must be in the future' },
+              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
+            ]
           }
           assert_equal expected_errors_object, result
         end

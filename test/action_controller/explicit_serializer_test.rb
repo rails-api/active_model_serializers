@@ -100,7 +100,8 @@ module ActionController
         get :render_array_using_explicit_serializer_and_custom_serializers
 
         expected = [
-          { 'title' => 'New Post',
+          {
+            'title' => 'New Post',
             'body' => 'Body',
             'id' => assigns(:post).id,
             'comments' => [{ 'id' => 1 }, { 'id' => 2 }],

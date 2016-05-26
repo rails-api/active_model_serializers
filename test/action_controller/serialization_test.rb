@@ -294,7 +294,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT'
+            }
           ],
           blog: {
             id: 999,
@@ -333,7 +334,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT'
+            }
           ],
           blog: {
             id: 999,
@@ -407,7 +409,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT'
+            }
           ],
           blog: {
             id: 999,

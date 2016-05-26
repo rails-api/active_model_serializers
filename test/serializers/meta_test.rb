@@ -15,7 +15,8 @@ module ActiveModel
           @blog,
           adapter: :json,
           serializer: AlternateBlogSerializer,
-          meta: { total: 10 }).as_json
+          meta: { total: 10 }
+        ).as_json
         expected = {
           blog: {
             id: 1,
@@ -65,7 +66,8 @@ module ActiveModel
           @blog,
           adapter: :attributes,
           serializer: AlternateBlogSerializer,
-          meta: { total: 10 }).as_json
+          meta: { total: 10 }
+        ).as_json
         expected = {
           id: 1,
           title: 'AMS Hints'
@@ -79,7 +81,8 @@ module ActiveModel
           adapter: :json,
           serializer: AlternateBlogSerializer,
           meta: { total: 10 },
-          meta_key: 'haha_meta').as_json
+          meta_key: 'haha_meta'
+        ).as_json
         expected = {
           blog: {
             id: 1,
@@ -98,7 +101,8 @@ module ActiveModel
           adapter: :json_api,
           serializer: AlternateBlogSerializer,
           meta: { total: 10 },
-          meta_key: 'haha_meta').as_json
+          meta_key: 'haha_meta'
+        ).as_json
         expected = {
           data: {
             id: '1',
@@ -148,7 +152,8 @@ module ActiveModel
         actual = ActiveModelSerializers::SerializableResource.new(
           [@blog],
           adapter: :attributes,
-          meta: { total: 10 }).as_json
+          meta: { total: 10 }
+        ).as_json
         expected = [{
           id: 1,
           name: 'AMS Hints',
@@ -170,7 +175,8 @@ module ActiveModel
           [@blog],
           adapter: :json,
           meta: { total: 10 },
-          meta_key: 'haha_meta').as_json
+          meta_key: 'haha_meta'
+        ).as_json
         expected = {
           blogs: [{
             id: 1,
