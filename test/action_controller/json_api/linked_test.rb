@@ -3,8 +3,9 @@ require 'test_helper'
 module ActionController
   module Serialization
     class JsonApi
-      class LinkedTest < ActionDispatch::IntegrationTest
+      class LinkedTest < ActionController::TestCase
         class LinkedTestController < ActionController::Base
+          require 'active_model_serializers/register_jsonapi_renderer'
           def setup_post
             ActionController::Base.cache_store.clear
             @role1 = Role.new(id: 1, name: 'admin')
@@ -38,68 +39,62 @@ module ActionController
 
           def render_resource_without_include
             setup_post
-            render json: @post
+            render jsonapi: @post
           end
 
           def render_resource_with_include
             setup_post
-            render json: @post, adapter: :json_api, include: [:author]
+            render jsonapi: @post, include: [:author]
           end
 
           def render_resource_with_include_of_custom_key_by_original
             setup_post
-            render json: @post, adapter: :json_api, include: [:reviews], serializer: PostWithCustomKeysSerializer
+            render jsonapi: @post, include: [:reviews], serializer: PostWithCustomKeysSerializer
           end
 
           def render_resource_with_nested_include
             setup_post
-            render json: @post, adapter: :json_api, include: [comments: [:author]]
+            render jsonapi: @post, include: [comments: [:author]]
           end
 
           def render_resource_with_nested_has_many_include_wildcard
             setup_post
-            render json: @post, adapter: :json_api, include: 'author.*'
+            render jsonapi: @post, include: 'author.*'
           end
 
           def render_resource_with_missing_nested_has_many_include
             setup_post
             @post.author = @author2 # author2 has no roles.
-            render json: @post, adapter: :json_api, include: [author: [:roles]]
+            render jsonapi: @post, include: [author: [:roles]]
           end
 
           def render_collection_with_missing_nested_has_many_include
             setup_post
             @post.author = @author2
-            render json: [@post, @post2], adapter: :json_api, include: [author: [:roles]]
+            render jsonapi: [@post, @post2], include: [author: [:roles]]
           end
 
           def render_collection_without_include
             setup_post
-            render json: [@post], adapter: :json_api
+            render jsonapi: [@post]
           end
 
           def render_collection_with_include
             setup_post
-            render json: [@post], adapter: :json_api, include: 'author, comments'
+            render jsonapi: [@post], include: 'author, comments'
           end
         end
 
-        setup do
-          @routes = Rails.application.routes.draw do
-            ActiveSupport::Deprecation.silence do
-              match ':action', :to => LinkedTestController, via: [:get, :post]
-            end
-          end
-        end
+        tests LinkedTestController
 
         def test_render_resource_without_include
-          get '/render_resource_without_include'
+          get :render_resource_without_include
           response = JSON.parse(@response.body)
           refute response.key? 'included'
         end
 
         def test_render_resource_with_include
-          get '/render_resource_with_include'
+          get :render_resource_with_include
           response = JSON.parse(@response.body)
           assert response.key? 'included'
           assert_equal 1, response['included'].size
@@ -107,7 +102,7 @@ module ActionController
         end
 
         def test_render_resource_with_nested_has_many_include
-          get '/render_resource_with_nested_has_many_include_wildcard'
+          get :render_resource_with_nested_has_many_include_wildcard
           response = JSON.parse(@response.body)
           expected_linked = [
             {
@@ -149,7 +144,7 @@ module ActionController
         end
 
         def test_render_resource_with_include_of_custom_key_by_original
-          get '/render_resource_with_include_of_custom_key_by_original'
+          get :render_resource_with_include_of_custom_key_by_original
           response = JSON.parse(@response.body)
           assert response.key? 'included'
 
@@ -161,33 +156,33 @@ module ActionController
         end
 
         def test_render_resource_with_nested_include
-          get '/render_resource_with_nested_include'
+          get :render_resource_with_nested_include
           response = JSON.parse(@response.body)
           assert response.key? 'included'
           assert_equal 3, response['included'].size
         end
 
         def test_render_collection_without_include
-          get '/render_collection_without_include'
+          get :render_collection_without_include
           response = JSON.parse(@response.body)
           refute response.key? 'included'
         end
 
         def test_render_collection_with_include
-          get '/render_collection_with_include'
+          get :render_collection_with_include
           response = JSON.parse(@response.body)
           assert response.key? 'included'
         end
 
         def test_render_resource_with_nested_attributes_even_when_missing_associations
-          get '/render_resource_with_missing_nested_has_many_include'
+          get :render_resource_with_missing_nested_has_many_include
           response = JSON.parse(@response.body)
           assert response.key? 'included'
           refute has_type?(response['included'], 'roles')
         end
 
         def test_render_collection_with_missing_nested_has_many_include
-          get '/render_collection_with_missing_nested_has_many_include'
+          get :render_collection_with_missing_nested_has_many_include
           response = JSON.parse(@response.body)
           assert response.key? 'included'
           assert has_type?(response['included'], 'roles')

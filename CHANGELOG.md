@@ -9,7 +9,6 @@ Features:
 Fixes:
 - [#1710](https://github.com/rails-api/active_model_serializers/pull/1710) Prevent association loading when `include_data` option
   is set to `false`. (@groyoh)
-- [#1747](https://github.com/rails-api/active_model_serializers/pull/1747) Improve jsonapi mime type registration for Rails 5 (@remear)
 
 Misc:
 - [#1734](https://github.com/rails-api/active_model_serializers/pull/1734) Adds documentation for conditional attribute (@lambda2)
