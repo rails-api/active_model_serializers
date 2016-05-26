@@ -52,6 +52,9 @@ Each adapter has a default key transform configured:
 `config.key_transform` is a global override of the adapter default. Adapters
 still prefer the render option `:key_transform` over this setting.
 
+*NOTE: Key transforms can be expensive operations. If key transforms are unnecessary for the
+application, setting `config.key_transform` to `:unaltered` will provide a performance boost.*
+
 ##### default_includes
 What relationships to serialize by default.  Default: `'*'`, which includes one level of related
 objects. See [includes](adapters.md#included) for more info.
