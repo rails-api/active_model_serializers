@@ -57,10 +57,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'grape', ['>= 0.13', '< 1.0']
   spec.add_development_dependency 'json_schema'
   spec.add_development_dependency 'rake', ['>= 10.0', '< 12.0']
-
-  spec.post_install_message = <<-EOF
-NOTE: The default key case for the JsonApi adapter has changed to dashed.
-See https://github.com/rails-api/active_model_serializers/blob/master/docs/general/key_transforms.md
-for more information on configuring this behavior.
-EOF
 end
