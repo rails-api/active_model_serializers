@@ -19,6 +19,7 @@ module ActiveModel
           collection_serializer
         end
 
+        config.default_includes = '*'
         config.adapter = :attributes
         config.jsonapi_resource_type = :plural
         config.jsonapi_version = '1.0'
