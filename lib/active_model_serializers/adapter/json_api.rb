@@ -430,7 +430,10 @@ module ActiveModelSerializers
       #   }.reject! {|_,v| v.nil? }
       def relationships_for(serializer, requested_associations)
         include_tree = ActiveModel::Serializer::IncludeTree.from_include_args(requested_associations)
-        serializer.associations(include_tree).each_with_object({}) do |association, hash|
+        # the association object evaluates the relationship, which we
+        # don't want it to do
+        included_associations = serializer.associations(include_tree)
+        included_associations.each_with_object({}) do |association, hash|
           hash[association.key] = Relationship.new(
             serializer,
             association.serializer,

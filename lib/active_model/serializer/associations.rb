@@ -86,10 +86,14 @@ module ActiveModel
         return unless object
 
         Enumerator.new do |y|
+          # _reflections is an AMS::BelongsToReflection or
+          # an AMS::HasManyReflection
           self.class._reflections.each do |reflection|
             next if reflection.excluded?(self)
             key = reflection.options.fetch(:key, reflection.name)
             next unless include_tree.key?(key)
+            # until this is called, the reflection / association
+            # is _not_ evaluated
             y.yield reflection.build_association(self, instance_options)
           end
         end
