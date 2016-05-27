@@ -285,7 +285,7 @@ module ActiveModelSerializers
       #     foo: 'bar'
       #   }
       def attributes_for(serializer, fields)
-        serializer.attributes(fields).except(:id)
+        serializer.attributes(only: fields, except: :id)
       end
 
       # {http://jsonapi.org/format/#document-resource-objects Document Resource Objects}

@@ -180,6 +180,19 @@ It could be combined, like above, with other paths in any combination desired.
   render json: @posts, include: 'author.comments.**'
 ```
 
+#### Excluded
+
+Sometimes you want to omit a specific field or association during serialization.
+You can use the `except` option for this:
+
+```ruby
+  render json: @posts, include: '*', except: :author
+```
+
+This is particularly helpful if you are using the recursive include wildstar
+(`**`), as it can lead to infinite recursion when you have associations that
+can be traversed in a cycle.
+
 ##### Security Considerations
 
 Since the included options may come from the query params (i.e. user-controller):

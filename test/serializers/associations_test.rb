@@ -289,6 +289,47 @@ module ActiveModel
 
           assert_match(/:if should be a Symbol, String or Proc/, exception.message)
         end
+
+        def test_association_except
+          # `except` can take an array
+          comment_serializer = Class.new(ActiveModel::Serializer) do
+            attributes :id, :body
+            belongs_to :author, except: [:posts, :roles, :bio]
+            belongs_to :post
+          end
+
+          # `except` can take a symbol
+          post_serializer = Class.new(ActiveModel::Serializer) do
+            attributes :id, :title, :body
+            has_many :comments, except: :post, serializer: comment_serializer
+          end
+
+          # Circular dependency created:
+          # - post has_many comments
+          # - comment belongs_to post
+          # excluding the "post" association on comment resolves it when
+          # we are including nested associations
+
+          author = Author.new(id: 1, name: 'Alice')
+          post = Post.new(id: 7, title: 'Do work', body: 'work work work')
+          post.comments = [
+            Comment.new(post: post, author: author, id: 2, body: 'I agree'),
+            Comment.new(post: post, author: author, id: 3, body: 'Right')
+          ]
+
+          hash = serializable(post, serializer: post_serializer, include: '**').serializable_hash
+
+          expected = {
+            id: 7,
+            title: 'Do work',
+            body: 'work work work',
+            comments: [
+              { id: 2, body: 'I agree', author: { id: 1, name: 'Alice' } },
+              { id: 3, body: 'Right', author: { id: 1, name: 'Alice' } }
+            ]
+          }
+          assert_equal(expected, hash)
+        end
       end
     end
   end

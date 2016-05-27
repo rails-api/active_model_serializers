@@ -140,6 +140,17 @@ module ActionController
 
           render json: like
         end
+
+        def render_object_except
+          blog = Blog.new(id: 1, name: 'Blogariffic')
+          blog.articles = [
+            Post.new(id: 1, title: 'Hello', body: 'world'),
+            Post.new(id: 2, title: 'Moby Dick', body: 'Call me Ishmael.')
+          ]
+          blog.writer = Author.new(id: 1, name: 'Joao Moura.')
+
+          render json: blog, except: [:articles, :name]
+        end
       end
 
       tests ImplicitSerializationTestController
@@ -466,6 +477,14 @@ module ActionController
         assert_equal 'render.active_model_serializers', @name
       ensure
         ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+      end
+
+      def test_render_object_except
+        get :render_object_except
+        assert_equal(
+          { id: 1, writer: { id: 1, name: 'Joao Moura.' } }.to_json,
+          @response.body
+        )
       end
     end
   end

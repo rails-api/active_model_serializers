@@ -38,7 +38,9 @@ module ActiveModelSerializers
 
       def resource_relationships(options)
         relationships = {}
+        excepts = Array(options[:except])
         serializer.associations(@include_tree).each do |association|
+          next if excepts.include?(association.key)
           relationships[association.key] ||= relationship_value_for(association, options)
         end
 
@@ -50,7 +52,8 @@ module ActiveModelSerializers
         return unless association.serializer && association.serializer.object
 
         opts = instance_options.merge(include: @include_tree[association.key])
-        relationship_value = Attributes.new(association.serializer, opts).serializable_hash(options)
+        hash_opts = options.merge(except: association.options[:except])
+        relationship_value = Attributes.new(association.serializer, opts).serializable_hash(hash_opts)
 
         if association.options[:polymorphic] && relationship_value
           polymorphic_type = association.serializer.object.class.name.underscore
@@ -68,12 +71,14 @@ module ActiveModelSerializers
       end
 
       def resource_object_for(options)
+        fields = options.fetch(:fields, {})
+        fields = fields.merge(except: options[:except]) if options[:except]
         if serializer.class.cache_enabled?
           @cached_attributes.fetch(serializer.cache_key(self)) do
-            serializer.cached_fields(options[:fields], self)
+            serializer.cached_fields(fields, self)
           end
         else
-          serializer.cached_fields(options[:fields], self)
+          serializer.cached_fields(fields, self)
         end
       end
     end
