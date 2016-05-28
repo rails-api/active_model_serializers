@@ -4,11 +4,13 @@ module ActiveModelSerializers
       def initialize(serializer, options = {})
         super
         @cached_attributes = options[:cache_attributes] || {}
-        @include_tree =
-          if options[:include]
-            ActiveModel::Serializer::IncludeTree.from_include_args(options[:include])
+        @include_directive =
+          if options[:include_directive]
+            options[:include_directive]
+          elsif options[:include]
+            JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
           else
-            ActiveModelSerializers.default_include_tree
+            ActiveModelSerializers.default_include_directive
           end
       end
 
@@ -26,8 +28,8 @@ module ActiveModelSerializers
 
       def serializable_hash_for_collection(options)
         cache_attributes
-
-        serializer.map { |s| Attributes.new(s, instance_options).serializable_hash(options) }
+        opts = instance_options.merge(include_directive: @include_directive)
+        serializer.map { |s| Attributes.new(s, opts).serializable_hash(options) }
       end
 
       def serializable_hash_for_single_resource(options)
@@ -38,7 +40,7 @@ module ActiveModelSerializers
 
       def resource_relationships(options)
         relationships = {}
-        serializer.associations(@include_tree).each do |association|
+        serializer.associations(@include_directive).each do |association|
           relationships[association.key] ||= relationship_value_for(association, options)
         end
 
@@ -49,7 +51,7 @@ module ActiveModelSerializers
         return association.options[:virtual_value] if association.options[:virtual_value]
         return unless association.serializer && association.serializer.object
 
-        opts = instance_options.merge(include: @include_tree[association.key])
+        opts = instance_options.merge(include_directive: @include_directive[association.key])
         relationship_value = Attributes.new(association.serializer, opts).serializable_hash(options)
 
         if association.options[:polymorphic] && relationship_value
@@ -64,7 +66,7 @@ module ActiveModelSerializers
       def cache_attributes
         return if @cached_attributes.present?
 
-        @cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, self, @include_tree)
+        @cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, self, @include_directive)
       end
 
       def resource_object_for(options)

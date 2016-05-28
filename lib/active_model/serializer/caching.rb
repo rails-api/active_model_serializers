@@ -163,10 +163,10 @@ module ActiveModel
 
         # Read cache from cache_store
         # @return [Hash]
-        def cache_read_multi(collection_serializer, adapter_instance, include_tree)
+        def cache_read_multi(collection_serializer, adapter_instance, include_directive)
           return {} if ActiveModelSerializers.config.cache_store.blank?
 
-          keys = object_cache_keys(collection_serializer, adapter_instance, include_tree)
+          keys = object_cache_keys(collection_serializer, adapter_instance, include_directive)
 
           return {} if keys.blank?
 
@@ -176,15 +176,15 @@ module ActiveModel
         # Find all cache_key for the collection_serializer
         # @param serializers [ActiveModel::Serializer::CollectionSerializer]
         # @param adapter_instance [ActiveModelSerializers::Adapter::Base]
-        # @param include_tree [ActiveModel::Serializer::IncludeTree]
+        # @param include_directive [JSONAPI::IncludeDirective]
         # @return [Array] all cache_key of collection_serializer
-        def object_cache_keys(collection_serializer, adapter_instance, include_tree)
+        def object_cache_keys(collection_serializer, adapter_instance, include_directive)
           cache_keys = []
 
           collection_serializer.each do |serializer|
             cache_keys << object_cache_key(serializer, adapter_instance)
 
-            serializer.associations(include_tree).each do |association|
+            serializer.associations(include_directive).each do |association|
               if association.serializer.respond_to?(:each)
                 association.serializer.each do |sub_serializer|
                   cache_keys << object_cache_key(sub_serializer, adapter_instance)

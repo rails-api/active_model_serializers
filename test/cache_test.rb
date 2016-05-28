@@ -286,9 +286,9 @@ module ActiveModelSerializers
 
     def test_object_cache_keys
       serializable = ActiveModelSerializers::SerializableResource.new([@comment, @comment])
-      include_tree = ActiveModel::Serializer::IncludeTree.from_include_args('*')
+      include_directive = JSONAPI::IncludeDirective.new('*', allow_wildcard: true)
 
-      actual = ActiveModel::Serializer.object_cache_keys(serializable.adapter.serializer, serializable.adapter, include_tree)
+      actual = ActiveModel::Serializer.object_cache_keys(serializable.adapter.serializer, serializable.adapter, include_directive)
 
       assert_equal 3, actual.size
       assert actual.any? { |key| key == "comment/1/#{serializable.adapter.cached_name}" }

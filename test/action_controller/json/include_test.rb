@@ -226,19 +226,19 @@ module ActionController
           }
         end
 
-        def with_default_includes(include_tree)
+        def with_default_includes(include_directive)
           original = ActiveModelSerializers.config.default_includes
-          ActiveModelSerializers.config.default_includes = include_tree
-          clear_include_tree_cache
+          ActiveModelSerializers.config.default_includes = include_directive
+          clear_include_directive_cache
           yield
         ensure
           ActiveModelSerializers.config.default_includes = original
-          clear_include_tree_cache
+          clear_include_directive_cache
         end
 
-        def clear_include_tree_cache
+        def clear_include_directive_cache
           ActiveModelSerializers
-            .instance_variable_set(:@default_include_tree, nil)
+            .instance_variable_set(:@default_include_directive, nil)
         end
       end
     end

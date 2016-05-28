@@ -78,18 +78,18 @@ module ActiveModel
         end
       end
 
-      # @param [IncludeTree] include_tree (defaults to the
-      #   default_includes config value when not provided)
+      # @param [JSONAPI::IncludeDirective] include_directive (defaults to the
+      #   +default_include_directive+ config value when not provided)
       # @return [Enumerator<Association>]
       #
-      def associations(include_tree = ActiveModelSerializers.default_include_tree)
+      def associations(include_directive = ActiveModelSerializers.default_include_directive)
         return unless object
 
         Enumerator.new do |y|
           self.class._reflections.each do |reflection|
             next if reflection.excluded?(self)
             key = reflection.options.fetch(:key, reflection.name)
-            next unless include_tree.key?(key)
+            next unless include_directive.key?(key)
             y.yield reflection.build_association(self, instance_options)
           end
         end
