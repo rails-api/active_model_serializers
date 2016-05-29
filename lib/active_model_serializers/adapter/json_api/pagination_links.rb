@@ -2,6 +2,7 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
       class PaginationLinks
+        MissingSerializationContextError = Class.new(KeyError)
         FIRST_PAGE = 1
 
         attr_reader :collection, :context
@@ -9,7 +10,13 @@ module ActiveModelSerializers
         def initialize(collection, adapter_options)
           @collection = collection
           @adapter_options = adapter_options
-          @context = adapter_options.fetch(:serialization_context)
+          @context = adapter_options.fetch(:serialization_context) do
+            fail MissingSerializationContextError, <<-EOF.freeze
+ JsonApi::PaginationLinks requires a ActiveModelSerializers::SerializationContext.
+ Please pass a ':serialization_context' option or
+ override CollectionSerializer#paginated? to return 'false'.
+             EOF
+          end
         end
 
         def as_json
