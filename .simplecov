@@ -48,34 +48,34 @@ require 'coverage'
 Coverage.start
 
 ## ADD SOME CUSTOM REPORTING AT EXIT
-SimpleCov.at_exit do
-  next if $! and not ($!.kind_of? SystemExit and $!.success?)
-
-  header = "#{'*' * 20} SimpleCov Results #{'*' * 20}"
-  results = SimpleCov.result.format!.join("\n")
-  exit_message = <<-EOF
-
-#{header}
-{{RESULTS}}
-{{FAILURE_MESSAGE}}
-
-#{'*' * header.size}
-  EOF
-  percent = Float(SimpleCov.result.covered_percent)
-  if percent < @minimum_coverage
-    failure_message = <<-EOF
-Spec coverage was not high enough: #{percent.round(2)}% is < #{@minimum_coverage}%
-    EOF
-    exit_message.sub!('{{RESULTS}}', results).sub!('{{FAILURE_MESSAGE}}', failure_message)
-    @output.puts exit_message
-    abort(failure_message) if @generate_report
-  elsif @running_ci
-    exit_message.sub!('{{RESULTS}}', results).sub!('{{FAILURE_MESSAGE}}', <<-EOF)
-Nice job! Spec coverage (#{percent.round(2)}%) is still at or above #{@minimum_coverage}%
-    EOF
-    @output.puts exit_message
-  end
-end
+# SimpleCov.at_exit do
+#   next if $! and not ($!.kind_of? SystemExit and $!.success?)
+#
+#   header = "#{'*' * 20} SimpleCov Results #{'*' * 20}"
+#   results = SimpleCov.result.format!.join("\n")
+#   exit_message = <<-EOF
+#
+# #{header}
+# {{RESULTS}}
+# {{FAILURE_MESSAGE}}
+#
+# #{'*' * header.size}
+#   EOF
+#   percent = Float(SimpleCov.result.covered_percent)
+#   if percent < @minimum_coverage
+#     failure_message = <<-EOF
+# Spec coverage was not high enough: #{percent.round(2)}% is < #{@minimum_coverage}%
+#     EOF
+#     exit_message.sub!('{{RESULTS}}', results).sub!('{{FAILURE_MESSAGE}}', failure_message)
+#     @output.puts exit_message
+#     abort(failure_message) if @generate_report
+#   elsif @running_ci
+#     exit_message.sub!('{{RESULTS}}', results).sub!('{{FAILURE_MESSAGE}}', <<-EOF)
+# Nice job! Spec coverage (#{percent.round(2)}%) is still at or above #{@minimum_coverage}%
+#     EOF
+#     @output.puts exit_message
+#   end
+# end
 
 ## CAPTURE CONFIG IN CLOSURE 'AppCoverage.start'
 ## to defer running until test/test_helper.rb is loaded.
@@ -105,6 +105,7 @@ end.new do
   else
     formatters = []
   end
-  SimpleCov.formatters = formatters
+  # Using default formatters...
+  # SimpleCov.formatters = formatters
 end
 # rubocop:enable Style/MultilineBlockChain

@@ -17,6 +17,14 @@ module SerializationTesting
     ActiveModelSerializers.config.jsonapi_namespace_separator = original_separator
   end
 
+  def with_prepended_lookup(lookup_proc)
+    original_lookup = ActiveModelSerializers.config.serializer_lookup_cahin
+    ActiveModelSerializers.config.serializer_lookup_chain.unshift lookup_proc
+    yield
+  ensure
+    ActiveModelSerializers.config.serializer_lookup_cahin = original_lookup
+  end
+
   # Aliased as :with_configured_adapter to clarify that
   # this method tests the configured adapter.
   # When not testing configuration, it may be preferable

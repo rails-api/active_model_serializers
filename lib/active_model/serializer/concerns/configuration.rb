@@ -32,6 +32,14 @@ module ActiveModel
         config.jsonapi_include_toplevel_object = false
         config.include_data_default = true
 
+        # example output
+        # => [
+        # "::Api::V1::ResNamespace::ResourceSerializer",
+        # "::Api::ResNamespace::ResourceSerializer",
+        # "::ResNamespace::ResourceSerializer" ,
+        # "::ResourceSerializer"]
+        config.serializer_lookup_chain = ActiveModelSerializers::LookupChain::DEFAULT.dup
+
         config.schema_path = 'test/support/schemas'
       end
     end
