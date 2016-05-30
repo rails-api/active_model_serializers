@@ -96,6 +96,12 @@ Thanks!
 
 ## High-level behavior
 
+Choose an adapter from [adapters](lib/active_model_serializers/adapter):
+
+``` ruby
+ActiveModelSerializers.config.adapter = :json_api # Default: `:attributes`
+```
+
 Given a [serializable model](lib/active_model/serializer/lint.rb):
 
 ```ruby
