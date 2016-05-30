@@ -20,7 +20,8 @@ cache:
 
 script:
   - bundle exec rake ci
-
+after_success:
+  - codeclimate-test-reporter
 env:
   global:
     - "JRUBY_OPTS='--dev -J-Xmx1024M --debug'"

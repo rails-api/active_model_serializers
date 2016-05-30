@@ -18,6 +18,10 @@ module ActionController
       self._serialization_scope = :current_user
     end
 
+    def namespace_for_serializer
+      @namespace_for_serializer ||= self.class.parent unless self.class.parent == Object
+    end
+
     def serialization_scope
       return unless _serialization_scope && respond_to?(_serialization_scope, true)
 
@@ -30,6 +34,9 @@ module ActionController
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
         options[:adapter] = false
       end
+
+      options.fetch(:namespace) { options[:namespace] = namespace_for_serializer }
+
       serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options)
       serializable_resource.serialization_scope ||= options.fetch(:scope) { serialization_scope }
       serializable_resource.serialization_scope_name = options.fetch(:scope_name) { _serialization_scope }
