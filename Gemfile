@@ -39,6 +39,11 @@ gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
 group :bench do
   # https://github.com/rails-api/active_model_serializers/commit/cb4459580a6f4f37f629bf3185a5224c8624ca76
   gem 'benchmark-ips', require: false, group: :development
+  gem 'oj'
+  gem 'oj_mimic_json'
+  gem 'redis', require: false
+  gem 'readthis', require: false
+  gem 'hiredis', require: false
 end
 
 group :test do
