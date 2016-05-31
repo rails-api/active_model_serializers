@@ -67,9 +67,11 @@ Doesn't follow any specific convention.
 
 ### JSON
 
-The response document always with a root key.
+The json response is always rendered with a root key.
 
-The root key **can't be overridden**, and will be derived from the resource being serialized.
+The root key can be overridden by:
+* passing the `root` option in the render call. See details in the [Rendering Guides](rendering.md#overriding-the-root-key).
+* setting the `type` of the serializer. See details in the [Serializers Guide](serializers.md#type).
 
 Doesn't follow any specific convention.
 
