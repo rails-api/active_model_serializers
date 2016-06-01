@@ -98,6 +98,16 @@ module ActiveModel
       end
     end
 
+    def self.include_directive_from_options(options)
+      if options[:include_directive]
+        options[:include_directive]
+      elsif options[:include]
+        JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
+      else
+        ActiveModelSerializers.default_include_directive
+      end
+    end
+
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -183,6 +193,39 @@ module ActiveModel
       else
         object.read_attribute_for_serialization(attr)
       end
+    end
+
+    def serializable_hash_for_single_resource(adapter_options, options, adapter_instance)
+      cached_attributes = adapter_options[:cached_attributes] ||= {}
+      resource = cached_attributes(options[:fields], cached_attributes, adapter_instance)
+      relationships = resource_relationships(options)
+      resource.merge(relationships)
+    end
+
+    def resource_relationships(options)
+      relationships = {}
+      include_directive = options.fetch(:include_directive)
+      associations(include_directive).each do |association|
+        relationships[association.key] ||= relationship_value_for(association, options)
+      end
+
+      relationships
+    end
+
+    def relationship_value_for(association, options)
+      return association.options[:virtual_value] if association.options[:virtual_value]
+      return unless association.serializer && association.serializer.object
+
+      include_directive = options.fetch(:include_directive)
+      opts = instance_options.merge(include_directive: include_directive[association.key])
+      relationship_value = ActiveModelSerializers::Adapter::Attributes.new(association.serializer, opts).serializable_hash(options)
+
+      if association.options[:polymorphic] && relationship_value
+        polymorphic_type = association.serializer.object.class.name.underscore
+        relationship_value = { type: polymorphic_type, polymorphic_type.to_sym => relationship_value }
+      end
+
+      relationship_value
     end
 
     protected
