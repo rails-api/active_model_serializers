@@ -48,6 +48,6 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rubocop', '~> 0.39.0', require: false
+  gem 'rubocop', '~> 0.40.0', require: false
   gem 'yard', require: false
 end
