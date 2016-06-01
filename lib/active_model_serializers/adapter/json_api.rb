@@ -431,7 +431,8 @@ module ActiveModelSerializers
       def relationships_for(serializer, requested_associations)
         include_directive = JSONAPI::IncludeDirective.new(
           requested_associations,
-          allow_wildcard: true)
+          allow_wildcard: true
+        )
         serializer.associations(include_directive).each_with_object({}) do |association, hash|
           hash[association.key] = Relationship.new(
             serializer,
