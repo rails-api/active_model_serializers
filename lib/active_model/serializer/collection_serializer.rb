@@ -56,6 +56,16 @@ module ActiveModel
           object.respond_to?(:size)
       end
 
+      # @api private
+      def serialize(adapter_options, options, adapter_instance)
+        include_directive = ActiveModel::Serializer.include_directive_from_options(adapter_options)
+        adapter_options[:cached_attributes] ||= ActiveModel::Serializer.cache_read_multi(self, adapter_instance, include_directive)
+        adapter_opts = adapter_options.merge(include_directive: include_directive)
+        serializers.map do |serializer|
+          serializer.serialize(adapter_opts, options, adapter_instance)
+        end
+      end
+
       protected
 
       attr_reader :serializers, :options

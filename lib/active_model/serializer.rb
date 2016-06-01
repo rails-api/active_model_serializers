@@ -98,6 +98,7 @@ module ActiveModel
       end
     end
 
+    # @api private
     def self.include_directive_from_options(options)
       if options[:include_directive]
         options[:include_directive]
@@ -161,9 +162,9 @@ module ActiveModel
     #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
     def serializable_hash(adapter_opts = nil)
       adapter_opts ||= {}
-      adapter_opts = { include: '*', adapter: :attributes }.merge!(adapter_opts)
-      adapter = ActiveModelSerializers::Adapter.create(self, adapter_opts)
-      adapter.serializable_hash(adapter_opts)
+      adapter_opts = { include: '*' }.merge!(adapter_opts)
+      adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(self, adapter_opts)
+      serialize(adapter_opts, {}, adapter_instance)
     end
     alias to_hash serializable_hash
     alias to_h serializable_hash
@@ -195,33 +196,38 @@ module ActiveModel
       end
     end
 
-    def serializable_hash_for_single_resource(adapter_options, options, adapter_instance)
+    # @api private
+    def serialize(adapter_options, options, adapter_instance)
+      options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
       cached_attributes = adapter_options[:cached_attributes] ||= {}
       resource = cached_attributes(options[:fields], cached_attributes, adapter_instance)
-      relationships = resource_relationships(options)
+      relationships = resource_relationships(adapter_options, options, adapter_instance)
       resource.merge(relationships)
     end
 
-    def resource_relationships(options)
+    # @api private
+    def resource_relationships(adapter_options, options, adapter_instance)
       relationships = {}
       include_directive = options.fetch(:include_directive)
       associations(include_directive).each do |association|
-        relationships[association.key] ||= relationship_value_for(association, options)
+        adapter_opts = adapter_options.merge(include_directive: include_directive[association.key])
+        relationships[association.key] ||= relationship_value_for(association, adapter_opts, adapter_instance)
       end
 
       relationships
     end
 
-    def relationship_value_for(association, options)
+    # @api private
+    def relationship_value_for(association, adapter_options, adapter_instance)
       return association.options[:virtual_value] if association.options[:virtual_value]
-      return unless association.serializer && association.serializer.object
+      association_serializer = association.serializer
+      association_object = association_serializer && association_serializer.object
+      return unless association_object
 
-      include_directive = options.fetch(:include_directive)
-      opts = instance_options.merge(include_directive: include_directive[association.key])
-      relationship_value = ActiveModelSerializers::Adapter::Attributes.new(association.serializer, opts).serializable_hash(options)
+      relationship_value = association_serializer.serialize(adapter_options, {}, adapter_instance)
 
       if association.options[:polymorphic] && relationship_value
-        polymorphic_type = association.serializer.object.class.name.underscore
+        polymorphic_type = association_object.class.name.underscore
         relationship_value = { type: polymorphic_type, polymorphic_type.to_sym => relationship_value }
       end
 
