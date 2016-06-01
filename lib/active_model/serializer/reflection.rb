@@ -105,21 +105,24 @@ module ActiveModel
       # @api private
       #
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
-        association_value = value(parent_serializer, include_slice)
         reflection_options = options.dup
+        association_value = value(parent_serializer, include_slice)
         serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
         reflection_options[:include_data] = include_data?(include_slice)
         reflection_options[:links] = @_links
         reflection_options[:meta] = @_meta
 
         if serializer_class
-          begin
-            reflection_options[:serializer] = serializer_class.new(
+          serializer = catch(:no_serializer) do
+            serializer_class.new(
               association_value,
               serializer_options(parent_serializer, parent_serializer_options, reflection_options)
             )
-          rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
+          end
+          if serializer.nil?
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
+          else
+            reflection_options[:serializer] = serializer
           end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           reflection_options[:virtual_value] = association_value

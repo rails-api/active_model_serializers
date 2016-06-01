@@ -38,9 +38,10 @@ module ActiveModelSerializers
 
     def find_adapter
       return resource unless serializer?
-      ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
-    rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
-      resource
+      adapter = catch :no_serializer do
+        ActiveModelSerializers::Adapter.create(serializer_instance, adapter_opts)
+      end
+      adapter || resource
     end
 
     def serializer_instance

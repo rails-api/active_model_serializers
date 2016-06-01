@@ -15,7 +15,7 @@ It requires an adapter to transform its attributes into a JSON document; it cann
 It may be useful to think of it as a
 [presenter](http://blog.steveklabnik.com/posts/2011-09-09-better-ruby-presenters).
 
-The **`ActiveModel::ArraySerializer`** represent a collection of resources as serializers
+The **`ActiveModel::CollectionSerializer`** represents a collection of resources as serializers
 and, if there is no serializer, primitives.
 
 The **`ActiveModel::Adapter`** describes the structure of the JSON document generated from a
@@ -42,10 +42,9 @@ it is not modified.
 Internally, if no serializer can be found in the controller, the resource is not decorated by
 ActiveModelSerializers.
 
-If the collection serializer (ArraySerializer) cannot
-identify a serializer for a resource in its collection, it raises [`NoSerializerError`](https://github.com/rails-api/active_model_serializers/issues/1191#issuecomment-142327128)
-which is rescued in `ActiveModel::Serializer::Reflection#build_association` which sets
-the association value directly:
+If the collection serializer (CollectionSerializer) cannot
+identify a serializer for a resource in its collection, it throws [`:no_serializer`](https://github.com/rails-api/active_model_serializers/issues/1191#issuecomment-142327128).
+For example, when caught by `Reflection#build_association`, the association value is set directly:
 
 ```ruby
 reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
@@ -85,8 +84,8 @@ Details:
   1. The serializer and adapter are created as
     1. `serializer_instance = serializer.new(resource, serializer_opts)`
     2. `adapter_instance = ActiveModel::Serializer::Adapter.create(serializer_instance, adapter_opts)`
-1. **ActiveModel::Serializer::ArraySerializer#new**
-  1. If the `serializer_instance` was a `ArraySerializer` and the `:serializer` serializer_opts
+1. **ActiveModel::Serializer::CollectionSerializer#new**
+  1. If the `serializer_instance` was a `CollectionSerializer` and the `:serializer` serializer_opts
     is present, then [that serializer is passed into each resource](https://github.com/rails-api/active_model_serializers/blob/a54d237e2828fe6bab1ea5dfe6360d4ecc8214cd/lib/active_model/serializer/array_serializer.rb#L14-L16).
 1. **ActiveModel::Serializer#attributes** is used by the adapter to get the attributes for
   resource as defined by the serializer.
