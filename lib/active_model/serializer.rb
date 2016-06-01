@@ -151,7 +151,7 @@ module ActiveModel
     #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
     def serializable_hash(adapter_opts = nil)
       adapter_opts ||= {}
-      adapter_opts = { include: '*', adapter: :attributes }.merge!(adapter_opts)
+      adapter_opts = { include: config.default_includes, adapter: :attributes }.merge!(adapter_opts)
       adapter = ActiveModelSerializers::Adapter.create(self, adapter_opts)
       adapter.serializable_hash(adapter_opts)
     end
