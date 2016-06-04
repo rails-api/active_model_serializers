@@ -109,6 +109,10 @@ module ActiveModel
       end
     end
 
+    def self.serialization_adapter_instance
+      @serialization_adapter_instance ||= ActiveModelSerializers::Adapter::Attributes
+    end
+
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -163,8 +167,7 @@ module ActiveModel
     def serializable_hash(adapter_opts = nil)
       adapter_opts ||= {}
       adapter_opts = { include: '*' }.merge!(adapter_opts)
-      adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(self, adapter_opts)
-      serialize(adapter_opts, {}, adapter_instance)
+      serialize(adapter_opts)
     end
     alias to_hash serializable_hash
     alias to_h serializable_hash
@@ -197,7 +200,7 @@ module ActiveModel
     end
 
     # @api private
-    def serialize(adapter_options, options, adapter_instance)
+    def serialize(adapter_options, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
       cached_attributes = adapter_options[:cached_attributes] ||= {}
       resource = cached_attributes(options[:fields], cached_attributes, adapter_instance)
