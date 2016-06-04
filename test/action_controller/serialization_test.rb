@@ -163,7 +163,7 @@ module ActionController
         end
         expected = {
           data: {
-            id: assigns(:profile).id.to_s,
+            id: @controller.instance_variable_get(:@profile).id.to_s,
             type: 'profiles',
             attributes: {
               name: 'Name 1',
@@ -246,7 +246,7 @@ module ActionController
         expected = {
           data: [
             {
-              id: assigns(:profiles).first.id.to_s,
+              id: @controller.instance_variable_get(:@profiles).first.id.to_s,
               type: 'profiles',
               attributes: {
                 name: 'Name 1',
@@ -269,7 +269,7 @@ module ActionController
         expected = {
           data: [
             {
-              id: assigns(:profiles).first.id.to_s,
+              id: @controller.instance_variable_get(:@profiles).first.id.to_s,
               type: 'profiles',
               attributes: {
                 name: 'Name 1',

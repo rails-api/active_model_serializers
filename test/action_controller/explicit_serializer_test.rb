@@ -103,9 +103,9 @@ module ActionController
           {
             'title' => 'New Post',
             'body' => 'Body',
-            'id' => assigns(:post).id,
+            'id' => @controller.instance_variable_get(:@post).id,
             'comments' => [{ 'id' => 1 }, { 'id' => 2 }],
-            'author' => { 'id' => assigns(:author).id }
+            'author' => { 'id' => @controller.instance_variable_get(:@author).id }
           }
         ]
 
