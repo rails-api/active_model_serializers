@@ -318,7 +318,7 @@ module ActiveModel
 
         parts = []
         parts << object_cache_key
-        parts << adapter_instance.cached_name
+        parts << adapter_instance.cache_key
         parts << self.class._cache_digest unless self.class._skip_digest?
         @cache_key = parts.join('/')
       end

@@ -102,13 +102,13 @@ module ActiveModelSerializers
 
       render_object_with_cache(uncached_author)
       key = "#{uncached_author_serializer.class._cache_key}/#{uncached_author_serializer.object.id}-#{uncached_author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}"
-      key = "#{key}/#{adapter.cached_name}"
+      key = "#{key}/#{adapter.cache_key}"
       assert_equal(uncached_author_serializer.attributes.to_json, cache_store.fetch(key).to_json)
     end
 
     def test_default_cache_key_fallback
       render_object_with_cache(@comment)
-      key = "#{@comment.cache_key}/#{adapter.cached_name}"
+      key = "#{@comment.cache_key}/#{adapter.cache_key}"
       assert_equal(@comment_serializer.attributes.to_json, cache_store.fetch(key).to_json)
     end
 
@@ -139,9 +139,9 @@ module ActiveModelSerializers
       Timecop.freeze(Time.current) do
         render_object_with_cache(@post)
 
-        key = "#{@post.cache_key}/#{adapter.cached_name}"
+        key = "#{@post.cache_key}/#{adapter.cache_key}"
         assert_equal(@post_serializer.attributes, cache_store.fetch(key))
-        key = "#{@comment.cache_key}/#{adapter.cached_name}"
+        key = "#{@comment.cache_key}/#{adapter.cache_key}"
         assert_equal(@comment_serializer.attributes, cache_store.fetch(key))
       end
     end
@@ -152,9 +152,9 @@ module ActiveModelSerializers
         render_object_with_cache(@post)
 
         # Check if it cached the objects separately
-        key = "#{@post.cache_key}/#{adapter.cached_name}"
+        key = "#{@post.cache_key}/#{adapter.cache_key}"
         assert_equal(@post_serializer.attributes, cache_store.fetch(key))
-        key = "#{@comment.cache_key}/#{adapter.cached_name}"
+        key = "#{@comment.cache_key}/#{adapter.cache_key}"
         assert_equal(@comment_serializer.attributes, cache_store.fetch(key))
 
         # Simulating update on comments relationship with Post
@@ -166,9 +166,9 @@ module ActiveModelSerializers
         render_object_with_cache(@post)
 
         # Check if the the new comment was cached
-        key = "#{new_comment.cache_key}/#{adapter.cached_name}"
+        key = "#{new_comment.cache_key}/#{adapter.cache_key}"
         assert_equal(new_comment_serializer.attributes, cache_store.fetch(key))
-        key = "#{@post.cache_key}/#{adapter.cached_name}"
+        key = "#{@post.cache_key}/#{adapter.cache_key}"
         assert_equal(@post_serializer.attributes, cache_store.fetch(key))
       end
     end
@@ -184,7 +184,7 @@ module ActiveModelSerializers
       hash = render_object_with_cache(@location)
 
       assert_equal(hash, expected_result)
-      key = "#{@location.cache_key}/#{adapter.cached_name}"
+      key = "#{@location.cache_key}/#{adapter.cache_key}"
       assert_equal({ place: 'Nowhere' }, cache_store.fetch(key))
     end
 
@@ -276,7 +276,7 @@ module ActiveModelSerializers
 
     def test_uses_file_digest_in_cache_key
       render_object_with_cache(@blog)
-      key = "#{@blog.cache_key}/#{adapter.cached_name}/#{::Model::FILE_DIGEST}"
+      key = "#{@blog.cache_key}/#{adapter.cache_key}/#{::Model::FILE_DIGEST}"
       assert_equal(@blog_serializer.attributes, cache_store.fetch(key))
     end
 
@@ -291,7 +291,7 @@ module ActiveModelSerializers
       actual = ActiveModel::Serializer.object_cache_keys(serializable.adapter.serializer, serializable.adapter, include_directive)
 
       assert_equal 3, actual.size
-      assert actual.any? { |key| key == "comment/1/#{serializable.adapter.cached_name}" }
+      assert actual.any? { |key| key == "comment/1/#{serializable.adapter.cache_key}" }
       assert actual.any? { |key| key =~ %r{post/post-\d+} }
       assert actual.any? { |key| key =~ %r{author/author-\d+} }
     end
@@ -306,13 +306,13 @@ module ActiveModelSerializers
         include_directive = ActiveModelSerializers.default_include_directive
         cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, attributes, include_directive)
 
-        assert_equal cached_attributes["#{@comment.cache_key}/#{attributes.cached_name}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
-        assert_equal cached_attributes["#{@comment.post.cache_key}/#{attributes.cached_name}"], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
+        assert_equal cached_attributes["#{@comment.cache_key}/#{attributes.cache_key}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
+        assert_equal cached_attributes["#{@comment.post.cache_key}/#{attributes.cache_key}"], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
 
         writer = @comment.post.blog.writer
         writer_cache_key = writer.cache_key
 
-        assert_equal cached_attributes["#{writer_cache_key}/#{attributes.cached_name}"], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
+        assert_equal cached_attributes["#{writer_cache_key}/#{attributes.cache_key}"], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
       end
     end
 

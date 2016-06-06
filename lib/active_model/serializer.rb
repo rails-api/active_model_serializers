@@ -98,6 +98,22 @@ module ActiveModel
       end
     end
 
+    # @api private
+    def self.include_directive_from_options(options)
+      if options[:include_directive]
+        options[:include_directive]
+      elsif options[:include]
+        JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
+      else
+        ActiveModelSerializers.default_include_directive
+      end
+    end
+
+    # @api private
+    def self.serialization_adapter_instance
+      @serialization_adapter_instance ||= ActiveModelSerializers::Adapter::Attributes
+    end
+
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -123,9 +139,7 @@ module ActiveModel
     # associations, similar to how ActiveModel::Serializers::JSON is used
     # in ActiveRecord::Base.
     #
-    # TODO: Move to here the Attributes adapter logic for
-    # +serializable_hash_for_single_resource(options)+
-    # and include <tt>ActiveModel::Serializers::JSON</tt>.
+    # TODO: Include <tt>ActiveModel::Serializers::JSON</tt>.
     # So that the below is true:
     #   @param options [nil, Hash] The same valid options passed to `serializable_hash`
     #      (:only, :except, :methods, and :include).
@@ -149,11 +163,13 @@ module ActiveModel
     #     serializer.as_json(include: :posts)
     #     # Second level and higher order associations work as well:
     #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
-    def serializable_hash(adapter_opts = nil)
-      adapter_opts ||= {}
-      adapter_opts = { include: '*', adapter: :attributes }.merge!(adapter_opts)
-      adapter = ActiveModelSerializers::Adapter.create(self, adapter_opts)
-      adapter.serializable_hash(adapter_opts)
+    def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
+      adapter_options ||= {}
+      options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
+      cached_attributes = adapter_options[:cached_attributes] ||= {}
+      resource = cached_attributes(options[:fields], cached_attributes, adapter_instance)
+      relationships = resource_relationships(adapter_options, options, adapter_instance)
+      resource.merge(relationships)
     end
     alias to_hash serializable_hash
     alias to_h serializable_hash
@@ -183,6 +199,35 @@ module ActiveModel
       else
         object.read_attribute_for_serialization(attr)
       end
+    end
+
+    # @api private
+    def resource_relationships(adapter_options, options, adapter_instance)
+      relationships = {}
+      include_directive = options.fetch(:include_directive)
+      associations(include_directive).each do |association|
+        adapter_opts = adapter_options.merge(include_directive: include_directive[association.key])
+        relationships[association.key] ||= relationship_value_for(association, adapter_opts, adapter_instance)
+      end
+
+      relationships
+    end
+
+    # @api private
+    def relationship_value_for(association, adapter_options, adapter_instance)
+      return association.options[:virtual_value] if association.options[:virtual_value]
+      association_serializer = association.serializer
+      association_object = association_serializer && association_serializer.object
+      return unless association_object
+
+      relationship_value = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
+
+      if association.options[:polymorphic] && relationship_value
+        polymorphic_type = association_object.class.name.underscore
+        relationship_value = { type: polymorphic_type, polymorphic_type.to_sym => relationship_value }
+      end
+
+      relationship_value
     end
 
     protected
