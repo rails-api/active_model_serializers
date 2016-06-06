@@ -28,7 +28,7 @@
 ## Documentation
 
 - [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
-[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0.rc5)
+[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/)
   - [Guides](docs)      
     - [Getting Started](docs/general/getting_started.md)
     - [Configuration Options](docs/general/configuration_options.md)
