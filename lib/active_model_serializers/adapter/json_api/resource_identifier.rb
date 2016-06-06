@@ -20,6 +20,7 @@ module ActiveModelSerializers
         private
 
         def type_for(serializer)
+          return serializer._type.call(serializer.object) if serializer._type.is_a?(Proc)
           return serializer._type if serializer._type
           if ActiveModelSerializers.config.jsonapi_resource_type == :singular
             serializer.object.class.model_name.singular

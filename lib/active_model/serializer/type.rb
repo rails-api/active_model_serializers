@@ -16,8 +16,13 @@ module ActiveModel
         # @example
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     type 'authors'
+        #
+        # @example
+        # TODO: actually do block, not Proc
+        #   class AdminAuthorSerializer < ActiveModel::Serializer
+        #     type { |object| object.class.name }
         def type(type)
-          self._type = type && type.to_s
+          self._type = type.is_a?(Proc) ? type : type.to_s if type
         end
       end
     end
