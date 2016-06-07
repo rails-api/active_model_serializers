@@ -5,11 +5,13 @@ module ActiveModelSerializers
     private_constant :ADAPTER_MAP if defined?(private_constant)
 
     class << self # All methods are class functions
+      # :nocov:
       def new(*args)
         fail ArgumentError, 'Adapters inherit from Adapter::Base.' \
           "Adapter.new called with args: '#{args.inspect}', from" \
           "'caller[0]'."
       end
+      # :nocov:
 
       def configured_adapter
         lookup(ActiveModelSerializers.config.adapter)
