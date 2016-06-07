@@ -18,9 +18,13 @@ module ActiveModel
         #     type 'authors'
         #
         # @example
-        # TODO: actually do block, not Proc
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     type { |object| object.class.name }
+        #
+        # @example
+        #   class AdminAuthorSerializer < ActiveModel::Serializer
+        #     type proc { |object| object.class.name }
+        #
         def type(type = nil, &block)
           type = block if block_given?
           return unless type
