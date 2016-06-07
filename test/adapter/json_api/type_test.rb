@@ -27,6 +27,12 @@ module ActiveModel
             end
           end
 
+          class LambdaTypeSerializer < ActiveModel::Serializer
+            type do |object|
+              "lambda-#{object.class.model_name}"
+            end
+          end
+
           setup do
             @author = Author.new(id: 1, name: 'Steve K.')
           end
@@ -37,6 +43,10 @@ module ActiveModel
 
           test 'the type can take a block' do
             assert_type(@author, 'block-author', serializer: BlockTypeSerializer)
+          end
+
+          test 'the type can take a lambda' do
+            assert_type(@author, 'lambda-author', serializer: LambdaTypeSerializer)
           end
 
           def test_config_plural
