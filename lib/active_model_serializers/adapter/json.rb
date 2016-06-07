@@ -10,7 +10,11 @@ module ActiveModelSerializers
       end
 
       def root
-        serializer.json_key.to_sym if serializer.json_key
+        if instance_options.key?(:root)
+          instance_options[:root]
+        elsif serializer.json_key
+          serializer.json_key.to_sym
+        end
       end
 
       def meta

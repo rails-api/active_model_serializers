@@ -5,12 +5,11 @@ module ActiveModel
       include Enumerable
       delegate :each, to: :@serializers
 
-      attr_reader :object, :root
+      attr_reader :object
 
       def initialize(resources, options = {})
         @object                  = resources
         @options                 = options
-        @root                    = options[:root]
         @serializers             = serializers_from_resources
       end
 
@@ -37,7 +36,6 @@ module ActiveModel
       # Disabling cop since it's good to highlight the complexity of this method by
       # including all the logic right here.
       def json_key
-        return root if root
         # 1. get from options[:serializer] for empty resource collection
         key = object.empty? &&
           (explicit_serializer_class = options[:serializer]) &&
