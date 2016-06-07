@@ -123,7 +123,7 @@ module ActionController
               id: 42,
               lat: '-23.550520',
               lng: '-46.633309',
-              place: 'Nowhere' # is a virtual attribute on LocationSerializer
+              address: 'Nowhere' # is a virtual attribute on LocationSerializer
             }
           ]
         }

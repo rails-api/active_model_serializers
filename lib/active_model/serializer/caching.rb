@@ -70,9 +70,9 @@ module ActiveModel
 
         def fragmented_attributes
           cached = _cache_only ? _cache_only : _attributes - _cache_except
-          cached = cached.map! {|field| _attributes_keys.fetch(field, field) }
+          cached = cached.map! { |field| _attributes_keys.fetch(field, field) }
           non_cached = _attributes - cached
-          non_cached = non_cached.map! {|field| _attributes_keys.fetch(field, field) }
+          non_cached = non_cached.map! { |field| _attributes_keys.fetch(field, field) }
           {
             cached: cached,
             non_cached: non_cached
@@ -233,28 +233,20 @@ module ActiveModel
       def fetch_attributes_fragment(adapter_instance)
         self.class._cache_options ||= {}
         self.class._cache_options[:key] = self.class._cache_key if self.class._cache_key
-        options = { include_directive: ActiveModel::Serializer.include_directive_from_options({})}
         fields = self.class.fragmented_attributes
 
         non_cached_fields = fields[:non_cached].dup
         non_cached_hash = attributes(non_cached_fields, true)
-        (non_cached_fields - non_cached_hash.keys).each do |missing_field|
-          # TODO: use _attributes_keys?
-          # gets any other associations, etc.
-          non_cached_hash[missing_field] = read_attribute_for_serialization(missing_field)
-        end
+        include_directive = JSONAPI::IncludeDirective.new(non_cached_fields - non_cached_hash.keys)
+        non_cached_hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
 
         cached_fields = fields[:cached].dup
         key = cache_key(adapter_instance)
         cached_hash =
           self.class.cache_store.fetch(key, self.class._cache_options) do
             hash = attributes(cached_fields, true)
-            (cached_fields - hash.keys).each do |missing_field|
-              # TODO: use _attributes_keys?
-              # gets any other associations, etc.
-              hash[missing_field] = read_attribute_for_serialization(missing_field)
-            end
-            hash
+            include_directive = JSONAPI::IncludeDirective.new(cached_fields - hash.keys)
+            hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
           end
 
         # Merge both results

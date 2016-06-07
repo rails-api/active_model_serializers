@@ -127,7 +127,7 @@ module ActiveModelSerializers
     end
 
     def test_fragment_cache_definition
-      assert_equal([:name], @role_serializer.class._cache_only)
+      assert_equal([:name, :slug], @role_serializer.class._cache_only)
       assert_equal([:content], @bio_serializer.class._cache_except)
     end
 
@@ -178,14 +178,14 @@ module ActiveModelSerializers
         id: @location.id,
         lat: @location.lat,
         lng: @location.lng,
-        place: 'Nowhere'
+        address: 'Nowhere'
       }
 
       hash = render_object_with_cache(@location)
 
       assert_equal(hash, expected_result)
       key = "#{@location.cache_key}/#{adapter.cache_key}"
-      assert_equal({ place: 'Nowhere' }, cache_store.fetch(key))
+      assert_equal({ address: 'Nowhere' }, cache_store.fetch(key))
     end
 
     def test_fragment_cache_with_inheritance
@@ -434,21 +434,46 @@ module ActiveModelSerializers
     end
 
     def test_fragment_fetch_with_virtual_attributes
-      @author          = Author.new(name: 'Joao M. D. Moura')
-      @role            = Role.new(name: 'Great Author', description: nil)
-      @role.author     = [@author]
-      @role_serializer = RoleSerializer.new(@role)
-      adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(@role_serializer)
-      @role_hash       = @role_serializer.fetch_attributes_fragment(adapter_instance)
-
+      author          = Author.new(name: 'Joao M. D. Moura')
+      role            = Role.new(name: 'Great Author', description: nil)
+      role.author     = [author]
+      role_serializer = RoleSerializer.new(role)
+      adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(role_serializer)
       expected_result = {
-        id: @role.id,
-        description: @role.description,
-        slug: "#{@role.name}-#{@role.id}",
-        name: @role.name
+        id: role.id,
+        description: role.description,
+        slug: "#{role.name}-#{role.id}",
+        name: role.name
       }
+      cache_store.clear
 
-      assert_equal(@role_hash, expected_result)
+      role_hash = role_serializer.fetch_attributes_fragment(adapter_instance)
+      assert_equal(role_hash, expected_result)
+
+      role.attributes[:id] = 'this has been updated'
+      role.name = 'this was cached'
+
+      role_hash = role_serializer.fetch_attributes_fragment(adapter_instance)
+      assert_equal(expected_result.merge(id: role.id), role_hash)
+    end
+
+    def test_fragment_fetch_with_except
+      adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(@bio_serializer)
+      expected_result = {
+        id: @bio.id,
+        rating: nil,
+        content: @bio.content
+      }
+      cache_store.clear
+
+      bio_hash = @bio_serializer.fetch_attributes_fragment(adapter_instance)
+      assert_equal(expected_result, bio_hash)
+
+      @bio.content = 'this has been updated'
+      @bio.rating = 'this was cached'
+
+      bio_hash = @bio_serializer.fetch_attributes_fragment(adapter_instance)
+      assert_equal(expected_result.merge(content: @bio.content), bio_hash)
     end
 
     def test_fragment_fetch_with_namespaced_object
