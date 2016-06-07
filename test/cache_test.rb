@@ -117,7 +117,7 @@ module ActiveModelSerializers
       e = assert_raises ActiveModel::Serializer::UndefinedCacheKey do
         render_object_with_cache(article)
       end
-      assert_match(/ActiveModelSerializers::CacheTest::Article must define #cache_key, or the 'key:' option must be passed into 'CachedActiveModelSerializers_CacheTest_ArticleSerializer.cache'/, e.message)
+      assert_match(/ActiveModelSerializers::CacheTest::Article must define #cache_key, or the 'key:' option must be passed into 'ActiveModelSerializers::CacheTest::ArticleSerializer.cache'/, e.message)
     end
 
     def test_cache_options_definition
@@ -438,7 +438,8 @@ module ActiveModelSerializers
       @role            = Role.new(name: 'Great Author', description: nil)
       @role.author     = [@author]
       @role_serializer = RoleSerializer.new(@role)
-      @role_hash       = @role_serializer.fetch_fragment_cache(ActiveModelSerializers::Adapter.configured_adapter.new(@role_serializer))
+      adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(@role_serializer)
+      @role_hash       = @role_serializer.fetch_attributes_fragment(adapter_instance)
 
       expected_result = {
         id: @role.id,
@@ -446,23 +447,19 @@ module ActiveModelSerializers
         slug: "#{@role.name}-#{@role.id}",
         name: @role.name
       }
+
       assert_equal(@role_hash, expected_result)
-    ensure
-      fragmented_serializer = @role_serializer
-      Object.send(:remove_const, fragmented_serializer._get_or_create_fragment_cached_serializer.name)
     end
 
     def test_fragment_fetch_with_namespaced_object
       @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')
       @spam_serializer = Spam::UnrelatedLinkSerializer.new(@spam)
-      @spam_hash       = @spam_serializer.fetch_fragment_cache(ActiveModelSerializers::Adapter.configured_adapter.new(@spam_serializer))
+      adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(@spam_serializer)
+      @spam_hash       = @spam_serializer.fetch_attributes_fragment(adapter_instance)
       expected_result = {
         id: @spam.id
       }
       assert_equal(@spam_hash, expected_result)
-    ensure
-      fragmented_serializer = @spam_serializer
-      Object.send(:remove_const, fragmented_serializer._get_or_create_fragment_cached_serializer.name)
     end
 
     private

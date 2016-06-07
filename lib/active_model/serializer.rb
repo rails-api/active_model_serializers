@@ -194,10 +194,6 @@ module ActiveModel
     def read_attribute_for_serialization(attr)
       if respond_to?(attr)
         send(attr)
-      elsif self.class._fragmented
-        # Attribute method wasn't available on this (fragment cached) serializer,
-        # so read it from the original serializer it was based on.
-        self.class._fragmented.read_attribute_for_serialization(attr)
       else
         object.read_attribute_for_serialization(attr)
       end

@@ -14,7 +14,13 @@ module ActiveModelSerializers
           end
         end
 
-        class FragmentedSerializer < ActiveModel::Serializer; end
+        class FragmentedSerializer < ActiveModel::Serializer
+          cache only: :id
+
+          def id
+            'special_id'
+          end
+        end
 
         setup do
           @model = Author.new(id: 1, name: 'Steve K.')
@@ -42,7 +48,6 @@ module ActiveModelSerializers
         end
 
         def test_id_defined_on_fragmented
-          FragmentedSerializer._fragmented = WithDefinedIdSerializer.new(@model)
           test_id(FragmentedSerializer, 'special_id')
         end
 
