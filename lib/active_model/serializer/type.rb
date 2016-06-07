@@ -21,8 +21,15 @@ module ActiveModel
         # TODO: actually do block, not Proc
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     type { |object| object.class.name }
-        def type(type)
-          self._type = type.is_a?(Proc) ? type : type.to_s if type
+        def type(type = nil, &block)
+          type = block if block_given?
+          return unless type
+
+          self._type = if type.respond_to?(:call) && type.arity == 1
+                         type
+                       else
+                         type.to_s
+                       end
         end
       end
     end

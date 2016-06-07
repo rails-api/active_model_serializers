@@ -15,14 +15,24 @@ module ActiveModel
             type :profile
           end
 
-          class BlockTypeSerializer < ActiveModel::Serializer
+          class ProcTypeSerializer < ActiveModel::Serializer
             type proc { |object|
-              "block-#{object.class.model_name}"
+              "proc-#{object.class.model_name}"
             }
+          end
+
+          class BlockTypeSerializer < ActiveModel::Serializer
+            type do |object|
+              "block-#{object.class.model_name}"
+            end
           end
 
           setup do
             @author = Author.new(id: 1, name: 'Steve K.')
+          end
+
+          test 'the type can take a proc' do
+            assert_type(@author, 'proc-author', serializer: ProcTypeSerializer)
           end
 
           test 'the type can take a block' do
