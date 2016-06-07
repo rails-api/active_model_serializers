@@ -42,7 +42,7 @@ module ActiveModelSerializers
         end
 
         def test_id_defined_on_fragmented
-          FragmentedSerializer.fragmented(WithDefinedIdSerializer.new(@model))
+          FragmentedSerializer._fragmented = WithDefinedIdSerializer.new(@model)
           test_id(FragmentedSerializer, 'special_id')
         end
 

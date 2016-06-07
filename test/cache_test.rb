@@ -204,7 +204,7 @@ module ActiveModelSerializers
 
     # Based on original failing test by @kevintyll
     # rubocop:disable Metrics/AbcSize
-    def test_a_serializer_rendered_by_two_adapter_returns_differently_cached_attributes
+    def test_a_serializer_rendered_by_two_adapter_returns_differently_fetch_attributes
       Object.const_set(:Alert, Class.new(ActiveModelSerializers::Model) do
         attr_accessor :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
       end)
@@ -225,7 +225,7 @@ module ActiveModelSerializers
         created_at: Time.new(2016, 3, 31, 21, 37, 35, 0)
       )
 
-      expected_cached_attributes = {
+      expected_fetch_attributes = {
         id: 1,
         status: 'fail',
         resource: 'resource-1',
@@ -250,7 +250,7 @@ module ActiveModelSerializers
       # Assert attributes are serialized correctly
       serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :attributes)
       attributes_serialization = serializable_alert.as_json
-      assert_equal expected_cached_attributes, alert.attributes
+      assert_equal expected_fetch_attributes, alert.attributes
       assert_equal alert.attributes, attributes_serialization
       attributes_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
       assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key)
@@ -296,23 +296,28 @@ module ActiveModelSerializers
       assert actual.any? { |key| key =~ %r{author/author-\d+} }
     end
 
-    def test_cached_attributes
-      serializer = ActiveModel::Serializer::CollectionSerializer.new([@comment, @comment])
+    def test_fetch_attributes_from_cache
+      serializers = ActiveModel::Serializer::CollectionSerializer.new([@comment, @comment])
 
       Timecop.freeze(Time.current) do
         render_object_with_cache(@comment)
 
-        attributes = Adapter::Attributes.new(serializer)
-        include_directive = ActiveModelSerializers.default_include_directive
-        cached_attributes = ActiveModel::Serializer.cache_read_multi(serializer, attributes, include_directive)
+        options = {}
+        adapter_options = {}
+        adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(serializers, adapter_options)
+        serializers.serializable_hash(adapter_options, options, adapter_instance)
+        cached_attributes = adapter_options.fetch(:cached_attributes)
 
-        assert_equal cached_attributes["#{@comment.cache_key}/#{attributes.cache_key}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
-        assert_equal cached_attributes["#{@comment.post.cache_key}/#{attributes.cache_key}"], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
+        include_directive = ActiveModelSerializers.default_include_directive
+        manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive)
+        assert_equal manual_cached_attributes, cached_attributes
+
+        assert_equal cached_attributes["#{@comment.cache_key}/#{adapter_instance.cache_key}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
+        assert_equal cached_attributes["#{@comment.post.cache_key}/#{adapter_instance.cache_key}"], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
 
         writer = @comment.post.blog.writer
         writer_cache_key = writer.cache_key
-
-        assert_equal cached_attributes["#{writer_cache_key}/#{attributes.cache_key}"], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
+        assert_equal cached_attributes["#{writer_cache_key}/#{adapter_instance.cache_key}"], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
       end
     end
 
@@ -442,6 +447,9 @@ module ActiveModelSerializers
         name: @role.name
       }
       assert_equal(@role_hash, expected_result)
+    ensure
+      fragmented_serializer = @role_serializer
+      Object.send(:remove_const, fragmented_serializer._get_or_create_fragment_cached_serializer.name)
     end
 
     def test_fragment_fetch_with_namespaced_object
@@ -452,6 +460,9 @@ module ActiveModelSerializers
         id: @spam.id
       }
       assert_equal(@spam_hash, expected_result)
+    ensure
+      fragmented_serializer = @spam_serializer
+      Object.send(:remove_const, fragmented_serializer._get_or_create_fragment_cached_serializer.name)
     end
 
     private
@@ -475,11 +486,6 @@ module ActiveModelSerializers
 
     def adapter
       @serializable_resource.adapter
-    end
-
-    def cached_serialization(serializer)
-      cache_key = serializer.cache_key(adapter)
-      cache_store.fetch(cache_key)
     end
   end
 end

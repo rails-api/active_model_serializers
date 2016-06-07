@@ -294,7 +294,7 @@ module ActiveModelSerializers
 
       # {http://jsonapi.org/format/#document-resource-objects Document Resource Objects}
       def resource_object_for(serializer)
-        resource_object = serializer.cache_check(self) do
+        resource_object = serializer.fetch(self) do
           resource_object = ResourceIdentifier.new(serializer, instance_options).as_json
 
           requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
