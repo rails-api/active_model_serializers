@@ -7,8 +7,7 @@ module ActiveModelSerializers
 
       def initialize(serializer, options = {})
         super
-        @include_directive = JSONAPI::IncludeDirective.new(
-          options[:include], allow_wildcard: true)
+        @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
       end
 
       def serializable_hash(options = nil)

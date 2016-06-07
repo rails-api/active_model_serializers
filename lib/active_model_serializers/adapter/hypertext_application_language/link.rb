@@ -57,15 +57,15 @@ module ActiveModelSerializers
         def as_json
           hash = {}
           hash[:href] = @value || @href
-          hash[:templated] = @templated if @templated
-          hash[:type] = @type if @type
-          hash[:deprecation] = @deprecation if @deprecation
-          hash[:name] = @name if @name
-          hash[:profile] = @profile if @profile
-          hash[:title] = @title if @title
-          hash[:hreflang] = @hreflang if @hreflang
+          hash[:templated] = @templated
+          hash[:type] = @type
+          hash[:deprecation] = @deprecation
+          hash[:name] = @name
+          hash[:profile] = @profile
+          hash[:title] = @title
+          hash[:hreflang] = @hreflang
 
-          hash
+          hash.compact
         end
 
         protected
