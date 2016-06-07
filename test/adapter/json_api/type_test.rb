@@ -28,9 +28,7 @@ module ActiveModel
           end
 
           class LambdaTypeSerializer < ActiveModel::Serializer
-            type do |object|
-              "lambda-#{object.class.model_name}"
-            end
+            type ->(object) { "lambda-#{object.class.model_name}" }
           end
 
           setup do
