@@ -18,7 +18,7 @@ module ActiveModel
           #    race_condition_ttl
           #  Passed to ::_cache as
           #    serializer.cache_store.fetch(cache_key, @klass._cache_options)
-          #  Passed as second argument to serializer.cache_store.fetch(cache_key, self.class._cache_options)
+          #  Passed as second argument to serializer.cache_store.fetch(cache_key, serializer_class._cache_options)
           serializer.class_attribute :_cache_digest_file_path # @api private : Derived at inheritance
         end
       end
@@ -203,23 +203,23 @@ module ActiveModel
 
       ### INSTANCE METHODS
       def fetch_attributes(fields, cached_attributes, adapter_instance)
-        if self.class.cache_enabled?
+        if serializer_class.cache_enabled?
           key = cache_key(adapter_instance)
           cached_attributes.fetch(key) do
-            self.class.cache_store.fetch(key, self.class._cache_options) do
+            serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
               attributes(fields, true)
             end
           end
-        elsif self.class.fragment_cache_enabled?
+        elsif serializer_class.fragment_cache_enabled?
           fetch_attributes_fragment(adapter_instance)
         else
           attributes(fields, true)
         end
       end
 
-      def fetch(adapter_instance, cache_options = self.class._cache_options)
-        if self.class.cache_store
-          self.class.cache_store.fetch(cache_key(adapter_instance), cache_options) do
+      def fetch(adapter_instance, cache_options = serializer_class._cache_options)
+        if serializer_class.cache_store
+          serializer_class.cache_store.fetch(cache_key(adapter_instance), cache_options) do
             yield
           end
         else
@@ -231,9 +231,9 @@ module ActiveModel
       # 2. Get non_cached_fields and fetch cache_fields
       # 3. Merge the two hashes using adapter_instance#fragment_cache
       def fetch_attributes_fragment(adapter_instance)
-        self.class._cache_options ||= {}
-        self.class._cache_options[:key] = self.class._cache_key if self.class._cache_key
-        fields = self.class.fragmented_attributes
+        serializer_class._cache_options ||= {}
+        serializer_class._cache_options[:key] = serializer_class._cache_key if serializer_class._cache_key
+        fields = serializer_class.fragmented_attributes
 
         non_cached_fields = fields[:non_cached].dup
         non_cached_hash = attributes(non_cached_fields, true)
@@ -243,7 +243,7 @@ module ActiveModel
         cached_fields = fields[:cached].dup
         key = cache_key(adapter_instance)
         cached_hash =
-          self.class.cache_store.fetch(key, self.class._cache_options) do
+          serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
             hash = attributes(cached_fields, true)
             include_directive = JSONAPI::IncludeDirective.new(cached_fields - hash.keys)
             hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
@@ -259,7 +259,7 @@ module ActiveModel
         parts = []
         parts << object_cache_key
         parts << adapter_instance.cache_key
-        parts << self.class._cache_digest unless self.class._skip_digest?
+        parts << serializer_class._cache_digest unless serializer_class._skip_digest?
         @cache_key = parts.join('/')
       end
 
@@ -268,13 +268,17 @@ module ActiveModel
       def object_cache_key
         if object.respond_to?(:cache_key)
           object.cache_key
-        elsif (serializer_cache_key = (self.class._cache_key || self.class._cache_options[:key]))
+        elsif (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
           object_time_safe = object.updated_at
           object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
           "#{serializer_cache_key}/#{object.id}-#{object_time_safe}"
         else
-          fail UndefinedCacheKey, "#{object.class} must define #cache_key, or the 'key:' option must be passed into '#{self.class}.cache'"
+          fail UndefinedCacheKey, "#{object.class} must define #cache_key, or the 'key:' option must be passed into '#{serializer_class}.cache'"
         end
+      end
+
+      def serializer_class
+        @serializer_class ||= self.class
       end
     end
   end
