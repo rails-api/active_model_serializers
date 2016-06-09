@@ -17,6 +17,7 @@ module ActiveModelSerializers
           link :yet_another do
             "http://example.com/resource/#{object.id}"
           end
+          link(:nil) { nil }
         end
 
         def setup
