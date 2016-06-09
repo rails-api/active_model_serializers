@@ -32,11 +32,13 @@ module ActiveModelSerializers
       end
     end
 
+    # :nocov:
     generators do |app|
       Rails::Generators.configure!(app.config.generators)
       Rails::Generators.hidden_namespaces.uniq!
       require 'generators/rails/resource_override'
     end
+    # :nocov:
 
     if Rails.env.test?
       ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Schema)

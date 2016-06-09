@@ -136,10 +136,11 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 RoleSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:name], skip_digest: true
-  attributes :id, :name, :description, :slug
+  cache only: [:name, :slug], skip_digest: true
+  attributes :id, :name, :description
+  attribute :friendly_id, key: :slug
 
-  def slug
+  def friendly_id
     "#{object.name}-#{object.id}"
   end
 
@@ -153,10 +154,10 @@ LikeSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 LocationSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:place], skip_digest: true
+  cache only: [:address], skip_digest: true
   attributes :id, :lat, :lng
 
-  belongs_to :place
+  belongs_to :place, key: :address
 
   def place
     'Nowhere'

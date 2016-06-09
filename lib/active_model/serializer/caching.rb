@@ -1,5 +1,3 @@
-# TODO(BF): refactor file to be smaller
-# rubocop:disable Metrics/ModuleLength
 module ActiveModel
   class Serializer
     UndefinedCacheKey = Class.new(StandardError)
@@ -9,10 +7,9 @@ module ActiveModel
       included do
         with_options instance_writer: false, instance_reader: false do |serializer|
           serializer.class_attribute :_cache         # @api private : the cache store
-          serializer.class_attribute :_fragmented    # @api private : @see ::fragmented
           serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key.  Ignored if the serializable object defines #cache_key.
-          serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists cached_attributes. Cannot combine with except
-          serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists cached_attributes. Cannot combine with only
+          serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists fetch_attributes. Cannot combine with except
+          serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists fetch_attributes. Cannot combine with only
           serializer.class_attribute :_cache_options # @api private : used by CachedSerializer, passed to _cache.fetch
           #  _cache_options include:
           #    expires_in
@@ -21,7 +18,7 @@ module ActiveModel
           #    race_condition_ttl
           #  Passed to ::_cache as
           #    serializer.cache_store.fetch(cache_key, @klass._cache_options)
-          #  Passed as second argument to serializer.cache_store.fetch(cache_key, self.class._cache_options)
+          #  Passed as second argument to serializer.cache_store.fetch(cache_key, serializer_class._cache_options)
           serializer.class_attribute :_cache_digest_file_path # @api private : Derived at inheritance
         end
       end
@@ -71,19 +68,15 @@ module ActiveModel
           _cache_options && _cache_options[:skip_digest]
         end
 
-        def cached_attributes
-          _cache_only ? _cache_only : _attributes - _cache_except
-        end
-
-        def non_cached_attributes
-          _attributes - cached_attributes
-        end
-
-        # @api private
-        # Used by FragmentCache on the CachedSerializer
-        #  to call attribute methods on the fragmented cached serializer.
-        def fragmented(serializer)
-          self._fragmented = serializer
+        def fragmented_attributes
+          cached = _cache_only ? _cache_only : _attributes - _cache_except
+          cached = cached.map! { |field| _attributes_keys.fetch(field, field) }
+          non_cached = _attributes - cached
+          non_cached = non_cached.map! { |field| _attributes_keys.fetch(field, field) }
+          {
+            cached: cached,
+            non_cached: non_cached
+          }
         end
 
         # Enables a serializer to be automatically cached
@@ -208,109 +201,56 @@ module ActiveModel
         end
       end
 
-      def cached_attributes(fields, cached_attributes, adapter_instance)
-        if self.class.cache_enabled?
+      ### INSTANCE METHODS
+      def fetch_attributes(fields, cached_attributes, adapter_instance)
+        if serializer_class.cache_enabled?
           key = cache_key(adapter_instance)
           cached_attributes.fetch(key) do
-            cache_check(adapter_instance) do
-              attributes(fields)
+            serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
+              attributes(fields, true)
             end
           end
+        elsif serializer_class.fragment_cache_enabled?
+          fetch_attributes_fragment(adapter_instance)
         else
-          cache_check(adapter_instance) do
-            attributes(fields)
-          end
+          attributes(fields, true)
         end
       end
 
-      def cache_check(adapter_instance)
-        if self.class.cache_enabled?
-          self.class.cache_store.fetch(cache_key(adapter_instance), self.class._cache_options) do
+      def fetch(adapter_instance, cache_options = serializer_class._cache_options)
+        if serializer_class.cache_store
+          serializer_class.cache_store.fetch(cache_key(adapter_instance), cache_options) do
             yield
           end
-        elsif self.class.fragment_cache_enabled?
-          fetch_fragment_cache(adapter_instance)
         else
           yield
         end
       end
 
-      # 1. Create a CachedSerializer and NonCachedSerializer from the serializer class
-      # 2. Serialize the above two with the given adapter
-      # 3. Pass their serializations to the adapter +::fragment_cache+
-      #
-      # It will split the serializer into two, one that will be cached and one that will not
-      #
-      # Given a resource name
-      # 1. Dynamically creates a CachedSerializer and NonCachedSerializer
-      #   for a given class 'name'
-      # 2. Call
-      #       CachedSerializer.cache(serializer._cache_options)
-      #       CachedSerializer.fragmented(serializer)
-      #       NonCachedSerializer.cache(serializer._cache_options)
-      # 3. Build a hash keyed to the +cached+ and +non_cached+ serializers
-      # 4. Call +cached_attributes+ on the serializer class and the above hash
-      # 5. Return the hash
-      #
-      # @example
-      #   When +name+ is <tt>User::Admin</tt>
-      #   creates the Serializer classes (if they don't exist).
-      #     CachedUser_AdminSerializer
-      #     NonCachedUser_AdminSerializer
-      #
-      # Given a hash of its cached and non-cached serializers
-      # 1. Determine cached attributes from serializer class options
-      # 2. Add cached attributes to cached Serializer
-      # 3. Add non-cached attributes to non-cached Serializer
-      def fetch_fragment_cache(adapter_instance)
-        serializer_class_name = self.class.name.gsub('::'.freeze, '_'.freeze)
-        self.class._cache_options ||= {}
-        self.class._cache_options[:key] = self.class._cache_key if self.class._cache_key
+      # 1. Determine cached fields from serializer class options
+      # 2. Get non_cached_fields and fetch cache_fields
+      # 3. Merge the two hashes using adapter_instance#fragment_cache
+      def fetch_attributes_fragment(adapter_instance)
+        serializer_class._cache_options ||= {}
+        serializer_class._cache_options[:key] = serializer_class._cache_key if serializer_class._cache_key
+        fields = serializer_class.fragmented_attributes
 
-        cached_serializer = _get_or_create_fragment_cached_serializer(serializer_class_name)
-        cached_hash = ActiveModelSerializers::SerializableResource.new(
-          object,
-          serializer: cached_serializer,
-          adapter: adapter_instance.class
-        ).serializable_hash
+        non_cached_fields = fields[:non_cached].dup
+        non_cached_hash = attributes(non_cached_fields, true)
+        include_directive = JSONAPI::IncludeDirective.new(non_cached_fields - non_cached_hash.keys)
+        non_cached_hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
 
-        non_cached_serializer = _get_or_create_fragment_non_cached_serializer(serializer_class_name)
-        non_cached_hash = ActiveModelSerializers::SerializableResource.new(
-          object,
-          serializer: non_cached_serializer,
-          adapter: adapter_instance.class
-        ).serializable_hash
+        cached_fields = fields[:cached].dup
+        key = cache_key(adapter_instance)
+        cached_hash =
+          serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
+            hash = attributes(cached_fields, true)
+            include_directive = JSONAPI::IncludeDirective.new(cached_fields - hash.keys)
+            hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
+          end
 
         # Merge both results
         adapter_instance.fragment_cache(cached_hash, non_cached_hash)
-      end
-
-      def _get_or_create_fragment_cached_serializer(serializer_class_name)
-        cached_serializer = _get_or_create_fragment_serializer "Cached#{serializer_class_name}"
-        cached_serializer.cache(self.class._cache_options)
-        cached_serializer.type(self.class._type)
-        cached_serializer.fragmented(self)
-        self.class.cached_attributes.each do |attribute|
-          options = self.class._attributes_keys[attribute] || {}
-          cached_serializer.attribute(attribute, options)
-        end
-        cached_serializer
-      end
-
-      def _get_or_create_fragment_non_cached_serializer(serializer_class_name)
-        non_cached_serializer = _get_or_create_fragment_serializer "NonCached#{serializer_class_name}"
-        non_cached_serializer.type(self.class._type)
-        non_cached_serializer.fragmented(self)
-        self.class.non_cached_attributes.each do |attribute|
-          options = self.class._attributes_keys[attribute] || {}
-          non_cached_serializer.attribute(attribute, options)
-        end
-        non_cached_serializer
-      end
-
-      def _get_or_create_fragment_serializer(name)
-        return Object.const_get(name) if Object.const_defined?(name)
-        Object.const_set(name, Class.new(ActiveModel::Serializer))
       end
 
       def cache_key(adapter_instance)
@@ -319,7 +259,7 @@ module ActiveModel
         parts = []
         parts << object_cache_key
         parts << adapter_instance.cache_key
-        parts << self.class._cache_digest unless self.class._skip_digest?
+        parts << serializer_class._cache_digest unless serializer_class._skip_digest?
         @cache_key = parts.join('/')
       end
 
@@ -328,15 +268,18 @@ module ActiveModel
       def object_cache_key
         if object.respond_to?(:cache_key)
           object.cache_key
-        elsif (serializer_cache_key = (self.class._cache_key || self.class._cache_options[:key]))
+        elsif (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
           object_time_safe = object.updated_at
           object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
           "#{serializer_cache_key}/#{object.id}-#{object_time_safe}"
         else
-          fail UndefinedCacheKey, "#{object.class} must define #cache_key, or the 'key:' option must be passed into '#{self.class}.cache'"
+          fail UndefinedCacheKey, "#{object.class} must define #cache_key, or the 'key:' option must be passed into '#{serializer_class}.cache'"
         end
+      end
+
+      def serializer_class
+        @serializer_class ||= self.class
       end
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength

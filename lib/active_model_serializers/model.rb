@@ -38,6 +38,7 @@ module ActiveModelSerializers
     end
 
     # The following methods are needed to be minimally implemented for ActiveModel::Errors
+    # :nocov:
     def self.human_attribute_name(attr, _options = {})
       attr
     end
@@ -45,5 +46,6 @@ module ActiveModelSerializers
     def self.lookup_ancestors
       [self]
     end
+    # :nocov:
   end
 end

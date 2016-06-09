@@ -167,7 +167,7 @@ module ActiveModel
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
       cached_attributes = adapter_options[:cached_attributes] ||= {}
-      resource = cached_attributes(options[:fields], cached_attributes, adapter_instance)
+      resource = fetch_attributes(options[:fields], cached_attributes, adapter_instance)
       relationships = resource_relationships(adapter_options, options, adapter_instance)
       resource.merge(relationships)
     end
@@ -194,8 +194,6 @@ module ActiveModel
     def read_attribute_for_serialization(attr)
       if respond_to?(attr)
         send(attr)
-      elsif self.class._fragmented
-        self.class._fragmented.read_attribute_for_serialization(attr)
       else
         object.read_attribute_for_serialization(attr)
       end
