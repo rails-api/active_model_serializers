@@ -43,7 +43,7 @@ class BenchmarkApp < Rails::Application
   config.secret_key_base = 'abc123'
   config.consider_all_requests_local = false
 
-  # otherwise deadlock occured
+  # otherwise deadlock occurred
   config.middleware.delete 'Rack::Lock'
 
   # to disable log files

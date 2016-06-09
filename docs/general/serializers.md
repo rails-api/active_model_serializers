@@ -266,7 +266,7 @@ In the controller, the scope/scope_name options are equal to
 the [`serialization_scope`method](https://github.com/rails-api/active_model_serializers/blob/d02cd30fe55a3ea85e1d351b6e039620903c1871/lib/action_controller/serialization.rb#L13-L20),
 which is `:current_user`, by default.
 
-Specfically, the `scope_name` is defaulted to `:current_user`, and may be set as
+Specifically, the `scope_name` is defaulted to `:current_user`, and may be set as
 `serialization_scope :view_context`.  The `scope` is set to `send(scope_name)` when `scope_name` is
 present and the controller responds to `scope_name`.
 
