@@ -136,22 +136,24 @@ class ActiveModelSerializers::GrapeTest < ActiveSupport::TestCase
   end
 
   def test_implicit_formatter
-    ActiveModel::Serializer.config.adapter = :json_api
-    get '/grape/render_with_implicit_formatter'
-
     post = Models.model1
     serializable_resource = serializable(post, adapter: :json_api)
+
+    with_adapter :json_api do
+      get '/grape/render_with_implicit_formatter'
+    end
 
     assert last_response.ok?
     assert_equal serializable_resource.to_json, last_response.body
   end
 
   def test_implicit_formatter_handles_arrays
-    ActiveModel::Serializer.config.adapter = :json_api
-    get '/grape/render_array_with_implicit_formatter'
-
     posts = Models.all
     serializable_resource = serializable(posts, adapter: :json_api)
+
+    with_adapter :json_api do
+      get '/grape/render_array_with_implicit_formatter'
+    end
 
     assert last_response.ok?
     assert_equal serializable_resource.to_json, last_response.body
@@ -160,11 +162,12 @@ class ActiveModelSerializers::GrapeTest < ActiveSupport::TestCase
   end
 
   def test_implicit_formatter_handles_collections
-    ActiveModel::Serializer.config.adapter = :json_api
-    get '/grape/render_collection_with_implicit_formatter'
-    assert last_response.ok?
+    with_adapter :json_api do
+      get '/grape/render_collection_with_implicit_formatter'
+    end
 
     representation = JSON.parse(last_response.body)
+    assert last_response.ok?
     assert representation.include?('data')
     assert representation['data'].count == Models.collection_per
     assert representation.include?('links')
