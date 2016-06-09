@@ -217,7 +217,15 @@ The object being serialized.
 
 #### #root
 
-PR please :)
+Allows you to change the root object name of the payload.
+
+e.g.
+
+```ruby
+def root
+  "posts"
+end
+```
 
 #### #scope
 
