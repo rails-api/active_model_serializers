@@ -66,25 +66,25 @@ class ApiAssertion
   def expected
     @expected ||=
       {
-        'post' =>  {
-          'id' =>  1337,
-          'title' => 'New Post',
+        'primary_resource' => {
+          'id' => 1337,
+          'title' => 'New PrimaryResource',
           'body' =>  'Body',
-          'comments' => [
-            {
-              'id' => 1,
-              'body' => 'ZOMG A COMMENT'
-            }
-          ],
-          'blog' =>  {
-            'id' =>  999,
-            'name' => 'Custom blog'
+          'virtual_attribute' => {
+            'id' => 999,
+            'name' => 'Free-Range Virtual Attribute'
           },
-          'author' => {
+          'has_one_relationship' => {
             'id' => 42,
             'first_name' => 'Joao',
             'last_name' => 'Moura'
-          }
+          },
+          'has_many_relationships' => [
+            {
+              'id' => 1,
+              'body' => 'ZOMG A HAS MANY RELATIONSHIP'
+            }
+          ]
         }
     }
   end
