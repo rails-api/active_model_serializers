@@ -9,6 +9,7 @@ Features:
 - [#1426](https://github.com/rails-api/active_model_serializers/pull/1426) Add ActiveModelSerializers.config.default_includes (@empact)
 
 Fixes:
+- [#1287](https://github.com/rails-api/active_model_serializers/pull/1287) Pass `fields` options from adapter to serializer. (@vasilakisfil)
 - [#1710](https://github.com/rails-api/active_model_serializers/pull/1710) Prevent association loading when `include_data` option
   is set to `false`. (@groyoh)
 - [#1747](https://github.com/rails-api/active_model_serializers/pull/1747) Improve jsonapi mime type registration for Rails 5 (@remear)
