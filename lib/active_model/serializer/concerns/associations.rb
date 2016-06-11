@@ -83,7 +83,8 @@ module ActiveModel
       #   +default_include_directive+ config value when not provided)
       # @return [Enumerator<Association>]
       #
-      def associations(include_directive = ActiveModelSerializers.default_include_directive)
+      def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil)
+        include_slice ||= include_directive
         return unless object
 
         Enumerator.new do |y|
@@ -91,7 +92,8 @@ module ActiveModel
             next if reflection.excluded?(self)
             key = reflection.options.fetch(:key, reflection.name)
             next unless include_directive.key?(key)
-            y.yield reflection.build_association(self, instance_options)
+
+            y.yield reflection.build_association(self, instance_options, include_slice)
           end
         end
       end
