@@ -17,6 +17,7 @@ Features:
   - Added `jsonapi_namespace_separator` config option.
 - [#1889](https://github.com/rails-api/active_model_serializers/pull/1889) Support key transformation for Attributes adapter (@iancanderson, @danbee)
 - [#1917](https://github.com/rails-api/active_model_serializers/pull/1917) Add `jsonapi_pagination_links_enabled` configuration option (@richmolj)
+- [#1797](https://github.com/rails-api/active_model_serializers/pull/1797) Only include 'relationships' when sideloading (@richmolj)
 
 Fixes:
 
