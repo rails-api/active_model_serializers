@@ -87,6 +87,7 @@ def pagination_dict(object)
   }
 end
 ```
+**[NOTE] will_paginate uses `previous_page` method**
 
 Then, use it on your render method.
 
@@ -132,7 +133,7 @@ def meta_attributes(resource, extra_meta = {})
   }.merge(extra_meta)
 end
 ```
-
+**[NOTE] will_paginate uses `previous_page` method**
 
 ### Attributes adapter
 
