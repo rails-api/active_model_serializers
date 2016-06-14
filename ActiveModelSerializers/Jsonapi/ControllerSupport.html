@@ -145,18 +145,22 @@
       <pre class="lines">
 
 
-33
-34
-35
-36
-37</pre>
+62
+63
+64
+65
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/register_jsonapi_renderer.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/register_jsonapi_renderer.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_serialize_jsonapi'>serialize_jsonapi</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:adapter</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:json_api</span>
-  <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:serialization_context</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:serialization_context</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>SerializationContext</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:serialization_context</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:serialization_context</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>SerializationContext</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
   <span class='id identifier rubyid_get_serializer'>get_serializer</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -169,9 +173,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:37 2016 by
+  Generated on Mon Jun 13 21:53:37 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

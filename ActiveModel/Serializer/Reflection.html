@@ -710,10 +710,10 @@ association by its reflection.</p>
 
   <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span>
     <span class='id identifier rubyid_block_value'>block_value</span> <span class='op'>=</span> <span class='id identifier rubyid_instance_exec'>instance_exec</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_block_value'>block_value</span> <span class='op'>==</span> <span class='symbol'>:nil</span>
-      <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_read_attribute_for_serialization'>read_attribute_for_serialization</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-    <span class='kw'>else</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_block_value'>block_value</span> <span class='op'>!=</span> <span class='symbol'>:nil</span>
       <span class='id identifier rubyid_block_value'>block_value</span>
+    <span class='kw'>elsif</span> <span class='ivar'>@_include_data</span>
+      <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_read_attribute_for_serialization'>read_attribute_for_serialization</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_read_attribute_for_serialization'>read_attribute_for_serialization</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -729,9 +729,9 @@ association by its reflection.</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:38 2016 by
+  Generated on Mon Jun 13 21:53:38 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

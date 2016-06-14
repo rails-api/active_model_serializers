@@ -86,35 +86,6 @@
     </td>
   </tr>
 </table>
-<h2 id="label-Documentation">Documentation</h2>
-<ul><li>
-<p><a
-href="https://github.com/rails-api/active_model_serializers/tree/master">0.10
-(master) Documentation</a></p>
-</li><li>
-<p><a
-href="http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0.rc5"><img
-src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
-</li><li>
-<p><a href="docs">Guides</a></p>
-</li><li>
-<p><a
-href="https://github.com/rails-api/active_model_serializers/tree/0-9-stable">0.9
-(0-9-stable) Documentation</a></p>
-</li><li>
-<p><a
-href="http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable"><img
-src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
-</li><li>
-<p><a
-href="https://github.com/rails-api/active_model_serializers/tree/0-8-stable">0.8
-(0-8-stable) Documentation</a></p>
-</li><li>
-<p><a
-href="http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable"><img
-src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
-</li></ul>
-
 <h2 id="label-About">About</h2>
 
 <p>ActiveModelSerializers brings convention over configuration to your JSON
@@ -136,36 +107,25 @@ produce the resource serialization. The serialization has the
 (SerializableResource actually delegates these methods to the adapter.)</p>
 
 <p>By default ActiveModelSerializers will use the <strong>Attributes
-Adapter</strong>. But we strongly advise you to use <strong>JsonApi
-Adapter</strong>, which follows 1.0 of the format specified in <a
-href="http://jsonapi.org/format">jsonapi.org/format</a>. Check how to
+Adapter</strong> (no JSON root). But we strongly advise you to use
+<strong>JsonApi Adapter</strong>, which follows 1.0 of the format specified
+in <a href="http://jsonapi.org/format">jsonapi.org/format</a>. Check how to
 change the adapter in the sections below.</p>
-
-<h2 id="label-RELEASE+CANDIDATE-2C+PLEASE+READ">RELEASE CANDIDATE, PLEASE READ</h2>
-
-<p>This is the <strong>master</strong> branch of ActiveModelSerializers.</p>
-
-<p>It will become the <code>0.10.0</code> release when it&#39;s ready.
-Currently this is a release candidate.</p>
 
 <p><code>0.10.x</code> is <strong>not</strong> backward compatible with
 <code>0.9.x</code> nor <code>0.8.x</code>.</p>
 
-<p><code>0.10.x</code> will be based on the <code>0.8.0</code> code, but with
-a more flexible architecture. We&#39;d love your help. <a
+<p><code>0.10.x</code> is based on the <code>0.8.0</code> code, but with a
+more flexible architecture. We&#39;d love your help. <a
 href="CONTRIBUTING.md">Learn how you can help here.</a></p>
 
 <p>It is generally safe and recommended to use the master branch.</p>
-
-<p>For more information, see the post &#39;<a
-href="https://medium.com/@joaomdmoura/the-future-of-ams-e5f9047ca7e9">The
-future of AMS</a>&#39;.</p>
 
 <h2 id="label-Installation">Installation</h2>
 
 <p>Add this line to your application&#39;s Gemfile:</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>active_model_serializers</span><span class='tstring_end'>&#39;</span></span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>active_model_serializers</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>~&gt; 0.10.0</span><span class='tstring_end'>&#39;</span></span>
 </code></pre>
 
 <p>And then execute:</p>
@@ -195,7 +155,42 @@ href="http://amserializers.herokuapp.com">community slack</a>.</p>
 
 <p>Thanks!</p>
 
+<h2 id="label-Documentation">Documentation</h2>
+<ul><li>
+<p><a
+href="https://github.com/rails-api/active_model_serializers/tree/master">0.10
+(master) Documentation</a></p>
+</li><li>
+<p><a
+href="http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0"><img
+src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
+</li><li>
+<p><a href="docs">Guides</a></p>
+</li><li>
+<p><a
+href="https://github.com/rails-api/active_model_serializers/tree/0-9-stable">0.9
+(0-9-stable) Documentation</a></p>
+</li><li>
+<p><a
+href="http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable"><img
+src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
+</li><li>
+<p><a
+href="https://github.com/rails-api/active_model_serializers/tree/0-8-stable">0.8
+(0-8-stable) Documentation</a></p>
+</li><li>
+<p><a
+href="http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable"><img
+src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
+</li></ul>
+
 <h2 id="label-High-level+behavior">High-level behavior</h2>
+
+<p>Choose an adapter from <a
+href="lib/active_model_serializers/adapter">adapters</a>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='symbol'>:json_api</span> <span class='comment'># Default: `:attributes`
+</span></code></pre>
 
 <p>Given a <a href="lib/active_model/serializer/lint.rb">serializable
 model</a>:</p>
@@ -226,7 +221,7 @@ model</a>:</p>
 <p>The model can be serialized as:</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='id identifier rubyid_serialization'>serialization</span> <span class='op'>=</span> <span class='const'>SerializableResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_serialization'>serialization</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>SerializableResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_serialization'>serialization</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span>
 <span class='id identifier rubyid_serialization'>serialization</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
 </code></pre>
@@ -234,7 +229,7 @@ model</a>:</p>
 <p>SerializableResource delegates to the adapter, which it builds as:</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_adapter_options'>adapter_options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span>
 <span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
 <span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_serializable_hash'>serializable_hash</span>
@@ -252,15 +247,15 @@ model</a>:</p>
 <p>See <a href="docs/ARCHITECTURE.md">ARCHITECTURE.md</a> for more
 information.</p>
 
-<h1 id="label-Contributing">Contributing</h1>
+<h2 id="label-Contributing">Contributing</h2>
 
 <p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a></p>
 </div></div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:34 2016 by
+  Generated on Mon Jun 13 21:53:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

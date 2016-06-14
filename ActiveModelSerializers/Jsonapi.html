@@ -164,14 +164,188 @@ format: [jsonapi]`)</p>
 
 
 
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#install-class_method" title="install (class method)">+ (Object) <strong>install</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parser-class_method" title="parser (class method)">+ (Object) <strong>parser</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Proposal: should actually deserialize the JSON API params to the hash
+format expected by `ActiveModel::Serializers::JSON`
+actionpack/lib/action_dispatch/http/parameters.rb.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="install-class_method">
+  
+    + (<tt>Object</tt>) <strong>install</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/register_jsonapi_renderer.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_install'>install</span>
+  <span class='comment'># actionpack/lib/action_dispatch/http/mime_types.rb
+</span>  <span class='const'>Mime</span><span class='op'>::</span><span class='const'>Type</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span> <span class='const'>MEDIA_TYPE</span><span class='comma'>,</span> <span class='symbol'>:jsonapi</span>
+
+  <span class='kw'>if</span> <span class='const'>Rails</span><span class='op'>::</span><span class='const'>VERSION</span><span class='op'>::</span><span class='const'>MAJOR</span> <span class='op'>&gt;=</span> <span class='int'>5</span>
+    <span class='const'>ActionDispatch</span><span class='op'>::</span><span class='const'>Request</span><span class='period'>.</span><span class='id identifier rubyid_parameter_parsers'>parameter_parsers</span><span class='lbracket'>[</span><span class='symbol'>:jsonapi</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_parser'>parser</span>
+  <span class='kw'>else</span>
+    <span class='const'>ActionDispatch</span><span class='op'>::</span><span class='const'>ParamsParser</span><span class='op'>::</span><span class='const'>DEFAULT_PARSERS</span><span class='lbracket'>[</span><span class='const'>Mime</span><span class='lbracket'>[</span><span class='symbol'>:jsonapi</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_parser'>parser</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'># ref https://github.com/rails/rails/pull/21496
+</span>  <span class='const'>ActionController</span><span class='op'>::</span><span class='const'>Renderers</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span> <span class='symbol'>:jsonapi</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>|</span>
+    <span class='id identifier rubyid_json'>json</span> <span class='op'>=</span> <span class='id identifier rubyid_serialize_jsonapi'>serialize_jsonapi</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_json'>json</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span>
+    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_content_type'>content_type</span> <span class='op'>||=</span> <span class='const'>Mime</span><span class='lbracket'>[</span><span class='symbol'>:jsonapi</span><span class='rbracket'>]</span>
+    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_response_body'>response_body</span> <span class='op'>=</span> <span class='id identifier rubyid_json'>json</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parser-class_method">
+  
+    + (<tt>Object</tt>) <strong>parser</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Proposal: should actually deserialize the JSON API params to the hash
+format expected by `ActiveModel::Serializers::JSON`
+actionpack/lib/action_dispatch/http/parameters.rb</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57
+58
+59</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/register_jsonapi_renderer.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_parser'>parser</span>
+  <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_body'>body</span><span class='op'>|</span>
+    <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='symbol'>:_json</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_data'>data</span> <span class='rbrace'>}</span> <span class='kw'>unless</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_with_indifferent_access'>with_indifferent_access</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:37 2016 by
+  Generated on Mon Jun 13 21:53:37 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

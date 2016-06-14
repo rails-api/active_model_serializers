@@ -119,18 +119,6 @@ object.</p>
   
 </p>
 
-  <h2>Constant Summary</h2>
-  
-    <dl class="constants">
-      
-        <dt id="DEFAULT_INCLUDE_TREE-constant" class="">DEFAULT_INCLUDE_TREE =
-          
-        </dt>
-        <dd><pre class="code"><span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>IncludeTree</span><span class='period'>.</span><span class='id identifier rubyid_from_string'>from_string</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>*</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
-      
-    </dl>
-  
-
 
 
 
@@ -148,7 +136,7 @@ object.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#associations-instance_method" title="#associations (instance method)">- (Enumerator&lt;Association&gt;) <strong>associations</strong>(include_tree = DEFAULT_INCLUDE_TREE) </a>
+      <a href="#associations-instance_method" title="#associations (instance method)">- (Enumerator&lt;Association&gt;) <strong>associations</strong>(include_directive = ActiveModelSerializers.default_include_directive) </a>
     
 
     
@@ -180,7 +168,7 @@ object.</p>
       <div class="method_details first">
   <h3 class="signature first" id="associations-instance_method">
   
-    - (<tt>Enumerator&lt;<span class='object_link'><a href="Association.html" title="ActiveModel::Serializer::Association (class)">Association</a></span>&gt;</tt>) <strong>associations</strong>(include_tree = DEFAULT_INCLUDE_TREE) 
+    - (<tt>Enumerator&lt;<span class='object_link'><a href="Association.html" title="ActiveModel::Serializer::Association (class)">Association</a></span>&gt;</tt>) <strong>associations</strong>(include_directive = ActiveModelSerializers.default_include_directive) 
   
 
   
@@ -198,18 +186,19 @@ object.</p>
   
     <li>
       
-        <span class='name'>include_tree</span>
+        <span class='name'>include_directive</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="IncludeTree.html" title="ActiveModel::Serializer::IncludeTree (class)">IncludeTree</a></span></tt>)</span>
+        <span class='type'>(<tt>JSONAPI::IncludeDirective</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>DEFAULT_INCLUDE_TREE</tt>)</em>
+        <em class="default">(defaults to: <tt>ActiveModelSerializers.default_include_directive</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
-<p>(defaults to all associations when not provided)</p>
+<p>(defaults to the <code>default_include_directive</code> config value when
+not provided)</p>
 </div>
       
     </li>
@@ -236,6 +225,7 @@ object.</p>
       <pre class="lines">
 
 
+85
 86
 87
 88
@@ -246,20 +236,19 @@ object.</p>
 93
 94
 95
-96
-97</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/associations.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/associations.rb', line 85</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_associations'>associations</span><span class='lparen'>(</span><span class='id identifier rubyid_include_tree'>include_tree</span> <span class='op'>=</span> <span class='const'>DEFAULT_INCLUDE_TREE</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_associations'>associations</span><span class='lparen'>(</span><span class='id identifier rubyid_include_directive'>include_directive</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_default_include_directive'>default_include_directive</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_object'>object</span>
 
   <span class='const'>Enumerator</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_y'>y</span><span class='op'>|</span>
     <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid__reflections'>_reflections</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_reflection'>reflection</span><span class='op'>|</span>
       <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_excluded?'>excluded?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:key</span><span class='comma'>,</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-      <span class='kw'>next</span> <span class='kw'>unless</span> <span class='id identifier rubyid_include_tree'>include_tree</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+      <span class='kw'>next</span> <span class='kw'>unless</span> <span class='id identifier rubyid_include_directive'>include_directive</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_y'>y</span><span class='period'>.</span><span class='id identifier rubyid_yield'>yield</span> <span class='id identifier rubyid_reflection'>reflection</span><span class='period'>.</span><span class='id identifier rubyid_build_association'>build_association</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_instance_options'>instance_options</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
@@ -274,9 +263,9 @@ object.</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:36 2016 by
+  Generated on Mon Jun 13 21:53:37 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

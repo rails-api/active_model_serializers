@@ -90,7 +90,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Schema/AssertResponseSchema.html" title="ActiveModelSerializers::Test::Schema::AssertResponseSchema (class)">AssertResponseSchema</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Schema/AssertRequestSchema.html" title="ActiveModelSerializers::Test::Schema::AssertRequestSchema (class)">AssertRequestSchema</a></span>, <span class='object_link'><a href="Schema/AssertResponseSchema.html" title="ActiveModelSerializers::Test::Schema::AssertResponseSchema (class)">AssertResponseSchema</a></span>, <span class='object_link'><a href="Schema/AssertSchema.html" title="ActiveModelSerializers::Test::Schema::AssertSchema (class)">AssertSchema</a></span>
     
   
 </p>
@@ -102,12 +102,12 @@
         <dt id="MissingSchema-constant" class="">MissingSchema =
           
         </dt>
-        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Minitest</span><span class='op'>::</span><span class='const'>Assertion</span><span class='rparen'>)</span></pre></dd>
       
         <dt id="InvalidSchemaError-constant" class="">InvalidSchemaError =
           
         </dt>
-        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>StandardError</span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Minitest</span><span class='op'>::</span><span class='const'>Assertion</span><span class='rparen'>)</span></pre></dd>
       
     </dl>
   
@@ -125,6 +125,52 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#assert_request_response_schema-instance_method" title="#assert_request_response_schema (instance method)">- (Object) <strong>assert_request_response_schema</strong>(schema_path = nil, message = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>May be renamed.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#assert_request_schema-instance_method" title="#assert_request_schema (instance method)">- (Object) <strong>assert_request_schema</strong>(schema_path = nil, message = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -150,6 +196,28 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#assert_schema-instance_method" title="#assert_schema (instance method)">- (Object) <strong>assert_schema</strong>(payload, schema_path = nil, message = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -160,7 +228,82 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="assert_response_schema-instance_method">
+  <h3 class="signature first" id="assert_request_response_schema-instance_method">
+  
+    - (<tt>Object</tt>) <strong>assert_request_response_schema</strong>(schema_path = nil, message = nil) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>May be renamed</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/test/schema.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_assert_request_response_schema'>assert_request_response_schema</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_assert_request_schema'>assert_request_schema</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_assert_response_schema'>assert_response_schema</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="assert_request_schema-instance_method">
+  
+    - (<tt>Object</tt>) <strong>assert_request_schema</strong>(schema_path = nil, message = nil) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+17
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/test/schema.rb', line 17</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_assert_request_schema'>assert_request_schema</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_matcher'>matcher</span> <span class='op'>=</span> <span class='const'>AssertRequestSchema</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_assert'>assert</span><span class='lparen'>(</span><span class='id identifier rubyid_matcher'>matcher</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='comma'>,</span> <span class='id identifier rubyid_matcher'>matcher</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="assert_response_schema-instance_method">
   
     - (<tt>Boolean</tt>, <tt>Minitest::Assertion</tt>) <strong>assert_response_schema</strong>(schema_path = nil, message = nil) 
   
@@ -275,7 +418,39 @@
       <pre class="code"><span class="info file"># File 'lib/active_model_serializers/test/schema.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_response_schema'>assert_response_schema</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_matcher'>matcher</span> <span class='op'>=</span> <span class='const'>AssertResponseSchema</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_matcher'>matcher</span> <span class='op'>=</span> <span class='const'>AssertResponseSchema</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_assert'>assert</span><span class='lparen'>(</span><span class='id identifier rubyid_matcher'>matcher</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='comma'>,</span> <span class='id identifier rubyid_matcher'>matcher</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="assert_schema-instance_method">
+  
+    - (<tt>Object</tt>) <strong>assert_schema</strong>(payload, schema_path = nil, message = nil) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+28
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/test/schema.rb', line 28</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_assert_schema'>assert_schema</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_schema_path'>schema_path</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_matcher'>matcher</span> <span class='op'>=</span> <span class='const'>AssertSchema</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_response'>response</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert'>assert</span><span class='lparen'>(</span><span class='id identifier rubyid_matcher'>matcher</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='comma'>,</span> <span class='id identifier rubyid_matcher'>matcher</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -288,9 +463,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:36 2016 by
+  Generated on Mon Jun 13 21:53:37 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

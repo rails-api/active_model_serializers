@@ -111,19 +111,13 @@
   
   <h3 class="inherited">Constants inherited
      from <span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">ActiveModel::Serializer</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Serializer.html#VERSION-constant" title="ActiveModel::Serializer::VERSION (constant)">VERSION</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Serializer.html#SERIALIZABLE_HASH_VALID_KEYS-constant" title="ActiveModel::Serializer::SERIALIZABLE_HASH_VALID_KEYS (constant)">SERIALIZABLE_HASH_VALID_KEYS</a></span>, <span class='object_link'><a href="../Serializer.html#UndefinedCacheKey-constant" title="ActiveModel::Serializer::UndefinedCacheKey (constant)">UndefinedCacheKey</a></span>, <span class='object_link'><a href="../Serializer.html#VERSION-constant" title="ActiveModel::Serializer::VERSION (constant)">VERSION</a></span></p>
 
   
   
   <h3 class="inherited">Constants included
      from <span class='object_link'><a href="Caching.html" title="ActiveModel::Serializer::Caching (module)">Caching</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="Caching.html#CALLER_FILE-constant" title="ActiveModel::Serializer::Caching::CALLER_FILE (constant)">Caching::CALLER_FILE</a></span></p>
-
-  
-  
-  <h3 class="inherited">Constants included
-     from <span class='object_link'><a href="Associations.html" title="ActiveModel::Serializer::Associations (module)">Associations</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Associations.html#DEFAULT_INCLUDE_TREE-constant" title="ActiveModel::Serializer::Associations::DEFAULT_INCLUDE_TREE (constant)">Associations::DEFAULT_INCLUDE_TREE</a></span></p>
 
 
 
@@ -199,7 +193,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">ActiveModel::Serializer</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Serializer.html#adapter-class_method" title="ActiveModel::Serializer.adapter (method)">adapter</a></span>, <span class='object_link'><a href="../Serializer.html#get_serializer_for-class_method" title="ActiveModel::Serializer.get_serializer_for (method)">get_serializer_for</a></span>, <span class='object_link'><a href="../Serializer.html#initialize-instance_method" title="ActiveModel::Serializer#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="../Serializer.html#json_key-instance_method" title="ActiveModel::Serializer#json_key (method)">#json_key</a></span>, <span class='object_link'><a href="../Serializer.html#read_attribute_for_serialization-instance_method" title="ActiveModel::Serializer#read_attribute_for_serialization (method)">#read_attribute_for_serialization</a></span>, <span class='object_link'><a href="../Serializer.html#serializable_hash-instance_method" title="ActiveModel::Serializer#serializable_hash (method)">#serializable_hash</a></span>, <span class='object_link'><a href="../Serializer.html#serializer_for-class_method" title="ActiveModel::Serializer.serializer_for (method)">serializer_for</a></span>, <span class='object_link'><a href="../Serializer.html#serializer_lookup_chain_for-class_method" title="ActiveModel::Serializer.serializer_lookup_chain_for (method)">serializer_lookup_chain_for</a></span>, <span class='object_link'><a href="../Serializer.html#serializers_cache-class_method" title="ActiveModel::Serializer.serializers_cache (method)">serializers_cache</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Serializer.html#adapter-class_method" title="ActiveModel::Serializer.adapter (method)">adapter</a></span>, <span class='object_link'><a href="../Serializer.html#get_serializer_for-class_method" title="ActiveModel::Serializer.get_serializer_for (method)">get_serializer_for</a></span>, <span class='object_link'><a href="../Serializer.html#include_directive_from_options-class_method" title="ActiveModel::Serializer.include_directive_from_options (method)">include_directive_from_options</a></span>, <span class='object_link'><a href="../Serializer.html#initialize-instance_method" title="ActiveModel::Serializer#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="../Serializer.html#json_key-instance_method" title="ActiveModel::Serializer#json_key (method)">#json_key</a></span>, <span class='object_link'><a href="../Serializer.html#read_attribute_for_serialization-instance_method" title="ActiveModel::Serializer#read_attribute_for_serialization (method)">#read_attribute_for_serialization</a></span>, <span class='object_link'><a href="../Serializer.html#relationship_value_for-instance_method" title="ActiveModel::Serializer#relationship_value_for (method)">#relationship_value_for</a></span>, <span class='object_link'><a href="../Serializer.html#resource_relationships-instance_method" title="ActiveModel::Serializer#resource_relationships (method)">#resource_relationships</a></span>, <span class='object_link'><a href="../Serializer.html#serializable_hash-instance_method" title="ActiveModel::Serializer#serializable_hash (method)">#serializable_hash</a></span>, <span class='object_link'><a href="../Serializer.html#serialization_adapter_instance-class_method" title="ActiveModel::Serializer.serialization_adapter_instance (method)">serialization_adapter_instance</a></span>, <span class='object_link'><a href="../Serializer.html#serializer_for-class_method" title="ActiveModel::Serializer.serializer_for (method)">serializer_for</a></span>, <span class='object_link'><a href="../Serializer.html#serializer_lookup_chain_for-class_method" title="ActiveModel::Serializer.serializer_lookup_chain_for (method)">serializer_lookup_chain_for</a></span>, <span class='object_link'><a href="../Serializer.html#serializers_cache-class_method" title="ActiveModel::Serializer.serializers_cache (method)">serializers_cache</a></span></p>
 
   
   
@@ -240,6 +234,11 @@
   
   
   
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="Caching.html" title="ActiveModel::Serializer::Caching (module)">Caching</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Caching.html#cache_key-instance_method" title="ActiveModel::Serializer::Caching#cache_key (method)">#cache_key</a></span>, <span class='object_link'><a href="Caching.html#fetch-instance_method" title="ActiveModel::Serializer::Caching#fetch (method)">#fetch</a></span>, <span class='object_link'><a href="Caching.html#fetch_attributes-instance_method" title="ActiveModel::Serializer::Caching#fetch_attributes (method)">#fetch_attributes</a></span>, <span class='object_link'><a href="Caching.html#fetch_attributes_fragment-instance_method" title="ActiveModel::Serializer::Caching#fetch_attributes_fragment (method)">#fetch_attributes_fragment</a></span>, <span class='object_link'><a href="Caching.html#object_cache_key-instance_method" title="ActiveModel::Serializer::Caching#object_cache_key (method)">#object_cache_key</a></span>, <span class='object_link'><a href="Caching.html#serializer_class-instance_method" title="ActiveModel::Serializer::Caching#serializer_class (method)">#serializer_class</a></span></p>
+
   
   
   
@@ -388,9 +387,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:40 2016 by
+  Generated on Mon Jun 13 21:53:39 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

@@ -184,6 +184,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#cache_key-class_method" title="cache_key (class method)">+ (Object) <strong>cache_key</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#default_key_transform-class_method" title="default_key_transform (class method)">+ (Symbol) <strong>default_key_transform</strong> </a>
     
 
@@ -201,6 +223,28 @@
     <span class="summary_desc"><div class='inline'>
 <p>Sets the default transform for the adapter.</p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fragment_cache-class_method" title="fragment_cache (class method)">+ (Object) <strong>fragment_cache</strong>(cached_hash, non_cached_hash) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -312,29 +356,7 @@ global config, adapter default.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#cache_check-instance_method" title="#cache_check (instance method)">- (Object) <strong>cache_check</strong>(serializer) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#cached_name-instance_method" title="#cached_name (instance method)">- (Object) <strong>cached_name</strong> </a>
+      <a href="#cache_key-instance_method" title="#cache_key (instance method)">- (Object) <strong>cache_key</strong> </a>
     
 
     
@@ -418,7 +440,10 @@ global config, adapter default.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Subclasses that implement this method must first call   options =
+serialization_options(options).</p>
+</div></span>
   
 </li>
 
@@ -455,13 +480,13 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-13
-14
-15
-16</pre>
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@serializer</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span>
@@ -505,12 +530,12 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-11
-12
-13</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_instance_options'>instance_options</span>
   <span class='ivar'>@instance_options</span>
@@ -548,12 +573,12 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-11
-12
-13</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_serializer'>serializer</span>
   <span class='ivar'>@serializer</span>
@@ -571,7 +596,37 @@ global config, adapter default.</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="default_key_transform-class_method">
+  <h3 class="signature first" id="cache_key-class_method">
+  
+    + (<tt>Object</tt>) <strong>cache_key</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_cache_key'>cache_key</span>
+  <span class='ivar'>@cache_key</span> <span class='op'>||=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_registered_name'>registered_name</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="default_key_transform-class_method">
   
     + (<tt>Symbol</tt>) <strong>default_key_transform</strong> 
   
@@ -614,15 +669,45 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-65
-66
-67</pre>
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 14</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_default_key_transform'>default_key_transform</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_default_key_transform'>default_key_transform</span>
   <span class='symbol'>:unaltered</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fragment_cache-class_method">
+  
+    + (<tt>Object</tt>) <strong>fragment_cache</strong>(cached_hash, non_cached_hash) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 41</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fragment_cache'>fragment_cache</span><span class='lparen'>(</span><span class='id identifier rubyid_cached_hash'>cached_hash</span><span class='comma'>,</span> <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span> <span class='id identifier rubyid_cached_hash'>cached_hash</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -731,15 +816,15 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-74
-75
-76
-77</pre>
+23
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 23</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_transform'>transform</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_transform'>transform</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:key_transform</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:key_transform</span><span class='rbracket'>]</span>
   <span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_key_transform'>key_transform</span> <span class='op'>||</span> <span class='id identifier rubyid_default_key_transform'>default_key_transform</span>
 <span class='kw'>end</span></pre>
@@ -828,14 +913,14 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-84
-85
-86</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 33</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_transform_key_casing!'>transform_key_casing!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_transform_key_casing!'>transform_key_casing!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'>KeyTransform</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_transform'>transform</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -864,19 +949,15 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-26
-27
-28
-29
-30</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='id identifier rubyid_serializable_hash'>serializable_hash</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_include_meta'>include_meta</span><span class='lparen'>(</span><span class='id identifier rubyid_hash'>hash</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_hash'>hash</span>
+  <span class='id identifier rubyid_serializable_hash'>serializable_hash</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -884,9 +965,9 @@ global config, adapter default.</p>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="cache_check-instance_method">
+  <h3 class="signature " id="cache_key-instance_method">
   
-    - (<tt>Object</tt>) <strong>cache_check</strong>(serializer) 
+    - (<tt>Object</tt>) <strong>cache_key</strong> 
   
 
   
@@ -898,49 +979,15 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-36
-37
-38
-39
-40</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 62</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_cache_check'>cache_check</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='rparen'>)</span>
-  <span class='const'>CachedSerializer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_cache_check'>cache_check</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span> <span class='kw'>do</span>
-    <span class='kw'>yield</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="cached_name-instance_method">
-  
-    - (<tt>Object</tt>) <strong>cached_name</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-18
-19
-20</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 18</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_cached_name'>cached_name</span>
-  <span class='ivar'>@cached_name</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_demodulize'>demodulize</span><span class='period'>.</span><span class='id identifier rubyid_underscore'>underscore</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_cache_key'>cache_key</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_cache_key'>cache_key</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -962,15 +1009,15 @@ global config, adapter default.</p>
       <pre class="lines">
 
 
-32
-33
-34</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fragment_cache'>fragment_cache</span><span class='lparen'>(</span><span class='id identifier rubyid_cached_hash'>cached_hash</span><span class='comma'>,</span> <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span> <span class='id identifier rubyid_cached_hash'>cached_hash</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_fragment_cache'>fragment_cache</span><span class='lparen'>(</span><span class='id identifier rubyid_cached_hash'>cached_hash</span><span class='comma'>,</span> <span class='id identifier rubyid_non_cached_hash'>non_cached_hash</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -986,18 +1033,32 @@ global config, adapter default.</p>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Subclasses that implement this method must first call</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_serialization_options'>serialization_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-22
-23
-24</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/base.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_serializable_hash'>serializable_hash</span><span class='lparen'>(</span><span class='id identifier rubyid__options'>_options</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_fail'>fail</span> <span class='const'>NotImplementedError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>This is an abstract method. Should be implemented at the concrete adapter.</span><span class='tstring_end'>&#39;</span></span>
@@ -1012,9 +1073,9 @@ global config, adapter default.</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:39 2016 by
+  Generated on Mon Jun 13 21:53:39 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

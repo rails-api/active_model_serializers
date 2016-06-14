@@ -84,7 +84,7 @@
   
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">lib/active_model_serializers/model.rb<span class="defines">,<br />
-  lib/active_model_serializers.rb,<br /> lib/active_model_serializers/test.rb,<br /> lib/active_model_serializers/railtie.rb,<br /> lib/active_model_serializers/logging.rb,<br /> lib/active_model_serializers/adapter.rb,<br /> lib/active_model_serializers/callbacks.rb,<br /> lib/active_model_serializers/deprecate.rb,<br /> lib/active_model_serializers/test/schema.rb,<br /> lib/active_model_serializers/json_pointer.rb,<br /> lib/active_model_serializers/adapter/null.rb,<br /> lib/active_model_serializers/adapter/base.rb,<br /> lib/active_model_serializers/adapter/json.rb,<br /> lib/active_model_serializers/key_transform.rb,<br /> lib/active_model_serializers/fragment_cache.rb,<br /> lib/active_model_serializers/deserialization.rb,<br /> lib/active_model_serializers/test/serializer.rb,<br /> lib/active_model_serializers/adapter/json_api.rb,<br /> lib/active_model_serializers/cached_serializer.rb,<br /> lib/active_model_serializers/adapter/attributes.rb,<br /> lib/active_model_serializers/adapter/json_api/meta.rb,<br /> lib/active_model_serializers/serialization_context.rb,<br /> lib/active_model_serializers/adapter/json_api/link.rb,<br /> lib/active_model_serializers/serializable_resource.rb,<br /> lib/active_model_serializers/adapter/json_api/error.rb,<br /> lib/active_model_serializers/adapter/json_api/jsonapi.rb,<br /> lib/active_model_serializers/adapter/json_api/relationship.rb,<br /> lib/active_model_serializers/adapter/json_api/deserialization.rb,<br /> lib/active_model_serializers/adapter/json_api/pagination_links.rb,<br /> lib/active_model_serializers/adapter/json_api/resource_identifier.rb</span>
+  lib/active_model_serializers.rb,<br /> lib/active_model_serializers/test.rb,<br /> lib/active_model_serializers/railtie.rb,<br /> lib/active_model_serializers/adapter.rb,<br /> lib/active_model_serializers/logging.rb,<br /> lib/active_model_serializers/deprecate.rb,<br /> lib/active_model_serializers/callbacks.rb,<br /> lib/active_model_serializers/test/schema.rb,<br /> lib/active_model_serializers/adapter/null.rb,<br /> lib/active_model_serializers/adapter/base.rb,<br /> lib/active_model_serializers/json_pointer.rb,<br /> lib/active_model_serializers/adapter/json.rb,<br /> lib/active_model_serializers/key_transform.rb,<br /> lib/active_model_serializers/test/serializer.rb,<br /> lib/active_model_serializers/deserialization.rb,<br /> lib/active_model_serializers/adapter/json_api.rb,<br /> lib/active_model_serializers/adapter/attributes.rb,<br /> lib/active_model_serializers/adapter/json_api/link.rb,<br /> lib/active_model_serializers/serialization_context.rb,<br /> lib/active_model_serializers/serializable_resource.rb,<br /> lib/active_model_serializers/adapter/json_api/meta.rb,<br /> lib/active_model_serializers/adapter/json_api/error.rb,<br /> lib/active_model_serializers/adapter/json_api/jsonapi.rb,<br /> lib/active_model_serializers/adapter/json_api/relationship.rb,<br /> lib/active_model_serializers/adapter/json_api/deserialization.rb,<br /> lib/active_model_serializers/adapter/json_api/pagination_links.rb,<br /> lib/active_model_serializers/adapter/json_api/resource_identifier.rb</span>
 </dd>
   
 </dl>
@@ -136,7 +136,7 @@ Style/AsciiComments TODO: implement!</p>
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="ActiveModelSerializers/CachedSerializer.html" title="ActiveModelSerializers::CachedSerializer (class)">CachedSerializer</a></span>, <span class='object_link'><a href="ActiveModelSerializers/FragmentCache.html" title="ActiveModelSerializers::FragmentCache (class)">FragmentCache</a></span>, <span class='object_link'><a href="ActiveModelSerializers/Model.html" title="ActiveModelSerializers::Model (class)">Model</a></span>, <span class='object_link'><a href="ActiveModelSerializers/Railtie.html" title="ActiveModelSerializers::Railtie (class)">Railtie</a></span>, <span class='object_link'><a href="ActiveModelSerializers/SerializableResource.html" title="ActiveModelSerializers::SerializableResource (class)">SerializableResource</a></span>, <span class='object_link'><a href="ActiveModelSerializers/SerializationContext.html" title="ActiveModelSerializers::SerializationContext (class)">SerializationContext</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="ActiveModelSerializers/Model.html" title="ActiveModelSerializers::Model (class)">Model</a></span>, <span class='object_link'><a href="ActiveModelSerializers/Railtie.html" title="ActiveModelSerializers::Railtie (class)">Railtie</a></span>, <span class='object_link'><a href="ActiveModelSerializers/SerializableResource.html" title="ActiveModelSerializers::SerializableResource (class)">SerializableResource</a></span>, <span class='object_link'><a href="ActiveModelSerializers/SerializationContext.html" title="ActiveModelSerializers::SerializationContext (class)">SerializationContext</a></span>
     
   
 </p>
@@ -212,6 +212,30 @@ Style/AsciiComments TODO: implement!</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#default_include_directive-class_method" title="default_include_directive (class method)">+ (JSONAPI::IncludeDirective) <strong>default_include_directive</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Memoized default include directive.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#location_of_caller-class_method" title="location_of_caller (class method)">+ (Object) <strong>location_of_caller</strong> </a>
     
 
@@ -269,12 +293,12 @@ Style/AsciiComments TODO: implement!</p>
       <pre class="lines">
 
 
-20
-21
-22</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_logger'>logger</span>
   <span class='ivar'>@logger</span>
@@ -306,15 +330,69 @@ Style/AsciiComments TODO: implement!</p>
       <pre class="lines">
 
 
-23
-24
-25</pre>
+21
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span>
   <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="default_include_directive-class_method">
+  
+    + (<tt>JSONAPI::IncludeDirective</tt>) <strong>default_include_directive</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Memoized default include directive</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>JSONAPI::IncludeDirective</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 36</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_default_include_directive'>default_include_directive</span>
+  <span class='ivar'>@default_include_directive</span> <span class='op'>||=</span> <span class='const'>JSONAPI</span><span class='op'>::</span><span class='const'>IncludeDirective</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_default_includes'>default_includes</span><span class='comma'>,</span> <span class='label'>allow_wildcard:</span> <span class='kw'>true</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -347,16 +425,16 @@ Style/AsciiComments TODO: implement!</p>
       <pre class="lines">
 
 
+26
+27
 28
 29
 30
 31
-32
-33
-34</pre>
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_location_of_caller'>location_of_caller</span>
   <span class='id identifier rubyid_caller'>caller</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>(.*?):(\d+).*?$</span><span class='regexp_end'>/i</span></span>
@@ -375,9 +453,9 @@ Style/AsciiComments TODO: implement!</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:35 2016 by
+  Generated on Mon Jun 13 21:53:35 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>

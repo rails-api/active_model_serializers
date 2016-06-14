@@ -390,7 +390,7 @@ meta</code></pre>
   <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:href</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@href</span> <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@href</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:meta</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@meta</span> <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@meta</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_hash'>hash</span>
+  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='op'>?</span> <span class='id identifier rubyid_hash'>hash</span> <span class='op'>:</span> <span class='kw'>nil</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -466,9 +466,9 @@ meta</code></pre>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  5 11:04:41 2016 by
+  Generated on Mon Jun 13 21:53:40 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.4).
 </div>
 
   </body>
