@@ -1,0 +1,475 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: ActiveModelSerializers::Adapter::JsonApi::Link
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!ActiveModelSerializers/Adapter/JsonApi/Link.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (L)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../ActiveModelSerializers.html" title="ActiveModelSerializers (module)">ActiveModelSerializers</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Adapter.html" title="ActiveModelSerializers::Adapter (module)">Adapter</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../JsonApi.html" title="ActiveModelSerializers::Adapter::JsonApi (class)">JsonApi</a></span></span>
+     &raquo; 
+    <span class="title">Link</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: ActiveModelSerializers::Adapter::JsonApi::Link
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">ActiveModelSerializers::Adapter::JsonApi::Link</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+      <dt class="r2">Includes:</dt>
+      <dd class="r2"><span class='object_link'><a href="../../SerializationContext/UrlHelpers.html" title="ActiveModelSerializers::SerializationContext::UrlHelpers (module)">SerializationContext::UrlHelpers</a></span></dd>
+      
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/active_model_serializers/adapter/json_api/link.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>link definition:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_oneOf'>oneOf</span>
+  <span class='id identifier rubyid_linkString'>linkString</span>
+  <span class='id identifier rubyid_linkObject'>linkObject</span>
+</code></pre>
+
+<p>description:</p>
+
+<pre class="code ruby"><code class="ruby">A link **MUST** be represented as either: a string containing the link&#39;s URL or a link
+object.&quot;</code></pre>
+
+<p>structure:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>if</span> <span class='id identifier rubyid_href?'>href?</span>
+  <span class='id identifier rubyid_linkString'>linkString</span>
+<span class='kw'>else</span>
+  <span class='id identifier rubyid_linkObject'>linkObject</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>linkString definition:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>URI</span>
+</code></pre>
+
+<p>description:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>A</span> <span class='id identifier rubyid_string'>string</span> <span class='id identifier rubyid_containing'>containing</span> <span class='id identifier rubyid_the'>the</span> <span class='id identifier rubyid_link'>link</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>s URL.</span></span></code></pre>
+
+<p>structure:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http://example.com/link-string</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>linkObject definition:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>JSON</span> <span class='const'>Object</span>
+</code></pre>
+
+<p>properties:</p>
+
+<pre class="code ruby"><code class="ruby">href (required) : URI
+meta</code></pre>
+
+<p>structure:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='label'>href:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http://example.com/link-object</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>meta:</span> <span class='id identifier rubyid_meta'>meta</span><span class='comma'>,</span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#as_json-instance_method" title="#as_json (instance method)">- (Object) <strong>as_json</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#href-instance_method" title="#href (instance method)">- (Object) <strong>href</strong>(value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Link) <strong>initialize</strong>(serializer, value) </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Link.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#meta-instance_method" title="#meta (instance method)">- (Object) <strong>meta</strong>(value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../../SerializationContext/UrlHelpers.html" title="ActiveModelSerializers::SerializationContext::UrlHelpers (module)">SerializationContext::UrlHelpers</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../../SerializationContext/UrlHelpers.html#default_url_options-instance_method" title="ActiveModelSerializers::SerializationContext::UrlHelpers#default_url_options (method)">#default_url_options</a></span>, <span class='object_link'><a href="../../SerializationContext/UrlHelpers.html#included-class_method" title="ActiveModelSerializers::SerializationContext::UrlHelpers.included (method)">included</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="ActiveModelSerializers::Adapter::JsonApi::Link (class)">Link</a></span></tt>) <strong>initialize</strong>(serializer, value) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of Link</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/link.rb', line 44</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@_routes</span> <span class='op'>||=</span> <span class='kw'>nil</span> <span class='comment'># handles warning
+</span>  <span class='comment'># actionpack-4.0.13/lib/action_dispatch/routing/route_set.rb:417: warning: instance variable @_routes not initialized
+</span>  <span class='ivar'>@object</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_object'>object</span>
+  <span class='ivar'>@scope</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_scope'>scope</span>
+  <span class='comment'># Use the return value of the block unless it is nil.
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span>
+    <span class='ivar'>@value</span> <span class='op'>=</span> <span class='id identifier rubyid_instance_eval'>instance_eval</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@value</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="as_json-instance_method">
+  
+    - (<tt>Object</tt>) <strong>as_json</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/link.rb', line 67</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span>
+  <span class='kw'>return</span> <span class='ivar'>@value</span> <span class='kw'>if</span> <span class='ivar'>@value</span>
+
+  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:href</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@href</span> <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@href</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='symbol'>:meta</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@meta</span> <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@meta</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='op'>?</span> <span class='id identifier rubyid_hash'>hash</span> <span class='op'>:</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="href-instance_method">
+  
+    - (<tt>Object</tt>) <strong>href</strong>(value) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+57
+58
+59
+60</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/link.rb', line 57</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_href'>href</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@href</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="meta-instance_method">
+  
+    - (<tt>Object</tt>) <strong>meta</strong>(value) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+62
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/link.rb', line 62</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_meta'>meta</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@meta</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Jun 14 10:33:53 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

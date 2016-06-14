@@ -1,0 +1,738 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: ActiveModel::Serializer::Reflection
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!ActiveModel/Serializer/Reflection.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (R)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../ActiveModel.html" title="ActiveModel (module)">ActiveModel</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">Serializer</a></span></span>
+     &raquo; 
+    <span class="title">Reflection</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: ActiveModel::Serializer::Reflection
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName"><span class='object_link'><a href="Field.html" title="ActiveModel::Serializer::Field (class)">Field</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Struct</li>
+          
+            <li class="next"><span class='object_link'><a href="Field.html" title="ActiveModel::Serializer::Field (class)">Field</a></span></li>
+          
+            <li class="next">ActiveModel::Serializer::Reflection</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/active_model/serializer/reflection.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Holds all the meta-data about an association as it was specified in the
+ActiveModel::Serializer class.</p>
+
+<pre class="code ruby"><code class="ruby">Specifically, the association &#39;comments&#39; is evaluated two different ways:
+1) as &#39;comments&#39; and named &#39;comments&#39;.
+2) as &#39;object.comments.last(1)&#39; and named &#39;last_comments&#39;.
+
+PostSerializer._reflections #=&gt;
+  # [
+  #   HasOneReflection.new(:author, serializer: AuthorSerializer),
+  #   HasManyReflection.new(:comments)
+  #   HasManyReflection.new(:comments, { key: :last_comments }, #&lt;Block&gt;)
+  #   HasManyReflection.new(:secret_meta_data, { if: :is_admin? })
+  # ]</code></pre>
+
+<p>So you can inspect reflections in your Adapters.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:author</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>AuthorSerializer</span>
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='symbol'>:last_comments</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:secret_meta_data</span><span class='comma'>,</span> <span class='label'>if:</span> <span class='symbol'>:is_admin?</span>
+
+  <span class='kw'>def</span> <span class='id identifier rubyid_is_admin?'>is_admin?</span>
+    <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_admin?'>admin?</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></code></pre>
+    
+  </div>
+
+
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="CollectionReflection.html" title="ActiveModel::Serializer::CollectionReflection (class)">CollectionReflection</a></span>, <span class='object_link'><a href="SingularReflection.html" title="ActiveModel::Serializer::SingularReflection (class)">SingularReflection</a></span></p>
+</div>
+
+
+
+
+
+
+  <h2>Instance Attribute Summary</h2>
+  
+  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Field.html" title="ActiveModel::Serializer::Field (class)">Field</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Field.html#block-instance_method" title="ActiveModel::Serializer::Field#block (method)">#block</a></span>, <span class='object_link'><a href="Field.html#name-instance_method" title="ActiveModel::Serializer::Field#name (method)">#name</a></span>, <span class='object_link'><a href="Field.html#options-instance_method" title="ActiveModel::Serializer::Field#options (method)">#options</a></span></p>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#build_association-instance_method" title="#build_association (instance method)">- (Object) <strong>build_association</strong>(subject, parent_serializer_options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Build association.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#include_data-instance_method" title="#include_data (instance method)">- (Object) <strong>include_data</strong>(value = true) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Reflection) <strong>initialize</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Reflection.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#link-instance_method" title="#link (instance method)">- (Object) <strong>link</strong>(name, value = nil, &amp;block) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#meta-instance_method" title="#meta (instance method)">- (Object) <strong>meta</strong>(value = nil, &amp;block) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#value-instance_method" title="#value (instance method)">- (:nil, associated resource or resource collection) <strong>value</strong>(serializer) {|ActiveModel::Serializer| ... }</a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  <div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="ActiveModel::Serializer::Reflection (class)">Reflection</a></span></tt>) <strong>initialize</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of Reflection</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39
+40
+41
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/reflection.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
+  <span class='kw'>super</span>
+  <span class='ivar'>@_links</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@_include_data</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='ivar'>@_meta</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="build_association-instance_method">
+  
+    - (<tt>Object</tt>) <strong>build_association</strong>(subject, parent_serializer_options) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Build association. This method is used internally to build serializer&#39;s
+association by its reflection.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='comment'># Given the following serializer defined:
+</span><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>CommentSummarySerializer</span>
+<span class='kw'>end</span>
+
+<span class='comment'># Then you instantiate your serializer
+</span><span class='id identifier rubyid_post_serializer'>post_serializer</span> <span class='op'>=</span> <span class='const'>PostSerializer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_post'>post</span><span class='comma'>,</span> <span class='label'>foo:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>bar</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='comment'>#
+</span><span class='comment'># to build association for comments you need to get reflection
+</span><span class='id identifier rubyid_comments_reflection'>comments_reflection</span> <span class='op'>=</span> <span class='const'>PostSerializer</span><span class='period'>.</span><span class='id identifier rubyid__reflections'>_reflections</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_r'>r</span><span class='op'>|</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>==</span> <span class='symbol'>:comments</span> <span class='rbrace'>}</span>
+<span class='comment'># and #build_association
+</span><span class='id identifier rubyid_comments_reflection'>comments_reflection</span><span class='period'>.</span><span class='id identifier rubyid_build_association'>build_association</span><span class='lparen'>(</span><span class='id identifier rubyid_post_serializer'>post_serializer</span><span class='comma'>,</span> <span class='label'>foo:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>bar</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>subject</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">Serializer</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>is a parent serializer for given association</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>parent_serializer_options</span>
+      
+      
+        <span class='type'>(<tt>Hash{Symbol =&gt; Object}</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/reflection.rb', line 109</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_build_association'>build_association</span><span class='lparen'>(</span><span class='id identifier rubyid_subject'>subject</span><span class='comma'>,</span> <span class='id identifier rubyid_parent_serializer_options'>parent_serializer_options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_association_value'>association_value</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='lparen'>(</span><span class='id identifier rubyid_subject'>subject</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_reflection_options'>reflection_options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
+  <span class='id identifier rubyid_serializer_class'>serializer_class</span> <span class='op'>=</span> <span class='id identifier rubyid_subject'>subject</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_serializer_for'>serializer_for</span><span class='lparen'>(</span><span class='id identifier rubyid_association_value'>association_value</span><span class='comma'>,</span> <span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='lbracket'>[</span><span class='symbol'>:include_data</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@_include_data</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_serializer_class'>serializer_class</span>
+    <span class='kw'>begin</span>
+      <span class='id identifier rubyid_serializer'>serializer</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer_class'>serializer_class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+        <span class='id identifier rubyid_association_value'>association_value</span><span class='comma'>,</span>
+        <span class='id identifier rubyid_serializer_options'>serializer_options</span><span class='lparen'>(</span><span class='id identifier rubyid_subject'>subject</span><span class='comma'>,</span> <span class='id identifier rubyid_parent_serializer_options'>parent_serializer_options</span><span class='comma'>,</span> <span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='rparen'>)</span>
+      <span class='rparen'>)</span>
+    <span class='kw'>rescue</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>CollectionSerializer</span><span class='op'>::</span><span class='const'>NoSerializerError</span>
+      <span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='lbracket'>[</span><span class='symbol'>:virtual_value</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_association_value'>association_value</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:as_json</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_association_value'>association_value</span>
+    <span class='kw'>end</span>
+  <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_association_value'>association_value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_association_value'>association_value</span><span class='period'>.</span><span class='id identifier rubyid_instance_of?'>instance_of?</span><span class='lparen'>(</span><span class='const'>Object</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='lbracket'>[</span><span class='symbol'>:virtual_value</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_association_value'>association_value</span>
+  <span class='kw'>end</span>
+
+  <span class='const'>Association</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='comma'>,</span> <span class='ivar'>@_links</span><span class='comma'>,</span> <span class='ivar'>@_meta</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="include_data-instance_method">
+  
+    - (<tt>Object</tt>) <strong>include_data</strong>(value = true) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+54
+55
+56
+57</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/reflection.rb', line 54</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_include_data'>include_data</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='ivar'>@_include_data</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='symbol'>:nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="link-instance_method">
+  
+    - (<tt>Object</tt>) <strong>link</strong>(name, value = nil, &amp;block) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/reflection.rb', line 44</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_link'>link</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='ivar'>@_links</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_block'>block</span> <span class='op'>||</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='symbol'>:nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="meta-instance_method">
+  
+    - (<tt>Object</tt>) <strong>meta</strong>(value = nil, &amp;block) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49
+50
+51
+52</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/reflection.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_meta'>meta</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='ivar'>@_meta</span> <span class='op'>=</span> <span class='id identifier rubyid_block'>block</span> <span class='op'>||</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='symbol'>:nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="value-instance_method">
+  
+    - (<tt>:nil</tt>, <tt>associated resource or resource collection</tt>) <strong>value</strong>(serializer) {|ActiveModel::Serializer| ... }
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:blog</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_serializer'>serializer</span><span class='op'>|</span>
+  <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_cached_blog'>cached_blog</span>
+<span class='kw'>end</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cached_blog'>cached_blog</span>
+  <span class='id identifier rubyid_cache_store'>cache_store</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cached_blog:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_updated_at'>updated_at</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='const'>Blog</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_blog_id'>blog_id</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>serializer</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">ActiveModel::Serializer</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Serializer.html" title="ActiveModel::Serializer (class)">ActiveModel::Serializer</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>:nil</tt>, <tt>associated resource or resource collection</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/active_model/serializer/reflection.rb', line 72</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_value'>value</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='rparen'>)</span>
+  <span class='ivar'>@object</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_object'>object</span>
+  <span class='ivar'>@scope</span> <span class='op'>=</span> <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_scope'>scope</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span>
+    <span class='id identifier rubyid_block_value'>block_value</span> <span class='op'>=</span> <span class='id identifier rubyid_instance_exec'>instance_exec</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_block_value'>block_value</span> <span class='op'>!=</span> <span class='symbol'>:nil</span>
+      <span class='id identifier rubyid_block_value'>block_value</span>
+    <span class='kw'>elsif</span> <span class='ivar'>@_include_data</span>
+      <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_read_attribute_for_serialization'>read_attribute_for_serialization</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_read_attribute_for_serialization'>read_attribute_for_serialization</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Tue Jun 14 10:33:51 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>
