@@ -62,198 +62,75 @@
     <iframe id="search_frame"></iframe>
 
     <div id="content"><div id='filecontents'>
-<h1 id="label-ActiveModelSerializers">ActiveModelSerializers</h1>
-<table>
-  <tr>
-    <td>Build Status</td>
-    <td>
-      <a href="https://travis-ci.org/rails-api/active_model_serializers"><img src="https://travis-ci.org/rails-api/active_model_serializers.svg?branch=master" alt="Build Status" ></a>
-      <a href="https://ci.appveyor.com/project/joaomdmoura/active-model-serializers/branch/master"><img src="https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true" alt="Build status"></a>
-    </td>
-  </tr>
-  <tr>
-    <td>Code Quality</td>
-    <td>
-      <a href="https://codeclimate.com/github/rails-api/active_model_serializers"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/gpa.svg" alt="Code Quality"></a>
-      <a href="https://codebeat.co/projects/github-com-rails-api-active_model_serializers"><img src="https://codebeat.co/badges/a9ab35fa-8b5a-4680-9d4e-a81f9a55ebcd" alt="codebeat" ></a>
-      <a href="https://codeclimate.com/github/rails-api/active_model_serializers/coverage"><img src="https://codeclimate.com/github/rails-api/active_model_serializers/badges/coverage.svg" alt="Test Coverage"></a>
-    </td>
-  </tr>
-  <tr>
-    <td>Issue Stats</td>
-    <td>
-      <a href="https://github.com/rails-api/active_model_serializers/pulse/monthly">Pulse</a>
-    </td>
-  </tr>
-</table>
-<h2 id="label-About">About</h2>
+<h1 id="label-Docs+-+ActiveModel-3A-3ASerializer+0.10.x">Docs - ActiveModel::Serializer 0.10.x</h1>
 
-<p>ActiveModelSerializers brings convention over configuration to your JSON
-generation.</p>
+<p>This is the documentation of ActiveModelSerializers, it&#39;s focused on
+the <strong>0.10.x version.</strong></p>
+<hr>
 
-<p>ActiveModelSerializers works through two components:
-<strong>serializers</strong> and <strong>adapters</strong>.</p>
-
-<p>Serializers describe <em>which</em> attributes and relationships should be
-serialized.</p>
-
-<p>Adapters describe <em>how</em> attributes and relationships should be
-serialized.</p>
-
-<p>SerializableResource co-ordinates the resource, Adapter and Serializer to
-produce the resource serialization. The serialization has the
-<code>#as_json</code>, <code>#to_json</code> and
-<code>#serializable_hash</code> methods used by the Rails JSON Renderer.
-(SerializableResource actually delegates these methods to the adapter.)</p>
-
-<p>By default ActiveModelSerializers will use the <strong>Attributes
-Adapter</strong> (no JSON root). But we strongly advise you to use
-<strong>JsonApi Adapter</strong>, which follows 1.0 of the format specified
-in <a href="http://jsonapi.org/format">jsonapi.org/format</a>. Check how to
-change the adapter in the sections below.</p>
-
-<p><code>0.10.x</code> is <strong>not</strong> backward compatible with
-<code>0.9.x</code> nor <code>0.8.x</code>.</p>
-
-<p><code>0.10.x</code> is based on the <code>0.8.0</code> code, but with a
-more flexible architecture. We&#39;d love your help. <a
-href="CONTRIBUTING.md">Learn how you can help here.</a></p>
-
-<p>It is generally safe and recommended to use the master branch.</p>
-
-<h2 id="label-Installation">Installation</h2>
-
-<p>Add this line to your application&#39;s Gemfile:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>active_model_serializers</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>~&gt; 0.10.0</span><span class='tstring_end'>&#39;</span></span>
-</code></pre>
-
-<p>And then execute:</p>
-
-<pre class="code ruby"><code class="ruby">$ bundle</code></pre>
-
-<h2 id="label-Getting+Started">Getting Started</h2>
-
-<p>See <a href="docs/general/getting_started.md">Getting Started</a> for the
-nuts and bolts.</p>
-
-<p>More information is available in the <a href="docs">Guides</a> and <a
-href="README.md#high-level-behavior">High-level behavior</a>.</p>
-
-<h2 id="label-Getting+Help">Getting Help</h2>
-
-<p>If you find a bug, please report an <a
-href="https://github.com/rails-api/active_model_serializers/issues/new">Issue</a>
-and see our <a href="CONTRIBUTING.md">contributing guide</a>.</p>
-
-<p>If you have a question, please <a
-href="http://stackoverflow.com/questions/tagged/active-model-serializers">post
-to Stack Overflow</a>.</p>
-
-<p>If you&#39;d like to chat, we have a <a
-href="http://amserializers.herokuapp.com">community slack</a>.</p>
-
-<p>Thanks!</p>
-
-<h2 id="label-Documentation">Documentation</h2>
+<h2 id="label-General">General</h2>
 <ul><li>
-<p><a
-href="https://github.com/rails-api/active_model_serializers/tree/master">0.10
-(master) Documentation</a></p>
+<p><a href="general/getting_started.md">Getting Started</a></p>
 </li><li>
-<p><a
-href="http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0"><img
-src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
+<p><a href="general/configuration_options.md">Configuration Options</a></p>
 </li><li>
-<p><a href="docs">Guides</a></p>
+<p><a href="general/serializers.md">Serializers</a></p>
 </li><li>
-<p><a
-href="https://github.com/rails-api/active_model_serializers/tree/0-9-stable">0.9
-(0-9-stable) Documentation</a></p>
+<p><a href="general/adapters.md">Adapters</a></p>
 </li><li>
-<p><a
-href="http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable"><img
-src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
+<p><a href="general/rendering.md">Rendering</a></p>
 </li><li>
-<p><a
-href="https://github.com/rails-api/active_model_serializers/tree/0-8-stable">0.8
-(0-8-stable) Documentation</a></p>
+<p><a href="general/caching.md">Caching</a></p>
 </li><li>
-<p><a
-href="http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable"><img
-src="http://img.shields.io/badge/yard-docs-blue.svg"></a></p>
+<p><a href="general/logging.md">Logging</a></p>
+</li><li>
+<p><a href="general/deserialization.md">Deserialization</a></p>
+</li><li>
+<p><a href="general/instrumentation.md">Instrumentation</a></p>
+</li><li>
+<p>JSON API</p>
+</li><li>
+<p><a href="jsonapi/schema.md">Schema</a></p>
+</li><li>
+<p><a href="jsonapi/errors.md">Errors</a></p>
+</li><li>
+<p><a href="ARCHITECTURE.md">ARCHITECTURE</a></p>
 </li></ul>
 
-<h2 id="label-High-level+behavior">High-level behavior</h2>
+<h2 id="label-How+to">How to</h2>
+<ul><li>
+<p><a href="howto/add_root_key.md">How to add root key</a></p>
+</li><li>
+<p><a href="howto/add_pagination_links.md">How to add pagination links</a></p>
+</li><li>
+<p><a href="howto/outside_controller_use.md">Using ActiveModelSerializers
+Outside Of Controllers</a></p>
+</li><li>
+<p><a href="howto/test.md">Testing ActiveModelSerializers</a></p>
+</li><li>
+<p><a href="howto/passing_arbitrary_options.md">Passing Arbitrary Options</a></p>
+</li><li>
+<p><a href="howto/serialize_poro.md">How to serialize a Plain-Old Ruby Object
+(PORO)</a></p>
+</li></ul>
 
-<p>Choose an adapter from <a
-href="lib/active_model_serializers/adapter">adapters</a>:</p>
+<h2 id="label-Integrations">Integrations</h2>
 
-<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='symbol'>:json_api</span> <span class='comment'># Default: `:attributes`
-</span></code></pre>
-
-<p>Given a <a href="lib/active_model/serializer/lint.rb">serializable
-model</a>:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='comment'># either
-</span><span class='kw'>class</span> <span class='const'>SomeResource</span> <span class='op'>&lt;</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span>
-  <span class='comment'># columns: title, body
-</span><span class='kw'>end</span>
-<span class='comment'># or
-</span><span class='kw'>class</span> <span class='const'>SomeResource</span> <span class='op'>&lt;</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Model</span>
-  <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
-<span class='kw'>end</span>
-</code></pre>
-
-<p>And initialized as:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_resource'>resource</span> <span class='op'>=</span> <span class='const'>SomeResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>title:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ActiveModelSerializers</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>body:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Convention over configuration</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-</code></pre>
-
-<p>Given a serializer for the serializable model:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>SomeSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
-  <span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='symbol'>:name</span>
-  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:body</span>
-<span class='kw'>end</span>
-</code></pre>
-
-<p>The model can be serialized as:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='id identifier rubyid_serialization'>serialization</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>SerializableResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_serialization'>serialization</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span>
-<span class='id identifier rubyid_serialization'>serialization</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
-</code></pre>
-
-<p>SerializableResource delegates to the adapter, which it builds as:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_adapter_options'>adapter_options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_serializer'>serializer</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span>
-<span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
-<span class='id identifier rubyid_adapter'>adapter</span><span class='period'>.</span><span class='id identifier rubyid_serializable_hash'>serializable_hash</span>
-</code></pre>
-
-<p>The adapter formats the serializer&#39;s attributes and associations
-(a.k.a. includes):</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_serializer_options'>serializer_options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='id identifier rubyid_serializer'>serializer</span> <span class='op'>=</span> <span class='const'>SomeSerializer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_serializer_options'>serializer_options</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span>
-<span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_associations'>associations</span>
-</code></pre>
-
-<p>See <a href="docs/ARCHITECTURE.md">ARCHITECTURE.md</a> for more
-information.</p>
-
-<h2 id="label-Contributing">Contributing</h2>
-
-<p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a></p>
+<p>| Integration | Supported ActiveModelSerializers versions | Gem name and/or
+link |—-|—–|—- | Ember.js | 0.9.x | <a
+href="https://github.com/ember-data/active-model-adapter">active-model-adapter</a>
+| Ember.js | 0.10.x + | <a
+href="integrations/ember-and-json-api.md">docs/integrations/ember-and-json-api.md</a>
+| Grape | 0.10.x + | <a
+href="integrations/grape.md">docs/integrations/grape.md</a> | | Grape |
+0.9.x | <a
+href="https://github.com/jrhe/grape-active_model_serializers">github.com/jrhe/grape-active_model_serializers</a>/
+| | Sinatra | 0.9.x | <a
+href="https://github.com/SauloSilva/sinatra-active-model-serializers">github.com/SauloSilva/sinatra-active-model-serializers</a>/</p>
 </div></div>
 
     <div id="footer">
-  Generated on Wed Jun 15 10:31:22 2016 by
+  Generated on Wed Jun 15 10:39:25 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.2.4).
 </div>
