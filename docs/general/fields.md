@@ -22,7 +22,7 @@ class AnonymousController < ApplicationController
 end
 ```
 
-Note that this is only valid for the `json` adapter. For the `json_api` adapter, you would use
+Note that this is only valid for the `json` and `attributes` adapter. For the `json_api` adapter, you would use
 
 ```ruby
 render json: @user, fields: { users: [:access_token] }
