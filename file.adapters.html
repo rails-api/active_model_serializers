@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: adapters
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.adapters.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: adapters</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Adapters">Adapters</h1>
+
+<p>ActiveModelSerializers offers the ability to configure which adapter to use
+both globally and/or when serializing (usually when rendering).</p>
+
+<p>The global adapter configuration is set on <a
+href="configuration_options.md">ActiveModelSerializers.config</a>. It
+should be set only once, preferably at initialization.</p>
+
+<p>For example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='op'>::</span><span class='const'>JsonApi</span>
+</code></pre>
+
+<p>or</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='symbol'>:json_api</span>
+</code></pre>
+
+<p>or</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='symbol'>:json</span>
+</code></pre>
+
+<p>The local adapter option is in the format <code>adapter: adapter</code>,
+where <code>adapter</code> is any of the same values as set globally.</p>
+
+<p>The configured adapter can be set as a symbol, class, or class name, as
+described in <a href="adapters.md#advanced-adapter-configuration">Advanced
+adapter configuration</a>.</p>
+
+<p>The <code>Attributes</code> adapter does not include a root key. It is just
+the serialized attributes.</p>
+
+<p>Use either the <code>JSON</code> or <code>JSON API</code> adapters if you
+want the response document to have a root key.</p>
+
+<h2 id="label-Built+in+Adapters">Built in Adapters</h2>
+
+<h3 id="label-Attributes+-+Default">Attributes - Default</h3>
+
+<p>It&#39;s the default adapter, it generates a json response without a root
+key. Doesn&#39;t follow any specific convention.</p>
+
+<h5 id="label-Example+output">Example output</h5>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Title 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Body 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>publish_at</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2020-03-16T03:55:25.291Z</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>author</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>first_name</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Bob</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>last_name</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Jones</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>comments</span><span class='label_end'>&quot;:</span> <span class='lbracket'>[</span>
+    <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cool</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>awesome</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span>
+  <span class='rbracket'>]</span>
+<span class='rbrace'>}</span>
+</code></pre>
+
+<h3 id="label-JSON">JSON</h3>
+
+<p>The json response is always rendered with a root key.</p>
+
+<p>The root key can be overridden by: * passing the <code>root</code> option
+in the render call. See details in the <a
+href="rendering.md#overriding-the-root-key">Rendering Guides</a>. * setting
+the <code>type</code> of the serializer. See details in the <a
+href="serializers.md#type">Serializers Guide</a>.</p>
+
+<p>Doesn&#39;t follow any specific convention.</p>
+
+<h5 id="label-Example+output">Example output</h5>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>post</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Title 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Body 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>publish_at</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2020-03-16T03:55:25.291Z</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>author</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>first_name</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Bob</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>last_name</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Jones</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>comments</span><span class='label_end'>&quot;:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cool</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>awesome</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span><span class='rbracket'>]</span>
+  <span class='rbrace'>}</span>
+<span class='rbrace'>}</span>
+</code></pre>
+
+<h3 id="label-JSON+API">JSON API</h3>
+
+<p>This adapter follows <strong>version 1.0</strong> of the <a
+href="../jsonapi/schema.md">format specified</a> in <a
+href="http://jsonapi.org/format">jsonapi.org/format</a>.</p>
+
+<h5 id="label-Example+output">Example output</h5>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>data</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1337</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>posts</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>attributes</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Title 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Body 1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>publish-at</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2020-03-16T03:55:25.291Z</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>relationships</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>author</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>data</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>authors</span><span class='tstring_end'>&quot;</span></span>
+        <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>comments</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>data</span><span class='label_end'>&quot;:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>7</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&quot;</span></span>
+        <span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>12</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&quot;</span></span>
+        <span class='rbrace'>}</span><span class='rbracket'>]</span>
+      <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>links</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>post-authors</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://example.com/post_authors</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>meta</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>rating</span><span class='label_end'>&quot;:</span> <span class='int'>5</span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>favorite-count</span><span class='label_end'>&quot;:</span> <span class='int'>10</span>
+    <span class='rbrace'>}</span>
+  <span class='rbrace'>}</span>
+<span class='rbrace'>}</span>
+</code></pre>
+
+<h4 id="label-Included">Included</h4>
+
+<p>It will include the associated resources in the
+<code>&quot;included&quot;</code> member when the resource names are
+included in the <code>include</code> option. Including nested associated
+resources is also supported.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>include:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>author</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments.author</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='comment'># or
+</span>  <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>include:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>author,comments,comments.author</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>In addition, two types of wildcards may be used:</p>
+<ul><li>
+<p><code>*</code> includes one level of associations.</p>
+</li><li>
+<p><code>**</code> includes all recursively.</p>
+</li></ul>
+
+<p>These can be combined with other paths.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>include:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>**</span><span class='tstring_end'>&#39;</span></span> <span class='comment'># or &#39;*&#39; for a single layer
+</span></code></pre>
+
+<p>The format of the <code>include</code> option can be either:</p>
+<ul><li>
+<p>a String composed of a comma-separated list of <a
+href="http://jsonapi.org/format/#fetching-includes">relationship paths</a>.</p>
+</li><li>
+<p>an Array of Symbols and Hashes.</p>
+</li><li>
+<p>a mix of both.</p>
+</li></ul>
+
+<p>The following would render posts and include:</p>
+<ul><li>
+<p>the author</p>
+</li><li>
+<p>the author&#39;s comments, and</p>
+</li><li>
+<p>every resource referenced by the author&#39;s comments (recursively).</p>
+</li></ul>
+
+<p>It could be combined, like above, with other paths in any combination
+desired.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>include:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>author.comments.**</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<h5 id="label-Security+Considerations">Security Considerations</h5>
+
+<p>Since the included options may come from the query params (i.e.
+user-controller):</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>include:</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:include</span><span class='rbracket'>]</span>
+</code></pre>
+
+<p>The user could pass in <code>include=**</code>.</p>
+
+<p>We recommend filtering any user-supplied includes appropriately.</p>
+
+<h2 id="label-Advanced+adapter+configuration">Advanced adapter configuration</h2>
+
+<h3 id="label-Registering+an+adapter">Registering an adapter</h3>
+
+<p>The default adapter can be configured, as above, to use any class given to
+it.</p>
+
+<p>An adapter may also be specified, e.g. when rendering, as a class or as a
+symbol. If a symbol, then the adapter must be, e.g.
+<code>:great_example</code>,
+<code>ActiveModelSerializers::Adapter::GreatExample</code>, or registered.</p>
+
+<p>There are two ways to register an adapter:</p>
+
+<p>1) The simplest, is to subclass
+<code>ActiveModelSerializers::Adapter::Base</code>, e.g. the below will
+register the <code>Example::UsefulAdapter</code> as
+<code>&quot;example/useful_adapter&quot;</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>module</span> <span class='const'>Example</span>
+  <span class='kw'>class</span> <span class='const'>UsefulAdapter</span> <span class='op'>&lt;</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='op'>::</span><span class='const'>Base</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>You&#39;ll notice that the name it registers is the underscored namespace
+and class.</p>
+
+<p>Under the covers, when the
+<code>ActiveModelSerializers::Adapter::Base</code> is subclassed, it
+registers the subclass as
+<code>register(&quot;example/useful_adapter&quot;,
+Example::UsefulAdapter)</code></p>
+
+<p>2) Any class can be registered as an adapter by calling
+<code>register</code> directly on the
+<code>ActiveModelSerializers::Adapter</code> class. e.g., the below
+registers <code>MyAdapter</code> as <code>:special_adapter</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>MyAdapter</span><span class='semicolon'>;</span> <span class='kw'>end</span>
+<span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Adapter</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='symbol'>:special_adapter</span><span class='comma'>,</span> <span class='const'>MyAdapter</span><span class='rparen'>)</span>
+</code></pre>
+
+<h3 id="label-Looking+up+an+adapter">Looking up an adapter</h3>
+
+<p>| Method | Return value | | :———— |:—————| |
+<code>ActiveModelSerializers::Adapter.adapter_map</code> | A Hash of all
+known adapters <code>{ adapter_name =&gt; adapter_class }</code> | |
+<code>ActiveModelSerializers::Adapter.adapters</code> | A (sorted) Array of
+all known <code>adapter_names</code> | |
+<code>ActiveModelSerializers::Adapter.lookup(name_or_klass)</code> | The
+<code>adapter_class</code>, else raises an
+<code>ActiveModelSerializers::Adapter::UnknownAdapter</code> error | |
+<code>ActiveModelSerializers::Adapter.adapter_class(adapter)</code> |
+Delegates to <code>ActiveModelSerializers::Adapter.lookup(adapter)</code> |
+| <code>ActiveModelSerializers::Adapter.configured_adapter</code> | A
+convenience method for
+<code>ActiveModelSerializers::Adapter.lookup(config.adapter)</code> |</p>
+
+<p>The registered adapter name is always a String, but may be looked up as a
+Symbol or String. Helpfully, the Symbol or String is underscored, so that
+<code>get(:my_adapter)</code> and <code>get(&quot;MyAdapter&quot;)</code>
+may both be used.</p>
+
+<p>For more information, see <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/adapter.rb">the
+Adapter class on GitHub</a></p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:23 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

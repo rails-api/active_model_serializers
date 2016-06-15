@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: serialize_poro
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.serialize_poro.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: serialize_poro</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-How+to+serialize+a+Plain-Old+Ruby+Object+-28PORO-29">How to serialize a Plain-Old Ruby Object (PORO)</h1>
+
+<p>When you are first getting started with ActiveModelSerializers, it may seem
+only <code>ActiveRecord::Base</code> objects can be serializable, but
+pretty much any object can be serializable with ActiveModelSerializers.
+Here is an example of a PORO that is serializable: “`ruby</p>
+
+<h1 id="label-my_model.rb">my_model.rb</h1>
+
+<p>class MyModel  alias :read_attribute_for_serialization :send  attr_accessor
+:id, :name, :level</p>
+
+<p>def initialize(attributes)  @id = <a href=":id">attributes</a>  @name = <a
+href=":name">attributes</a>  @level = <a href=":level">attributes</a>  end</p>
+
+<p>def self.model_name  @_model_name ||= ActiveModel::Name.new(self)  end end
+“`</p>
+
+<p>Fortunately, ActiveModelSerializers provides a <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/model.rb">ActiveModelSerializers::Model</a>
+which you can use in production code that will make your PORO a lot
+cleaner. The above code now becomes: <code>ruby # my_model.rb class MyModel
+&lt; ActiveModelSerializers::Model   attr_accessor :id, :name, :level end
+</code></p>
+
+<p>The default serializer would be <code>MyModelSerializer</code>.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

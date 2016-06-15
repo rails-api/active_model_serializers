@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: rendering
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.rendering.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: rendering</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Rendering">Rendering</h1>
+
+<h3 id="label-Implicit+Serializer">Implicit Serializer</h3>
+
+<p>In your controllers, when you use <code>render :json</code>, Rails will now
+first search for a serializer for the object and use it if available.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostsController</span> <span class='op'>&lt;</span> <span class='const'>ApplicationController</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span>
+    <span class='ivar'>@post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+    <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>In this case, Rails will look for a serializer named
+<code>PostSerializer</code>, and if it exists, use it to serialize the
+<code>Post</code>.</p>
+
+<h3 id="label-Explicit+Serializer">Explicit Serializer</h3>
+
+<p>If you wish to use a serializer other than the default, you can explicitly
+pass it to the renderer.</p>
+
+<h4 id="label-1.+For+a+resource-3A">1. For a resource:</h4>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>PostPreviewSerializer</span>
+</code></pre>
+
+<h4 id="label-2.+For+a+resource+collection-3A">2. For a resource collection:</h4>
+
+<p>Specify the serializer for each resource with <code>each_serializer</code></p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>each_serializer:</span> <span class='const'>PostPreviewSerializer</span>
+</code></pre>
+
+<p>The default serializer for collections is
+<code>CollectionSerializer</code>.</p>
+
+<p>Specify the collection serializer with the <code>serializer</code> option.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>CollectionSerializer</span><span class='comma'>,</span> <span class='label'>each_serializer:</span> <span class='const'>PostPreviewSerializer</span>
+</code></pre>
+
+<h2 id="label-Serializing+non-ActiveRecord+objects">Serializing non-ActiveRecord objects</h2>
+
+<p>All serializable resources must pass the <a
+href="../../lib/active_model/serializer/lint.rb#L17">ActiveModel::Serializer::Lint::Tests</a>.</p>
+
+<p>See the ActiveModelSerializers::Model for a base class that implements the
+full API for a plain-old Ruby object (PORO).</p>
+
+<h2 id="label-SerializableResource+options">SerializableResource options</h2>
+
+<p>The <code>options</code> hash passed to <code>render</code> or
+<code>ActiveModelSerializers::SerializableResource.new(resource,
+options)</code> are partitioned into <code>serializer_opts</code> and
+<code>adapter_opts</code>. <code>adapter_opts</code> are passed to new
+Adapters; <code>serializer_opts</code> are passed to new Serializers.</p>
+
+<p>The <code>adapter_opts</code> are specified in <a
+href="../../lib/active_model_serializers/serializable_resource.rb#L5">ActiveModelSerializers::SerializableResource::ADAPTER_OPTIONS</a>.
+The <code>serializer_opts</code> are the remaining options.</p>
+
+<p>(In Rails, the <code>options</code> are also passed to the
+<code>as_json(options)</code> or <code>to_json(options)</code> methods on
+the resource serialization by the Rails JSON renderer. They are, therefore,
+important to know about, but not part of ActiveModelSerializers.)</p>
+
+<p>See <a href="../ARCHITECTURE.md">ARCHITECTURE</a> for more information.</p>
+
+<h3 id="label-adapter_opts">adapter_opts</h3>
+
+<h4 id="label-fields">fields</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-adapter">adapter</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-key_transform">key_transform</h4>
+
+<pre class="code ruby"><code class="ruby">json: posts, each_serializer: PostSerializer, key_transform: :camel_lower</code></pre>
+
+<p>See <a href="key_transforms.md">Key Transforms</a> for more informaiton.</p>
+
+<h4 id="label-meta">meta</h4>
+
+<p>A <code>meta</code> member can be used to include non-standard
+meta-information. <code>meta</code> can be utilized in several levels in a
+response.</p>
+
+<h5 id="label-Top-level">Top-level</h5>
+
+<p>To set top-level <code>meta</code> in a response, specify it in the
+<code>render</code> call.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span><span class='comma'>,</span> <span class='label'>meta:</span> <span class='lbrace'>{</span> <span class='label'>total:</span> <span class='int'>10</span> <span class='rbrace'>}</span>
+</code></pre>
+
+<p>The key can be customized using <code>meta_key</code> option.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span><span class='comma'>,</span> <span class='label'>meta:</span> <span class='lbrace'>{</span> <span class='label'>total:</span> <span class='int'>10</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>meta_key:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>custom_meta</span><span class='tstring_end'>&quot;</span></span>
+</code></pre>
+
+<p><code>meta</code> will only be included in your response if you are using
+an Adapter that supports <code>root</code>, e.g., <code>JsonApi</code> and
+<code>Json</code> adapters. The default adapter, <code>Attributes</code>
+does not have <code>root</code>.</p>
+
+<h5 id="label-Resource-level">Resource-level</h5>
+
+<p>To set resource-level <code>meta</code> in a response, define meta in a
+serializer with one of the following methods:</p>
+
+<p>As a single, static string.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_meta'>meta</span> <span class='label'>stuff:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>value</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>As a block containing a Hash.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_meta'>meta</span> <span class='kw'>do</span>
+  <span class='lbrace'>{</span>
+    <span class='label'>rating:</span> <span class='int'>4</span><span class='comma'>,</span>
+    <span class='label'>comments_count:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h4 id="label-links">links</h4>
+
+<p>If you wish to use Rails url helpers for link generation, e.g.,
+<code>link(:resources) { resources_url }</code>, ensure your application
+sets <code>Rails.application.routes.default_url_options</code>.</p>
+
+<h5 id="label-Top-level">Top-level</h5>
+
+<p>JsonApi supports a <a
+href="http://jsonapi.org/format/#document-links">links object</a> to be
+specified at top-level, that you can specify in the <code>render</code>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_links_object'>links_object</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='label'>href:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://example.com/api/posts</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='label'>meta:</span> <span class='lbrace'>{</span>
+      <span class='label'>count:</span> <span class='int'>10</span>
+    <span class='rbrace'>}</span>
+  <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>links:</span> <span class='id identifier rubyid_links_object'>links_object</span>
+</code></pre>
+
+<p>That&#39;s the result:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>data</span><span class='label_end'>&quot;:</span> <span class='lbracket'>[</span>
+    <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>posts</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>attributes</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>title</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>JSON API is awesome!</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>body</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>You should be using JSON API</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>created</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2015-05-22T14:56:29.000Z</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>updated</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2015-05-22T14:56:28.000Z</span><span class='tstring_end'>&quot;</span></span>
+      <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span>
+  <span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>links</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>href</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://example.com/api/posts</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>meta</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>count</span><span class='label_end'>&quot;:</span> <span class='int'>10</span>
+    <span class='rbrace'>}</span>
+  <span class='rbrace'>}</span>
+<span class='rbrace'>}</span>
+</code></pre>
+
+<p>This feature is specific to JsonApi, so you have to use the use the <a
+href="adapters.md#jsonapi">JsonApi Adapter</a></p>
+
+<h5 id="label-Resource-level">Resource-level</h5>
+
+<p>In your serializer, define each link in one of the following methods:</p>
+
+<p>As a static string</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_link'>link</span> <span class='symbol'>:link_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>https://example.com/resource</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>As a block to be evaluated. When using Rails, URL helpers are available.
+Ensure your application sets
+<code>Rails.application.routes.default_url_options</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_link'>link</span> <span class='symbol'>:link_name_</span> <span class='kw'>do</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://example.com/resource/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span>
+
+<span class='id identifier rubyid_link'>link</span><span class='lparen'>(</span><span class='symbol'>:link_name</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://example.com/resource/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_link'>link</span><span class='lparen'>(</span><span class='symbol'>:link_name</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_resource_url'>resource_url</span><span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_link'>link</span><span class='lparen'>(</span><span class='symbol'>:link_name</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_url_for'>url_for</span><span class='lparen'>(</span><span class='label'>controller:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>controller_name</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>action:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>index</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>only_path:</span> <span class='kw'>false</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+</code></pre>
+
+<h3 id="label-serializer_opts">serializer_opts</h3>
+
+<h4 id="label-include">include</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-Overriding+the+root+key">Overriding the root key</h4>
+
+<p>Overriding the resource root only applies when using the JSON adapter.</p>
+
+<p>Normally, the resource root is derived from the class name of the resource
+being serialized. e.g. <code>UserPostSerializer.new(UserPost.new)</code>
+will be serialized with the root <code>user_post</code> or
+<code>user_posts</code> according the adapter collection pluralization
+rules.</p>
+
+<p>When using the JSON adapter in your initializer
+(ActiveModelSerializers.config.adapter = :json), or passing in the adapter
+in your render call, you can specify the root by passing it as an argument
+to <code>render</code>. For example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@user_post</span><span class='comma'>,</span> <span class='label'>root:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>admin_post</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>adapter:</span> <span class='symbol'>:json</span>
+</code></pre>
+
+<p>This will be rendered as: <code>json   {     &quot;admin_post&quot;: {     
+&quot;title&quot;: &quot;how to do open source&quot;     }   } </code>
+Note: the <code>Attributes</code> adapter (default) does not include a
+resource root. You also will not be able to create a single top-level root
+if you are using the :json_api adapter.</p>
+
+<h4 id="label-serializer">serializer</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-scope">scope</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-scope_name">scope_name</h4>
+
+<p>PR please :)</p>
+
+<h2 id="label-Using+a+serializer+without+render">Using a serializer without <code>render</code></h2>
+
+<p>See <a
+href="../howto/outside_controller_use.md#serializing-before-controller-render">Usage
+outside of a controller</a>.</p>
+
+<h2 id="label-Pagination">Pagination</h2>
+
+<p>See <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/docs/howto/add_pagination_links.md">How
+to add pagination links</a>.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:24 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

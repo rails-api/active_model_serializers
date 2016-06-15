@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: ARCHITECTURE
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.ARCHITECTURE.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: ARCHITECTURE</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="README.md">Back to Guides</a></p>
+
+<p>This document focuses on architecture the 0.10.x version of
+ActiveModelSerializers. If you are interested in the architecture of the
+0.8 or 0.9 versions, please refer to the <a
+href="https://github.com/rails-api/active_model_serializers/blob/0-8-stable/README.md">0.8
+README</a> or <a
+href="https://github.com/rails-api/active_model_serializers/blob/0-9-stable/README.md">0.9
+README</a>.</p>
+
+<p>The original design is also available <a
+href="https://github.com/rails-api/active_model_serializers/blob/d72b66d4c5355b0ff0a75a04895fcc4ea5b0c65e/README.textile">here</a>.</p>
+
+<h1 id="label-ARCHITECTURE">ARCHITECTURE</h1>
+
+<p>An <strong><code>ActiveModel::Serializer</code></strong> wraps a <a
+href="https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/serialization.rb">serializable
+resource</a> and exposes an <code>attributes</code> method, among a few
+others. It allows you to specify which attributes and associations should
+be represented in the serializatation of the resource. It requires an
+adapter to transform its attributes into a JSON document; it cannot be
+serialized itself. It may be useful to think of it as a <a
+href="http://blog.steveklabnik.com/posts/2011-09-09-better-ruby-presenters">presenter</a>.</p>
+
+<p>The <strong><code>ActiveModel::ArraySerializer</code></strong> represent a
+collection of resources as serializers and, if there is no serializer,
+primitives.</p>
+
+<p>The <strong><code>ActiveModel::Adapter</code></strong> describes the
+structure of the JSON document generated from a serializer. For example,
+the <code>Attributes</code> example represents each serializer as its
+unmodified attributes. The <code>JsonApi</code> adapter represents the
+serializer as a <a href="http://jsonapi.org/">JSON API</a> document.</p>
+
+<p>The
+<strong><code>ActiveModelSerializers::SerializableResource</code></strong>
+acts to coordinate the serializer(s) and adapter to an object that responds
+to <code>to_json</code>, and <code>as_json</code>. It is used in the
+controller to encapsulate the serialization resource when rendered.
+However, it can also be used on its own to serialize a resource outside of
+a controller, as well.</p>
+
+<h2 id="label-Primitive+handling">Primitive handling</h2>
+
+<p>Definitions: A primitive is usually a String or Array. There is no
+serializer defined for them; they will be serialized when the resource is
+converted to JSON (<code>as_json</code> or <code>to_json</code>). (The
+below also applies for any object with no serializer.)</p>
+
+<p>ActiveModelSerializers doesn&#39;t handle primitives passed to <code>render
+json:</code> at all.</p>
+
+<p>However, when a primitive value is an attribute or in a collection, it is
+not modified.</p>
+
+<p>Internally, if no serializer can be found in the controller, the resource
+is not decorated by ActiveModelSerializers.</p>
+
+<p>If the collection serializer (ArraySerializer) cannot identify a serializer
+for a resource in its collection, it raises <a
+href="https://github.com/rails-api/active_model_serializers/issues/1191#issuecomment-142327128">NoSerializerError</a>
+which is rescued in
+<code>ActiveModel::Serializer::Reflection#build_association</code> which
+sets the association value directly:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_reflection_options'>reflection_options</span><span class='lbracket'>[</span><span class='symbol'>:virtual_value</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_association_value'>association_value</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:as_json</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_association_value'>association_value</span>
+</code></pre>
+
+<p>(which is called by the adapter as
+<code>serializer.associations(*)</code>.)</p>
+
+<h2 id="label-How+options+are+parsed">How options are parsed</h2>
+
+<p>High-level overview:</p>
+<ul><li>
+<p>For a collection</p>
+</li><li>
+<p><code>:serializer</code> specifies the collection serializer and</p>
+</li><li>
+<p><code>:each_serializer</code> specifies the serializer for each resource in
+the collection.</p>
+</li><li>
+<p>For a single resource, the <code>:serializer</code> option is the resource
+serializer.</p>
+</li><li>
+<p>Options are partitioned in serializer options and adapter options. Keys for
+adapter options are specified by <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/serializable_resource.rb#L5">ADAPTER_OPTION_KEYS</a>.
+The remaining options are serializer options.</p>
+</li></ul>
+
+<p>Details:</p>
+<ol><li>
+<p><strong>ActionController::Serialization</strong></p>
+</li><li>
+<p><code>serializable_resource =
+ActiveModelSerializers::SerializableResource.new(resource, options)</code></p>
+<ol><li>
+<p><code>options</code> are partitioned into <code>adapter_opts</code> and
+everything else (<code>serializer_opts</code>).  The
+<code>adapter_opts</code> keys are defined in
+<code>ActiveModelSerializers::SerializableResource::ADAPTER_OPTION_KEYS</code>.</p>
+</li></ol>
+</li><li>
+<p><strong>ActiveModelSerializers::SerializableResource</strong></p>
+</li><li>
+<p><code>if serializable_resource.serializer?</code> (there is a serializer
+for the resource, and an adapter is used.)</p>
+<ul><li>
+<p>Where <code>serializer?</code> is <code>use_adapter? &amp;&amp;
+!!(serializer)</code></p>
+</li><li>
+<p>Where <code>use_adapter?</code>: &#39;True when no explicit adapter given,
+or explicit value is truthy (non-nil); False when explicit adapter is falsy
+(nil or false)&#39;</p>
+</li><li>
+<p>Where <code>serializer</code>:</p>
+<ol><li>
+<p>from explicit <code>:serializer</code> option, else</p>
+</li><li>
+<p>implicitly from resource
+<code>ActiveModel::Serializer.serializer_for(resource)</code></p>
+</li></ol>
+</li></ul>
+</li><li>
+<p>A side-effect of checking <code>serializer</code> is:</p>
+<ul><li>
+<p>The <code>:serializer</code> option is removed from the serializer_opts
+hash</p>
+</li><li>
+<p>If the <code>:each_serializer</code> option is present, it is removed from
+the serializer_opts hash and set as the <code>:serializer</code> option</p>
+</li></ul>
+</li><li>
+<p>The serializer and adapter are created as</p>
+<ol><li>
+<p><code>serializer_instance = serializer.new(resource,
+serializer_opts)</code></p>
+</li><li>
+<p><code>adapter_instance =
+ActiveModel::Serializer::Adapter.create(serializer_instance,
+adapter_opts)</code></p>
+</li></ol>
+</li><li>
+<p><strong>ActiveModel::Serializer::ArraySerializer#new</strong></p>
+</li><li>
+<p>If the <code>serializer_instance</code> was a <code>ArraySerializer</code>
+and the <code>:serializer</code> serializer_opts is present, then <a
+href="https://github.com/rails-api/active_model_serializers/blob/a54d237e2828fe6bab1ea5dfe6360d4ecc8214cd/lib/active_model/serializer/array_serializer.rb#L14-L16">that
+serializer is passed into each resource</a>.</p>
+</li><li>
+<p><strong>ActiveModel::Serializer#attributes</strong> is used by the adapter
+to get the attributes for  resource as defined by the serializer.</p>
+</li></ol>
+
+<h2 id="label-What+does+a+-27serializable+resource-27+look+like-3F">What does a &#39;serializable resource&#39; look like?</h2>
+<ul><li>
+<p>An <code>ActiveRecord::Base</code> object.</p>
+</li><li>
+<p>Any Ruby object that passes the  <a
+href="http://www.rubydoc.info/github/rails-api/active_model_serializers/ActiveModel/Serializer/Lint/Tests">Lint</a>
+<a
+href="https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer/lint.rb">code</a>.</p>
+</li></ul>
+
+<p>ActiveModelSerializers provides a <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/model.rb">ActiveModelSerializers::Model</a>,
+which is a simple serializable PORO (Plain-Old Ruby Object).</p>
+
+<p>ActiveModelSerializers::Model may be used either as a template, or in
+production code.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>MyModel</span> <span class='op'>&lt;</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Model</span>
+  <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:id</span><span class='comma'>,</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:level</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>The default serializer for <code>MyModel</code> would be
+<code>MyModelSerializer</code> whether MyModel is an ActiveRecord::Base
+object or not.</p>
+
+<p>Outside of the controller the rules are <strong>exactly</strong> the same
+as for records. For example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='const'>MyModel</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>level:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>awesome</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>adapter:</span> <span class='symbol'>:json</span>
+</code></pre>
+
+<p>would be serialized the same as</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>SerializableResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>MyModel</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>level:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>awesome</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>adapter:</span> <span class='symbol'>:json</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
+</code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:25:09 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

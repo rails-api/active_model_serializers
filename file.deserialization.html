@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: deserialization
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.deserialization.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: deserialization</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Deserialization">Deserialization</h1>
+
+<p>This is currently an <em>experimental</em> feature. The interface may
+change.</p>
+
+<h2 id="label-JSON+API">JSON API</h2>
+
+<p>The <code>ActiveModelSerializers::Deserialization</code> defines two
+methods (namely <code>jsonapi_parse</code> and
+<code>jsonapi_parse!</code>), which take a <code>Hash</code> or an instance
+of <code>ActionController::Parameters</code> representing a JSON API
+payload, and return a hash that can directly be used to create/update
+models. The bang version throws an <code>InvalidDocument</code> exception
+when parsing fails, whereas the “safe” version simply returns an empty
+hash.</p>
+<ul><li>
+<p>Parameters</p>
+</li><li>
+<p>document: <code>Hash</code> or <code>ActionController::Parameters</code>
+instance</p>
+</li><li>
+<p>options:</p>
+<ul><li>
+<p>only: <code>Array</code> of whitelisted fields</p>
+</li><li>
+<p>except: <code>Array</code> of blacklisted fields</p>
+</li><li>
+<p>keys: <code>Hash</code> of fields the name of which needs to be modified
+(e.g. <code>{ :author =&gt; :user, :date =&gt; :created_at }</code>)</p>
+</li></ul>
+</li></ul>
+
+<p>Examples:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostsController</span> <span class='op'>&lt;</span> <span class='const'>ActionController</span><span class='op'>::</span><span class='const'>Base</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
+    <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_create_params'>create_params</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>def</span> <span class='id identifier rubyid_create_params'>create_params</span>
+    <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Deserialization</span><span class='period'>.</span><span class='id identifier rubyid_jsonapi_parse'>jsonapi_parse</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:content</span><span class='comma'>,</span> <span class='symbol'>:author</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Given a JSON API document,</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_document'>document</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>attributes</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>title</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Title 1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>date</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2015-12-20</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>relationships</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>author</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+        <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>user</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2</span><span class='tstring_end'>&#39;</span></span>
+        <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>second_author</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+        <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='kw'>nil</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+        <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='lbrace'>{</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comment</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>3</span><span class='tstring_end'>&#39;</span></span>
+        <span class='rbrace'>}</span><span class='comma'>,</span><span class='lbrace'>{</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comment</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>4</span><span class='tstring_end'>&#39;</span></span>
+        <span class='rbrace'>}</span><span class='rbracket'>]</span>
+      <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span>
+  <span class='rbrace'>}</span>
+<span class='rbrace'>}</span>
+</code></pre>
+
+<p>The entire document can be parsed without specifying any options:
+<code>ruby ActiveModelSerializers::Deserialization.jsonapi_parse(document)
+#=&gt; # { #   title: &#39;Title 1&#39;, #   date: &#39;2015-12-20&#39;, # 
+author_id: 2, #   second_author_id: nil #   comment_ids: [3, 4] # } </code></p>
+
+<p>and fields, relationships, and polymorphic relationships can be specified
+via the options:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>Deserialization</span>
+  <span class='period'>.</span><span class='id identifier rubyid_jsonapi_parse'>jsonapi_parse</span><span class='lparen'>(</span><span class='id identifier rubyid_document'>document</span><span class='comma'>,</span> <span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:date</span><span class='comma'>,</span> <span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span>
+                           <span class='label'>keys:</span> <span class='lbrace'>{</span> <span class='label'>date:</span> <span class='symbol'>:published_at</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+                           <span class='label'>polymorphic:</span> <span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='comment'>#=&gt;
+</span><span class='comment'># {
+</span><span class='comment'>#   title: &#39;Title 1&#39;,
+</span><span class='comment'>#   published_at: &#39;2015-12-20&#39;,
+</span><span class='comment'>#   author_id: &#39;2&#39;,
+</span><span class='comment'>#   author_type: &#39;user&#39;
+</span><span class='comment'># }
+</span></code></pre>
+
+<h2 id="label-Attributes-2FJson">Attributes/Json</h2>
+
+<p>There is currently no deserialization for those adapters.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:23 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

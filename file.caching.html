@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: caching
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.caching.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: caching</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Caching">Caching</h1>
+
+<p>To cache a serializer, call <code>cache</code> and pass its options. The
+options are the same options of <code>ActiveSupport::Cache::Store</code>,
+plus a <code>key</code> option that will be the prefix of the object cache
+on a pattern
+<code>&quot;#{key}/#{object.id}-#{object.updated_at}&quot;</code>.</p>
+
+<p>The cache support is optimized to use the cached object in multiple
+request. An object cached on a <code>show</code> request will be reused at
+the <code>index</code>. If there is a relationship with another cached
+serializer it will also be created and reused automatically.</p>
+
+<p><strong>[NOTE] Every object is individually cached.</strong></p>
+
+<p><strong>[NOTE] The cache is automatically expired after an object is
+updated, but it&#39;s not deleted.</strong></p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_cache'>cache</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='comment'># options:
+</span></code></pre>
+
+<p>expires_in, compress, force, race_condition_ttl<code> </code></p>
+
+<p>Take the example bellow:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_cache'>cache</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>expires_in:</span> <span class='int'>3</span><span class='period'>.</span><span class='id identifier rubyid_hours'>hours</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>On this example every <code>Post</code> object will be cached with the key
+<code>&quot;post/#{post.id}-#{post.updated_at}&quot;</code>. You can use
+this key to expire it as you want, but in this case it will be
+automatically expired after 3 hours.</p>
+
+<h2 id="label-Fragment+Caching">Fragment Caching</h2>
+
+<p>If there is some API endpoint that shouldn&#39;t be fully cached, you can
+still optimise it, using Fragment Cache on the attributes and relationships
+that you want to cache.</p>
+
+<p>You can define the attribute by using <code>only</code> or
+<code>except</code> option on cache method.</p>
+
+<p><strong>[NOTE] Cache serializers will be used at their
+relationships</strong></p>
+
+<p>Example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_cache'>cache</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>expires_in:</span> <span class='int'>3</span><span class='period'>.</span><span class='id identifier rubyid_hours'>hours</span><span class='comma'>,</span> <span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:title</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+<span class='kw'>end</span>
+</code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:23 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

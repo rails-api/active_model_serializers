@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: passing_arbitrary_options
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.passing_arbitrary_options.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: passing_arbitrary_options</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Passing+Arbitrary+Options+To+A+Serializer">Passing Arbitrary Options To A Serializer</h1>
+
+<p>In addition to the <a
+href="../general/serializers.md#scope">serialization_scope</a>, any options
+passed to <code>render</code> that are not reserved for the <a
+href="../general/rendering.md#adapter_opts">adapter</a> are available in
+the serializer as <a
+href="../general/serializers.md#instance_options">instance_options</a>.</p>
+
+<p>For example, we could pass in a field, such as <code>user_id</code> into
+our serializer.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'># posts_controller.rb
+</span><span class='kw'>class</span> <span class='const'>PostsController</span> <span class='op'>&lt;</span> <span class='const'>ApplicationController</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_dashboard'>dashboard</span>  
+    <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span><span class='comma'>,</span> <span class='label'>user_id:</span> <span class='int'>12</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+
+<span class='comment'># post_serializer.rb
+</span><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:id</span><span class='comma'>,</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='kw'>def</span> <span class='id identifier rubyid_comments_by_me'>comments_by_me</span>  
+    <span class='const'>Comments</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>user_id:</span> <span class='id identifier rubyid_instance_options'>instance_options</span><span class='lbracket'>[</span><span class='symbol'>:user_id</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>post_id:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

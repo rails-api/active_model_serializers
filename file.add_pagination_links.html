@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: add_pagination_links
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.add_pagination_links.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: add_pagination_links</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-How+to+add+pagination+links">How to add pagination links</h1>
+
+<h3 id="label-JSON+API+adapter">JSON API adapter</h3>
+
+<p>Pagination links will be included in your response automatically as long as
+the resource is paginated and if you are using the <code>JsonApi</code>
+adapter.</p>
+
+<p>If you want pagination links in your response, use <a
+href="https://github.com/amatsuda/kaminari">Kaminari</a> or <a
+href="https://github.com/mislav/will_paginate">WillPaginate</a>.</p>
+
+<p>Although the others adapters does not have this feature, it is possible to
+implement pagination links to <code>JSON</code> adapter. For more
+information about it, please see in our docs</p>
+
+<h6 id="label-Kaminari+examples">Kaminari examples</h6>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>#array
+</span><span class='ivar'>@posts</span> <span class='op'>=</span> <span class='const'>Kaminari</span><span class='period'>.</span><span class='id identifier rubyid_paginate_array'>paginate_array</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>2</span><span class='comma'>,</span> <span class='int'>3</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_page'>page</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_per'>per</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span>
+
+<span class='comment'>#active_record
+</span><span class='ivar'>@posts</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_page'>page</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_per'>per</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span>
+</code></pre>
+
+<h6 id="label-WillPaginate+examples">WillPaginate examples</h6>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>#array
+</span><span class='ivar'>@posts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span><span class='int'>2</span><span class='comma'>,</span><span class='int'>3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_paginate'>paginate</span><span class='lparen'>(</span><span class='label'>page:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>per_page:</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span>
+
+<span class='comment'>#active_record
+</span><span class='ivar'>@posts</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_page'>page</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_per_page'>per_page</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span>
+</code></pre>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_adapter'>adapter</span> <span class='op'>=</span> <span class='symbol'>:json_api</span>
+</code></pre>
+
+<p>ex: <code>json {   &quot;data&quot;: [     {       &quot;type&quot;:
+&quot;articles&quot;,       &quot;id&quot;: &quot;3&quot;,      
+&quot;attributes&quot;: {         &quot;title&quot;: &quot;JSON API paints
+my bikeshed!&quot;,         &quot;body&quot;: &quot;The shortest article.
+Ever.&quot;,         &quot;created&quot;:
+&quot;2015-05-22T14:56:29.000Z&quot;,         &quot;updated&quot;:
+&quot;2015-05-22T14:56:28.000Z&quot;       }     }   ],  
+&quot;links&quot;: {     &quot;self&quot;:
+&quot;http://example.com/articles?page[number]=3&page[size]=1&quot;,    
+&quot;first&quot;:
+&quot;http://example.com/articles?page[number]=1&page[size]=1&quot;,    
+&quot;prev&quot;:
+&quot;http://example.com/articles?page[number]=2&page[size]=1&quot;,    
+&quot;next&quot;:
+&quot;http://example.com/articles?page[number]=4&page[size]=1&quot;,    
+&quot;last&quot;:
+&quot;http://example.com/articles?page[number]=13&page[size]=1&quot;   } }
+</code></p>
+
+<p>ActiveModelSerializers pagination relies on a paginated collection with the
+methods <code>current_page</code>, <code>total_pages</code>, and
+<code>size</code>, such as are supported by both <a
+href="https://github.com/amatsuda/kaminari">Kaminari</a> or <a
+href="https://github.com/mislav/will_paginate">WillPaginate</a>.</p>
+
+<h3 id="label-JSON+adapter">JSON adapter</h3>
+
+<p>If you are using <code>JSON</code> adapter, pagination links will not be
+included automatically, but it is possible to do so using <code>meta</code>
+key.</p>
+
+<p>Add this method to your base API controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>def</span> <span class='id identifier rubyid_pagination_dict'>pagination_dict</span><span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='rparen'>)</span>
+  <span class='lbrace'>{</span>
+    <span class='label'>current_page:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_current_page'>current_page</span><span class='comma'>,</span>
+    <span class='label'>next_page:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_next_page'>next_page</span><span class='comma'>,</span>
+    <span class='label'>prev_page:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_prev_page'>prev_page</span><span class='comma'>,</span>
+    <span class='label'>total_pages:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_total_pages'>total_pages</span><span class='comma'>,</span>
+    <span class='label'>total_count:</span> <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_total_count'>total_count</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Then, use it on your render method.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='id identifier rubyid_posts'>posts</span><span class='comma'>,</span> <span class='label'>meta:</span> <span class='id identifier rubyid_pagination_dict'>pagination_dict</span><span class='lparen'>(</span><span class='id identifier rubyid_posts'>posts</span><span class='rparen'>)</span>
+</code></pre>
+
+<p>ex. <code>json {   &quot;posts&quot;: [     {       &quot;id&quot;: 2,     
+&quot;title&quot;: &quot;JSON API paints my bikeshed!&quot;,      
+&quot;body&quot;: &quot;The shortest article. Ever.&quot;     }   ],  
+&quot;meta&quot;: {     &quot;current_page&quot;: 3,    
+&quot;next_page&quot;: 4,     &quot;prev_page&quot;: 2,    
+&quot;total_pages&quot;: 10,     &quot;total_count&quot;: 10   } } </code></p>
+
+<p>You can also achieve the same result if you have a helper method that adds
+the pagination info in the meta tag. For instance, in your action specify a
+custom serializer.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@posts</span><span class='comma'>,</span> <span class='label'>each_serializer:</span> <span class='const'>PostPreviewSerializer</span><span class='comma'>,</span> <span class='label'>meta:</span> <span class='id identifier rubyid_meta_attributes'>meta_attributes</span><span class='lparen'>(</span><span class='ivar'>@post</span><span class='rparen'>)</span>
+</code></pre>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>#expects pagination!
+</span><span class='kw'>def</span> <span class='id identifier rubyid_meta_attributes'>meta_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='id identifier rubyid_extra_meta'>extra_meta</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='lbrace'>{</span>
+    <span class='label'>current_page:</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_current_page'>current_page</span><span class='comma'>,</span>
+    <span class='label'>next_page:</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_next_page'>next_page</span><span class='comma'>,</span>
+    <span class='label'>prev_page:</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_prev_page'>prev_page</span><span class='comma'>,</span>
+    <span class='label'>total_pages:</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_total_pages'>total_pages</span><span class='comma'>,</span>
+    <span class='label'>total_count:</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_total_count'>total_count</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_extra_meta'>extra_meta</span><span class='rparen'>)</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h3 id="label-Attributes+adapter">Attributes adapter</h3>
+
+<p>This adapter does not allow us to use <code>meta</code> key, due to that it
+is not possible to add pagination links.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

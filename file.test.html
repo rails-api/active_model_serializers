@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: test
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.test.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: test</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<h1 id="label-How+to+test">How to test</h1>
+
+<h2 id="label-Controller+Serializer+Usage">Controller Serializer Usage</h2>
+
+<p>ActiveModelSerializers provides a <code>assert_serializer</code> method to
+be used on your controller tests to assert that a specific serializer was
+used.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostsControllerTest</span> <span class='op'>&lt;</span> <span class='const'>ActionController</span><span class='op'>::</span><span class='const'>TestCase</span>
+  <span class='id identifier rubyid_test'>test</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>should render post serializer</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_get'>get</span> <span class='symbol'>:index</span>
+    <span class='id identifier rubyid_assert_serializer'>assert_serializer</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>PostSerializer</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>See <a
+href="../../lib/active_model_serializers/test/serializer.rb">ActiveModelSerializers::Test::Serializer</a>
+for more examples and documentation.</p>
+
+<h2 id="label-Serialization+against+a+schema">Serialization against a schema</h2>
+
+<h3 id="label-Dependencies">Dependencies</h3>
+
+<p>To use the <code>assert_response_schema</code> you need to have the <a
+href="https://github.com/brandur/json_schema">json_schema</a> on your
+Gemfile. Please add it to your Gemfile and run <code>$ bundle
+install</code>.</p>
+
+<h3 id="label-Minitest+test+helpers">Minitest test helpers</h3>
+
+<p>ActiveModelSerializers provides a <code>assert_response_schema</code>
+method to be used on your controller tests to assert the response against a
+<a href="http://json-schema.org/">JSON Schema</a>. Let&#39;s take a look in
+an example.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostsController</span> <span class='op'>&lt;</span> <span class='const'>ApplicationController</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span>
+    <span class='ivar'>@post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+    <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>To test the <code>posts#show</code> response of this controller we need to
+create a file named <code>test/support/schemas/posts/show.json</code>. The
+helper uses a naming convention to locate the file.</p>
+
+<p>This file is a JSON Schema representation of our response.</p>
+
+<pre class="code ruby"><code class="ruby">{
+  &quot;properties&quot;: {
+    &quot;title&quot; : { &quot;type&quot; : &quot;string&quot; },
+    &quot;content&quot; : { &quot;type&quot; : &quot;string&quot; }
+  }
+}</code></pre>
+
+<p>With all in place we can go to our test and use the helper.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostsControllerTest</span> <span class='op'>&lt;</span> <span class='const'>ActionController</span><span class='op'>::</span><span class='const'>TestCase</span>
+  <span class='id identifier rubyid_test'>test</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>should render right response</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_get'>get</span> <span class='symbol'>:index</span>
+    <span class='id identifier rubyid_assert_response_schema'>assert_response_schema</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h4 id="label-Load+a+custom+schema">Load a custom schema</h4>
+
+<p>If we need to use another schema, for example when we have a namespaced API
+that shows the same response, we can pass the path of the schema.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>module</span> <span class='const'>V1</span>
+  <span class='kw'>class</span> <span class='const'>PostsController</span> <span class='op'>&lt;</span> <span class='const'>ApplicationController</span>
+    <span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span>
+      <span class='ivar'>@post</span> <span class='op'>=</span> <span class='const'>Post</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+      <span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='ivar'>@post</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>V1</span><span class='op'>::</span><span class='const'>PostsControllerTest</span> <span class='op'>&lt;</span> <span class='const'>ActionController</span><span class='op'>::</span><span class='const'>TestCase</span>
+  <span class='id identifier rubyid_test'>test</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>should render right response</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_get'>get</span> <span class='symbol'>:index</span>
+    <span class='id identifier rubyid_assert_response_schema'>assert_response_schema</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>posts/show.json</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h4 id="label-Change+the+schema+path">Change the schema path</h4>
+
+<p>By default all schemas are created at <code>test/support/schemas</code>. If
+we are using RSpec for example we can change this to
+<code>spec/support/schemas</code> defining the default schema path in an
+initializer.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_schema_path'>schema_path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>spec/support/schemas</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<h4 id="label-Using+with+the+Heroku-E2-80-99s+JSON+Schema-based+tools">Using with the Heroku’s JSON Schema-based tools</h4>
+
+<p>To use the test helper with the <a
+href="https://github.com/interagent/prmd">prmd</a> and <a
+href="https://github.com/interagent/committee">committee</a>.</p>
+
+<p>We need to change the schema path to the recommended by prmd:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>ActiveModelSerializers</span><span class='period'>.</span><span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_schema_path'>schema_path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>docs/schema/schemata</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>We also need to structure our schemata according to Heroku&#39;s
+conventions (e.g. including <a
+href="https://github.com/interagent/prmd/blob/master/docs/schemata.md#meta-data">required
+metadata</a> and <a
+href="https://github.com/interagent/prmd/blob/master/docs/schemata.md#links">links</a>.</p>
+
+<h4 id="label-JSON+Pointers">JSON Pointers</h4>
+
+<p>If we plan to use <a
+href="http://spacetelescope.github.io/understanding-json-schema/UnderstandingJSONSchema.pdf">JSON
+Pointers</a> we need to define the <code>id</code> attribute on the schema.
+Example:</p>
+
+<pre class="code ruby"><code class="ruby">// attributes.json
+
+{
+  &quot;id&quot;: &quot;file://attributes.json#&quot;,
+  &quot;properties&quot;: {
+    &quot;name&quot; : { &quot;type&quot; : &quot;string&quot; },
+    &quot;description&quot; : { &quot;type&quot; : &quot;string&quot; }
+  }
+}</code></pre>
+
+<pre class="code ruby"><code class="ruby">// show.json
+
+{
+  &quot;properties&quot;: {
+    &quot;name&quot;: {
+      &quot;$ref&quot;: &quot;file://attributes.json#/properties/name&quot;
+    },
+    &quot;description&quot;: {
+      &quot;$ref&quot;: &quot;file://attributes.json#/properties/description&quot;
+    }
+  }
+}</code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

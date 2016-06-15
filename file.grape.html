@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: grape
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.grape.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: grape</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<h1 id="label-Integration+with+Grape">Integration with Grape</h1>
+
+<p><a href="https://github.com/ruby-grape/grape">Grape</a> is an opinionated
+micro-framework for creating REST-like APIs in ruby.</p>
+
+<p>ActiveModelSerializers currently supports Grape &gt;= 0.13, &lt; 1.0</p>
+
+<p>To add <a href="https://github.com/ruby-grape/grape">Grape</a> support,
+enable the formatter and helper functions by including
+<code>Grape::ActiveModelSerializers</code> in your base endpoint. For
+example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>module</span> <span class='const'>Example</span>
+  <span class='kw'>class</span> <span class='const'>Dummy</span> <span class='op'>&lt;</span> <span class='const'>Grape</span><span class='op'>::</span><span class='const'>API</span>
+    <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>grape/active_model_serializers</span><span class='tstring_end'>&#39;</span></span>
+    <span class='id identifier rubyid_include'>include</span> <span class='const'>Grape</span><span class='op'>::</span><span class='const'>ActiveModelSerializers</span>
+    <span class='id identifier rubyid_mount'>mount</span> <span class='const'>Example</span><span class='op'>::</span><span class='const'>V1</span><span class='op'>::</span><span class='const'>Base</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Aside from this, <a
+href="../general/configuration_options.md">configuration</a> of
+ActiveModelSerializers is exactly the same.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:26 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

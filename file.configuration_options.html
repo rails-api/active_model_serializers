@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: configuration_options
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.configuration_options.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: configuration_options</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Configuration+Options">Configuration Options</h1>
+
+<p>The following configuration options can be set on
+<code>ActiveModelSerializers.config</code>, preferably inside an
+initializer.</p>
+
+<h2 id="label-General">General</h2>
+
+<h5 id="label-adapter">adapter</h5>
+
+<p>The <a href="adapters.md">adapter</a> to use.</p>
+
+<p>Possible values:</p>
+<ul><li>
+<p><code>:attributes</code> (default)</p>
+</li><li>
+<p><code>:json</code></p>
+</li><li>
+<p><code>:json_api</code></p>
+</li></ul>
+
+<h5 id="label-serializer_lookup_enabled">serializer_lookup_enabled</h5>
+
+<p>Enable automatic serializer lookup.</p>
+
+<p>Possible values:</p>
+<ul><li>
+<p><code>true</code> (default)</p>
+</li><li>
+<p><code>false</code></p>
+</li></ul>
+
+<p>When <code>false</code>, serializers must be explicitly specified.</p>
+
+<h5 id="label-key_transform">key_transform</h5>
+
+<p>The <a href="key_transforms.md">key transform</a> to use.</p>
+
+<p>| Option | Result | |—-|—-| | <code>:camel</code> | ExampleKey | |
+<code>:camel_lower</code> | exampleKey | | <code>:dash</code> | example-key
+| | <code>:unaltered</code> | the original, unaltered key | |
+<code>:underscore</code> | example_key | | <code>nil</code> | use the
+adapter default |</p>
+
+<p>Each adapter has a default key transform configured:</p>
+
+<p>| Adapter | Default Key Transform | |—-|—-| | <code>Json</code> |
+<code>:unaltered</code> | | <code>JsonApi</code> | <code>:dash</code> |</p>
+
+<p><code>config.key_transform</code> is a global override of the adapter
+default. Adapters still prefer the render option
+<code>:key_transform</code> over this setting.</p>
+
+<p><em>NOTE: Key transforms can be expensive operations. If key transforms are
+unnecessary for the application, setting <code>config.key_transform</code>
+to <code>:unaltered</code> will provide a performance boost.</em></p>
+
+<h5 id="label-default_includes">default_includes</h5>
+
+<p>What relationships to serialize by default. Default:
+<code>&#39;*&#39;</code>, which includes one level of related objects. See
+<a href="adapters.md#included">includes</a> for more info.</p>
+
+<h2 id="label-JSON+API">JSON API</h2>
+
+<h5 id="label-jsonapi_resource_type">jsonapi_resource_type</h5>
+
+<p>Sets whether the <a
+href="http://jsonapi.org/format/#document-resource-identifier-objects">type</a>
+of the resource should be <code>singularized</code> or
+<code>pluralized</code> when it is not <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/docs/general/serializers.md#type">explicitly
+specified by the serializer</a></p>
+
+<p>Possible values:</p>
+<ul><li>
+<p><code>:singular</code></p>
+</li><li>
+<p><code>:plural</code> (default)</p>
+</li></ul>
+
+<h5 id="label-jsonapi_include_toplevel_object">jsonapi_include_toplevel_object</h5>
+
+<p>Include a <a href="http://jsonapi.org/format/#document-jsonapi-object">top
+level jsonapi member</a> in the response document.</p>
+
+<p>Possible values:</p>
+<ul><li>
+<p><code>true</code></p>
+</li><li>
+<p><code>false</code> (default)</p>
+</li></ul>
+
+<h5 id="label-jsonapi_version">jsonapi_version</h5>
+
+<p>The latest version of the spec to which the API conforms.</p>
+
+<p>Default: <code>&#39;1.0&#39;</code>.</p>
+
+<p><em>Used when <code>jsonapi_include_toplevel_object</code> is
+<code>true</em></code></p>
+
+<h5 id="label-jsonapi_toplevel_meta">jsonapi_toplevel_meta</h5>
+
+<p>Optional top-level metadata. Not included if empty.</p>
+
+<p>Default: <code>{}</code>.</p>
+
+<p><em>Used when <code>jsonapi_include_toplevel_object</code> is
+<code>true</em></code></p>
+
+<h2 id="label-Hooks">Hooks</h2>
+
+<p>To run a hook when ActiveModelSerializers is loaded, use
+<code>ActiveSupport.on_load(:action_controller) do end</code></p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:23 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

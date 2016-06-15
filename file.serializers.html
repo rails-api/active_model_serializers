@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: serializers
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.serializers.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: serializers</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Serializers">Serializers</h1>
+
+<p>Given a serializer class:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>SomeSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>The following methods may be defined in it:</p>
+
+<h3 id="label-Attributes">Attributes</h3>
+
+<h4 id="label-3A-3Aattributes">::attributes</h4>
+
+<p>Serialization of the resource <code>title</code> and <code>body</code></p>
+
+<p>| In Serializer | #attributes | |—————————- |————-| | <code>attributes
+:title, :body</code> | <code>{ title: &#39;Some Title&#39;, body: &#39;Some
+Body&#39; }</code> | <code>attributes :title, :body</code><br><code>def
+body &quot;Special #{object.body}&quot; end</code> | <code>{ title:
+&#39;Some Title&#39;, body: &#39;Special Some Body&#39; }</code></p>
+
+<h4 id="label-3A-3Aattribute">::attribute</h4>
+
+<p>Serialization of the resource <code>title</code></p>
+
+<p>| In Serializer | #attributes | |—————————- |————-| | <code>attribute
+:title</code> | <code>{ title: &#39;Some Title&#39; }</code> |
+<code>attribute :title, key: :name</code> | <code>{ name: &#39;Some
+Title&#39; }</code> | <code>attribute :title { &#39;A Different
+Title&#39;}</code> | <code>{ title: &#39;A Different Title&#39; }</code> |
+<code>attribute :title</code><br><code>def title &#39;A Different
+Title&#39; end</code> | <code>{ title: &#39;A Different Title&#39; }</code></p>
+
+<p>An <code>if</code> or <code>unless</code> option can make an attribute
+conditional. It takes a symbol of a method name on the serializer, or a
+lambda literal.</p>
+
+<p>e.g.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:private_data</span><span class='comma'>,</span> <span class='label'>if:</span> <span class='symbol'>:is_current_user?</span>
+<span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:another_private_data</span><span class='comma'>,</span> <span class='label'>if:</span> <span class='tlambda'>-&gt;</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_scope'>scope</span><span class='period'>.</span><span class='id identifier rubyid_admin?'>admin?</span> <span class='rbrace'>}</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_is_current_user?'>is_current_user?</span>
+  <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>==</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h3 id="label-Associations">Associations</h3>
+
+<p>The interface for associations is, generically:</p>
+
+<blockquote>
+<p><code>association_type(association_name, options, &amp;block)</code></p>
+</blockquote>
+
+<p>Where:</p>
+<ul><li>
+<p><code>association_type</code> may be <code>has_one</code>,
+<code>has_many</code>, <code>belongs_to</code>.</p>
+</li><li>
+<p><code>association_name</code> is a method name the serializer calls.</p>
+</li><li>
+<p>optional: <code>options</code> may be:</p>
+</li><li>
+<p><code>key:</code> The name used for the serialized association.</p>
+</li><li>
+<p><code>serializer:</code></p>
+</li><li>
+<p><code>if:</code></p>
+</li><li>
+<p><code>unless:</code></p>
+</li><li>
+<p><code>virtual_value:</code></p>
+</li><li>
+<p><code>polymorphic:</code> defines if polymorphic relation type should be
+nested in serialized association.</p>
+</li><li>
+<p>optional: <code>&amp;block</code> is a context that returns the
+association&#39;s attributes.</p>
+</li><li>
+<p>prevents <code>association_name</code> method from being called.</p>
+</li><li>
+<p>return value of block is used as the association value.</p>
+</li><li>
+<p>yields the <code>serializer</code> to the block.</p>
+</li><li>
+<p><code>include_data false</code> prevents the <code>data</code> key from
+being rendered in the JSON API relationship.</p>
+</li></ul>
+
+<h4 id="label-3A-3Ahas_one">::has_one</h4>
+
+<p>e.g.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:bio</span>
+<span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:blog</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='symbol'>:site</span>
+<span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:maker</span><span class='comma'>,</span> <span class='label'>virtual_value:</span> <span class='lbrace'>{</span> <span class='label'>id:</span> <span class='int'>1</span> <span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:blog</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_serializer'>serializer</span><span class='op'>|</span>
+  <span class='id identifier rubyid_serializer'>serializer</span><span class='period'>.</span><span class='id identifier rubyid_cached_blog'>cached_blog</span>
+<span class='kw'>end</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cached_blog'>cached_blog</span>
+  <span class='id identifier rubyid_cache_store'>cache_store</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cached_blog:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_updated_at'>updated_at</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='const'>Blog</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_blog_id'>blog_id</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:blog</span><span class='comma'>,</span> <span class='label'>if:</span> <span class='symbol'>:show_blog?</span>
+<span class='comment'># you can also use a string or lambda
+</span><span class='comment'># has_one :blog, if: &#39;scope.admin?&#39;
+</span><span class='comment'># has_one :blog, if: -&gt; (serializer) { serializer.scope.admin? }
+</span><span class='comment'># has_one :blog, if: -&gt; { scope.admin? }
+</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_show_blog?'>show_blog?</span>
+  <span class='id identifier rubyid_scope'>scope</span><span class='period'>.</span><span class='id identifier rubyid_admin?'>admin?</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h4 id="label-3A-3Ahas_many">::has_many</h4>
+
+<p>e.g.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+<span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='symbol'>:reviews</span>
+<span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>CommentPreviewSerializer</span>
+<span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:reviews</span><span class='comma'>,</span> <span class='label'>virtual_value:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span> <span class='label'>id:</span> <span class='int'>1</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>id:</span> <span class='int'>2</span> <span class='rbrace'>}</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='symbol'>:last_comments</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_last'>last</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h4 id="label-3A-3Abelongs_to">::belongs_to</h4>
+
+<p>e.g.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_belongs_to'>belongs_to</span> <span class='symbol'>:author</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>AuthorPreviewSerializer</span>
+<span class='id identifier rubyid_belongs_to'>belongs_to</span> <span class='symbol'>:author</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='symbol'>:writer</span>
+<span class='id identifier rubyid_belongs_to'>belongs_to</span> <span class='symbol'>:post</span>
+<span class='id identifier rubyid_belongs_to'>belongs_to</span> <span class='symbol'>:blog</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_blog'>blog</span>
+  <span class='const'>Blog</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>id:</span> <span class='int'>999</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Custom blog</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h3 id="label-Polymorphic+Relationships">Polymorphic Relationships</h3>
+
+<p>Polymorphic relationships are serialized by specifying the relationship,
+like any other association. For example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PictureSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:imageable</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>For more context, see the <a
+href="../../test/adapter/polymorphic_test.rb">tests</a> for each adapter.</p>
+
+<h3 id="label-Caching">Caching</h3>
+
+<h4 id="label-3A-3Acache">::cache</h4>
+
+<p>e.g.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_cache'>cache</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>expires_in:</span> <span class='float'>0.1</span><span class='comma'>,</span> <span class='label'>skip_digest:</span> <span class='kw'>true</span>
+<span class='id identifier rubyid_cache'>cache</span> <span class='label'>expires_in:</span> <span class='int'>1</span><span class='period'>.</span><span class='id identifier rubyid_day'>day</span><span class='comma'>,</span> <span class='label'>skip_digest:</span> <span class='kw'>true</span>
+<span class='id identifier rubyid_cache'>cache</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>writer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>skip_digest:</span> <span class='kw'>true</span>
+<span class='id identifier rubyid_cache'>cache</span> <span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>skip_digest:</span> <span class='kw'>true</span>
+<span class='id identifier rubyid_cache'>cache</span> <span class='label'>except:</span> <span class='lbracket'>[</span><span class='symbol'>:content</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>skip_digest:</span> <span class='kw'>true</span>
+<span class='id identifier rubyid_cache'>cache</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>blog</span><span class='tstring_end'>&#39;</span></span>
+<span class='id identifier rubyid_cache'>cache</span> <span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span>
+</code></pre>
+
+<h4 id="label-23cache_key">#cache_key</h4>
+
+<p>e.g.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'># Uses a custom non-time-based cache key
+</span><span class='kw'>def</span> <span class='id identifier rubyid_cache_key'>cache_key</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h3 id="label-Other">Other</h3>
+
+<h4 id="label-3A-3Atype">::type</h4>
+
+<p>The <code>::type</code> method defines the JSONAPI <a
+href="http://jsonapi.org/format/#document-resource-object-identification">type</a>
+that will be rendered for this serializer. It either takes a
+<code>String</code> or <code>Symbol</code> as parameter.</p>
+
+<p>Note: This method is useful only when using the <code>:json_api</code>
+adapter.</p>
+
+<p>Examples: <code>ruby class UserProfileSerializer &lt;
+ActiveModel::Serializer   type &#39;profile&#39; end class
+AuthorProfileSerializer &lt; ActiveModel::Serializer   type :profile end
+</code></p>
+
+<p>With the <code>:json_api</code> adapter, the previous serializers would be
+rendered as:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>data</span><span class='label_end'>&quot;:</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>profile</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rbrace'>}</span>
+<span class='rbrace'>}</span>
+</code></pre>
+
+<h4 id="label-3A-3Alink">::link</h4>
+
+<pre class="code ruby"><code class="ruby">link :self do
+  href &quot;https://example.com/link_author/#{object.id}&quot;
+end
+link :author { link_author_url(object) }
+link :link_authors { link_authors_url }
+link :other, &#39;https://example.com/resource&#39;
+link :posts { link_author_posts_url(object) }
+</code></pre>
+
+<h4 id="label-23object">#object</h4>
+
+<p>The object being serialized.</p>
+
+<h4 id="label-23root">#root</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-23scope">#scope</h4>
+
+<p>Allows you to include in the serializer access to an external method.</p>
+
+<p>It&#39;s intended to provide an authorization context to the serializer, so
+that you may e.g. show an admin all comments on a post, else only published
+comments.</p>
+<ul><li>
+<p><code>scope</code> is a method on the serializer instance that comes from
+<code>options[:scope]</code>. It may be nil.</p>
+</li><li>
+<p><code>scope_name</code> is an option passed to the new serializer
+(<code>options[:scope_name]</code>). The serializer  defines a method with
+that name that calls the <code>scope</code>, e.g. <code>def current_user;
+scope; end</code>.  Note: it does not define the method if the serializer
+instance responds to it.</p>
+</li></ul>
+
+<p>That&#39;s a lot of words, so here&#39;s some examples:</p>
+
+<p>First, let&#39;s assume the serializer is instantiated in the controller,
+since that&#39;s the usual scenario. We&#39;ll refer to the serialization
+context as <code>controller</code>.</p>
+
+<p>| options | <code>Serializer#scope</code> | method definition | |——– |
+——————|——————–| | <code>scope: current_user, scope_name:
+:current_user</code> | <code>current_user</code> |
+<code>Serializer#current_user</code> calls
+<code>controller.current_user</code> | <code>scope: view_context,
+scope_name: :view_context</code> | <code>view_context</code> |
+<code>Serializer#view_context</code> calls
+<code>controller.view_context</code></p>
+
+<p>We can take advantage of the scope to customize the objects returned based
+on the current user (scope).</p>
+
+<p>For example, we can limit the posts the current user sees to those they
+created:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:id</span><span class='comma'>,</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='comment'># scope comments to those created_by the current user
+</span>  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='label'>created_by:</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Whether you write the method as above or as
+<code>object.comments.where(created_by: scope)</code> is a matter of
+preference (assuming <code>scope_name</code> has been set).</p>
+
+<h5 id="label-Controller+Authorization+Context">Controller Authorization Context</h5>
+
+<p>In the controller, the scope/scope_name options are equal to the <a
+href="https://github.com/rails-api/active_model_serializers/blob/d02cd30fe55a3ea85e1d351b6e039620903c1871/lib/action_controller/serialization.rb#L13-L20">serialization_scopemethod</a>,
+which is <code>:current_user</code>, by default.</p>
+
+<p>Specifically, the <code>scope_name</code> is defaulted to
+<code>:current_user</code>, and may be set as <code>serialization_scope
+:view_context</code>. The <code>scope</code> is set to
+<code>send(scope_name)</code> when <code>scope_name</code> is present and
+the controller responds to <code>scope_name</code>.</p>
+
+<p>Thus, in a serializer, the controller provides <code>current_user</code> as
+the current authorization scope when you call <code>render :json</code>.</p>
+
+<p><strong>IMPORTANT</strong>: Since the scope is set at render, you may want
+to customize it so that <code>current_user</code> isn&#39;t called on every
+request. This was <a
+href="https://github.com/rails-api/active_model_serializers/pull/1252#issuecomment-159810477">also
+a problem</a> in <a
+href="https://github.com/rails-api/active_model_serializers/tree/0-9-stable#customizing-scope">0.9</a>.</p>
+
+<p>We can change the scope from <code>current_user</code> to
+<code>view_context</code>.</p>
+
+<pre class="code ruby"><code class="ruby">class SomeController &lt; ActionController::Base
++  serialization_scope :view_context
+
+  def current_user
+    User.new(id: 2, name: &#39;Bob&#39;, admin: true)
+  end
+
+  def edit
+    user = User.new(id: 1, name: &#39;Pete&#39;)
+    render json: user, serializer: AdminUserSerializer, adapter: :json_api
+  end
+end</code></pre>
+
+<p>We could then use the controller method <code>view_context</code> in our
+serializer, like so:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>AdminUserSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:id</span><span class='comma'>,</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:can_edit</span>
+
+  <span class='kw'>def</span> <span class='id identifier rubyid_can_edit?'>can_edit?</span>
+<span class='op'>+</span>    <span class='id identifier rubyid_view_context'>view_context</span><span class='period'>.</span><span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_admin?'>admin?</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>So that when we render the <code>#edit</code> action, we&#39;ll get</p>
+
+<pre class="code ruby"><code class="ruby"><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>data</span><span class='label_end'>&quot;:</span><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>id</span><span class='label_end'>&quot;:</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>type</span><span class='label_end'>&quot;:</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>users</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>attributes</span><span class='label_end'>&quot;:</span><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name</span><span class='label_end'>&quot;:</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Pete</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can_edit</span><span class='label_end'>&quot;:</span><span class='kw'>true</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='rbrace'>}</span>
+</code></pre>
+
+<p>Where <code>can_edit</code> is
+<code>view_context.current_user.admin?</code> (true).</p>
+
+<h4 id="label-23read_attribute_for_serialization-28key-29">#read_attribute_for_serialization(key)</h4>
+
+<p>The serialized value for a given key. e.g.
+<code>read_attribute_for_serialization(:title) #=&gt; &#39;Hello
+World&#39;</code></p>
+
+<h4 id="label-23links">#links</h4>
+
+<p>PR please :)</p>
+
+<h4 id="label-23json_key">#json_key</h4>
+
+<p>PR please :)</p>
+
+<h2 id="label-Examples">Examples</h2>
+
+<p>Given two models, a <code>Post(title: string, body: text)</code> and a
+<code>Comment(name: string, body: text, post_id: integer)</code>, you will
+have two serializers:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_cache'>cache</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>posts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>expires_in:</span> <span class='int'>3</span><span class='period'>.</span><span class='id identifier rubyid_hours'>hours</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>and</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>CommentSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='id identifier rubyid_belongs_to'>belongs_to</span> <span class='symbol'>:post</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Generally speaking, you, as a user of ActiveModelSerializers, will write
+(or generate) these serializer classes.</p>
+
+<h2 id="label-More+Info">More Info</h2>
+
+<p>For more information, see <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer.rb">the
+Serializer class on GitHub</a></p>
+
+<h2 id="label-Overriding+association+methods">Overriding association methods</h2>
+
+<p>To override an association, call <code>has_many</code>,
+<code>has_one</code> or <code>belongs_to</code> with a block:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_comments'>comments</span><span class='period'>.</span><span class='id identifier rubyid_active'>active</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h2 id="label-Overriding+attribute+methods">Overriding attribute methods</h2>
+
+<p>To override an attribute, call <code>attribute</code> with a block:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:body</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_object'>object</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<h2 id="label-Overriding+association+serializer+lookup">Overriding association serializer lookup</h2>
+
+<p>If you want to define a specific serializer lookup for your associations,
+you can override the <code>ActiveModel::Serializer.serializer_for</code>
+method to return a serializer class based on defined conditions.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>MySerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_serializer_for'>serializer_for</span><span class='lparen'>(</span><span class='id identifier rubyid_model'>model</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='kw'>return</span> <span class='const'>SparseAdminSerializer</span> <span class='kw'>if</span> <span class='id identifier rubyid_model'>model</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Admin</span><span class='tstring_end'>&#39;</span></span>
+    <span class='kw'>super</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'># the rest of the serializer
+</span><span class='kw'>end</span>
+</code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

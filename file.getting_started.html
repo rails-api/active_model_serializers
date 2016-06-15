@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: getting_started
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.getting_started.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: getting_started</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Getting+Started">Getting Started</h1>
+
+<h2 id="label-Creating+a+Serializer">Creating a Serializer</h2>
+
+<p>The easiest way to create a new serializer is to generate a new resource,
+which will generate a serializer at the same time:</p>
+
+<pre class="code ruby"><code class="ruby">$ rails g resource post title:string body:string</code></pre>
+
+<p>This will generate a serializer in
+<code>app/serializers/post_serializer.rb</code> for your new model. You can
+also generate a serializer for an existing model with the serializer
+generator:</p>
+
+<pre class="code ruby"><code class="ruby">$ rails g serializer post</code></pre>
+
+<p>The generated serializer will contain basic <code>attributes</code> and
+<code>has_many</code>/<code>has_one</code>/<code>belongs_to</code>
+declarations, based on the model. For example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:title</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+  <span class='id identifier rubyid_has_one'>has_one</span> <span class='symbol'>:author</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>and</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>CommentSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:body</span>
+
+  <span class='id identifier rubyid_belongs_to'>belongs_to</span> <span class='symbol'>:post_id</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>The attribute names are a <strong>whitelist</strong> of attributes to be
+serialized.</p>
+
+<p>The <code>has_many</code>, <code>has_one</code>, and
+<code>belongs_to</code> declarations describe relationships between
+resources. By default, when you serialize a <code>Post</code>, you will get
+its <code>Comments</code> as well.</p>
+
+<p>For more information, see <a
+href="/docs/general/serializers.md">Serializers</a>.</p>
+
+<h3 id="label-Namespaced+Models">Namespaced Models</h3>
+
+<p>When serializing a model inside a namespace, such as
+<code>Api::V1::Post</code>, ActiveModelSerializers will expect the
+corresponding serializer to be inside the same namespace (namely
+<code>Api::V1::PostSerializer</code>).</p>
+
+<h3 id="label-Model+Associations+and+Nested+Serializers">Model Associations and Nested Serializers</h3>
+
+<p>When declaring a serializer for a model with associations, such as:
+<code>ruby class PostSerializer &lt; ActiveModel::Serializer   has_many
+:comments end </code> ActiveModelSerializers will look for
+<code>PostSerializer::CommentSerializer</code> in priority, and fall back
+to <code>::CommentSerializer</code> in case the former does not exist. This
+allows for more control over the way a model gets serialized as an
+association of an other model.</p>
+
+<p>For example, in the following situation:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>CommentSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:body</span><span class='comma'>,</span> <span class='symbol'>:date</span><span class='comma'>,</span> <span class='symbol'>:nb_likes</span>
+<span class='kw'>end</span>
+
+<span class='kw'>class</span> <span class='const'>PostSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+  <span class='id identifier rubyid_has_many'>has_many</span> <span class='symbol'>:comments</span>
+  <span class='kw'>class</span> <span class='const'>CommentSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+    <span class='id identifier rubyid_attributes'>attributes</span> <span class='symbol'>:body_short</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>ActiveModelSerializers will use
+<code>PostSerializer::CommentSerializer</code> (thus including only the
+<code>:body_short</code> attribute) when serializing a <code>Comment</code>
+as part of a <code>Post</code>, but use <code>::CommentSerializer</code>
+when serializing a <code>Comment</code> directly (thus including
+<code>:body, :date, :nb_likes</code>).</p>
+
+<h3 id="label-Extending+a+Base+ApplicationSerializer">Extending a Base <code>ApplicationSerializer</code></h3>
+
+<p>By default, new serializers descend from
+<code>ActiveModel::Serializer</code>. However, if you wish to share
+behavior across your serializers, you can create an
+<code>ApplicationSerializer</code> at
+<code>app/serializers/application_serializer.rb</code>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>ApplicationSerializer</span> <span class='op'>&lt;</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>Then any newly-generated serializers will automatically descend from
+<code>ApplicationSerializer</code>.</p>
+
+<pre class="code ruby"><code class="ruby">$ rails g serializer post</code></pre>
+
+<p>Now generates:</p>
+
+<pre class="code ruby"><code class="ruby">class PostSerializer &lt; ApplicationSerializer
+  attributes :id
+end
+````
+
+## Rails Integration
+
+ActiveModelSerializers will automatically integrate with your Rails app,
+so you won&#39;t need to update your controller.
+This is a example of how the controller will look:
+</code></pre>
+
+<p>ruby class PostsController &lt; ApplicationController</p>
+
+<p>def show  @post = <a href=":id">Post.find(params</a>)  render json: @post 
+end</p>
+
+<p>end “`</p>
+
+<p>If you wish to use Rails url helpers for link generation, e.g.,
+<code>link(:resources) { resources_url }</code>, ensure your application
+sets <code>Rails.application.routes.default_url_options</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_application'>application</span><span class='period'>.</span><span class='id identifier rubyid_routes'>routes</span><span class='period'>.</span><span class='id identifier rubyid_default_url_options'>default_url_options</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='label'>host:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>example.com</span><span class='tstring_end'>&#39;</span></span>
+<span class='rbrace'>}</span>
+</code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:23 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

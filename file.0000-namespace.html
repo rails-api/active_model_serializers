@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: 0000-namespace
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.0000-namespace.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: 0000-namespace</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'><ul><li>
+<p>Start Date: (2015-10-29)</p>
+</li><li>
+<p>RFC PR: <a
+href="https://github.com/rails-api/active_model_serializers/pull/1310">github.com/rails-api/active_model_serializers/pull/1310</a></p>
+</li><li>
+<p>ActiveModelSerializers Issue: <a
+href="https://github.com/rails-api/active_model_serializers/issues/1298">github.com/rails-api/active_model_serializers/issues/1298</a></p>
+</li></ul>
+
+<h1 id="label-Summary">Summary</h1>
+
+<p>Provide a consistent API for the user of the AMS.</p>
+
+<h1 id="label-Motivation">Motivation</h1>
+
+<p>The actual public API is defined under <code>ActiveModelSerializers</code>,
+<code>ActiveModel::Serializer</code> and <code>ActiveModel</code>.</p>
+
+<p>At the <code>ActiveModel::Serializer</code> we have:</p>
+<ul><li>
+<p><code>ActiveModel::Serializer.config</code></p>
+</li><li>
+<p><code>ActiveModel::Serializer</code></p>
+</li></ul>
+
+<p>At the <code>ActiveModelSerializers</code> we have:</p>
+<ul><li>
+<p><code>ActiveModelSerializers::Model</code></p>
+</li><li>
+<p><code>ActiveModelSerializers.logger</code></p>
+</li></ul>
+
+<p>At <code>ActiveModel</code> we have:</p>
+<ul><li>
+<p><code>ActiveModel::SerializableResource</code></p>
+</li></ul>
+
+<p>The idea here is to provide a single namespace
+<code>ActiveModelSerializers</code> to the user. Following the same idea we
+have on other gems like <a
+href="https://github.com/plataformatec/devise/blob/e9c82472ffe7c43a448945f77e034a0e47dde0bb/lib/devise.rb">Devise</a>,
+<a
+href="https://github.com/refile/refile/blob/6b24c293d044862dafbf1bfa4606672a64903aa2/lib/refile.rb">Refile</a>
+and <a
+href="https://github.com/rails/rails/blob/30bacc26f8f258b39e12f63fe52389a968d9c1ea/activejob/lib/active_job.rb">Active
+Job</a> for example.</p>
+
+<p>This way we are clarifing the boundaries of <a
+href="https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md#prehistory">ActiveModelSerializers
+and Rails</a> and make clear that the <code>ActiveModel::Serializer</code>
+class is no longer the primary behavior of the ActiveModelSerializers.</p>
+
+<h1 id="label-Detailed+design">Detailed design</h1>
+
+<h2 id="label-New+classes+and+modules+organization">New classes and modules organization</h2>
+
+<p>Since this will be a big change we can do this on baby steps, read small
+pull requests. A possible approach is:</p>
+<ul><li>
+<p>All new code will be in <code>lib/active_model_serializers/</code> using 
+the module namespace <code>ActiveModelSerializers</code>.</p>
+</li><li>
+<p>Move all content under <code>ActiveModel::Serializer</code> to be under 
+<code>ActiveModelSerializers</code>, the adapter is on this steps;</p>
+</li><li>
+<p>Move all content under <code>ActiveModel</code> to be under
+<code>ActiveModelSerializers</code>,  the <code>SerializableResource</code>
+is on this step;</p>
+</li><li>
+<p>Change all public API that doesn&#39;t make sense, keeping in mind only to
+keep  this in the same namespace</p>
+</li><li>
+<p>Update the README;</p>
+</li><li>
+<p>Update the docs;</p>
+</li></ul>
+
+<p>The following table represents the current and the desired classes and
+modules at the first moment.</p>
+
+<p>| Current | Desired | Notes |
+|——————————————————–|————————————————–|——————–| |
+<code>ActiveModelSerializers</code> and
+<code>ActiveModel::Serializer</code> | <code>ActiveModelSerializers</code>
+| The main namespace | | <code>ActiveModelSerializers.logger</code> |
+<code>ActiveModelSerializers.logger</code> || |
+<code>ActiveModelSerializers::Model</code> |
+<code>ActiveModelSerializers::Model</code> || |
+<code>ActiveModel::SerializableResource</code> |
+<code>ActiveModelSerializers::SerializableResource</code> || |
+<code>ActiveModel::Serializer</code> |
+<code>ActiveModelSerializers::Serializer</code> | The name can be discussed
+in a future pull request. For example, we can rename this to
+<code>Resource</code> <a
+href="https://github.com/rails-api/active_model_serializers/pull/1301/files#r42963185">following
+this idea</a> more info about naming in the next section| |
+<code>ActiveModel::Serializer.config</code> |
+<code>ActiveModelSerializers.config</code> ||</p>
+
+<h2 id="label-Renaming+of+class+and+modules">Renaming of class and modules</h2>
+
+<p>When moving some content to the new namespace we can find some names that
+does not make much sense like
+<code>ActiveModel::Serializer::Adapter::JsonApi</code>. Discussion of
+renaming existing classes / modules and JsonApi objects will happen in
+separate pull requests, and issues, and in the google doc <a
+href="https://docs.google.com/document/d/1rcrJr0sVcazY2Opd_6Kmv1iIwuHbI84s1P_NzFn-05c/edit?usp=sharing">docs.google.com/document/d/1rcrJr0sVcazY2Opd_6Kmv1iIwuHbI84s1P_NzFn-05c/edit?usp=sharing</a></p>
+
+<p>Some of names already have a definition.</p>
+<ul><li>
+<p>Adapters get their own namespace under ActiveModelSerializers. E.g 
+<code>ActiveModelSerializers::Adapter</code></p>
+</li><li>
+<p>Serializers get their own namespace under ActiveModelSerializers. E.g 
+<code>ActiveModelSerializers::Serializer</code></p>
+</li></ul>
+
+<h2 id="label-Keeping+compatibility">Keeping compatibility</h2>
+
+<p>All moved classes or modules be aliased to their old name and location with
+deprecation warnings, such as <a
+href="https://github.com/rails-api/active_model_serializers/pull/1251">was
+done for CollectionSerializer</a>.</p>
+
+<h1 id="label-Drawbacks">Drawbacks</h1>
+
+<p>This will be a breaking change, so all users serializers will be broken
+after a major bump. All pull requests will need to rebase since the
+architeture will change a lot.</p>
+
+<h1 id="label-Alternatives">Alternatives</h1>
+
+<p>We can keep the way it is, and keep in mind to not add another namespace as
+a public API.</p>
+
+<h1 id="label-Unresolved+questions">Unresolved questions</h1>
+
+<p>What is the better class name to be used to the class that will be
+inherited at the creation of a serializer. This can be discussed in other
+RFC or directly via pull request.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:27 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

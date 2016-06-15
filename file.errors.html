@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: errors
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.errors.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: errors</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-JSON+API+Errors"><a href="http://jsonapi.org/format/#errors">JSON API Errors</a></h1>
+
+<p>Rendering error documents requires specifying the error serializer(s):</p>
+<ul><li>
+<p>Serializer:</p>
+</li><li>
+<p>For a single resource: <code>serializer:
+ActiveModel::Serializer::ErrorSerializer</code>.</p>
+</li><li>
+<p>For a collection: <code>serializer:
+ActiveModel::Serializer::ErrorsSerializer</code>, <code>each_serializer:
+ActiveModel::Serializer::ErrorSerializer</code>.</p>
+</li></ul>
+
+<p>The resource <strong>MUST</strong> have a non-empty associated
+<code>#errors</code> object. The <code>errors</code> object must have a
+<code>#messages</code> method that returns a hash of error name to array of
+descriptions.</p>
+
+<h2 id="label-Use+in+controllers">Use in controllers</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_resource'>resource</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Name 1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                       <span class='label'>description:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Description 1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                       <span class='label'>comments:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Comments 1</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot be nil</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must be longer</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must be a uuid</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_render'>render</span> <span class='label'>json:</span> <span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='label'>status:</span> <span class='int'>422</span><span class='comma'>,</span> <span class='label'>adapter:</span> <span class='symbol'>:json_api</span><span class='comma'>,</span> <span class='label'>serializer:</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>ErrorSerializer</span>
+<span class='comment'># #=&gt;
+</span><span class='comment'>#  { :errors =&gt;
+</span><span class='comment'>#    [
+</span><span class='comment'>#      { :source =&gt; { :pointer =&gt; &#39;/data/attributes/name&#39; }, :detail =&gt; &#39;cannot be nil&#39; },
+</span><span class='comment'>#      { :source =&gt; { :pointer =&gt; &#39;/data/attributes/name&#39; }, :detail =&gt; &#39;must be longer&#39; },
+</span><span class='comment'>#      { :source =&gt; { :pointer =&gt; &#39;/data/attributes/id&#39; }, :detail =&gt; &#39;must be a uuid&#39; }
+</span><span class='comment'>#    ]
+</span><span class='comment'>#  }.to_json
+</span></code></pre>
+
+<h2 id="label-Direct+error+document+generation">Direct error document generation</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_resource'>resource</span> <span class='op'>=</span> <span class='const'>ModelWithErrors</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+<span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must be awesome</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_serializable_resource'>serializable_resource</span> <span class='op'>=</span> <span class='const'>ActiveModelSerializers</span><span class='op'>::</span><span class='const'>SerializableResource</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+  <span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='lbrace'>{</span>
+    <span class='label'>serializer:</span> <span class='const'>ActiveModel</span><span class='op'>::</span><span class='const'>Serializer</span><span class='op'>::</span><span class='const'>ErrorSerializer</span><span class='comma'>,</span>
+    <span class='label'>adapter:</span> <span class='symbol'>:json_api</span>
+  <span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_serializable_resource'>serializable_resource</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='comment'># #=&gt;
+</span><span class='comment'># {
+</span><span class='comment'>#   :errors =&gt;
+</span><span class='comment'>#     [
+</span><span class='comment'>#       { :source =&gt; { :pointer =&gt; &#39;/data/attributes/name&#39; }, :detail =&gt; &#39;must be awesome&#39; }
+</span><span class='comment'>#     ]
+</span><span class='comment'># }
+</span></code></pre>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:26 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

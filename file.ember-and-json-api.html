@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: ember-and-json-api
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.ember-and-json-api.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: ember-and-json-api</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<p><a href="../README.md">Back to Guides</a></p>
+
+<h1 id="label-Integrating+with+Ember+and+JSON+API">Integrating with Ember and JSON API</h1>
+<ul><li>
+<p><a href="./ember-and-json-api.md#preparation">Preparation</a></p>
+</li><li>
+<p><a href="./ember-and-json-api.md#server-side-changes">Server-Side
+Changes</a></p>
+</li><li>
+<p><a href="./ember-and-json-api.md#adapter-changes">Adapter Changes</a></p>
+</li><li>
+<p><a href="./ember-and-json-api.md#serializer-changes">Serializer Changes</a></p>
+</li><li>
+<p><a href="./ember-and-json-api.md#including-nested-resources">Including
+Nested Resources</a></p>
+</li></ul>
+
+<h2 id="label-Preparation">Preparation</h2>
+
+<p>Note: This guide assumes that <code>ember-cli</code> is used for your ember
+app.</p>
+
+<p>The JSON API specification calls for hyphens for multi-word separators.
+ActiveModelSerializers uses underscores. To solve this, in Ember, both the
+adapter and the serializer will need some modifications:</p>
+
+<h3 id="label-Server-Side+Changes">Server-Side Changes</h3>
+
+<p>there are multiple mimetypes for json that should all be parsed similarly,
+so in <code>config/initializers/mime_types.rb</code>: “`ruby api_mime_types
+= %W(  application/vnd.api+json  text/x-json  application/json )</p>
+
+<p>Mime::Type.unregister :json Mime::Type.register &#39;application/json&#39;,
+:json, api_mime_types “`</p>
+
+<h3 id="label-Adapter+Changes">Adapter Changes</h3>
+
+<pre class="code ruby"><code class="ruby">// app/adapters/application.js
+import DS from &#39;ember-data&#39;;
+import ENV from &quot;../config/environment&quot;;
+
+export default  DS.JSONAPIAdapter.extend({
+  namespace: &#39;api&#39;,
+  // if your rails app is on a different port from your ember app
+  // this can be helpful for development.
+  // in production, the host for both rails and ember should be the same.
+  host: ENV.host,
+
+  // allows the multiword paths in urls to be underscored
+  pathForType: function(type) {
+    let underscored = Ember.String.underscore(type);
+    return Ember.String.pluralize(underscored);
+  },
+
+  // allows queries to be sent along with a findRecord
+  // hopefully Ember / EmberData will soon have this built in
+  // ember-data issue tracked here:
+  // https://github.com/emberjs/data/issues/3596
+  urlForFindRecord(id, modelName, snapshot) {
+    let url = this._super(...arguments);
+    let query = Ember.get(snapshot, &#39;adapterOptions.query&#39;);
+    if(query) {
+      url += &#39;?&#39; + Ember.$.param(query);
+    }
+    return url;
+  }
+});</code></pre>
+
+<h3 id="label-Serializer+Changes">Serializer Changes</h3>
+
+<pre class="code ruby"><code class="ruby">// app/serializers/application.js
+import Ember from &#39;ember&#39;;
+import DS from &#39;ember-data&#39;;
+var underscore = Ember.String.underscore;
+
+export default DS.JSONAPISerializer.extend({
+  keyForAttribute: function(attr) {
+    return underscore(attr);
+  },
+
+  keyForRelationship: function(rawKey) {
+    return underscore(rawKey);
+  }
+});</code></pre>
+
+<h2 id="label-Including+Nested+Resources">Including Nested Resources</h2>
+
+<p>Previously, <code>store.find</code> and <code>store.findRecord</code> did
+not allow specification of any query params. The ActiveModelSerializers
+default for the <code>include</code> parameter is to be <code>nil</code>
+meaning that if any associations are defined in your serializer, only the
+<code>id</code> and <code>type</code> will be in the
+<code>relationships</code> structure of the JSON API response. For more on
+<code>include</code> usage, see: <a
+href="./../general/adapters.md#JSON-API">The JSON API include examples</a></p>
+
+<p>With the above modifications, you can execute code as below in order to
+include nested resources while doing a find query.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_store'>store</span><span class='period'>.</span><span class='id identifier rubyid_findRecord'>findRecord</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_postId'>postId</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>adapterOptions:</span> <span class='lbrace'>{</span> <span class='label'>query:</span> <span class='lbrace'>{</span> <span class='label'>include:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='semicolon'>;</span>
+</code></pre>
+
+<p>will generate the path
+<code>/posts/{postId}?include=&#39;comments&#39;</code></p>
+
+<p>So then in your controller, you&#39;ll want to be sure to have something
+like: <code>ruby render json: @post, include: params[:include] </code></p>
+
+<p>If you want to use <code>include</code> on a collection, you&#39;d write
+something like this:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_store'>store</span><span class='period'>.</span><span class='id identifier rubyid_query'>query</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>post</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>include:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>comments</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span><span class='semicolon'>;</span>
+</code></pre>
+
+<p>which will generate the path <code>/posts?include=&#39;comments&#39;</code></p>
+</div></div>
+
+    <div id="footer">
+  Generated on Wed Jun 15 10:31:26 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>
