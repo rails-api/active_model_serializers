@@ -73,7 +73,21 @@ See [ARCHITECTURE](../ARCHITECTURE.md) for more information.
 
 #### fields
 
-PR please :)
+If you are using `json` or `attributes` adapter
+```ruby
+render json: @user, fields: [:access_token]
+```
+
+or if you your adapter is `json_api`, then you should change as below
+
+```ruby
+render json: @user, fields: { users: [:access_token] }
+```
+
+where `users` is your JSONAPI type.
+
+
+See [Fields](fields.md) for more information.
 
 #### adapter
 
@@ -83,7 +97,7 @@ PR please :)
 
 ```render json: posts, each_serializer: PostSerializer, key_transform: :camel_lower```
 
-See [Key Transforms](key_transforms.md) for more informaiton.
+See [Key Transforms](key_transforms.md) for more information.
 
 #### meta
 
