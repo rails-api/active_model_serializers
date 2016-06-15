@@ -5,13 +5,19 @@ require 'minitest/mock'
 class SerializationContextTest < ActiveSupport::TestCase
   include ActiveSupport::Testing::Isolation
 
-  def create_request
-    request = Minitest::Mock.new
-    request.expect(:original_url, 'original_url')
-    request.expect(:query_parameters, 'query_parameters')
-  end
-
   class WithRails < SerializationContextTest
+    def create_request
+      request = ActionDispatch::Request.new({})
+      def request.original_url
+        'http://example.com/articles?page=2'
+      end
+
+      def request.query_parameters
+        { 'page' => 2 }
+      end
+      request
+    end
+
     setup do
       require 'rails'
       require 'active_model_serializers'
@@ -20,8 +26,8 @@ class SerializationContextTest < ActiveSupport::TestCase
     end
 
     test 'create context with request url and query parameters' do
-      assert_equal @context.request_url, 'original_url'
-      assert_equal @context.query_parameters, 'query_parameters'
+      assert_equal @context.request_url, 'http://example.com/articles'
+      assert_equal @context.query_parameters, 'page' => 2
     end
 
     test 'url_helpers is set up for Rails url_helpers' do
@@ -36,14 +42,21 @@ class SerializationContextTest < ActiveSupport::TestCase
   end
 
   class WithoutRails < SerializationContextTest
+    def create_request
+      {
+        request_url: 'http://example.com/articles',
+        query_parameters: { 'page' => 2 }
+      }
+    end
+
     setup do
       require 'active_model_serializers/serialization_context'
       @context = ActiveModelSerializers::SerializationContext.new(create_request)
     end
 
     test 'create context with request url and query parameters' do
-      assert_equal @context.request_url, 'original_url'
-      assert_equal @context.query_parameters, 'query_parameters'
+      assert_equal @context.request_url, 'http://example.com/articles'
+      assert_equal @context.query_parameters, 'page' => 2
     end
 
     test 'url_helpers is a module when Rails is not present' do
