@@ -216,8 +216,8 @@ module ActiveModelSerializers
           expected = {
             related: {
               data: [{
-                type: 'spam-unrelated-links',
-                id: '456'
+                id: '456',
+                type: 'spam--unrelated-links'
               }]
             }
           }

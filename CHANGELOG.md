@@ -5,6 +5,7 @@
 Breaking changes:
 
 Features:
+- [#1609](https://github.com/rails-api/active_model_serializers/pull/1609) Adds JSON API Attribute namespace separator setting. (@youroff)
 - [#1668](https://github.com/rails-api/active_model_serializers/pull/1668) Exclude nil and empty links. (@sigmike)
 - [#1426](https://github.com/rails-api/active_model_serializers/pull/1426) Add ActiveModelSerializers.config.default_includes (@empact)
 
