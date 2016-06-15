@@ -20,36 +20,29 @@ To solve this, in Ember, both the adapter and the serializer will need some modi
 First, set the adapter type in an initializer file:
 
 ```ruby
-# config/initializers/ams_config.rb
+# config/initializers/active_model_serializers.rb
 ActiveModelSerializers.config.adapter = :json_api
 ```
 
 or:
 
 ```ruby
-# config/initializers/ams_config.rb
+# config/initializers/active_model_serializers.rb
 ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::JsonApi
 ```
 
-You will also want to set the `key_transform` to `:underscore` since you will adjust the attributes in your Ember serializer to use underscores instead of dashes later.
+You will also want to set the `key_transform` to `:unaltered` since you will adjust the attributes in your Ember serializer to use underscores instead of dashes later. You could also use `:underscore`, but `:unaltered` is better for performance.
 
 ```ruby
-# config/initializers/ams_config.rb
-ActiveModelSerializers.config.key_transform = :underscore
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.key_transform = :unaltered
 ```
 
-There are multiple mimetypes for json that should all be parsed similarly, so
-in `config/initializers/mime_types.rb`:
+Lastly, in order to properly handle JSON API responses, we need to register a JSON API renderer, like so:
 
 ```ruby
-api_mime_types = %W(
-  application/vnd.api+json
-  text/x-json
-  application/json
-)
-
-Mime::Type.unregister :json
-Mime::Type.register 'application/json', :json, api_mime_types
+# config/initializers/active_model_serializers.rb
+require 'active_model_serializers/register_jsonapi_renderer'
 ```
 
 ### Adapter Changes
