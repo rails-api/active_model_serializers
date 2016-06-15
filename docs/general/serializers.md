@@ -31,7 +31,7 @@ Serialization of the resource `title`
 |---------------------------- |-------------|
 | `attribute :title`          | `{ title: 'Some Title' } `
 | `attribute :title, key: :name` | `{ name: 'Some Title' } `
-| `attribute :title { 'A Different Title'}` | `{ title: 'A Different Title' } `
+| `attribute(:title) { 'A Different Title'}` | `{ title: 'A Different Title' } `
 | `attribute :title`<br>`def title 'A Different Title' end` | `{ title: 'A Different Title' }`
 
 An `if` or `unless` option can make an attribute conditional. It takes a symbol of a method name on the serializer, or a lambda literal.
