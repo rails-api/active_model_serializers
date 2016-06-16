@@ -9,6 +9,7 @@ Features:
 Fixes:
 
 Misc:
+- [#1812](https://github.com/rails-api/active_model_serializers/pull/1812) add a code of conduct (@corainchicago)
 
 ### [v0.10.1 (2016-06-16)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0...v0.10.1)
 
