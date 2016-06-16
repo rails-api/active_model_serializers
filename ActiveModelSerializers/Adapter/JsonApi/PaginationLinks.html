@@ -104,6 +104,11 @@
   
     <dl class="constants">
       
+        <dt id="MissingSerializationContextError-constant" class="">MissingSerializationContextError =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'>Class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>KeyError</span><span class='rparen'>)</span></pre></dd>
+      
         <dt id="FIRST_PAGE-constant" class="">FIRST_PAGE =
           
         </dt>
@@ -269,19 +274,31 @@
       <pre class="lines">
 
 
-9
 10
 11
 12
-13</pre>
+13
+14
+15
+16
+17
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span><span class='rparen'>)</span>
   <span class='ivar'>@collection</span> <span class='op'>=</span> <span class='id identifier rubyid_collection'>collection</span>
   <span class='ivar'>@adapter_options</span> <span class='op'>=</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span>
-  <span class='ivar'>@context</span> <span class='op'>=</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:serialization_context</span><span class='rparen'>)</span>
+  <span class='ivar'>@context</span> <span class='op'>=</span> <span class='id identifier rubyid_adapter_options'>adapter_options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:serialization_context</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_fail'>fail</span> <span class='const'>MissingSerializationContextError</span><span class='comma'>,</span> <span class='heredoc_beg'>&lt;&lt;-EOF</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'> JsonApi::PaginationLinks requires a ActiveModelSerializers::SerializationContext.
+ Please pass a &#39;:serialization_context&#39; option or
+ override CollectionSerializer#paginated? to return &#39;false&#39;.
+</span><span class='heredoc_end'>     EOF
+</span>  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -321,12 +338,12 @@
       <pre class="lines">
 
 
-7
 8
-9</pre>
+9
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_collection'>collection</span>
   <span class='ivar'>@collection</span>
@@ -364,12 +381,12 @@
       <pre class="lines">
 
 
-7
 8
-9</pre>
+9
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context'>context</span>
   <span class='ivar'>@context</span>
@@ -401,17 +418,17 @@
       <pre class="lines">
 
 
-15
-16
-17
-18
-19
-20
-21
-22</pre>
+22
+23
+24
+25
+26
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/adapter/json_api/pagination_links.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span>
   <span class='id identifier rubyid_per_page'>per_page</span> <span class='op'>=</span> <span class='id identifier rubyid_collection'>collection</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:per_page</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_collection'>collection</span><span class='period'>.</span><span class='id identifier rubyid_try'>try</span><span class='lparen'>(</span><span class='symbol'>:limit_value</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_collection'>collection</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
@@ -431,7 +448,7 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Jun 15 10:39:35 2016 by
+  Generated on Thu Jun 16 09:05:13 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.2.4).
 </div>

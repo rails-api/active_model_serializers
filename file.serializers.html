@@ -93,7 +93,7 @@ body &quot;Special #{object.body}&quot; end</code> | <code>{ title:
 <p>| In Serializer | #attributes | |—————————- |————-| | <code>attribute
 :title</code> | <code>{ title: &#39;Some Title&#39; }</code> |
 <code>attribute :title, key: :name</code> | <code>{ name: &#39;Some
-Title&#39; }</code> | <code>attribute :title { &#39;A Different
+Title&#39; }</code> | <code>attribute(:title) { &#39;A Different
 Title&#39;}</code> | <code>{ title: &#39;A Different Title&#39; }</code> |
 <code>attribute :title</code><br><code>def title &#39;A Different
 Title&#39; end</code> | <code>{ title: &#39;A Different Title&#39; }</code></p>
@@ -494,7 +494,7 @@ method to return a serializer class based on defined conditions.</p>
 </div></div>
 
     <div id="footer">
-  Generated on Wed Jun 15 10:39:27 2016 by
+  Generated on Thu Jun 16 09:05:05 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.2.4).
 </div>

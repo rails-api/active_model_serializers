@@ -274,7 +274,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (SerializationContext) <strong>initialize</strong>(request, options = {}) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (SerializationContext) <strong>initialize</strong>(*args) </a>
     
 
     
@@ -306,7 +306,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="ActiveModelSerializers::SerializationContext (class)">SerializationContext</a></span></tt>) <strong>initialize</strong>(request, options = {}) 
+    - (<tt><span class='object_link'><a href="" title="ActiveModelSerializers::SerializationContext (class)">SerializationContext</a></span></tt>) <strong>initialize</strong>(*args) 
   
 
   
@@ -329,19 +329,31 @@
       <pre class="lines">
 
 
-25
 26
 27
 28
 29
-30</pre>
+30
+31
+32
+33
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 26</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='ivar'>@request_url</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_original_url'>original_url</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A[^?]+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span>
-  <span class='ivar'>@query_parameters</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_query_parameters'>query_parameters</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_extract_options!'>extract_options!</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='int'>1</span>
+    <span class='id identifier rubyid_request'>request</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_pop'>pop</span>
+    <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:request_url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_original_url'>original_url</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A[^?]+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:query_parameters</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_query_parameters'>query_parameters</span>
+  <span class='kw'>end</span>
+  <span class='ivar'>@request_url</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:request_url</span><span class='rparen'>)</span>
+  <span class='ivar'>@query_parameters</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:query_parameters</span><span class='rparen'>)</span>
   <span class='ivar'>@url_helpers</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:url_helpers</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_url_helpers'>url_helpers</span>
   <span class='ivar'>@default_url_options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:default_url_options</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_default_url_options'>default_url_options</span>
 <span class='kw'>end</span></pre>
@@ -372,12 +384,12 @@
       <pre class="lines">
 
 
-9
 10
-11</pre>
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_url_options'>default_url_options</span>
   <span class='ivar'>@default_url_options</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -404,12 +416,12 @@
       <pre class="lines">
 
 
-5
 6
-7</pre>
+7
+8</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 6</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url_helpers'>url_helpers</span>
   <span class='ivar'>@url_helpers</span> <span class='op'>||=</span> <span class='const'>Module</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -452,12 +464,12 @@
       <pre class="lines">
 
 
-23
 24
-25</pre>
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_transform'>key_transform</span>
   <span class='ivar'>@key_transform</span>
@@ -495,12 +507,12 @@
       <pre class="lines">
 
 
-23
 24
-25</pre>
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_query_parameters'>query_parameters</span>
   <span class='ivar'>@query_parameters</span>
@@ -538,12 +550,12 @@
       <pre class="lines">
 
 
-23
 24
-25</pre>
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/active_model_serializers/serialization_context.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_request_url'>request_url</span>
   <span class='ivar'>@request_url</span>
@@ -559,7 +571,7 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Jun 15 10:39:35 2016 by
+  Generated on Thu Jun 16 09:05:13 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.2.4).
 </div>
