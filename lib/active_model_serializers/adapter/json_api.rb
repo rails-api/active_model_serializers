@@ -35,17 +35,6 @@ module ActiveModelSerializers
         :dash
       end
 
-      def self.fragment_cache(cached_hash, non_cached_hash, root = true)
-        core_cached       = cached_hash.first
-        core_non_cached   = non_cached_hash.first
-        no_root_cache     = cached_hash.delete_if { |key, _value| key == core_cached[0] }
-        no_root_non_cache = non_cached_hash.delete_if { |key, _value| key == core_non_cached[0] }
-        cached_resource   = (core_cached[1]) ? core_cached[1].deep_merge(core_non_cached[1]) : core_non_cached[1]
-        hash = root ? { root => cached_resource } : cached_resource
-
-        hash.deep_merge no_root_non_cache.deep_merge no_root_cache
-      end
-
       def initialize(serializer, options = {})
         super
         @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
@@ -61,11 +50,6 @@ module ActiveModelSerializers
                      failure_document
                    end
         self.class.transform_key_casing!(document, instance_options)
-      end
-
-      def fragment_cache(cached_hash, non_cached_hash)
-        root = !instance_options.include?(:include)
-        self.class.fragment_cache(cached_hash, non_cached_hash, root)
       end
 
       # {http://jsonapi.org/format/#document-top-level Primary data}
