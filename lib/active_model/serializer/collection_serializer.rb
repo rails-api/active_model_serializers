@@ -19,11 +19,11 @@ module ActiveModel
       end
 
       # @api private
-      def serializable_hash(adapter_options, options, adapter_instance)
+      def serializable_hash(adapter_options, options)
         include_directive = ActiveModel::Serializer.include_directive_from_options(adapter_options)
         adapter_opts = adapter_options.merge(include_directive: include_directive)
         serializers.map do |serializer|
-          serializer.serializable_hash(adapter_opts, options, adapter_instance)
+          serializer.serializable_hash(adapter_opts, options)
         end
       end
 

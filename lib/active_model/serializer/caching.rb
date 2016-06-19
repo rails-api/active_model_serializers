@@ -202,19 +202,8 @@ module ActiveModel
       end
 
       ### INSTANCE METHODS
-      def fetch_attributes(fields, cached_attributes, adapter_instance)
-        if serializer_class.cache_enabled?
-          key = cache_key(adapter_instance)
-          cached_attributes.fetch(key) do
-            serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
-              attributes(fields, true)
-            end
-          end
-        elsif serializer_class.fragment_cache_enabled?
-          fetch_attributes_fragment(adapter_instance, cached_attributes)
-        else
-          attributes(fields, true)
-        end
+      def fetch_attributes(fields)
+        attributes(fields, true)
       end
 
       def fetch(adapter_instance, cache_options = serializer_class._cache_options)

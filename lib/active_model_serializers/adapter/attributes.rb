@@ -4,7 +4,7 @@ module ActiveModelSerializers
       def serializable_hash(options = nil)
         options = serialization_options(options)
         options[:fields] ||= instance_options[:fields]
-        serializer.serializable_hash(instance_options, options, self)
+        serializer.serializable_hash(instance_options, options)
       end
     end
   end

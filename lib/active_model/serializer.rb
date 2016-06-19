@@ -162,12 +162,11 @@ module ActiveModel
     #     serializer.as_json(include: :posts)
     #     # Second level and higher order associations work as well:
     #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
-    def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
+    def serializable_hash(adapter_options = nil, options = {})
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
-      cached_attributes = adapter_options[:cached_attributes] ||= {}
-      resource = fetch_attributes(options[:fields], cached_attributes, adapter_instance)
-      relationships = resource_relationships(adapter_options, options, adapter_instance)
+      resource = fetch_attributes(options[:fields])
+      relationships = resource_relationships(adapter_options, options)
       resource.merge(relationships)
     end
     alias to_hash serializable_hash
@@ -199,25 +198,25 @@ module ActiveModel
     end
 
     # @api private
-    def resource_relationships(adapter_options, options, adapter_instance)
+    def resource_relationships(adapter_options, options)
       relationships = {}
       include_directive = options.fetch(:include_directive)
       associations(include_directive).each do |association|
         adapter_opts = adapter_options.merge(include_directive: include_directive[association.key])
-        relationships[association.key] ||= relationship_value_for(association, adapter_opts, adapter_instance)
+        relationships[association.key] ||= relationship_value_for(association, adapter_opts)
       end
 
       relationships
     end
 
     # @api private
-    def relationship_value_for(association, adapter_options, adapter_instance)
+    def relationship_value_for(association, adapter_options)
       return association.options[:virtual_value] if association.options[:virtual_value]
       association_serializer = association.serializer
       association_object = association_serializer && association_serializer.object
       return unless association_object
 
-      relationship_value = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
+      relationship_value = association_serializer.serializable_hash(adapter_options, {})
 
       if association.options[:polymorphic] && relationship_value
         polymorphic_type = association_object.class.name.underscore
