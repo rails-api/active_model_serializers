@@ -27,7 +27,6 @@ module ActiveModelSerializers
 
           @serializer = CommentSerializer.new(@comment)
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
-          ActionController::Base.cache_store.clear
         end
 
         def test_includes_post_id

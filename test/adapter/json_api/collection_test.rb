@@ -20,7 +20,6 @@ module ActiveModelSerializers
 
           @serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
-          ActionController::Base.cache_store.clear
         end
 
         def test_include_multiple_posts

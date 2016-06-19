@@ -36,7 +36,6 @@ module ActionController
           end
 
           def setup_post
-            ActionController::Base.cache_store.clear
             @author = Author.new(id: 1, first_name: 'Bob', last_name: 'Jones')
             @comment1 = TopComment.new(id: 7, body: 'cool', author: @author)
             @comment2 = TopComment.new(id: 12, body: 'awesome', author: @author)

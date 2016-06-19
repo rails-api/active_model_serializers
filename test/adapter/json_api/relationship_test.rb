@@ -8,7 +8,6 @@ module ActiveModelSerializers
           @blog = Blog.new(id: 1)
           @author = Author.new(id: 1, name: 'Steve K.', blog: @blog)
           @serializer = BlogSerializer.new(@blog)
-          ActionController::Base.cache_store.clear
         end
 
         def test_relationship_with_data

@@ -15,8 +15,6 @@ module ActiveModelSerializers
           @blog = Blog.new(id: 1, name: 'My Blog!!')
           @first_post.blog = @blog
           @second_post.blog = nil
-
-          ActionController::Base.cache_store.clear
         end
 
         def test_with_serializer_option

@@ -5,7 +5,6 @@ module ActiveModelSerializers
     class Json
       class HasManyTestTest < ActiveSupport::TestCase
         def setup
-          ActionController::Base.cache_store.clear
           @author = Author.new(id: 1, name: 'Steve K.')
           @post = Post.new(id: 42, title: 'New Post', body: 'Body')
           @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')

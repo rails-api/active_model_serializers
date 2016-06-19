@@ -21,7 +21,6 @@ module ActiveModelSerializers
         end
 
         setup do
-          ActionController::Base.cache_store.clear
           @blog = Blog.new(id: 1, name: 'My Blog!!', special_attribute: 'neat')
         end
 

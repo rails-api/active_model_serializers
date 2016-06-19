@@ -10,8 +10,6 @@ module ActionController
 
         class IncludeTestController < ActionController::Base
           def setup_data
-            ActionController::Base.cache_store.clear
-
             @author = Author.new(id: 1, name: 'Steve K.')
 
             @post = Post.new(id: 42, title: 'New Post', body: 'Body')

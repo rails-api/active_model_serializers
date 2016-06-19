@@ -11,7 +11,6 @@ module ActiveModelSerializers
         URI = 'http://example.com'.freeze
 
         def setup
-          ActionController::Base.cache_store.clear
           @array = [
             Profile.new(id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
             Profile.new(id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2'),

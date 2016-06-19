@@ -5,7 +5,6 @@ module ActiveModelSerializers
     class JsonApi
       class HasManyTest < ActiveSupport::TestCase
         def setup
-          ActionController::Base.cache_store.clear
           @author = Author.new(id: 1, name: 'Steve K.')
           @author.posts = []
           @author.bio = nil

@@ -6,7 +6,6 @@ module ActionController
       class LinkedTest < ActionDispatch::IntegrationTest
         class LinkedTestController < ActionController::Base
           def setup_post
-            ActionController::Base.cache_store.clear
             @role1 = Role.new(id: 1, name: 'admin')
             @role2 = Role.new(id: 2, name: 'colab')
             @author = Author.new(id: 1, name: 'Steve K.')
