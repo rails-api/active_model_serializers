@@ -34,10 +34,6 @@ module ActiveModelSerializers
         KeyTransform.send(transform(options), value)
       end
 
-      def self.cache_key
-        @cache_key ||= ActiveModelSerializers::Adapter.registered_name(self)
-      end
-
       attr_reader :serializer, :instance_options
 
       def initialize(serializer, options = {})
@@ -53,10 +49,6 @@ module ActiveModelSerializers
 
       def as_json(options = nil)
         serializable_hash(options)
-      end
-
-      def cache_key
-        self.class.cache_key
       end
 
       private

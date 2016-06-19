@@ -6,7 +6,6 @@ require 'active_model/serializer/error_serializer'
 require 'active_model/serializer/errors_serializer'
 require 'active_model/serializer/associations'
 require 'active_model/serializer/attributes'
-require 'active_model/serializer/caching'
 require 'active_model/serializer/configuration'
 require 'active_model/serializer/fieldset'
 require 'active_model/serializer/lint'
@@ -26,10 +25,12 @@ module ActiveModel
     include Configuration
     include Associations
     include Attributes
-    include Caching
     include Links
     include Meta
     include Type
+
+    def self.cache(*)
+    end
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
@@ -109,11 +110,6 @@ module ActiveModel
       end
     end
 
-    # @api private
-    def self.serialization_adapter_instance
-      @serialization_adapter_instance ||= ActiveModelSerializers::Adapter::Attributes
-    end
-
     attr_accessor :object, :root, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
@@ -165,7 +161,7 @@ module ActiveModel
     def serializable_hash(adapter_options = nil, options = {})
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
-      resource = fetch_attributes(options[:fields])
+      resource = attributes(options[:fields], true)
       relationships = resource_relationships(adapter_options, options)
       resource.merge(relationships)
     end
