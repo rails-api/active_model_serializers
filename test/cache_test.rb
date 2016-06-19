@@ -321,6 +321,36 @@ module ActiveModelSerializers
       end
     end
 
+    def test_cache_read_multi_with_fragment_cache_enabled
+      post_serializer = Class.new(ActiveModel::Serializer) do
+        cache except: [:body]
+      end
+
+      serializers = ActiveModel::Serializer::CollectionSerializer.new([@post, @post], {serializer: post_serializer})
+
+      Timecop.freeze(Time.current) do
+        # Warming up.
+        options = {}
+        adapter_options = {}
+        adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(serializers, adapter_options)
+        serializers.serializable_hash(adapter_options, options, adapter_instance)
+
+        # Should find something with read_multi now
+        options = {}
+        adapter_options = {}
+        adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(serializers, adapter_options)
+        serializers.serializable_hash(adapter_options, options, adapter_instance)
+        cached_attributes = adapter_options.fetch(:cached_attributes)
+
+        include_directive = ActiveModelSerializers.default_include_directive
+        manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive)
+
+        refute_equal 0, cached_attributes.size
+        refute_equal 0, manual_cached_attributes.size
+        assert_equal manual_cached_attributes, cached_attributes
+      end
+    end
+
     def test_serializer_file_path_on_nix
       path = '/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb'
       caller_line = "#{path}:1:in `<top (required)>'"
