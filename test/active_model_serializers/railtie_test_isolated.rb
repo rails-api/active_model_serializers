@@ -29,11 +29,6 @@ class RailtieTest < ActiveSupport::TestCase
       refute_nil ActiveModelSerializers.logger
       assert_equal Rails.logger, ActiveModelSerializers.logger
     end
-
-    test 'it is configured for caching' do
-      assert_equal ActionController::Base.cache_store, ActiveModelSerializers.config.cache_store
-      assert_equal Rails.configuration.action_controller.perform_caching, ActiveModelSerializers.config.perform_caching
-    end
   end
 
   class WithoutRails < RailtieTest
@@ -51,13 +46,6 @@ class RailtieTest < ActiveSupport::TestCase
       refute_nil Rails.logger
       refute_nil ActiveModelSerializers.logger
       refute_equal Rails.logger, ActiveModelSerializers.logger
-    end
-
-    test 'it is not configured for caching' do
-      refute_nil ActionController::Base.cache_store
-      assert_nil ActiveModelSerializers.config.cache_store
-      refute Rails.configuration.action_controller.perform_caching
-      refute ActiveModelSerializers.config.perform_caching
     end
   end
 end
