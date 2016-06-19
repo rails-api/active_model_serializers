@@ -64,18 +64,6 @@ module ActiveModel
         def _attributes
           _attributes_data.keys
         end
-
-        # @api private
-        # maps attribute value to explict key name
-        # @see Serializer::attribute
-        # @see FragmentCache#fragment_serializer
-        def _attributes_keys
-          _attributes_data
-            .each_with_object({}) do |(key, attr), hash|
-              next if key == attr.name
-              hash[attr.name] = { key: key }
-            end
-        end
       end
     end
   end
