@@ -5,10 +5,6 @@ module SerializationTesting
 
   private
 
-  def generate_cached_serializer(obj)
-    ActiveModelSerializers::SerializableResource.new(obj).to_json
-  end
-
   # Aliased as :with_configured_adapter to clarify that
   # this method tests the configured adapter.
   # When not testing configuration, it may be preferable
@@ -46,10 +42,6 @@ end
 
 module Minitest
   class Test
-    def before_setup
-      ActionController::Base.cache_store.clear
-    end
-
     include SerializationTesting
   end
 end
