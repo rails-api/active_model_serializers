@@ -155,14 +155,7 @@ class LikeSerializer < ActiveModel::Serializer
 end
 
 class LocationSerializer < ActiveModel::Serializer
-  cache only: [:address], skip_digest: true
   attributes :id, :lat, :lng
-
-  belongs_to :place, key: :address
-
-  def place
-    'Nowhere'
-  end
 end
 
 class PlaceSerializer < ActiveModel::Serializer

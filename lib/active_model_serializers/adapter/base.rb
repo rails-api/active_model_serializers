@@ -38,10 +38,6 @@ module ActiveModelSerializers
         @cache_key ||= ActiveModelSerializers::Adapter.registered_name(self)
       end
 
-      def self.fragment_cache(cached_hash, non_cached_hash)
-        non_cached_hash.merge cached_hash
-      end
-
       attr_reader :serializer, :instance_options
 
       def initialize(serializer, options = {})
@@ -61,10 +57,6 @@ module ActiveModelSerializers
 
       def cache_key
         self.class.cache_key
-      end
-
-      def fragment_cache(cached_hash, non_cached_hash)
-        self.class.fragment_cache(cached_hash, non_cached_hash)
       end
 
       private
