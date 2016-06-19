@@ -53,10 +53,6 @@ module ActiveModelSerializers
         self
       end
 
-      def registered_name(adapter_class)
-        ADAPTER_MAP.key adapter_class
-      end
-
       # @param  adapter [String, Symbol, Class] name to fetch adapter by
       # @return [ActiveModelSerializers::Adapter] subclass of Adapter
       # @raise  [UnknownAdapterError]

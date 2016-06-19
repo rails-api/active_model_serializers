@@ -8,7 +8,7 @@
   when 'jruby', 'rbx'
     96.0
   else
-    98.1
+    100.0
   end
 }.to_f.round(2)
 # rubocop:disable Style/DoubleNegation

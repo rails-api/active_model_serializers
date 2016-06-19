@@ -108,27 +108,21 @@ module ActiveModelSerializers
         # @api private
         # rubocop:disable Metrics/CyclomaticComplexity
         def validate_payload(payload)
-          unless payload.is_a?(Hash)
-            yield payload, 'Expected hash'
-            return
-          end
+          yield payload, 'Expected hash' unless payload.is_a?(Hash)
 
           primary_data = payload['data']
           unless primary_data.is_a?(Hash)
             yield payload, { data: 'Expected hash' }
-            return
           end
 
           attributes = primary_data['attributes'] || {}
           unless attributes.is_a?(Hash)
             yield payload, { data: { attributes: 'Expected hash or nil' } }
-            return
           end
 
           relationships = primary_data['relationships'] || {}
           unless relationships.is_a?(Hash)
             yield payload, { data: { relationships: 'Expected hash or nil' } }
-            return
           end
 
           relationships.each do |(key, value)|
