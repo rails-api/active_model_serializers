@@ -227,23 +227,19 @@ module ActiveModel
         end
       end
 
-      def non_cached_attributes(adapter_instance, fields)
-        non_cached_fields = fields[:non_cached].dup
-        non_cached_hash = attributes(non_cached_fields, true)
-        include_directive = JSONAPI::IncludeDirective.new(non_cached_fields - non_cached_hash.keys)
-        non_cached_hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
-        non_cached_hash
-      end
-
       # 1. Determine cached fields from serializer class options
       # 2. Get non_cached_fields and fetch cache_fields
       # 3. Merge the two hashes using adapter_instance#fragment_cache
+      # rubocop:disable Metrics/AbcSize
       def fetch_attributes_fragment(adapter_instance, cached_attributes = {})
         serializer_class._cache_options ||= {}
         serializer_class._cache_options[:key] = serializer_class._cache_key if serializer_class._cache_key
         fields = serializer_class.fragmented_attributes
 
-        non_cached_hash = non_cached_attributes(adapter_instance, fields)
+        non_cached_fields = fields[:non_cached].dup
+        non_cached_hash = attributes(non_cached_fields, true)
+        include_directive = JSONAPI::IncludeDirective.new(non_cached_fields - non_cached_hash.keys)
+        non_cached_hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
 
         cached_fields = fields[:cached].dup
         key = cache_key(adapter_instance)
@@ -258,6 +254,7 @@ module ActiveModel
         # Merge both results
         adapter_instance.fragment_cache(cached_hash, non_cached_hash)
       end
+      # rubocop:enable Metrics/AbcSize
 
       def cache_key(adapter_instance)
         return @cache_key if defined?(@cache_key)
