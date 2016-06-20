@@ -112,14 +112,14 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({
-            data: {
-              id: '1',
-              type: 'posts',
-              relationships: {
-                tags: { data: [@tag.as_json] }
-              }
-            }
-          }, adapter.serializable_hash)
+                         data: {
+                           id: '1',
+                           type: 'posts',
+                           relationships: {
+                             tags: { data: [@tag.as_json] }
+                           }
+                         }
+                       }, adapter.serializable_hash)
         end
 
         def test_has_many_with_virtual_value
@@ -127,16 +127,16 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({
-            data: {
-              id: '1',
-              type: 'virtual-values',
-              relationships: {
-                maker: { data: { type: 'makers', id: '1' } },
-                reviews: { data: [{ type: 'reviews', id: '1' },
-                                  { type: 'reviews', id: '2' }] }
-              }
-            }
-          }, adapter.serializable_hash)
+                         data: {
+                           id: '1',
+                           type: 'virtual-values',
+                           relationships: {
+                             maker: { data: { type: 'makers', id: '1' } },
+                             reviews: { data: [{ type: 'reviews', id: '1' },
+                                               { type: 'reviews', id: '2' }] }
+                           }
+                         }
+                       }, adapter.serializable_hash)
         end
       end
     end
