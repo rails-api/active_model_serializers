@@ -336,9 +336,7 @@ module ActiveModelSerializers
         serializers.serializable_hash(adapter_options, options, adapter_instance)
 
         # Should find something with read_multi now
-        options = {}
         adapter_options = {}
-        adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(serializers, adapter_options)
         serializers.serializable_hash(adapter_options, options, adapter_instance)
         cached_attributes = adapter_options.fetch(:cached_attributes)
 
