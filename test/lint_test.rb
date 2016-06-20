@@ -30,7 +30,7 @@ module ActiveModel
         def errors
         end
 
-        def self.human_attribute_name(attr, options = {})
+        def self.human_attribute_name(_, _ = {})
         end
 
         def self.lookup_ancestors

@@ -20,4 +20,3 @@ module ActiveModelSerializers
     end
   end
 end
-

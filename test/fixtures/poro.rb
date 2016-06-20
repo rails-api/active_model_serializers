@@ -8,7 +8,7 @@ class Model < ActiveModelSerializers::Model
   # Convenience when not adding @attributes readers and writers
   def method_missing(meth, *args)
     if meth.to_s =~ /^(.*)=$/
-      attributes[$1.to_sym] = args[0]
+      attributes[Regexp.last_match(1).to_sym] = args[0]
     elsif attributes.key?(meth)
       attributes[meth]
     else
@@ -64,7 +64,7 @@ VirtualValue = Class.new(Model)
 Comment = Class.new(Model) do
   # Uses a custom non-time-based cache key
   def cache_key
-    "#{self.class.name.downcase}/#{self.id}"
+    "#{self.class.name.downcase}/#{id}"
   end
 end
 

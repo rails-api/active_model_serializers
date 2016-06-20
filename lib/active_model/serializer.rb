@@ -125,10 +125,9 @@ module ActiveModel
       self.root = instance_options[:root]
       self.scope = instance_options[:scope]
 
-      scope_name = instance_options[:scope_name]
-      if scope_name && !respond_to?(scope_name)
-        define_singleton_method scope_name, lambda { scope }
-      end
+      return if !(scope_name = instance_options[:scope_name]) || respond_to?(scope_name)
+
+      define_singleton_method scope_name, -> { scope }
     end
 
     def success?

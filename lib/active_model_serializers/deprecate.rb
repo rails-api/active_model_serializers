@@ -36,7 +36,7 @@ module ActiveModelSerializers
           target = is_a?(Module) ? "#{self}." : "#{self.class}#"
           msg = ["NOTE: #{target}#{name} is deprecated",
                  replacement == :none ? ' with no replacement' : "; use #{replacement} instead",
-                 "\n#{target}#{name} called from #{ActiveModelSerializers.location_of_caller.join(":")}"]
+                 "\n#{target}#{name} called from #{ActiveModelSerializers.location_of_caller.join(':')}"]
           warn "#{msg.join}."
           send old, *args, &block
         end

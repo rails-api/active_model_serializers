@@ -74,7 +74,7 @@ module ActionController
         end
 
         def update_and_render_object_with_cache_enabled
-          @post.updated_at = Time.now
+          @post.updated_at = Time.zone.now
 
           generate_cached_serializer(@post)
           render json: @post

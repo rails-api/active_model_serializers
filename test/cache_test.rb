@@ -101,7 +101,7 @@ module ActiveModelSerializers
       uncached_author_serializer = AuthorSerializer.new(uncached_author)
 
       render_object_with_cache(uncached_author)
-      key = "#{uncached_author_serializer.class._cache_key}/#{uncached_author_serializer.object.id}-#{uncached_author_serializer.object.updated_at.strftime("%Y%m%d%H%M%S%9N")}"
+      key = "#{uncached_author_serializer.class._cache_key}/#{uncached_author_serializer.object.id}-#{uncached_author_serializer.object.updated_at.strftime('%Y%m%d%H%M%S%9N')}"
       key = "#{key}/#{adapter.cache_key}"
       assert_equal(uncached_author_serializer.attributes.to_json, cache_store.fetch(key).to_json)
     end
