@@ -11,14 +11,6 @@ Lint/HandleExceptions:
   Exclude:
     - 'Rakefile'
 
-# Offense count: 16
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle, SupportedLastArgumentHashStyles.
-# SupportedLastArgumentHashStyles: always_inspect, always_ignore, ignore_implicit, ignore_explicit
-Style/AlignHash:
-  Exclude:
-    - 'test/action_controller/json_api/pagination_test.rb'
-
 
 # Offense count: 271
 # Configuration parameters: EnforcedStyle, SupportedStyles.
