@@ -5,17 +5,17 @@ module ActionController
     class AdapterSelectorTest < ActionController::TestCase
       class AdapterSelectorTestController < ActionController::Base
         def render_using_default_adapter
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile
         end
 
         def render_using_adapter_override
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile, adapter: :json_api
         end
 
         def render_skipping_adapter
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile, adapter: false
         end
       end

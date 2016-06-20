@@ -19,23 +19,6 @@ Style/AlignHash:
   Exclude:
     - 'test/action_controller/json_api/pagination_test.rb'
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'test/action_controller/adapter_selector_test.rb'
-    - 'test/action_controller/json_api/pagination_test.rb'
-    - 'test/adapter/json_api/linked_test.rb'
-    - 'test/adapter/json_api/pagination_links_test.rb'
-    - 'test/adapter/null_test.rb'
-    - 'test/adapter_test.rb'
-    - 'test/collection_serializer_test.rb'
-    - 'test/serializable_resource_test.rb'
-    - 'test/serializers/associations_test.rb'
-    - 'test/serializers/attributes_test.rb'
-    - 'test/serializers/root_test.rb'
 
 # Offense count: 271
 # Configuration parameters: EnforcedStyle, SupportedStyles.

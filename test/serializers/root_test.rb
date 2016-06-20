@@ -8,7 +8,7 @@ module ActiveModel
       end
 
       def test_overwrite_root
-        serializer = VirtualValueSerializer.new(@virtual_value, { root: 'smth' })
+        serializer = VirtualValueSerializer.new(@virtual_value, root: 'smth')
         assert_equal('smth', serializer.json_key)
       end
 

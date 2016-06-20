@@ -7,10 +7,10 @@ module ActiveModel
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
         @author.roles = []
-        @blog = Blog.new({ name: 'AMS Blog' })
-        @post = Post.new({ title: 'New Post', body: 'Body' })
-        @tag = Tag.new({ name: '#hashtagged' })
-        @comment = Comment.new({ id: 1, body: 'ZOMG A COMMENT' })
+        @blog = Blog.new(name: 'AMS Blog')
+        @post = Post.new(title: 'New Post', body: 'Body')
+        @tag = Tag.new(name: '#hashtagged')
+        @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
         @post.comments = [@comment]
         @post.tags = [@tag]
         @post.blog = @blog
@@ -19,7 +19,7 @@ module ActiveModel
         @post.author = @author
         @author.posts = [@post]
 
-        @post_serializer = PostSerializer.new(@post, { custom_options: true })
+        @post_serializer = PostSerializer.new(@post, custom_options: true)
         @author_serializer = AuthorSerializer.new(@author)
         @comment_serializer = CommentSerializer.new(@comment)
       end

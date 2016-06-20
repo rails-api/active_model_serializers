@@ -17,7 +17,7 @@ module ActiveModelSerializers
           @first_post = Post.new(id: 10, title: 'Hello!!', body: 'Hello, world!!')
           @second_post = Post.new(id: 20, title: 'New Post', body: 'Body')
           @third_post = Post.new(id: 30, title: 'Yet Another Post', body: 'Body')
-          @blog = Blog.new({ name: 'AMS Blog' })
+          @blog = Blog.new(name: 'AMS Blog')
           @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
           @first_post.blog = @blog

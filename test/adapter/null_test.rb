@@ -4,7 +4,7 @@ module ActiveModelSerializers
   module Adapter
     class NullTest < ActiveSupport::TestCase
       def setup
-        profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+        profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
         serializer = ProfileSerializer.new(profile)
 
         @adapter = Null.new(serializer)

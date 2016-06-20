@@ -14,9 +14,9 @@ module ActionController
         class PaginationTestController < ActionController::Base
           def setup
             @array = [
-              Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
-              Profile.new({ name: 'Name 2', description: 'Description 2', comments: 'Comments 2' }),
-              Profile.new({ name: 'Name 3', description: 'Description 3', comments: 'Comments 3' })
+              Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
+              Profile.new(name: 'Name 2', description: 'Description 2', comments: 'Comments 2'),
+              Profile.new(name: 'Name 3', description: 'Description 3', comments: 'Comments 3')
             ]
           end
 
