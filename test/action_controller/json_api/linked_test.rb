@@ -87,7 +87,7 @@ module ActionController
         setup do
           @routes = Rails.application.routes.draw do
             ActiveSupport::Deprecation.silence do
-              match ':action', :to => LinkedTestController, via: [:get, :post]
+              match ':action', to: LinkedTestController, via: [:get, :post]
             end
           end
         end

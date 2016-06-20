@@ -143,12 +143,12 @@ module ActiveModel
         )
         actual = serializable(post, adapter: :attributes, serializer: InlineAssociationTestPostSerializer).as_json
         expected = {
-          :comments => [
-            { :id => 1, :contents => 'first comment' },
-            { :id => 2, :contents => 'last comment' }
+          comments: [
+            { id: 1, contents: 'first comment' },
+            { id: 2, contents: 'last comment' }
           ],
-          :last_comments => [
-            { :id => 2, :contents => 'last comment' }
+          last_comments: [
+            { id: 2, contents: 'last comment' }
           ]
         }
 

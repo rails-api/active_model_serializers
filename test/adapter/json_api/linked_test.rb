@@ -370,7 +370,7 @@ module ActiveModelSerializers
           expected = [
             type: 'nested-posts', id: '2',
             relationships: {
-              :"nested-posts" => {
+              "nested-posts": {
                 data: [
                   { type: 'nested-posts', id: '1' },
                   { type: 'nested-posts', id: '2' }

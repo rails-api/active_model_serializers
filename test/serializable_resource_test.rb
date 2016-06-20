@@ -51,8 +51,8 @@ module ActiveModelSerializers
           }
         )
         expected_response_document = {
-          :errors => [
-            { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be awesome' }
+          errors: [
+            { source: { pointer: '/data/attributes/name' }, detail: 'must be awesome' }
           ]
         }
         assert_equal serializable_resource.as_json(options), expected_response_document
@@ -72,8 +72,8 @@ module ActiveModelSerializers
           }
         )
         expected_response_document = {
-          :errors => [
-            { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be amazing' }
+          errors: [
+            { source: { pointer: '/data/attributes/title' }, detail: 'must be amazing' }
           ]
         }
         assert_equal serializable_resource.as_json(options), expected_response_document

@@ -44,7 +44,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
 
       Rails.application.routes.draw do
         ActiveSupport::Deprecation.silence do
-          match ':action', :to => TestController, via: [:get, :post]
+          match ':action', to: TestController, via: [:get, :post]
         end
       end
     end
@@ -95,7 +95,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
 
       Rails.application.routes.draw do
         ActiveSupport::Deprecation.silence do
-          match ':action', :to => TestController, via: [:get, :post]
+          match ':action', to: TestController, via: [:get, :post]
         end
       end
     end

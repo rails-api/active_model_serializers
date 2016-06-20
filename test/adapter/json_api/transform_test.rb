@@ -76,7 +76,7 @@ module ActiveModelSerializers
                            attributes: {
                              title: 'Title 1',
                              body: 'Body 1',
-                             :"publish-at" => @publish_at
+                             "publish-at": @publish_at
                            },
                            relationships: {
                              author: {
@@ -91,10 +91,10 @@ module ActiveModelSerializers
                            },
                            links: {
                              self: 'http://example.com/posts/1337',
-                             :"post-authors" => 'http://example.com/posts/1337/authors',
-                             :"subscriber-comments" => 'http://example.com/posts/1337/comments'
+                             "post-authors": 'http://example.com/posts/1337/authors',
+                             "subscriber-comments": 'http://example.com/posts/1337/comments'
                            },
-                           meta: { rating: 5, :"favorite-count" => 10 }
+                           meta: { rating: 5, "favorite-count": 10 }
                          }
                        }, result)
         end
@@ -185,7 +185,7 @@ module ActiveModelSerializers
                            attributes: {
                              title: 'Title 1',
                              body: 'Body 1',
-                             :"publish-at" => @publish_at
+                             "publish-at": @publish_at
                            },
                            relationships: {
                              author: {
@@ -200,10 +200,10 @@ module ActiveModelSerializers
                            },
                            links: {
                              self: 'http://example.com/posts/1337',
-                             :"post-authors" => 'http://example.com/posts/1337/authors',
-                             :"subscriber-comments" => 'http://example.com/posts/1337/comments'
+                             "post-authors": 'http://example.com/posts/1337/authors',
+                             "subscriber-comments": 'http://example.com/posts/1337/comments'
                            },
-                           meta: { rating: 5, :"favorite-count" => 10 }
+                           meta: { rating: 5, "favorite-count": 10 }
                          }
                        }, result)
         end
@@ -332,14 +332,14 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           expected_errors_object = {
-            :errors => [
+            errors: [
               {
-                :source => { :pointer => '/data/attributes/published-at' },
-                :detail => 'must be in the future'
+                source: { pointer: '/data/attributes/published-at' },
+                detail: 'must be in the future'
               },
               {
-                :source => { :pointer => '/data/attributes/title' },
-                :detail => 'must be longer'
+                source: { pointer: '/data/attributes/title' },
+                detail: 'must be longer'
               }
             ]
           }
@@ -357,14 +357,14 @@ module ActiveModelSerializers
             adapter.serializable_hash
           end
           expected_errors_object = {
-            :Errors => [
+            Errors: [
               {
-                :Source => { :Pointer => '/data/attributes/PublishedAt' },
-                :Detail => 'must be in the future'
+                Source: { Pointer: '/data/attributes/PublishedAt' },
+                Detail: 'must be in the future'
               },
               {
-                :Source => { :Pointer => '/data/attributes/Title' },
-                :Detail => 'must be longer'
+                Source: { Pointer: '/data/attributes/Title' },
+                Detail: 'must be longer'
               }
             ]
           }
@@ -382,14 +382,14 @@ module ActiveModelSerializers
             adapter.serializable_hash
           end
           expected_errors_object = {
-            :Errors => [
+            Errors: [
               {
-                :Source => { :Pointer => '/data/attributes/PublishedAt' },
-                :Detail => 'must be in the future'
+                Source: { Pointer: '/data/attributes/PublishedAt' },
+                Detail: 'must be in the future'
               },
               {
-                :Source => { :Pointer => '/data/attributes/Title' },
-                :Detail => 'must be longer'
+                Source: { Pointer: '/data/attributes/Title' },
+                Detail: 'must be longer'
               }
             ]
           }
@@ -408,14 +408,14 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :errors => [
+            errors: [
               {
-                :source => { :pointer => '/data/attributes/published-at' },
-                :detail => 'must be in the future'
+                source: { pointer: '/data/attributes/published-at' },
+                detail: 'must be in the future'
               },
               {
-                :source => { :pointer => '/data/attributes/title' },
-                :detail => 'must be longer'
+                source: { pointer: '/data/attributes/title' },
+                detail: 'must be longer'
               }
             ]
           }
@@ -434,9 +434,9 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :errors => [
-              { :source => { :pointer => '/data/attributes/published_at' }, :detail => 'must be in the future' },
-              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
+            errors: [
+              { source: { pointer: '/data/attributes/published_at' }, detail: 'must be in the future' },
+              { source: { pointer: '/data/attributes/title' }, detail: 'must be longer' }
             ]
           }
           assert_equal expected_errors_object, result
@@ -470,9 +470,9 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :Errors => [
-              { :Source => { :Pointer => '/data/attributes/PublishedAt' }, :Detail => 'must be in the future' },
-              { :Source => { :Pointer => '/data/attributes/Title' }, :Detail => 'must be longer' }
+            Errors: [
+              { Source: { Pointer: '/data/attributes/PublishedAt' }, Detail: 'must be in the future' },
+              { Source: { Pointer: '/data/attributes/Title' }, Detail: 'must be longer' }
             ]
           }
           assert_equal expected_errors_object, result
@@ -490,9 +490,9 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :errors => [
-              { :source => { :pointer => '/data/attributes/publishedAt' }, :detail => 'must be in the future' },
-              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
+            errors: [
+              { source: { pointer: '/data/attributes/publishedAt' }, detail: 'must be in the future' },
+              { source: { pointer: '/data/attributes/title' }, detail: 'must be longer' }
             ]
           }
           assert_equal expected_errors_object, result

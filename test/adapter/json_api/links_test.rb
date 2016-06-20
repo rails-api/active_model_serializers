@@ -82,10 +82,10 @@ module ActiveModelSerializers
               }
             },
             author: 'http://example.com/link_authors/1337',
-            :"link-authors" => 'http://example.com/link_authors',
+            "link-authors": 'http://example.com/link_authors',
             resource: 'http://example.com/resource',
             posts: 'http://example.com/link_authors/1337/posts',
-            :"yet-another" => 'http://example.com/resource/1337'
+            "yet-another": 'http://example.com/resource/1337'
           }
           assert_equal(expected, hash[:data][:links])
         end

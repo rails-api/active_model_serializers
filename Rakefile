@@ -100,4 +100,4 @@ else
 end
 
 desc 'CI test task'
-task :ci => [:default]
+task ci: [:default]

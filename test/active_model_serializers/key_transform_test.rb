@@ -5,16 +5,16 @@ class ActiveModelSerializers::KeyTransformTest < ActiveSupport::TestCase
     obj = Object.new
     scenarios = [
       {
-        value: { :"some-key" => 'value' },
-        expected: { :SomeKey => 'value' }
+        value: { "some-key": 'value' },
+        expected: { SomeKey: 'value' }
       },
       {
-        value: { :someKey => 'value' },
-        expected: { :SomeKey => 'value' }
+        value: { someKey: 'value' },
+        expected: { SomeKey: 'value' }
       },
       {
-        value: { :some_key => 'value' },
-        expected: { :SomeKey => 'value' }
+        value: { some_key: 'value' },
+        expected: { SomeKey: 'value' }
       },
       {
         value: { 'some-key' => 'value' },
@@ -71,16 +71,16 @@ class ActiveModelSerializers::KeyTransformTest < ActiveSupport::TestCase
     obj = Object.new
     scenarios = [
       {
-        value: { :"some-key" => 'value' },
-        expected: { :someKey => 'value' }
+        value: { "some-key": 'value' },
+        expected: { someKey: 'value' }
       },
       {
-        value: { :SomeKey => 'value' },
-        expected: { :someKey => 'value' }
+        value: { SomeKey: 'value' },
+        expected: { someKey: 'value' }
       },
       {
-        value: { :some_key => 'value' },
-        expected: { :someKey => 'value' }
+        value: { some_key: 'value' },
+        expected: { someKey: 'value' }
       },
       {
         value: { 'some-key' => 'value' },
@@ -137,24 +137,24 @@ class ActiveModelSerializers::KeyTransformTest < ActiveSupport::TestCase
     obj = Object.new
     scenarios = [
       {
-        value: { :some_key => 'value' },
-        expected: { :"some-key" => 'value' }
+        value: { some_key: 'value' },
+        expected: { "some-key": 'value' }
       },
       {
         value: { 'some_key' => 'value' },
         expected: { 'some-key' => 'value' }
       },
       {
-        value: { :SomeKey => 'value' },
-        expected: { :"some-key" => 'value' }
+        value: { SomeKey: 'value' },
+        expected: { "some-key": 'value' }
       },
       {
         value: { 'SomeKey' => 'value' },
         expected: { 'some-key' => 'value' }
       },
       {
-        value: { :someKey => 'value' },
-        expected: { :"some-key" => 'value' }
+        value: { someKey: 'value' },
+        expected: { "some-key": 'value' }
       },
       {
         value: { 'someKey' => 'value' },
@@ -199,24 +199,24 @@ class ActiveModelSerializers::KeyTransformTest < ActiveSupport::TestCase
     obj = Object.new
     scenarios = [
       {
-        value: { :"some-key" => 'value' },
-        expected: { :some_key => 'value' }
+        value: { "some-key": 'value' },
+        expected: { some_key: 'value' }
       },
       {
         value: { 'some-key' => 'value' },
         expected: { 'some_key' => 'value' }
       },
       {
-        value: { :SomeKey => 'value' },
-        expected: { :some_key => 'value' }
+        value: { SomeKey: 'value' },
+        expected: { some_key: 'value' }
       },
       {
         value: { 'SomeKey' => 'value' },
         expected: { 'some_key' => 'value' }
       },
       {
-        value: { :someKey => 'value' },
-        expected: { :some_key => 'value' }
+        value: { someKey: 'value' },
+        expected: { some_key: 'value' }
       },
       {
         value: { 'someKey' => 'value' },
