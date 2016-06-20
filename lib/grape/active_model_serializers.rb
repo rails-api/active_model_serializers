@@ -4,11 +4,13 @@ require 'active_model_serializers'
 require 'grape/formatters/active_model_serializers'
 require 'grape/helpers/active_model_serializers'
 
-module Grape::ActiveModelSerializers
-  extend ActiveSupport::Concern
+module Grape
+  module ActiveModelSerializers
+    extend ActiveSupport::Concern
 
-  included do
-    formatter :json, Grape::Formatters::ActiveModelSerializers
-    helpers Grape::Helpers::ActiveModelSerializers
+    included do
+      formatter :json, Grape::Formatters::ActiveModelSerializers
+      helpers Grape::Helpers::ActiveModelSerializers
+    end
   end
 end

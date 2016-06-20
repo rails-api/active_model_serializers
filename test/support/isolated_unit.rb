@@ -75,6 +75,8 @@ module TestHelpers
   end
 end
 
-class ActiveSupport::TestCase
-  include TestHelpers::Generation
+module ActiveSupport
+  class TestCase
+    include TestHelpers::Generation
+  end
 end

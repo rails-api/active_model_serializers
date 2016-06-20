@@ -12,13 +12,6 @@ Lint/HandleExceptions:
     - 'Rakefile'
 
 
-# Offense count: 271
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-
 
 # Offense count: 3
 # Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
