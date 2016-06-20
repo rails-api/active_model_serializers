@@ -39,7 +39,7 @@ module ActiveModel
         # @example
         #  has_many :comments, serializer: CommentSummarySerializer
         #
-        def has_many(name, options = {}, &block)
+        def has_many(name, options = {}, &block) # rubocop:disable Style/PredicateName
           associate(HasManyReflection.new(name, options, block))
         end
 
@@ -61,7 +61,7 @@ module ActiveModel
         # @example
         #  has_one :author, serializer: AuthorSerializer
         #
-        def has_one(name, options = {}, &block)
+        def has_one(name, options = {}, &block) # rubocop:disable Style/PredicateName
           associate(HasOneReflection.new(name, options, block))
         end
 
