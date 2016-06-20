@@ -326,7 +326,7 @@ module ActiveModelSerializers
         cache except: [:body]
       end
 
-      serializers = ActiveModel::Serializer::CollectionSerializer.new([@post, @post], {serializer: post_serializer})
+      serializers = ActiveModel::Serializer::CollectionSerializer.new([@post, @post], serializer: post_serializer)
 
       Timecop.freeze(Time.current) do
         # Warming up.
