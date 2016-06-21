@@ -6,7 +6,7 @@ module ActiveModelSerializers
       obj = Object.new
       scenarios = [
         {
-          value: { "some-key": 'value' },
+          value: { :"some-key" => 'value' },
           expected: { SomeKey: 'value' }
         },
         {
@@ -72,7 +72,7 @@ module ActiveModelSerializers
       obj = Object.new
       scenarios = [
         {
-          value: { "some-key": 'value' },
+          value: { :"some-key" => 'value' },
           expected: { someKey: 'value' }
         },
         {
@@ -139,7 +139,7 @@ module ActiveModelSerializers
       scenarios = [
         {
           value: { some_key: 'value' },
-          expected: { "some-key": 'value' }
+          expected: { :"some-key" => 'value' }
         },
         {
           value: { 'some_key' => 'value' },
@@ -147,7 +147,7 @@ module ActiveModelSerializers
         },
         {
           value: { SomeKey: 'value' },
-          expected: { "some-key": 'value' }
+          expected: { :"some-key" => 'value' }
         },
         {
           value: { 'SomeKey' => 'value' },
@@ -155,7 +155,7 @@ module ActiveModelSerializers
         },
         {
           value: { someKey: 'value' },
-          expected: { "some-key": 'value' }
+          expected: { :"some-key" => 'value' }
         },
         {
           value: { 'someKey' => 'value' },
@@ -200,7 +200,7 @@ module ActiveModelSerializers
       obj = Object.new
       scenarios = [
         {
-          value: { "some-key": 'value' },
+          value: { :"some-key" => 'value' },
           expected: { some_key: 'value' }
         },
         {

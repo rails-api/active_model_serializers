@@ -76,7 +76,7 @@ module ActiveModelSerializers
                            attributes: {
                              title: 'Title 1',
                              body: 'Body 1',
-                             "publish-at": @publish_at
+                             :"publish-at" => @publish_at
                            },
                            relationships: {
                              author: {
@@ -91,10 +91,10 @@ module ActiveModelSerializers
                            },
                            links: {
                              self: 'http://example.com/posts/1337',
-                             "post-authors": 'http://example.com/posts/1337/authors',
-                             "subscriber-comments": 'http://example.com/posts/1337/comments'
+                             :"post-authors" => 'http://example.com/posts/1337/authors',
+                             :"subscriber-comments" => 'http://example.com/posts/1337/comments'
                            },
-                           meta: { rating: 5, "favorite-count": 10 }
+                           meta: { rating: 5, :"favorite-count" => 10 }
                          }
                        }, result)
         end
@@ -185,7 +185,7 @@ module ActiveModelSerializers
                            attributes: {
                              title: 'Title 1',
                              body: 'Body 1',
-                             "publish-at": @publish_at
+                             :"publish-at" => @publish_at
                            },
                            relationships: {
                              author: {
@@ -200,10 +200,10 @@ module ActiveModelSerializers
                            },
                            links: {
                              self: 'http://example.com/posts/1337',
-                             "post-authors": 'http://example.com/posts/1337/authors',
-                             "subscriber-comments": 'http://example.com/posts/1337/comments'
+                             :"post-authors" => 'http://example.com/posts/1337/authors',
+                             :"subscriber-comments" => 'http://example.com/posts/1337/comments'
                            },
-                           meta: { rating: 5, "favorite-count": 10 }
+                           meta: { rating: 5, :"favorite-count" => 10 }
                          }
                        }, result)
         end

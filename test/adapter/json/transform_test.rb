@@ -63,7 +63,7 @@ module ActiveModelSerializers
         def test_transform_dash
           mock_request(:dash)
           assert_equal({
-                         blog: { id: 1, "special-attribute": 'neat', articles: nil }
+                         blog: { id: 1, :"special-attribute" => 'neat', articles: nil }
                        }, @adapter.serializable_hash)
         end
 
