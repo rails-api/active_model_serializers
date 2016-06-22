@@ -73,7 +73,7 @@ See [ARCHITECTURE](../ARCHITECTURE.md) for more information.
 
 #### fields
 
-If you are using `json` adapter
+If you are using `json` or `attributes` adapter
 ```ruby
 render json: @user, fields: [:access_token]
 ```
