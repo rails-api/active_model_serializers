@@ -78,15 +78,6 @@ If you are using `json` adapter
 render json: @user, fields: [:access_token]
 ```
 
-or if you your adapter is `json_api`, then you should change as below
-
-```ruby
-render json: @user, fields: { users: [:access_token] }
-```
-
-where `users` is your JSONAPI type.
-
-
 See [Fields](fields.md) for more information.
 
 #### adapter
