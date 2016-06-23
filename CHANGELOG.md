@@ -7,6 +7,7 @@ Breaking changes:
 Features:
 
 Fixes:
+- [#1814] (https://github.com/rails-api/active_model_serializers/pull/1814) Ensuring read_multi works with fragment cache
 
 Misc:
 

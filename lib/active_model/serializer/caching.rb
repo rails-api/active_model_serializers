@@ -197,7 +197,7 @@ module ActiveModel
         def object_cache_key(serializer, adapter_instance)
           return unless serializer.present? && serializer.object.present?
 
-          serializer.class.cache_enabled? ? serializer.cache_key(adapter_instance) : nil
+          (serializer.class.cache_enabled? || serializer.class.fragment_cache_enabled?) ? serializer.cache_key(adapter_instance) : nil
         end
       end
 
@@ -211,7 +211,7 @@ module ActiveModel
             end
           end
         elsif serializer_class.fragment_cache_enabled?
-          fetch_attributes_fragment(adapter_instance)
+          fetch_attributes_fragment(adapter_instance, cached_attributes)
         else
           attributes(fields, true)
         end
@@ -230,7 +230,8 @@ module ActiveModel
       # 1. Determine cached fields from serializer class options
       # 2. Get non_cached_fields and fetch cache_fields
       # 3. Merge the two hashes using adapter_instance#fragment_cache
-      def fetch_attributes_fragment(adapter_instance)
+      # rubocop:disable Metrics/AbcSize
+      def fetch_attributes_fragment(adapter_instance, cached_attributes = {})
         serializer_class._cache_options ||= {}
         serializer_class._cache_options[:key] = serializer_class._cache_key if serializer_class._cache_key
         fields = serializer_class.fragmented_attributes
@@ -243,15 +244,17 @@ module ActiveModel
         cached_fields = fields[:cached].dup
         key = cache_key(adapter_instance)
         cached_hash =
-          serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
-            hash = attributes(cached_fields, true)
-            include_directive = JSONAPI::IncludeDirective.new(cached_fields - hash.keys)
-            hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
+          cached_attributes.fetch(key) do
+            serializer_class.cache_store.fetch(key, serializer_class._cache_options) do
+              hash = attributes(cached_fields, true)
+              include_directive = JSONAPI::IncludeDirective.new(cached_fields - hash.keys)
+              hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
+            end
           end
-
         # Merge both results
         adapter_instance.fragment_cache(cached_hash, non_cached_hash)
       end
+      # rubocop:enable Metrics/AbcSize
 
       def cache_key(adapter_instance)
         return @cache_key if defined?(@cache_key)
