@@ -10,6 +10,7 @@ Fixes:
 - [#1814] (https://github.com/rails-api/active_model_serializers/pull/1814) Ensuring read_multi works with fragment cache
 
 Misc:
+- [#1808](https://github.com/rails-api/active_model_serializers/pull/1808) Adds documentation for `fields` option. (@luizkowalski)
 
 ### [v0.10.1 (2016-06-16)](https://github.com/rails-api/active_model_serializers/compare/v0.10.0...v0.10.1)
 
