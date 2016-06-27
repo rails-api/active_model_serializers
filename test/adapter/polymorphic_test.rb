@@ -27,11 +27,11 @@ module ActiveModel
               id: 1,
               title: 'headshot-1.jpg',
               imageable: {
-                  type: 'employee',
-                  employee: {
-                    id: 42,
-                    name: 'Zoop Zoopler'
-                  }
+                type: 'employee',
+                employee: {
+                  id: 42,
+                  name: 'Zoop Zoopler'
+                }
               }
             }
 

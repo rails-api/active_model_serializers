@@ -11,7 +11,7 @@ module ActiveModel
         @comment = Comment.new
         @post = Post.new
         @resource = build_named_collection @comment, @post
-        @serializer = collection_serializer.new(@resource, { some: :options })
+        @serializer = collection_serializer.new(@resource, some: :options)
       end
 
       def collection_serializer
@@ -44,7 +44,7 @@ module ActiveModel
       end
 
       def test_serializer_option_not_passed_to_each_serializer
-        serializers = collection_serializer.new([@post], { serializer: PostSerializer }).to_a
+        serializers = collection_serializer.new([@post], serializer: PostSerializer).to_a
 
         refute serializers.first.custom_options.key?(:serializer)
       end

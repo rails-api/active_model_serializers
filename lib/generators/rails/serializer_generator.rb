@@ -2,11 +2,11 @@ module Rails
   module Generators
     class SerializerGenerator < NamedBase
       source_root File.expand_path('../templates', __FILE__)
-      check_class_collision :suffix => 'Serializer'
+      check_class_collision suffix: 'Serializer'
 
-      argument :attributes, :type => :array, :default => [], :banner => 'field:type field:type'
+      argument :attributes, type: :array, default: [], banner: 'field:type field:type'
 
-      class_option :parent, :type => :string, :desc => 'The parent class for the generated serializer'
+      class_option :parent, type: :string, desc: 'The parent class for the generated serializer'
 
       def create_serializer_file
         template 'serializer.rb.erb', File.join('app/serializers', class_path, "#{file_name}_serializer.rb")

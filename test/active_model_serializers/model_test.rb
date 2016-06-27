@@ -1,9 +1,11 @@
 require 'test_helper'
 
-class ActiveModelSerializers::ModelTest < ActiveSupport::TestCase
-  include ActiveModel::Serializer::Lint::Tests
+module ActiveModelSerializers
+  class ModelTest < ActiveSupport::TestCase
+    include ActiveModel::Serializer::Lint::Tests
 
-  def setup
-    @resource = ActiveModelSerializers::Model.new
+    def setup
+      @resource = ActiveModelSerializers::Model.new
+    end
   end
 end

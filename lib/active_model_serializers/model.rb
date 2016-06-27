@@ -21,7 +21,7 @@ module ActiveModelSerializers
 
     # Defaults to the downcased model name and updated_at
     def cache_key
-      attributes.fetch(:cache_key) { "#{self.class.name.downcase}/#{id}-#{updated_at.strftime("%Y%m%d%H%M%S%9N")}" }
+      attributes.fetch(:cache_key) { "#{self.class.name.downcase}/#{id}-#{updated_at.strftime('%Y%m%d%H%M%S%9N')}" }
     end
 
     # Defaults to the time the serializer file was modified.

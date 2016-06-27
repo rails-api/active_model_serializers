@@ -87,7 +87,7 @@ module ActionController
         setup do
           @routes = Rails.application.routes.draw do
             ActiveSupport::Deprecation.silence do
-              match ':action', :to => LinkedTestController, via: [:get, :post]
+              match ':action', to: LinkedTestController, via: [:get, :post]
             end
           end
         end
@@ -183,17 +183,17 @@ module ActionController
           get '/render_resource_with_missing_nested_has_many_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
-          refute has_type?(response['included'], 'roles')
+          refute include_type?(response['included'], 'roles')
         end
 
         def test_render_collection_with_missing_nested_has_many_include
           get '/render_collection_with_missing_nested_has_many_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
-          assert has_type?(response['included'], 'roles')
+          assert include_type?(response['included'], 'roles')
         end
 
-        def has_type?(collection, value)
+        def include_type?(collection, value)
           collection.detect { |i| i['type'] == value }
         end
       end

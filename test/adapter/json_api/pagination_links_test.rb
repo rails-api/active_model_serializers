@@ -13,11 +13,11 @@ module ActiveModelSerializers
         def setup
           ActionController::Base.cache_store.clear
           @array = [
-            Profile.new({ id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
-            Profile.new({ id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2' }),
-            Profile.new({ id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3' }),
-            Profile.new({ id: 4, name: 'Name 4', description: 'Description 4', comments: 'Comments 4' }),
-            Profile.new({ id: 5, name: 'Name 5', description: 'Description 5', comments: 'Comments 5' })
+            Profile.new(id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
+            Profile.new(id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2'),
+            Profile.new(id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3'),
+            Profile.new(id: 4, name: 'Name 4', description: 'Description 4', comments: 'Comments 4'),
+            Profile.new(id: 5, name: 'Name 5', description: 'Description 5', comments: 'Comments 5')
           ]
         end
 
@@ -122,7 +122,7 @@ module ActiveModelSerializers
         end
 
         def test_pagination_links_with_additional_params
-          adapter = load_adapter(using_will_paginate, mock_request({ test: 'test' }))
+          adapter = load_adapter(using_will_paginate, mock_request(test: 'test'))
 
           assert_equal expected_response_with_pagination_links_and_additional_params,
             adapter.serializable_hash

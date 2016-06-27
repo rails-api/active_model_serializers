@@ -19,12 +19,13 @@ module ActionController
     end
 
     def serialization_scope
-      send(_serialization_scope) if _serialization_scope &&
-        respond_to?(_serialization_scope, true)
+      return unless _serialization_scope && respond_to?(_serialization_scope, true)
+
+      send(_serialization_scope)
     end
 
     def get_serializer(resource, options = {})
-      if !use_adapter?
+      unless use_adapter?
         warn 'ActionController::Serialization#use_adapter? has been removed. '\
           "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
         options[:adapter] = false

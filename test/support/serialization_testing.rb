@@ -44,10 +44,12 @@ module SerializationTesting
   end
 end
 
-class Minitest::Test
-  def before_setup
-    ActionController::Base.cache_store.clear
-  end
+module Minitest
+  class Test
+    def before_setup
+      ActionController::Base.cache_store.clear
+    end
 
-  include SerializationTesting
+    include SerializationTesting
+  end
 end

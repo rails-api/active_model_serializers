@@ -5,7 +5,7 @@ rescue LoadError
 end
 begin
   require 'simplecov'
-rescue LoadError
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 
 Bundler::GemHelper.install_tasks
@@ -33,7 +33,7 @@ end
 begin
   require 'rubocop'
   require 'rubocop/rake_task'
-rescue LoadError
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 else
   Rake::Task[:rubocop].clear if Rake::Task.task_defined?(:rubocop)
   require 'rbconfig'
@@ -100,4 +100,4 @@ else
 end
 
 desc 'CI test task'
-task :ci => [:default]
+task ci: [:default]

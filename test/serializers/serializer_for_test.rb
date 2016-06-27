@@ -41,7 +41,9 @@ module ActiveModel
         end
 
         class CustomProfile
-          def serializer_class; ProfileSerializer; end
+          def serializer_class
+            ProfileSerializer
+          end
         end
 
         Tweet = Class.new(::Model)

@@ -86,7 +86,7 @@ class ApiAssertion
             }
           ]
         }
-    }
+      }
   end
 
   def assert_equal(expected, actual, message)

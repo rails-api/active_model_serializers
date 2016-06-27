@@ -47,7 +47,7 @@ module ActiveModel
             assert_equal(expected_type, hash.fetch(:data).fetch(:type))
           end
 
-          def with_jsonapi_resource_type inflection
+          def with_jsonapi_resource_type(inflection)
             old_inflection = ActiveModelSerializers.config.jsonapi_resource_type
             ActiveModelSerializers.config.jsonapi_resource_type = inflection
             yield

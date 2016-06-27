@@ -22,7 +22,7 @@ module ActiveModel
         inherited_klass = Class.new(AlternateBlogSerializer)
         blog_serializer = inherited_klass.new(@blog)
         adapter = ActiveModelSerializers::Adapter::Attributes.new(blog_serializer)
-        assert_equal({ :id => 1, :title => 'AMS Hints' }, adapter.serializable_hash)
+        assert_equal({ id: 1, title: 'AMS Hints' }, adapter.serializable_hash)
       end
 
       def test_multiple_calls_with_the_same_attribute

@@ -70,33 +70,33 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           assert_equal({
-            data: {
-              id: '1337',
-              type: 'posts',
-              attributes: {
-                title: 'Title 1',
-                body: 'Body 1',
-                :"publish-at" => @publish_at
-              },
-              relationships: {
-                author: {
-                  data: { id: '1', type: 'authors' }
-                },
-                comments: {
-                  data: [
-                    { id: '7', type: 'comments' },
-                    { id: '12', type: 'comments' }
-                  ]
-                }
-              },
-              links: {
-                self: 'http://example.com/posts/1337',
-                :"post-authors" => 'http://example.com/posts/1337/authors',
-                :"subscriber-comments" => 'http://example.com/posts/1337/comments'
-              },
-              meta: { rating: 5, :"favorite-count" => 10 }
-            }
-          }, result)
+                         data: {
+                           id: '1337',
+                           type: 'posts',
+                           attributes: {
+                             title: 'Title 1',
+                             body: 'Body 1',
+                             :"publish-at" => @publish_at
+                           },
+                           relationships: {
+                             author: {
+                               data: { id: '1', type: 'authors' }
+                             },
+                             comments: {
+                               data: [
+                                 { id: '7', type: 'comments' },
+                                 { id: '12', type: 'comments' }
+                               ]
+                             }
+                           },
+                           links: {
+                             self: 'http://example.com/posts/1337',
+                             :"post-authors" => 'http://example.com/posts/1337/authors',
+                             :"subscriber-comments" => 'http://example.com/posts/1337/comments'
+                           },
+                           meta: { rating: 5, :"favorite-count" => 10 }
+                         }
+                       }, result)
         end
 
         def test_success_document_transform_global_config
@@ -107,33 +107,33 @@ module ActiveModelSerializers
             adapter.serializable_hash
           end
           assert_equal({
-            data: {
-              id: '1337',
-              type: 'posts',
-              attributes: {
-                title: 'Title 1',
-                body: 'Body 1',
-                publishAt: @publish_at
-              },
-              relationships: {
-                author: {
-                  data: { id: '1', type: 'authors' }
-                },
-                comments: {
-                  data: [
-                    { id: '7', type: 'comments' },
-                    { id: '12', type: 'comments' }
-                  ]
-                }
-              },
-              links: {
-                self: 'http://example.com/posts/1337',
-                postAuthors: 'http://example.com/posts/1337/authors',
-                subscriberComments: 'http://example.com/posts/1337/comments'
-              },
-              meta: { rating: 5, favoriteCount: 10 }
-            }
-          }, result)
+                         data: {
+                           id: '1337',
+                           type: 'posts',
+                           attributes: {
+                             title: 'Title 1',
+                             body: 'Body 1',
+                             publishAt: @publish_at
+                           },
+                           relationships: {
+                             author: {
+                               data: { id: '1', type: 'authors' }
+                             },
+                             comments: {
+                               data: [
+                                 { id: '7', type: 'comments' },
+                                 { id: '12', type: 'comments' }
+                               ]
+                             }
+                           },
+                           links: {
+                             self: 'http://example.com/posts/1337',
+                             postAuthors: 'http://example.com/posts/1337/authors',
+                             subscriberComments: 'http://example.com/posts/1337/comments'
+                           },
+                           meta: { rating: 5, favoriteCount: 10 }
+                         }
+                       }, result)
         end
 
         def test_success_doc_transform_serialization_ctx_overrides_global
@@ -144,33 +144,33 @@ module ActiveModelSerializers
             adapter.serializable_hash
           end
           assert_equal({
-            Data: {
-              Id: '1337',
-              Type: 'Posts',
-              Attributes: {
-                Title: 'Title 1',
-                Body: 'Body 1',
-                PublishAt: @publish_at
-              },
-              Relationships: {
-                Author: {
-                  Data: { Id: '1', Type: 'Authors' }
-                },
-                Comments: {
-                  Data: [
-                    { Id: '7', Type: 'Comments' },
-                    { Id: '12', Type: 'Comments' }
-                  ]
-                }
-              },
-              Links: {
-                Self: 'http://example.com/posts/1337',
-                PostAuthors: 'http://example.com/posts/1337/authors',
-                SubscriberComments: 'http://example.com/posts/1337/comments'
-              },
-              Meta: { Rating: 5, FavoriteCount: 10 }
-            }
-          }, result)
+                         Data: {
+                           Id: '1337',
+                           Type: 'Posts',
+                           Attributes: {
+                             Title: 'Title 1',
+                             Body: 'Body 1',
+                             PublishAt: @publish_at
+                           },
+                           Relationships: {
+                             Author: {
+                               Data: { Id: '1', Type: 'Authors' }
+                             },
+                             Comments: {
+                               Data: [
+                                 { Id: '7', Type: 'Comments' },
+                                 { Id: '12', Type: 'Comments' }
+                               ]
+                             }
+                           },
+                           Links: {
+                             Self: 'http://example.com/posts/1337',
+                             PostAuthors: 'http://example.com/posts/1337/authors',
+                             SubscriberComments: 'http://example.com/posts/1337/comments'
+                           },
+                           Meta: { Rating: 5, FavoriteCount: 10 }
+                         }
+                       }, result)
         end
 
         def test_success_document_transform_dash
@@ -179,33 +179,33 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           assert_equal({
-            data: {
-              id: '1337',
-              type: 'posts',
-              attributes: {
-                title: 'Title 1',
-                body: 'Body 1',
-                :"publish-at" => @publish_at
-              },
-              relationships: {
-                author: {
-                  data: { id: '1', type: 'authors' }
-                },
-                comments: {
-                  data: [
-                    { id: '7', type: 'comments' },
-                    { id: '12', type: 'comments' }
-                  ]
-                }
-              },
-              links: {
-                self: 'http://example.com/posts/1337',
-                :"post-authors" => 'http://example.com/posts/1337/authors',
-                :"subscriber-comments" => 'http://example.com/posts/1337/comments'
-              },
-              meta: { rating: 5, :"favorite-count" => 10 }
-            }
-          }, result)
+                         data: {
+                           id: '1337',
+                           type: 'posts',
+                           attributes: {
+                             title: 'Title 1',
+                             body: 'Body 1',
+                             :"publish-at" => @publish_at
+                           },
+                           relationships: {
+                             author: {
+                               data: { id: '1', type: 'authors' }
+                             },
+                             comments: {
+                               data: [
+                                 { id: '7', type: 'comments' },
+                                 { id: '12', type: 'comments' }
+                               ]
+                             }
+                           },
+                           links: {
+                             self: 'http://example.com/posts/1337',
+                             :"post-authors" => 'http://example.com/posts/1337/authors',
+                             :"subscriber-comments" => 'http://example.com/posts/1337/comments'
+                           },
+                           meta: { rating: 5, :"favorite-count" => 10 }
+                         }
+                       }, result)
         end
 
         def test_success_document_transform_unaltered
@@ -214,33 +214,33 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           assert_equal({
-            data: {
-              id: '1337',
-              type: 'posts',
-              attributes: {
-                title: 'Title 1',
-                body: 'Body 1',
-                publish_at: @publish_at
-              },
-              relationships: {
-                author: {
-                  data: { id: '1', type: 'authors' }
-                },
-                comments: {
-                  data: [
-                    { id: '7', type: 'comments' },
-                    { id: '12', type: 'comments' }
-                  ]
-                }
-              },
-              links: {
-                self: 'http://example.com/posts/1337',
-                post_authors: 'http://example.com/posts/1337/authors',
-                subscriber_comments: 'http://example.com/posts/1337/comments'
-              },
-              meta: { rating: 5, favorite_count: 10 }
-            }
-          }, result)
+                         data: {
+                           id: '1337',
+                           type: 'posts',
+                           attributes: {
+                             title: 'Title 1',
+                             body: 'Body 1',
+                             publish_at: @publish_at
+                           },
+                           relationships: {
+                             author: {
+                               data: { id: '1', type: 'authors' }
+                             },
+                             comments: {
+                               data: [
+                                 { id: '7', type: 'comments' },
+                                 { id: '12', type: 'comments' }
+                               ]
+                             }
+                           },
+                           links: {
+                             self: 'http://example.com/posts/1337',
+                             post_authors: 'http://example.com/posts/1337/authors',
+                             subscriber_comments: 'http://example.com/posts/1337/comments'
+                           },
+                           meta: { rating: 5, favorite_count: 10 }
+                         }
+                       }, result)
         end
 
         def test_success_document_transform_undefined
@@ -259,33 +259,33 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           assert_equal({
-            Data: {
-              Id: '1337',
-              Type: 'Posts',
-              Attributes: {
-                Title: 'Title 1',
-                Body: 'Body 1',
-                PublishAt: @publish_at
-              },
-              Relationships: {
-                Author: {
-                  Data: { Id: '1', Type: 'Authors' }
-                },
-                Comments: {
-                  Data: [
-                    { Id: '7', Type: 'Comments' },
-                    { Id: '12', Type: 'Comments' }
-                  ]
-                }
-              },
-              Links: {
-                Self: 'http://example.com/posts/1337',
-                PostAuthors: 'http://example.com/posts/1337/authors',
-                SubscriberComments: 'http://example.com/posts/1337/comments'
-              },
-              Meta: { Rating: 5, FavoriteCount: 10 }
-            }
-          }, result)
+                         Data: {
+                           Id: '1337',
+                           Type: 'Posts',
+                           Attributes: {
+                             Title: 'Title 1',
+                             Body: 'Body 1',
+                             PublishAt: @publish_at
+                           },
+                           Relationships: {
+                             Author: {
+                               Data: { Id: '1', Type: 'Authors' }
+                             },
+                             Comments: {
+                               Data: [
+                                 { Id: '7', Type: 'Comments' },
+                                 { Id: '12', Type: 'Comments' }
+                               ]
+                             }
+                           },
+                           Links: {
+                             Self: 'http://example.com/posts/1337',
+                             PostAuthors: 'http://example.com/posts/1337/authors',
+                             SubscriberComments: 'http://example.com/posts/1337/comments'
+                           },
+                           Meta: { Rating: 5, FavoriteCount: 10 }
+                         }
+                       }, result)
         end
 
         def test_success_document_transform_camel_lower
@@ -294,33 +294,33 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           assert_equal({
-            data: {
-              id: '1337',
-              type: 'posts',
-              attributes: {
-                title: 'Title 1',
-                body: 'Body 1',
-                publishAt: @publish_at
-              },
-              relationships: {
-                author: {
-                  data: { id: '1', type: 'authors' }
-                },
-                comments: {
-                  data: [
-                    { id: '7', type: 'comments' },
-                    { id: '12', type: 'comments' }
-                  ]
-                }
-              },
-              links: {
-                self: 'http://example.com/posts/1337',
-                postAuthors: 'http://example.com/posts/1337/authors',
-                subscriberComments: 'http://example.com/posts/1337/comments'
-              },
-              meta: { rating: 5, favoriteCount: 10 }
-            }
-          }, result)
+                         data: {
+                           id: '1337',
+                           type: 'posts',
+                           attributes: {
+                             title: 'Title 1',
+                             body: 'Body 1',
+                             publishAt: @publish_at
+                           },
+                           relationships: {
+                             author: {
+                               data: { id: '1', type: 'authors' }
+                             },
+                             comments: {
+                               data: [
+                                 { id: '7', type: 'comments' },
+                                 { id: '12', type: 'comments' }
+                               ]
+                             }
+                           },
+                           links: {
+                             self: 'http://example.com/posts/1337',
+                             postAuthors: 'http://example.com/posts/1337/authors',
+                             subscriberComments: 'http://example.com/posts/1337/comments'
+                           },
+                           meta: { rating: 5, favoriteCount: 10 }
+                         }
+                       }, result)
         end
 
         def test_error_document_transform_default
@@ -332,14 +332,14 @@ module ActiveModelSerializers
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
           result = adapter.serializable_hash
           expected_errors_object = {
-            :errors => [
+            errors: [
               {
-                :source => { :pointer => '/data/attributes/published-at' },
-                :detail => 'must be in the future'
+                source: { pointer: '/data/attributes/published-at' },
+                detail: 'must be in the future'
               },
               {
-                :source => { :pointer => '/data/attributes/title' },
-                :detail => 'must be longer'
+                source: { pointer: '/data/attributes/title' },
+                detail: 'must be longer'
               }
             ]
           }
@@ -357,14 +357,14 @@ module ActiveModelSerializers
             adapter.serializable_hash
           end
           expected_errors_object = {
-            :Errors => [
+            Errors: [
               {
-                :Source => { :Pointer => '/data/attributes/PublishedAt' },
-                :Detail => 'must be in the future'
+                Source: { Pointer: '/data/attributes/PublishedAt' },
+                Detail: 'must be in the future'
               },
               {
-                :Source => { :Pointer => '/data/attributes/Title' },
-                :Detail => 'must be longer'
+                Source: { Pointer: '/data/attributes/Title' },
+                Detail: 'must be longer'
               }
             ]
           }
@@ -382,14 +382,14 @@ module ActiveModelSerializers
             adapter.serializable_hash
           end
           expected_errors_object = {
-            :Errors => [
+            Errors: [
               {
-                :Source => { :Pointer => '/data/attributes/PublishedAt' },
-                :Detail => 'must be in the future'
+                Source: { Pointer: '/data/attributes/PublishedAt' },
+                Detail: 'must be in the future'
               },
               {
-                :Source => { :Pointer => '/data/attributes/Title' },
-                :Detail => 'must be longer'
+                Source: { Pointer: '/data/attributes/Title' },
+                Detail: 'must be longer'
               }
             ]
           }
@@ -408,14 +408,14 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :errors => [
+            errors: [
               {
-                :source => { :pointer => '/data/attributes/published-at' },
-                :detail => 'must be in the future'
+                source: { pointer: '/data/attributes/published-at' },
+                detail: 'must be in the future'
               },
               {
-                :source => { :pointer => '/data/attributes/title' },
-                :detail => 'must be longer'
+                source: { pointer: '/data/attributes/title' },
+                detail: 'must be longer'
               }
             ]
           }
@@ -434,9 +434,9 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :errors => [
-              { :source => { :pointer => '/data/attributes/published_at' }, :detail => 'must be in the future' },
-              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
+            errors: [
+              { source: { pointer: '/data/attributes/published_at' }, detail: 'must be in the future' },
+              { source: { pointer: '/data/attributes/title' }, detail: 'must be longer' }
             ]
           }
           assert_equal expected_errors_object, result
@@ -470,9 +470,9 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :Errors => [
-              { :Source => { :Pointer => '/data/attributes/PublishedAt' }, :Detail => 'must be in the future' },
-              { :Source => { :Pointer => '/data/attributes/Title' }, :Detail => 'must be longer' }
+            Errors: [
+              { Source: { Pointer: '/data/attributes/PublishedAt' }, Detail: 'must be in the future' },
+              { Source: { Pointer: '/data/attributes/Title' }, Detail: 'must be longer' }
             ]
           }
           assert_equal expected_errors_object, result
@@ -490,9 +490,9 @@ module ActiveModelSerializers
           result = adapter.serializable_hash
 
           expected_errors_object = {
-            :errors => [
-              { :source => { :pointer => '/data/attributes/publishedAt' }, :detail => 'must be in the future' },
-              { :source => { :pointer => '/data/attributes/title' }, :detail => 'must be longer' }
+            errors: [
+              { source: { pointer: '/data/attributes/publishedAt' }, detail: 'must be in the future' },
+              { source: { pointer: '/data/attributes/title' }, detail: 'must be longer' }
             ]
           }
           assert_equal expected_errors_object, result
