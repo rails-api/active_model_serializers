@@ -81,7 +81,7 @@ def pagination_dict(object)
   {
     current_page: object.current_page,
     next_page: object.next_page,
-    prev_page: object.prev_page,
+    prev_page: object.prev_page, # use object.previous_page when using will_paginate
     total_pages: object.total_pages,
     total_count: object.total_count
   }
@@ -126,13 +126,12 @@ def meta_attributes(resource, extra_meta = {})
   {
     current_page: resource.current_page,
     next_page: resource.next_page,
-    prev_page: resource.prev_page,
+    prev_page: resource.prev_page, # use resource.previous_page when using will_paginate
     total_pages: resource.total_pages,
     total_count: resource.total_count
   }.merge(extra_meta)
 end
 ```
-
 
 ### Attributes adapter
 
