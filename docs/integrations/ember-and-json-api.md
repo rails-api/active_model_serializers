@@ -17,17 +17,32 @@ To solve this, in Ember, both the adapter and the serializer will need some modi
 
 ### Server-Side Changes
 
-there are multiple mimetypes for json that should all be parsed similarly, so
-in `config/initializers/mime_types.rb`:
-```ruby
-api_mime_types = %W(
-  application/vnd.api+json
-  text/x-json
-  application/json
-)
+First, set the adapter type in an initializer file:
 
-Mime::Type.unregister :json
-Mime::Type.register 'application/json', :json, api_mime_types
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.adapter = :json_api
+```
+
+or:
+
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::JsonApi
+```
+
+You will also want to set the `key_transform` to `:unaltered` since you will adjust the attributes in your Ember serializer to use underscores instead of dashes later. You could also use `:underscore`, but `:unaltered` is better for performance.
+
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.key_transform = :unaltered
+```
+
+Lastly, in order to properly handle JSON API responses, we need to register a JSON API renderer, like so:
+
+```ruby
+# config/initializers/active_model_serializers.rb
+require 'active_model_serializers/register_jsonapi_renderer'
 ```
 
 ### Adapter Changes
