@@ -1,10 +1,16 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.1...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.2...master)
 
 Breaking changes:
 
 Features:
+
+Fixes:
+
+Misc:
+
+### [v0.10.2 (2016-07-05)(unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.1...v0.10.2)
 
 Fixes:
 - [#1814] (https://github.com/rails-api/active_model_serializers/pull/1814) Ensuring read_multi works with fragment cache
