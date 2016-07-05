@@ -38,6 +38,12 @@ matrix:
     env: RAILS_VERSION=master
   - rvm: jruby-head
     env: RAILS_VERSION=master
+  - rvm: 2.1
+    env: RAILS_VERSION=5.0
+  - rvm: jruby-9.0.4.0
+    env: RAILS_VERSION=5.0
+  - rvm: jruby-head
+    env: RAILS_VERSION=5.0
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
