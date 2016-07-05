@@ -27,6 +27,7 @@ env:
   matrix:
     - "RAILS_VERSION=4.1"
     - "RAILS_VERSION=4.2"
+    - "RAILS_VERSION=5.0"
     - "RAILS_VERSION=master"
 
 matrix:
