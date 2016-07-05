@@ -314,6 +314,38 @@ So that when we render the `#edit` action, we'll get
 
 Where `can_edit` is `view_context.current_user.admin?` (true).
 
+You can also tell what to set as `serialization_scope` for specific actions.
+
+For example, use `admin_user` only for `Admin::PostSerializer` and `current_user` for rest.
+
+```ruby
+class PostsController < ActionController::Base
+
+  before_action only: :edit do
+    self.class.serialization_scope :admin_user
+  end
+
+  def show
+    render json: @post, serializer: PostSerializer
+  end
+
+  def edit
+    @post.save
+    render json: @post, serializer: Admin::PostSerializer
+  end
+
+  private
+
+  def admin_user
+    User.new(id: 2, name: 'Bob', admin: true)
+  end
+
+  def current_user
+    User.new(id: 2, name: 'Bob', admin: false)
+  end
+end
+```
+
 #### #read_attribute_for_serialization(key)
 
 The serialized value for a given key. e.g. `read_attribute_for_serialization(:title) #=> 'Hello World'`
