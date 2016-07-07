@@ -8,6 +8,8 @@ Features:
 
 Fixes:
 
+- [#1833](https://github.com/rails-api/active_model_serializers/pull/1833) Remove relationship links if they are null (@groyoh)
+
 Misc:
 
 ### [v0.10.2 (2016-07-05)](https://github.com/rails-api/active_model_serializers/compare/v0.10.1...v0.10.2)
