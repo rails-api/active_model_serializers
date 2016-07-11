@@ -20,11 +20,7 @@ module ActiveModel
       private
 
       def parsed_fields
-        if raw_fields.is_a?(Hash)
-          raw_fields.each_with_object({}) { |(k, v), h| h[k.to_sym] = v.map(&:to_sym) }
-        else
-          {}
-        end
+        JSONAPI::IncludeDirective.new(raw_fields).to_hash
       end
     end
   end
