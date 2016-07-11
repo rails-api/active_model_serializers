@@ -7,6 +7,7 @@ Breaking changes:
 Features:
 
 Fixes:
+ - [#1839](https://github.com/rails-api/active_model_serializers/pull/1839) `fields` option whitelists both attributes and relationships. (@NullVoxPopuli)
 
 Misc:
 
