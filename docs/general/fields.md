@@ -29,3 +29,5 @@ render json: @user, fields: { users: [:access_token] }
 ```
 
 Where `users` is the JSONAPI type.
+
+Casing for multi-word fields should match the casing specified for `ActiveModelSerializers.config.key_transform`.
