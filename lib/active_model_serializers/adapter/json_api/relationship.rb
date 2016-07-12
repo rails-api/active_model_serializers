@@ -13,7 +13,8 @@ module ActiveModelSerializers
           @serializable_resource_options = serializable_resource_options
           @data = data_for(serializer)
           @links = args.fetch(:links, {}).each_with_object({}) do |(key, value), hash|
-            hash[key] = ActiveModelSerializers::Adapter::JsonApi::Link.new(parent_serializer, value).as_json
+            result = Link.new(parent_serializer, value).as_json
+            hash[key] = result if result
           end
           meta = args.fetch(:meta, nil)
           @meta = meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta

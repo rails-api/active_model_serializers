@@ -13,8 +13,9 @@ module ActiveModel
             end
 
             has_one :profile do
+              id = object.profile.id
               link :related do
-                "//example.com/profiles/#{object.profile.id}"
+                "//example.com/profiles/#{id}" if id != 123
               end
             end
 
@@ -109,6 +110,14 @@ module ActiveModel
             expected = {
               data: { id: '1337', type: 'profiles' },
               links: { related: '//example.com/profiles/1337' }
+            }
+            assert_relationship(:profile, expected)
+          end
+
+          def test_relationship_nil_link
+            @author.profile.id = 123
+            expected = {
+              data: { id: '123', type: 'profiles' }
             }
             assert_relationship(:profile, expected)
           end
