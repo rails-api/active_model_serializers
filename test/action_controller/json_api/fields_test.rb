@@ -36,14 +36,14 @@ module ActionController
           get :render_fields_works_on_relationships
           response = JSON.parse(@response.body)
           expected = {
-            "data" => {
-              "id" => "1337",
-              "type" => "posts",
-              "relationships" => {
-                "author" => {
-                  "data" => {
-                  "id" => "1",
-                  "type" => "authors"
+            'data' => {
+              'id' => '1337',
+              'type' => 'posts',
+              'relationships' => {
+                'author' => {
+                  'data' => {
+                    'id' => '1',
+                    'type' => 'authors'
                   }
                 }
               }

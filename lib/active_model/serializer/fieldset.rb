@@ -18,6 +18,7 @@ module ActiveModel
       attr_reader :raw_fields
 
       private
+
       def parsed_fields
         # TODO: this is not very flexible.
         # - we should probably support symbol, array, hash, etc
