@@ -21,7 +21,7 @@ functionality as you had with `AMS 0.8`. Then, you can continue to develop in yo
 new serializers that don't use these backwards compatible versions and slowly migrate
 existing serializers to the `0.10` versions as needed.
 
-### Basic list `0.10` breaking changes
+### `0.10` breaking changes
 - Passing a serializer to `render json:` is no longer supported
     - Ex. `render json: CustomerSerializer.new(customer)`
 - Passing a nil resource to serializer now fails
