@@ -1,5 +1,5 @@
 module ActiveModel
   class Serializer
-    VERSION = "0.10.0.rc1"
+    VERSION = '0.10.2'.freeze
   end
 end

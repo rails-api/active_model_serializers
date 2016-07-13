@@ -1,5 +1,5 @@
 require 'test_helper'
-# require 'active_model/serializer/railtie'
+require 'generators/rails/resource_override'
 
 class ResourceGeneratorTest < Rails::Generators::TestCase
   destination File.expand_path('../../../tmp/generators', __FILE__)
@@ -19,6 +19,6 @@ class ResourceGeneratorTest < Rails::Generators::TestCase
   def copy_routes
     config_dir = File.join(destination_root, 'config')
     FileUtils.mkdir_p(config_dir)
-    File.write(File.join(config_dir, 'routes.rb'), 'Rails.application.routes.draw { }')
+    File.write(File.join(config_dir, 'routes.rb'), 'Rails.application.routes.draw {}')
   end
 end

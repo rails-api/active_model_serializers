@@ -1,31 +1,105 @@
-## How can I help?
+## Have an issue?
 
-Everyone is encouraged to open issues that are affecting you: bugs, ideas, performance problems – everything helps!
+Before opening an issue, try the following:
 
-The first place to start is by looking at our [GitHub Issues](https://github.com/rails-api/active_model_serializers/issues).
+##### Consult the documentation
 
-The vast majority of development is happening under the `master` branch, currently slated for release as `0.10.x`. This is where we would suggest you start.
+See if your issue can be resolved by information in the documentation.
 
-Fixing bugs is extraordinarily helpful and requires the least familiarity with AMS. Look for issues labeled [**Needs Bug Verification**](https://github.com/rails-api/active_model_serializers/labels/Needs%20Bug%20Verification) and [**Bug**](https://github.com/rails-api/active_model_serializers/labels/bug).
+- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
+  - [Guides](docs)
+- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
+- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
 
-We are also actively working to identify tasks under the label [**Good for New Contributors**](https://github.com/rails-api/active_model_serializers/labels/Good%20for%20New%20Contributors). Some bugs are expressly not good for new contributors, so don't expect 100% overlap between the two.
+##### Check for an existing issue
 
-If you want to work on new feature development, look for the label [**Feature**](https://github.com/rails-api/active_model_serializers/labels/Feature).
+Take a look at the issues to see if a similar one has already been created. If
+one exists, please add any additional information that might expedite
+resolution.
 
-We are also encouraging comments to substantial changes (larger than bugfixes and simple features) under an "RFC" (Request for Comments) process before we start active development. Look for the [**RFC**](https://github.com/rails-api/active_model_serializers/labels/RFC) label.
+#### Open an issue
 
-## Issue Labeling
+If the documentation wasn't able to help resolve the issue and no issue already
+exists, please open a new issue with the following in mind:
 
-AMS uses a subset of [StandardIssueLabels](https://github.com/wagenet/StandardIssueLabels) for Github Issues. You can [see our labels here](https://github.com/rails-api/active_model_serializers/labels).
+- Please make sure only to include one issue per report. If you encounter
+  multiple, unrelated issues, please report them as such.
+- Be detailed. Provide backtraces and example code when possible. Provide
+  information about your environment. e.g., Ruby version, rails version, etc.
+- Own your issue. Actively participate in the discussion and help drive the
+  issue to closure.
+- If you resolve your own issue, please share the details on the issue and close
+  it out. Others might have the same issue and sharing solutions is helpful.
 
 ## Contributing
 
-1. Fork it ( https://github.com/rails-api/active_model_serializers/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Write tests for your feature, or regression tests highlighting a bug
-4. Write the feature itself, or fix your bug
-5. Commit your changes (`git commit -am 'Add some feature'`)
-6. Push to the branch (`git push origin my-new-feature`)
-7. Create a new Pull Request
+Contributing can be done in many ways and is not exclusive to code. If you have
+thoughts on a particular issue or feature, we encourage you to open new issues
+for discussion or add your comments to existing ones.
 
-Remember to squash your commits and rebase off `master`.
+#### Pull requests
+
+We also gladly welcome pull requests. When preparing to work on pull request,
+please adhere to these standards:
+
+- Base work on the master branch unless fixing an issue with
+  [0.9-stable](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
+  or
+  [0.8-stable](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
+- Squash your commits and regularly rebase off master.
+- Provide a description of the changes contained in the pull request.
+- Note any specific areas that should be reviewed.
+- Include tests.
+- The test suite must pass on [supported Ruby versions](.travis.yml)
+- Include updates to the [documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
+  where applicable.
+- Update the
+  [CHANGELOG](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
+  to the appropriate sections with a brief description of the changes.
+- Do not change the VERSION file.
+
+#### Running tests
+
+Run all tests
+
+`$ rake test`
+
+Run a single test suite
+
+`$ rake test TEST=path/to/test.rb`
+
+Run a single test
+
+`$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
+
+Run tests against different Rails versions by setting the RAILS_VERSION variable
+and bundling gems.  (save this script somewhere executable and run from top of AMS repository)
+
+```bash
+#!/usr/bin/env bash
+
+rcommand='puts YAML.load_file("./.travis.yml")["env"]["matrix"].join(" ").gsub("RAILS_VERSION=", "")'
+versions=$(ruby -ryaml -e "$rcommand")
+
+for version in ${versions[@]}; do
+  export RAILS_VERSION="$version"
+  rm -f Gemfile.lock
+  bundle check || bundle --local || bundle
+  bundle exec rake test
+  if [ "$?" -eq 0 ]; then
+    # green in ANSI
+    echo -e "\033[32m **** Tests passed against Rails ${RAILS_VERSION} **** \033[0m"
+  else
+    # red in ANSI
+    echo -e "\033[31m **** Tests failed against Rails ${RAILS_VERSION} **** \033[0m"
+    read -p '[Enter] any key to continue, [q] to quit...' prompt
+    if [ "$prompt" = 'q' ]; then
+      unset RAILS_VERSION
+      exit 1
+    fi
+fi
+  unset RAILS_VERSION
+done
+```
+

@@ -1,41 +1,37 @@
-class Model
-  def initialize(hash={})
-    @attributes = hash
-  end
+verbose = $VERBOSE
+$VERBOSE = nil
+class Model < ActiveModelSerializers::Model
+  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
-  def cache_key
-    "#{self.class.name.downcase}/#{self.id}-#{self.updated_at}"
-  end
+  ### Helper methods, not required to be serializable
 
-  def updated_at
-    @attributes[:updated_at] ||= DateTime.now.to_time.to_i
-  end
-
-  def read_attribute_for_serialization(name)
-    if name == :id || name == 'id'
-      id
-    else
-      @attributes[name]
-    end
-  end
-
-  def id
-    @attributes[:id] || @attributes['id'] || object_id
-  end
-
-  def to_param
-    id
-  end
-
+  # Convenience when not adding @attributes readers and writers
   def method_missing(meth, *args)
     if meth.to_s =~ /^(.*)=$/
-      @attributes[$1.to_sym] = args[0]
-    elsif @attributes.key?(meth)
-      @attributes[meth]
+      attributes[Regexp.last_match(1).to_sym] = args[0]
+    elsif attributes.key?(meth)
+      attributes[meth]
     else
       super
     end
   end
+
+  # required for ActiveModel::AttributeAssignment#_assign_attribute
+  # in Rails 5
+  def respond_to_missing?(method_name, _include_private = false)
+    attributes.key?(method_name.to_s.tr('=', '').to_sym) || super
+  end
+end
+
+# see
+# https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/errors.rb
+# The below allows you to do:
+#
+#   model = ModelWithErrors.new
+#   model.validate!            # => ["cannot be nil"]
+#   model.errors.full_messages # => ["name cannot be nil"]
+class ModelWithErrors < ::ActiveModelSerializers::Model
+  attr_accessor :name
 end
 
 class Profile < Model
@@ -44,22 +40,18 @@ end
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
 
-  urls :posts, :comments
-
+  # TODO: is this used anywhere?
   def arguments_passed_in?
-    options[:my_options] == :accessible
+    instance_options[:my_options] == :accessible
   end
 end
 
 class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
-
-  urls :posts, :comments
 end
 
 Post     = Class.new(Model)
 Like     = Class.new(Model)
-Comment  = Class.new(Model)
 Author   = Class.new(Model)
 Bio      = Class.new(Model)
 Blog     = Class.new(Model)
@@ -67,64 +59,89 @@ Role     = Class.new(Model)
 User     = Class.new(Model)
 Location = Class.new(Model)
 Place    = Class.new(Model)
+Tag      = Class.new(Model)
+VirtualValue = Class.new(Model)
+Comment = Class.new(Model) do
+  # Uses a custom non-time-based cache key
+  def cache_key
+    "#{self.class.name.downcase}/#{id}"
+  end
+end
+
+class Employee < ActiveRecord::Base
+  has_many :pictures, as: :imageable
+  has_many :object_tags, as: :taggable
+end
+
+class ObjectTag < ActiveRecord::Base
+  belongs_to :poly_tag
+  belongs_to :taggable, polymorphic: true
+end
+
+class Picture < ActiveRecord::Base
+  belongs_to :imageable, polymorphic: true
+  has_many :object_tags, as: :taggable
+end
+
+class PolyTag < ActiveRecord::Base
+  has_many :object_tags
+end
 
 module Spam; end
 Spam::UnrelatedLink = Class.new(Model)
 
 PostSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'post', expires_in: 0.1
+  cache key: 'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
 
   has_many :comments
   belongs_to :blog
   belongs_to :author
-  url :comments
 
   def blog
-    Blog.new(id: 999, name: "Custom blog")
+    Blog.new(id: 999, name: 'Custom blog')
   end
 
+  # TODO: is this used anywhere?
   def custom_options
-    options
+    instance_options
   end
 end
 
 SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
   has_many :related
-
-  def self.root_name
-    'posts'
-  end
 end
 
 CommentSerializer = Class.new(ActiveModel::Serializer) do
-  cache expires_in: 1.day
+  cache expires_in: 1.day, skip_digest: true
   attributes :id, :body
 
   belongs_to :post
   belongs_to :author
 
   def custom_options
-    options
+    instance_options
   end
 end
 
 AuthorSerializer = Class.new(ActiveModel::Serializer) do
-  cache key:'writer'
-  attributes :id, :name
+  cache key: 'writer', skip_digest: true
+  attribute :id
+  attribute :name
 
-  has_many :posts, embed: :ids
-  has_many :roles, embed: :ids
+  has_many :posts
+  has_many :roles
   has_one :bio
 end
 
 RoleSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:name]
-  attributes :id, :name, :description, :slug
+  cache only: [:name, :slug], skip_digest: true
+  attributes :id, :name, :description
+  attribute :friendly_id, key: :slug
 
-  def slug
-    "#{name}-#{id}"
+  def friendly_id
+    "#{object.name}-#{object.id}"
   end
 
   belongs_to :author
@@ -133,14 +150,14 @@ end
 LikeSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id, :time
 
-  belongs_to :post
+  belongs_to :likeable
 end
 
 LocationSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:place]
+  cache only: [:address], skip_digest: true
   attributes :id, :lat, :lng
 
-  belongs_to :place
+  belongs_to :place, key: :address
 
   def place
     'Nowhere'
@@ -154,20 +171,21 @@ PlaceSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 BioSerializer = Class.new(ActiveModel::Serializer) do
-  cache except: [:content]
+  cache except: [:content], skip_digest: true
   attributes :id, :content, :rating
 
   belongs_to :author
 end
 
 BlogSerializer = Class.new(ActiveModel::Serializer) do
+  cache key: 'blog'
   attributes :id, :name
 
   belongs_to :writer
   has_many :articles
 end
 
-PaginatedSerializer = Class.new(ActiveModel::Serializer::ArraySerializer) do
+PaginatedSerializer = Class.new(ActiveModel::Serializer::CollectionSerializer) do
   def json_key
     'paginated'
   end
@@ -198,22 +216,68 @@ AuthorPreviewSerializer = Class.new(ActiveModel::Serializer) do
 end
 
 PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
-  def self.root_name
-    'posts'
-  end
-
   attributes :title, :body, :id
 
   has_many :comments, serializer: CommentPreviewSerializer
   belongs_to :author, serializer: AuthorPreviewSerializer
 end
 
-Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
+PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :tags
+end
+
+PostWithCustomKeysSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :comments, key: :reviews
+  belongs_to :author, key: :writer
+  has_one :blog, key: :site
+end
+
+VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :reviews, virtual_value: [{ type: 'reviews', id: '1' },
+                                     { type: 'reviews', id: '2' }]
+  has_one :maker, virtual_value: { type: 'makers', id: '1' }
+
+  def reviews
+  end
+
+  def maker
+  end
+end
+
+PolymorphicHasManySerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :name
+end
+
+PolymorphicBelongsToSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :title
+
+  has_one :imageable, serializer: PolymorphicHasManySerializer, polymorphic: true
+end
+
+PolymorphicSimpleSerializer = Class.new(ActiveModel::Serializer) do
   attributes :id
 end
 
-RaiseErrorSerializer = Class.new(ActiveModel::Serializer) do
-  def json_key
-    raise StandardError, 'Intentional error for rescue_from test'
-  end
+PolymorphicObjectTagSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id
+
+  has_many :taggable, serializer: PolymorphicSimpleSerializer, polymorphic: true
 end
+
+PolymorphicTagSerializer = Class.new(ActiveModel::Serializer) do
+  attributes :id, :phrase
+
+  has_many :object_tags, serializer: PolymorphicObjectTagSerializer
+end
+
+Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
+  cache only: [:id]
+  attributes :id
+end
+$VERBOSE = verbose

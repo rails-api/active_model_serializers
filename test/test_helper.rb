@@ -1,44 +1,57 @@
+# Configure Rails Environment
+ENV['RAILS_ENV'] = 'test'
 require 'bundler/setup'
 
+begin
+  require 'simplecov'
+  AppCoverage.start
+rescue LoadError
+  STDERR.puts 'Running without SimpleCov'
+end
+
+require 'timecop'
 require 'rails'
 require 'action_controller'
 require 'action_controller/test_case'
 require 'action_controller/railtie'
-require 'active_support/json'
-require 'minitest/autorun'
-require 'fileutils'
-# Ensure backward compatibility with Minitest 4
-Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
-
 require 'active_model_serializers'
+# For now, we only restrict the options to serializable_hash/as_json/to_json
+# in tests, to ensure developers don't add any unsupported options.
+# There's no known benefit, at this time, to having the filtering run in
+# production when the excluded options would simply not be used.
+#
+# However, for documentation purposes, the constant
+# ActiveModel::Serializer::SERIALIZABLE_HASH_VALID_KEYS is defined
+# in the Serializer.
+ActiveModelSerializers::Adapter::Base.class_eval do
+  alias_method :original_serialization_options, :serialization_options
 
-class Foo < Rails::Application
-  if Rails::VERSION::MAJOR >= 4
-    config.eager_load = false
-    config.secret_key_base = 'abc123'
-    config.action_controller.perform_caching = true
-    config.active_support.test_order = :random
-    config.logger = Logger.new(nil)
-    ActionController::Base.cache_store = :memory_store
+  def serialization_options(options)
+    original_serialization_options(options)
+      .slice(*ActiveModel::Serializer::SERIALIZABLE_HASH_VALID_KEYS)
   end
 end
+require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../../tmp/cache', __FILE__))
-Foo.initialize!
+
+gem 'minitest'
+require 'minitest'
+require 'minitest/autorun'
+Minitest.backtrace_filter = Minitest::BacktraceFilter.new
+
+require 'support/rails_app'
+
+# require "rails/test_help"
+
+require 'support/serialization_testing'
+
+require 'support/rails5_shims'
+
+require 'fixtures/active_record'
 
 require 'fixtures/poro'
 
-module TestHelper
-  Routes = ActionDispatch::Routing::RouteSet.new
-  Routes.draw do
-    get ':controller(/:action(/:id))'
-    get ':controller(/:action)'
-  end
-
-  ActionController::Base.send :include, Routes.url_helpers
-end
-
-ActionController::TestCase.class_eval do
-  def setup
-    @routes = TestHelper::Routes
-  end
+ActiveSupport.on_load(:action_controller) do
+  $action_controller_logger = ActiveModelSerializers.logger
+  ActiveModelSerializers.logger = Logger.new(IO::NULL)
 end

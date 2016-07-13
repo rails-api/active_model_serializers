@@ -3,24 +3,48 @@ language: ruby
 sudo: false
 
 rvm:
-  - 1.9.3
-  - 2.0.0
   - 2.1
-  - 2.2
-  - jruby-19mode
-  - rbx-2
+  - 2.2.3
+  - 2.3.0
   - ruby-head
+  - jruby-9.0.4.0
+  - jruby-head
 
-install:
-  - bundle install --retry=3
+jdk:
+  - oraclejdk8
+
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+cache:
+  directories:
+    - vendor/bundle
+
+script:
+  - bundle exec rake ci
 
 env:
-  - "RAILS_VERSION=4.0"
-  - "RAILS_VERSION=4.1"
-  - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  global:
+    - "JRUBY_OPTS='--dev -J-Xmx1024M --debug'"
+  matrix:
+    - "RAILS_VERSION=4.1"
+    - "RAILS_VERSION=4.2"
+    - "RAILS_VERSION=5.0"
+    - "RAILS_VERSION=master"
 
 matrix:
+  exclude:
+  - rvm: 2.1
+    env: RAILS_VERSION=master
+  - rvm: jruby-9.0.4.0
+    env: RAILS_VERSION=master
+  - rvm: jruby-head
+    env: RAILS_VERSION=master
+  - rvm: 2.1
+    env: RAILS_VERSION=5.0
+  - rvm: jruby-9.0.4.0
+    env: RAILS_VERSION=5.0
+  - rvm: jruby-head
+    env: RAILS_VERSION=5.0
   allow_failures:
     - rvm: ruby-head
-    - env: "RAILS_VERSION=master"
+    - rvm: jruby-head
+  fast_finish: true

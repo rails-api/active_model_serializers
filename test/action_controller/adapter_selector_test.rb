@@ -3,24 +3,24 @@ require 'test_helper'
 module ActionController
   module Serialization
     class AdapterSelectorTest < ActionController::TestCase
-      class MyController < ActionController::Base
+      class AdapterSelectorTestController < ActionController::Base
         def render_using_default_adapter
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile
         end
 
         def render_using_adapter_override
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile, adapter: :json_api
         end
 
         def render_skipping_adapter
-          @profile = Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })
+          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile, adapter: false
         end
       end
 
-      tests MyController
+      tests AdapterSelectorTestController
 
       def test_render_using_default_adapter
         get :render_using_default_adapter
@@ -32,11 +32,11 @@ module ActionController
 
         expected = {
           data: {
-            id: assigns(:profile).id.to_s,
-            type: "profiles",
+            id: @controller.instance_variable_get(:@profile).id.to_s,
+            type: 'profiles',
             attributes: {
-              name: "Name 1",
-              description: "Description 1",
+              name: 'Name 1',
+              description: 'Description 1'
             }
           }
         }
@@ -46,7 +46,7 @@ module ActionController
 
       def test_render_skipping_adapter
         get :render_skipping_adapter
-        assert_equal '{"attributes":{"name":"Name 1","description":"Description 1","comments":"Comments 1"}}', response.body
+        assert_equal '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}', response.body
       end
     end
   end

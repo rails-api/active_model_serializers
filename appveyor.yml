@@ -1,0 +1,24 @@
+version: '{build}'
+
+skip_tags: true
+
+environment:
+  JRUBY_OPTS: "--dev -J-Xmx1024M --debug"
+  matrix:
+    - ruby_version: "Ruby21"
+    - ruby_version: "Ruby21-x64"
+    - ruby_version: "jruby-9.0.0.0"
+
+cache:
+  - vendor/bundle
+
+install:
+  - SET PATH=C:\%ruby_version%\bin;%PATH%
+  - gem install bundler
+  - bundle env
+  - bundle install --path=vendor/bundle --retry=3 --jobs=3
+
+test_script:
+  - bundle exec rake ci
+
+build: off

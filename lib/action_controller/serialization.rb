@@ -1,4 +1,5 @@
 require 'active_support/core_ext/class/attribute'
+require 'active_model_serializers/serialization_context'
 
 module ActionController
   module Serialization
@@ -6,7 +7,11 @@ module ActionController
 
     include ActionController::Renderers
 
-    ADAPTER_OPTION_KEYS = [:include, :fields, :root, :adapter]
+    module ClassMethods
+      def serialization_scope(scope)
+        self._serialization_scope = scope
+      end
+    end
 
     included do
       class_attribute :_serialization_scope
@@ -14,56 +19,38 @@ module ActionController
     end
 
     def serialization_scope
-      send(_serialization_scope) if _serialization_scope &&
-        respond_to?(_serialization_scope, true)
+      return unless _serialization_scope && respond_to?(_serialization_scope, true)
+
+      send(_serialization_scope)
     end
 
-    def get_serializer(resource)
-      @_serializer ||= @_serializer_opts.delete(:serializer)
-      @_serializer ||= ActiveModel::Serializer.serializer_for(resource)
-
-      if @_serializer_opts.key?(:each_serializer)
-        @_serializer_opts[:serializer] = @_serializer_opts.delete(:each_serializer)
+    def get_serializer(resource, options = {})
+      unless use_adapter?
+        warn 'ActionController::Serialization#use_adapter? has been removed. '\
+          "Please pass 'adapter: false' or see ActiveSupport::SerializableResource.new"
+        options[:adapter] = false
       end
-
-      @_serializer
+      serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options)
+      serializable_resource.serialization_scope ||= options.fetch(:scope) { serialization_scope }
+      serializable_resource.serialization_scope_name = options.fetch(:scope_name) { _serialization_scope }
+      # For compatibility with the JSON renderer: `json.to_json(options) if json.is_a?(String)`.
+      # Otherwise, since `serializable_resource` is not a string, the renderer would call
+      # `to_json` on a String and given odd results, such as `"".to_json #=> '""'`
+      serializable_resource.adapter.is_a?(String) ? serializable_resource.adapter : serializable_resource
     end
 
+    # Deprecated
     def use_adapter?
-      !(@_adapter_opts.key?(:adapter) && !@_adapter_opts[:adapter])
+      true
     end
 
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
-        @_adapter_opts, @_serializer_opts =
-          options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
-
-        if use_adapter? && (serializer = get_serializer(resource))
-
-          @_serializer_opts[:scope] ||= serialization_scope
-          @_serializer_opts[:scope_name] = _serialization_scope
-
-          # omg hax
-          object = serializer.new(resource, @_serializer_opts)
-          adapter = ActiveModel::Serializer::Adapter.create(object, @_adapter_opts)
-          super(adapter, options)
-        else
-          super(resource, options)
+        options.fetch(:serialization_context) do
+          options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(request, options)
         end
-      end
-    end
-
-    def rescue_with_handler(exception)
-      @_serializer = nil
-      @_serializer_opts = nil
-      @_adapter_opts = nil
-
-      super(exception)
-    end
-
-    module ClassMethods
-      def serialization_scope(scope)
-        self._serialization_scope = scope
+        serializable_resource = get_serializer(resource, options)
+        super(serializable_resource, options)
       end
     end
   end

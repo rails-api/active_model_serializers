@@ -2,24 +2,12 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class FieldsetTest < Minitest::Test
-
+    class FieldsetTest < ActiveSupport::TestCase
       def test_fieldset_with_hash
-        fieldset = ActiveModel::Serializer::Fieldset.new({'post' => ['id', 'title'], 'coment' => ['body']})
+        fieldset = ActiveModel::Serializer::Fieldset.new('post' => %w(id title), 'comment' => ['body'])
+        expected = { post: [:id, :title], comment: [:body] }
 
-        assert_equal(
-          {:post=>[:id, :title], :coment=>[:body]}, 
-          fieldset.fields
-        )
-      end
-
-      def test_fieldset_with_array_of_fields_and_root_name
-        fieldset = ActiveModel::Serializer::Fieldset.new(['title'], 'post')
-
-        assert_equal(
-          {:post => [:title]}, 
-          fieldset.fields
-        )
+        assert_equal(expected, fieldset.fields)
       end
     end
   end

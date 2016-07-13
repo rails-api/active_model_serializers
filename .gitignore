@@ -4,6 +4,7 @@
 .config
 .yardoc
 Gemfile.lock
+Gemfile.local
 InstalledFiles
 _yardoc
 coverage
@@ -19,3 +20,16 @@ test/version_tmp
 tmp
 *.swp
 .ruby-version
+.ruby-gemset
+vendor/bundle
+tags
+
+# silly macs
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
