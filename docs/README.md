@@ -28,6 +28,7 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - [Testing ActiveModelSerializers](howto/test.md)
 - [Passing Arbitrary Options](howto/passing_arbitrary_options.md)
 - [How to serialize a Plain-Old Ruby Object (PORO)](howto/serialize_poro.md)
+- [How to upgrade from `0.8` to `0.10` safely](howto/upgrade_from_0_8_to_0_10.md)
 
 ## Integrations
 
