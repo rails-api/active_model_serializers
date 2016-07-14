@@ -67,10 +67,12 @@ module ActiveModel
 
         # Set _default_include to the parsed value of +include+.
         # @param includes value to be parsed by JSONAPI::IncludeDirective::Parser
+        # @param options options for JSONAPI::IncludeDirective::Parser, default { allow_wildcard: true }
         # @return [void]
         #
         def default_include(include, options = {})
-          self._default_include = JSONAPI::IncludeDirective.new(include, options)
+          default_options = { allow_wildcard: true }
+          self._default_include = JSONAPI::IncludeDirective.new(include, default_options.merge(options))
         end
 
         private
