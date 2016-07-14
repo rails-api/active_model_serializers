@@ -12,7 +12,7 @@ module ActiveModel
 
       included do
         with_options instance_writer: false, instance_reader: true do |serializer|
-          serializer.class_attribute :_reflections
+          serializer.class_attribute :_reflections, :_default_include
           self._reflections ||= []
         end
 
@@ -65,6 +65,14 @@ module ActiveModel
           associate(HasOneReflection.new(name, options, block))
         end
 
+        # Set _default_include to the parsed value of +include+.
+        # @param includes value to be parsed by JSONAPI::IncludeDirective::Parser
+        # @return [void]
+        #
+        def default_include(include, options = {})
+          self._default_include = JSONAPI::IncludeDirective.new(include, options)
+        end
+
         private
 
         # Add reflection and define {name} accessor.
@@ -74,7 +82,7 @@ module ActiveModel
         # @api private
         #
         def associate(reflection)
-          self._reflections << reflection
+          _reflections << reflection
         end
       end
 
@@ -84,6 +92,8 @@ module ActiveModel
       #
       def associations(include_directive = ActiveModelSerializers.default_include_directive)
         return unless object
+
+        include_directive.merge!(_default_include) if _default_include
 
         Enumerator.new do |y|
           self.class._reflections.each do |reflection|
