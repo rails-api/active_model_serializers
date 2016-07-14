@@ -100,13 +100,16 @@ module ActiveModel
 
     # @api private
     def self.include_directive_from_options(options)
-      if options[:include_directive]
+      include_directive = if options[:include_directive]
         options[:include_directive]
       elsif options[:include]
         JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
       else
         ActiveModelSerializers.default_include_directive
       end
+      _default_include ?
+          include_directive.merge(_default_include) :
+          include_directive
     end
 
     # @api private
@@ -164,7 +167,7 @@ module ActiveModel
     #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
     def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       adapter_options ||= {}
-      options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
+      options[:include_directive] ||= self.class.include_directive_from_options(adapter_options)
       cached_attributes = adapter_options[:cached_attributes] ||= {}
       resource = fetch_attributes(options[:fields], cached_attributes, adapter_instance)
       relationships = resource_relationships(adapter_options, options, adapter_instance)
