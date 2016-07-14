@@ -65,6 +65,16 @@ And then execute:
 $ bundle
 ```
 
+## Semantic Versioning
+
+This project conforms to [semver](http://semver.org/). As a result of this policy, you can (and should) specify a dependency on this gem using the [Pessimistic Version Constraint](http://guides.rubygems.org/patterns/) with two digits of precision. For example:
+
+spec.add_dependency 'active_model_serializers', '~> 1.0'
+
+This means your project is compatible with licensee 1.0 up until 2.0. You can also set a higher minimum version:
+
+spec.add_dependency 'active_model_serializers', '~> 1.1'
+
 ## Getting Started
 
 See [Getting Started](docs/general/getting_started.md) for the nuts and bolts.
