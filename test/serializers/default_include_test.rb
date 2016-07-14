@@ -51,6 +51,9 @@ module ActiveModel
 
         assert_equal serialized[:included].size, 3
         assert_equal 'The first post', serialized[:included].first[:attributes][:title]
+        types = serialized[:included].map { |h| h[:type] }
+        assert_includes(types, 'active-model-serializer-default-include-test-posts')
+        assert_includes(types, 'active-model-serializer-default-include-test-authors')
       end
 
       test '#default_include merges with the render include for json_api adapter' do
@@ -58,6 +61,10 @@ module ActiveModel
 
         assert_equal serialized[:included].size, 4
         assert_equal 'The first post', serialized[:included].first[:attributes][:title]
+        types = serialized[:included].map { |h| h[:type] }
+        assert_includes(types, 'active-model-serializer-default-include-test-posts')
+        assert_includes(types, 'active-model-serializer-default-include-test-authors')
+        assert_includes(types, 'active-model-serializer-default-include-test-categories')
       end
 
       test '#default_include option include associations for attributes adapter' do
