@@ -236,7 +236,12 @@ module ActiveModelSerializers
         @included = []
         @resource_identifiers = Set.new
         serializers.each { |serializer| process_resource(serializer, true) }
-        serializers.each { |serializer| process_relationships(serializer, @include_directive) }
+        serializers.each do |serializer|
+          include_directive = serializer.default_include ?
+              @include_directive.merge(serializer.default_include) :
+              @include_directive
+          process_relationships(serializer, include_directive)
+        end
 
         [@primary, @included]
       end
