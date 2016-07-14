@@ -65,14 +65,14 @@ module ActiveModel
           associate(HasOneReflection.new(name, options, block))
         end
 
-        # Set _default_include to the parsed value of +include+.
-        # @param includes value to be parsed by JSONAPI::IncludeDirective::Parser
+        # Set _default_include to the parsed value of +include_args+.
+        # @param args value to be parsed by JSONAPI::IncludeDirective::Parser
         # @param options options for JSONAPI::IncludeDirective::Parser, default { allow_wildcard: true }
         # @return [void]
         #
-        def default_include(include, options = {})
+        def default_include(include_args, options = {})
           default_options = { allow_wildcard: true }
-          self._default_include = JSONAPI::IncludeDirective.new(include, default_options.merge(options))
+          self._default_include = JSONAPI::IncludeDirective.new(include_args, default_options.merge(options))
         end
 
         private
