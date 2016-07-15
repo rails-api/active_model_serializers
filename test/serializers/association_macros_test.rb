@@ -11,7 +11,7 @@ module ActiveModel
       end
 
       def before_setup
-        @reflections = AssociationsTestSerializer._reflections
+        @reflections = AssociationsTestSerializer._reflections.values
       end
 
       def test_has_one_defines_reflection
