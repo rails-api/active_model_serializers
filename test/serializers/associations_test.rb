@@ -291,7 +291,6 @@ module ActiveModel
       end
 
       class InheritedSerializerTest < ActiveSupport::TestCase
-
         InheritedPostSerializer = Class.new(PostSerializer) do
           belongs_to :author, custom_option: true
           has_many :comments, custom_option: true, key: :reviews
@@ -305,7 +304,7 @@ module ActiveModel
 
         def setup
           @author = Author.new(name: 'Steve K.')
-          @author.bio = Bio.new(id:1, content: 'AMS Contributor')
+          @author.bio = Bio.new(id: 1, content: 'AMS Contributor')
           @blog = Blog.new(name: 'AMS Blog')
           @post = Post.new(title: 'New Post', body: 'Body')
           @post.blog = @blog
@@ -318,49 +317,46 @@ module ActiveModel
         end
 
         def test_redefined_has_many_and_has_one
-
-          without_redefine = lambda {
+          without_redefine = lambda do
             associations = {}
             @author_serializer.associations.each do |ass|
               associations[ass.name] = ass.options[:custom_option]
             end
 
             expected_associations = {
-                posts: nil,
-                roles: nil,
-                bio: nil
+              posts: nil,
+              roles: nil,
+              bio: nil
             }
 
             assert_equal(associations, expected_associations)
             assert_equal(@author_serializer.associations.count, 3)
-          }
+          end
 
           without_redefine.call
 
-          with_redefine = lambda {
+          with_redefine = lambda do
             associations = {}
             @inherited_author_serializer.associations.each do |ass|
               associations[ass.name] = ass.options[:custom_option]
             end
 
             expected_associations = {
-                posts: true,
-                roles: true,
-                bio: true
+              posts: true,
+              roles: true,
+              bio: true
             }
 
             assert_equal(associations, expected_associations)
             # it should not replace association with a different key
             assert_equal(@inherited_author_serializer.associations.count, 4)
-          }
+          end
 
           with_redefine.call
-
         end
 
         def test_redefined_belongs_to
-
-          without_redefine = lambda {
+          without_redefine = lambda do
             associations = {}
             @post_serializer.associations.each do |ass|
               associations[ass.name] = ass.options[:custom_option]
@@ -374,11 +370,11 @@ module ActiveModel
 
             assert_equal(associations, expected_associations)
             assert_equal(@author_serializer.associations.count, 3)
-          }
+          end
 
           without_redefine.call
 
-          with_redefine = lambda {
+          with_redefine = lambda do
             associations = {}
             @inherited_post_serializer.associations.each do |ass|
               associations[ass.name] = ass.options[:custom_option]
@@ -393,14 +389,11 @@ module ActiveModel
             assert_equal(associations, expected_associations)
             # it should not replace association with a different key
             assert_equal(@inherited_author_serializer.associations.count, 4)
-          }
+          end
 
           with_redefine.call
-
         end
-
       end
-
     end
   end
 end
