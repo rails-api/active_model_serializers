@@ -1,5 +1,4 @@
 require 'test_helper'
-
 module ActiveModel
   class Serializer
     class AssociationsTest < ActiveSupport::TestCase
@@ -104,13 +103,13 @@ module ActiveModel
         end
 
         assert(
-          PostSerializer._reflections.all? do |reflection|
-            inherited_klass._reflections.include?(reflection)
+          PostSerializer._reflections.values.all? do |reflection|
+            inherited_klass._reflections.values.include?(reflection)
           end
         )
 
         assert(
-          inherited_klass._reflections.any? do |reflection|
+          inherited_klass._reflections.values.any? do |reflection|
             reflection.name == :top_comments
           end
         )
@@ -288,6 +287,61 @@ module ActiveModel
           end
 
           assert_match(/:if should be a Symbol, String or Proc/, exception.message)
+        end
+      end
+
+      class InheritedSerializerTest < ActiveSupport::TestCase
+        InheritedPostSerializer = Class.new(PostSerializer) do
+          belongs_to :author, polymorphic: true
+          has_many :comments, key: :reviews
+        end
+
+        InheritedAuthorSerializer = Class.new(AuthorSerializer) do
+          has_many :roles, polymorphic: true
+          has_one :bio, polymorphic: true
+        end
+
+        def setup
+          @author = Author.new(name: 'Steve K.')
+          @post = Post.new(title: 'New Post', body: 'Body')
+          @post_serializer = PostSerializer.new(@post)
+          @author_serializer = AuthorSerializer.new(@author)
+          @inherited_post_serializer = InheritedPostSerializer.new(@post)
+          @inherited_author_serializer = InheritedAuthorSerializer.new(@author)
+          @author_associations = @author_serializer.associations.to_a
+          @inherited_author_associations = @inherited_author_serializer.associations.to_a
+          @post_associations = @post_serializer.associations.to_a
+          @inherited_post_associations = @inherited_post_serializer.associations.to_a
+        end
+
+        test 'an author serializer must have [posts,roles,bio] associations' do
+          expected = [:posts, :roles, :bio].sort
+          result = @author_serializer.associations.map(&:name).sort
+          assert_equal(result, expected)
+        end
+
+        test 'a post serializer must have [author,comments,blog] associations' do
+          expected = [:author, :comments, :blog].sort
+          result = @post_serializer.associations.map(&:name).sort
+          assert_equal(result, expected)
+        end
+
+        test 'a serializer inheriting from another serializer can redefine has_many and has_one associations' do
+          expected = [:roles, :bio].sort
+          result = (@inherited_author_associations - @author_associations).map(&:name).sort
+          assert_equal(result, expected)
+        end
+
+        test 'a serializer inheriting from another serializer can redefine belongs_to associations' do
+          expected = [:author, :comments, :blog].sort
+          result = (@inherited_post_associations - @post_associations).map(&:name).sort
+          assert_equal(result, expected)
+        end
+
+        test 'a serializer inheriting from another serializer can have an additional association with the same name but with different key' do
+          expected = [:author, :comments, :blog, :reviews].sort
+          result = @inherited_post_serializer.associations.map { |a| a.options.fetch(:key, a.name) }.sort
+          assert_equal(result, expected)
         end
       end
     end

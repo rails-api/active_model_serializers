@@ -16,6 +16,7 @@ Misc:
 
 Fixes:
 - [#1814](https://github.com/rails-api/active_model_serializers/pull/1814) Ensuring read_multi works with fragment cache
+- [#1848](https://github.com/rails-api/active_model_serializers/pull/1848) Redefine associations on inherited serializers. (@EhsanYousefi)
 
 Misc:
 - [#1808](https://github.com/rails-api/active_model_serializers/pull/1808) Adds documentation for `fields` option. (@luizkowalski)
