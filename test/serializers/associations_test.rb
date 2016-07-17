@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pry'
 module ActiveModel
   class Serializer
     class AssociationsTest < ActiveSupport::TestCase
@@ -292,14 +293,14 @@ module ActiveModel
 
       class InheritedSerializerTest < ActiveSupport::TestCase
         InheritedPostSerializer = Class.new(PostSerializer) do
-          belongs_to :author, custom_option: true
-          has_many :comments, custom_option: true, key: :reviews
+          belongs_to :author, polymorphic: true
+          has_many :comments, key: :reviews
         end
 
         InheritedAuthorSerializer = Class.new(AuthorSerializer) do
-          has_many :posts, custom_option: true
-          has_one :roles, custom_option: true, key: :new_roles
-          has_one :bio, custom_option: true
+          has_many :posts, polymorphic: true
+          has_one :roles, key: :new_roles
+          has_one :bio, polymorphic: true
         end
 
         def setup
@@ -309,7 +310,6 @@ module ActiveModel
           @post = Post.new(title: 'New Post', body: 'Body')
           @post.blog = @blog
           @post.author = @author
-
           @post_serializer = PostSerializer.new(@post, custom_options: true)
           @author_serializer = AuthorSerializer.new(@author)
           @inherited_post_serializer = InheritedPostSerializer.new(@post, custom_options: true)
@@ -317,81 +317,19 @@ module ActiveModel
         end
 
         def test_redefined_has_many_and_has_one
-          without_redefine = lambda do
-            associations = {}
-            @author_serializer.associations.each do |ass|
-              associations[ass.name] = ass.options[:custom_option]
-            end
-
-            expected_associations = {
-              posts: nil,
-              roles: nil,
-              bio: nil
-            }
-
-            assert_equal(associations, expected_associations)
-            assert_equal(@author_serializer.associations.count, 3)
-          end
-
-          without_redefine.call
-
-          with_redefine = lambda do
-            associations = {}
-            @inherited_author_serializer.associations.each do |ass|
-              associations[ass.name] = ass.options[:custom_option]
-            end
-
-            expected_associations = {
-              posts: true,
-              roles: true,
-              bio: true
-            }
-
-            assert_equal(associations, expected_associations)
-            # it should not replace association with a different key
-            assert_equal(@inherited_author_serializer.associations.count, 4)
-          end
-
-          with_redefine.call
+          author_associations = @author_serializer.associations.to_a
+          inherited_author_associations = @inherited_author_serializer.associations.to_a
+          assert_equal(@author_serializer.associations.count, 3)
+          assert_equal(@inherited_author_serializer.associations.count, 4)
+          assert_equal((author_associations - inherited_author_associations).count, 2)
         end
 
         def test_redefined_belongs_to
-          without_redefine = lambda do
-            associations = {}
-            @post_serializer.associations.each do |ass|
-              associations[ass.name] = ass.options[:custom_option]
-            end
-
-            expected_associations = {
-              comments: nil,
-              blog: nil,
-              author: nil
-            }
-
-            assert_equal(associations, expected_associations)
-            assert_equal(@author_serializer.associations.count, 3)
-          end
-
-          without_redefine.call
-
-          with_redefine = lambda do
-            associations = {}
-            @inherited_post_serializer.associations.each do |ass|
-              associations[ass.name] = ass.options[:custom_option]
-            end
-
-            expected_associations = {
-              comments: true,
-              blog: nil,
-              author: true
-            }
-
-            assert_equal(associations, expected_associations)
-            # it should not replace association with a different key
-            assert_equal(@inherited_author_serializer.associations.count, 4)
-          end
-
-          with_redefine.call
+          post_associations = @post_serializer.associations.to_a
+          inherited_post_associations = @inherited_post_serializer.associations.to_a
+          assert_equal(@post_serializer.associations.count, 3)
+          assert_equal(@inherited_post_serializer.associations.count, 4)
+          assert_equal((post_associations - inherited_post_associations).count, 2)
         end
       end
     end
