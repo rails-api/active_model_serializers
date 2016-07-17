@@ -305,9 +305,9 @@ module ActiveModel
         def setup
           @author = Author.new(name: 'Steve K.')
           @post = Post.new(title: 'New Post', body: 'Body')
-          @post_serializer = PostSerializer.new(@post, custom_options: true)
+          @post_serializer = PostSerializer.new(@post)
           @author_serializer = AuthorSerializer.new(@author)
-          @inherited_post_serializer = InheritedPostSerializer.new(@post, custom_options: true)
+          @inherited_post_serializer = InheritedPostSerializer.new(@post)
           @inherited_author_serializer = InheritedAuthorSerializer.new(@author)
         end
 
