@@ -297,9 +297,8 @@ module ActiveModel
         end
 
         InheritedAuthorSerializer = Class.new(AuthorSerializer) do
-          has_many :posts, polymorphic: true
           has_many :roles, polymorphic: true
-          has_one :bio, key: :biography
+          has_one :bio, polymorphic: true
         end
 
         def setup
@@ -309,60 +308,40 @@ module ActiveModel
           @author_serializer = AuthorSerializer.new(@author)
           @inherited_post_serializer = InheritedPostSerializer.new(@post)
           @inherited_author_serializer = InheritedAuthorSerializer.new(@author)
+          @author_associations = @author_serializer.associations.to_a
+          @inherited_author_associations = @inherited_author_serializer.associations.to_a
+          @post_associations = @post_serializer.associations.to_a
+          @inherited_post_associations = @inherited_post_serializer.associations.to_a
         end
 
-        def map_with_key(associations)
-          associations.map { |a| a.options.fetch(:key, a.name) }
+        test 'an author serializer must have [posts,roles,bio] associations' do
+          expected = [:posts, :roles, :bio].sort
+          result = @author_serializer.associations.map(&:name).sort
+          assert_equal(result, expected)
         end
 
-        def test_redefined_has_many_and_has_one
-          author_associations = @author_serializer.associations.to_a
-          inherited_author_associations = @inherited_author_serializer.associations.to_a
-          assert_equal(
-            @author_serializer.associations.map(&:name).sort,
-            [:posts, :roles, :bio].sort
-          )
-          assert_equal(
-            @inherited_author_serializer.associations.map(&:name).sort,
-            [:posts, :roles, :bio, :bio].sort
-          )
-          assert_equal(
-            map_with_key(@inherited_author_serializer.associations).sort,
-            [:posts, :roles, :bio, :biography].sort
-          )
-          assert_equal(
-            (inherited_author_associations - author_associations).map(&:name).sort,
-            [:posts, :bio, :roles].sort
-          )
-          assert_equal(
-            map_with_key(inherited_author_associations - author_associations).sort,
-            [:posts, :roles, :biography].sort
-          )
+        test 'a post serializer must have [author,comments,blog] associations' do
+          expected = [:author, :comments, :blog].sort
+          result = @post_serializer.associations.map(&:name).sort
+          assert_equal(result, expected)
         end
 
-        def test_redefined_belongs_to
-          post_associations = @post_serializer.associations.to_a
-          inherited_post_associations = @inherited_post_serializer.associations.to_a
-          assert_equal(
-            @post_serializer.associations.map(&:name).sort,
-            [:author, :comments, :blog].sort
-          )
-          assert_equal(
-            @inherited_post_serializer.associations.map(&:name).sort,
-            [:author, :comments, :blog, :comments].sort
-          )
-          assert_equal(
-            map_with_key(@inherited_post_serializer.associations).sort,
-            [:author, :comments, :blog, :reviews].sort
-          )
-          assert_equal(
-            (inherited_post_associations - post_associations).map(&:name).sort,
-            [:author, :comments, :blog].sort
-          )
-          assert_equal(
-            map_with_key(inherited_post_associations - post_associations).sort,
-            [:author, :reviews, :blog].sort
-          )
+        test 'a serializer inheriting from another serializer can redefine has_many and has_one associations' do
+          expected = [:roles, :bio].sort
+          result = (@inherited_author_associations - @author_associations).map(&:name).sort
+          assert_equal(result, expected)
+        end
+
+        test 'a serializer inheriting from another serializer can redefine belongs_to associations' do
+          expected = [:author, :comments, :blog].sort
+          result = (@inherited_post_associations - @post_associations).map(&:name).sort
+          assert_equal(result, expected)
+        end
+
+        test 'a serializer inheriting from another serializer can have an additional association with the same name but with different key' do
+          expected = [:author, :comments, :blog, :reviews].sort
+          result = @inherited_post_serializer.associations.map { |a| a.options.fetch(:key, a.name) }.sort
+          assert_equal(result, expected)
         end
       end
     end
