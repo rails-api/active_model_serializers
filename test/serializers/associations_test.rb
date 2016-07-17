@@ -298,37 +298,71 @@ module ActiveModel
 
         InheritedAuthorSerializer = Class.new(AuthorSerializer) do
           has_many :posts, polymorphic: true
-          has_one :roles, key: :new_roles
-          has_one :bio, polymorphic: true
+          has_many :roles, polymorphic: true
+          has_one :bio, key: :biography
         end
 
         def setup
           @author = Author.new(name: 'Steve K.')
-          @author.bio = Bio.new(id: 1, content: 'AMS Contributor')
-          @blog = Blog.new(name: 'AMS Blog')
           @post = Post.new(title: 'New Post', body: 'Body')
-          @post.blog = @blog
-          @post.author = @author
           @post_serializer = PostSerializer.new(@post, custom_options: true)
           @author_serializer = AuthorSerializer.new(@author)
           @inherited_post_serializer = InheritedPostSerializer.new(@post, custom_options: true)
           @inherited_author_serializer = InheritedAuthorSerializer.new(@author)
         end
 
+        def map_with_key(associations)
+          associations.map { |a| a.options.fetch(:key, a.name) }
+        end
+
         def test_redefined_has_many_and_has_one
           author_associations = @author_serializer.associations.to_a
           inherited_author_associations = @inherited_author_serializer.associations.to_a
-          assert_equal(@author_serializer.associations.count, 3)
-          assert_equal(@inherited_author_serializer.associations.count, 4)
-          assert_equal((author_associations - inherited_author_associations).count, 2)
+          assert_equal(
+            @author_serializer.associations.map(&:name).sort,
+            [:posts, :roles, :bio].sort
+          )
+          assert_equal(
+            @inherited_author_serializer.associations.map(&:name).sort,
+            [:posts, :roles, :bio, :bio].sort
+          )
+          assert_equal(
+            map_with_key(@inherited_author_serializer.associations).sort,
+            [:posts, :roles, :bio, :biography].sort
+          )
+          assert_equal(
+            (inherited_author_associations - author_associations).map(&:name).sort,
+            [:posts, :bio, :roles].sort
+          )
+          assert_equal(
+            map_with_key(inherited_author_associations - author_associations).sort,
+            [:posts, :roles, :biography].sort
+          )
         end
 
         def test_redefined_belongs_to
           post_associations = @post_serializer.associations.to_a
           inherited_post_associations = @inherited_post_serializer.associations.to_a
-          assert_equal(@post_serializer.associations.count, 3)
-          assert_equal(@inherited_post_serializer.associations.count, 4)
-          assert_equal((post_associations - inherited_post_associations).count, 2)
+          assert_equal(
+            @post_serializer.associations.map(&:name).sort,
+            [:author, :comments, :blog].sort
+          )
+          assert_equal(
+            @inherited_post_serializer.associations.map(&:name).sort,
+            [:author, :comments, :blog, :comments].sort
+          )
+          assert_equal(
+            map_with_key(@inherited_post_serializer.associations).sort,
+            [:author, :comments, :blog, :reviews].sort
+          )
+          assert_equal(
+            (inherited_post_associations - post_associations).map(&:name).sort,
+            [:author, :comments, :blog].sort
+          )
+          assert_equal(
+            map_with_key(inherited_post_associations - post_associations).sort,
+            [:author, :reviews, :blog].sort
+          )
         end
       end
     end
