@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'pry'
 module ActiveModel
   class Serializer
     class AssociationsTest < ActiveSupport::TestCase
