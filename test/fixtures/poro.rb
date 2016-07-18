@@ -87,8 +87,9 @@ class PolyTag < ActiveRecord::Base
   has_many :object_tags
 end
 
-module Spam; end
-class Spam::UnrelatedLink < Model; end
+module Spam
+  class UnrelatedLink < Model; end
+end
 
 class PostSerializer < ActiveModel::Serializer
   cache key: 'post', expires_in: 0.1, skip_digest: true
@@ -276,8 +277,10 @@ class PolymorphicTagSerializer < ActiveModel::Serializer
   has_many :object_tags, serializer: PolymorphicObjectTagSerializer
 end
 
-class Spam::UnrelatedLinkSerializer < ActiveModel::Serializer
-  cache only: [:id]
-  attributes :id
+module Spam
+  class UnrelatedLinkSerializer < ActiveModel::Serializer
+    cache only: [:id]
+    attributes :id
+  end
 end
 $VERBOSE = verbose
