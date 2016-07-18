@@ -1,10 +1,9 @@
 require 'test_helper'
 
-NestedPost = Class.new(Model)
+class NestedPost < ::Model; end
 class NestedPostSerializer < ActiveModel::Serializer
   has_many :nested_posts
 end
-
 module ActiveModelSerializers
   module Adapter
     class JsonApi
@@ -283,8 +282,8 @@ module ActiveModelSerializers
       end
 
       class NoDuplicatesTest < ActiveSupport::TestCase
-        Post = Class.new(::Model)
-        Author = Class.new(::Model)
+        class Post < ::Model; end
+        class Author < ::Model; end
 
         class PostSerializer < ActiveModel::Serializer
           type 'posts'
@@ -303,8 +302,8 @@ module ActiveModelSerializers
           @author.posts << @post1
           @author.posts << @post2
 
-          @nestedpost1 = ::NestedPost.new(id: 1, nested_posts: [])
-          @nestedpost2 = ::NestedPost.new(id: 2, nested_posts: [])
+          @nestedpost1 = NestedPost.new(id: 1, nested_posts: [])
+          @nestedpost2 = NestedPost.new(id: 2, nested_posts: [])
           @nestedpost1.nested_posts << @nestedpost1
           @nestedpost1.nested_posts << @nestedpost2
           @nestedpost2.nested_posts << @nestedpost1

@@ -4,22 +4,22 @@ require 'tempfile'
 
 module ActiveModelSerializers
   class CacheTest < ActiveSupport::TestCase
-    UncachedAuthor = Class.new(Author) do
+    class UncachedAuthor < Author
       # To confirm cache_key is set using updated_at and cache_key option passed to cache
       undef_method :cache_key
     end
 
-    Article = Class.new(::Model) do
+    class Article < ::Model
       # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
       undef_method :cache_key
     end
 
-    ArticleSerializer = Class.new(ActiveModel::Serializer) do
+    class ArticleSerializer < ActiveModel::Serializer
       cache only: [:place], skip_digest: true
       attributes :title
     end
 
-    InheritedRoleSerializer = Class.new(RoleSerializer) do
+    class InheritedRoleSerializer < RoleSerializer
       cache key: 'inherited_role', only: [:name, :special_attribute]
       attribute :special_attribute
     end

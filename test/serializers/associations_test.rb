@@ -159,18 +159,18 @@ module ActiveModel
 
       class NamespacedResourcesTest < ActiveSupport::TestCase
         class ResourceNamespace
-          Post    = Class.new(::Model)
-          Comment = Class.new(::Model)
-          Author  = Class.new(::Model)
-          Description = Class.new(::Model)
+          class Post    < ::Model; end
+          class Comment < ::Model; end
+          class Author  < ::Model; end
+          class Description < ::Model; end
           class PostSerializer < ActiveModel::Serializer
             has_many :comments
             belongs_to :author
             has_one :description
           end
-          CommentSerializer     = Class.new(ActiveModel::Serializer)
-          AuthorSerializer      = Class.new(ActiveModel::Serializer)
-          DescriptionSerializer = Class.new(ActiveModel::Serializer)
+          class CommentSerializer     < ActiveModel::Serializer; end
+          class AuthorSerializer      < ActiveModel::Serializer; end
+          class DescriptionSerializer < ActiveModel::Serializer; end
         end
 
         def setup
@@ -200,17 +200,17 @@ module ActiveModel
       end
 
       class NestedSerializersTest < ActiveSupport::TestCase
-        Post    = Class.new(::Model)
-        Comment = Class.new(::Model)
-        Author  = Class.new(::Model)
-        Description = Class.new(::Model)
+        class Post    < ::Model; end
+        class Comment < ::Model; end
+        class Author  < ::Model; end
+        class Description < ::Model; end
         class PostSerializer < ActiveModel::Serializer
           has_many :comments
-          CommentSerializer = Class.new(ActiveModel::Serializer)
+          class CommentSerializer < ActiveModel::Serializer; end
           belongs_to :author
-          AuthorSerializer = Class.new(ActiveModel::Serializer)
+          class AuthorSerializer < ActiveModel::Serializer; end
           has_one :description
-          DescriptionSerializer = Class.new(ActiveModel::Serializer)
+          class DescriptionSerializer < ActiveModel::Serializer; end
         end
 
         def setup
@@ -291,12 +291,12 @@ module ActiveModel
       end
 
       class InheritedSerializerTest < ActiveSupport::TestCase
-        InheritedPostSerializer = Class.new(PostSerializer) do
+        class InheritedPostSerializer < PostSerializer
           belongs_to :author, polymorphic: true
           has_many :comments, key: :reviews
         end
 
-        InheritedAuthorSerializer = Class.new(AuthorSerializer) do
+        class InheritedAuthorSerializer < AuthorSerializer
           has_many :roles, polymorphic: true
           has_one :bio, polymorphic: true
         end

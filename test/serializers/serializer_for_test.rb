@@ -28,8 +28,8 @@ module ActiveModel
 
       class SerializerTest < ActiveSupport::TestCase
         module ResourceNamespace
-          Post    = Class.new(::Model)
-          Comment = Class.new(::Model)
+          class Post    < ::Model; end
+          class Comment < ::Model; end
 
           class PostSerializer < ActiveModel::Serializer
             class CommentSerializer < ActiveModel::Serializer
@@ -46,7 +46,7 @@ module ActiveModel
           end
         end
 
-        Tweet = Class.new(::Model)
+        class Tweet < ::Model; end
         TweetSerializer = Class.new
 
         def setup
