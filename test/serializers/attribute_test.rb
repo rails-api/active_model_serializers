@@ -81,7 +81,7 @@ module ActiveModel
         assert_equal('custom', hash[:blog][:id])
       end
 
-      PostWithVirtualAttribute = Class.new(::Model)
+      class PostWithVirtualAttribute < ::Model; end
       class PostWithVirtualAttributeSerializer < ActiveModel::Serializer
         attribute :name do
           "#{object.first_name} #{object.last_name}"

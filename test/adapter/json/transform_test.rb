@@ -15,7 +15,7 @@ module ActiveModelSerializers
           @adapter = ActiveModelSerializers::Adapter::Json.new(serializer, options)
         end
 
-        Post = Class.new(::Model)
+        class Post < ::Model; end
         class PostSerializer < ActiveModel::Serializer
           attributes :id, :title, :body, :publish_at
         end

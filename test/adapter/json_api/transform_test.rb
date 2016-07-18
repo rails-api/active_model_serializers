@@ -4,7 +4,10 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class KeyCaseTest < ActiveSupport::TestCase
-        Post = Class.new(::Model)
+        class Post < ::Model; end
+        class Author < ::Model; end
+        class Comment < ::Model; end
+
         class PostSerializer < ActiveModel::Serializer
           type 'posts'
           attributes :title, :body, :publish_at
@@ -23,13 +26,11 @@ module ActiveModelSerializers
           end
         end
 
-        Author = Class.new(::Model)
         class AuthorSerializer < ActiveModel::Serializer
           type 'authors'
           attributes :first_name, :last_name
         end
 
-        Comment = Class.new(::Model)
         class CommentSerializer < ActiveModel::Serializer
           type 'comments'
           attributes :body

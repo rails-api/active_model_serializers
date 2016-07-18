@@ -4,7 +4,7 @@ require_relative './app'
 # https://github.com/ruby-bench/ruby-bench-suite/blob/8ad567f7e43a044ae48c36833218423bb1e2bd9d/rails/benchmarks/actionpack_router.rb
 class ApiAssertion
   include Benchmark::ActiveModelSerializers::TestMethods
-  BadRevisionError = Class.new(StandardError)
+  class BadRevisionError < StandardError; end
 
   def valid?
     caching = get_caching

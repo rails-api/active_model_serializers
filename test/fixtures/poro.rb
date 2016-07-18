@@ -50,18 +50,18 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
 end
 
-Post     = Class.new(Model)
-Like     = Class.new(Model)
-Author   = Class.new(Model)
-Bio      = Class.new(Model)
-Blog     = Class.new(Model)
-Role     = Class.new(Model)
-User     = Class.new(Model)
-Location = Class.new(Model)
-Place    = Class.new(Model)
-Tag      = Class.new(Model)
-VirtualValue = Class.new(Model)
-Comment = Class.new(Model) do
+class Post < Model; end
+class Like < Model; end
+class Author < Model; end
+class Bio < Model; end
+class Blog < Model; end
+class Role < Model; end
+class User < Model; end
+class Location < Model; end
+class Place < Model; end
+class Tag < Model; end
+class VirtualValue < Model; end
+class Comment < Model
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{id}"
@@ -87,10 +87,11 @@ class PolyTag < ActiveRecord::Base
   has_many :object_tags
 end
 
-module Spam; end
-Spam::UnrelatedLink = Class.new(Model)
+module Spam
+  class UnrelatedLink < Model; end
+end
 
-PostSerializer = Class.new(ActiveModel::Serializer) do
+class PostSerializer < ActiveModel::Serializer
   cache key: 'post', expires_in: 0.1, skip_digest: true
   attributes :id, :title, :body
 
@@ -108,12 +109,12 @@ PostSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
-SpammyPostSerializer = Class.new(ActiveModel::Serializer) do
+class SpammyPostSerializer < ActiveModel::Serializer
   attributes :id
   has_many :related
 end
 
-CommentSerializer = Class.new(ActiveModel::Serializer) do
+class CommentSerializer < ActiveModel::Serializer
   cache expires_in: 1.day, skip_digest: true
   attributes :id, :body
 
@@ -125,7 +126,7 @@ CommentSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
-AuthorSerializer = Class.new(ActiveModel::Serializer) do
+class AuthorSerializer < ActiveModel::Serializer
   cache key: 'writer', skip_digest: true
   attribute :id
   attribute :name
@@ -135,7 +136,7 @@ AuthorSerializer = Class.new(ActiveModel::Serializer) do
   has_one :bio
 end
 
-RoleSerializer = Class.new(ActiveModel::Serializer) do
+class RoleSerializer < ActiveModel::Serializer
   cache only: [:name, :slug], skip_digest: true
   attributes :id, :name, :description
   attribute :friendly_id, key: :slug
@@ -147,13 +148,13 @@ RoleSerializer = Class.new(ActiveModel::Serializer) do
   belongs_to :author
 end
 
-LikeSerializer = Class.new(ActiveModel::Serializer) do
+class LikeSerializer < ActiveModel::Serializer
   attributes :id, :time
 
   belongs_to :likeable
 end
 
-LocationSerializer = Class.new(ActiveModel::Serializer) do
+class LocationSerializer < ActiveModel::Serializer
   cache only: [:address], skip_digest: true
   attributes :id, :lat, :lng
 
@@ -164,20 +165,20 @@ LocationSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
-PlaceSerializer = Class.new(ActiveModel::Serializer) do
+class PlaceSerializer < ActiveModel::Serializer
   attributes :id, :name
 
   has_many :locations
 end
 
-BioSerializer = Class.new(ActiveModel::Serializer) do
+class BioSerializer < ActiveModel::Serializer
   cache except: [:content], skip_digest: true
   attributes :id, :content, :rating
 
   belongs_to :author
 end
 
-BlogSerializer = Class.new(ActiveModel::Serializer) do
+class BlogSerializer < ActiveModel::Serializer
   cache key: 'blog'
   attributes :id, :name
 
@@ -185,50 +186,50 @@ BlogSerializer = Class.new(ActiveModel::Serializer) do
   has_many :articles
 end
 
-PaginatedSerializer = Class.new(ActiveModel::Serializer::CollectionSerializer) do
+class PaginatedSerializer < ActiveModel::Serializer::CollectionSerializer
   def json_key
     'paginated'
   end
 end
 
-AlternateBlogSerializer = Class.new(ActiveModel::Serializer) do
+class AlternateBlogSerializer < ActiveModel::Serializer
   attribute :id
   attribute :name, key: :title
 end
 
-CustomBlogSerializer = Class.new(ActiveModel::Serializer) do
+class CustomBlogSerializer < ActiveModel::Serializer
   attribute :id
   attribute :special_attribute
 
   has_many :articles
 end
 
-CommentPreviewSerializer = Class.new(ActiveModel::Serializer) do
+class CommentPreviewSerializer < ActiveModel::Serializer
   attributes :id
 
   belongs_to :post
 end
 
-AuthorPreviewSerializer = Class.new(ActiveModel::Serializer) do
+class AuthorPreviewSerializer < ActiveModel::Serializer
   attributes :id
 
   has_many :posts
 end
 
-PostPreviewSerializer = Class.new(ActiveModel::Serializer) do
+class PostPreviewSerializer < ActiveModel::Serializer
   attributes :title, :body, :id
 
   has_many :comments, serializer: CommentPreviewSerializer
   belongs_to :author, serializer: AuthorPreviewSerializer
 end
 
-PostWithTagsSerializer = Class.new(ActiveModel::Serializer) do
+class PostWithTagsSerializer < ActiveModel::Serializer
   attributes :id
 
   has_many :tags
 end
 
-PostWithCustomKeysSerializer = Class.new(ActiveModel::Serializer) do
+class PostWithCustomKeysSerializer < ActiveModel::Serializer
   attributes :id
 
   has_many :comments, key: :reviews
@@ -236,7 +237,7 @@ PostWithCustomKeysSerializer = Class.new(ActiveModel::Serializer) do
   has_one :blog, key: :site
 end
 
-VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
+class VirtualValueSerializer < ActiveModel::Serializer
   attributes :id
 
   has_many :reviews, virtual_value: [{ type: 'reviews', id: '1' },
@@ -250,34 +251,36 @@ VirtualValueSerializer = Class.new(ActiveModel::Serializer) do
   end
 end
 
-PolymorphicHasManySerializer = Class.new(ActiveModel::Serializer) do
+class PolymorphicHasManySerializer < ActiveModel::Serializer
   attributes :id, :name
 end
 
-PolymorphicBelongsToSerializer = Class.new(ActiveModel::Serializer) do
+class PolymorphicBelongsToSerializer < ActiveModel::Serializer
   attributes :id, :title
 
   has_one :imageable, serializer: PolymorphicHasManySerializer, polymorphic: true
 end
 
-PolymorphicSimpleSerializer = Class.new(ActiveModel::Serializer) do
+class PolymorphicSimpleSerializer < ActiveModel::Serializer
   attributes :id
 end
 
-PolymorphicObjectTagSerializer = Class.new(ActiveModel::Serializer) do
+class PolymorphicObjectTagSerializer < ActiveModel::Serializer
   attributes :id
 
   has_many :taggable, serializer: PolymorphicSimpleSerializer, polymorphic: true
 end
 
-PolymorphicTagSerializer = Class.new(ActiveModel::Serializer) do
+class PolymorphicTagSerializer < ActiveModel::Serializer
   attributes :id, :phrase
 
   has_many :object_tags, serializer: PolymorphicObjectTagSerializer
 end
 
-Spam::UnrelatedLinkSerializer = Class.new(ActiveModel::Serializer) do
-  cache only: [:id]
-  attributes :id
+module Spam
+  class UnrelatedLinkSerializer < ActiveModel::Serializer
+    cache only: [:id]
+    attributes :id
+  end
 end
 $VERBOSE = verbose

@@ -3,7 +3,7 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class CollectionSerializerTest < ActiveSupport::TestCase
-      MessagesSerializer = Class.new(ActiveModel::Serializer) do
+      class MessagesSerializer < ActiveModel::Serializer
         type 'messages'
       end
 
