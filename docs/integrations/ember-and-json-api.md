@@ -51,6 +51,8 @@ require 'active_model_serializers/register_jsonapi_renderer'
 // app/adapters/application.js
 import DS from 'ember-data';
 import ENV from "../config/environment";
+var underscore = Ember.String.underscore;
+var pluralize = Ember.String.pluralize;
 
 export default  DS.JSONAPIAdapter.extend({
   namespace: 'api',
@@ -61,8 +63,8 @@ export default  DS.JSONAPIAdapter.extend({
 
   // allows the multiword paths in urls to be underscored
   pathForType: function(type) {
-    let underscored = Ember.String.underscore(type);
-    return Ember.String.pluralize(underscored);
+    let underscored = underscore(type);
+    return pluralize(underscored);
   },
 
   // allows queries to be sent along with a findRecord
@@ -84,7 +86,6 @@ export default  DS.JSONAPIAdapter.extend({
 
 ```javascript
 // app/serializers/application.js
-import Ember from 'ember';
 import DS from 'ember-data';
 var underscore = Ember.String.underscore;
 
