@@ -49,10 +49,10 @@ require 'active_model_serializers/register_jsonapi_renderer'
 
 ```javascript
 // app/adapters/application.js
+import Ember from 'ember';
 import DS from 'ember-data';
 import ENV from "../config/environment";
-var underscore = Ember.String.underscore;
-var pluralize = Ember.String.pluralize;
+const { underscore, pluralize } = Ember.String;
 
 export default  DS.JSONAPIAdapter.extend({
   namespace: 'api',
@@ -86,6 +86,7 @@ export default  DS.JSONAPIAdapter.extend({
 
 ```javascript
 // app/serializers/application.js
+import Ember from 'ember';
 import DS from 'ember-data';
 var underscore = Ember.String.underscore;
 
