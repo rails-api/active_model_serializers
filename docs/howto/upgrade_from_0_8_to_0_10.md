@@ -5,7 +5,7 @@
 ## Disclaimer
 ### Proceed at your own risk
 This document attempts to outline steps to upgrade your app based on the collective experience of
-developers who have done this already. It may not cover all edge cases and situation that may cause issues, 
+developers who have done this already. It may not cover all edge cases and situations that may cause issues, 
 so please proceed with a certain level of caution. 
 
 ## Overview
@@ -15,30 +15,46 @@ the migration successfully. The method has been tested specifically for migratin
 to `0.10.2`.
 
 The high level approach is to upgrade to `0.10` and change all serializers to use 
-a backwards-compatible `VersionEightSerializer`or `VersionEightCollectionSerializer` 
-and a `VersionEightAdapter`. After a few more manual changes, you should have the same
+a backwards-compatible `ActiveModel::V08::Serializer`or `ActiveModel::V08::CollectionSerializer` 
+and a `ActiveModelSerializers::Adapter::V08Adapter`. After a few more manual changes, you should have the same
 functionality as you had with `AMS 0.8`. Then, you can continue to develop in your app by creating
 new serializers that don't use these backwards compatible versions and slowly migrate
 existing serializers to the `0.10` versions as needed.
 
 ### `0.10` breaking changes
 - Passing a serializer to `render json:` is no longer supported
-    - Ex. `render json: CustomerSerializer.new(customer)`
+     
+```ruby
+render json: CustomerSerializer.new(customer) # rendered in 0.8, errors in 0.10
+```
+        
 - Passing a nil resource to serializer now fails
-    - Ex. `CustomerSerializer.new(nil)`
-- Attribute methods are no longer accessible from other serializer methods
-    - Ex. 
-    ```ruby
-    class MySerializer
-      attributes :foo, :bar
-      
-      def foo
-        bar + 1
-      end
-    end
-    ```
+     
+```ruby
+CustomerSerializer.new(nil) # returned nil in 0.8, throws error in 0.10
+```
+        
+- Attribute methods are no longer defined on the serializer, and must be explicitly
+  accessed through `object`
+    
+```ruby
+class MySerializer
+  attributes :foo, :bar
+  
+  def foo
+    bar + 1 # bar does not work, needs to be object.bar in 0.10
+  end
+end
+```
+        
  - `root` option to collection serializer behaves differently
-    - Ex. `ActiveModel::ArraySerializer.new(resources, root: "resources")`
+    
+```ruby
+# in 0.8
+ActiveModel::ArraySerializer.new(resources, root: "resources")
+# resulted in { "resources": <serialized_resources> }, does not work in 0.10
+```
+        
 - No default serializer when serializer doesn't exist
 - `@options` changed to `instance_options`
 
@@ -47,41 +63,42 @@ existing serializers to the `0.10` versions as needed.
 ### 1. Upgrade the `active_model_serializer` gem in you `Gemfile`
 Change to `gem 'active_model_serializers', '~> 0.10'` and run `bundle install`
 
-### 2. Add `VersionEightSerializer`
+### 2. Add `ActiveModel::V08::Serializer`
 
-#### Code
 ```ruby
 module ActiveModel
-  class VersionEightSerializer < Serializer
-    include Rails.application.routes.url_helpers
-
-    # AMS 0.8 would delegate method calls from within the serializer to the
-    # object.
-    def method_missing(*args)
-      method = args.first
-      read_attribute_for_serialization(method)
-    end
-
-    alias_method :options, :instance_options
-
-    # Since attributes could be read from the `object` via `method_missing`,
-    # the `try` method did not behave as before. This patches `try` with the
-    # original implementation plus the addition of
-    # ` || object.respond_to?(a.first, true)` to check if the object responded to
-    # the given method.
-    def try(*a, &b)
-      if a.empty? || respond_to?(a.first, true) || object.respond_to?(a.first, true)
-        try!(*a, &b)
+  module V08
+    class Serializer < ActiveModel::Serializer
+      include Rails.application.routes.url_helpers
+  
+      # AMS 0.8 would delegate method calls from within the serializer to the
+      # object.
+      def method_missing(*args)
+        method = args.first
+        read_attribute_for_serialization(method)
       end
-    end
-
-    # AMS 0.8 would return nil if the serializer was initialized with a nil
-    # resource.
-    def serializable_hash(adapter_options = nil,
-                          options = {},
-                          adapter_instance =
-                            self.class.serialization_adapter_instance)
-      object.nil? ? nil : super
+  
+      alias_method :options, :instance_options
+  
+      # Since attributes could be read from the `object` via `method_missing`,
+      # the `try` method did not behave as before. This patches `try` with the
+      # original implementation plus the addition of
+      # ` || object.respond_to?(a.first, true)` to check if the object responded to
+      # the given method.
+      def try(*a, &b)
+        if a.empty? || respond_to?(a.first, true) || object.respond_to?(a.first, true)
+          try!(*a, &b)
+        end
+      end
+  
+      # AMS 0.8 would return nil if the serializer was initialized with a nil
+      # resource.
+      def serializable_hash(adapter_options = nil,
+                            options = {},
+                            adapter_instance =
+                              self.class.serialization_adapter_instance)
+        object.nil? ? nil : super
+      end
     end
   end
 end
@@ -90,12 +107,11 @@ end
 Add this class to your app however you see fit. This is the class that your existing serializers 
 that inherit from `ActiveMode::Serializer` should inherit from.
 
-### 3. Add `VersionEightCollectionSerializer`
-#### Code
+### 3. Add `ActiveModel::V08::CollectionSerializer`
 ```ruby
 module ActiveModel
-  class Serializer
-    class VersionEightCollectionSerializer < CollectionSerializer
+  module V08
+    class CollectionSerializer < ActiveModel::Serializer::CollectionSerializer
       # In AMS 0.8, passing an ArraySerializer instance with a `root` option
       # properly nested the serialized resources within the given root.
       # Ex.
@@ -155,14 +171,13 @@ module ActiveModel
 end
 ```
 Add this class to your app however you see fit. This is the class that existing uses of 
-`ActiveMode::ArraySerializer` should be changed to use.
+`ActiveModel::ArraySerializer` should be changed to use.
 
-### 4. Add `VersionEightAdapter`
-#### Code
+### 4. Add `ActiveModelSerializers::Adapter::V08Adapter`
 ```ruby
 module ActiveModelSerializers
   module Adapter
-    class VersionEightAdapter < Base
+    class V08Adapter < ActiveModelSerializers::Adapter::Base
       def serializable_hash(options = nil)
         options ||= {}
 
@@ -179,7 +194,7 @@ module ActiveModelSerializers
 
       def serializable_hash_for_collection(options)
         serializer.map do |s|
-          VersionEightAdapter.new(s, instance_options)
+          V08Adapter.new(s, instance_options)
             .serializable_hash(options)
         end
       end
@@ -214,16 +229,16 @@ Add this class to your app however you see fit.
 Add
 ```ruby
 ActiveModelSerializers.config.adapter =
-  ActiveModelSerializers::Adapter::VersionEightAdapter
+  ActiveModelSerializers::Adapter::V08Adapter
 ```
 to `config/active_model_serializer.rb` to configure AMS to use this 
 class as the default adapter.
  
-### 5. Change inheritors of `ActiveModel::Serializer` to inherit from `ActiveModel::VersionEightSerializer`
+### 5. Change inheritors of `ActiveModel::Serializer` to inherit from `ActiveModel::V08::Serializer`
 Simple find/replace
  
 ### 6. Remove `private` keyword from serializers
-Simple find/replace. This is required to allow the `ActiveModel::VersionEightSerializer`
+Simple find/replace. This is required to allow the `ActiveModel::V08::Serializer`
 to have proper access to the methods defined in the serializer. 
 
 You may be able to change the `private` to `protected`, but this is hasn't been tested yet.
@@ -233,8 +248,8 @@ This method is no longer supported in `0.10`.
 
 `0.10` does a good job of discovering serializers for `ActiveRecord` objects.
 
-### 8. Rename `ActiveModel::ArraySerializer` to `ActiveModel::Serializer::Version8CollectionSerializer`
-Find/replace uses of `ActiveModel::ArraySerializer` with `ActiveModel::Serializer::Version8CollectionSerializer`.
+### 8. Rename `ActiveModel::ArraySerializer` to `ActiveModel::V08::CollectionSerializer`
+Find/replace uses of `ActiveModel::ArraySerializer` with `ActiveModel::V08::CollectionSerializer`.
 
 Also, be sure to change the `each_serializer` keyword to `serializer` when calling making the replacement.
 
