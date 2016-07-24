@@ -17,7 +17,7 @@ The cache support is optimized to use the cached object in multiple request. An 
 cache(options = nil) # options: ```{key, expires_in, compress, force, race_condition_ttl}```
 ```
 
-Take the example bellow:
+Take the example below:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer
