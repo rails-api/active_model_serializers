@@ -22,7 +22,7 @@ model_json = serializable_resource.as_json
 
 ### Looking up the Serializer for a Resource
 
-If you want to retrieve a serializer for a specific resource, you can do the following:
+If you want to retrieve the serializer class for a specific resource, you can do the following:
 
 ```ruby
 # Create our resource
@@ -41,7 +41,13 @@ You could also retrieve the serializer via:
 ActiveModelSerializers::SerializableResource.new(post, options).serializer
 ```
 
-Both approaches will return an instance, if any, of the resource's serializer.
+Both approaches will return the serializer class that will be used for the resource.
+
+Additionally, you could retrieve the serializer instance for the resource via:
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(post, options).serializer_instance
+```
 
 ## Serializing before controller render
 
