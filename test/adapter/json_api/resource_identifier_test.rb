@@ -27,33 +27,33 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
-        def test_defined_type
+        test 'defined_type' do
           test_type(WithDefinedTypeSerializer, 'with-defined-type')
         end
 
-        def test_singular_type
+        test 'singular_type' do
           test_type_inflection(AuthorSerializer, 'author', :singular)
         end
 
-        def test_plural_type
+        test 'plural_type' do
           test_type_inflection(AuthorSerializer, 'authors', :plural)
         end
 
-        def test_id_defined_on_object
+        test 'id_defined_on_object' do
           test_id(AuthorSerializer, @model.id.to_s)
         end
 
-        def test_id_defined_on_serializer
+        test 'id_defined_on_serializer' do
           test_id(WithDefinedIdSerializer, 'special_id')
         end
 
-        def test_id_defined_on_fragmented
+        test 'id_defined_on_fragmented' do
           test_id(FragmentedSerializer, 'special_id')
         end
 
         private
 
-        def test_type_inflection(serializer_class, expected_type, inflection)
+        test 'type_inflection(serializer_class, expected_type, inflection)' do
           original_inflection = ActiveModelSerializers.config.jsonapi_resource_type
           ActiveModelSerializers.config.jsonapi_resource_type = inflection
           test_type(serializer_class, expected_type)
@@ -61,7 +61,7 @@ module ActiveModelSerializers
           ActiveModelSerializers.config.jsonapi_resource_type = original_inflection
         end
 
-        def test_type(serializer_class, expected_type)
+        test 'type(serializer_class, expected_type)' do
           serializer = serializer_class.new(@model)
           resource_identifier = ResourceIdentifier.new(serializer, nil)
           expected = {
@@ -72,7 +72,7 @@ module ActiveModelSerializers
           assert_equal(expected, resource_identifier.as_json)
         end
 
-        def test_id(serializer_class, id)
+        test 'id(serializer_class, id)' do
           serializer = serializer_class.new(@model)
           resource_identifier = ResourceIdentifier.new(serializer, nil)
           inflection = ActiveModelSerializers.config.jsonapi_resource_type

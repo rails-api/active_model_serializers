@@ -11,21 +11,21 @@ module ActiveModel
           @serializer = PostSerializer.new(post)
         end
 
-        def test_null_adapter_serialization_deprecation
+        test 'null_adapter_serialization_deprecation' do
           expected = {}
           assert_deprecated do
             assert_equal(expected, Null.new(@serializer).as_json)
           end
         end
 
-        def test_json_adapter_serialization_deprecation
+        test 'json_adapter_serialization_deprecation' do
           expected = { post: { body: 'Hello' } }
           assert_deprecated do
             assert_equal(expected, Json.new(@serializer).as_json)
           end
         end
 
-        def test_jsonapi_adapter_serialization_deprecation
+        test 'jsonapi_adapter_serialization_deprecation' do
           expected = {
             data: {
               id: '1',
@@ -40,38 +40,38 @@ module ActiveModel
           end
         end
 
-        def test_attributes_adapter_serialization_deprecation
+        test 'attributes_adapter_serialization_deprecation' do
           expected = { body: 'Hello' }
           assert_deprecated do
             assert_equal(expected, Attributes.new(@serializer).as_json)
           end
         end
 
-        def test_adapter_create_deprecation
+        test 'adapter_create_deprecation' do
           assert_deprecated do
             Adapter.create(@serializer)
           end
         end
 
-        def test_adapter_adapter_map_deprecation
+        test 'adapter_adapter_map_deprecation' do
           assert_deprecated do
             Adapter.adapter_map
           end
         end
 
-        def test_adapter_adapters_deprecation
+        test 'adapter_adapters_deprecation' do
           assert_deprecated do
             Adapter.adapters
           end
         end
 
-        def test_adapter_adapter_class_deprecation
+        test 'adapter_adapter_class_deprecation' do
           assert_deprecated do
             Adapter.adapter_class(:json_api)
           end
         end
 
-        def test_adapter_register_deprecation
+        test 'adapter_register_deprecation' do
           assert_deprecated do
             begin
               Adapter.register(:test, Class.new)
@@ -81,7 +81,7 @@ module ActiveModel
           end
         end
 
-        def test_adapter_lookup_deprecation
+        test 'adapter_lookup_deprecation' do
           assert_deprecated do
             Adapter.lookup(:json_api)
           end

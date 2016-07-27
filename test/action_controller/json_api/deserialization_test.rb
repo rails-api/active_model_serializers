@@ -21,7 +21,7 @@ module ActionController
 
         tests DeserializationTestController
 
-        def test_deserialization_of_relationship_only_object
+        test 'deserialization_of_relationship_only_object' do
           hash = {
             'data' => {
               'type' => 'restraints',
@@ -53,7 +53,7 @@ module ActionController
           assert_equal(expected, response)
         end
 
-        def test_deserialization
+        test 'deserialization' do
           hash = {
             'data' => {
               'type' => 'photos',

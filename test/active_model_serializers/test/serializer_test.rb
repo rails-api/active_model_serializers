@@ -17,32 +17,32 @@ module ActiveModelSerializers
 
       tests MyController
 
-      def test_supports_specifying_serializers_with_a_serializer_class
+      test 'supports_specifying_serializers_with_a_serializer_class' do
         get :render_using_serializer
         assert_serializer ProfileSerializer
       end
 
-      def test_supports_specifying_serializers_with_a_regexp
+      test 'supports_specifying_serializers_with_a_regexp' do
         get :render_using_serializer
         assert_serializer(/\AProfile.+\Z/)
       end
 
-      def test_supports_specifying_serializers_with_a_string
+      test 'supports_specifying_serializers_with_a_string' do
         get :render_using_serializer
         assert_serializer 'ProfileSerializer'
       end
 
-      def test_supports_specifying_serializers_with_a_symbol
+      test 'supports_specifying_serializers_with_a_symbol' do
         get :render_using_serializer
         assert_serializer :profile_serializer
       end
 
-      def test_supports_specifying_serializers_with_a_nil
+      test 'supports_specifying_serializers_with_a_nil' do
         get :render_some_text
         assert_serializer nil
       end
 
-      def test_raises_descriptive_error_message_when_serializer_was_not_rendered
+      test 'raises_descriptive_error_message_when_serializer_was_not_rendered' do
         get :render_using_serializer
         e = assert_raise ActiveSupport::TestCase::Assertion do
           assert_serializer 'PostSerializer'
@@ -50,7 +50,7 @@ module ActiveModelSerializers
         assert_match 'expecting <"PostSerializer"> but rendering with <["ProfileSerializer"]>', e.message
       end
 
-      def test_raises_argument_error_when_asserting_with_invalid_object
+      test 'raises_argument_error_when_asserting_with_invalid_object' do
         get :render_using_serializer
         e = assert_raise ArgumentError do
           assert_serializer Hash

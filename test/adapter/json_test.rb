@@ -20,14 +20,14 @@ module ActiveModelSerializers
         @adapter = ActiveModelSerializers::Adapter::Json.new(@serializer)
       end
 
-      def test_has_many
+      test 'has_many' do
         assert_equal([
                        { id: 1, body: 'ZOMG A COMMENT' },
                        { id: 2, body: 'ZOMG ANOTHER COMMENT' }
                      ], @adapter.serializable_hash[:post][:comments])
       end
 
-      def test_custom_keys
+      test 'custom_keys' do
         serializer = PostWithCustomKeysSerializer.new(@post)
         adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 

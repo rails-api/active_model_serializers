@@ -66,14 +66,14 @@ module ActionController
 
       tests ExplicitSerializerTestController
 
-      def test_render_using_explicit_serializer
+      test 'render_using_explicit_serializer' do
         get :render_using_explicit_serializer
 
         assert_equal 'application/json', @response.content_type
         assert_equal '{"name":"Name 1"}', @response.body
       end
 
-      def test_render_array_using_explicit_serializer
+      test 'render_array_using_explicit_serializer' do
         get :render_array_using_explicit_serializer
         assert_equal 'application/json', @response.content_type
 
@@ -85,7 +85,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_using_implicit_serializer
+      test 'render_array_using_implicit_serializer' do
         get :render_array_using_implicit_serializer
         assert_equal 'application/json', @response.content_type
 
@@ -96,7 +96,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_using_explicit_serializer_and_custom_serializers
+      test 'render_array_using_explicit_serializer_and_custom_serializers' do
         get :render_array_using_explicit_serializer_and_custom_serializers
 
         expected = [
@@ -112,7 +112,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_using_explicit_each_serializer
+      test 'render_using_explicit_each_serializer' do
         get :render_using_explicit_each_serializer
 
         expected = {

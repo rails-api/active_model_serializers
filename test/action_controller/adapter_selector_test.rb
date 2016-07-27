@@ -22,12 +22,12 @@ module ActionController
 
       tests AdapterSelectorTestController
 
-      def test_render_using_default_adapter
+      test 'render_using_default_adapter' do
         get :render_using_default_adapter
         assert_equal '{"name":"Name 1","description":"Description 1"}', response.body
       end
 
-      def test_render_using_adapter_override
+      test 'render_using_adapter_override' do
         get :render_using_adapter_override
 
         expected = {
@@ -44,7 +44,7 @@ module ActionController
         assert_equal expected.to_json, response.body
       end
 
-      def test_render_skipping_adapter
+      test 'render_skipping_adapter' do
         get :render_skipping_adapter
         assert_equal '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}', response.body
       end

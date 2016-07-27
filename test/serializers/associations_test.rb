@@ -23,7 +23,7 @@ module ActiveModel
         @comment_serializer = CommentSerializer.new(@comment)
       end
 
-      def test_has_many_and_has_one
+      test 'has_many_and_has_one' do
         @author_serializer.associations.each do |association|
           key = association.key
           serializer = association.serializer
@@ -45,7 +45,7 @@ module ActiveModel
         end
       end
 
-      def test_has_many_with_no_serializer
+      test 'has_many_with_no_serializer' do
         PostWithTagsSerializer.new(@post).associations.each do |association|
           key = association.key
           serializer = association.serializer
@@ -57,7 +57,7 @@ module ActiveModel
         end
       end
 
-      def test_serializer_options_are_passed_into_associations_serializers
+      test 'serializer_options_are_passed_into_associations_serializers' do
         association = @post_serializer
                       .associations
                       .detect { |assoc| assoc.key == :comments }
@@ -65,7 +65,7 @@ module ActiveModel
         assert association.serializer.first.custom_options[:custom_options]
       end
 
-      def test_belongs_to
+      test 'belongs_to' do
         @comment_serializer.associations.each do |association|
           key = association.key
           serializer = association.serializer
@@ -83,7 +83,7 @@ module ActiveModel
         end
       end
 
-      def test_belongs_to_with_custom_method
+      test 'belongs_to_with_custom_method' do
         assert(
           @post_serializer.associations.any? do |association|
             association.key == :blog
@@ -91,13 +91,13 @@ module ActiveModel
         )
       end
 
-      def test_associations_inheritance
+      test 'associations_inheritance' do
         inherited_klass = Class.new(PostSerializer)
 
         assert_equal(PostSerializer._reflections, inherited_klass._reflections)
       end
 
-      def test_associations_inheritance_with_new_association
+      test 'associations_inheritance_with_new_association' do
         inherited_klass = Class.new(PostSerializer) do
           has_many :top_comments, serializer: CommentSerializer
         end
@@ -115,7 +115,7 @@ module ActiveModel
         )
       end
 
-      def test_associations_custom_keys
+      test 'associations_custom_keys' do
         serializer = PostWithCustomKeysSerializer.new(@post)
 
         expected_association_keys = serializer.associations.map(&:key)
@@ -132,7 +132,7 @@ module ActiveModel
         end
       end
 
-      def test_virtual_attribute_block
+      test 'virtual_attribute_block' do
         comment1 = ::ARModels::Comment.create!(contents: 'first comment')
         comment2 = ::ARModels::Comment.create!(contents: 'last comment')
         post = ::ARModels::Post.create!(
@@ -183,7 +183,7 @@ module ActiveModel
           @post_serializer = ResourceNamespace::PostSerializer.new(@post)
         end
 
-        def test_associations_namespaced_resources
+        test 'associations_namespaced_resources' do
           @post_serializer.associations.each do |association|
             case association.key
             when :comments
@@ -223,7 +223,7 @@ module ActiveModel
           @post_serializer = PostSerializer.new(@post)
         end
 
-        def test_associations_namespaced_resources
+        test 'associations_namespaced_resources' do
           @post_serializer.associations.each do |association|
             case association.key
             when :comments
@@ -239,7 +239,7 @@ module ActiveModel
         end
 
         # rubocop:disable Metrics/AbcSize
-        def test_conditional_associations
+        test 'conditional_associations' do
           model = ::Model.new(true: true, false: false)
 
           scenarios = [
@@ -279,7 +279,7 @@ module ActiveModel
           end
         end
 
-        def test_illegal_conditional_associations
+        test 'illegal_conditional_associations' do
           exception = assert_raises(TypeError) do
             Class.new(ActiveModel::Serializer) do
               belongs_to :x, if: nil

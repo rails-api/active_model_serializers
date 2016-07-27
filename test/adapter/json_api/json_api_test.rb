@@ -17,7 +17,7 @@ module ActiveModelSerializers
         @post.blog = @blog
       end
 
-      def test_custom_keys
+      test 'custom_keys' do
         serializer = PostWithCustomKeysSerializer.new(@post)
         adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 

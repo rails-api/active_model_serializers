@@ -65,7 +65,7 @@ module ActiveModelSerializers
           @comment2.post = @post
         end
 
-        def test_success_document_transform_default
+        test 'success_document_transform_default' do
           mock_request
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
@@ -100,7 +100,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_success_document_transform_global_config
+        test 'success_document_transform_global_config' do
           mock_request
           result = with_config(key_transform: :camel_lower) do
             serializer = PostSerializer.new(@post)
@@ -137,7 +137,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_success_doc_transform_serialization_ctx_overrides_global
+        test 'success_doc_transform_serialization_ctx_overrides_global' do
           mock_request(:camel)
           result = with_config(key_transform: :camel_lower) do
             serializer = PostSerializer.new(@post)
@@ -174,7 +174,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_success_document_transform_dash
+        test 'success_document_transform_dash' do
           mock_request(:dash)
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
@@ -209,7 +209,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_success_document_transform_unaltered
+        test 'success_document_transform_unaltered' do
           mock_request(:unaltered)
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
@@ -244,7 +244,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_success_document_transform_undefined
+        test 'success_document_transform_undefined' do
           mock_request(:zoot)
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
@@ -254,7 +254,7 @@ module ActiveModelSerializers
           assert_match(/undefined method.*zoot/, exception.message)
         end
 
-        def test_success_document_transform_camel
+        test 'success_document_transform_camel' do
           mock_request(:camel)
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
@@ -289,7 +289,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_success_document_transform_camel_lower
+        test 'success_document_transform_camel_lower' do
           mock_request(:camel_lower)
           serializer = PostSerializer.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
@@ -324,7 +324,7 @@ module ActiveModelSerializers
                        }, result)
         end
 
-        def test_error_document_transform_default
+        test 'error_document_transform_default' do
           mock_request
           resource = ModelWithErrors.new
           resource.errors.add(:published_at, 'must be in the future')
@@ -347,7 +347,7 @@ module ActiveModelSerializers
           assert_equal expected_errors_object, result
         end
 
-        def test_error_document_transform_global_config
+        test 'error_document_transform_global_config' do
           mock_request
           result = with_config(key_transform: :camel) do
             resource = ModelWithErrors.new
@@ -372,7 +372,7 @@ module ActiveModelSerializers
           assert_equal expected_errors_object, result
         end
 
-        def test_error_document_transform_serialization_ctx_overrides_global
+        test 'error_document_transform_serialization_ctx_overrides_global' do
           mock_request(:camel)
           result = with_config(key_transform: :camel_lower) do
             resource = ModelWithErrors.new
@@ -397,7 +397,7 @@ module ActiveModelSerializers
           assert_equal expected_errors_object, result
         end
 
-        def test_error_document_transform_dash
+        test 'error_document_transform_dash' do
           mock_request(:dash)
 
           resource = ModelWithErrors.new
@@ -423,7 +423,7 @@ module ActiveModelSerializers
           assert_equal expected_errors_object, result
         end
 
-        def test_error_document_transform_unaltered
+        test 'error_document_transform_unaltered' do
           mock_request(:unaltered)
 
           resource = ModelWithErrors.new
@@ -443,7 +443,7 @@ module ActiveModelSerializers
           assert_equal expected_errors_object, result
         end
 
-        def test_error_document_transform_undefined
+        test 'error_document_transform_undefined' do
           mock_request(:krazy)
 
           resource = ModelWithErrors.new
@@ -459,7 +459,7 @@ module ActiveModelSerializers
           assert_match(/undefined method.*krazy/, exception.message)
         end
 
-        def test_error_document_transform_camel
+        test 'error_document_transform_camel' do
           mock_request(:camel)
 
           resource = ModelWithErrors.new
@@ -479,7 +479,7 @@ module ActiveModelSerializers
           assert_equal expected_errors_object, result
         end
 
-        def test_error_document_transform_camel_lower
+        test 'error_document_transform_camel_lower' do
           mock_request(:camel_lower)
 
           resource = ModelWithErrors.new

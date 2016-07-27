@@ -22,18 +22,18 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
-        def test_includes_post
+        test 'includes_post' do
           assert_equal({ id: 42, title: 'New Post', body: 'Body' }, @adapter.serializable_hash[:comment][:post])
         end
 
-        def test_include_nil_author
+        test 'include_nil_author' do
           serializer = PostSerializer.new(@anonymous_post)
           adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
           assert_equal({ post: { title: 'Hello!!', body: 'Hello, world!!', id: 43, comments: [], blog: { id: 999, name: 'Custom blog' }, author: nil } }, adapter.serializable_hash)
         end
 
-        def test_include_nil_author_with_specified_serializer
+        test 'include_nil_author_with_specified_serializer' do
           serializer = PostPreviewSerializer.new(@anonymous_post)
           adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 

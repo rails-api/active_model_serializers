@@ -27,7 +27,7 @@ module ActiveModelSerializers
           )
         end
 
-        def test_includes_comment_ids
+        test 'includes_comment_ids' do
           expected = {
             data: [
               { type: 'comments', id: '1' },
@@ -38,7 +38,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
         end
 
-        def test_includes_linked_data
+        test 'includes_linked_data' do
           # If CommentPreviewSerializer is applied correctly the body text will not be present in the output
           expected = [
             {
@@ -67,7 +67,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:included])
         end
 
-        def test_includes_author_id
+        test 'includes_author_id' do
           expected = {
             data: { type: 'authors', id: @author.id.to_s }
           }
@@ -75,7 +75,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:author])
         end
 
-        def test_explicit_serializer_with_null_resource
+        test 'explicit_serializer_with_null_resource' do
           @post.author = nil
 
           expected = { data: nil }
@@ -83,7 +83,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:author])
         end
 
-        def test_explicit_serializer_with_null_collection
+        test 'explicit_serializer_with_null_collection' do
           @post.comments = []
 
           expected = { data: [] }

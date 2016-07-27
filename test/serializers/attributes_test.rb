@@ -13,33 +13,33 @@ module ActiveModel
         end
       end
 
-      def test_attributes_definition
+      test 'attributes_definition' do
         assert_equal([:name, :description],
           @profile_serializer.class._attributes)
       end
 
-      def test_attributes_inheritance_definition
+      test 'attributes_inheritance_definition' do
         assert_equal([:id, :body], @serializer_klass._attributes)
       end
 
-      def test_attributes_inheritance
+      test 'attributes_inheritance' do
         serializer = @serializer_klass.new(@comment)
         assert_equal({ id: 1, body: 'ZOMG!!' },
           serializer.attributes)
       end
 
-      def test_attribute_inheritance_with_new_attribute_definition
+      test 'attribute_inheritance_with_new_attribute_definition' do
         assert_equal([:id, :body, :date, :likes], @serializer_klass_with_new_attributes._attributes)
         assert_equal([:id, :body], CommentSerializer._attributes)
       end
 
-      def test_attribute_inheritance_with_new_attribute
+      test 'attribute_inheritance_with_new_attribute' do
         serializer = @serializer_klass_with_new_attributes.new(@comment)
         assert_equal({ id: 1, body: 'ZOMG!!', date: '2015', likes: nil },
           serializer.attributes)
       end
 
-      def test_multiple_calls_with_the_same_attribute
+      test 'multiple_calls_with_the_same_attribute' do
         serializer_class = Class.new(ActiveModel::Serializer) do
           attributes :id, :title
           attributes :id, :title, :title, :body

@@ -19,23 +19,23 @@ module ActiveModel
             @author = Author.new(id: 1, name: 'Steve K.')
           end
 
-          def test_config_plural
+          test 'config_plural' do
             with_jsonapi_resource_type :plural do
               assert_type(@author, 'authors')
             end
           end
 
-          def test_config_singular
+          test 'config_singular' do
             with_jsonapi_resource_type :singular do
               assert_type(@author, 'author')
             end
           end
 
-          def test_explicit_string_type_value
+          test 'explicit_string_type_value' do
             assert_type(@author, 'profile', serializer: StringTypeSerializer)
           end
 
-          def test_explicit_symbol_type_value
+          test 'explicit_symbol_type_value' do
             assert_type(@author, 'profile', serializer: SymbolTypeSerializer)
           end
 

@@ -8,13 +8,13 @@ module ActiveModelSerializers
       @adapter = ActiveModelSerializers::Adapter::Base.new(@serializer)
     end
 
-    def test_serializable_hash_is_abstract_method
+    test 'serializable_hash_is_abstract_method' do
       assert_raises(NotImplementedError) do
         @adapter.serializable_hash(only: [:name])
       end
     end
 
-    def test_serialization_options_ensures_option_is_a_hash
+    test 'serialization_options_ensures_option_is_a_hash' do
       adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
         def serializable_hash(options = nil)
           serialization_options(options)
@@ -26,7 +26,7 @@ module ActiveModelSerializers
       ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
     end
 
-    def test_serialization_options_ensures_option_is_one_of_valid_options
+    test 'serialization_options_ensures_option_is_one_of_valid_options' do
       adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
         def serializable_hash(options = nil)
           serialization_options(options)
@@ -41,21 +41,21 @@ module ActiveModelSerializers
       ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
     end
 
-    def test_serializer
+    test 'serializer' do
       assert_equal @serializer, @adapter.serializer
     end
 
-    def test_create_adapter
+    test 'create_adapter' do
       adapter = ActiveModelSerializers::Adapter.create(@serializer)
       assert_equal ActiveModelSerializers::Adapter::Attributes, adapter.class
     end
 
-    def test_create_adapter_with_override
+    test 'create_adapter_with_override' do
       adapter = ActiveModelSerializers::Adapter.create(@serializer, adapter: :json_api)
       assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter.class
     end
 
-    def test_inflected_adapter_class_for_known_adapter
+    test 'inflected_adapter_class_for_known_adapter' do
       ActiveSupport::Inflector.inflections(:en) { |inflect| inflect.acronym 'API' }
       klass = ActiveModelSerializers::Adapter.adapter_class(:json_api)
 

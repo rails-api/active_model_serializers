@@ -92,13 +92,13 @@ module ActionController
           end
         end
 
-        def test_render_resource_without_include
+        test 'render_resource_without_include' do
           get '/render_resource_without_include'
           response = JSON.parse(@response.body)
           refute response.key? 'included'
         end
 
-        def test_render_resource_with_include
+        test 'render_resource_with_include' do
           get '/render_resource_with_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
@@ -106,7 +106,7 @@ module ActionController
           assert_equal 'Steve K.', response['included'].first['attributes']['name']
         end
 
-        def test_render_resource_with_nested_has_many_include
+        test 'render_resource_with_nested_has_many_include' do
           get '/render_resource_with_nested_has_many_include_wildcard'
           response = JSON.parse(@response.body)
           expected_linked = [
@@ -148,7 +148,7 @@ module ActionController
           assert_equal expected_linked, response['included']
         end
 
-        def test_render_resource_with_include_of_custom_key_by_original
+        test 'render_resource_with_include_of_custom_key_by_original' do
           get '/render_resource_with_include_of_custom_key_by_original'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
@@ -160,33 +160,33 @@ module ActionController
           assert_includes relationships, 'site'
         end
 
-        def test_render_resource_with_nested_include
+        test 'render_resource_with_nested_include' do
           get '/render_resource_with_nested_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
           assert_equal 3, response['included'].size
         end
 
-        def test_render_collection_without_include
+        test 'render_collection_without_include' do
           get '/render_collection_without_include'
           response = JSON.parse(@response.body)
           refute response.key? 'included'
         end
 
-        def test_render_collection_with_include
+        test 'render_collection_with_include' do
           get '/render_collection_with_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
         end
 
-        def test_render_resource_with_nested_attributes_even_when_missing_associations
+        test 'render_resource_with_nested_attributes_even_when_missing_associations' do
           get '/render_resource_with_missing_nested_has_many_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'
           refute include_type?(response['included'], 'roles')
         end
 
-        def test_render_collection_with_missing_nested_has_many_include
+        test 'render_collection_with_missing_nested_has_many_include' do
           get '/render_collection_with_missing_nested_has_many_include'
           response = JSON.parse(@response.body)
           assert response.key? 'included'

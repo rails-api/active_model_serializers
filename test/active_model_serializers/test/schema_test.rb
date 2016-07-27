@@ -36,12 +36,12 @@ module ActiveModelSerializers
 
       tests MyController
 
-      def test_that_assert_with_a_valid_schema
+      test 'that_assert_with_a_valid_schema' do
         get :index
         assert_response_schema
       end
 
-      def test_that_raises_a_minitest_error_with_a_invalid_schema
+      test 'that_raises_a_minitest_error_with_a_invalid_schema' do
         message = "#/name: failed schema #/properties/name: For 'properties/name', \"Name 1\" is not an integer. and #/description: failed schema #/properties/description: For 'properties/description', \"Description 1\" is not a boolean."
 
         get :show
@@ -52,7 +52,7 @@ module ActiveModelSerializers
         assert_equal(message, error.message)
       end
 
-      def test_that_raises_error_with_a_custom_message_with_a_invalid_schema
+      test 'that_raises_error_with_a_custom_message_with_a_invalid_schema' do
         message = 'oh boy the show is broken'
         exception_message = "#/name: failed schema #/properties/name: For 'properties/name', \"Name 1\" is not an integer. and #/description: failed schema #/properties/description: For 'properties/description', \"Description 1\" is not a boolean."
         expected_message = "#{message}: #{exception_message}"
@@ -65,22 +65,22 @@ module ActiveModelSerializers
         assert_equal(expected_message, error.message)
       end
 
-      def test_that_assert_with_a_custom_schema
+      test 'that_assert_with_a_custom_schema' do
         get :show
         assert_response_schema('custom/show.json')
       end
 
-      def test_that_assert_with_a_hyper_schema
+      test 'that_assert_with_a_hyper_schema' do
         get :show
         assert_response_schema('hyper_schema.json')
       end
 
-      def test_simple_json_pointers
+      test 'simple_json_pointers' do
         get :show
         assert_response_schema('simple_json_pointers.json')
       end
 
-      def test_simple_json_pointers_that_doesnt_match
+      test 'simple_json_pointers_that_doesnt_match' do
         get :name_as_a_integer
 
         assert_raises Minitest::Assertion do
@@ -88,12 +88,12 @@ module ActiveModelSerializers
         end
       end
 
-      def test_json_api_schema
+      test 'json_api_schema' do
         get :render_using_json_api
         assert_response_schema('render_using_json_api.json')
       end
 
-      def test_that_assert_with_a_custom_schema_directory
+      test 'that_assert_with_a_custom_schema_directory' do
         original_schema_path = ActiveModelSerializers.config.schema_path
         ActiveModelSerializers.config.schema_path = 'test/support/custom_schemas'
 
@@ -103,7 +103,7 @@ module ActiveModelSerializers
         ActiveModelSerializers.config.schema_path = original_schema_path
       end
 
-      def test_with_a_non_existent_file
+      test 'with_a_non_existent_file' do
         message = 'No Schema file at test/support/schemas/non-existent.json'
 
         get :show
@@ -114,7 +114,7 @@ module ActiveModelSerializers
         assert_equal(message, error.message)
       end
 
-      def test_that_raises_with_a_invalid_json_body
+      test 'that_raises_with_a_invalid_json_body' do
         message = 'A JSON text must at least contain two octets!'
 
         get :invalid_json_body

@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModelSerializers
   class KeyTransformTest < ActiveSupport::TestCase
-    def test_camel
+    test 'camel' do
       obj = Object.new
       scenarios = [
         {
@@ -68,7 +68,7 @@ module ActiveModelSerializers
       end
     end
 
-    def test_camel_lower
+    test 'camel_lower' do
       obj = Object.new
       scenarios = [
         {
@@ -134,7 +134,7 @@ module ActiveModelSerializers
       end
     end
 
-    def test_dash
+    test 'dash' do
       obj = Object.new
       scenarios = [
         {
@@ -196,7 +196,7 @@ module ActiveModelSerializers
       end
     end
 
-    def test_underscore
+    test 'underscore' do
       obj = Object.new
       scenarios = [
         {

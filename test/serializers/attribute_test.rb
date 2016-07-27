@@ -8,24 +8,24 @@ module ActiveModel
         @blog_serializer = AlternateBlogSerializer.new(@blog)
       end
 
-      def test_attributes_definition
+      test 'attributes_definition' do
         assert_equal([:id, :title],
           @blog_serializer.class._attributes)
       end
 
-      def test_json_serializable_hash
+      test 'json_serializable_hash' do
         adapter = ActiveModelSerializers::Adapter::Json.new(@blog_serializer)
         assert_equal({ blog: { id: 1, title: 'AMS Hints' } }, adapter.serializable_hash)
       end
 
-      def test_attribute_inheritance_with_key
+      test 'attribute_inheritance_with_key' do
         inherited_klass = Class.new(AlternateBlogSerializer)
         blog_serializer = inherited_klass.new(@blog)
         adapter = ActiveModelSerializers::Adapter::Attributes.new(blog_serializer)
         assert_equal({ id: 1, title: 'AMS Hints' }, adapter.serializable_hash)
       end
 
-      def test_multiple_calls_with_the_same_attribute
+      test 'multiple_calls_with_the_same_attribute' do
         serializer_class = Class.new(ActiveModel::Serializer) do
           attribute :title
           attribute :title
@@ -34,7 +34,7 @@ module ActiveModel
         assert_equal([:title], serializer_class._attributes)
       end
 
-      def test_id_attribute_override
+      test 'id_attribute_override' do
         serializer = Class.new(ActiveModel::Serializer) do
           attribute :name, key: :id
         end
@@ -43,7 +43,7 @@ module ActiveModel
         assert_equal({ blog: { id: 'AMS Hints' } }, adapter.serializable_hash)
       end
 
-      def test_object_attribute_override
+      test 'object_attribute_override' do
         serializer = Class.new(ActiveModel::Serializer) do
           attribute :name, key: :object
         end
@@ -52,7 +52,7 @@ module ActiveModel
         assert_equal({ blog: { object: 'AMS Hints' } }, adapter.serializable_hash)
       end
 
-      def test_type_attribute
+      test 'type_attribute' do
         attribute_serializer = Class.new(ActiveModel::Serializer) do
           attribute :id, key: :type
         end
@@ -67,7 +67,7 @@ module ActiveModel
         assert_equal({ blog: { type: 'stuff' } }, adapter.serializable_hash)
       end
 
-      def test_id_attribute_override_before
+      test 'id_attribute_override_before' do
         serializer = Class.new(ActiveModel::Serializer) do
           def id
             'custom'
@@ -88,7 +88,7 @@ module ActiveModel
         end
       end
 
-      def test_virtual_attribute_block
+      test 'virtual_attribute_block' do
         post = PostWithVirtualAttribute.new(first_name: 'Lucas', last_name: 'Hosseini')
         hash = serializable(post).serializable_hash
         expected = { name: 'Lucas Hosseini' }
@@ -97,7 +97,7 @@ module ActiveModel
       end
 
       # rubocop:disable Metrics/AbcSize
-      def test_conditional_associations
+      test 'conditional_associations' do
         model = ::Model.new(true: true, false: false)
 
         scenarios = [
@@ -137,7 +137,7 @@ module ActiveModel
         end
       end
 
-      def test_illegal_conditional_attributes
+      test 'illegal_conditional_attributes' do
         exception = assert_raises(TypeError) do
           Class.new(ActiveModel::Serializer) do
             attribute :x, if: nil

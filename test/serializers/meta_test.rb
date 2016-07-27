@@ -10,7 +10,7 @@ module ActiveModel
                          articles: [Post.new(id: 3, title: 'AMS')])
       end
 
-      def test_meta_is_present_with_root
+      test 'meta_is_present_with_root' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
@@ -29,7 +29,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_is_not_included_when_blank
+      test 'meta_is_not_included_when_blank' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
@@ -45,7 +45,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_is_not_included_when_empty_string
+      test 'meta_is_not_included_when_empty_string' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
@@ -61,7 +61,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_is_not_included_when_root_is_missing
+      test 'meta_is_not_included_when_root_is_missing' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :attributes,
@@ -75,7 +75,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_used
+      test 'meta_key_is_used' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json,
@@ -95,7 +95,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_not_used_with_json_api
+      test 'meta_key_is_not_used_with_json_api' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
@@ -114,7 +114,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_not_present_when_empty_hash_with_json_api
+      test 'meta_key_is_not_present_when_empty_hash_with_json_api' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
@@ -131,7 +131,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_key_is_not_present_when_empty_string_with_json_api
+      test 'meta_key_is_not_present_when_empty_string_with_json_api' do
         actual = ActiveModelSerializers::SerializableResource.new(
           @blog,
           adapter: :json_api,
@@ -148,7 +148,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_is_not_present_on_arrays_without_root
+      test 'meta_is_not_present_on_arrays_without_root' do
         actual = ActiveModelSerializers::SerializableResource.new(
           [@blog],
           adapter: :attributes,
@@ -170,7 +170,7 @@ module ActiveModel
         assert_equal(expected, actual)
       end
 
-      def test_meta_is_present_on_arrays_with_root
+      test 'meta_is_present_on_arrays_with_root' do
         actual = ActiveModelSerializers::SerializableResource.new(
           [@blog],
           adapter: :json,

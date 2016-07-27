@@ -55,7 +55,7 @@ module ActiveModelSerializers
       @blog_serializer     = BlogSerializer.new(@blog)
     end
 
-    def test_explicit_cache_store
+    test 'explicit_cache_store' do
       default_store = Class.new(ActiveModel::Serializer) do
         cache
       end
@@ -68,14 +68,14 @@ module ActiveModelSerializers
       assert ActiveSupport::Cache::FileStore, explicit_store.cache_store
     end
 
-    def test_inherited_cache_configuration
+    test 'inherited_cache_configuration' do
       inherited_serializer = Class.new(PostSerializer)
 
       assert_equal PostSerializer._cache_key, inherited_serializer._cache_key
       assert_equal PostSerializer._cache_options, inherited_serializer._cache_options
     end
 
-    def test_override_cache_configuration
+    test 'override_cache_configuration' do
       inherited_serializer = Class.new(PostSerializer) do
         cache key: 'new-key'
       end
@@ -84,19 +84,19 @@ module ActiveModelSerializers
       assert_equal inherited_serializer._cache_key, 'new-key'
     end
 
-    def test_cache_definition
+    test 'cache_definition' do
       assert_equal(cache_store, @post_serializer.class._cache)
       assert_equal(cache_store, @author_serializer.class._cache)
       assert_equal(cache_store, @comment_serializer.class._cache)
     end
 
-    def test_cache_key_definition
+    test 'cache_key_definition' do
       assert_equal('post', @post_serializer.class._cache_key)
       assert_equal('writer', @author_serializer.class._cache_key)
       assert_equal(nil, @comment_serializer.class._cache_key)
     end
 
-    def test_cache_key_interpolation_with_updated_at_when_cache_key_is_not_defined_on_object
+    test 'cache_key_interpolation_with_updated_at_when_cache_key_is_not_defined_on_object' do
       uncached_author            = UncachedAuthor.new(name: 'Joao M. D. Moura')
       uncached_author_serializer = AuthorSerializer.new(uncached_author)
 
@@ -106,13 +106,13 @@ module ActiveModelSerializers
       assert_equal(uncached_author_serializer.attributes.to_json, cache_store.fetch(key).to_json)
     end
 
-    def test_default_cache_key_fallback
+    test 'default_cache_key_fallback' do
       render_object_with_cache(@comment)
       key = "#{@comment.cache_key}/#{adapter.cache_key}"
       assert_equal(@comment_serializer.attributes.to_json, cache_store.fetch(key).to_json)
     end
 
-    def test_error_is_raised_if_cache_key_is_not_defined_on_object_or_passed_as_cache_option
+    test 'error_is_raised_if_cache_key_is_not_defined_on_object_or_passed_as_cache_option' do
       article = Article.new(title: 'Must Read')
       e = assert_raises ActiveModel::Serializer::UndefinedCacheKey do
         render_object_with_cache(article)
@@ -120,18 +120,18 @@ module ActiveModelSerializers
       assert_match(/ActiveModelSerializers::CacheTest::Article must define #cache_key, or the 'key:' option must be passed into 'ActiveModelSerializers::CacheTest::ArticleSerializer.cache'/, e.message)
     end
 
-    def test_cache_options_definition
+    test 'cache_options_definition' do
       assert_equal({ expires_in: 0.1, skip_digest: true }, @post_serializer.class._cache_options)
       assert_equal(nil, @blog_serializer.class._cache_options)
       assert_equal({ expires_in: 1.day, skip_digest: true }, @comment_serializer.class._cache_options)
     end
 
-    def test_fragment_cache_definition
+    test 'fragment_cache_definition' do
       assert_equal([:name, :slug], @role_serializer.class._cache_only)
       assert_equal([:content], @bio_serializer.class._cache_except)
     end
 
-    def test_associations_separately_cache
+    test 'associations_separately_cache' do
       cache_store.clear
       assert_equal(nil, cache_store.fetch(@post.cache_key))
       assert_equal(nil, cache_store.fetch(@comment.cache_key))
@@ -146,7 +146,7 @@ module ActiveModelSerializers
       end
     end
 
-    def test_associations_cache_when_updated
+    test 'associations_cache_when_updated' do
       Timecop.freeze(Time.current) do
         # Generate a new Cache of Post object and each objects related to it.
         render_object_with_cache(@post)
@@ -173,7 +173,7 @@ module ActiveModelSerializers
       end
     end
 
-    def test_fragment_fetch_with_virtual_associations
+    test 'fragment_fetch_with_virtual_associations' do
       expected_result = {
         id: @location.id,
         lat: @location.lat,
@@ -188,7 +188,7 @@ module ActiveModelSerializers
       assert_equal({ address: 'Nowhere' }, cache_store.fetch(key))
     end
 
-    def test_fragment_cache_with_inheritance
+    test 'fragment_cache_with_inheritance' do
       inherited = render_object_with_cache(@role, serializer: InheritedRoleSerializer)
       base = render_object_with_cache(@role)
 
@@ -196,7 +196,7 @@ module ActiveModelSerializers
       refute_includes(base.keys, :special_attribute)
     end
 
-    def test_uses_adapter_in_cache_key
+    test 'uses_adapter_in_cache_key' do
       render_object_with_cache(@post)
       key = "#{@post.cache_key}/#{adapter.class.to_s.demodulize.underscore}"
       assert_equal(@post_serializer.attributes, cache_store.fetch(key))
@@ -204,7 +204,7 @@ module ActiveModelSerializers
 
     # Based on original failing test by @kevintyll
     # rubocop:disable Metrics/AbcSize
-    def test_a_serializer_rendered_by_two_adapter_returns_differently_fetch_attributes
+    test 'a_serializer_rendered_by_two_adapter_returns_differently_fetch_attributes' do
       Object.const_set(:Alert, Class.new(ActiveModelSerializers::Model) do
         attr_accessor :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
       end)
@@ -274,17 +274,17 @@ module ActiveModelSerializers
     end
     # rubocop:enable Metrics/AbcSize
 
-    def test_uses_file_digest_in_cache_key
+    test 'uses_file_digest_in_cache_key' do
       render_object_with_cache(@blog)
       key = "#{@blog.cache_key}/#{adapter.cache_key}/#{::Model::FILE_DIGEST}"
       assert_equal(@blog_serializer.attributes, cache_store.fetch(key))
     end
 
-    def test_cache_digest_definition
+    test 'cache_digest_definition' do
       assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
     end
 
-    def test_object_cache_keys
+    test 'object_cache_keys' do
       serializable = ActiveModelSerializers::SerializableResource.new([@comment, @comment])
       include_directive = JSONAPI::IncludeDirective.new('*', allow_wildcard: true)
 
@@ -296,7 +296,7 @@ module ActiveModelSerializers
       assert actual.any? { |key| key =~ %r{author/author-\d+} }
     end
 
-    def test_fetch_attributes_from_cache
+    test 'fetch_attributes_from_cache' do
       serializers = ActiveModel::Serializer::CollectionSerializer.new([@comment, @comment])
 
       Timecop.freeze(Time.current) do
@@ -321,7 +321,7 @@ module ActiveModelSerializers
       end
     end
 
-    def test_cache_read_multi_with_fragment_cache_enabled
+    test 'cache_read_multi_with_fragment_cache_enabled' do
       post_serializer = Class.new(ActiveModel::Serializer) do
         cache except: [:body]
       end
@@ -349,32 +349,32 @@ module ActiveModelSerializers
       end
     end
 
-    def test_serializer_file_path_on_nix
+    test 'serializer_file_path_on_nix' do
       path = '/Users/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb'
       caller_line = "#{path}:1:in `<top (required)>'"
       assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
     end
 
-    def test_serializer_file_path_on_windows
+    test 'serializer_file_path_on_windows' do
       path = 'c:/git/emberjs/ember-crm-backend/app/serializers/lead_serializer.rb'
       caller_line = "#{path}:1:in `<top (required)>'"
       assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
     end
 
-    def test_serializer_file_path_with_space
+    test 'serializer_file_path_with_space' do
       path = '/Users/git/ember js/ember-crm-backend/app/serializers/lead_serializer.rb'
       caller_line = "#{path}:1:in `<top (required)>'"
       assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
     end
 
-    def test_serializer_file_path_with_submatch
+    test 'serializer_file_path_with_submatch' do
       # The submatch in the path ensures we're using a correctly greedy regexp.
       path = '/Users/git/ember js/ember:123:in x/app/serializers/lead_serializer.rb'
       caller_line = "#{path}:1:in `<top (required)>'"
       assert_equal caller_line[ActiveModel::Serializer::CALLER_FILE], path
     end
 
-    def test_digest_caller_file
+    test 'digest_caller_file' do
       contents = "puts 'AMS rocks'!"
       dir = Dir.mktmpdir('space char')
       file = Tempfile.new('some_ruby.rb', dir)
@@ -388,7 +388,7 @@ module ActiveModelSerializers
       FileUtils.remove_entry dir
     end
 
-    def test_warn_on_serializer_not_defined_in_file
+    test 'warn_on_serializer_not_defined_in_file' do
       called = false
       serializer = Class.new(ActiveModel::Serializer)
       assert_output(nil, /_cache_digest/) do
@@ -398,21 +398,21 @@ module ActiveModelSerializers
       assert called
     end
 
-    def test_cached_false_without_cache_store
+    test 'cached_false_without_cache_store' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = nil
       end
       refute cached_serializer.class.cache_enabled?
     end
 
-    def test_cached_true_with_cache_store_and_without_cache_only_and_cache_except
+    test 'cached_true_with_cache_store_and_without_cache_only_and_cache_except' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = Object
       end
       assert cached_serializer.class.cache_enabled?
     end
 
-    def test_cached_false_with_cache_store_and_with_cache_only
+    test 'cached_false_with_cache_store_and_with_cache_only' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = Object
         serializer._cache_only = [:name]
@@ -420,7 +420,7 @@ module ActiveModelSerializers
       refute cached_serializer.class.cache_enabled?
     end
 
-    def test_cached_false_with_cache_store_and_with_cache_except
+    test 'cached_false_with_cache_store_and_with_cache_except' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = Object
         serializer._cache_except = [:content]
@@ -428,7 +428,7 @@ module ActiveModelSerializers
       refute cached_serializer.class.cache_enabled?
     end
 
-    def test_fragment_cached_false_without_cache_store
+    test 'fragment_cached_false_without_cache_store' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = nil
         serializer._cache_only = [:name]
@@ -436,7 +436,7 @@ module ActiveModelSerializers
       refute cached_serializer.class.fragment_cache_enabled?
     end
 
-    def test_fragment_cached_true_with_cache_store_and_cache_only
+    test 'fragment_cached_true_with_cache_store_and_cache_only' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = Object
         serializer._cache_only = [:name]
@@ -444,7 +444,7 @@ module ActiveModelSerializers
       assert cached_serializer.class.fragment_cache_enabled?
     end
 
-    def test_fragment_cached_true_with_cache_store_and_cache_except
+    test 'fragment_cached_true_with_cache_store_and_cache_except' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = Object
         serializer._cache_except = [:content]
@@ -452,7 +452,7 @@ module ActiveModelSerializers
       assert cached_serializer.class.fragment_cache_enabled?
     end
 
-    def test_fragment_cached_false_with_cache_store_and_cache_except_and_cache_only
+    test 'fragment_cached_false_with_cache_store_and_cache_except_and_cache_only' do
       cached_serializer = build_cached_serializer do |serializer|
         serializer._cache = Object
         serializer._cache_except = [:content]
@@ -461,7 +461,7 @@ module ActiveModelSerializers
       refute cached_serializer.class.fragment_cache_enabled?
     end
 
-    def test_fragment_fetch_with_virtual_attributes
+    test 'fragment_fetch_with_virtual_attributes' do
       author          = Author.new(name: 'Joao M. D. Moura')
       role            = Role.new(name: 'Great Author', description: nil)
       role.author     = [author]
@@ -485,7 +485,7 @@ module ActiveModelSerializers
       assert_equal(expected_result.merge(id: role.id), role_hash)
     end
 
-    def test_fragment_fetch_with_except
+    test 'fragment_fetch_with_except' do
       adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(@bio_serializer)
       expected_result = {
         id: @bio.id,
@@ -504,7 +504,7 @@ module ActiveModelSerializers
       assert_equal(expected_result.merge(content: @bio.content), bio_hash)
     end
 
-    def test_fragment_fetch_with_namespaced_object
+    test 'fragment_fetch_with_namespaced_object' do
       @spam            = Spam::UnrelatedLink.new(id: 'spam-id-1')
       @spam_serializer = Spam::UnrelatedLinkSerializer.new(@spam)
       adapter_instance = ActiveModelSerializers::Adapter.configured_adapter.new(@spam_serializer)

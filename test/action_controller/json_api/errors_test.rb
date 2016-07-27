@@ -4,7 +4,7 @@ module ActionController
   module Serialization
     class JsonApi
       class ErrorsTest < ActionController::TestCase
-        def test_active_model_with_multiple_errors
+        test 'active_model_with_multiple_errors' do
           get :render_resource_with_errors
 
           expected_errors_object = {

@@ -30,7 +30,7 @@ module ActiveModelSerializers
           @author = LinkAuthor.new(id: 1337, posts: [@post])
         end
 
-        def test_toplevel_links
+        test 'toplevel_links' do
           hash = ActiveModelSerializers::SerializableResource.new(
             @post,
             adapter: :json_api,
@@ -54,7 +54,7 @@ module ActiveModelSerializers
           assert_equal(expected, hash[:links])
         end
 
-        def test_nil_toplevel_links
+        test 'nil_toplevel_links' do
           hash = ActiveModelSerializers::SerializableResource.new(
             @post,
             adapter: :json_api,
@@ -63,7 +63,7 @@ module ActiveModelSerializers
           refute hash.key?(:links), 'No links key to be output'
         end
 
-        def test_nil_toplevel_links_json_adapter
+        test 'nil_toplevel_links_json_adapter' do
           hash = ActiveModelSerializers::SerializableResource.new(
             @post,
             adapter: :json,
@@ -72,7 +72,7 @@ module ActiveModelSerializers
           refute hash.key?(:links), 'No links key to be output'
         end
 
-        def test_resource_links
+        test 'resource_links' do
           hash = serializable(@author, adapter: :json_api).serializable_hash
           expected = {
             self: {
