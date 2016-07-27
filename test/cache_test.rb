@@ -205,39 +205,29 @@ module ActiveModelSerializers
     # Based on original failing test by @kevintyll
     # rubocop:disable Metrics/AbcSize
     test 'a_serializer_rendered_by_two_adapter_returns_differently_fetch_attributes' do
-      Object.const_set(:Alert, Class.new(ActiveModelSerializers::Model) do
-        attr_accessor :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
-      end)
-      Object.const_set(:UncachedAlertSerializer, Class.new(ActiveModel::Serializer) do
-        attributes :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
-      end)
-      Object.const_set(:AlertSerializer, Class.new(UncachedAlertSerializer) do
-        cache
-      end)
+      begin
+        Object.const_set(:Alert, Class.new(ActiveModelSerializers::Model) do
+          attr_accessor :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
+        end)
+        Object.const_set(:UncachedAlertSerializer, Class.new(ActiveModel::Serializer) do
+          attributes :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
+        end)
+        Object.const_set(:AlertSerializer, Class.new(UncachedAlertSerializer) do
+          cache
+        end)
 
-      alert = Alert.new(
-        id: 1,
-        status: 'fail',
-        resource: 'resource-1',
-        started_at: Time.new(2016, 3, 31, 21, 36, 35, 0),
-        ended_at: nil,
-        updated_at: Time.new(2016, 3, 31, 21, 27, 35, 0),
-        created_at: Time.new(2016, 3, 31, 21, 37, 35, 0)
-      )
+        alert = Alert.new(
+          id: 1,
+          status: 'fail',
+          resource: 'resource-1',
+          started_at: Time.new(2016, 3, 31, 21, 36, 35, 0),
+          ended_at: nil,
+          updated_at: Time.new(2016, 3, 31, 21, 27, 35, 0),
+          created_at: Time.new(2016, 3, 31, 21, 37, 35, 0)
+        )
 
-      expected_fetch_attributes = {
-        id: 1,
-        status: 'fail',
-        resource: 'resource-1',
-        started_at: alert.started_at,
-        ended_at: nil,
-        updated_at: alert.updated_at,
-        created_at: alert.created_at
-      }
-      expected_cached_jsonapi_attributes = {
-        id: '1',
-        type: 'alerts',
-        attributes: {
+        expected_fetch_attributes = {
+          id: 1,
           status: 'fail',
           resource: 'resource-1',
           started_at: alert.started_at,
@@ -245,32 +235,44 @@ module ActiveModelSerializers
           updated_at: alert.updated_at,
           created_at: alert.created_at
         }
-      }
+        expected_cached_jsonapi_attributes = {
+          id: '1',
+          type: 'alerts',
+          attributes: {
+            status: 'fail',
+            resource: 'resource-1',
+            started_at: alert.started_at,
+            ended_at: nil,
+            updated_at: alert.updated_at,
+            created_at: alert.created_at
+          }
+        }
 
-      # Assert attributes are serialized correctly
-      serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :attributes)
-      attributes_serialization = serializable_alert.as_json
-      assert_equal expected_fetch_attributes, alert.attributes
-      assert_equal alert.attributes, attributes_serialization
-      attributes_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
-      assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key)
+        # Assert attributes are serialized correctly
+        serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :attributes)
+        attributes_serialization = serializable_alert.as_json
+        assert_equal expected_fetch_attributes, alert.attributes
+        assert_equal alert.attributes, attributes_serialization
+        attributes_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
+        assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key)
 
-      serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :json_api)
-      jsonapi_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
-      # Assert cache keys differ
-      refute_equal attributes_cache_key, jsonapi_cache_key
-      # Assert (cached) serializations differ
-      jsonapi_serialization = serializable_alert.as_json
-      assert_equal alert.status, jsonapi_serialization.fetch(:data).fetch(:attributes).fetch(:status)
-      serializable_alert = serializable(alert, serializer: UncachedAlertSerializer, adapter: :json_api)
-      assert_equal serializable_alert.as_json, jsonapi_serialization
+        serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :json_api)
+        jsonapi_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
+        # Assert cache keys differ
+        refute_equal attributes_cache_key, jsonapi_cache_key
+        # Assert (cached) serializations differ
+        jsonapi_serialization = serializable_alert.as_json
+        assert_equal alert.status, jsonapi_serialization.fetch(:data).fetch(:attributes).fetch(:status)
+        serializable_alert = serializable(alert, serializer: UncachedAlertSerializer, adapter: :json_api)
+        assert_equal serializable_alert.as_json, jsonapi_serialization
 
-      cached_serialization = cache_store.fetch(jsonapi_cache_key)
-      assert_equal expected_cached_jsonapi_attributes, cached_serialization
-    ensure
-      Object.send(:remove_const, :Alert)
-      Object.send(:remove_const, :AlertSerializer)
-      Object.send(:remove_const, :UncachedAlertSerializer)
+        cached_serialization = cache_store.fetch(jsonapi_cache_key)
+        assert_equal expected_cached_jsonapi_attributes, cached_serialization
+      ensure
+        Object.send(:remove_const, :Alert)
+        Object.send(:remove_const, :AlertSerializer)
+        Object.send(:remove_const, :UncachedAlertSerializer)
+      end
     end
     # rubocop:enable Metrics/AbcSize
 
@@ -375,17 +377,19 @@ module ActiveModelSerializers
     end
 
     test 'digest_caller_file' do
-      contents = "puts 'AMS rocks'!"
-      dir = Dir.mktmpdir('space char')
-      file = Tempfile.new('some_ruby.rb', dir)
-      file.write(contents)
-      path = file.path
-      caller_line = "#{path}:1:in `<top (required)>'"
-      file.close
-      assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
-    ensure
-      file.unlink
-      FileUtils.remove_entry dir
+      begin
+        contents = "puts 'AMS rocks'!"
+        dir = Dir.mktmpdir('space char')
+        file = Tempfile.new('some_ruby.rb', dir)
+        file.write(contents)
+        path = file.path
+        caller_line = "#{path}:1:in `<top (required)>'"
+        file.close
+        assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
+      ensure
+        file.unlink
+        FileUtils.remove_entry dir
+      end
     end
 
     test 'warn_on_serializer_not_defined_in_file' do

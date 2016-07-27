@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class ResourceMetaTest < Minitest::Test
+        class ResourceMetaTest < ActiveSupport::TestCase
           class MetaHashPostSerializer < ActiveModel::Serializer
             attributes :id
             meta stuff: 'value'

@@ -15,30 +15,34 @@ module ActiveModelSerializers
     end
 
     test 'serialization_options_ensures_option_is_a_hash' do
-      adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
-        def serializable_hash(options = nil)
-          serialization_options(options)
-        end
-      end.new(@serializer)
-      assert_equal({}, adapter.serializable_hash(nil))
-      assert_equal({}, adapter.serializable_hash({}))
-    ensure
-      ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
+      begin
+        adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
+          def serializable_hash(options = nil)
+            serialization_options(options)
+          end
+        end.new(@serializer)
+        assert_equal({}, adapter.serializable_hash(nil))
+        assert_equal({}, adapter.serializable_hash({}))
+      ensure
+        ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
+      end
     end
 
     test 'serialization_options_ensures_option_is_one_of_valid_options' do
-      adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
-        def serializable_hash(options = nil)
-          serialization_options(options)
+      begin
+        adapter = Class.new(ActiveModelSerializers::Adapter::Base) do
+          def serializable_hash(options = nil)
+            serialization_options(options)
+          end
+        end.new(@serializer)
+        filtered_options = { now: :see_me, then: :not }
+        valid_options = ActiveModel::Serializer::SERIALIZABLE_HASH_VALID_KEYS.each_with_object({}) do |option, result|
+          result[option] = option
         end
-      end.new(@serializer)
-      filtered_options = { now: :see_me, then: :not }
-      valid_options = ActiveModel::Serializer::SERIALIZABLE_HASH_VALID_KEYS.each_with_object({}) do |option, result|
-        result[option] = option
+        assert_equal(valid_options, adapter.serializable_hash(filtered_options.merge(valid_options)))
+      ensure
+        ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
       end
-      assert_equal(valid_options, adapter.serializable_hash(filtered_options.merge(valid_options)))
-    ensure
-      ActiveModelSerializers::Adapter.adapter_map.delete_if { |k, _| k =~ /class/ }
     end
 
     test 'serializer' do

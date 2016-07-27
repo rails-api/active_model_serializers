@@ -39,7 +39,7 @@ module ActiveModelSerializers
       refute SerializableResource.new(@resource, adapter: false).use_adapter?
     end
 
-    class SerializableResourceErrorsTest < Minitest::Test
+    class SerializableResourceErrorsTest < ActiveSupport::TestCase
       test 'serializable_resource_with_errors' do
         options = nil
         resource = ModelWithErrors.new

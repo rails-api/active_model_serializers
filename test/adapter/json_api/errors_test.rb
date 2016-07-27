@@ -3,14 +3,14 @@ require 'test_helper'
 module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
-      class ErrorsTest < Minitest::Test
+      class ErrorsTest < ActiveSupport::TestCase
         include ActiveModel::Serializer::Lint::Tests
 
         def setup
           @resource = ModelWithErrors.new
         end
 
-        test 'active_model_with_error' do
+        test 'active model with error' do
           options = {
             serializer: ActiveModel::Serializer::ErrorSerializer,
             adapter: :json_api

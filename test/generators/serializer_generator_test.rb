@@ -20,19 +20,23 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   end
 
   test 'uses_application_serializer_if_one_exists' do
-    Object.const_set(:ApplicationSerializer, Class.new)
-    run_generator
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
-  ensure
-    Object.send :remove_const, :ApplicationSerializer
+    begin
+      Object.const_set(:ApplicationSerializer, Class.new)
+      run_generator
+      assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
+    ensure
+      Object.send :remove_const, :ApplicationSerializer
+    end
   end
 
   test 'uses_given_parent' do
-    Object.const_set(:ApplicationSerializer, Class.new)
-    run_generator ['Account', '--parent=MySerializer']
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < MySerializer/
-  ensure
-    Object.send :remove_const, :ApplicationSerializer
+    begin
+      Object.const_set(:ApplicationSerializer, Class.new)
+      run_generator ['Account', '--parent=MySerializer']
+      assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < MySerializer/
+    ensure
+      Object.send :remove_const, :ApplicationSerializer
+    end
   end
 
   test 'generates_attributes_and_associations' do

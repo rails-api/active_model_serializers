@@ -54,11 +54,13 @@ module ActiveModelSerializers
         private
 
         test 'type_inflection(serializer_class, expected_type, inflection)' do
-          original_inflection = ActiveModelSerializers.config.jsonapi_resource_type
-          ActiveModelSerializers.config.jsonapi_resource_type = inflection
-          test_type(serializer_class, expected_type)
-        ensure
-          ActiveModelSerializers.config.jsonapi_resource_type = original_inflection
+          begin
+            original_inflection = ActiveModelSerializers.config.jsonapi_resource_type
+            ActiveModelSerializers.config.jsonapi_resource_type = inflection
+            test_type(serializer_class, expected_type)
+          ensure
+            ActiveModelSerializers.config.jsonapi_resource_type = original_inflection
+          end
         end
 
         test 'type(serializer_class, expected_type)' do

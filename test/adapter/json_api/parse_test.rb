@@ -3,7 +3,7 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       module Deserialization
-        class ParseTest < Minitest::Test
+        class ParseTest < ActiveSupport::TestCase
           def setup
             @hash = {
               'data' => {

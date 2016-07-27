@@ -133,28 +133,30 @@ module ActiveModel
       end
 
       test 'virtual_attribute_block' do
-        comment1 = ::ARModels::Comment.create!(contents: 'first comment')
-        comment2 = ::ARModels::Comment.create!(contents: 'last comment')
-        post = ::ARModels::Post.create!(
-          title: 'inline association test',
-          body: 'etc',
-          comments: [comment1, comment2]
-        )
-        actual = serializable(post, adapter: :attributes, serializer: InlineAssociationTestPostSerializer).as_json
-        expected = {
-          comments: [
-            { id: 1, contents: 'first comment' },
-            { id: 2, contents: 'last comment' }
-          ],
-          last_comments: [
-            { id: 2, contents: 'last comment' }
-          ]
-        }
+        begin
+          comment1 = ::ARModels::Comment.create!(contents: 'first comment')
+          comment2 = ::ARModels::Comment.create!(contents: 'last comment')
+          post = ::ARModels::Post.create!(
+            title: 'inline association test',
+            body: 'etc',
+            comments: [comment1, comment2]
+          )
+          actual = serializable(post, adapter: :attributes, serializer: InlineAssociationTestPostSerializer).as_json
+          expected = {
+            comments: [
+              { id: 1, contents: 'first comment' },
+              { id: 2, contents: 'last comment' }
+            ],
+            last_comments: [
+              { id: 2, contents: 'last comment' }
+            ]
+          }
 
-        assert_equal expected, actual
-      ensure
-        ::ARModels::Post.delete_all
-        ::ARModels::Comment.delete_all
+          assert_equal expected, actual
+        ensure
+          ::ARModels::Post.delete_all
+          ::ARModels::Comment.delete_all
+        end
       end
 
       class NamespacedResourcesTest < ActiveSupport::TestCase

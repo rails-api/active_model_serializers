@@ -42,6 +42,7 @@ group :bench do
 end
 
 group :test do
+  gem 'minitest'
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
   gem 'codeclimate-test-reporter', require: false

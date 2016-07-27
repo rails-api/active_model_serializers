@@ -7,14 +7,16 @@ module ActiveModelSerializers
     end
 
     test 'logger_can_be_set' do
-      original_logger = ActiveModelSerializers.logger
-      logger = Logger.new(STDOUT)
+      begin
+        original_logger = ActiveModelSerializers.logger
+        logger = Logger.new(STDOUT)
 
-      ActiveModelSerializers.logger = logger
+        ActiveModelSerializers.logger = logger
 
-      assert_equal ActiveModelSerializers.logger, logger
-    ensure
-      ActiveModelSerializers.logger = original_logger
+        assert_equal ActiveModelSerializers.logger, logger
+      ensure
+        ActiveModelSerializers.logger = original_logger
+      end
     end
   end
 end
