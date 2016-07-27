@@ -42,7 +42,7 @@ module ActiveModelSerializers
           @bio2.author = @author2
         end
 
-        def test_include_multiple_posts_and_linked_array
+        test 'include_multiple_posts_and_linked_array' do
           serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
@@ -152,7 +152,7 @@ module ActiveModelSerializers
           assert_equal expected, alt_adapter.serializable_hash
         end
 
-        def test_include_multiple_posts_and_linked
+        test 'include_multiple_posts_and_linked' do
           serializer = BioSerializer.new @bio1
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
@@ -206,7 +206,7 @@ module ActiveModelSerializers
           assert_equal expected, alt_adapter.serializable_hash[:included]
         end
 
-        def test_underscore_model_namespace_for_linked_resource_type
+        test 'underscore_model_namespace_for_linked_resource_type' do
           spammy_post = Post.new(id: 123)
           spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
           serializer = SpammyPostSerializer.new(spammy_post)
@@ -223,7 +223,7 @@ module ActiveModelSerializers
           assert_equal expected, relationships
         end
 
-        def test_multiple_references_to_same_resource
+        test 'multiple_references_to_same_resource' do
           serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_comment, @second_comment])
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(
             serializer,
@@ -255,7 +255,7 @@ module ActiveModelSerializers
           assert_equal expected, adapter.serializable_hash[:included]
         end
 
-        def test_nil_link_with_specified_serializer
+        test 'nil_link_with_specified_serializer' do
           @first_post.author = nil
           serializer = PostPreviewSerializer.new(@first_post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(
@@ -310,7 +310,7 @@ module ActiveModelSerializers
           @nestedpost2.nested_posts << @nestedpost2
         end
 
-        def test_no_duplicates
+        test 'no_duplicates' do
           hash = ActiveModelSerializers::SerializableResource.new(@post1, adapter: :json_api,
                                                                           include: '*.*')
                                                              .serializable_hash
@@ -338,7 +338,7 @@ module ActiveModelSerializers
           assert_equal(expected, hash[:included])
         end
 
-        def test_no_duplicates_collection
+        test 'no_duplicates_collection' do
           hash = ActiveModelSerializers::SerializableResource.new(
             [@post1, @post2],
             adapter: :json_api,
@@ -360,7 +360,7 @@ module ActiveModelSerializers
           assert_equal(expected, hash[:included])
         end
 
-        def test_no_duplicates_global
+        test 'no_duplicates_global' do
           hash = ActiveModelSerializers::SerializableResource.new(
             @nestedpost1,
             adapter: :json_api,
@@ -380,7 +380,7 @@ module ActiveModelSerializers
           assert_equal(expected, hash[:included])
         end
 
-        def test_no_duplicates_collection_global
+        test 'no_duplicates_collection_global' do
           hash = ActiveModelSerializers::SerializableResource.new(
             [@nestedpost1, @nestedpost2],
             adapter: :json_api,

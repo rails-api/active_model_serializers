@@ -30,13 +30,13 @@ module ActiveModelSerializers
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:bio, :posts])
         end
 
-        def test_includes_bio_id
+        test 'includes_bio_id' do
           expected = { data: { type: 'bios', id: '43' } }
 
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:bio])
         end
 
-        def test_includes_linked_bio
+        test 'includes_linked_bio' do
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:bio])
 
           expected = [
@@ -56,7 +56,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:included])
         end
 
-        def test_has_one_with_virtual_value
+        test 'has_one_with_virtual_value' do
           serializer = VirtualValueSerializer.new(@virtual_value)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 

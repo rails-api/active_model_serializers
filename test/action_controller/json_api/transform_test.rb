@@ -71,7 +71,7 @@ module ActionController
 
         tests KeyTransformTestController
 
-        def test_render_resource_with_transform
+        test 'render_resource_with_transform' do
           get :render_resource_with_transform
           response = JSON.parse(@response.body)
           expected = {
@@ -106,7 +106,7 @@ module ActionController
           assert_equal expected, response
         end
 
-        def test_render_resource_with_transform_nil
+        test 'render_resource_with_transform_nil' do
           get :render_resource_with_transform_nil
           response = JSON.parse(@response.body)
           expected = {
@@ -141,7 +141,7 @@ module ActionController
           assert_equal expected, response
         end
 
-        def test_render_resource_with_transform_with_global_config
+        test 'render_resource_with_transform_with_global_config' do
           get :render_resource_with_transform_with_global_config
           response = JSON.parse(@response.body)
           expected =  {

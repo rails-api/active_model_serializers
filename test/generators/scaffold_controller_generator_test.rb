@@ -8,7 +8,7 @@ class ResourceGeneratorTest < Rails::Generators::TestCase
   tests Rails::Generators::ResourceGenerator
   arguments %w(account)
 
-  def test_serializer_file_is_generated
+  test 'serializer_file_is_generated' do
     run_generator
 
     assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ActiveModel::Serializer/

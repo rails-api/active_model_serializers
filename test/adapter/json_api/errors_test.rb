@@ -3,14 +3,14 @@ require 'test_helper'
 module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
-      class ErrorsTest < Minitest::Test
+      class ErrorsTest < ActiveSupport::TestCase
         include ActiveModel::Serializer::Lint::Tests
 
         def setup
           @resource = ModelWithErrors.new
         end
 
-        def test_active_model_with_error
+        test 'active model with error' do
           options = {
             serializer: ActiveModel::Serializer::ErrorSerializer,
             adapter: :json_api
@@ -33,7 +33,7 @@ module ActiveModelSerializers
           assert_equal serializable_resource.as_json, expected_errors_object
         end
 
-        def test_active_model_with_multiple_errors
+        test 'active_model_with_multiple_errors' do
           options = {
             serializer: ActiveModel::Serializer::ErrorSerializer,
             adapter: :json_api
@@ -58,13 +58,13 @@ module ActiveModelSerializers
         end
 
         # see http://jsonapi.org/examples/
-        def test_parameter_source_type_error
+        test 'parameter_source_type_error' do
           parameter = 'auther'
           error_source = ActiveModelSerializers::Adapter::JsonApi::Error.error_source(:parameter, parameter)
           assert_equal({ parameter: parameter }, error_source)
         end
 
-        def test_unknown_source_type_error
+        test 'unknown_source_type_error' do
           value = 'auther'
           assert_raises(ActiveModelSerializers::Adapter::JsonApi::Error::UnknownSourceTypeError) do
             ActiveModelSerializers::Adapter::JsonApi::Error.error_source(:hyper, value)

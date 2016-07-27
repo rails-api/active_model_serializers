@@ -30,13 +30,13 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
-        def test_includes_post_id
+        test 'includes_post_id' do
           expected = { data: { type: 'posts', id: '42' } }
 
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:post])
         end
 
-        def test_includes_linked_post
+        test 'includes_linked_post' do
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:post])
           expected = [{
             id: '42',
@@ -54,7 +54,7 @@ module ActiveModelSerializers
           assert_equal expected, @adapter.serializable_hash[:included]
         end
 
-        def test_limiting_linked_post_fields
+        test 'limiting_linked_post_fields' do
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:post], fields: { post: [:title, :comments, :blog, :author] })
           expected = [{
             id: '42',
@@ -71,14 +71,14 @@ module ActiveModelSerializers
           assert_equal expected, @adapter.serializable_hash[:included]
         end
 
-        def test_include_nil_author
+        test 'include_nil_author' do
           serializer = PostSerializer.new(@anonymous_post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({ comments: { data: [] }, blog: { data: { type: 'blogs', id: '999' } }, author: { data: nil } }, adapter.serializable_hash[:data][:relationships])
         end
 
-        def test_include_type_for_association_when_different_than_name
+        test 'include_type_for_association_when_different_than_name' do
           serializer = BlogSerializer.new(@blog)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
           relationships = adapter.serializable_hash[:data][:relationships]
@@ -105,7 +105,7 @@ module ActiveModelSerializers
           assert_equal expected, relationships
         end
 
-        def test_include_linked_resources_with_type_name
+        test 'include_linked_resources_with_type_name' do
           serializer = BlogSerializer.new(@blog)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, include: [:writer, :articles])
           linked = adapter.serializable_hash[:included]

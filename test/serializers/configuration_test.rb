@@ -3,15 +3,15 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class ConfigurationTest < ActiveSupport::TestCase
-      def test_collection_serializer
+      test 'collection_serializer' do
         assert_equal ActiveModel::Serializer::CollectionSerializer, ActiveModelSerializers.config.collection_serializer
       end
 
-      def test_array_serializer
+      test 'array_serializer' do
         assert_equal ActiveModel::Serializer::CollectionSerializer, ActiveModelSerializers.config.array_serializer
       end
 
-      def test_setting_array_serializer_sets_collection_serializer
+      test 'setting_array_serializer_sets_collection_serializer' do
         config = ActiveModelSerializers.config
         old_config = config.dup
         begin
@@ -24,7 +24,7 @@ module ActiveModel
         end
       end
 
-      def test_default_adapter
+      test 'default_adapter' do
         assert_equal :attributes, ActiveModelSerializers.config.adapter
       end
     end

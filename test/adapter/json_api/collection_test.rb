@@ -23,7 +23,7 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
-        def test_include_multiple_posts
+        test 'include_multiple_posts' do
           expected = [
             {
               id: '1',
@@ -56,7 +56,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:data])
         end
 
-        def test_limiting_fields
+        test 'limiting_fields' do
           actual = ActiveModelSerializers::SerializableResource.new(
             [@first_post, @second_post],
             adapter: :json_api,

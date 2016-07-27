@@ -11,7 +11,7 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
-        def test_relationship_with_data
+        test 'relationship_with_data' do
           expected = {
             data: {
               id: '1',
@@ -21,19 +21,19 @@ module ActiveModelSerializers
           test_relationship(expected, options: { include_data: true })
         end
 
-        def test_relationship_with_nil_model
+        test 'relationship_with_nil_model' do
           @serializer = BlogSerializer.new(nil)
           expected = { data: nil }
           test_relationship(expected, options: { include_data: true })
         end
 
-        def test_relationship_with_nil_serializer
+        test 'relationship_with_nil_serializer' do
           @serializer = nil
           expected = { data: nil }
           test_relationship(expected, options: { include_data: true })
         end
 
-        def test_relationship_with_data_array
+        test 'relationship_with_data_array' do
           posts = [Post.new(id: 1), Post.new(id: 2)]
           @serializer = ActiveModel::Serializer::CollectionSerializer.new(posts)
           @author.posts = posts
@@ -53,16 +53,16 @@ module ActiveModelSerializers
           test_relationship(expected, options: { include_data: true })
         end
 
-        def test_relationship_data_not_included
+        test 'relationship_data_not_included' do
           test_relationship({}, options: { include_data: false })
         end
 
-        def test_relationship_simple_link
+        test 'relationship_simple_link' do
           links = { self: 'a link' }
           test_relationship({ links: { self: 'a link' } }, links: links)
         end
 
-        def test_relationship_many_links
+        test 'relationship_many_links' do
           links = {
             self: 'a link',
             related: 'another link'
@@ -76,13 +76,13 @@ module ActiveModelSerializers
           test_relationship(expected, links: links)
         end
 
-        def test_relationship_block_link
+        test 'relationship_block_link' do
           links = { self: proc { object.id.to_s } }
           expected = { links: { self: @blog.id.to_s } }
           test_relationship(expected, links: links)
         end
 
-        def test_relationship_block_link_with_meta
+        test 'relationship_block_link_with_meta' do
           links = {
             self: proc do
               href object.id.to_s
@@ -100,13 +100,13 @@ module ActiveModelSerializers
           test_relationship(expected, links: links)
         end
 
-        def test_relationship_simple_meta
+        test 'relationship_simple_meta' do
           meta = { id: '1' }
           expected = { meta: meta }
           test_relationship(expected, meta: meta)
         end
 
-        def test_relationship_block_meta
+        test 'relationship_block_meta' do
           meta =  proc do
             { id: object.id }
           end
@@ -118,7 +118,7 @@ module ActiveModelSerializers
           test_relationship(expected, meta: meta)
         end
 
-        def test_relationship_with_everything
+        test 'relationship_with_everything' do
           links = {
             self: 'a link',
             related: proc do
@@ -150,7 +150,7 @@ module ActiveModelSerializers
 
         private
 
-        def test_relationship(expected, params = {})
+        test 'relationship(expected, params = {})' do
           parent_serializer = AuthorSerializer.new(@author)
           relationship = Relationship.new(parent_serializer, @serializer, nil, params)
           assert_equal(expected, relationship.as_json)

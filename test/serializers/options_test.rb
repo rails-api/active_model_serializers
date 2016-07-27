@@ -7,12 +7,12 @@ module ActiveModel
         @profile = Profile.new(name: 'Name 1', description: 'Description 1')
       end
 
-      def test_options_are_accessible
+      test 'options_are_accessible' do
         @profile_serializer = ProfileSerializer.new(@profile, my_options: :accessible)
         assert @profile_serializer.arguments_passed_in?
       end
 
-      def test_no_option_is_passed_in
+      test 'no_option_is_passed_in' do
         @profile_serializer = ProfileSerializer.new(@profile)
         refute @profile_serializer.arguments_passed_in?
       end

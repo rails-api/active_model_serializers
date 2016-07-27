@@ -70,15 +70,15 @@ module SerializationScopeTesting
   class DefaultScopeTest < ActionController::TestCase
     tests PostTestController
 
-    def test_default_serialization_scope
+    test 'default_serialization_scope' do
       assert_equal :current_user, @controller._serialization_scope
     end
 
-    def test_default_serialization_scope_object
+    test 'default_serialization_scope_object' do
       assert_equal @controller.current_user, @controller.serialization_scope
     end
 
-    def test_default_scope_non_admin
+    test 'default_scope_non_admin' do
       get :render_post_by_non_admin
       expected_json = {
         post: {
@@ -93,7 +93,7 @@ module SerializationScopeTesting
       assert_equal expected_json, @response.body
     end
 
-    def test_default_scope_admin
+    test 'default_scope_admin' do
       get :render_post_by_admin
       expected_json = {
         post: {
@@ -120,15 +120,15 @@ module SerializationScopeTesting
     end
     tests PostViewContextTestController
 
-    def test_defined_serialization_scope
+    test 'defined_serialization_scope' do
       assert_equal :view_context, @controller._serialization_scope
     end
 
-    def test_defined_serialization_scope_object
+    test 'defined_serialization_scope_object' do
       assert_equal @controller.view_context.class, @controller.serialization_scope.class
     end
 
-    def test_serialization_scope_non_admin
+    test 'serialization_scope_non_admin' do
       get :render_post_by_non_admin
       expected_json = {
         post: {
@@ -143,7 +143,7 @@ module SerializationScopeTesting
       assert_equal expected_json, @response.body
     end
 
-    def test_serialization_scope_admin
+    test 'serialization_scope_admin' do
       get :render_post_by_admin
       expected_json = {
         post: {
@@ -187,15 +187,15 @@ module SerializationScopeTesting
     end
     tests PostViewContextTestController
 
-    def test_nil_serialization_scope
+    test 'nil_serialization_scope' do
       assert_nil @controller._serialization_scope
     end
 
-    def test_nil_serialization_scope_object
+    test 'nil_serialization_scope_object' do
       assert_nil @controller.serialization_scope
     end
 
-    def test_nil_scope
+    test 'nil_scope' do
       exception_matcher = /current_user/
       exception = assert_raises(NameError) do
         get :render_post_with_no_scope
@@ -203,7 +203,7 @@ module SerializationScopeTesting
       assert_match exception_matcher, exception.message
     end
 
-    def test_serialization_scope_is_and_nil_scope_passed_in_current_user
+    test 'serialization_scope_is_and_nil_scope_passed_in_current_user' do
       get :render_post_with_passed_in_scope
       expected_json = {
         post: {
@@ -218,7 +218,7 @@ module SerializationScopeTesting
       assert_equal expected_json, @response.body
     end
 
-    def test_serialization_scope_is_nil_and_scope_passed_in_current_user_without_scope_name
+    test 'serialization_scope_is_nil_and_scope_passed_in_current_user_without_scope_name' do
       exception_matcher = /current_user/
       exception = assert_raises(NameError) do
         get :render_post_with_passed_in_scope_without_scope_name

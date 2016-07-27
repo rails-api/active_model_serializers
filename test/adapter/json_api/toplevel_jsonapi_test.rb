@@ -26,39 +26,39 @@ module ActiveModelSerializers
           @author.posts = []
         end
 
-        def test_toplevel_jsonapi_defaults_to_false
+        test 'toplevel_jsonapi_defaults_to_false' do
           assert_equal config.fetch(:jsonapi_include_toplevel_object), false
         end
 
-        def test_disable_toplevel_jsonapi
+        test 'disable_toplevel_jsonapi' do
           with_config(jsonapi_include_toplevel_object: false) do
             hash = serialize(@post)
             assert_nil(hash[:jsonapi])
           end
         end
 
-        def test_enable_toplevel_jsonapi
+        test 'enable_toplevel_jsonapi' do
           with_config(jsonapi_include_toplevel_object: true) do
             hash = serialize(@post)
             refute_nil(hash[:jsonapi])
           end
         end
 
-        def test_default_toplevel_jsonapi_version
+        test 'default_toplevel_jsonapi_version' do
           with_config(jsonapi_include_toplevel_object: true) do
             hash = serialize(@post)
             assert_equal('1.0', hash[:jsonapi][:version])
           end
         end
 
-        def test_toplevel_jsonapi_no_meta
+        test 'toplevel_jsonapi_no_meta' do
           with_config(jsonapi_include_toplevel_object: true) do
             hash = serialize(@post)
             assert_nil(hash[:jsonapi][:meta])
           end
         end
 
-        def test_toplevel_jsonapi_meta
+        test 'toplevel_jsonapi_meta' do
           new_config = {
             jsonapi_include_toplevel_object: true,
             jsonapi_toplevel_meta: {

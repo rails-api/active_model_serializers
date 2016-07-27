@@ -9,33 +9,37 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   tests Rails::Generators::SerializerGenerator
   arguments %w(account name:string description:text business:references)
 
-  def test_generates_a_serializer
+  test 'generates_a_serializer' do
     run_generator
     assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ActiveModel::Serializer/
   end
 
-  def test_generates_a_namespaced_serializer
+  test 'generates_a_namespaced_serializer' do
     run_generator ['admin/account']
     assert_file 'app/serializers/admin/account_serializer.rb', /class Admin::AccountSerializer < ActiveModel::Serializer/
   end
 
-  def test_uses_application_serializer_if_one_exists
-    Object.const_set(:ApplicationSerializer, Class.new)
-    run_generator
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
-  ensure
-    Object.send :remove_const, :ApplicationSerializer
+  test 'uses_application_serializer_if_one_exists' do
+    begin
+      Object.const_set(:ApplicationSerializer, Class.new)
+      run_generator
+      assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
+    ensure
+      Object.send :remove_const, :ApplicationSerializer
+    end
   end
 
-  def test_uses_given_parent
-    Object.const_set(:ApplicationSerializer, Class.new)
-    run_generator ['Account', '--parent=MySerializer']
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < MySerializer/
-  ensure
-    Object.send :remove_const, :ApplicationSerializer
+  test 'uses_given_parent' do
+    begin
+      Object.const_set(:ApplicationSerializer, Class.new)
+      run_generator ['Account', '--parent=MySerializer']
+      assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < MySerializer/
+    ensure
+      Object.send :remove_const, :ApplicationSerializer
+    end
   end
 
-  def test_generates_attributes_and_associations
+  test 'generates_attributes_and_associations' do
     run_generator
     assert_file 'app/serializers/account_serializer.rb' do |serializer|
       assert_match(/^  attributes :id, :name, :description$/, serializer)
@@ -44,7 +48,7 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
     end
   end
 
-  def test_with_no_attributes_does_not_add_extra_space
+  test 'with_no_attributes_does_not_add_extra_space' do
     run_generator ['account']
     assert_file 'app/serializers/account_serializer.rb' do |content|
       if RUBY_PLATFORM =~ /mingw/

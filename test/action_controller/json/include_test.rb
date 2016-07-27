@@ -69,7 +69,7 @@ module ActionController
 
         tests IncludeTestController
 
-        def test_render_without_include
+        test 'render_without_include' do
           get :render_without_include
           response = JSON.parse(@response.body)
           expected = {
@@ -89,14 +89,14 @@ module ActionController
           assert_equal(expected, response)
         end
 
-        def test_render_resource_with_include_hash
+        test 'render_resource_with_include_hash' do
           get :render_resource_with_include_hash
           response = JSON.parse(@response.body)
 
           assert_equal(expected_include_response, response)
         end
 
-        def test_render_resource_with_include_string
+        test 'render_resource_with_include_string' do
           get :render_resource_with_include_string
 
           response = JSON.parse(@response.body)
@@ -104,7 +104,7 @@ module ActionController
           assert_equal(expected_include_response, response)
         end
 
-        def test_render_resource_with_deep_include
+        test 'render_resource_with_deep_include' do
           get :render_resource_with_deep_include
 
           response = JSON.parse(@response.body)
@@ -112,7 +112,7 @@ module ActionController
           assert_equal(expected_deep_include_response, response)
         end
 
-        def test_render_with_empty_default_includes
+        test 'render_with_empty_default_includes' do
           with_default_includes '' do
             get :render_without_include
             response = JSON.parse(@response.body)
@@ -126,7 +126,7 @@ module ActionController
           end
         end
 
-        def test_render_with_recursive_default_includes
+        test 'render_with_recursive_default_includes' do
           with_default_includes '**' do
             get :render_without_recursive_relationships
             response = JSON.parse(@response.body)
@@ -163,7 +163,7 @@ module ActionController
           end
         end
 
-        def test_render_with_includes_overrides_default_includes
+        test 'render_with_includes_overrides_default_includes' do
           with_default_includes '' do
             get :render_resource_with_include_hash
             response = JSON.parse(@response.body)

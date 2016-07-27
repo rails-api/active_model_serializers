@@ -23,7 +23,7 @@ module ActiveModelSerializers
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
         end
 
-        def test_includes_comment_ids
+        test 'includes_comment_ids' do
           expected = {
             data: [
               { type: 'posts', id: '1' },
@@ -34,7 +34,7 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:posts])
         end
 
-        def test_no_includes_linked_comments
+        test 'no_includes_linked_comments' do
           assert_nil @adapter.serializable_hash[:linked]
         end
       end

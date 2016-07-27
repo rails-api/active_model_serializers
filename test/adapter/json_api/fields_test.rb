@@ -36,7 +36,7 @@ module ActiveModelSerializers
           @comment2.post = @post
         end
 
-        def test_fields_attributes
+        test 'fields_attributes' do
           fields = { posts: [:title] }
           hash = serializable(@post, adapter: :json_api, fields: fields).serializable_hash
           expected = {
@@ -46,7 +46,7 @@ module ActiveModelSerializers
           assert_equal(expected, hash[:data][:attributes])
         end
 
-        def test_fields_relationships
+        test 'fields_relationships' do
           fields = { posts: [:author] }
           hash = serializable(@post, adapter: :json_api, fields: fields).serializable_hash
           expected = {
@@ -61,7 +61,7 @@ module ActiveModelSerializers
           assert_equal(expected, hash[:data][:relationships])
         end
 
-        def test_fields_included
+        test 'fields_included' do
           fields = { posts: [:author], comments: [:body] }
           hash = serializable(@post, adapter: :json_api, fields: fields, include: 'comments').serializable_hash
           expected = [

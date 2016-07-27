@@ -21,7 +21,7 @@ module ActiveModel
         attributes :name
       end
 
-      def test_child_serializer_calls_dynamic_method_in_parent_serializer
+      test 'child_serializer_calls_dynamic_method_in_parent_serializer' do
         parent = ParentSerializer.new(Parent.new(id: 5))
         child  = ChildSerializer.new(Child.new(id: 6, name: 'Child'))
         assert_equal 5, parent.read_attribute_for_serialization(:$id)
@@ -50,7 +50,7 @@ module ActiveModel
         end
       end
 
-      def test_child_serializer_with_error_attribute
+      test 'child_serializer_with_error_attribute' do
         error = ErrorResponse.new(error: 'i have an error')
         serializer = ErrorResponseSerializer.new(error)
         serializer_with_super = ErrorResponseWithSuperSerializer.new(error)
@@ -58,7 +58,7 @@ module ActiveModel
         assert_equal false, serializer_with_super.read_attribute_for_serialization(:status)
       end
 
-      def test_child_serializer_with_errors
+      test 'child_serializer_with_errors' do
         error = ErrorResponse.new
         error.errors.add(:invalid, 'i am not valid')
         serializer = ErrorResponseSerializer.new(error)
@@ -67,7 +67,7 @@ module ActiveModel
         assert_equal false, serializer_with_super.read_attribute_for_serialization(:status)
       end
 
-      def test_child_serializer_no_error_attribute_or_errors
+      test 'child_serializer_no_error_attribute_or_errors' do
         error = ErrorResponse.new
         serializer = ErrorResponseSerializer.new(error)
         serializer_with_super = ErrorResponseWithSuperSerializer.new(error)

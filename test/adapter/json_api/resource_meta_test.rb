@@ -4,7 +4,7 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class ResourceMetaTest < Minitest::Test
+        class ResourceMetaTest < ActiveSupport::TestCase
           class MetaHashPostSerializer < ActiveModel::Serializer
             attributes :id
             meta stuff: 'value'
@@ -35,7 +35,7 @@ module ActiveModel
             @post = Post.new(id: 1337, comments: [], author: nil)
           end
 
-          def test_meta_hash_object_resource
+          test 'meta_hash_object_resource' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaHashPostSerializer,
@@ -47,7 +47,7 @@ module ActiveModel
             assert_equal(expected, hash[:data][:meta])
           end
 
-          def test_meta_block_object_resource
+          test 'meta_block_object_resource' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostSerializer,
@@ -59,7 +59,7 @@ module ActiveModel
             assert_equal(expected, hash[:data][:meta])
           end
 
-          def test_meta_object_resource_in_array
+          test 'meta_object_resource_in_array' do
             post2 = Post.new(id: 1339, comments: [Comment.new])
             posts = [@post, post2]
             hash = ActiveModelSerializers::SerializableResource.new(
@@ -76,7 +76,7 @@ module ActiveModel
             assert_equal(expected, hash)
           end
 
-          def test_meta_object_blank_omitted
+          test 'meta_object_blank_omitted' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostBlankMetaSerializer,
@@ -85,7 +85,7 @@ module ActiveModel
             refute hash[:data].key? :meta
           end
 
-          def test_meta_object_empty_string_omitted
+          test 'meta_object_empty_string_omitted' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostEmptyStringSerializer,

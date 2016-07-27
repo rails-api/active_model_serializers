@@ -93,7 +93,7 @@ module ActiveModelSerializers
       Grape::Middleware::Globals.new(GrapeTest.new)
     end
 
-    def test_formatter_returns_json
+    test 'formatter_returns_json' do
       get '/grape/render'
 
       post = Models.model1
@@ -103,7 +103,7 @@ module ActiveModelSerializers
       assert_equal serializable_resource.to_json, last_response.body
     end
 
-    def test_render_helper_passes_through_options_correctly
+    test 'render_helper_passes_through_options_correctly' do
       get '/grape/render_with_json_api'
 
       post = Models.model1
@@ -113,19 +113,21 @@ module ActiveModelSerializers
       assert_equal serializable_resource.to_json, last_response.body
     end
 
-    def test_formatter_handles_arrays
-      get '/grape/render_array_with_json_api'
+    test 'formatter_handles_arrays' do
+      begin
+        get '/grape/render_array_with_json_api'
 
-      posts = Models.all
-      serializable_resource = serializable(posts, adapter: :json_api)
+        posts = Models.all
+        serializable_resource = serializable(posts, adapter: :json_api)
 
-      assert last_response.ok?
-      assert_equal serializable_resource.to_json, last_response.body
-    ensure
-      Models.reset_all
+        assert last_response.ok?
+        assert_equal serializable_resource.to_json, last_response.body
+      ensure
+        Models.reset_all
+      end
     end
 
-    def test_formatter_handles_collections
+    test 'formatter_handles_collections' do
       get '/grape/render_collection_with_json_api'
       assert last_response.ok?
 
@@ -136,7 +138,7 @@ module ActiveModelSerializers
       assert representation['links'].count > 0
     end
 
-    def test_implicit_formatter
+    test 'implicit_formatter' do
       post = Models.model1
       serializable_resource = serializable(post, adapter: :json_api)
 
@@ -148,21 +150,23 @@ module ActiveModelSerializers
       assert_equal serializable_resource.to_json, last_response.body
     end
 
-    def test_implicit_formatter_handles_arrays
-      posts = Models.all
-      serializable_resource = serializable(posts, adapter: :json_api)
+    test 'implicit_formatter_handles_arrays' do
+      begin
+        posts = Models.all
+        serializable_resource = serializable(posts, adapter: :json_api)
 
-      with_adapter :json_api do
-        get '/grape/render_array_with_implicit_formatter'
+        with_adapter :json_api do
+          get '/grape/render_array_with_implicit_formatter'
+        end
+
+        assert last_response.ok?
+        assert_equal serializable_resource.to_json, last_response.body
+      ensure
+        Models.reset_all
       end
-
-      assert last_response.ok?
-      assert_equal serializable_resource.to_json, last_response.body
-    ensure
-      Models.reset_all
     end
 
-    def test_implicit_formatter_handles_collections
+    test 'implicit_formatter_handles_collections' do
       with_adapter :json_api do
         get '/grape/render_collection_with_implicit_formatter'
       end

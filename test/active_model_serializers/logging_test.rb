@@ -38,37 +38,37 @@ module ActiveModel
         ActiveModelSerializers.logger = logger
       end
 
-      def test_uses_ams_as_tag
+      test 'uses_ams_as_tag' do
         ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/\[active_model_serializers\]/, @logger.messages)
       end
 
-      def test_logs_when_call_serializable_hash
+      test 'logs_when_call_serializable_hash' do
         ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/Rendered/, @logger.messages)
       end
 
-      def test_logs_when_call_as_json
+      test 'logs_when_call_as_json' do
         ActiveModelSerializers::SerializableResource.new(@post).as_json
         assert_match(/Rendered/, @logger.messages)
       end
 
-      def test_logs_when_call_to_json
+      test 'logs_when_call_to_json' do
         ActiveModelSerializers::SerializableResource.new(@post).to_json
         assert_match(/Rendered/, @logger.messages)
       end
 
-      def test_logs_correct_serializer
+      test 'logs_correct_serializer' do
         ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/PostSerializer/, @logger.messages)
       end
 
-      def test_logs_correct_adapter
+      test 'logs_correct_adapter' do
         ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/ActiveModelSerializers::Adapter::Attributes/, @logger.messages)
       end
 
-      def test_logs_the_duration
+      test 'logs_the_duration' do
         ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/\(\d+\.\d+ms\)/, @logger.messages)
       end

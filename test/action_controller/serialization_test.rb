@@ -145,7 +145,7 @@ module ActionController
       tests ImplicitSerializationTestController
 
       # We just have Null for now, this will change
-      def test_render_using_implicit_serializer
+      test 'render_using_implicit_serializer' do
         get :render_using_implicit_serializer
 
         expected = {
@@ -157,7 +157,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_using_default_root
+      test 'render_using_default_root' do
         with_adapter :json_api do
           get :render_using_default_adapter_root
         end
@@ -176,7 +176,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_using_custom_root
+      test 'render_array_using_custom_root' do
         with_adapter :json do
           get :render_array_using_custom_root
         end
@@ -185,7 +185,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_that_is_empty_using_custom_root
+      test 'render_array_that_is_empty_using_custom_root' do
         with_adapter :json do
           get :render_array_that_is_empty_using_custom_root
         end
@@ -195,7 +195,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_object_using_custom_root
+      test 'render_object_using_custom_root' do
         with_adapter :json do
           get :render_object_using_custom_root
         end
@@ -205,7 +205,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_json_object_without_serializer
+      test 'render_json_object_without_serializer' do
         get :render_json_object_without_serializer
 
         assert_equal 'application/json', @response.content_type
@@ -213,7 +213,7 @@ module ActionController
         assert_equal expected_body.to_json, @response.body
       end
 
-      def test_render_json_array_object_without_serializer
+      test 'render_json_array_object_without_serializer' do
         get :render_json_array_object_without_serializer
 
         assert_equal 'application/json', @response.content_type
@@ -221,7 +221,7 @@ module ActionController
         assert_equal expected_body.to_json, @response.body
       end
 
-      def test_render_array_using_implicit_serializer
+      test 'render_array_using_implicit_serializer' do
         get :render_array_using_implicit_serializer
         assert_equal 'application/json', @response.content_type
 
@@ -239,7 +239,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_using_implicit_serializer_and_meta
+      test 'render_array_using_implicit_serializer_and_meta' do
         with_adapter :json_api do
           get :render_array_using_implicit_serializer_and_meta
         end
@@ -263,7 +263,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_array_using_implicit_serializer_and_links
+      test 'render_array_using_implicit_serializer_and_links' do
         get :render_array_using_implicit_serializer_and_links
 
         expected = {
@@ -286,7 +286,7 @@ module ActionController
         assert_equal expected.to_json, @response.body
       end
 
-      def test_render_with_cache_enable
+      test 'render_with_cache_enable' do
         expected = {
           id: 1,
           title: 'New Post',
@@ -323,7 +323,7 @@ module ActionController
         assert_not_equal expected.to_json, @response.body
       end
 
-      def test_render_with_cache_enable_and_expired
+      test 'render_with_cache_enable_and_expired' do
         ActionController::Base.cache_store.clear
         get :render_object_expired_with_cache_enabled
 
@@ -357,7 +357,7 @@ module ActionController
         end
       end
 
-      def test_render_with_fragment_only_cache_enable
+      test 'render_with_fragment_only_cache_enable' do
         ActionController::Base.cache_store.clear
         get :render_fragment_changed_object_with_only_cache_enabled
         response = JSON.parse(@response.body)
@@ -367,7 +367,7 @@ module ActionController
         assert_equal 'HUEHUEBRBR', response['description']
       end
 
-      def test_render_with_fragment_except_cache_enable
+      test 'render_with_fragment_except_cache_enable' do
         ActionController::Base.cache_store.clear
         get :render_fragment_changed_object_with_except_cache_enabled
         response = JSON.parse(@response.body)
@@ -377,7 +377,7 @@ module ActionController
         assert_equal 'lol', response['content']
       end
 
-      def test_render_fragment_changed_object_with_relationship
+      test 'render_fragment_changed_object_with_relationship' do
         ActionController::Base.cache_store.clear
 
         Timecop.freeze(Time.zone.now) do
@@ -398,7 +398,7 @@ module ActionController
         end
       end
 
-      def test_cache_expiration_on_update
+      test 'cache_expiration_on_update' do
         ActionController::Base.cache_store.clear
         get :render_object_with_cache_enabled
 
@@ -434,7 +434,7 @@ module ActionController
         end
       end
 
-      def test_warn_overridding_use_adapter_as_falsy_on_controller_instance
+      test 'warn_overridding_use_adapter_as_falsy_on_controller_instance' do
         controller = Class.new(ImplicitSerializationTestController) do
           def use_adapter?
             false
@@ -445,7 +445,7 @@ module ActionController
         end
       end
 
-      def test_dont_warn_overridding_use_adapter_as_truthy_on_controller_instance
+      test 'dont_warn_overridding_use_adapter_as_truthy_on_controller_instance' do
         controller = Class.new(ImplicitSerializationTestController) do
           def use_adapter?
             true
@@ -456,16 +456,18 @@ module ActionController
         end
       end
 
-      def test_render_event_is_emmited
-        subscriber = ::ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
-          @name = name
+      test 'render_event_is_emmited' do
+        begin
+          subscriber = ::ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
+            @name = name
+          end
+
+          get :render_using_implicit_serializer
+
+          assert_equal 'render.active_model_serializers', @name
+        ensure
+          ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
         end
-
-        get :render_using_implicit_serializer
-
-        assert_equal 'render.active_model_serializers', @name
-      ensure
-        ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
       end
     end
   end

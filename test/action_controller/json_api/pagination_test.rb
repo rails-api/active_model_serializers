@@ -46,7 +46,7 @@ module ActionController
 
         tests PaginationTestController
 
-        def test_render_pagination_links_with_will_paginate
+        test 'render_pagination_links_with_will_paginate' do
           expected_links = { 'self' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1",
                              'first' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                              'prev' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
@@ -58,7 +58,7 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_last_and_next_pagination_links
+        test 'render_only_last_and_next_pagination_links' do
           expected_links = { 'self' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
                              'next' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
                              'last' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2" }
@@ -67,7 +67,7 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_pagination_links_with_kaminari
+        test 'render_pagination_links_with_kaminari' do
           expected_links = { 'self' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1",
                              'first' => "#{KAMINARI_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                              'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
@@ -78,7 +78,7 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_prev_and_first_pagination_links
+        test 'render_only_prev_and_first_pagination_links' do
           expected_links = { 'self' => "#{KAMINARI_URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1",
                              'first' => "#{KAMINARI_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
                              'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1" }
@@ -87,7 +87,7 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_last_and_next_pagination_links_with_additional_params
+        test 'render_only_last_and_next_pagination_links_with_additional_params' do
           expected_links = { 'self' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2&teste=additional",
                              'next' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2&teste=additional",
                              'last' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2&teste=additional" }
@@ -96,7 +96,7 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_prev_and_first_pagination_links_with_additional_params
+        test 'render_only_prev_and_first_pagination_links_with_additional_params' do
           expected_links = { 'self' => "#{KAMINARI_URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1&teste=additional",
                              'first' => "#{KAMINARI_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1&teste=additional",
                              'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1&teste=additional" }
@@ -105,7 +105,7 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_array_without_pagination_links
+        test 'array_without_pagination_links' do
           get :render_array_without_pagination_links, params: { page: { number: 2, size: 1 } }
           response = JSON.parse(@response.body)
           refute response.key? 'links'

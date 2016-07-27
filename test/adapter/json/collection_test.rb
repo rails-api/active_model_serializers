@@ -19,7 +19,7 @@ module ActiveModelSerializers
           ActionController::Base.cache_store.clear
         end
 
-        def test_with_serializer_option
+        test 'with_serializer_option' do
           @blog.special_attribute = 'Special'
           @blog.articles = [@first_post, @second_post]
           serializer = ActiveModel::Serializer::CollectionSerializer.new([@blog], serializer: CustomBlogSerializer)
@@ -33,7 +33,7 @@ module ActiveModelSerializers
           assert_equal expected, adapter.serializable_hash
         end
 
-        def test_include_multiple_posts
+        test 'include_multiple_posts' do
           serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
           adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
 
@@ -67,7 +67,7 @@ module ActiveModelSerializers
           assert_equal expected, adapter.serializable_hash
         end
 
-        def test_root_is_underscored
+        test 'root_is_underscored' do
           virtual_value = VirtualValue.new(id: 1)
           serializer = ActiveModel::Serializer::CollectionSerializer.new([virtual_value])
           adapter = ActiveModelSerializers::Adapter::Json.new(serializer)
@@ -75,7 +75,7 @@ module ActiveModelSerializers
           assert_equal 1, adapter.serializable_hash[:virtual_values].length
         end
 
-        def test_include_option
+        test 'include_option' do
           serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_post, @second_post])
           adapter = ActiveModelSerializers::Adapter::Json.new(serializer, include: '')
           actual = adapter.serializable_hash
@@ -85,7 +85,7 @@ module ActiveModelSerializers
           assert_equal(expected, actual)
         end
 
-        def test_fields_with_no_associations_include_option
+        test 'fields_with_no_associations_include_option' do
           actual = ActiveModelSerializers::SerializableResource.new(
             [@first_post, @second_post], adapter: :json, fields: [:id], include: []
           ).as_json

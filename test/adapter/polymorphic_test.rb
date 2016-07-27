@@ -21,7 +21,7 @@ module ActiveModel
           serializable(tag, adapter: adapter, serializer: PolymorphicTagSerializer, include: '*.*').as_json
         end
 
-        def test_attributes_serialization
+        test 'attributes_serialization' do
           expected =
             {
               id: 1,
@@ -38,7 +38,7 @@ module ActiveModel
           assert_equal(expected, serialization(@picture))
         end
 
-        def test_attributes_serialization_without_polymorphic_association
+        test 'attributes_serialization_without_polymorphic_association' do
           expected =
             {
               id: 2,
@@ -50,7 +50,7 @@ module ActiveModel
           assert_equal(expected, serialization(simple_picture))
         end
 
-        def test_attributes_serialization_with_polymorphic_has_many
+        test 'attributes_serialization_with_polymorphic_has_many' do
           expected =
             {
               id: 1,
@@ -79,7 +79,7 @@ module ActiveModel
           assert_equal(expected, tag_serialization)
         end
 
-        def test_json_serialization
+        test 'json_serialization' do
           expected =
             {
               picture: {
@@ -98,7 +98,7 @@ module ActiveModel
           assert_equal(expected, serialization(@picture, :json))
         end
 
-        def test_json_serialization_without_polymorphic_association
+        test 'json_serialization_without_polymorphic_association' do
           expected =
             {
               picture: {
@@ -112,7 +112,7 @@ module ActiveModel
           assert_equal(expected, serialization(simple_picture, :json))
         end
 
-        def test_json_serialization_with_polymorphic_has_many
+        test 'json_serialization_with_polymorphic_has_many' do
           expected =
             {
               poly_tag: {
@@ -143,7 +143,7 @@ module ActiveModel
           assert_equal(expected, tag_serialization(:json))
         end
 
-        def test_json_api_serialization
+        test 'json_api_serialization' do
           expected =
             {
               data: {

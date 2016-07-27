@@ -93,7 +93,7 @@ module ActiveModel
             )
           end
 
-          def test_relationship_simple_link
+          test 'relationship_simple_link' do
             expected = {
               data: {
                 id: '1337',
@@ -106,7 +106,7 @@ module ActiveModel
             assert_relationship(:bio, expected)
           end
 
-          def test_relationship_block_link
+          test 'relationship_block_link' do
             expected = {
               data: { id: '1337', type: 'profiles' },
               links: { related: '//example.com/profiles/1337' }
@@ -114,7 +114,7 @@ module ActiveModel
             assert_relationship(:profile, expected)
           end
 
-          def test_relationship_nil_link
+          test 'relationship_nil_link' do
             @author.profile.id = 123
             expected = {
               data: { id: '123', type: 'profiles' }
@@ -122,7 +122,7 @@ module ActiveModel
             assert_relationship(:profile, expected)
           end
 
-          def test_relationship_block_link_href
+          test 'relationship_block_link_href' do
             expected = {
               data: [{ id: '1337', type: 'locations' }],
               links: {
@@ -132,7 +132,7 @@ module ActiveModel
             assert_relationship(:locations, expected)
           end
 
-          def test_relationship_block_link_href_and_meta
+          test 'relationship_block_link_href_and_meta' do
             expected = {
               data: [{ id: '1337', type: 'posts' }],
               links: {
@@ -145,7 +145,7 @@ module ActiveModel
             assert_relationship(:posts, expected)
           end
 
-          def test_relationship_block_link_meta
+          test 'relationship_block_link_meta' do
             expected = {
               data: [{ id: '1337', type: 'comments' }],
               links: {
@@ -157,7 +157,7 @@ module ActiveModel
             assert_relationship(:comments, expected)
           end
 
-          def test_relationship_meta
+          test 'relationship_meta' do
             expected = {
               data: [{ id: 'from-serializer-method', type: 'roles' }],
               meta: { count: 1 }
@@ -165,7 +165,7 @@ module ActiveModel
             assert_relationship(:roles, expected)
           end
 
-          def test_relationship_not_including_data
+          test 'relationship_not_including_data' do
             @author.define_singleton_method(:read_attribute_for_serialization) do |attr|
               fail 'should not be called' if attr == :blog
               super(attr)
@@ -178,7 +178,7 @@ module ActiveModel
             end
           end
 
-          def test_relationship_including_data_explicit
+          test 'relationship_including_data_explicit' do
             expected = {
               data: { id: '1337', type: 'authors' },
               meta: { name: 'Dan Brown' }
@@ -186,7 +186,7 @@ module ActiveModel
             assert_relationship(:reviewer, expected)
           end
 
-          def test_relationship_with_everything
+          test 'relationship_with_everything' do
             expected = {
               data: [{ id: '1337', type: 'likes' }],
               links: {

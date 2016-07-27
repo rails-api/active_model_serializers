@@ -3,7 +3,7 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       module Deserialization
-        class ParseTest < Minitest::Test
+        class ParseTest < ActiveSupport::TestCase
           def setup
             @hash = {
               'data' => {
@@ -58,25 +58,25 @@ module ActiveModelSerializers
                                    }]
           end
 
-          def test_hash
+          test 'hash' do
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash)
             assert_equal(@expected, parsed_hash)
           end
 
-          def test_actioncontroller_parameters
+          test 'actioncontroller_parameters' do
             assert_equal(false, @params.permitted?)
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@params)
             assert_equal(@expected, parsed_hash)
           end
 
-          def test_illformed_payloads_safe
+          test 'illformed_payloads_safe' do
             @illformed_payloads.each do |p|
               parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse(p)
               assert_equal({}, parsed_hash)
             end
           end
 
-          def test_illformed_payloads_unsafe
+          test 'illformed_payloads_unsafe' do
             @illformed_payloads.each do |p|
               assert_raises(InvalidDocument) do
                 ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(p)
@@ -84,7 +84,7 @@ module ActiveModelSerializers
             end
           end
 
-          def test_filter_fields_only
+          test 'filter_fields_only' do
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, only: [:id, :title, :author])
             expected = {
               id: 'zorglub',
@@ -94,7 +94,7 @@ module ActiveModelSerializers
             assert_equal(expected, parsed_hash)
           end
 
-          def test_filter_fields_except
+          test 'filter_fields_except' do
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, except: [:id, :title, :author])
             expected = {
               src: 'http://example.com/images/productivity.png',
@@ -104,7 +104,7 @@ module ActiveModelSerializers
             assert_equal(expected, parsed_hash)
           end
 
-          def test_keys
+          test 'keys' do
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, keys: { author: :user, title: :post_title })
             expected = {
               id: 'zorglub',
@@ -117,7 +117,7 @@ module ActiveModelSerializers
             assert_equal(expected, parsed_hash)
           end
 
-          def test_polymorphic
+          test 'polymorphic' do
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, polymorphic: [:photographer])
             expected = {
               id: 'zorglub',

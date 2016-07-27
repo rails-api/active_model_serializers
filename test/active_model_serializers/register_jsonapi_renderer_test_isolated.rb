@@ -49,7 +49,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       end
     end
 
-    def test_jsonapi_parser_not_registered
+    test 'jsonapi_parser_not_registered' do
       parsers = if Rails::VERSION::MAJOR >= 5
                   ActionDispatch::Request.parameter_parsers
                 else
@@ -58,7 +58,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       assert_nil parsers[Mime[:jsonapi]]
     end
 
-    def test_jsonapi_renderer_not_registered
+    test 'jsonapi_renderer_not_registered' do
       expected = {
         'data' => {
           'attributes' => {
@@ -73,7 +73,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       assert expected, response.body
     end
 
-    def test_jsonapi_parser
+    test 'jsonapi_parser' do
       assert_parses(
         {},
         '',
@@ -100,7 +100,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       end
     end
 
-    def test_jsonapi_parser_registered
+    test 'jsonapi_parser_registered' do
       if Rails::VERSION::MAJOR >= 5
         parsers = ActionDispatch::Request.parameter_parsers
         assert_equal Proc, parsers[:jsonapi].class
@@ -110,7 +110,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       end
     end
 
-    def test_jsonapi_renderer_registered
+    test 'jsonapi_renderer_registered' do
       expected = {
         'data' => {
           'attributes' => {
@@ -125,7 +125,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       assert expected, response.body
     end
 
-    def test_jsonapi_parser
+    test 'jsonapi_parser' do
       assert_parses(
         {
           'data' => {
