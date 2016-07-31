@@ -47,9 +47,8 @@ require 'support/serialization_testing'
 
 require 'support/rails5_shims'
 
-require 'fixtures/active_record'
-
-require 'fixtures/poro'
+require 'support/fixtures/active_record'
+require 'support/fixtures/poro'
 
 ActiveSupport.on_load(:action_controller) do
   $action_controller_logger = ActiveModelSerializers.logger
