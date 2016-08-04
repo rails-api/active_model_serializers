@@ -24,7 +24,8 @@ module ActionController
 
       def test_render_using_default_adapter
         get :render_using_default_adapter
-        assert_equal '{"name":"Name 1","description":"Description 1"}', response.body
+        expected = '{"name":"Name 1","description":"Description 1"}'
+        assert_equal expected, response.body
       end
 
       def test_render_using_adapter_override
@@ -46,7 +47,8 @@ module ActionController
 
       def test_render_skipping_adapter
         get :render_skipping_adapter
-        assert_equal '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}', response.body
+        expected = '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}'
+        assert_equal expected, response.body
       end
     end
   end
