@@ -82,8 +82,8 @@ Provides transform for `type` attribute. Class name `NicePost` gets converted in
 
 Possible values:
 
-- `:underscore` (default)
-- `:dashed`
+- `:underscore`
+- `:dashed` (default)
 - `:camel`
 - `:snake`
 
