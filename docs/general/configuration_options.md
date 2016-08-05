@@ -87,12 +87,6 @@ Provides transform for `type` attribute.
 | dashed (default) | nice-post
 | camel | nicePost
 
-Possible values:
-
-- `:underscore`
-- `:dashed` (default)
-- `:camel`
-- `:snake`
 
 ##### jsonapi_include_toplevel_object
 
