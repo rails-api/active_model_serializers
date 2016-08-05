@@ -147,7 +147,7 @@ module ActiveModelSerializers
           assert_equal({
                          Data: {
                            Id: '1337',
-                           Type: 'Posts',
+                           Type: 'posts',
                            Attributes: {
                              Title: 'Title 1',
                              Body: 'Body 1',
@@ -155,12 +155,12 @@ module ActiveModelSerializers
                            },
                            Relationships: {
                              Author: {
-                               Data: { Id: '1', Type: 'Authors' }
+                               Data: { Id: '1', Type: 'authors' }
                              },
                              Comments: {
                                Data: [
-                                 { Id: '7', Type: 'Comments' },
-                                 { Id: '12', Type: 'Comments' }
+                                 { Id: '7', Type: 'comments' },
+                                 { Id: '12', Type: 'comments' }
                                ]
                              }
                            },

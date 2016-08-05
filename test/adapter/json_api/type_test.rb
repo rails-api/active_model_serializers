@@ -32,11 +32,11 @@ module ActiveModel
           end
 
           def test_explicit_string_type_value
-            assert_type(@author, 'profile', serializer: StringTypeSerializer)
+            assert_type(@author, 'profiles', serializer: StringTypeSerializer)
           end
 
           def test_explicit_symbol_type_value
-            assert_type(@author, 'profile', serializer: SymbolTypeSerializer)
+            assert_type(@author, 'profiles', serializer: SymbolTypeSerializer)
           end
 
           private

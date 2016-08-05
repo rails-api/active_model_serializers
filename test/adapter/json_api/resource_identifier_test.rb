@@ -32,22 +32,16 @@ module ActiveModelSerializers
         end
 
         def type_for_ignores_key_transform
-          # with_key_transform :camel_lower do
-            with_type_transform :underscore do
-              assert_type(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
-            end
-          # end
+          assert_type(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
         end
 
         def test_defined_type
-          with_key_transform :underscore do
-            assert_identifier(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
-          end
+          assert_identifier(WithDefinedTypeSerializer.new(@model), type: 'with-defined-types')
         end
 
         def test_defined_type_with_differing_transform_from_regular_key_transform
           with_type_transform :underscore do
-            assert_identifier(WithDefinedTypeSerializer.new(@model), type: 'with_defined_type')
+            assert_identifier(WithDefinedTypeSerializer.new(@model), type: 'with_defined_types')
           end
         end
 
@@ -69,10 +63,8 @@ module ActiveModelSerializers
         end
 
         def test_type_with_custom_namespace
-          with_key_transform :underscore do
-            spam = Spam::UnrelatedLink.new
-            assert_with_confing(Spam::UnrelatedLinkSerializer.new(spam), type: 'spam/unrelated_links', namespace_separator: '/')
-          end
+          spam = Spam::UnrelatedLink.new
+          assert_with_confing(Spam::UnrelatedLinkSerializer.new(spam), type: 'spam/unrelated-links', namespace_separator: '/')
         end
 
         def test_id_defined_on_object
@@ -108,7 +100,7 @@ module ActiveModelSerializers
         end
 
         def assert_identifier(serializer, opts = {})
-          identifier = ResourceIdentifier.new(serializer, opts)
+          identifier = ResourceIdentifier.new(serializer, {})
 
           expected = {
             id: opts.fetch(:id, identifier.as_json[:id]),

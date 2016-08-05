@@ -19,10 +19,11 @@ module ActiveModelSerializers
         private
 
         def type_for(serializer, options = {})
-          return apply_key_transform(serializer._type, options) if serializer._type
-          type = serializer.object.class.to_s.split('::')
+          type = serializer._type.to_s.split('::') if serializer._type
+          type = serializer.object.class.to_s.split('::') unless type
           type = apply_key_transform(type, options)
           type = type.join ActiveModelSerializers.config.jsonapi_namespace_separator
+
           if ActiveModelSerializers.config.jsonapi_resource_type == :plural
             type = type.pluralize
           end

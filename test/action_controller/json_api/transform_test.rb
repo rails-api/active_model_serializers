@@ -77,7 +77,7 @@ module ActionController
           expected = {
             'Data' => {
               'Id' => '1337',
-              'Type' => 'Posts',
+              'Type' => 'posts',
               'Attributes' => {
                 'Title' => 'Title 1',
                 'Body' => 'Body 1',
@@ -87,13 +87,13 @@ module ActionController
                 'Author' => {
                   'Data' => {
                     'Id' => '1',
-                    'Type' => 'Authors'
+                    'Type' => 'authors'
                   }
                 },
                 'TopComments' => {
                   'Data' => [
-                    { 'Id' => '7', 'Type' => 'TopComments' },
-                    { 'Id' => '12', 'Type' => 'TopComments' }
+                    { 'Id' => '7', 'Type' => 'top-comments' },
+                    { 'Id' => '12', 'Type' => 'top-comments' }
                   ]
                 }
               },
@@ -162,8 +162,8 @@ module ActionController
                 },
                 'topComments' => {
                   'data' => [
-                    { 'id' => '7', 'type' => 'topComments' },
-                    { 'id' => '12', 'type' => 'topComments' }
+                    { 'id' => '7', 'type' => 'top-comments' },
+                    { 'id' => '12', 'type' => 'top-comments' }
                   ]
                 }
               },
