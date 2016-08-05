@@ -78,7 +78,14 @@ Sets separator string for namespaced models to render `type` attribute. Default 
 
 ##### jsonapi_type_transform
 
-Provides transform for `type` attribute. Class name `NicePost` gets converted into `nice_post`, `nice-post`, `NicePost` or `nicePost` depending on selected setting.
+Provides transform for `type` attribute.
+
+| transform | value |
+|------------|---------|
+| unaltered | nice_post
+| snake | nicePost
+| dashed (default) | nice-post
+| camel | nicePost
 
 Possible values:
 
