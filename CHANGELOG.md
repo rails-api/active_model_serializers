@@ -3,7 +3,7 @@
 ### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.2...master)
 
 Breaking changes:
-- [#1791](https://github.com/rails-api/active_model_serializers/pull/1791) (@bf4, @NullVoxPopuli)  
+- [#1791](https://github.com/rails-api/active_model_serializers/pull/1791) (@bf4, @youroff, @NullVoxPopuli)  
   - JSON API Type Transform functions independent of Key Transform.
   - Added jsonapi_type_transform config option.
   - Added jsonapi_namespace_separator config option.
