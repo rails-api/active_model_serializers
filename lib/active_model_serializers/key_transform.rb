@@ -81,8 +81,10 @@ module ActiveModelSerializers
         string.dasherize
       when :camel
         string.camelize
-      when :snake
+      when :camel_lower
         string.camelize(:lower)
+      when :snake, :underscore
+        string.underscore
       else
         string
       end
