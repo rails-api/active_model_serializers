@@ -36,7 +36,7 @@ module ActiveModelSerializers
         end
 
         def apply_key_transform(type, options)
-          return type.map{ |t| apply_key_transform(t, options) } if type.is_a?(Array)
+          return type.map { |t| apply_key_transform(t, options) } if type.is_a?(Array)
           # type = JsonApi.send(:transform_key_casing!, type, options)
           KeyTransform.transform(type, ActiveModelSerializers.config.jsonapi_type_transform)
         end
