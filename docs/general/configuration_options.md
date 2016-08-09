@@ -83,8 +83,8 @@ Provides transform for `type` attribute.
 | transform | value |
 |------------|---------|
 | unaltered | nice_post
-| snake | nicePost
-| dashed (default) | nice-post
+| camel_lower | nicePost
+| dash (default) | nice-post
 | camel | nicePost
 
 

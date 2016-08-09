@@ -66,28 +66,5 @@ module ActiveModelSerializers
     def unaltered(value)
       value
     end
-
-    # Transforms string to selected case
-    # Accepts string in any case: 'camel', 'undescore', 'dashed'.
-    #
-    # @example:
-    #   transform('SomeClass', :underscore) => 'some_class'
-    #   transform('some_class', :snake) => 'someClass'
-    #   etc...
-    def transform(string, type)
-      string = string.underscore
-      case type.to_sym
-      when :dashed
-        string.dasherize
-      when :camel
-        string.camelize
-      when :camel_lower
-        string.camelize(:lower)
-      when :snake, :underscore
-        string.underscore
-      else
-        string
-      end
-    end
   end
 end
