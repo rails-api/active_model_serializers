@@ -38,7 +38,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       require 'active_record'
       require 'support/rails5_shims'
       require 'active_model_serializers'
-      require 'fixtures/poro'
+      require 'support/fixtures/poro'
 
       make_basic_app
 
@@ -88,7 +88,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       require 'active_record'
       require 'support/rails5_shims'
       require 'active_model_serializers'
-      require 'fixtures/poro'
+      require 'support/fixtures/poro'
       require 'active_model_serializers/register_jsonapi_renderer'
 
       make_basic_app
