@@ -21,7 +21,7 @@ module ActiveModelSerializers
         def type_for(serializer, options = {})
           type = serializer._type.to_s.split('::') if serializer._type
           type = serializer.object.class.to_s.split('::') unless type
-          type = apply_key_transform(type, options)
+          type = apply_type_transform(type, options)
           type = type.join ActiveModelSerializers.config.jsonapi_namespace_separator
 
           if ActiveModelSerializers.config.jsonapi_resource_type == :plural
@@ -35,8 +35,8 @@ module ActiveModelSerializers
           serializer.read_attribute_for_serialization(:id).to_s
         end
 
-        def apply_key_transform(type, options)
-          return type.map { |t| apply_key_transform(t, options) } if type.is_a?(Array)
+        def apply_type_transform(type, options)
+          return type.map { |t| apply_type_transform(t, options) } if type.is_a?(Array)
           KeyTransform.send(ActiveModelSerializers.config.jsonapi_type_transform, type)
         end
       end
