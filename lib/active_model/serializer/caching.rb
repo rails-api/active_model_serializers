@@ -263,7 +263,11 @@ module ActiveModel
         parts << object_cache_key
         parts << adapter_instance.cache_key
         parts << serializer_class._cache_digest unless serializer_class._skip_digest?
-        @cache_key = parts.join('/')
+        @cache_key = expand_cache_key(parts)
+      end
+
+      def expand_cache_key(parts)
+        ActiveSupport::Cache.expand_cache_key(parts)
       end
 
       # Use object's cache_key if available, else derive a key from the object
