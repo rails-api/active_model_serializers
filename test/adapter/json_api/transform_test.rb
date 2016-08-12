@@ -147,7 +147,7 @@ module ActiveModelSerializers
           assert_equal({
                          Data: {
                            Id: '1337',
-                           Type: 'posts',
+                           Type: 'Posts',
                            Attributes: {
                              Title: 'Title 1',
                              Body: 'Body 1',
@@ -155,12 +155,12 @@ module ActiveModelSerializers
                            },
                            Relationships: {
                              Author: {
-                               Data: { Id: '1', Type: 'authors' }
+                               Data: { Id: '1', Type: 'Authors' }
                              },
                              Comments: {
                                Data: [
-                                 { Id: '7', Type: 'comments' },
-                                 { Id: '12', Type: 'comments' }
+                                 { Id: '7', Type: 'Comments' },
+                                 { Id: '12', Type: 'Comments' }
                                ]
                              }
                            },
@@ -255,40 +255,38 @@ module ActiveModelSerializers
         end
 
         def test_success_document_transform_camel
-          with_type_transform :camel do
-            mock_request(:camel)
-            serializer = PostSerializer.new(@post)
-            adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
-            result = adapter.serializable_hash
-            assert_equal({
-                           Data: {
-                             Id: '1337',
-                             Type: 'Posts',
-                             Attributes: {
-                               Title: 'Title 1',
-                               Body: 'Body 1',
-                               PublishAt: @publish_at
+          mock_request(:camel)
+          serializer = PostSerializer.new(@post)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer, @options)
+          result = adapter.serializable_hash
+          assert_equal({
+                         Data: {
+                           Id: '1337',
+                           Type: 'Posts',
+                           Attributes: {
+                             Title: 'Title 1',
+                             Body: 'Body 1',
+                             PublishAt: @publish_at
+                           },
+                           Relationships: {
+                             Author: {
+                               Data: { Id: '1', Type: 'Authors' }
                              },
-                             Relationships: {
-                               Author: {
-                                 Data: { Id: '1', Type: 'Authors' }
-                               },
-                               Comments: {
-                                 Data: [
-                                   { Id: '7', Type: 'Comments' },
-                                   { Id: '12', Type: 'Comments' }
-                                 ]
-                               }
-                             },
-                             Links: {
-                               Self: 'http://example.com/posts/1337',
-                               PostAuthors: 'http://example.com/posts/1337/authors',
-                               SubscriberComments: 'http://example.com/posts/1337/comments'
-                             },
-                             Meta: { Rating: 5, FavoriteCount: 10 }
-                           }
-                         }, result)
-          end
+                             Comments: {
+                               Data: [
+                                 { Id: '7', Type: 'Comments' },
+                                 { Id: '12', Type: 'Comments' }
+                               ]
+                             }
+                           },
+                           Links: {
+                             Self: 'http://example.com/posts/1337',
+                             PostAuthors: 'http://example.com/posts/1337/authors',
+                             SubscriberComments: 'http://example.com/posts/1337/comments'
+                           },
+                           Meta: { Rating: 5, FavoriteCount: 10 }
+                         }
+                       }, result)
         end
 
         def test_success_document_transform_camel_lower

@@ -9,28 +9,12 @@ module SerializationTesting
     ActiveModelSerializers::SerializableResource.new(obj).to_json
   end
 
-  def with_key_transform(transform)
-    original_transform = ActiveModelSerializers.config.key_transform
-    ActiveModelSerializers.config.key_transform = transform
-    yield
-  ensure
-    ActiveModelSerializers.config.key_transform = original_transform
-  end
-
-  def with_namespace_seperator(seperator)
+  def with_namespace_separator(seperator)
     original_seperator = ActiveModelSerializers.config.jsonapi_namespace_separator
     ActiveModelSerializers.config.jsonapi_namespace_separator = seperator
     yield
   ensure
     ActiveModelSerializers.config.jsonapi_namespace_separator = original_seperator
-  end
-
-  def with_type_transform(transform)
-    original_transform = ActiveModelSerializers.config.jsonapi_type_transform
-    ActiveModelSerializers.config.jsonapi_type_transform = transform
-    yield
-  ensure
-    ActiveModelSerializers.config.jsonapi_type_transform = original_transform
   end
 
   # Aliased as :with_configured_adapter to clarify that

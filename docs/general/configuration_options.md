@@ -74,19 +74,16 @@ Possible values:
 
 ##### jsonapi_namespace_separator
 
-Sets separator string for namespaced models to render `type` attribute. Default value is `--`.
+Sets separator string for namespaced models to render `type` attribute.
 
-##### jsonapi_type_transform
 
-Provides transform for `type` attribute.
+| Separator | Example: Admin::User |
+|----|----|
+| `'-'` (default) | 'admin-users'
+| `'--'` (recommended) | 'admin--users'
 
-| transform | value |
-|------------|---------|
-| unaltered | nice_post
-| camel_lower | nicePost
-| dash (default) | nice-post
-| camel | nicePost
-
+See [Recommendation for dasherizing (kebab-case-ing) namespaced object, such as `Admin::User`](https://github.com/json-api/json-api/issues/850)
+for more discussion.
 
 ##### jsonapi_include_toplevel_object
 

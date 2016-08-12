@@ -23,9 +23,7 @@ module ActiveModel
         config.adapter = :attributes
         config.key_transform = nil
         config.jsonapi_resource_type = :plural
-        config.jsonapi_namespace_separator = '--'.freeze
-        # http://jsonapi.org/recommendations/#naming
-        config.jsonapi_type_transform = :dash
+        config.jsonapi_namespace_separator = '-'.freeze
         config.jsonapi_version = '1.0'
         config.jsonapi_toplevel_meta = {}
         # Make JSON API top-level jsonapi member opt-in
