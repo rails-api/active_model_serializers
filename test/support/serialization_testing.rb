@@ -9,6 +9,14 @@ module SerializationTesting
     ActiveModelSerializers::SerializableResource.new(obj).to_json
   end
 
+  def with_namespace_separator(seperator)
+    original_seperator = ActiveModelSerializers.config.jsonapi_namespace_separator
+    ActiveModelSerializers.config.jsonapi_namespace_separator = seperator
+    yield
+  ensure
+    ActiveModelSerializers.config.jsonapi_namespace_separator = original_seperator
+  end
+
   # Aliased as :with_configured_adapter to clarify that
   # this method tests the configured adapter.
   # When not testing configuration, it may be preferable

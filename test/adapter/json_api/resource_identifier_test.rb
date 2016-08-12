@@ -39,6 +39,26 @@ module ActiveModelSerializers
           test_type_inflection(AuthorSerializer, 'authors', :plural)
         end
 
+        def test_type_with_namespace
+          Object.const_set(:Admin, Module.new)
+          model = Class.new(::Model)
+          Admin.const_set(:PowerUser, model)
+          serializer = Class.new(ActiveModel::Serializer)
+          Admin.const_set(:PowerUserSerializer, serializer)
+          with_namespace_separator '--' do
+            admin_user = Admin::PowerUser.new
+            serializer = Admin::PowerUserSerializer.new(admin_user)
+            expected = {
+              id: admin_user.id,
+              type: 'admin--power-users'
+            }
+
+            identifier = ResourceIdentifier.new(serializer, {})
+            actual = identifier.as_json
+            assert_equal(expected, actual)
+          end
+        end
+
         def test_id_defined_on_object
           test_id(AuthorSerializer, @model.id.to_s)
         end

@@ -6,6 +6,9 @@ Breaking changes:
 
 Features:
 
+- [#1791](https://github.com/rails-api/active_model_serializers/pull/1791) (@bf4, @youroff, @NullVoxPopuli)
+  - Added `jsonapi_namespace_separator` config option.
+
 Fixes:
 
 - [#1833](https://github.com/rails-api/active_model_serializers/pull/1833) Remove relationship links if they are null (@groyoh)

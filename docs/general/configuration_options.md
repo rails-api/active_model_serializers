@@ -72,6 +72,19 @@ Possible values:
 - `:singular`
 - `:plural` (default)
 
+##### jsonapi_namespace_separator
+
+Sets separator string for namespaced models to render `type` attribute.
+
+
+| Separator | Example: Admin::User |
+|----|----|
+| `'-'` (default) | 'admin-users'
+| `'--'` (recommended) | 'admin--users'
+
+See [Recommendation for dasherizing (kebab-case-ing) namespaced object, such as `Admin::User`](https://github.com/json-api/json-api/issues/850)
+for more discussion.
+
 ##### jsonapi_include_toplevel_object
 
 Include a [top level jsonapi member](http://jsonapi.org/format/#document-jsonapi-object)
