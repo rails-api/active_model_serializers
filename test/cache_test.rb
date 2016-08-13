@@ -4,22 +4,26 @@ require 'tempfile'
 
 module ActiveModelSerializers
   class CacheTest < ActiveSupport::TestCase
-    class AuthorWithCustomCacheKey < Author
-      class DerivedCacheKey
-        def initialize(object, method)
-          @object = object
-          @method = method
+    # Instead of a primitive cache key (i.e. a string), this class
+    # returns a list of objects that require to be expanded themselves.
+    class AuthorWithExpandableCacheElements < Author
+      # For the test purposes it's important that #to_s for HasCacheKey differs
+      # between instances, hence not a Struct.
+      class HasCacheKey
+        attr_reader :cache_key
+        def initialize(cache_key)
+          @cache_key = cache_key
         end
 
-        def cache_key
-          @object.__send__(@method)
+        def to_s
+          "HasCacheKey##{object_id}"
         end
       end
 
       def cache_key
         [
-          DerivedCacheKey.new(self, :name),
-          DerivedCacheKey.new(self, :id)
+          HasCacheKey.new(name),
+          HasCacheKey.new(id)
         ]
       end
     end
@@ -126,10 +130,10 @@ module ActiveModelSerializers
       assert_equal(uncached_author_serializer.attributes.to_json, cache_store.fetch(key).to_json)
     end
 
-    def test_cache_key_with_non_primitive_values
-      author = AuthorWithCustomCacheKey.new(id: 10, name: 'hello')
-      same_author = AuthorWithCustomCacheKey.new(id: 10, name: 'hello')
-      diff_author = AuthorWithCustomCacheKey.new(id: 11, name: 'hello')
+    def test_cache_key_expansion
+      author = AuthorWithExpandableCacheElements.new(id: 10, name: 'hello')
+      same_author = AuthorWithExpandableCacheElements.new(id: 10, name: 'hello')
+      diff_author = AuthorWithExpandableCacheElements.new(id: 11, name: 'hello')
 
       author_serializer = AuthorSerializer.new(author)
       same_author_serializer = AuthorSerializer.new(same_author)
