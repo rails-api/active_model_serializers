@@ -288,8 +288,9 @@ module ActiveModelSerializers
       # Assert attributes are serialized correctly
       serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :attributes)
       attributes_serialization = serializable_alert.as_json
-      assert_equal expected_fetch_attributes, alert.attributes
-      assert_equal alert.attributes, attributes_serialization
+      alert_attributes_symbolized = alert.attributes.symbolize_keys
+      assert_equal expected_fetch_attributes, alert_attributes_symbolized
+      assert_equal alert_attributes_symbolized, attributes_serialization
       attributes_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
       assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key)
 
@@ -350,12 +351,15 @@ module ActiveModelSerializers
         manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive)
         assert_equal manual_cached_attributes, cached_attributes
 
-        assert_equal cached_attributes["#{@comment.cache_key}/#{adapter_instance.cache_key}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
-        assert_equal cached_attributes["#{@comment.post.cache_key}/#{adapter_instance.cache_key}"], Post.new(id: 'post', title: 'New Post', body: 'Body').attributes
+        expected_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes.symbolize_keys
+        assert_equal cached_attributes["#{@comment.cache_key}/#{adapter_instance.cache_key}"], expected_comment
+        expected_post = Post.new(id: 'post', title: 'New Post', body: 'Body').attributes.symbolize_keys
+        assert_equal cached_attributes["#{@comment.post.cache_key}/#{adapter_instance.cache_key}"], expected_post
 
         writer = @comment.post.blog.writer
         writer_cache_key = writer.cache_key
-        assert_equal cached_attributes["#{writer_cache_key}/#{adapter_instance.cache_key}"], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
+        expected_attributes = Author.new(id: 'author', name: 'Joao M. D. Moura').attributes.symbolize_keys
+        assert_equal cached_attributes["#{writer_cache_key}/#{adapter_instance.cache_key}"], expected_attributes
       end
     end
 

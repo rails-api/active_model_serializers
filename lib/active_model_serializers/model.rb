@@ -9,7 +9,7 @@ module ActiveModelSerializers
     attr_reader :attributes, :errors
 
     def initialize(attributes = {})
-      @attributes = attributes
+      @attributes = attributes.with_indifferent_access
       @errors = ActiveModel::Errors.new(self)
       super
     end
@@ -30,7 +30,7 @@ module ActiveModelSerializers
     end
 
     def read_attribute_for_serialization(key)
-      if key == :id || key == 'id'
+      if key == :id
         attributes.fetch(key) { id }
       else
         attributes[key]
