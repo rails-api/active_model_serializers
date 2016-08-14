@@ -34,6 +34,7 @@ module ActiveModel
       # we have no simple way to know that it is safe to call that instance method.
       # (which is really a class property at this point, anyhow).
       # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/PerceivedComplexity
       # Disabling cop since it's good to highlight the complexity of this method by
       # including all the logic right here.
       def json_key
@@ -45,11 +46,18 @@ module ActiveModel
         # 2. get from first serializer instance in collection
         key ||= (serializer = serializers.first) && serializer.json_key
         # 3. get from collection name, if a named collection
-        key ||= object.respond_to?(:name) ? object.name && object.name.underscore : nil
+        key ||= if object.respond_to?(:name) && (object_name = object.name)
+                  if (object_class = object_name.safe_constantize)
+                    serializer_class = serializer_from_resource(object_class.new, ActiveModel::Serializer, options) { nil }
+                  end
+                  (serializer_class && serializer_class.json_key) || object_name.underscore
+                end
+
         # 4. key may be nil for empty collection and no serializer option
         key && key.pluralize
       end
       # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/PerceivedComplexity
 
       def paginated?
         object.respond_to?(:current_page) &&
@@ -73,8 +81,9 @@ module ActiveModel
       def serializer_from_resource(resource, serializer_context_class, options)
         serializer_class = options.fetch(:serializer) { serializer_context_class.serializer_for(resource) }
 
-        if serializer_class.nil? # rubocop:disable Style/GuardClause
-          fail NoSerializerError, "No serializer found for resource: #{resource.inspect}"
+        if serializer_class.nil?
+          block_given? && yield ||
+            fail(NoSerializerError, "No serializer found for resource: #{resource.inspect}")
         else
           serializer_class.new(resource, options.except(:serializer))
         end

@@ -23,6 +23,21 @@ module ActiveModel
         resource
       end
 
+      def build_named_collection_with_matching_serializer(*resource)
+        serialized_resource = Class.new(::Model)
+        serializer = Class.new(ActiveModel::Serializer) do
+          def json_key
+            'resources'
+          end
+        end
+
+        Object.const_set(:SerializedResource, serialized_resource)
+        Object.const_set(:SerializedResourceSerializer, serializer)
+
+        resource.define_singleton_method(:name) { 'SerializedResource' }
+        resource
+      end
+
       def test_has_object_reader_serializer_interface
         assert_equal @serializer.object, @resource
       end
@@ -74,6 +89,11 @@ module ActiveModel
       def test_json_key_with_resource_with_name_and_no_serializers
         serializer = collection_serializer.new(build_named_collection)
         assert_equal 'me_resources', serializer.json_key
+      end
+
+      def test_json_key_with_resource_with_name_and_serializer
+        serializer = collection_serializer.new(build_named_collection_with_matching_serializer)
+        assert_equal 'resources', serializer.json_key
       end
 
       def test_json_key_with_resource_with_nil_name_and_no_serializers

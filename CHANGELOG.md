@@ -12,6 +12,7 @@ Features:
 Fixes:
 
 - [#1833](https://github.com/rails-api/active_model_serializers/pull/1833) Remove relationship links if they are null (@groyoh)
+- [#1867](https://github.com/rails-api/active_model_serializers/pull/1867) Infer collection root preferably from serializer matching collection name, if a named collection. (@mchitten)
 
 Misc:
 
