@@ -12,6 +12,7 @@ Features:
 Fixes:
 
 - [#1833](https://github.com/rails-api/active_model_serializers/pull/1833) Remove relationship links if they are null (@groyoh)
+- [#1881](https://github.com/rails-api/active_model_serializers/pull/1881) ActiveModelSerializers::Model correctly works with string keys (@yevhene)
 
 Misc:
 

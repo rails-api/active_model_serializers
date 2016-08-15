@@ -9,7 +9,7 @@ module ActiveModelSerializers
     attr_reader :attributes, :errors
 
     def initialize(attributes = {})
-      @attributes = attributes
+      @attributes = attributes && attributes.symbolize_keys
       @errors = ActiveModel::Errors.new(self)
       super
     end
