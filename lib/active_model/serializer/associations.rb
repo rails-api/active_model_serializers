@@ -90,7 +90,7 @@ module ActiveModel
           self.class._reflections.values.each do |reflection|
             next if reflection.excluded?(self)
             key = reflection.options.fetch(:key, reflection.name)
-            next unless include_directive.key?(key)
+            next if !include_directive.key?(key) && !reflection.options[:included]
             y.yield reflection.build_association(self, instance_options)
           end
         end
