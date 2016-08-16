@@ -5,7 +5,7 @@ module ActiveModelSerializers
         # {http://jsonapi.org/format/#document-resource-object-related-resource-links Document Resource Object Related Resource Links}
         # {http://jsonapi.org/format/#document-links Document Links}
         # {http://jsonapi.org/format/#document-resource-object-linkage Document Resource Relationship Linkage}
-        # {http://jsonapi.org/format/#document-meta Docment Meta}
+        # {http://jsonapi.org/format/#document-meta Document Meta}
         def initialize(parent_serializer, serializer, serializable_resource_options, args = {})
           @object = parent_serializer.object
           @scope = parent_serializer.scope
