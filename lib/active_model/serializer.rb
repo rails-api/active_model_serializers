@@ -62,15 +62,27 @@ module ActiveModel
     def self.serializer_lookup_chain_for(klass)
       chain = []
 
-      resource_class_name = klass.name.demodulize
-      resource_namespace = klass.name.deconstantize
-      name_namespace = name.deconstantize
+      resource_class_name   = klass.name.demodulize
+      resource_namespace    = klass.name.deconstantize
       serializer_class_name = "#{resource_class_name}Serializer"
 
-      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
-      chain.push("#{name_namespace}::#{serializer_class_name}") if self != ActiveModel::Serializer
-      chain.push("#{resource_namespace}::#{serializer_class_name}")
+      tmp_namespace   = name.to_s
+      name_namespaces = [tmp_namespace]
 
+      until tmp_namespace.empty?
+        found_namespace = tmp_namespace.deconstantize
+        name_namespaces << found_namespace
+
+        tmp_namespace = found_namespace
+      end
+
+      if self != ActiveModel::Serializer
+        name_namespaces.each do |ns|
+          chain.push("#{ns}::#{serializer_class_name}")
+        end
+      end
+
+      chain.push("#{resource_namespace}::#{serializer_class_name}")
       chain
     end
 
