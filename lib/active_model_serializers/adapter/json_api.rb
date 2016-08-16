@@ -438,14 +438,7 @@ module ActiveModelSerializers
           allow_wildcard: true
         )
         serializer.associations(include_directive).each_with_object({}) do |association, hash|
-          hash[association.key] = Relationship.new(
-            serializer,
-            association.serializer,
-            instance_options,
-            options: association.options,
-            links: association.links,
-            meta: association.meta
-          ).as_json
+          hash[association.key] = Relationship.new(serializer, instance_options, association).as_json
         end
       end
 
