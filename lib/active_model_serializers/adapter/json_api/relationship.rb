@@ -5,18 +5,21 @@ module ActiveModelSerializers
         # {http://jsonapi.org/format/#document-resource-object-related-resource-links Document Resource Object Related Resource Links}
         # {http://jsonapi.org/format/#document-links Document Links}
         # {http://jsonapi.org/format/#document-resource-object-linkage Document Resource Relationship Linkage}
-        # {http://jsonapi.org/format/#document-meta Docment Meta}
-        def initialize(parent_serializer, serializer, serializable_resource_options, args = {})
+        # {http://jsonapi.org/format/#document-meta Document Meta}
+        def initialize(parent_serializer, serializable_resource_options, association)
+          serializer = association.serializer
+          options = association.options
+          links = association.links
+          meta = association.meta
           @object = parent_serializer.object
           @scope = parent_serializer.scope
-          @association_options = args.fetch(:options, {})
+          @association_options = options || {}
           @serializable_resource_options = serializable_resource_options
           @data = data_for(serializer)
-          @links = args.fetch(:links, {}).each_with_object({}) do |(key, value), hash|
+          @links = (links || {}).each_with_object({}) do |(key, value), hash|
             result = Link.new(parent_serializer, value).as_json
             hash[key] = result if result
           end
-          meta = args.fetch(:meta, nil)
           @meta = meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta
         end
 

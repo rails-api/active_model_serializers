@@ -150,9 +150,23 @@ module ActiveModelSerializers
 
         private
 
-        def test_relationship(expected, params = {})
+        def test_relationship(expected, test_options = {})
           parent_serializer = AuthorSerializer.new(@author)
-          relationship = Relationship.new(parent_serializer, @serializer, nil, params)
+
+          serializable_resource_options = {} # adapter.instance_options
+
+          meta = test_options.delete(:meta)
+          options = test_options.delete(:options)
+          links = test_options.delete(:links)
+          association_serializer = @serializer
+          if association_serializer && association_serializer.object
+            association_name = association_serializer.json_key.to_sym
+            association = ::ActiveModel::Serializer::Association.new(association_name, association_serializer, options, links, meta)
+          else
+            association = ::ActiveModel::Serializer::Association.new(:association_name_not_used, association, options, links, meta)
+          end
+
+          relationship = Relationship.new(parent_serializer, serializable_resource_options, association)
           assert_equal(expected, relationship.as_json)
         end
       end
