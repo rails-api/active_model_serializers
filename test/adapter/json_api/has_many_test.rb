@@ -40,6 +40,27 @@ module ActiveModelSerializers
           assert_equal(expected, @adapter.serializable_hash[:data][:relationships][:comments])
         end
 
+        test 'relationships can be whitelisted via fields' do
+          @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, fields: { posts: [:author] })
+          result = @adapter.serializable_hash
+          expected = {
+            data: {
+              id: '1',
+              type: 'posts',
+              relationships: {
+                author: {
+                  data: {
+                    id: '1',
+                    type: 'authors'
+                  }
+                }
+              }
+            }
+          }
+
+          assert_equal expected, result
+        end
+
         def test_includes_linked_comments
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer, include: [:comments])
           expected = [{

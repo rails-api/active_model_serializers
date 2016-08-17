@@ -15,6 +15,7 @@ Fixes:
 - [#1881](https://github.com/rails-api/active_model_serializers/pull/1881) ActiveModelSerializers::Model correctly works with string keys (@yevhene)
 
 Misc:
+- [#1839](https://github.com/rails-api/active_model_serializers/pull/1839) `fields` tests demonstrating usage for both attributes and relationships. (@NullVoxPopuli)
 
 - [#1878](https://github.com/rails-api/active_model_serializers/pull/1878) Cache key generation for serializers now uses `ActiveSupport::Cache.expand_cache_key` instead of `Array#join` by default and is also overridable. This change should be backward-compatible. (@markiz)
 
