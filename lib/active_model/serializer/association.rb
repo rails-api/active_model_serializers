@@ -1,6 +1,6 @@
 module ActiveModel
   class Serializer
-    # This class hold all information about serializer's association.
+    # This class holds all information about serializer's association.
     #
     # @attr [Symbol] name
     # @attr [ActiveModel::Serializer] serializer
