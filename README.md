@@ -84,9 +84,8 @@ If you'd like to chat, we have a [community slack](http://amserializers.herokuap
 Thanks!
 
 ## Documentation
-
 - [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.2)
   - [Guides](docs)
 - [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
   - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)
