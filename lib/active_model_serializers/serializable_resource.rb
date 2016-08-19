@@ -49,7 +49,7 @@ module ActiveModelSerializers
 
     # Get serializer either explicitly :serializer or implicitly from resource
     # Remove :serializer key from serializer_opts
-    # Replace :serializer key with :each_serializer if present
+    # Remove :each_serializer if present and set as :serializer key
     def serializer
       @serializer ||=
         begin

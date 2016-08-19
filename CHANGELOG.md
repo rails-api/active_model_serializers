@@ -4,6 +4,10 @@
 
 Breaking changes:
 
+Fixes:
+
+- [#1887](https://github.com/rails-api/active_model_serializers/pull/1887) Make the comment reflect what the function does (@johnnymo87)
+
 Features:
 
 - [#1791](https://github.com/rails-api/active_model_serializers/pull/1791) (@bf4, @youroff, @NullVoxPopuli)
