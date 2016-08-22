@@ -117,7 +117,7 @@ will generate the path `/posts/{postId}?include='comments'`
 
 So then in your controller, you'll want to be sure to have something like:
 ```ruby
-render json: @post, include: params[:include]
+render jsonapi: @post, include: params[:include]
 ```
 
 If you want to use `include` on a collection, you'd write something like this:
