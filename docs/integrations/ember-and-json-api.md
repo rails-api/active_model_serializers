@@ -42,7 +42,9 @@ Lastly, in order to properly handle JSON API responses, we need to register a JS
 
 ```ruby
 # config/initializers/active_model_serializers.rb
-require 'active_model_serializers/register_jsonapi_renderer'
+ActiveSupport.on_load(:action_controller) do
+  require 'active_model_serializers/register_jsonapi_renderer'
+end
 ```
 
 ### Adapter Changes
