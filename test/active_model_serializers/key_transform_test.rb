@@ -60,6 +60,14 @@ module ActiveModelSerializers
         {
           value: nil,
           expected: nil
+        },
+        {
+          value: [
+            { some_value: 'value' }
+          ],
+          expected: [
+            { SomeValue: 'value' }
+          ]
         }
       ]
       scenarios.each do |s|
@@ -126,6 +134,14 @@ module ActiveModelSerializers
         {
           value: nil,
           expected: nil
+        },
+        {
+          value: [
+            { some_value: 'value' }
+          ],
+          expected: [
+            { someValue: 'value' }
+          ]
         }
       ]
       scenarios.each do |s|
@@ -188,6 +204,14 @@ module ActiveModelSerializers
         {
           value: nil,
           expected: nil
+        },
+        {
+          value: [
+            { 'some_value' => 'value' }
+          ],
+          expected: [
+            { 'some-value' => 'value' }
+          ]
         }
       ]
       scenarios.each do |s|
@@ -254,6 +278,14 @@ module ActiveModelSerializers
         {
           value: nil,
           expected: nil
+        },
+        {
+          value: [
+            { 'some-value' => 'value' }
+          ],
+          expected: [
+            { 'some_value' => 'value' }
+          ]
         }
       ]
       scenarios.each do |s|
