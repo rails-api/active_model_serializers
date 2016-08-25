@@ -46,6 +46,7 @@ Each adapter has a default key transform configured:
 
 | Adapter | Default Key Transform |
 |----|----|
+| `Attributes` | `:unaltered` |
 | `Json` | `:unaltered` |
 | `JsonApi` | `:dash` |
 

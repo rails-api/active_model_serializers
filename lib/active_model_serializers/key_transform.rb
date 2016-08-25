@@ -11,6 +11,7 @@ module ActiveModelSerializers
     # @see {https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector/methods.rb#L66-L76 ActiveSupport::Inflector.camelize}
     def camel(value)
       case value
+      when Array then value.map { |item| camel(item) }
       when Hash then value.deep_transform_keys! { |key| camel(key) }
       when Symbol then camel(value.to_s).to_sym
       when String then value.underscore.camelize
@@ -25,6 +26,7 @@ module ActiveModelSerializers
     # @see {https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector/methods.rb#L66-L76 ActiveSupport::Inflector.camelize}
     def camel_lower(value)
       case value
+      when Array then value.map { |item| camel_lower(item) }
       when Hash then value.deep_transform_keys! { |key| camel_lower(key) }
       when Symbol then camel_lower(value.to_s).to_sym
       when String then value.underscore.camelize(:lower)
@@ -40,6 +42,7 @@ module ActiveModelSerializers
     # @see {https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector/methods.rb#L185-L187 ActiveSupport::Inflector.dasherize}
     def dash(value)
       case value
+      when Array then value.map { |item| dash(item) }
       when Hash then value.deep_transform_keys! { |key| dash(key) }
       when Symbol then dash(value.to_s).to_sym
       when String then value.underscore.dasherize
@@ -55,6 +58,7 @@ module ActiveModelSerializers
     # @see {https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector/methods.rb#L89-L98 ActiveSupport::Inflector.underscore}
     def underscore(value)
       case value
+      when Array then value.map { |item| underscore(item) }
       when Hash then value.deep_transform_keys! { |key| underscore(key) }
       when Symbol then underscore(value.to_s).to_sym
       when String then value.underscore
