@@ -1,5 +1,5 @@
-module ActiveModel
-  class Serializer
+module ActiveModelSerializers
+  module Resource
     module Links
       extend ActiveSupport::Concern
 
