@@ -67,7 +67,7 @@ Then, in your controller you can tell rails you're accepting and rendering the j
   
     # Only allow a trusted parameter "white list" through.
     def post_params
-      ActiveModelSerializers::Deserialization.jsonapi_parse!(params).permit(:title, :body)
+      ActiveModelSerializers::Deserialization.jsonapi_parse!(params, only: [:title, :body] )
     end
 end
 ```
