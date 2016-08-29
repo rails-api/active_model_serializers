@@ -38,12 +38,40 @@ You will also want to set the `key_transform` to `:unaltered` since you will adj
 ActiveModelSerializers.config.key_transform = :unaltered
 ```
 
-Lastly, in order to properly handle JSON API responses, we need to register a JSON API renderer, like so:
+In order to properly handle JSON API responses, we need to register a JSON API renderer, like so:
 
 ```ruby
 # config/initializers/active_model_serializers.rb
 require 'active_model_serializers/register_jsonapi_renderer'
 ```
+Rails also requires your controller to tell it that you accept and generate JSONAPI data.  To do that, you use `respond_to` in your controller handlers.  You can add `ActionController::MimeResponds` to your application controller to enable this:
+
+```ruby
+class ApplicationController < ActionController::API
+  include ActionController::MimeResponds
+end
+```
+Then, in your controller you can tell rails you're accepting and rendering the jsonapi format:
+```ruby
+ # POST /post
+  def create
+    @post = Post.new(post_params)
+    respond_to do |format|
+      if @post.save
+        format.jsonapi { render jsonapi: @post, status: :created, location: @post }
+      else
+        format.jsonapi { render jsonapi: @post.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
+    # Only allow a trusted parameter "white list" through.
+    def post_params
+      ActiveModelSerializers::Deserialization.jsonapi_parse!(params).permit(:title, :body)
+    end
+end
+```
+
 
 ### Adapter Changes
 
@@ -67,18 +95,6 @@ export default  DS.JSONAPIAdapter.extend({
     return pluralize(underscored);
   },
 
-  // allows queries to be sent along with a findRecord
-  // hopefully Ember / EmberData will soon have this built in
-  // ember-data issue tracked here:
-  // https://github.com/emberjs/data/issues/3596
-  urlForFindRecord(id, modelName, snapshot) {
-    let url = this._super(...arguments);
-    let query = Ember.get(snapshot, 'adapterOptions.query');
-    if(query) {
-      url += '?' + Ember.$.param(query);
-    }
-    return url;
-  }
 });
 ```
 
@@ -102,18 +118,16 @@ export default DS.JSONAPISerializer.extend({
 
 ```
 
+
 ## Including Nested Resources
 
-Previously, `store.find` and `store.findRecord` did not allow specification of any query params.
-The ActiveModelSerializers default for the `include` parameter is to be `nil` meaning that if any associations are defined in your serializer, only the `id` and `type` will be in the `relationships` structure of the JSON API response.
+Ember-data can request related records by using `include`.  To tell it to make that request, use the form below when requesting records.
 For more on `include` usage, see: [The JSON API include examples](./../general/adapters.md#JSON-API)
 
-With the above modifications, you can execute code as below in order to include nested resources while doing a find query.
-
 ```javascript
-store.findRecord('post', postId, { adapterOptions: { query: { include: 'comments' } } });
+store.findRecord('post', postId, { include: 'comments' } );
 ```
-will generate the path `/posts/{postId}?include='comments'`
+which will generate the path /posts/{postId}?include='comments'
 
 So then in your controller, you'll want to be sure to have something like:
 ```ruby
