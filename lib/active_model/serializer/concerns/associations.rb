@@ -74,8 +74,8 @@ module ActiveModel
         # @api private
         #
         def associate(reflection)
-          key = reflection.options[:key]
-          key ? self._reflections[key] = reflection : self._reflections[reflection.name] = reflection
+          key = reflection.options[:key] || reflection.name
+          self._reflections[key] = reflection
         end
       end
 
