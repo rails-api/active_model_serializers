@@ -291,9 +291,21 @@ module ActiveModel
       end
 
       class InheritedSerializerTest < ActiveSupport::TestCase
+        class PostSerializer < ActiveModel::Serializer
+          belongs_to :author
+          has_many :comments
+          belongs_to :blog
+        end
+
         class InheritedPostSerializer < PostSerializer
           belongs_to :author, polymorphic: true
           has_many :comments, key: :reviews
+        end
+
+        class AuthorSerializer < ActiveModel::Serializer
+          has_many :posts
+          has_many :roles
+          has_one :bio
         end
 
         class InheritedAuthorSerializer < AuthorSerializer
@@ -333,9 +345,18 @@ module ActiveModel
         end
 
         test 'a serializer inheriting from another serializer can redefine belongs_to associations' do
-          expected = [:author, :comments, :blog].sort
-          result = (@inherited_post_associations - @post_associations).map(&:name).sort
-          assert_equal(result, expected)
+          assert_equal [:author, :comments, :blog], @post_associations.map(&:name)
+          assert_equal [:author, :comments, :blog, :comments], @inherited_post_associations.map(&:name)
+
+          refute @post_associations.detect {|assoc| assoc.name == :author }.options.key?(:polymorphic)
+          assert_equal true,  @inherited_post_associations.detect {|assoc| assoc.name == :author }.options.fetch(:polymorphic)
+
+          refute @post_associations.detect {|assoc| assoc.name == :comments }.options.key?(:key)
+          original_comment_assoc, new_comments_assoc = @inherited_post_associations.select {|assoc| assoc.name == :comments }
+          refute original_comment_assoc.options.key?(:key)
+          assert_equal :reviews, new_comments_assoc.options.fetch(:key)
+
+          assert_equal @post_associations.detect {|assoc| assoc.name == :blog }, @inherited_post_associations.detect {|assoc| assoc.name == :blog }
         end
 
         test 'a serializer inheriting from another serializer can have an additional association with the same name but with different key' do
