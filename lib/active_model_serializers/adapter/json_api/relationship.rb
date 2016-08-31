@@ -7,19 +7,16 @@ module ActiveModelSerializers
         # {http://jsonapi.org/format/#document-resource-object-linkage Document Resource Relationship Linkage}
         # {http://jsonapi.org/format/#document-meta Document Meta}
         def initialize(parent_serializer, serializable_resource_options, association)
-          serializer = association.serializer
-          options = association.options
-          links = association.links
-          meta = association.meta
           @object = parent_serializer.object
           @scope = parent_serializer.scope
-          @association_options = options || {}
+          @association_options = association.options || {}
           @serializable_resource_options = serializable_resource_options
-          @data = data_for(serializer)
-          @links = (links || {}).each_with_object({}) do |(key, value), hash|
+          @data = data_for(association)
+          @links = (association.links || {}).each_with_object({}) do |(key, value), hash|
             result = Link.new(parent_serializer, value).as_json
             hash[key] = result if result
           end
+          meta = association.meta
           @meta = meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta
         end
 
@@ -41,7 +38,8 @@ module ActiveModelSerializers
 
         private
 
-        def data_for(serializer)
+        def data_for(association)
+          serializer = association.serializer
           if serializer.respond_to?(:each)
             serializer.map { |s| ResourceIdentifier.new(s, serializable_resource_options).as_json }
           elsif association_options[:virtual_value]
