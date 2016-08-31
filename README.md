@@ -158,6 +158,10 @@ serializer.associations
 ```
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for more information.
 
+## Semantic Versioning
+
+This project adheres to [semver](http://semver.org/)
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
