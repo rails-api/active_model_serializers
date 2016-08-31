@@ -22,12 +22,12 @@ module ActiveModel
 
       # @return [Hash]
       def links
-        options.fetch(:links)
+        options.fetch(:links) || {}
       end
 
-      # @return [Hash]
+      # @return [Hash, nil]
       def meta
-        options.fetch(:meta)
+        options[:meta]
       end
     end
   end
