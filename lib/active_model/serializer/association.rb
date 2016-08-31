@@ -10,19 +10,24 @@ module ActiveModel
     #  Association.new(:comments, { serializer: CommentSummarySerializer })
     #
     class Association < Field
-      attr_reader :serializer, :links, :meta
-
-      def initialize(*)
-        super
-
-        @serializer = options.delete(:serializer)
-        @links = options.delete(:links)
-        @meta = options.delete(:meta)
-      end
-
       # @return [Symbol]
       def key
         options.fetch(:key, name)
+      end
+
+      # @return [ActiveModel::Serializer]
+      def serializer
+        options.fetch(:serializer)
+      end
+
+      # @return [Hash]
+      def links
+        options.fetch(:links)
+      end
+
+      # @return [Hash]
+      def meta
+        options.fetch(:meta)
       end
     end
   end

@@ -31,13 +31,13 @@ module ActiveModel
 
           case key
           when :posts
-            assert_equal({ include_data: true }, options)
+            assert_equal true, options.fetch(:include_data)
             assert_kind_of(ActiveModelSerializers.config.collection_serializer, serializer)
           when :bio
-            assert_equal({ include_data: true }, options)
+            assert_equal true, options.fetch(:include_data)
             assert_nil serializer
           when :roles
-            assert_equal({ include_data: true }, options)
+            assert_equal true, options.fetch(:include_data)
             assert_kind_of(ActiveModelSerializers.config.collection_serializer, serializer)
           else
             flunk "Unknown association: #{key}"
@@ -79,7 +79,7 @@ module ActiveModel
             flunk "Unknown association: #{key}"
           end
 
-          assert_equal({ include_data: true }, association.options)
+          assert_equal true, association.options.fetch(:include_data)
         end
       end
 
@@ -348,15 +348,15 @@ module ActiveModel
           assert_equal [:author, :comments, :blog], @post_associations.map(&:name)
           assert_equal [:author, :comments, :blog, :comments], @inherited_post_associations.map(&:name)
 
-          refute @post_associations.detect {|assoc| assoc.name == :author }.options.key?(:polymorphic)
-          assert_equal true,  @inherited_post_associations.detect {|assoc| assoc.name == :author }.options.fetch(:polymorphic)
+          refute @post_associations.detect { |assoc| assoc.name == :author }.options.key?(:polymorphic)
+          assert_equal true, @inherited_post_associations.detect { |assoc| assoc.name == :author }.options.fetch(:polymorphic)
 
-          refute @post_associations.detect {|assoc| assoc.name == :comments }.options.key?(:key)
-          original_comment_assoc, new_comments_assoc = @inherited_post_associations.select {|assoc| assoc.name == :comments }
+          refute @post_associations.detect { |assoc| assoc.name == :comments }.options.key?(:key)
+          original_comment_assoc, new_comments_assoc = @inherited_post_associations.select { |assoc| assoc.name == :comments }
           refute original_comment_assoc.options.key?(:key)
           assert_equal :reviews, new_comments_assoc.options.fetch(:key)
 
-          assert_equal @post_associations.detect {|assoc| assoc.name == :blog }, @inherited_post_associations.detect {|assoc| assoc.name == :blog }
+          assert_equal @post_associations.detect { |assoc| assoc.name == :blog }, @inherited_post_associations.detect { |assoc| assoc.name == :blog }
         end
 
         test 'a serializer inheriting from another serializer can have an additional association with the same name but with different key' do
