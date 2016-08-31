@@ -42,7 +42,9 @@ Lastly, in order to properly handle JSON API responses, we need to register a JS
 
 ```ruby
 # config/initializers/active_model_serializers.rb
-require 'active_model_serializers/register_jsonapi_renderer'
+ActiveSupport.on_load(:action_controller) do
+  require 'active_model_serializers/register_jsonapi_renderer'
+end
 ```
 
 ### Adapter Changes
@@ -117,7 +119,7 @@ will generate the path `/posts/{postId}?include='comments'`
 
 So then in your controller, you'll want to be sure to have something like:
 ```ruby
-render json: @post, include: params[:include]
+render jsonapi: @post, include: params[:include]
 ```
 
 If you want to use `include` on a collection, you'd write something like this:
