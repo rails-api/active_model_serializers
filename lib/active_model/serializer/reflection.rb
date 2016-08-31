@@ -88,7 +88,7 @@ module ActiveModel
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
-      # @param [Serializer] subject is a parent serializer for given association
+      # @param [Serializer] parent_serializer for given association
       # @param [Hash{Symbol => Object}] parent_serializer_options
       #
       # @example
@@ -106,17 +106,19 @@ module ActiveModel
       #
       # @api private
       #
-      def build_association(subject, parent_serializer_options)
-        association_value = value(subject)
+      def build_association(parent_serializer, parent_serializer_options)
+        association_value = value(parent_serializer)
         reflection_options = options.dup
-        serializer_class = subject.class.serializer_for(association_value, reflection_options)
+        serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
         reflection_options[:include_data] = @_include_data
+        reflection_options[:links] = @_links
+        reflection_options[:meta] = @_meta
 
         if serializer_class
           begin
-            serializer = serializer_class.new(
+            reflection_options[:serializer] = serializer_class.new(
               association_value,
-              serializer_options(subject, parent_serializer_options, reflection_options)
+              serializer_options(parent_serializer, parent_serializer_options, reflection_options)
             )
           rescue ActiveModel::Serializer::CollectionSerializer::NoSerializerError
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
@@ -125,9 +127,6 @@ module ActiveModel
           reflection_options[:virtual_value] = association_value
         end
 
-        reflection_options[:serializer] = serializer
-        reflection_options[:links] = @_links
-        reflection_options[:meta] = @_meta
         block = nil
         Association.new(name, reflection_options, block)
       end
@@ -138,12 +137,12 @@ module ActiveModel
 
       private
 
-      def serializer_options(subject, parent_serializer_options, reflection_options)
+      def serializer_options(parent_serializer, parent_serializer_options, reflection_options)
         serializer = reflection_options.fetch(:serializer, nil)
 
         serializer_options = parent_serializer_options.except(:serializer)
         serializer_options[:serializer] = serializer if serializer
-        serializer_options[:serializer_context_class] = subject.class
+        serializer_options[:serializer_context_class] = parent_serializer.class
         serializer_options
       end
     end

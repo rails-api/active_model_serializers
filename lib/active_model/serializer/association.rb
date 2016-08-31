@@ -15,9 +15,9 @@ module ActiveModel
         options.fetch(:key, name)
       end
 
-      # @return [ActiveModel::Serializer]
+      # @return [ActiveModel::Serializer, nil]
       def serializer
-        options.fetch(:serializer)
+        options[:serializer]
       end
 
       # @return [Hash]
