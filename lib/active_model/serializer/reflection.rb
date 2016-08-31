@@ -125,7 +125,11 @@ module ActiveModel
           reflection_options[:virtual_value] = association_value
         end
 
-        Association.new(name, serializer, reflection_options, @_links, @_meta)
+        reflection_options[:serializer] = serializer
+        reflection_options[:links] = @_links
+        reflection_options[:meta] = @_meta
+        block = nil
+        Association.new(name, reflection_options, block)
       end
 
       protected
