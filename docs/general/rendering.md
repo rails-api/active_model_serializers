@@ -82,7 +82,11 @@ See [Fields](fields.md) for more information.
 
 #### adapter
 
-PR please :)
+This option lets you explicitly set the adapter to be used by passing a registered adapter. Your options are `:attributes`, `:json`, and `:json_api`.
+
+```
+ActiveModel::Serializer.config.adapter = :json_api
+```
 
 #### key_transform
 
