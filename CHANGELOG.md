@@ -21,6 +21,7 @@ Fixes:
 
 Misc:
 - [#1839](https://github.com/rails-api/active_model_serializers/pull/1839) `fields` tests demonstrating usage for both attributes and relationships. (@NullVoxPopuli)
+- [#1812](https://github.com/rails-api/active_model_serializers/pull/1812) add a code of conduct (@corainchicago)
 
 - [#1878](https://github.com/rails-api/active_model_serializers/pull/1878) Cache key generation for serializers now uses `ActiveSupport::Cache.expand_cache_key` instead of `Array#join` by default and is also overridable. This change should be backward-compatible. (@markiz)
 
