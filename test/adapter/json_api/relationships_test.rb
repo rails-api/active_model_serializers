@@ -5,94 +5,6 @@ module ActiveModel
     module Adapter
       class JsonApi
         class RelationshipTest < ActiveSupport::TestCase
-          class RelationshipAuthor < ::Model; end
-
-          class RelationshipAuthorSerializer < ActiveModel::Serializer
-            has_one :bio do
-              link :self, '//example.com/link_author/relationships/bio'
-            end
-
-            has_one :profile do
-              id = object.profile.id
-              link :related do
-                "//example.com/profiles/#{id}" if id != 123
-              end
-            end
-
-            has_many :locations do
-              link :related do
-                ids = object.locations.map(&:id).join(',')
-                href "//example.com/locations/#{ids}"
-              end
-            end
-
-            has_many :posts do
-              link :related do
-                ids = object.posts.map(&:id).join(',')
-                href "//example.com/posts/#{ids}"
-                meta ids: ids
-              end
-            end
-
-            has_many :comments do
-              link :self do
-                meta ids: [1]
-              end
-            end
-
-            has_many :roles do |serializer|
-              meta count: object.posts.count
-              serializer.cached_roles
-            end
-
-            has_one :blog do
-              link :self, '//example.com/link_author/relationships/blog'
-              include_data false
-            end
-
-            belongs_to :reviewer do
-              meta name: 'Dan Brown'
-              include_data true
-            end
-
-            has_many :likes do
-              link :related do
-                ids = object.likes.map(&:id).join(',')
-                href "//example.com/likes/#{ids}"
-                meta ids: ids
-              end
-              meta liked: object.likes.any?
-            end
-
-            def cached_roles
-              [
-                Role.new(id: 'from-serializer-method')
-              ]
-            end
-          end
-
-          def setup
-            @post = Post.new(id: 1337, comments: [], author: nil)
-            @bio = Bio.new(id: 1337)
-            @like = Like.new(id: 1337)
-            @role = Role.new(id: 'from-record')
-            @profile = Profile.new(id: 1337)
-            @location = Location.new(id: 1337)
-            @reviewer = Author.new(id: 1337)
-            @comment = Comment.new(id: 1337)
-            @author = RelationshipAuthor.new(
-              id: 1337,
-              posts: [@post],
-              reviewer: @reviewer,
-              bio: @bio,
-              likes: [@like],
-              roles: [@role],
-              locations: [@location],
-              profile: @profile,
-              comments: [@comment]
-            )
-          end
-
           def test_relationship_simple_link
             expected = {
               data: {
@@ -104,8 +16,15 @@ module ActiveModel
               }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :bio)
+            model_attributes = { bio: Bio.new(id: 1337) }
+            relationship_name = :bio
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_one :bio do
+                link :self, '//example.com/link_author/relationships/bio'
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_block_link
@@ -114,8 +33,18 @@ module ActiveModel
               links: { related: '//example.com/profiles/1337' }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :profile)
+            model_attributes = { profile: Profile.new(id: 1337) }
+            relationship_name = :profile
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_one :profile do
+                id = object.profile.id
+                link :related do
+                  "//example.com/profiles/#{id}" if id != 123
+                end
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_nil_link
@@ -123,9 +52,18 @@ module ActiveModel
               data: { id: '123', type: 'profiles' }
             }
 
-            author = @author.dup
-            author.profile.id = 123
-            assert_author_relationship_serialized(expected, author, :profile)
+            model_attributes = { profile: Profile.new(id: 123) }
+            relationship_name = :profile
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_one :profile do
+                id = object.profile.id
+                link :related do
+                  "//example.com/profiles/#{id}" if id != 123
+                end
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_block_link_href
@@ -136,8 +74,18 @@ module ActiveModel
               }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :locations)
+            model_attributes = { locations: [Location.new(id: 1337)] }
+            relationship_name = :locations
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_many :locations do
+                link :related do
+                  ids = object.locations.map(&:id).join(',')
+                  href "//example.com/locations/#{ids}"
+                end
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_block_link_href_and_meta
@@ -151,8 +99,19 @@ module ActiveModel
               }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :posts)
+            model_attributes =  { posts: [Post.new(id: 1337, comments: [], author: nil)] }
+            relationship_name = :posts
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_many :posts do
+                link :related do
+                  ids = object.posts.map(&:id).join(',')
+                  href "//example.com/posts/#{ids}"
+                  meta ids: ids
+                end
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_block_link_meta
@@ -165,8 +124,17 @@ module ActiveModel
               }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :comments)
+            model_attributes = { comments: [Comment.new(id: 1337)] }
+            relationship_name = :comments
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_many :comments do
+                link :self do
+                  meta ids: [1]
+                end
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_meta
@@ -175,8 +143,21 @@ module ActiveModel
               meta: { count: 1 }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :roles)
+            model_attributes = { roles: [Role.new(id: 'from-record')] }
+            relationship_name = :roles
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_many :roles do |serializer|
+                meta count: object.roles.count
+                serializer.cached_roles
+              end
+              def cached_roles
+                [
+                  Role.new(id: 'from-serializer-method')
+                ]
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_not_including_data
@@ -184,13 +165,21 @@ module ActiveModel
               links: { self: '//example.com/link_author/relationships/blog' }
             }
 
-            author = @author.dup
-            author.define_singleton_method(:read_attribute_for_serialization) do |attr|
+            model_attributes = { blog: Object }
+            relationship_name = :blog
+            model = new_model(model_attributes)
+            model.define_singleton_method(:read_attribute_for_serialization) do |attr|
               fail 'should not be called' if attr == :blog
               super(attr)
             end
             assert_nothing_raised do
-              assert_author_relationship_serialized(expected, author, :blog)
+              actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+                has_one :blog do
+                  link :self, '//example.com/link_author/relationships/blog'
+                  include_data false
+                end
+              end
+              assert_equal(expected, actual)
             end
           end
 
@@ -200,8 +189,16 @@ module ActiveModel
               meta: { name: 'Dan Brown' }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :reviewer)
+            model_attributes = { reviewer: Author.new(id: 1337) }
+            relationship_name = :reviewer
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              belongs_to :reviewer do
+                meta name: 'Dan Brown'
+                include_data true
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           def test_relationship_with_everything
@@ -216,16 +213,58 @@ module ActiveModel
               meta: { liked: true }
             }
 
-            author = @author.dup
-            assert_author_relationship_serialized(expected, author, :likes)
+            model_attributes = { likes: [Like.new(id: 1337)] }
+            relationship_name = :likes
+            model = new_model(model_attributes)
+            actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+              has_many :likes do
+                link :related do
+                  ids = object.likes.map(&:id).join(',')
+                  href "//example.com/likes/#{ids}"
+                  meta ids: ids
+                end
+                meta liked: object.likes.any?
+              end
+            end
+            assert_equal(expected, actual)
           end
 
           private
 
-          def assert_author_relationship_serialized(expected, author, relationship_name)
-            hash = serializable(author, adapter: :json_api).serializable_hash
-            actual_relationship = hash[:data][:relationships][relationship_name]
-            assert_equal(expected, actual_relationship)
+          def build_serializer_and_serialize_relationship(model, relationship_name, &block)
+            serializer_class = Class.new(ActiveModel::Serializer, &block)
+            hash = serializable(model, serializer: serializer_class, adapter: :json_api).serializable_hash
+            hash[:data][:relationships][relationship_name]
+          end
+
+          def new_model(model_attributes)
+            post = Post.new(id: 1337, comments: [], author: nil)
+            bio = Bio.new(id: 1337)
+            like = Like.new(id: 1337)
+            role = Role.new(id: 'from-record')
+            profile = Profile.new(id: 1337)
+            location = Location.new(id: 1337)
+            reviewer = Author.new(id: 1337)
+            comment = Comment.new(id: 1337)
+            default_model_attributes = {
+              id: 1337,
+              posts: [post],
+              reviewer: reviewer,
+              bio: bio,
+              likes: [like],
+              roles: [role],
+              locations: [location],
+              profile: profile,
+              comments: [comment]
+            }
+            model_attributes.reverse_merge!(default_model_attributes)
+            Class.new(ActiveModelSerializers::Model) do
+              attr_accessor *model_attributes.keys
+
+              def self.name
+                'TestModel'
+              end
+            end.new(model_attributes)
           end
         end
       end
