@@ -103,7 +103,9 @@ module ActiveModel
                 self: '//example.com/link_author/relationships/bio'
               }
             }
-            assert_relationship(:bio, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :bio)
           end
 
           def test_relationship_block_link
@@ -111,15 +113,19 @@ module ActiveModel
               data: { id: '1337', type: 'profiles' },
               links: { related: '//example.com/profiles/1337' }
             }
-            assert_relationship(:profile, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :profile)
           end
 
           def test_relationship_nil_link
-            @author.profile.id = 123
             expected = {
               data: { id: '123', type: 'profiles' }
             }
-            assert_relationship(:profile, expected)
+
+            author = @author.dup
+            author.profile.id = 123
+            assert_author_relationship_serialized(expected, author, :profile)
           end
 
           def test_relationship_block_link_href
@@ -129,7 +135,9 @@ module ActiveModel
                 related: { href: '//example.com/locations/1337' }
               }
             }
-            assert_relationship(:locations, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :locations)
           end
 
           def test_relationship_block_link_href_and_meta
@@ -142,7 +150,9 @@ module ActiveModel
                 }
               }
             }
-            assert_relationship(:posts, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :posts)
           end
 
           def test_relationship_block_link_meta
@@ -154,7 +164,9 @@ module ActiveModel
                 }
               }
             }
-            assert_relationship(:comments, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :comments)
           end
 
           def test_relationship_meta
@@ -162,19 +174,23 @@ module ActiveModel
               data: [{ id: 'from-serializer-method', type: 'roles' }],
               meta: { count: 1 }
             }
-            assert_relationship(:roles, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :roles)
           end
 
           def test_relationship_not_including_data
-            @author.define_singleton_method(:read_attribute_for_serialization) do |attr|
-              fail 'should not be called' if attr == :blog
-              super(attr)
-            end
             expected = {
               links: { self: '//example.com/link_author/relationships/blog' }
             }
+
+            author = @author.dup
+            author.define_singleton_method(:read_attribute_for_serialization) do |attr|
+              fail 'should not be called' if attr == :blog
+              super(attr)
+            end
             assert_nothing_raised do
-              assert_relationship(:blog, expected)
+              assert_author_relationship_serialized(expected, author, :blog)
             end
           end
 
@@ -183,7 +199,9 @@ module ActiveModel
               data: { id: '1337', type: 'authors' },
               meta: { name: 'Dan Brown' }
             }
-            assert_relationship(:reviewer, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :reviewer)
           end
 
           def test_relationship_with_everything
@@ -197,14 +215,17 @@ module ActiveModel
               },
               meta: { liked: true }
             }
-            assert_relationship(:likes, expected)
+
+            author = @author.dup
+            assert_author_relationship_serialized(expected, author, :likes)
           end
 
           private
 
-          def assert_relationship(relationship_name, expected)
-            hash = serializable(@author, adapter: :json_api).serializable_hash
-            assert_equal(expected, hash[:data][:relationships][relationship_name])
+          def assert_author_relationship_serialized(expected, author, relationship_name)
+            hash = serializable(author, adapter: :json_api).serializable_hash
+            actual_relationship = hash[:data][:relationships][relationship_name]
+            assert_equal(expected, actual_relationship)
           end
         end
       end
