@@ -7,6 +7,7 @@ Breaking changes:
 Fixes:
 
 - [#1887](https://github.com/rails-api/active_model_serializers/pull/1887) Make the comment reflect what the function does (@johnnymo87)
+- [#1890](https://github.com/rails-api/active_model_serializers/issues/1890) Ensure generator inherits from ApplicationSerializer when available (@richmolj)
 
 Features:
 
