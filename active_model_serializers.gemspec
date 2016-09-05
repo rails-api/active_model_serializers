@@ -59,4 +59,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'grape', ['>= 0.13', '< 1.0']
   spec.add_development_dependency 'json_schema'
   spec.add_development_dependency 'rake', ['>= 10.0', '< 12.0']
+  spec.add_development_dependency 'pry-byebug'
+  spec.add_development_dependency 'm'
 end

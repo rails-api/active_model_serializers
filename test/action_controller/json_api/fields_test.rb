@@ -1,5 +1,5 @@
 require 'test_helper'
-
+require 'pry-byebug'
 module ActionController
   module Serialization
     class JsonApi

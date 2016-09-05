@@ -3,6 +3,11 @@ require 'active_support'
 require 'active_support/core_ext/object/with_options'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/json'
+
+require 'active_model_serializers/model_mixin'
+
+require 'pry-byebug'
+
 module ActiveModelSerializers
   extend ActiveSupport::Autoload
   autoload :Model

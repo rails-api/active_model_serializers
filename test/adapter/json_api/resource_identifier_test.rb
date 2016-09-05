@@ -1,5 +1,7 @@
 require 'test_helper'
 
+require 'pry-byebug'
+
 module ActiveModelSerializers
   module Adapter
     class JsonApi
