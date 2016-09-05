@@ -9,6 +9,7 @@ rescue LoadError
   STDERR.puts 'Running without SimpleCov'
 end
 
+require 'pry'
 require 'timecop'
 require 'rails'
 require 'action_controller'
