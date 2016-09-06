@@ -45,6 +45,9 @@ group :test do
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
   gem 'codeclimate-test-reporter', require: false
+  gem 'm', '~> 1.5'
+  gem 'pry', '~> 0.10'
+  gem 'pry-byebug', '~> 3.4', platform: :ruby
 end
 
 group :development, :test do
