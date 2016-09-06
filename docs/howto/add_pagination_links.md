@@ -10,9 +10,9 @@ the resource is paginated and if you are using the ```JsonApi``` adapter.
 If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari)
 or [WillPaginate](https://github.com/mislav/will_paginate).
 
-Although the others adapters does not have this feature, it is possible to
+Although the other adapters do not have this feature, it is possible to
 implement pagination links to `JSON` adapter. For more information about it,
-please see in our docs 
+please check our docs.
 
 ###### Kaminari examples
 
