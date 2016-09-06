@@ -25,7 +25,7 @@ module Rails
       def parent_class_name
         if options[:parent]
           options[:parent]
-        elsif defined?(::ApplicationSerializer)
+        elsif 'ApplicationSerializer'.safe_constantize
           'ApplicationSerializer'
         else
           'ActiveModel::Serializer'

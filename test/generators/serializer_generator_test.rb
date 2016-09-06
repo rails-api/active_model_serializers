@@ -20,11 +20,10 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
   end
 
   def test_uses_application_serializer_if_one_exists
-    Object.const_set(:ApplicationSerializer, Class.new)
-    run_generator
-    assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
-  ensure
-    Object.send :remove_const, :ApplicationSerializer
+    stub_safe_constantize(expected: 'ApplicationSerializer') do
+      run_generator
+      assert_file 'app/serializers/account_serializer.rb', /class AccountSerializer < ApplicationSerializer/
+    end
   end
 
   def test_uses_given_parent
@@ -52,6 +51,24 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
       else
         assert_no_match(/\n\nend/, content)
       end
+    end
+  end
+
+  private
+
+  def stub_safe_constantize(expected:)
+    String.class_eval do
+      alias_method :old, :safe_constantize
+    end
+    String.send(:define_method, :safe_constantize) do
+      Class if self == expected
+    end
+
+    yield
+  ensure
+    String.class_eval do
+      alias_method :safe_constantize, :old
+      undef_method :old
     end
   end
 end
