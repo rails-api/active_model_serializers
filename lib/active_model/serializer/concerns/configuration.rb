@@ -29,6 +29,7 @@ module ActiveModel
         # Make JSON API top-level jsonapi member opt-in
         # ref: http://jsonapi.org/format/#document-top-level
         config.jsonapi_include_toplevel_object = false
+        config.include_data_default = true
 
         config.schema_path = 'test/support/schemas'
       end
