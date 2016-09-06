@@ -76,7 +76,7 @@ module ActiveModelSerializers
           }
         end
 
-        def expected_response_without_pagination_links
+        def expected_response_when_unpaginatable
           data
         end
 
@@ -84,6 +84,12 @@ module ActiveModelSerializers
           {}.tap do |hash|
             hash[:data] = data.values.flatten[2..3]
             hash.merge! links
+          end
+        end
+
+        def expected_response_without_pagination_links
+          {}.tap do |hash|
+            hash[:data] = data.values.flatten[2..3]
           end
         end
 
@@ -159,7 +165,7 @@ module ActiveModelSerializers
         def test_not_showing_pagination_links
           adapter = load_adapter(@array, mock_request)
 
-          assert_equal expected_response_without_pagination_links, adapter.serializable_hash
+          assert_equal expected_response_when_unpaginatable, adapter.serializable_hash
         end
 
         def test_raises_descriptive_error_when_serialization_context_unset
@@ -171,6 +177,15 @@ module ActiveModelSerializers
           exception_class = ActiveModelSerializers::Adapter::JsonApi::PaginationLinks::MissingSerializationContextError
           assert_equal exception_class, exception.class
           assert_match(/CollectionSerializer#paginated\?/, exception.message)
+        end
+
+        def test_pagination_links_not_present_when_disabled
+          ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = false
+          adapter = load_adapter(using_kaminari, mock_request)
+
+          assert_equal expected_response_without_pagination_links, adapter.serializable_hash
+        ensure
+          ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = true
         end
       end
     end
