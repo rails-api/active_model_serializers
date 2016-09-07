@@ -140,7 +140,7 @@ class PictureSerializer < ActiveModel::Serializer
 end
 ```
 
-For more context, see the [tests](../../test/adapter/polymorphic_test.rb) for each adapter.
+You can specify the serializers by [overriding serializer_for](serializers.md#overriding-association-serializer-lookup). For more context about polymorphic relationships, see the [tests](../../test/adapter/polymorphic_test.rb) for each adapter.
 
 ### Caching
 
