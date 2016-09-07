@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pry-byebug'
 
 module ActiveModel
   class Serializer
@@ -51,7 +52,8 @@ module ActiveModel
       end
 
       def test_child_serializer_with_error_attribute
-        error = ErrorResponse.new(error: 'i have an error')
+        error = ErrorResponse.new
+        error.error = 'i have an error'
         serializer = ErrorResponseSerializer.new(error)
         serializer_with_super = ErrorResponseWithSuperSerializer.new(error)
         assert_equal false, serializer.read_attribute_for_serialization(:status)

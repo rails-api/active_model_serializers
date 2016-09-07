@@ -191,10 +191,24 @@ module ActiveModel
     end
 
     def read_attribute_for_serialization(attr)
+      # Start by favoring serializers method override
       if respond_to?(attr)
         send(attr)
       else
-        object.read_attribute_for_serialization(attr)
+        # Otherwise, check read_attribute_for_serialization
+        if object.respond_to?(:read_attribute_for_serialization)
+          object.read_attribute_for_serialization(attr)
+        else
+          # Fall back to object property/method
+          if object.respond_to?(attr)
+            object.send(attr)
+          else
+            # Special logic for hashes
+            if object.is_a?(Hash)
+              object[attr] || object[attr.to_s]
+            end
+          end
+        end
       end
     end
 
