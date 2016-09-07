@@ -44,7 +44,7 @@ In order to properly handle JSON API responses, we need to register a JSON API r
 # config/initializers/active_model_serializers.rb
 require 'active_model_serializers/register_jsonapi_renderer'
 ```
-Rails also requires your controller to tell it that you accept and generate JSONAPI data.  To do that, you use `respond_to` in your controller handlers.  You can add `ActionController::MimeResponds` to your application controller to enable this:
+Rails also requires your controller to tell it that you accept and generate JSONAPI data.  To do that, you use `respond_to` in your controller handlers to tell rails you are consuming and returning jsonapi format data. Without this, Rails will refuse to parse the request body into params.  You can add `ActionController::MimeResponds` to your application controller to enable this:
 
 ```ruby
 class ApplicationController < ActionController::API
@@ -121,8 +121,7 @@ export default DS.JSONAPISerializer.extend({
 
 ## Including Nested Resources
 
-Ember-data can request related records by using `include`.  To tell it to make that request, use the form below when requesting records.
-For more on `include` usage, see: [The JSON API include examples](./../general/adapters.md#JSON-API)
+Ember Data can request related records by using `include`.  Below are some examples of how to make Ember Data request the inclusion of related records. For more on `include` usage, see: [The JSON API include examples](./../general/adapters.md#JSON-API)
 
 ```javascript
 store.findRecord('post', postId, { include: 'comments' } );
@@ -131,7 +130,7 @@ which will generate the path /posts/{postId}?include='comments'
 
 So then in your controller, you'll want to be sure to have something like:
 ```ruby
-render json: @post, include: params[:include]
+render jsonapi: @post, include: params[:include]
 ```
 
 If you want to use `include` on a collection, you'd write something like this:
