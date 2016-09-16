@@ -9,6 +9,7 @@ Fixes:
 - [#1887](https://github.com/rails-api/active_model_serializers/pull/1887) Make the comment reflect what the function does (@johnnymo87)
 - [#1890](https://github.com/rails-api/active_model_serializers/issues/1890) Ensure generator inherits from ApplicationSerializer when available (@richmolj)
 - [#1922](https://github.com/rails-api/active_model_serializers/pull/1922) Make railtie an optional dependency in runtime (@ggpasqualino)
+- [#1930](https://github.com/rails-api/active_model_serializers/pull/1930) Ensure valid jsonapi when relationship has no links or data (@richmolj)
 
 Features:
 

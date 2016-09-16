@@ -54,7 +54,7 @@ module ActiveModelSerializers
         end
 
         def test_relationship_data_not_included
-          test_relationship({}, options: { include_data: false })
+          test_relationship({ meta: {} }, options: { include_data: false })
         end
 
         def test_relationship_simple_link
