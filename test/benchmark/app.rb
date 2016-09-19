@@ -36,7 +36,19 @@ class BenchmarkApp < Rails::Application
   config.cache_classes = true
   # CONFIG: CACHE_ON={on,off}
   config.action_controller.perform_caching = ENV['CACHE_ON'] != 'off'
-  config.action_controller.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+  # config.action_controller.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+  require 'redis'
+  require 'readthis'
+  require 'oj'
+  Readthis.serializers << ::Oj
+
+  ENV['REDIS_URL'] = 'redis://localhost:6379/5'
+  config.action_controller.cache_store = :readthis_store, {
+    expires_in: 2.weeks.to_i,
+    marshal: ::Oj,
+    namespace: 'cache',
+    redis: { url: ENV.fetch('REDIS_URL'), driver: :hiredis }
+  }
 
   config.active_support.test_order = :random
   config.secret_token = 'S' * 30

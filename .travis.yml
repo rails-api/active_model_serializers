@@ -13,7 +13,7 @@ rvm:
 jdk:
   - oraclejdk8
 
-install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3 --without bench
 cache:
   directories:
     - vendor/bundle
