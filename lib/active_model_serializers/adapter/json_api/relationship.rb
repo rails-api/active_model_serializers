@@ -24,6 +24,7 @@ module ActiveModelSerializers
 
           meta = meta_for(association)
           hash[:meta] = meta if meta
+          hash[:meta] = {} if hash.empty?
 
           hash
         end
