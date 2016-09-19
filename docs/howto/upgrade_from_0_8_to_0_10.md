@@ -57,6 +57,7 @@ ActiveModel::ArraySerializer.new(resources, root: "resources")
 
 - No default serializer when serializer doesn't exist
 - `@options` changed to `instance_options`
+- Nested relationships are no longer walked by default. Use the `:include` option at **controller `render`** level to specify what relationships to walk. E.g. `render json: @post, include: {comments: :author}` if you want the `author` relationship walked, otherwise the json would only include the post with comments. See: https://github.com/rails-api/active_model_serializers/pull/1127
 
 ## Steps to migrate
 
