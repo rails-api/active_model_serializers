@@ -37,7 +37,7 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 end
 ```
 
-This will resilt in (example is in jsonapi adapter):
+This will result in (example is in jsonapi adapter):
 ```json
 {
   "data": {
@@ -69,7 +69,7 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 end
 ```
 
-This will resilt in (example is in jsonapi adapter):
+This will result in (example is in jsonapi adapter):
 ```json
 {
   "data": {
@@ -104,12 +104,7 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 
   has_many :microposts, serializer: Api::V1::MicropostSerializer do
     link(:related) { api_v1_microposts_path(user_id: object.id) }
-  end
-
-  #this is needed to avoid n+1, gem core devs are working to remove this necessity
-  #more on: https://github.com/rails-api/active_model_serializers/issues/1325
-  def microposts
-    object.microposts.loaded ? object.microposts : object.microposts.none
+    include_data false
   end
 end
 ```
@@ -126,7 +121,6 @@ This will result in:
     },
     "relationships": {
       "microposts": {
-        "data": [],
         "links": {
           "related": "/api/v1/microposts?user_id=1"
         }
