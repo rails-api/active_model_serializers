@@ -46,6 +46,12 @@ module ARModels
   class Post < ActiveRecord::Base
     has_many :comments
     belongs_to :author
+
+    class Special < self
+      def self.serializer_class
+        PostSerializer::Special
+      end
+    end
   end
 
   class Comment < ActiveRecord::Base
@@ -62,6 +68,14 @@ module ARModels
 
     has_many :comments
     belongs_to :author
+
+    class Special < self
+      attributes :special
+
+      def special
+        true
+      end
+    end
   end
 
   class CommentSerializer < ActiveModel::Serializer
