@@ -50,4 +50,6 @@ end
 group :development, :test do
   gem 'rubocop', '~> 0.40.0', require: false
   gem 'yard', require: false
+  gem 'm'
+  gem 'pry-byebug'
 end

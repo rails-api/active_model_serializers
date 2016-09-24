@@ -35,8 +35,6 @@ module ActiveModelSerializers
       # Change via accessor
       instance.one = :not_one
 
-      expected_attributes = { one: :not_one, two: 2, three: 3 }
-      assert_equal expected_attributes, instance.attributes
       assert_equal :not_one, instance.one
       assert_equal :not_one, instance.read_attribute_for_serialization(:one)
     end
@@ -50,21 +48,16 @@ module ActiveModelSerializers
       instance = klass.new(original_attributes)
 
       # Initial value
-      expected_attributes = { id: :ego, one: 1, two: 2, three: 3 }
-      assert_equal expected_attributes, instance.attributes
       assert_equal 1, instance.one
       assert_equal 1, instance.read_attribute_for_serialization(:one)
 
       # Change via accessor
       instance.id = :superego
 
-      expected_attributes = { id: :superego, one: 1, two: 2, three: 3 }
-      assert_equal expected_attributes, instance.attributes
       assert_equal :superego, instance.id
       assert_equal :superego, instance.read_attribute_for_serialization(:id)
     ensure
       self.class.send(:remove_const, :SomeTestModel)
     end
-
   end
 end
