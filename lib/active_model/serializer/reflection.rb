@@ -37,7 +37,7 @@ module ActiveModel
       def initialize(*)
         super
         @_links = {}
-        @_include_data = true
+        @_include_data = Serializer.config.include_data_default
         @_meta = nil
       end
 
@@ -69,17 +69,15 @@ module ActiveModel
       #       Blog.find(object.blog_id)
       #     end
       #   end
-      def value(serializer)
+      def value(serializer, include_slice)
         @object = serializer.object
         @scope = serializer.scope
 
-        if block
-          block_value = instance_exec(serializer, &block)
-          if block_value != :nil
-            block_value
-          elsif @_include_data
-            serializer.read_attribute_for_serialization(name)
-          end
+        block_value = instance_exec(serializer, &block) if block
+        return unless include_data?(include_slice)
+
+        if block && block_value != :nil
+          block_value
         else
           serializer.read_attribute_for_serialization(name)
         end
@@ -106,11 +104,11 @@ module ActiveModel
       #
       # @api private
       #
-      def build_association(parent_serializer, parent_serializer_options)
-        association_value = value(parent_serializer)
+      def build_association(parent_serializer, parent_serializer_options, include_slice = {})
+        association_value = value(parent_serializer, include_slice)
         reflection_options = options.dup
         serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
-        reflection_options[:include_data] = @_include_data
+        reflection_options[:include_data] = include_data?(include_slice)
         reflection_options[:links] = @_links
         reflection_options[:meta] = @_meta
 
@@ -136,6 +134,14 @@ module ActiveModel
       attr_accessor :object, :scope
 
       private
+
+      def include_data?(include_slice)
+        if @_include_data == :if_sideloaded
+          include_slice.key?(name)
+        else
+          @_include_data
+        end
+      end
 
       def serializer_options(parent_serializer, parent_serializer_options, reflection_options)
         serializer = reflection_options.fetch(:serializer, nil)
