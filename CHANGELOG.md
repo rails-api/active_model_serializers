@@ -25,6 +25,8 @@ Fixes:
 - [#1881](https://github.com/rails-api/active_model_serializers/pull/1881) ActiveModelSerializers::Model correctly works with string keys (@yevhene)
 
 Misc:
+- [#1767](https://github.com/rails-api/active_model_serializers/pull/1767) Replace raising/rescuing `CollectionSerializer::NoSerializerError`,
+  throw/catch `:no_serializer`. (@bf4)
 - [#1839](https://github.com/rails-api/active_model_serializers/pull/1839) `fields` tests demonstrating usage for both attributes and relationships. (@NullVoxPopuli)
 - [#1812](https://github.com/rails-api/active_model_serializers/pull/1812) add a code of conduct (@corainchicago)
 
