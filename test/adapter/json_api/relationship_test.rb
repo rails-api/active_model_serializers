@@ -4,48 +4,36 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class RelationshipTest < ActiveSupport::TestCase
-        setup do
-          ActionController::Base.cache_store.clear
-        end
-
         def test_relationship_with_data
-          blog = Blog.new(id: 1)
-          author = Author.new(id: 1, name: 'Steve K.', blog: blog)
-          serializer = BlogSerializer.new(blog)
           expected = {
             data: {
               id: '1',
               type: 'blogs'
             }
           }
-          test_options = { options: { include_data: true }, author: author, serializer: serializer }
-          assert_relationship(expected, test_options)
+
+          model_attributes = { blog: Blog.new(id: 1) }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_with_nil_model
-          author = nil
-          blog = nil
-          serializer = BlogSerializer.new(blog)
           expected = { data: nil }
-          test_options = { options: { include_data: true }, author: author, serializer: serializer }
-          assert_relationship(expected, test_options)
-        end
 
-        def test_relationship_with_nil_serializer
-          author = nil
-          serializer = nil
-          expected = { data: nil }
-          test_options = { options: { include_data: true }, author: author, serializer: serializer }
-          assert_relationship(expected, test_options)
+          model_attributes = { blog: nil }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_with_data_array
-          posts = [Post.new(id: 1), Post.new(id: 2)]
-          blog = Blog.new(id: 1)
-          author = Author.new(id: 1, name: 'Steve K.', blog: blog)
-          serializer = ActiveModel::Serializer::CollectionSerializer.new(posts)
-          author.posts = posts
-          author.blog = nil
           expected = {
             data: [
               {
@@ -58,74 +46,108 @@ module ActiveModelSerializers
               }
             ]
           }
-          test_options = { options: { include_data: true }, author: author, serializer: serializer }
-          assert_relationship(expected, test_options)
+
+          model_attributes = { posts: [Post.new(id: 1), Post.new(id: 2)] }
+          relationship_name = :posts
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_many :posts
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_data_not_included
           expected = { meta: {} }
-          test_options = { options: { include_data: false }, author: nil, serializer: nil }
-          assert_relationship(expected, test_options)
+
+          model_attributes = { blog: :does_not_matter }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog do
+              include_data false
+            end
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_many_links
-          links = {
-            self: 'a link',
-            related: 'another link'
-          }
           expected = {
             links: {
               self: 'a link',
               related: 'another link'
             }
           }
-          test_options = { links: links, author: nil, serializer: nil }
-          assert_relationship(expected, test_options)
+
+          model_attributes = { blog: :does_not_matter }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog do
+              include_data false
+              link :self, 'a link'
+              link :related, 'another link'
+            end
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_block_link_with_meta
-          links = {
-            self: proc do
-              href object.id.to_s
-              meta(id: object.id)
-            end
-          }
-          blog = Blog.new(id: 1)
-          author = Author.new(id: 1, name: 'Steve K.', blog: blog)
           expected = {
             links: {
               self: {
-                href: blog.id.to_s,
-                meta: { id: blog.id }
+                href: '1',
+                meta: { id: 1 }
               }
             }
           }
-          serializer = BlogSerializer.new(blog)
-          test_options = { links: links, author: author, serializer: serializer }
-          assert_relationship(expected, test_options)
+
+          model_attributes = { blog: Blog.new(id: 1) }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog do
+              include_data false
+              link :self do
+                href object.blog.id.to_s
+                meta(id: object.blog.id)
+              end
+            end
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_simple_meta
-          meta = { id: '1' }
-          expected = { meta: meta }
-          test_options = { meta: meta, author: nil, serializer: nil }
-          assert_relationship(expected, test_options)
+          expected = { meta: { id: '1' } }
+
+          model_attributes = { blog: Blog.new(id: 1) }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog do
+              include_data false
+              meta(id: object.blog.id.to_s)
+            end
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_block_meta
-          meta =  proc do
-            { id: object.id }
-          end
-          blog = Blog.new(id: 1)
-          author = Author.new(id: 1, name: 'Steve K.', blog: blog)
-          serializer = BlogSerializer.new(blog)
           expected = {
             meta: {
-              id: blog.id
+              id: 1
             }
           }
-          test_options = { meta: meta, author: author, serializer: serializer }
-          assert_relationship(expected, test_options)
+
+          model_attributes = { blog: Blog.new(id: 1) }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            has_one :blog do
+              include_data false
+              meta(id: object.blog.id)
+            end
+          end
+          assert_equal(expected, actual)
         end
 
         def test_relationship_simple_link
@@ -353,28 +375,6 @@ module ActiveModelSerializers
         end
 
         private
-
-        def assert_relationship(expected, test_options = {})
-          options = test_options.delete(:options) || {}
-          options[:links] = test_options.delete(:links)
-          options[:meta] = test_options.delete(:meta)
-          author = test_options.delete(:author)
-          association_serializer = test_options.delete(:serializer)
-
-          if association_serializer && association_serializer.object
-            association_name = association_serializer.json_key.to_sym
-            options[:serializer] = association_serializer
-            association = ::ActiveModel::Serializer::Association.new(association_name, options, nil)
-          else
-            options[:serializer] = association
-            association = ::ActiveModel::Serializer::Association.new(:association_name_not_used, options, nil)
-          end
-
-          serializable_resource_options = {} # adapter.instance_options
-          parent_serializer = AuthorSerializer.new(author)
-          relationship = Relationship.new(parent_serializer, serializable_resource_options, association)
-          assert_equal(expected, relationship.as_json)
-        end
 
         def build_serializer_and_serialize_relationship(model, relationship_name, &block)
           serializer_class = Class.new(ActiveModel::Serializer, &block)
