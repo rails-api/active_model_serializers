@@ -11,6 +11,7 @@ module ActiveModelSerializers
   autoload :SerializableResource
   autoload :Logging
   autoload :Test
+  require 'active_model_serializers/rspec/matchers'
   autoload :Adapter
   autoload :JsonPointer
   autoload :Deprecate
