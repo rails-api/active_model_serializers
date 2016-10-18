@@ -1,9 +1,10 @@
 module ActiveModelSerializers
-  module RSpec
-    # @api public
-    # Container module for active_model_serializers specific matchers.
-    module Matchers
-    end
+  # @api public
+  # Container module for active_model_serializers specific matchers.
+  module RSpecMatchers
+    # extend ActiveSupport::Autoload
+    # autoload :Serializer
+    # autoload :Schema
   end
 end
 
