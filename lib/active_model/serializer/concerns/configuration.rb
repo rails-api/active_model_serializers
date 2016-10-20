@@ -10,6 +10,7 @@ module ActiveModel
         config = base.config
         config.collection_serializer = ActiveModel::Serializer::CollectionSerializer
         config.serializer_lookup_enabled = true
+        config.on_serializer_not_found = -> {}
 
         def config.array_serializer=(collection_serializer)
           self.collection_serializer = collection_serializer

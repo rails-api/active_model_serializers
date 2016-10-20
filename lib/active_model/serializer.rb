@@ -80,22 +80,35 @@ module ActiveModel
 
     # @api private
     # Find a serializer from a class and caches the lookup.
-    # Preferentially returns:
-    #   1. class name appended with "Serializer"
-    #   2. try again with superclass, if present
-    #   3. nil
     def self.get_serializer_for(klass)
       return nil unless config.serializer_lookup_enabled
       serializers_cache.fetch_or_store(klass) do
-        # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
-        serializer_class = serializer_lookup_chain_for(klass).map(&:safe_constantize).find { |x| x && x < ActiveModel::Serializer }
-
-        if serializer_class
-          serializer_class
-        elsif klass.superclass
-          get_serializer_for(klass.superclass)
-        end
+        get_serializer_class(klass)
       end
+    end
+
+    # @api private
+    # Preferentially returns:
+    #   1. class name appended with "Serializer"
+    #   2. try again with superclass, if present
+    #   3. (optional) runs `on_serializer_not_found` policy if serializer is not found
+    #   4. nil
+    def self.get_serializer_class(klass)
+      # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
+      serializer_class = find_serializer_class(klass)
+
+      require 'pry';binding.pry
+      if serializer_class
+        serializer_class
+      elsif klass.superclass && find_serializer_class(klass.superclass)
+        get_serializer_class(klass.superclass)
+      elsif config.on_serializer_not_found.respond_to?(:call) && klass.respond_to?(:serialized_attributes)
+        config.on_serializer_not_found.call(klass)
+      end
+    end
+
+    def self.find_serializer_class(klass)
+      serializer_lookup_chain_for(klass).lazy.map(&:safe_constantize).find { |x| x && x < ActiveModel::Serializer }
     end
 
     # @api private

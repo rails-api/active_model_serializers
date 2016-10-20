@@ -26,6 +26,50 @@ module ActiveModel
         end
       end
 
+      class SerializerNotFoundTest < ActiveSupport::TestCase
+        class Poro; end
+        class Post < ActiveRecord::Base; end
+        class PostSerializer < ActiveModel::Serializer; end
+        class Comment < ActiveRecord::Base; end
+
+        class C  < ::Model; end
+        class CSerializer < ActiveModel::Serializer; end
+        class B < C; end
+        class A < B; end
+
+        def setup
+          @previous_serializer_not_found_policy = ActiveModelSerializers.config.on_serializer_not_found
+          ActiveModelSerializers.config.on_serializer_not_found = -> (klass) { fail NameError, "Serializer for [#{klass}] not found" }
+        end
+
+        def teardown
+          ActiveModelSerializers.config.on_serializer_not_found = @previous_serializer_not_found_policy
+        end
+
+        test 'serializer not found doesnt affect POROs' do
+          assert_nothing_raised do
+            ActiveModel::Serializer.serializer_for(Poro.new)
+          end
+        end
+
+        test 'serializer not found triggers configured policy' do
+          err = assert_raises(NameError) { ActiveModel::Serializer.serializer_for(Comment.new) }
+          assert_equal(err.message, 'Serializer for [ActiveModel::Serializer::SerializerForTest::SerializerNotFoundTest::Comment] not found')
+        end
+
+        test 'serializer not found doesnt trigger on valid model' do
+          assert_nothing_raised NameError do
+            ActiveModel::Serializer.serializer_for(Post.new)
+          end
+        end
+
+        test 'serializer not found goes to the bottom of the class hierarchy' do
+          assert_equal(ActiveModel::Serializer.serializer_for(C.new), CSerializer)
+          assert_equal(ActiveModel::Serializer.serializer_for(B.new), CSerializer)
+          assert_equal(ActiveModel::Serializer.serializer_for(A.new), CSerializer)
+        end
+      end
+
       class SerializerTest < ActiveSupport::TestCase
         module ResourceNamespace
           class Post    < ::Model; end
