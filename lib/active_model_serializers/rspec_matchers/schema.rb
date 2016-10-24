@@ -3,10 +3,10 @@ require 'active_model_serializers/test/schema'
 module ActiveModelSerializers
   module RSpecMatchers
     module Schema
-      RSpec::Matchers.define :have_valid_schema do |schema_path|
+      RSpec::Matchers.define :have_valid_schema do |schema_path, message|
         match do
           @matcher = ActiveModelSerializers::Test::Schema::AssertSchema.new(
-            schema_path || nil, request, response, nil
+            schema_path || nil, request, response, message || nil
           )
           @matcher.call
         end
