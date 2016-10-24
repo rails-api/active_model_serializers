@@ -15,8 +15,6 @@ module ActiveModelSerializers
   autoload :JsonPointer
   autoload :Deprecate
 
-  autoload :RSpecMatchers, 'active_model_serializers/rspec/matchers' if defined? RSpec
-
   class << self; attr_accessor :logger; end
   self.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
 

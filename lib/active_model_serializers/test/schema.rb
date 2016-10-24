@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-
 module ActiveModelSerializers
   module Test
     module Schema
