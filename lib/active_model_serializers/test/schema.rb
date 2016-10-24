@@ -62,11 +62,11 @@ module ActiveModelSerializers
         attr_reader :document_store
 
         def controller_path
-          request.filtered_parameters[:controller]
+          request.filtered_parameters.with_indifferent_access[:controller]
         end
 
         def action
-          request.filtered_parameters[:action]
+          request.filtered_parameters.with_indifferent_access[:action]
         end
 
         def schema_directory
