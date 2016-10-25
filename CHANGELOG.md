@@ -10,6 +10,7 @@ Features:
 
 Fixes:
 
+- [#1960](https://github.com/rails-api/active_model_serializers/pull/1960) Pass serializer to resource `meta` block (@groyoh)
 - [#1984](https://github.com/rails-api/active_model_serializers/pull/1984) Mutation of ActiveModelSerializers::Model now changes the attributes. (@bf4)
 
 Misc:

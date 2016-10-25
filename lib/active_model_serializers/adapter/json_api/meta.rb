@@ -18,7 +18,7 @@ module ActiveModelSerializers
 
           # Use the return value of the block unless it is nil.
           if serializer._meta.respond_to?(:call)
-            @value = instance_eval(&serializer._meta)
+            @value = instance_exec(serializer, &serializer._meta)
           else
             @value = serializer._meta
           end

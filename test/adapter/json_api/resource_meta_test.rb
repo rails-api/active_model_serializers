@@ -4,16 +4,29 @@ module ActiveModel
   class Serializer
     module Adapter
       class JsonApi
-        class ResourceMetaTest < Minitest::Test
+        class ResourceMetaTest < ActiveSupport::TestCase
           class MetaHashPostSerializer < ActiveModel::Serializer
             attributes :id
-            meta stuff: 'value'
+            meta cache: { expires: 3600 }
           end
 
           class MetaBlockPostSerializer < ActiveModel::Serializer
             attributes :id
             meta do
               { comments_count: object.comments.count }
+            end
+          end
+
+          class MetaBlockParamPostSerializer < ActiveModel::Serializer
+            attributes :id
+            meta do |serializer|
+              {
+                actions: serializer.actions
+              }
+            end
+
+            def actions
+              instance_options[:actions] || []
             end
           end
 
@@ -31,23 +44,23 @@ module ActiveModel
             end
           end
 
-          def setup
+          setup do
             @post = Post.new(id: 1337, comments: [], author: nil)
           end
 
-          def test_meta_hash_object_resource
+          test 'resource meta as hash' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaHashPostSerializer,
               adapter: :json_api
             ).serializable_hash
             expected = {
-              stuff: 'value'
+              cache: { expires: 3600 }
             }
             assert_equal(expected, hash[:data][:meta])
           end
 
-          def test_meta_block_object_resource
+          test 'resource meta as block' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostSerializer,
@@ -59,7 +72,7 @@ module ActiveModel
             assert_equal(expected, hash[:data][:meta])
           end
 
-          def test_meta_object_resource_in_array
+          test 'resource meta within collections' do
             post2 = Post.new(id: 1339, comments: [Comment.new])
             posts = [@post, post2]
             hash = ActiveModelSerializers::SerializableResource.new(
@@ -76,7 +89,7 @@ module ActiveModel
             assert_equal(expected, hash)
           end
 
-          def test_meta_object_blank_omitted
+          test 'empty resource meta hash' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostBlankMetaSerializer,
@@ -85,13 +98,46 @@ module ActiveModel
             refute hash[:data].key? :meta
           end
 
-          def test_meta_object_empty_string_omitted
+          test 'empty resource meta string' do
             hash = ActiveModelSerializers::SerializableResource.new(
               @post,
               serializer: MetaBlockPostEmptyStringSerializer,
               adapter: :json_api
             ).serializable_hash
             refute hash[:data].key? :meta
+          end
+
+          test 'resource meta as block with parameter' do
+            hash = ActiveModelSerializers::SerializableResource.new(
+              @post,
+              serializer: MetaBlockParamPostSerializer,
+              adapter: :json_api,
+              actions: {
+                update: {
+                  method: 'PUT'
+                },
+                delete: {
+                  method: 'DELETE'
+                }
+              }
+            ).serializable_hash
+            expected = {
+              data: {
+                id: '1337',
+                type: 'posts',
+                meta: {
+                  actions: {
+                    update: {
+                      method: 'PUT'
+                    },
+                    delete: {
+                      method: 'DELETE'
+                    }
+                  }
+                }
+              }
+            }
+            assert_equal(expected, hash)
           end
         end
       end
