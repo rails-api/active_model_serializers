@@ -218,7 +218,14 @@ link(:link_name) { url_for(controller: 'controller_name', action: 'index', only_
 
 #### include
 
-PR please :)
+By default, associations are only included for the first level of nesting. If you want to include associations at a deeper level, you need to specify it via the `include` directive.
+
+```ruby
+# Example with a Parking having many Cars, each Car having one Driver
+render json: @parking, include: "cars.driver"
+```
+
+`include: '*.*'` means include any association up to 2 levels. You may also use `include: '**'` to include every level (not recommended) or be more specific and include named associations such as `include: 'cars.driver'`.
 
 #### Overriding the root key
 
