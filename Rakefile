@@ -97,7 +97,6 @@ end
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = Dir.glob('spec/**/*_spec.rb')
-  t.rspec_opts = '--color'
 end
 
 if ENV['RAILS_VERSION'].to_s > '4.0' && RUBY_ENGINE == 'ruby'
