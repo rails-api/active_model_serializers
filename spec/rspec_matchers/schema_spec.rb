@@ -1,32 +1,36 @@
 require 'rails_helper'
 
-module ActiveModelSerializers::Test::SchemaTest
-  class MyController < ActionController::Base
-    def index
-      render json: profile
-    end
+module ActiveModelSerializers
+  module Test
+    module SchemaTest
+      class MyController < ActionController::Base
+        def index
+          render json: profile
+        end
 
-    def show
-      index
-    end
+        def show
+          index
+        end
 
-    def name_as_a_integer
-      profile.name = 1
-      index
-    end
+        def name_as_a_integer
+          profile.name = 1
+          index
+        end
 
-    def render_using_json_api
-      render json: profile, adapter: :json_api
-    end
+        def render_using_json_api
+          render json: profile, adapter: :json_api
+        end
 
-    def invalid_json_body
-      render json: ''
-    end
+        def invalid_json_body
+          render json: ''
+        end
 
-    private
+        private
 
-    def profile
-      @profile ||= Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+        def profile
+          @profile ||= Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+        end
+      end
     end
   end
 end
@@ -107,7 +111,7 @@ describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :controll
     get :show
 
     expect do
-      expect(response).to have_valid_schema 'non-existent.json'
+      expect(response).to have_valid_schema 'non-existent.json', message
     end.to raise_error(ActiveModelSerializers::Test::Schema::MissingSchema)
   end
 
@@ -117,7 +121,7 @@ describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :controll
     get :invalid_json_body
 
     expect do
-      expect(response).to have_valid_schema 'custom/show.json'
+      expect(response).to have_valid_schema 'custom/show.json', message
     end.to raise_error(ActiveModelSerializers::Test::Schema::InvalidSchemaError)
   end
 end
