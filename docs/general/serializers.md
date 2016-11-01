@@ -226,7 +226,7 @@ There are several ways to specify root:
 * Specifying the `root` option, e.g. `root: 'specific_name'`, during the serializer's initialization:
 
 ```ruby
-+ActiveModelSerializers::SerializableResource.new(foo, root: 'bar')
+ActiveModelSerializers::SerializableResource.new(foo, root: 'bar')
 ```
 
 #### #scope
