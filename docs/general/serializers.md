@@ -217,7 +217,17 @@ The object being serialized.
 
 #### #root
 
-PR please :)
+Resource root which is included in `JSON` adapter. As you can see at [Adapters Document](adapters.md), `Attribute` adapter (default) and `JSON API` adapter does not include root at top level.
+By default, the resource root comes from the `model_name` of the serialized object's class.
+
+There are several ways to specify root:
+* [Overriding the root key](rendering.md#overriding-the-root-key)
+* [Setting `type`](serializers.md#type)
+* Specifying the `root` option, e.g. `root: 'specific_name'`, during the serializer's initialization:
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(foo, root: 'bar')
+```
 
 #### #scope
 
