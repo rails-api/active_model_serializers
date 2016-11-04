@@ -51,3 +51,5 @@ or if it returns a collection:
   ]
 }
 ```
+
+[There are several ways to specify root](../general/serializers.md#root) when using the JSON adapter.

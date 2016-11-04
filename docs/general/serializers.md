@@ -173,18 +173,25 @@ end
 
 #### ::type
 
-The `::type` method defines the JSONAPI [type](http://jsonapi.org/format/#document-resource-object-identification) that will be rendered for this serializer.
+When using the `:json_api` adapter, the `::type` method defines the JSONAPI [type](http://jsonapi.org/format/#document-resource-object-identification) that will be rendered for this serializer.
+
+When using the `:json` adapter, the `::type` method defines the name of the root element.
+
 It either takes a `String` or `Symbol` as parameter.
 
-Note: This method is useful only when using the `:json_api` adapter.
+Note: This method is useful only when using the `:json_api` or `:json` adapter.
 
 Examples:
 ```ruby
 class UserProfileSerializer < ActiveModel::Serializer
   type 'profile'
+
+  attribute :name
 end
 class AuthorProfileSerializer < ActiveModel::Serializer
   type :profile
+
+  attribute :name
 end
 ```
 
@@ -194,7 +201,20 @@ With the `:json_api` adapter, the previous serializers would be rendered as:
 {
   "data": {
     "id": "1",
-    "type": "profile"
+    "type": "profile",
+    "attributes": {
+      "name": "Julia"
+    }
+  }
+}
+```
+
+With the `:json` adapter, the previous serializer would be rendered as:
+
+``` json
+{
+  "profile": {
+    "name": "Julia"
   }
 }
 ```
