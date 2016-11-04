@@ -60,16 +60,41 @@ module ActiveModel
 
     # @api private
     def self.serializer_lookup_chain_for(klass)
-      chain = []
+      lookup_chain = []
 
-      resource_class_name = klass.name.demodulize
-      resource_namespace = klass.name.deconstantize
+      resource_class_name   = klass.name.demodulize
+      resource_namespace    = klass.name.deconstantize
       serializer_class_name = "#{resource_class_name}Serializer"
 
-      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
-      chain.push("#{resource_namespace}::#{serializer_class_name}")
+      # Loops over a namespaced Serializer's name to add multiple
+      # namespaced serializer candidates for lookup in the `lookup_chain` from
+      # the "parent" serializer.
+      #
+      # Example:
+      # if `name.to_s` returns "Api::V1::Admin::UserSerializer" (parent serializer),
+      # and `klass` is Post,
+      # this would make the lookup `lookup_chain`:
+      # [
+      #   "Api::V1::Admin::PostSerializer",
+      #   "Api::V1::PostSerializer",
+      #   "Api::PostSerializer",
+      # ]
+      parent_namespace = name.to_s
 
-      chain
+      if self != ActiveModel::Serializer
+        until parent_namespace.empty?
+          lookup_chain.push("#{parent_namespace}::#{serializer_class_name}")
+          parent_namespace = parent_namespace.deconstantize
+        end
+      end
+
+      # And finally - this adds the last namespaced candidate based on the
+      # provided klass, returning the full chain.
+      #
+      # Examples:
+      # - Post -> "::PostSerializer"
+      # - Api::Post -> "Api::PostSerializer"
+      lookup_chain.push("#{resource_namespace}::#{serializer_class_name}")
     end
 
     # Used to cache serializer name => serializer class
