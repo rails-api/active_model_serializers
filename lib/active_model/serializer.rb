@@ -66,7 +66,7 @@ module ActiveModel
       resource_namespace = klass.name.deconstantize
       serializer_class_name = "#{resource_class_name}Serializer"
 
-      chain.push("#{namespace.name}::#{serializer_class_name}") if namespace
+      chain.push("#{namespace}::#{serializer_class_name}") if namespace
       chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
       chain.push("#{resource_namespace}::#{serializer_class_name}")
 
