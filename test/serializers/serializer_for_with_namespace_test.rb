@@ -1,7 +1,5 @@
 require 'test_helper'
 
-
-
 module ActiveModel
   class Serializer
     class SerializerForWithNamespaceTest < ActiveSupport::TestCase
