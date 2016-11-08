@@ -250,8 +250,7 @@ The namespace for serializer lookup is based on the controller.
 To configure the implicit namespace, in your controller, create a before filter
 
 ```ruby
-before_filter :use_my_namespace
-def use_my_namespace
+before_filter do
   self.namespace_for_serializer = Api::V2
 end
 ```
