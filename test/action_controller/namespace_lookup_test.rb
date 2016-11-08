@@ -44,13 +44,17 @@ module ActionController
             def explicit_namespace_as_string
               book = Book.new(title: 'New Post', body: 'Body')
 
-              render json: book, namespace: 'Api::V2'
+              # because this is a string, ruby can't auto-lookup the constant, so otherwise
+              # the looku things we mean ::Api::V2
+              render json: book, namespace: 'ActionController::Serialization::NamespaceLookupTest::Api::V2'
             end
 
             def explicit_namespace_as_symbol
               book = Book.new(title: 'New Post', body: 'Body')
 
-              render json: book, namespace: :'Api::V2'
+              # because this is a string, ruby can't auto-lookup the constant, so otherwise
+              # the looku things we mean ::Api::V2
+              render json: book, namespace: :'ActionController::Serialization::NamespaceLookupTest::Api::V2'
             end
 
             def invalid_namespace
@@ -78,8 +82,8 @@ module ActionController
 
       tests Api::V3::LookupTestController
 
-      before do
-        ActiveModel::Serializer.instance_variable_set('@serializers_cache', {})
+      setup do
+        @test_namespace = self.class.parent
       end
 
       test 'implicitly uses namespaced serializer' do
@@ -131,7 +135,7 @@ module ActionController
 
         assert_serializer ActiveModel::Serializer::Null
 
-        expected = { 'title' => 'New Post' }
+        expected = { 'title' => 'New Post', 'body' => 'Body' }
         actual = JSON.parse(@response.body)
 
         assert_equal expected, actual
