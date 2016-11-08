@@ -78,6 +78,10 @@ module ActionController
 
       tests Api::V3::LookupTestController
 
+      before do
+        ActiveModel::Serializer.instance_variable_set('@serializers_cache', {})
+      end
+
       test 'implicitly uses namespaced serializer' do
         get :implicit_namespaced_serializer
 
