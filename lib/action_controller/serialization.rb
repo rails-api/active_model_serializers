@@ -16,6 +16,8 @@ module ActionController
     included do
       class_attribute :_serialization_scope
       self._serialization_scope = :current_user
+
+      attr_writer :namespace_for_serializer
     end
 
     def namespace_for_serializer

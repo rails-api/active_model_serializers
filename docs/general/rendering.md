@@ -245,13 +245,14 @@ Note: the `Attributes` adapter (default) does not include a resource root. You a
 
 #### namespace
 
-The namespace for serializer lookup is based on the controller, via `ActionController::Serialization#namespace_for_serializer`.
+The namespace for serializer lookup is based on the controller.
 
-To configure the implicit namespace, in your controller, define
+To configure the implicit namespace, in your controller, create a before filter
 
 ```ruby
-def namespace_for_serializer
-  @namespace_for_serializer ||= self.class.parent unless self.class.parent == Object
+before_filter :use_my_namespace
+def use_my_namespace
+  self.namespace_for_serializer = Api::V2
 end
 ```
 
@@ -259,10 +260,17 @@ end
 
 
 ```ruby
+@post = Post.first
 render json: @post, namespace: Api::V2
 ```
 
-This tells the serializer lookup to check for the existence of `Api::V2::PostSerializer`, and if any relations are rendered with `@post`, they will also utilize the `Api::V2` namespace.
+This tells the serializer lookup to check for the existence of `Api::V2::PostSerializer`, and if any relations are rendered with `@post`, they will also utilize the `Api::V2` namespace.  
+
+The namespace can _only_ be in one of the following formats:
+
+- `Api::V2`
+- `'Api::V2'`
+- `:'Api::V2'`
 
 
 #### serializer
