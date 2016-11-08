@@ -266,11 +266,12 @@ render json: @post, namespace: Api::V2
 
 This tells the serializer lookup to check for the existence of `Api::V2::PostSerializer`, and if any relations are rendered with `@post`, they will also utilize the `Api::V2` namespace.  
 
-The namespace can _only_ be in one of the following formats:
+The `namespace` can be any object whose namespace can be represented by string interpolation (i.e. by calling to_s)
+- Module `Api::V2`
+- String `'Api::V2'`
+- Symbol `:'Api::V2'`
 
-- `Api::V2`
-- `'Api::V2'`
-- `:'Api::V2'`
+Note that by using a string and symbol, Ruby will assume the namespace is defined at the top level.
 
 
 #### serializer
