@@ -13,6 +13,10 @@ Fixes:
 
 Features:
 
+- [#1968](https://github.com/rails-api/active_model_serializers/pull/1968) (@NullVoxPopuli)
+  - Add controller namespace to default controller lookup
+  - Provide a `namespace` render option
+  - document how set the namespace in the controller for implicit lookup.
 - [#1791](https://github.com/rails-api/active_model_serializers/pull/1791) (@bf4, @youroff, @NullVoxPopuli)
   - Added `jsonapi_namespace_separator` config option.
 - [#1889](https://github.com/rails-api/active_model_serializers/pull/1889) Support key transformation for Attributes adapter (@iancanderson, @danbee)
