@@ -26,7 +26,7 @@ module ActionController
           end
 
           class LookupTestController < ActionController::Base
-            before_filter :set_namespace, only: [:namespace_set_in_before_filter]
+            # before_filter :set_namespace, only: [:namespace_set_in_before_filter]
 
             def implicit_namespaced_serializer
               writer = Writer.new(name: 'Bob')
@@ -60,6 +60,9 @@ module ActionController
             end
 
             def namespace_set_in_before_filter
+              # fake before_filter
+              set_namespace
+
               book = Book.new(title: 'New Post', body: 'Body')
               render json: book
             end
