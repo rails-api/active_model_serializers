@@ -24,7 +24,8 @@ module ActiveModelSerializers
     # Example:
     #  Api::V3::AuthorsController => Api::V3::AuthorSerializer
     BY_CONTROLLER_NAMESPACE = lambda do |resource_class, _serializer_class, namespace|
-      "#{namespace}::#{resource_class}Serializer"
+      resource_name = resource_class_name(resource_class)
+      namespace ? "#{namespace}::#{resource_name}Serializer" : nil
     end
 
     # Allows for serializers to be defined in parent serializers
