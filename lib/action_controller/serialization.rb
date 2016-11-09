@@ -24,10 +24,6 @@ module ActionController
       @namespace_for_serializer ||= self.class.parent unless self.class.parent == Object
     end
 
-    def namespace_for_serializer
-      @namespace_for_serializer ||= self.class.parent unless self.class.parent == Object
-    end
-
     def serialization_scope
       return unless _serialization_scope && respond_to?(_serialization_scope, true)
 
