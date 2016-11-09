@@ -243,6 +243,36 @@ This will be rendered as:
 ```
 Note: the `Attributes` adapter (default) does not include a resource root. You also will not be able to create a single top-level root if you are using the :json_api adapter.
 
+#### namespace
+
+The namespace for serializer lookup is based on the controller.
+
+To configure the implicit namespace, in your controller, create a before filter
+
+```ruby
+before_action do
+  self.namespace_for_serializer = Api::V2
+end
+```
+
+`namespace` can also be passed in as a render option:
+
+
+```ruby
+@post = Post.first
+render json: @post, namespace: Api::V2
+```
+
+This tells the serializer lookup to check for the existence of `Api::V2::PostSerializer`, and if any relations are rendered with `@post`, they will also utilize the `Api::V2` namespace.  
+
+The `namespace` can be any object whose namespace can be represented by string interpolation (i.e. by calling to_s)
+- Module `Api::V2`
+- String `'Api::V2'`
+- Symbol `:'Api::V2'`
+
+Note that by using a string and symbol, Ruby will assume the namespace is defined at the top level.
+
+
 #### serializer
 
 PR please :)
