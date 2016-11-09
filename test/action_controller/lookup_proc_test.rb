@@ -28,21 +28,21 @@ module ActionController
 
       tests Api::V3::LookupProcTestController
 
-      def test_implicitly_uses_namespaced_serializer # test 'implicitly uses namespaced serializer' do
-        # controller_namespace = lambda do |resource_class, _parent_serializer_class, namespace|
-        #   "#{namespace}::#{resource_class}CustomSerializer" if namespace
-        # end
-        #
-        # with_prepended_lookup(controller_namespace) do
-        #   get :implicit_namespaced_serializer
-        #
-        #   assert_serializer Api::V3::PostCustomSerializer
-        #
-        #   expected = { 'title' => 'New Post', 'body' => 'Body', 'author' => { 'name' => 'Bob' } }
-        #   actual = JSON.parse(@response.body)
-        #
-        #   assert_equal expected, actual
-        # end
+      test 'implicitly uses namespaced serializer' do
+        controller_namespace = lambda do |resource_class, _parent_serializer_class, namespace|
+          "#{namespace}::#{resource_class}CustomSerializer" if namespace
+        end
+
+        with_prepended_lookup(controller_namespace) do
+          get :implicit_namespaced_serializer
+
+          assert_serializer Api::V3::PostCustomSerializer
+
+          expected = { 'title' => 'New Post', 'body' => 'Body', 'author' => { 'name' => 'Bob' } }
+          actual = JSON.parse(@response.body)
+
+          assert_equal expected, actual
+        end
       end
     end
   end
