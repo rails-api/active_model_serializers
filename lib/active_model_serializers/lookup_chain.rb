@@ -12,7 +12,7 @@ module ActiveModelSerializers
     #
     # Example:
     #  British::Author => British::AuthorSerializer
-    BY_NAMESPACE = lambda do |resource_class, _serializer_class, _namespace|
+    BY_RESOURCE_NAMESPACE = lambda do |resource_class, _serializer_class, _namespace|
       resource_namespace = namespace_for(resource_class)
       serializer_name = serializer_from(resource_class)
 
@@ -23,7 +23,7 @@ module ActiveModelSerializers
     #
     # Example:
     #  Api::V3::AuthorsController => Api::V3::AuthorSerializer
-    BY_CONTROLLER_NAMESPACE = lambda do |resource_class, _serializer_class, namespace|
+    BY_NAMESPACE = lambda do |resource_class, _serializer_class, namespace|
       resource_name = resource_class_name(resource_class)
       namespace ? "#{namespace}::#{resource_name}Serializer" : nil
     end
@@ -52,9 +52,9 @@ module ActiveModelSerializers
     end
 
     DEFAULT = [
-      BY_CONTROLLER_NAMESPACE,
-      BY_PARENT_SERIALIZER,
       BY_NAMESPACE,
+      BY_PARENT_SERIALIZER,
+      BY_RESOURCE_NAMESPACE,
       BY_RESOURCE
     ].freeze
 
