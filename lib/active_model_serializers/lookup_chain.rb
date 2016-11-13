@@ -52,8 +52,8 @@ module ActiveModelSerializers
     end
 
     DEFAULT = [
-      BY_NAMESPACE,
       BY_PARENT_SERIALIZER,
+      BY_NAMESPACE,
       BY_RESOURCE_NAMESPACE,
       BY_RESOURCE
     ].freeze

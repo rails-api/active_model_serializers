@@ -60,6 +60,50 @@ application, setting `config.key_transform` to `:unaltered` will provide a perfo
 What relationships to serialize by default.  Default: `'*'`, which includes one level of related
 objects. See [includes](adapters.md#included) for more info.
 
+
+##### serializer_lookup_chain
+
+Configures how serializers are searched for. By default, the lookup chain is
+
+```ruby
+ActiveModelSerializers::LookupChain::DEFAULT
+```
+
+which is shorthand for
+
+```ruby
+[
+  ActiveModelSerializers::LookupChain::BY_PARENT_SERIALIZER,
+  ActiveModelSerializers::LookupChain::BY_NAMESPACE,
+  ActiveModelSerializers::LookupChain::BY_RESOURCE_NAMESPACE,
+  ActiveModelSerializers::LookupChain::BY_RESOURCE
+]
+```
+
+Each of the array entries represent a proc. A serializer lookup proc will be yielded 3 arguments. `resource_class`, `serializer_class`, and `namespace`.
+
+An example config could be:
+
+```ruby
+ActiveModelSerializers.config.serializer_lookup_chain = [
+  lambda do |resource_class, serializer_class, namespace|
+    "API::#{namespace}::#{resource_class}"
+  end
+]
+```
+
+If you simply want to add to the existing lookup_chain. Use `unshift`.
+
+```ruby
+ActiveModelSerializers.config.serializer_lookup_chain.unshift(
+  lambda do |resource_class, serializer_class, namespace|
+    # ...
+  end
+)
+```
+
+See [lookup_chain.rb](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/lookup_chain.rb) for further explanations and examples.
+
 ## JSON API
 
 ##### jsonapi_resource_type
