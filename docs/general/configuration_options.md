@@ -82,6 +82,12 @@ which is shorthand for
 
 Each of the array entries represent a proc. A serializer lookup proc will be yielded 3 arguments. `resource_class`, `serializer_class`, and `namespace`.
 
+Note that:
+ - `resource_class` is the class of the resource being rendered
+ - by default `serializer_class` is `ActiveModel::Serializer`
+   - for association lookup it's the "parent" serializer
+ - `namespace` correspond to either the controller namespace or the [optionally] specified [namespace render option](./rendering.md#namespace)
+
 An example config could be:
 
 ```ruby
