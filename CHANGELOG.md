@@ -13,6 +13,7 @@ Fixes:
 
 Features:
 
+- [#1757](https://github.com/rails-api/active_model_serializers/pull/1757) Make serializer lookup chain configurable. (@NullVoxPopuli)
 - [#1968](https://github.com/rails-api/active_model_serializers/pull/1968) (@NullVoxPopuli)
   - Add controller namespace to default controller lookup
   - Provide a `namespace` render option
