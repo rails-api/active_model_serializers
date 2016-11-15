@@ -5,10 +5,50 @@ time = 10
 disable_gc = true
 ActiveModelSerializers.config.key_transform = :unaltered
 
-configurable = lambda do
-  Benchmark.ams('Configurable Lookup Chain', time: time, disable_gc: disable_gc) do
-    ActiveModel::Serializer.serializer_lookup_chain_for(PrimaryResource)
+module AmsBench
+  module Api
+    module V1
+      class PrimaryResourceSerializer < ActiveModel::Serializer
+        attributes :title, :body
+
+        has_many :has_many_relationships
+      end
+
+      class HasManyRelationshipSerializer < ActiveModel::Serializer
+        attribute :body
+      end
+    end
   end
+  class PrimaryResourceSerializer < ActiveModel::Serializer
+    attributes :title, :body
+
+    has_many :has_many_relationships
+
+    class HasManyRelationshipSerializer < ActiveModel::Serializer
+      attribute :body
+    end
+  end
+end
+
+
+resource = PrimaryResource.new(
+  id: 1,
+  title: "title",
+  body: "body",
+  has_many_relationships: [
+    HasManyRelationship.new(id: 1, body: "body1"),
+    HasManyRelationship.new(id: 2, body: "body1")
+  ]
+)
+
+serialization = lambda do
+  ActiveModelSerializers::SerializableResource.new(resource, serializer: AmsBench::PrimaryResourceSerializer).as_json
+  ActiveModelSerializers::SerializableResource.new(resource, namespace: AmsBench::Api::V1).as_json
+  ActiveModelSerializers::SerializableResource.new(resource).as_json
+end
+
+configurable = lambda do
+  Benchmark.ams('Configurable Lookup Chain', time: time, disable_gc: disable_gc, &serialization)
 end
 
 old = lambda do
@@ -24,15 +64,12 @@ old = lambda do
         chain.push("#{namespace}::#{serializer_class_name}") if namespace
         chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
         chain.push("#{resource_namespace}::#{serializer_class_name}")
-
         chain
       end
     end
   end
 
-  Benchmark.ams('Old Lookup Chain (v0.10)', time: time, disable_gc: disable_gc) do
-    ActiveModel::Serializer.serializer_lookup_chain_for(PrimaryResource)
-  end
+  Benchmark.ams('Old Lookup Chain (v0.10)', time: time, disable_gc: disable_gc, &serialization)
 end
 
 configurable.call
