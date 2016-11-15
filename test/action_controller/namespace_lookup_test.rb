@@ -37,6 +37,14 @@ module ActionController
               render json: book
             end
 
+            def implicit_namespaced_collection_serializer
+              writer = Writer.new(name: 'Bob')
+              book = Book.new(title: 'New Post', body: 'Body', writer: writer)
+              book2 = Book.new(title: 'New Post2', body: 'Body', writer: writer)
+
+              render json: [book, book2]
+            end
+
             def explicit_namespace_as_module
               book = Book.new(title: 'New Post', body: 'Body')
 
@@ -85,6 +93,18 @@ module ActionController
         assert_serializer Api::V3::BookSerializer
 
         expected = { 'title' => 'New Post', 'body' => 'Body', 'writer' => { 'name' => 'Bob' } }
+        actual = JSON.parse(@response.body)
+
+        assert_equal expected, actual
+      end
+
+      test 'implicitly uses namespaced serializer for collection' do
+        get :implicit_namespaced_collection_serializer
+
+        expected = [
+          { 'title' => 'New Post', 'body' => 'Body', 'writer' => { 'name' => 'Bob' } },
+          { 'title' => 'New Post2', 'body' => 'Body', 'writer' => { 'name' => 'Bob' } }
+        ]
         actual = JSON.parse(@response.body)
 
         assert_equal expected, actual
