@@ -30,14 +30,13 @@ module AmsBench
   end
 end
 
-
 resource = PrimaryResource.new(
   id: 1,
-  title: "title",
-  body: "body",
+  title: 'title',
+  body: 'body',
   has_many_relationships: [
-    HasManyRelationship.new(id: 1, body: "body1"),
-    HasManyRelationship.new(id: 2, body: "body1")
+    HasManyRelationship.new(id: 1, body: 'body1'),
+    HasManyRelationship.new(id: 2, body: 'body1')
   ]
 )
 
