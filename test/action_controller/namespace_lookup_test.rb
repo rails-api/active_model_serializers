@@ -5,6 +5,7 @@ module ActionController
     class NamespaceLookupTest < ActionController::TestCase
       class Book < ::Model; end
       class Page < ::Model; end
+      class Chapter < ::Model; end
       class Writer < ::Model; end
 
       module Api
@@ -19,6 +20,13 @@ module ActionController
             attributes :title, :body
 
             belongs_to :writer
+            has_many :chapters
+          end
+
+          class ChapterSerializer < ActiveModel::Serializer
+            attribute :title do
+              "Chapter - #{object.title}"
+            end
           end
 
           class WriterSerializer < ActiveModel::Serializer
@@ -32,7 +40,22 @@ module ActionController
 
             def implicit_namespaced_serializer
               writer = Writer.new(name: 'Bob')
-              book = Book.new(title: 'New Post', body: 'Body', writer: writer)
+              book = Book.new(title: 'New Post', body: 'Body', writer: writer, chapters: [])
+
+              render json: book
+            end
+
+            def implicit_namespaced_collection_serializer
+              chapter1 = Chapter.new(title: 'Oh')
+              chapter2 = Chapter.new(title: 'Oh my')
+
+              render json: [chapter1, chapter2]
+            end
+
+            def implicit_has_many_namespaced_serializer
+              chapter1 = Chapter.new(title: 'Odd World')
+              chapter2 = Chapter.new(title: 'New World')
+              book = Book.new(title: 'New Post', body: 'Body', chapters: [chapter1, chapter2])
 
               render json: book
             end
@@ -84,7 +107,36 @@ module ActionController
 
         assert_serializer Api::V3::BookSerializer
 
-        expected = { 'title' => 'New Post', 'body' => 'Body', 'writer' => { 'name' => 'Bob' } }
+        expected = { 'title' => 'New Post', 'body' => 'Body', 'writer' => { 'name' => 'Bob' }, 'chapters' => [] }
+        actual = JSON.parse(@response.body)
+
+        assert_equal expected, actual
+      end
+
+      test 'implicitly uses namespaced serializer for collection' do
+        get :implicit_namespaced_collection_serializer
+
+        assert_serializer 'ActiveModel::Serializer::CollectionSerializer'
+
+        expected = [{ 'title' => 'Chapter - Oh' }, { 'title' => 'Chapter - Oh my' }]
+        actual = JSON.parse(@response.body)
+
+        assert_equal expected, actual
+      end
+
+      test 'implicitly uses namespaced serializer for has_many' do
+        get :implicit_has_many_namespaced_serializer
+
+        assert_serializer Api::V3::BookSerializer
+
+        expected = {
+          'title' => 'New Post',
+          'body' => 'Body', 'writer' => nil,
+          'chapters' => [
+            { 'title' => 'Chapter - Odd World' },
+            { 'title' => 'Chapter - New World' }
+          ]
+        }
         actual = JSON.parse(@response.body)
 
         assert_equal expected, actual
