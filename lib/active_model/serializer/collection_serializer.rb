@@ -71,7 +71,7 @@ module ActiveModel
       end
 
       def serializer_from_resource(resource, serializer_context_class, options)
-        serializer_class = options.fetch(:serializer) { serializer_context_class.serializer_for(resource) }
+        serializer_class = options.fetch(:serializer) { serializer_context_class.serializer_for(resource, options) }
 
         if serializer_class.nil?
           ActiveModelSerializers.logger.debug "No serializer found for resource: #{resource.inspect}"
