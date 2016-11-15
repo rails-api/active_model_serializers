@@ -6,6 +6,7 @@ Breaking changes:
 
 Fixes:
 
+- [#1973](https://github.com/rails-api/active_model_serializers/pull/1973) Fix namespace lookup for collections and has_many relationships (@groyoh)
 - [#1887](https://github.com/rails-api/active_model_serializers/pull/1887) Make the comment reflect what the function does (@johnnymo87)
 - [#1890](https://github.com/rails-api/active_model_serializers/issues/1890) Ensure generator inherits from ApplicationSerializer when available (@richmolj)
 - [#1922](https://github.com/rails-api/active_model_serializers/pull/1922) Make railtie an optional dependency in runtime (@ggpasqualino)
