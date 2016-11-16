@@ -46,11 +46,19 @@ serialization = lambda do
   ActiveModelSerializers::SerializableResource.new(resource).as_json
 end
 
+def clear_cache
+  AmsBench::PrimaryResourceSerializer.serializers_cache.clear
+  AmsBench::Api::V1::PrimaryResourceSerializer.serializers_cache.clear
+  ActiveModel::Serializer.serializers_cache.clear
+end
+
 configurable = lambda do
+  clear_cache
   Benchmark.ams('Configurable Lookup Chain', time: time, disable_gc: disable_gc, &serialization)
 end
 
 old = lambda do
+  clear_cache
   module ActiveModel
     class Serializer
       def self.serializer_lookup_chain_for(klass, namespace = nil)
