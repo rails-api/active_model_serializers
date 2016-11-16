@@ -15,6 +15,16 @@ module ActionController
           end
         end
 
+        module VHeader
+          class BookSerializer < ActiveModel::Serializer
+            attributes :title, :body
+
+            def body
+              'header'
+            end
+          end
+        end
+
         module V3
           class BookSerializer < ActiveModel::Serializer
             attributes :title, :body
@@ -92,6 +102,14 @@ module ActionController
               book = Book.new(title: 'New Post', body: 'Body')
               render json: book
             end
+
+            def namespace_set_by_request_headers
+              book = Book.new(title: 'New Post', body: 'Body')
+              version_from_header = request.headers['X-API_VERSION']
+              namespace = "ActionController::Serialization::NamespaceLookupTest::#{version_from_header}"
+
+              render json: book, namespace: namespace
+            end
           end
         end
       end
@@ -100,6 +118,13 @@ module ActionController
 
       setup do
         @test_namespace = self.class.parent
+      end
+
+      test 'uses request headers to determine the namespace' do
+        request.env['X-API_VERSION'] = 'Api::VHeader'
+        get :namespace_set_by_request_headers
+
+        assert_serializer Api::VHeader::BookSerializer
       end
 
       test 'implicitly uses namespaced serializer' do

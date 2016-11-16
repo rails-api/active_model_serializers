@@ -60,17 +60,10 @@ module ActiveModel
 
     # @api private
     def self.serializer_lookup_chain_for(klass, namespace = nil)
-      chain = []
-
-      resource_class_name = klass.name.demodulize
-      resource_namespace = klass.name.deconstantize
-      serializer_class_name = "#{resource_class_name}Serializer"
-
-      chain.push("#{namespace}::#{serializer_class_name}") if namespace
-      chain.push("#{name}::#{serializer_class_name}") if self != ActiveModel::Serializer
-      chain.push("#{resource_namespace}::#{serializer_class_name}")
-
-      chain
+      lookups = ActiveModelSerializers.config.serializer_lookup_chain
+      Array[*lookups].flat_map do |lookup|
+        lookup.call(klass, self, namespace)
+      end.compact
     end
 
     # Used to cache serializer name => serializer class
