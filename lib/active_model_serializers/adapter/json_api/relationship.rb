@@ -48,7 +48,7 @@ module ActiveModelSerializers
 
         def links_for(association)
           association.links.each_with_object({}) do |(key, value), hash|
-            result = Link.new(parent_serializer, value).as_json
+            result = Link.new(parent_serializer, value, serializable_resource_options).as_json
             hash[key] = result if result
           end
         end

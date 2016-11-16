@@ -41,11 +41,12 @@ module ActiveModelSerializers
       class Link
         include SerializationContext::UrlHelpers
 
-        def initialize(serializer, value)
+        def initialize(serializer, value, adapter_options)
           @_routes ||= nil # handles warning
           # actionpack-4.0.13/lib/action_dispatch/routing/route_set.rb:417: warning: instance variable @_routes not initialized
           @object = serializer.object
           @scope = serializer.scope
+          @context = adapter_options[:serialization_context]
           # Use the return value of the block unless it is nil.
           if value.respond_to?(:call)
             @value = instance_eval(&value)
@@ -76,7 +77,7 @@ module ActiveModelSerializers
 
         protected
 
-        attr_reader :object, :scope
+        attr_reader :object, :scope, :context
       end
     end
   end
