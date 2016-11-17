@@ -19,6 +19,7 @@ serializable_resource = ActiveModelSerializers::SerializableResource.new(post, o
 # Convert your resource into json
 model_json = serializable_resource.as_json
 ```
+The object that is passed to `ActiveModelSerializers::SerializableResource.new` can be a single resource or a collection.
 
 ### Looking up the Serializer for a Resource
 
