@@ -2,6 +2,20 @@ verbose = $VERBOSE
 $VERBOSE = nil
 class Model < ActiveModelSerializers::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
+
+  class_attribute :association_names
+  self.association_names = []
+
+  def self.associations(*names)
+    attr_accessor(*names)
+    self.association_names = association_names | names.map(&:to_sym)
+  end
+
+  def associations
+    association_names.each_with_object({}) do |association_name, result|
+      result[association_name] = public_send(association_name)
+    end.with_indifferent_access
+  end
 end
 
 # see
@@ -15,7 +29,7 @@ class ModelWithErrors < ::ActiveModelSerializers::Model
   attributes :name
 end
 
-class Profile < Model; attributes :name, :description, :comments end
+class Profile < Model; attributes :name, :description; associations :comments end
 
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
@@ -30,9 +44,9 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
 end
 
-class Post < Model; attributes :title, :body, :author, :comments, :blog, :tags, :related, :publish_at end
+class Post < Model; attributes :title, :body, :publish_at; associations :author, :comments, :blog, :tags, :related end
 class Like < Model; attributes :likeable, :likable, :time end
-class Author < Model; attributes :name, :posts, :bio, :roles, :first_name, :last_name, :comments end
+class Author < Model; attributes :name, :first_name, :last_name; associations :posts, :bio, :roles, :comments end
 class Bio < Model; attributes :author, :content, :rating end
 class Blog < Model; attributes :name, :type, :writer, :articles, :special_attribute end
 class Role < Model; attributes :name, :description, :author, :special_attribute end
@@ -42,7 +56,8 @@ class Place < Model; attributes :name, :locations end
 class Tag < Model; attributes :name end
 class VirtualValue < Model; end
 class Comment < Model
-  attributes :body, :post, :author, :date, :likes
+  attributes :body
+  associations :post, :author, :date, :likes
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{id}"
