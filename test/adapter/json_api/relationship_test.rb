@@ -384,7 +384,7 @@ module ActiveModelSerializers
 
         def new_model(model_attributes)
           Class.new(ActiveModelSerializers::Model) do
-            attr_accessor(*model_attributes.keys)
+            attributes(*model_attributes.keys)
 
             def self.name
               'TestModel'

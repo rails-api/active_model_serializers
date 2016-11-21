@@ -25,7 +25,7 @@ Fortunately, ActiveModelSerializers provides a [`ActiveModelSerializers::Model`]
 ```ruby
 # my_model.rb
 class MyModel < ActiveModelSerializers::Model
-  attr_accessor :id, :name, :level
+  attributes :id, :name, :level
 end
 ```
 

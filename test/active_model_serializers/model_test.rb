@@ -10,7 +10,7 @@ module ActiveModelSerializers
 
     def test_initialization_with_string_keys
       klass = Class.new(ActiveModelSerializers::Model) do
-        attr_accessor :key
+        attributes :key
       end
       value = 'value'
 

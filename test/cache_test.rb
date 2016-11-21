@@ -244,7 +244,7 @@ module ActiveModelSerializers
     # rubocop:disable Metrics/AbcSize
     def test_a_serializer_rendered_by_two_adapter_returns_differently_fetch_attributes
       Object.const_set(:Alert, Class.new(ActiveModelSerializers::Model) do
-        attr_accessor :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
+        attributes :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
       end)
       Object.const_set(:UncachedAlertSerializer, Class.new(ActiveModel::Serializer) do
         attributes :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at

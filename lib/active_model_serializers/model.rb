@@ -6,6 +6,10 @@ module ActiveModelSerializers
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
+    def self.attributes(*names)
+      attr_accessor(*names)
+    end
+
     attr_reader :attributes, :errors
 
     def initialize(attributes = {})

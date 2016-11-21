@@ -110,7 +110,7 @@ class SomeResource < ActiveRecord::Base
 end
 # or
 class SomeResource < ActiveModelSerializers::Model
-  attr_accessor :title, :body
+  attributes :title, :body
 end
 ```
 
