@@ -3,9 +3,9 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class SerializerForWithNamespaceTest < ActiveSupport::TestCase
-      class Book < ::Model; end
-      class Page < ::Model; end
-      class Publisher < ::Model; end
+      class Book < ::Model; attributes :title, :author_name, :publisher, :pages end
+      class Page < ::Model; attributes :number, :text end
+      class Publisher < ::Model; attributes :name end
 
       module Api
         module V3

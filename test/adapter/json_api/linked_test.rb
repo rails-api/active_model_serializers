@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class NestedPost < ::Model; end
+class NestedPost < ::Model; attributes :nested_posts end
 class NestedPostSerializer < ActiveModel::Serializer
   has_many :nested_posts
 end
@@ -301,8 +301,8 @@ module ActiveModelSerializers
       end
 
       class NoDuplicatesTest < ActiveSupport::TestCase
-        class Post < ::Model; end
-        class Author < ::Model; end
+        class Post < ::Model; attributes :author end
+        class Author < ::Model; attributes :posts, :roles, :bio end
 
         class PostSerializer < ActiveModel::Serializer
           type 'posts'

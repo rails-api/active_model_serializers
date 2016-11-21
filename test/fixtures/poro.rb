@@ -2,25 +2,6 @@ verbose = $VERBOSE
 $VERBOSE = nil
 class Model < ActiveModelSerializers::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
-
-  ### Helper methods, not required to be serializable
-
-  # Convenience when not adding @attributes readers and writers
-  def method_missing(meth, *args)
-    if meth.to_s =~ /^(.*)=$/
-      attributes[Regexp.last_match(1).to_sym] = args[0]
-    elsif attributes.key?(meth)
-      attributes[meth]
-    else
-      super
-    end
-  end
-
-  # required for ActiveModel::AttributeAssignment#_assign_attribute
-  # in Rails 5
-  def respond_to_missing?(method_name, _include_private = false)
-    attributes.key?(method_name.to_s.tr('=', '').to_sym) || super
-  end
 end
 
 # see
@@ -34,8 +15,7 @@ class ModelWithErrors < ::ActiveModelSerializers::Model
   attributes :name
 end
 
-class Profile < Model
-end
+class Profile < Model; attributes :name, :description, :comments end
 
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
@@ -50,18 +30,19 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
 end
 
-class Post < Model; end
-class Like < Model; end
-class Author < Model; end
-class Bio < Model; end
-class Blog < Model; end
-class Role < Model; end
+class Post < Model; attributes :title, :body, :author, :comments, :blog, :tags, :related, :publish_at end
+class Like < Model; attributes :likeable, :likable, :time end
+class Author < Model; attributes :name, :posts, :bio, :roles, :first_name, :last_name, :comments end
+class Bio < Model; attributes :author, :content, :rating end
+class Blog < Model; attributes :name, :type, :writer, :articles, :special_attribute end
+class Role < Model; attributes :name, :description, :author, :special_attribute end
 class User < Model; end
-class Location < Model; end
-class Place < Model; end
-class Tag < Model; end
+class Location < Model; attributes :lat, :lng, :place end
+class Place < Model; attributes :name, :locations end
+class Tag < Model; attributes :name end
 class VirtualValue < Model; end
 class Comment < Model
+  attributes :body, :post, :author, :date, :likes
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{id}"
