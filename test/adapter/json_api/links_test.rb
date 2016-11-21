@@ -4,7 +4,7 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class LinksTest < ActiveSupport::TestCase
-        class LinkAuthor < ::Model; end
+        class LinkAuthor < ::Model; associations :posts end
         class LinkAuthorSerializer < ActiveModel::Serializer
           link :self do
             href "http://example.com/link_author/#{object.id}"
