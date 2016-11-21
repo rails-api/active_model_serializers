@@ -6,6 +6,8 @@ Breaking changes:
 
 Features:
 
+- [#1982](https://github.com/rails-api/active_model_serializers/pull/1982) Add ActiveModelSerializers::Model.attributes to configure PORO attributes (@bf4).
+
 Fixes:
 
 Misc:

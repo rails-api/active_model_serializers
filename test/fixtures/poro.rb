@@ -31,7 +31,7 @@ end
 #   model.validate!            # => ["cannot be nil"]
 #   model.errors.full_messages # => ["name cannot be nil"]
 class ModelWithErrors < ::ActiveModelSerializers::Model
-  attr_accessor :name
+  attributes :name
 end
 
 class Profile < Model

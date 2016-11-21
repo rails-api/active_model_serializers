@@ -105,7 +105,7 @@ ActiveModelSerializers::Model may be used either as a template, or in production
 
 ```ruby
 class MyModel < ActiveModelSerializers::Model
-  attr_accessor :id, :name, :level
+  attributes :id, :name, :level
 end
 ```
 
