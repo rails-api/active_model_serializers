@@ -68,6 +68,10 @@ module ActiveModelSerializers
           expected: [
             { SomeValue: 'value' }
           ]
+        },
+        {
+          value: 'scope/some_value',
+          expected: 'Scope/SomeValue'
         }
       ]
       scenarios.each do |s|
@@ -142,6 +146,10 @@ module ActiveModelSerializers
           expected: [
             { someValue: 'value' }
           ]
+        },
+        {
+          value: 'scope/some_value',
+          expected: 'scope/someValue'
         }
       ]
       scenarios.each do |s|
