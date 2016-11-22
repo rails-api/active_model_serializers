@@ -141,6 +141,7 @@ module ActiveModelSerializers
 
         # @api private
         def filter_fields(fields, options)
+          KeyTransform.send(:underscore, fields)
           if (only = options[:only])
             fields.slice!(*Array(only).map(&:to_s))
           elsif (except = options[:except])
