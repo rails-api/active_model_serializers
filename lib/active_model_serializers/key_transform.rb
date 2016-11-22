@@ -4,7 +4,7 @@ module ActiveModelSerializers
   module KeyTransform
     module_function
 
-    SLASH_SYMBOL = "/".freeze
+    SLASH_SYMBOL = '/'.freeze
     # Transforms values to UpperCamelCase or PascalCase.
     #
     # @example:
