@@ -18,7 +18,6 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - JSON API
   - [Schema](jsonapi/schema.md)
   - [Errors](jsonapi/errors.md)
-- [ARCHITECTURE](ARCHITECTURE.md)
 
 ## How to
 

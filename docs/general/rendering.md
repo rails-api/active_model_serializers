@@ -48,26 +48,11 @@ render json: @posts, serializer: CollectionSerializer, each_serializer: PostPrev
 
 ## Serializing non-ActiveRecord objects
 
-All serializable resources must pass the
-[ActiveModel::Serializer::Lint::Tests](../../lib/active_model/serializer/lint.rb#L17).
-
-See the ActiveModelSerializers::Model for a base class that implements the full
-API for a plain-old Ruby object (PORO).
+See [README](../../README.md#what-does-a-serializable-resource-look-like)
 
 ## SerializableResource options
 
-The `options` hash passed to `render` or `ActiveModelSerializers::SerializableResource.new(resource, options)`
-are partitioned into `serializer_opts` and `adapter_opts`. `adapter_opts` are passed to new Adapters;
-`serializer_opts` are passed to new Serializers.
-
-The `adapter_opts` are specified in [ActiveModelSerializers::SerializableResource::ADAPTER_OPTIONS](../../lib/active_model_serializers/serializable_resource.rb#L5).
-The `serializer_opts` are the remaining options.
-
-(In Rails, the `options` are also passed to the `as_json(options)` or `to_json(options)`
-methods on the resource serialization by the Rails JSON renderer.  They are, therefore, important
-to know about, but not part of ActiveModelSerializers.)
-
-See [ARCHITECTURE](../ARCHITECTURE.md) for more information.
+See [README](../../README.md#activemodelserializersserializableresource)
 
 ### adapter_opts
 
