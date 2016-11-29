@@ -37,7 +37,7 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 end
 ```
 
-This will resilt in (example is in jsonapi adapter):
+This will result in (example is in jsonapi adapter):
 ```json
 {
   "data": {
@@ -69,7 +69,7 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 end
 ```
 
-This will resilt in (example is in jsonapi adapter):
+This will result in (example is in jsonapi adapter):
 ```json
 {
   "data": {
