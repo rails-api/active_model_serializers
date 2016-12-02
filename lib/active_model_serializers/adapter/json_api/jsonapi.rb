@@ -23,12 +23,15 @@ module ActiveModelSerializers
       module Jsonapi
         module_function
 
-        def add!(hash)
-          hash.merge!(object) if include_object?
+        def add!(hash, instance_options)
+          hash.merge!(object) if include_object?(instance_options)
         end
 
-        def include_object?
-          ActiveModelSerializers.config.jsonapi_include_toplevel_object
+        def include_object?(instance_options)
+          instance_options.fetch(
+            :jsonapi_include_toplevel_object,
+            ActiveModelSerializers.config.jsonapi_include_toplevel_object
+          )
         end
 
         # TODO: see if we can cache this
