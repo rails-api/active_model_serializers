@@ -4,8 +4,8 @@ sudo: false
 
 rvm:
   - 2.1
-  - 2.2.3
-  - 2.3.0
+  - 2.2.6
+  - 2.3.3
   - ruby-head
   - jruby-9.0.4.0
   - jruby-head
