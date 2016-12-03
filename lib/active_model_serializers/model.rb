@@ -34,6 +34,8 @@ module ActiveModelSerializers
     end
 
     def read_attribute_for_serialization(key)
+      return send(key) if respond_to?(key)
+
       if key == :id || key == 'id'
         attributes.fetch(key) { id }
       else
