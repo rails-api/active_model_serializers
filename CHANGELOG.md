@@ -10,7 +10,11 @@ Features:
 
 Fixes:
 
+- [#1984](https://github.com/rails-api/active_model_serializers/pull/1984) Mutation of ActiveModelSerializers::Model now changes the attributes. (@bf4)
+
 Misc:
+
+- [#1984](https://github.com/rails-api/active_model_serializers/pull/1984) Make test attributes explicit. Test models have 'associations' support. (@bf4)
 
 ### [v0.10.3 (2016-11-21)](https://github.com/rails-api/active_model_serializers/compare/v0.10.2...v0.10.3)
 
