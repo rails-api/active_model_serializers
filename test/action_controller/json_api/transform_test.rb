@@ -5,9 +5,9 @@ module ActionController
     class JsonApi
       class KeyTransformTest < ActionController::TestCase
         class KeyTransformTestController < ActionController::Base
-          class Post < ::Model; end
-          class Author < ::Model; end
-          class TopComment < ::Model; end
+          class Post < ::Model; attributes :title, :body, :author, :top_comments, :publish_at end
+          class Author < ::Model; attributes :first_name, :last_name end
+          class TopComment < ::Model; attributes :body, :author, :post end
           class PostSerializer < ActiveModel::Serializer
             type 'posts'
             attributes :title, :body, :publish_at

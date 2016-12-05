@@ -3,23 +3,18 @@ $VERBOSE = nil
 class Model < ActiveModelSerializers::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
-  ### Helper methods, not required to be serializable
+  class_attribute :association_names
+  self.association_names = []
 
-  # Convenience when not adding @attributes readers and writers
-  def method_missing(meth, *args)
-    if meth.to_s =~ /^(.*)=$/
-      attributes[Regexp.last_match(1).to_sym] = args[0]
-    elsif attributes.key?(meth)
-      attributes[meth]
-    else
-      super
-    end
+  def self.associations(*names)
+    attr_accessor(*names)
+    self.association_names = association_names | names.map(&:to_sym)
   end
 
-  # required for ActiveModel::AttributeAssignment#_assign_attribute
-  # in Rails 5
-  def respond_to_missing?(method_name, _include_private = false)
-    attributes.key?(method_name.to_s.tr('=', '').to_sym) || super
+  def associations
+    association_names.each_with_object({}) do |association_name, result|
+      result[association_name] = public_send(association_name)
+    end.with_indifferent_access
   end
 end
 
@@ -34,8 +29,7 @@ class ModelWithErrors < ::ActiveModelSerializers::Model
   attributes :name
 end
 
-class Profile < Model
-end
+class Profile < Model; attributes :name, :description; associations :comments end
 
 class ProfileSerializer < ActiveModel::Serializer
   attributes :name, :description
@@ -50,18 +44,20 @@ class ProfilePreviewSerializer < ActiveModel::Serializer
   attributes :name
 end
 
-class Post < Model; end
-class Like < Model; end
-class Author < Model; end
-class Bio < Model; end
-class Blog < Model; end
-class Role < Model; end
+class Post < Model; attributes :title, :body, :publish_at; associations :author, :comments, :blog, :tags, :related end
+class Like < Model; attributes :likeable, :likable, :time end
+class Author < Model; attributes :name, :first_name, :last_name; associations :posts, :bio, :roles, :comments end
+class Bio < Model; attributes :author, :content, :rating end
+class Blog < Model; attributes :name, :type, :writer, :articles, :special_attribute end
+class Role < Model; attributes :name, :description, :author, :special_attribute end
 class User < Model; end
-class Location < Model; end
-class Place < Model; end
-class Tag < Model; end
+class Location < Model; attributes :lat, :lng, :place end
+class Place < Model; attributes :name, :locations end
+class Tag < Model; attributes :name end
 class VirtualValue < Model; end
 class Comment < Model
+  attributes :body
+  associations :post, :author, :date, :likes
   # Uses a custom non-time-based cache key
   def cache_key
     "#{self.class.name.downcase}/#{id}"

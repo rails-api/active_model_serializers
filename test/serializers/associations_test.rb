@@ -8,7 +8,7 @@ module ActiveModel
         @author.roles = []
         @blog = Blog.new(name: 'AMS Blog')
         @post = Post.new(title: 'New Post', body: 'Body')
-        @tag = Tag.new(name: '#hashtagged')
+        @tag = Tag.new(id: 'tagid', name: '#hashtagged')
         @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
         @post.comments = [@comment]
         @post.tags = [@tag]
@@ -53,7 +53,7 @@ module ActiveModel
 
           assert_equal :tags, key
           assert_nil serializer
-          assert_equal [{ name: '#hashtagged' }].to_json, options[:virtual_value].to_json
+          assert_equal [{ id: 'tagid', name: '#hashtagged' }].to_json, options[:virtual_value].to_json
         end
       end
 
@@ -159,7 +159,7 @@ module ActiveModel
 
       class NamespacedResourcesTest < ActiveSupport::TestCase
         class ResourceNamespace
-          class Post    < ::Model; end
+          class Post    < ::Model; attributes :comments, :author, :description end
           class Comment < ::Model; end
           class Author  < ::Model; end
           class Description < ::Model; end
@@ -200,7 +200,7 @@ module ActiveModel
       end
 
       class NestedSerializersTest < ActiveSupport::TestCase
-        class Post    < ::Model; end
+        class Post    < ::Model; attributes :author, :description, :comments end
         class Comment < ::Model; end
         class Author  < ::Model; end
         class Description < ::Model; end
@@ -240,7 +240,9 @@ module ActiveModel
 
         # rubocop:disable Metrics/AbcSize
         def test_conditional_associations
-          model = ::Model.new(true: true, false: false)
+          model = Class.new(::Model) do
+            attributes :true, :false, :association
+          end.new(true: true, false: false)
 
           scenarios = [
             { options: { if:     :true  }, included: true  },
