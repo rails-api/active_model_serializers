@@ -5,7 +5,9 @@ module ActiveModel
     module Adapter
       class JsonApi
         class IncludeParamTest < ActiveSupport::TestCase
-          IncludeParamAuthor = Class.new(::Model)
+          IncludeParamAuthor = Class.new(::Model) do
+            associations :tags, :posts
+          end
 
           class CustomCommentLoader
             def all

@@ -135,7 +135,7 @@ module ActionController
           like = Like.new(id: 1, likeable: comment, time: 3.days.ago)
 
           generate_cached_serializer(like)
-          like.likable = comment2
+          like.likeable = comment2
           like.time = Time.zone.now.to_s
 
           render json: like
