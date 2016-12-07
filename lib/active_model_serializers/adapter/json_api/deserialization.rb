@@ -205,7 +205,7 @@ module ActiveModelSerializers
         # @api private
         def transform_keys(hash, options)
           transform = options[:key_transform] || :underscore
-          KeyTransform.send(transform, hash)
+          CaseTransform.send(transform, hash)
         end
       end
     end
