@@ -4,6 +4,7 @@ module ActiveModelSerializers
   module KeyTransform
     module_function
 
+    SLASH_SYMBOL = '/'.freeze
     # Transforms values to UpperCamelCase or PascalCase.
     #
     # @example:
@@ -14,7 +15,7 @@ module ActiveModelSerializers
       when Array then value.map { |item| camel(item) }
       when Hash then value.deep_transform_keys! { |key| camel(key) }
       when Symbol then camel(value.to_s).to_sym
-      when String then value.underscore.camelize
+      when String then camelize(value, :upper)
       else value
       end
     end
@@ -29,7 +30,7 @@ module ActiveModelSerializers
       when Array then value.map { |item| camel_lower(item) }
       when Hash then value.deep_transform_keys! { |key| camel_lower(key) }
       when Symbol then camel_lower(value.to_s).to_sym
-      when String then value.underscore.camelize(:lower)
+      when String then camelize(value, :lower)
       else value
       end
     end
@@ -69,6 +70,10 @@ module ActiveModelSerializers
     # Returns the value unaltered
     def unaltered(value)
       value
+    end
+
+    def camelize(value, first_letter)
+      value.split(SLASH_SYMBOL).map { |ch| ch.underscore.camelize(first_letter) }.join(SLASH_SYMBOL)
     end
   end
 end
