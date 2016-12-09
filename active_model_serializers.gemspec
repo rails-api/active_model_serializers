@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
   # 'thread_safe'
 
   spec.add_runtime_dependency 'jsonapi-deserializable', '~> 0.1.1'
+  spec.add_runtime_dependency 'jsonapi-renderer', '~> 0.1.1'
   spec.add_runtime_dependency 'case_transform', '>= 0.2'
 
   spec.add_development_dependency 'activerecord', rails_versions

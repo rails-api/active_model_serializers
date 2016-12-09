@@ -1,5 +1,6 @@
 require 'active_model'
 require 'active_support'
+require 'jsonapi/deserializable'
 require 'active_support/core_ext/object/with_options'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/json'
