@@ -3,8 +3,8 @@ require 'test_helper'
 module ActionController
   module Serialization
     class JsonApi
-      class CaseTransformTest < ActionController::TestCase
-        class CaseTransformTestController < ActionController::Base
+      class KeyTransformTest < ActionController::TestCase
+        class KeyTransformTestController < ActionController::Base
           class Post < ::Model
             attributes :title, :body, :publish_at
             associations :author, :top_comments
@@ -77,7 +77,7 @@ module ActionController
           end
         end
 
-        tests CaseTransformTestController
+        tests KeyTransformTestController
 
         def test_render_resource_with_transform
           get :render_resource_with_transform
