@@ -79,9 +79,7 @@ module ActiveModelSerializers
         # Same as parse!, but returns an empty hash instead of raising InvalidDocument
         # on invalid payloads.
         def parse(document, options = {})
-          # TODO: change to jsonapi-ralis to have default conversion to flat hashes
           result = JSONAPI::Deserializable::Resource.call(document)
-          # result = JSONAPI::Deserializable::ActiveRecord.new(document, options: options).to_hash
           result = apply_options(result, options)
           result
         rescue JSONAPI::Parser::InvalidDocument => e
