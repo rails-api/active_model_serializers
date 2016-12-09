@@ -7,7 +7,7 @@ module ActiveModel
       included do
         with_options instance_writer: false, instance_reader: false do |serializer|
           serializer.class_attribute :_cache         # @api private : the cache store
-          serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key.  Ignored if the serializable object defines #cache_key.
+          serializer.class_attribute :_cache_key     # @api private : when present, is first item in cache_key. If is a Proc, will be evaluated in context of a serializer instance
           serializer.class_attribute :_cache_only    # @api private : when fragment caching, whitelists fetch_attributes. Cannot combine with except
           serializer.class_attribute :_cache_except  # @api private : when fragment caching, blacklists fetch_attributes. Cannot combine with only
           serializer.class_attribute :_cache_options # @api private : used by CachedSerializer, passed to _cache.fetch
@@ -98,6 +98,17 @@ module ActiveModel
         #     attributes :title, :body
         #
         #     has_many :comments
+        #   end
+        #
+        # @example
+        #   class PostSerializer < ActiveModel::Serializer
+        #     cache key: proc { "#{object.cache_key}?detalized=#{detalized?}" }, expires_in: 3.hours
+        #     attributes :title, :author
+        #     attributes :body, if: :detalized?
+        #
+        #     def detalized?
+        #       !!instance_options[:detalized]
+        #     end
         #   end
         #
         # @todo require less code comments. See
@@ -270,15 +281,17 @@ module ActiveModel
         ActiveSupport::Cache.expand_cache_key(parts)
       end
 
-      # Use object's cache_key if available, else derive a key from the object
-      # Pass the `key` option to the `cache` declaration or override this method to customize the cache key
+      # Use a custom cache key defined via serializer's ::cache method if available,
+      # else use object's #cache_key.
+      # Pass the `key` option to the `cache` declaration or override this method to customize the cache key.
       def object_cache_key
-        if object.respond_to?(:cache_key)
-          object.cache_key
-        elsif (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
+        if serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options.try(:[], :key))
           object_time_safe = object.updated_at
           object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
+          serializer_cache_key = instance_eval(&serializer_cache_key) if serializer_cache_key.is_a? Proc
           "#{serializer_cache_key}/#{object.id}-#{object_time_safe}"
+        elsif object.respond_to?(:cache_key)
+          object.cache_key
         else
           fail UndefinedCacheKey, "#{object.class} must define #cache_key, or the 'key:' option must be passed into '#{serializer_class}.cache'"
         end
