@@ -7,8 +7,6 @@ eval_gemfile local_gemfile if File.readable?(local_gemfile)
 # Specify your gem's dependencies in active_model_serializers.gemspec
 gemspec
 
-gem 'jsonapi-rails', github: 'beauby/jsonapi-rails', branch: 'initial-implementation'
-
 version = ENV['RAILS_VERSION'] || '4.2'
 
 if version == 'master'
