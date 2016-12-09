@@ -1,6 +1,3 @@
-require 'jsonapi/parser'
-require 'jsonapi/rails'
-
 module ActiveModelSerializers
   module Adapter
     class JsonApi
