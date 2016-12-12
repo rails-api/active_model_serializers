@@ -6,7 +6,36 @@ module ActiveModelSerializers
     include ActiveModel::Serializers::JSON
     include ActiveModel::Model
 
-    class_attribute :attribute_names
+    # Configuration to avoid a breaking change with older versions of this class which lacked defined attributes.
+    # Previous behavior was: 1) initialized attributes were the
+    class_attribute :attributes_are_always_the_initialization_data, instance_writer: false, instance_reader: false
+    self.attributes_are_always_the_initialization_data = true
+    module AttributesAreAlwaysTheInitializationData
+      def initialize(attributes = {})
+        @initialized_attributes = attributes && attributes.symbolize_keys
+        super
+      end
+
+      # Defaults to the downcased model name.
+      def id
+        @initialized_attributes.fetch(:id) { self.class.model_name.name && self.class.model_name.name.downcase }
+      end
+
+      def attributes
+        @initialized_attributes
+      end
+    end
+
+    def self.inherited(subclass)
+      if subclass.attributes_are_always_the_initialization_data
+        unless subclass.included_modules.include?(AttributesAreAlwaysTheInitializationData)
+          subclass.prepend(AttributesAreAlwaysTheInitializationData)
+        end
+      end
+      super
+    end
+
+    class_attribute :attribute_names, instance_writer: false, instance_reader: false
     # Initialize +attribute_names+ for all subclasses.  The array is usually
     # mutated in the +attributes+ method, but can be set directly, as well.
     self.attribute_names = []
@@ -37,7 +66,7 @@ module ActiveModelSerializers
     # +attributes+ are returned frozen to prevent any expectations that mutation affects
     # the actual values in the model.
     def attributes
-      attribute_names.each_with_object({}) do |attribute_name, result|
+      self.class.attribute_names.each_with_object({}) do |attribute_name, result|
         result[attribute_name] = public_send(attribute_name).freeze
       end.with_indifferent_access.freeze
     end
