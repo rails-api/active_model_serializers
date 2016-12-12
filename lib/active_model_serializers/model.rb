@@ -9,7 +9,7 @@ module ActiveModelSerializers
     # Configuration to avoid a breaking change with older versions of this class which lacked defined attributes.
     # Previous behavior was: 1) initialized attributes were the
     class_attribute :attributes_are_always_the_initialization_data, instance_writer: false, instance_reader: false
-    self.attributes_are_always_the_initialization_data = true
+    self.attributes_are_always_the_initialization_data = false # remove this commit, just for demonstration
     module AttributesAreAlwaysTheInitializationData
       def initialize(attributes = {})
         @initialized_attributes = attributes && attributes.symbolize_keys
