@@ -456,7 +456,7 @@ module ActionController
         end
       end
 
-      def test_render_event_is_emmited
+      def test_render_event_is_emitted
         subscriber = ::ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
           @name = name
         end

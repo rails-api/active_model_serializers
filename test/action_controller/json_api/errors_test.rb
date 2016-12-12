@@ -14,10 +14,10 @@ module ActionController
               { source: { pointer: '/data/attributes/id' }, detail: 'must be a uuid' }
             ]
           }.to_json
-          assert_equal json_reponse_body.to_json, expected_errors_object
+          assert_equal json_response_body.to_json, expected_errors_object
         end
 
-        def json_reponse_body
+        def json_response_body
           JSON.load(@response.body)
         end
 
