@@ -13,7 +13,7 @@ module ActiveModelSerializers
       assert_equal '/data', pointer
     end
 
-    def test_unkown_data_pointer
+    def test_unknown_data_pointer
       assert_raises(TypeError) do
         ActiveModelSerializers::JsonPointer.new(:unknown)
       end
