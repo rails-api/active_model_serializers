@@ -1,3 +1,4 @@
+ActiveModelSerializers::Model.attributes_are_always_the_initialization_data = false
 class Model < ActiveModelSerializers::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 
