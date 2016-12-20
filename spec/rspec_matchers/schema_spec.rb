@@ -38,8 +38,6 @@ end
 RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :controller do
   routes { Routes }
 
-  include ActiveModelSerializers::RSpecMatchers::Schema
-
   it 'test_that_assert_with_a_valid_schema' do
     get :index
     expect(response).to have_valid_schema

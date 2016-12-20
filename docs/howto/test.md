@@ -116,8 +116,6 @@ require 'active_model_serializers/rspec'
 
 # spec/controller/posts_controller_spec.rb
 describe PostsController do
-  include ActiveModelSerializers::RSpecMatchers::Schema
-
   describe 'index' do
     it "should render right response" do
       get :index
