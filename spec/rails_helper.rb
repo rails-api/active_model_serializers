@@ -10,3 +10,5 @@ require 'fixtures/poro'
 
 require 'rspec/rails'
 require 'active_model_serializers/rspec'
+
+RSpec.configure(&:disable_monkey_patching!)

@@ -35,7 +35,7 @@ module ActiveModelSerializers
   end
 end
 
-describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :controller do
+RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :controller do
   routes { Routes }
 
   include ActiveModelSerializers::RSpecMatchers::Schema
