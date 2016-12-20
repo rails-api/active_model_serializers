@@ -61,36 +61,36 @@ RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :co
     get :show
 
     expect do
-      expect(response).to have_valid_schema nil, message
+      expect(response).to have_valid_schema(message)
     end.to raise_error(RSpec::Expectations::ExpectationNotMetError, expected_message)
   end
 
   it 'test_that_assert_with_a_custom_schema' do
     get :show
-    expect(response).to have_valid_schema 'custom/show.json'
+    expect(response).to have_valid_schema.at_path 'custom/show.json'
   end
 
   it 'test_that_assert_with_a_hyper_schema' do
     get :show
-    expect(response).to have_valid_schema 'hyper_schema.json'
+    expect(response).to have_valid_schema.at_path 'hyper_schema.json'
   end
 
   it 'test_simple_json_pointers' do
     get :show
-    expect(response).to have_valid_schema 'simple_json_pointers.json'
+    expect(response).to have_valid_schema.at_path 'simple_json_pointers.json'
   end
 
   it 'test_simple_json_pointers_that_doesnt_match' do
     get :name_as_a_integer
 
     expect do
-      expect(response).to have_valid_schema 'simple_json_pointers.json'
+      expect(response).to have_valid_schema.at_path 'simple_json_pointers.json'
     end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'test_json_api_schema' do
     get :render_using_json_api
-    expect(response).to have_valid_schema 'render_using_json_api.json'
+    expect(response).to have_valid_schema.at_path 'render_using_json_api.json'
   end
 
   it 'test_that_assert_with_a_custom_schema_directory' do
@@ -109,7 +109,7 @@ RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :co
     get :show
 
     expect do
-      expect(response).to have_valid_schema 'non-existent.json', message
+      expect(response).to have_valid_schema(message).at_path 'non-existent.json'
     end.to raise_error(ActiveModelSerializers::Test::Schema::MissingSchema)
   end
 
@@ -119,7 +119,7 @@ RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :co
     get :invalid_json_body
 
     expect do
-      expect(response).to have_valid_schema 'custom/show.json', message
+      expect(response).to have_valid_schema(message).at_path 'custom/show.json'
     end.to raise_error(ActiveModelSerializers::Test::Schema::InvalidSchemaError)
   end
 end

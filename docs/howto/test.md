@@ -125,7 +125,7 @@ describe PostsController do
 end
 ```
 
-It's usage is on par with `assert_response_schema`. See [ActiveModelSerializers::Test::Schema](../../lib/active_model_serializers/test/schema.rb)
+It's usage is on par with `assert_response_schema`. See [ActiveModelSerializers::Test::Schema](../../lib/active_model_serializers/test/schema.rb) and [ActiveModelSerializers::RSpecMatchers::Schema](../../lib/active_model_serializers/rspec_matchers/schema.rb)
 for more examples and documentation.
 
 
