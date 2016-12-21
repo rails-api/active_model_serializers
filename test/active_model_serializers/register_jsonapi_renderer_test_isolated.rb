@@ -12,13 +12,9 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def render_with_jsonapi_renderer
-      author = Author.new(params[:data][:attributes])
+      attributes = params[:data].present? ? params[:data][:attributes] : {}
+      author = Author.new(attributes)
       render jsonapi: author
-    end
-
-    def render_with_jsonapi_fields
-      post = Post.new(params[:data][:attributes])
-      render jsonapi: post, fields: {posts: ['title']}
     end
 
     def parse
@@ -63,6 +59,21 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       assert_nil parsers[Mime[:jsonapi]]
     end
 
+    def test_jsonapi_renderer_not_registered    
+       expected = {    
+         'data' => {   
+           'attributes' => {   
+             'name' => 'Johnny Rico'   
+           },    
+           'type' => 'users'   
+         }   
+       }   
+       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'    
+       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }    
+       post '/render_with_jsonapi_renderer', params: payload, headers: headers   
+       assert_equal 500, response.status
+    end
+
     def test_jsonapi_parser
       assert_parses(
         {},
@@ -101,20 +112,12 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def test_jsonapi_renderer_registered
-      expected = {'name' => 'Johnny Rico'}
+      expected = { 'name' => 'Johnny Rico' }
 
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
-      assert_equal expected, JSON.parse(response.body)["data"]["attributes"] 
-    end
-
-    def test_jsonapi_renderer_registered_withfields
-      expected = {'title'  => 'This is a test' }
-      payload = '{"data": {"attributes": {"title": "This is a test","body": "Of an emergency alert system."}, "type": "posts"},"fields": { "posts" : ["title"] } }'
-      headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
-      post '/render_with_jsonapi_fields?fields[posts][]=title', params: payload, headers: headers
-      assert_equal expected, JSON.parse(response.body)["data"]["attributes"]
+      assert_equal expected, JSON.parse(response.body)['data']['attributes']
     end
 
     def test_jsonapi_parser
