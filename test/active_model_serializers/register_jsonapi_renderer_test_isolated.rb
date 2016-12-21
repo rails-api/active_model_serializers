@@ -59,19 +59,19 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       assert_nil parsers[Mime[:jsonapi]]
     end
 
-    def test_jsonapi_renderer_not_registered    
-       expected = {    
-         'data' => {   
-           'attributes' => {   
-             'name' => 'Johnny Rico'   
-           },    
-           'type' => 'users'   
-         }   
-       }   
-       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'    
-       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }    
-       post '/render_with_jsonapi_renderer', params: payload, headers: headers   
-       assert_equal 500, response.status
+    def test_jsonapi_renderer_not_registered
+      expected = {
+        'data' => {
+          'attributes' => {
+            'name' => 'Johnny Rico'
+          },
+        'type' => 'authors'
+        }
+      }
+      payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
+      headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
+      post '/render_with_jsonapi_renderer', params: payload, headers: headers
+      assert_equal 500, response.status
     end
 
     def test_jsonapi_parser
