@@ -55,14 +55,12 @@ RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :co
 
   it 'test_that_raises_error_with_a_custom_message_with_a_invalid_schema' do
     message = 'oh boy the show is broken'
-    exception_message = "#/name: failed schema #/properties/name: For 'properties/name', \"Name 1\" is not an integer. and #/description: failed schema #/properties/description: For 'properties/description', \"Description 1\" is not a boolean."
-    expected_message = "#{message}: #{exception_message}"
 
     get :show
 
     expect do
-      expect(response).to have_valid_schema(message)
-    end.to raise_error(RSpec::Expectations::ExpectationNotMetError, expected_message)
+      expect(response).to have_valid_schema, message
+    end.to raise_error(RSpec::Expectations::ExpectationNotMetError, message)
   end
 
   it 'test_that_assert_with_a_custom_schema' do
@@ -109,7 +107,7 @@ RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :co
     get :show
 
     expect do
-      expect(response).to have_valid_schema(message).at_path 'non-existent.json'
+      expect(response).to have_valid_schema.at_path('non-existent.json'), message
     end.to raise_error(ActiveModelSerializers::Test::Schema::MissingSchema)
   end
 
@@ -119,7 +117,7 @@ RSpec.describe ActiveModelSerializers::Test::SchemaTest::MyController, type: :co
     get :invalid_json_body
 
     expect do
-      expect(response).to have_valid_schema(message).at_path 'custom/show.json'
+      expect(response).to have_valid_schema.at_path('custom/show.json'), message
     end.to raise_error(ActiveModelSerializers::Test::Schema::InvalidSchemaError)
   end
 end
