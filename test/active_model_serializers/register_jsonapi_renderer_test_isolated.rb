@@ -12,7 +12,8 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def render_with_jsonapi_renderer
-      attributes = params[:data].present? ? params[:data][:attributes] : {}
+      unlocked_params = ActiveSupport::HashWithIndifferentAccess.new(params)
+      attributes = unlocked_params[:data].present? ? unlocked_params[:data][:attributes] : {}
       author = Author.new(attributes)
       render jsonapi: author
     end
@@ -64,6 +65,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
       assert_equal 500, response.status
+      assert response.request.env['action_dispatch.exception'].is_a?(ActionView::MissingTemplate)
     end
 
     def test_jsonapi_parser
@@ -109,7 +111,6 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
-      puts "RESPONSE #{response.body}"
       assert_equal expected, JSON.parse(response.body)['data']['attributes']
     end
 
