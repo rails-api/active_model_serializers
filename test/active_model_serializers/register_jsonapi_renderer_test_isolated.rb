@@ -60,14 +60,6 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def test_jsonapi_renderer_not_registered
-      expected = {
-        'data' => {
-          'attributes' => {
-            'name' => 'Johnny Rico'
-          },
-        'type' => 'authors'
-        }
-      }
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
