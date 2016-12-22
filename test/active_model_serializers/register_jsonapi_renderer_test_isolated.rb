@@ -65,7 +65,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
       assert_equal 500, response.status
-      assert response.request.env['action_dispatch.exception'].is_a?(ActionView::MissingTemplate)
+      assert response.request.env['action_dispatch.exception'].is_a?(ActionView::MissingTemplate) if response.request.present?
     end
 
     def test_jsonapi_parser
