@@ -109,6 +109,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
+      puts "RESPONSE #{response.body}"
       assert_equal expected, JSON.parse(response.body)['data']['attributes']
     end
 
