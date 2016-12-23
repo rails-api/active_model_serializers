@@ -12,7 +12,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def render_with_jsonapi_renderer
-      unlocked_params = ActiveSupport::HashWithIndifferentAccess.new(params)
+      unlocked_params = Rails::VERSION::MAJOR >= 5 ? params.to_unsafe_h : params
       attributes = unlocked_params[:data].present? ? unlocked_params[:data][:attributes] : {}
       author = Author.new(attributes)
       render jsonapi: author
