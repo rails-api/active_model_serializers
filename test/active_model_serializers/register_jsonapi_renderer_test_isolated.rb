@@ -2,6 +2,7 @@ require 'support/isolated_unit'
 require 'minitest/mock'
 require 'action_dispatch'
 require 'action_controller'
+require 'pry'
 
 class JsonApiRendererTest < ActionDispatch::IntegrationTest
   include ActiveSupport::Testing::Isolation
@@ -65,6 +66,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
       assert_equal 500, response.status
+      assert_equal '', response.body
       assert response.request.env['action_dispatch.exception'].is_a?(ActionView::MissingTemplate) if response.request.present?
     end
 
@@ -106,12 +108,23 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def test_jsonapi_renderer_registered
-      expected = { 'name' => 'Johnny Rico' }
+      expected = {
+        'data' => {
+          'id' => 'author',
+          'type' => 'authors',
+          'attributes' => { 'name' => 'Johnny Rico' },
+          'relationships' => {
+            'posts' => { 'data' => nil },
+            'roles' => { 'data' => nil },
+            'bio' => { 'data' => nil }
+          }
+        }
+      }
 
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
-      assert_equal expected, JSON.parse(response.body)['data']['attributes']
+      assert_equal expected.to_json, response.body
     end
 
     def test_jsonapi_parser
