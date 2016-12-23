@@ -2,7 +2,6 @@ require 'support/isolated_unit'
 require 'minitest/mock'
 require 'action_dispatch'
 require 'action_controller'
-require 'pry'
 
 class JsonApiRendererTest < ActionDispatch::IntegrationTest
   include ActiveSupport::Testing::Isolation
