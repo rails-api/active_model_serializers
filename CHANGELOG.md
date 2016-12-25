@@ -7,6 +7,7 @@ Breaking changes:
 Features:
 
 - [#1982](https://github.com/rails-api/active_model_serializers/pull/1982) Add ActiveModelSerializers::Model.attributes to configure PORO attributes (@bf4).
+- [#1995](https://github.com/rails-api/active_model_serializers/pull/1995) Allow STI type deserialization (@gauthier-delacroix).
 
 Fixes:
 

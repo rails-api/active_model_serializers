@@ -130,6 +130,25 @@ module ActiveModelSerializers
             }
             assert_equal(expected, parsed_hash)
           end
+
+          def test_sti_type
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, sti_type_key: :_type)
+            assert_equal(@expected.merge(_type: 'Photo'), parsed_hash)
+
+            with_config(sti_type_key: :_type) do
+              parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash)
+              assert_equal(@expected.merge(_type: 'Photo'), parsed_hash)
+            end
+          end
+
+          def test_namespaced_sti_type
+            hash = @hash
+            hash['data']['type'] = 'content--user-photos'
+            with_namespace_separator '--' do
+              parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(hash, sti_type_key: :_type)
+              assert_equal(@expected.merge(_type: 'Content::UserPhoto'), parsed_hash)
+            end
+          end
         end
       end
     end

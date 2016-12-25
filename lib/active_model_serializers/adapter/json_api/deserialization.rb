@@ -97,6 +97,7 @@ module ActiveModelSerializers
           filter_fields(relationships, options)
 
           hash = {}
+          hash.merge!(parse_type(primary_data['type'], options))
           hash.merge!(parse_attributes(attributes, options))
           hash.merge!(parse_relationships(relationships, options))
 
@@ -200,6 +201,17 @@ module ActiveModelSerializers
           transform_keys(relationships, options)
             .map { |(k, v)| parse_relationship(k, v['data'], options) }
             .reduce({}, :merge)
+        end
+
+        # @api private
+        def parse_type(type, options)
+          sti_type_key = options.fetch(:sti_type_key, ActiveModelSerializers.config.sti_type_key)
+          if sti_type_key && type
+            type = type.gsub(ActiveModelSerializers.config.jsonapi_namespace_separator, '/')
+            type = transform_keys(type, options).classify
+            { sti_type_key => type }
+          else {}
+          end
         end
 
         # @api private

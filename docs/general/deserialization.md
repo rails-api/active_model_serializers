@@ -95,6 +95,24 @@ ActiveModelSerializers::Deserialization
 # }
 ```
 
+A [Single Table Inheritance](http://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) type key can be set via the options or config key `sti_key_type` to get the original class name:
+
+```ruby
+ActiveModelSerializers::Deserialization
+  .jsonapi_parse(document, sti_key_type: :type)
+#=>
+# {
+#   type: 'Post',
+#   title: 'Title 1',
+#   date: '2015-12-20',
+#   author_id: 2,
+#   second_author_id: nil
+#   comment_ids: [3, 4]
+# }
+```
+
+Note that [jsonapi_namespace_separator](configuration_options.md#jsonapi_namespace_separator) has to be changed to something different than [key_transform](configuration_options.md#key_transform) to allow deserialization of namespaced STI models.
+
 ## Attributes/Json
 
 There is currently no deserialization for those adapters.

@@ -22,6 +22,7 @@ module ActiveModel
         config.default_includes = '*'
         config.adapter = :attributes
         config.key_transform = nil
+        config.sti_type_key = nil
         config.jsonapi_pagination_links_enabled = true
         config.jsonapi_resource_type = :plural
         config.jsonapi_namespace_separator = '-'.freeze
