@@ -12,7 +12,9 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def render_with_jsonapi_renderer
-      author = Author.new(params[:data][:attributes])
+      unlocked_params = Rails::VERSION::MAJOR >= 5 ? params.to_unsafe_h : params
+      attributes = unlocked_params[:data].present? ? unlocked_params[:data][:attributes] : {}
+      author = Author.new(attributes)
       render jsonapi: author
     end
 
@@ -59,18 +61,12 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     end
 
     def test_jsonapi_renderer_not_registered
-      expected = {
-        'data' => {
-          'attributes' => {
-            'name' => 'Johnny Rico'
-          },
-          'type' => 'users'
-        }
-      }
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
-      assert expected, response.body
+      assert_equal 500, response.status
+      assert_equal '', response.body
+      assert response.request.env['action_dispatch.exception'].is_a?(ActionView::MissingTemplate) if response.request.present?
     end
 
     def test_jsonapi_parser
@@ -113,16 +109,21 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
     def test_jsonapi_renderer_registered
       expected = {
         'data' => {
-          'attributes' => {
-            'name' => 'Johnny Rico'
-          },
-          'type' => 'users'
+          'id' => 'author',
+          'type' => 'authors',
+          'attributes' => { 'name' => 'Johnny Rico' },
+          'relationships' => {
+            'posts' => { 'data' => nil },
+            'roles' => { 'data' => nil },
+            'bio' => { 'data' => nil }
+          }
         }
       }
+
       payload = '{"data": {"attributes": {"name": "Johnny Rico"}, "type": "authors"}}'
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
-      assert expected, response.body
+      assert_equal expected.to_json, response.body
     end
 
     def test_jsonapi_parser
