@@ -116,7 +116,7 @@ module ActiveModelSerializers
 
       def test_that_raises_with_a_invalid_json_body
         # message changes from JSON gem 2.0.2 to 2.2.0
-        message = /A JSON text must at least contain two octets!|an unexpected token at ''/
+        message = /A JSON text must at least contain two octets!|unexpected token at ''/
 
         get :invalid_json_body
 
