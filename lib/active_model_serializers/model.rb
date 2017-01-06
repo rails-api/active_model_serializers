@@ -1,6 +1,5 @@
-# ActiveModelSerializers::Model is a convenient
-# serializable class to inherit from when making
-# serializable non-activerecord objects.
+# ActiveModelSerializers::Model is a convenient superclass when making serializable non-activerecord objects.
+# It also serves as documentation of an implementation that satisfies ActiveModel::Serializer::Lint::Tests.
 module ActiveModelSerializers
   class Model
     include ActiveModel::Serializers::JSON
