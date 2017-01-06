@@ -32,7 +32,10 @@ class RailtieTest < ActiveSupport::TestCase
 
     test 'it is configured for caching' do
       assert_equal ActionController::Base.cache_store, ActiveModelSerializers.config.cache_store
-      assert_equal Rails.configuration.action_controller.perform_caching, ActiveModelSerializers.config.perform_caching
+      expected = Rails.configuration.action_controller.perform_caching
+      actual = ActiveModelSerializers.config.perform_caching
+      assert_nil expected
+      assert_nil actual
     end
   end
 

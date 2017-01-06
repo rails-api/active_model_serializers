@@ -159,7 +159,12 @@ module ActiveModel
 
           def assert_relationship(relationship_name, expected, opts = {})
             hash = result(opts)
-            assert_equal(expected, hash[:data][:relationships][relationship_name])
+            actual = hash[:data][:relationships][relationship_name]
+            if expected.nil?
+              assert_nil(actual)
+            else
+              assert_equal(expected, actual)
+            end
           end
         end
       end

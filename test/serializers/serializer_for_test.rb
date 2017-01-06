@@ -59,7 +59,7 @@ module ActiveModel
 
         def test_serializer_for_non_ams_serializer
           serializer = ActiveModel::Serializer.serializer_for(@tweet)
-          assert_equal nil, serializer
+          assert_nil serializer
         end
 
         def test_serializer_for_existing_serializer
@@ -71,12 +71,12 @@ module ActiveModel
           serializer = with_serializer_lookup_disabled do
             ActiveModel::Serializer.serializer_for(@profile)
           end
-          assert_equal nil, serializer
+          assert_nil serializer
         end
 
         def test_serializer_for_not_existing_serializer
           serializer = ActiveModel::Serializer.serializer_for(@model)
-          assert_equal nil, serializer
+          assert_nil serializer
         end
 
         def test_serializer_inherited_serializer
@@ -88,7 +88,7 @@ module ActiveModel
           serializer = with_serializer_lookup_disabled do
             ActiveModel::Serializer.serializer_for(@my_profile)
           end
-          assert_equal nil, serializer
+          assert_nil serializer
         end
 
         def test_serializer_custom_serializer
@@ -114,7 +114,7 @@ module ActiveModel
           serializer = with_serializer_lookup_disabled do
             ActiveModel::Serializer.serializer_for(post)
           end
-          assert_equal nil, serializer
+          assert_nil serializer
         end
 
         def test_serializer_for_nested_resource
@@ -128,7 +128,7 @@ module ActiveModel
           serializer = with_serializer_lookup_disabled do
             ResourceNamespace::PostSerializer.serializer_for(comment)
           end
-          assert_equal nil, serializer
+          assert_nil serializer
         end
       end
     end

@@ -75,7 +75,10 @@ module SerializationScopeTesting
     end
 
     def test_default_serialization_scope_object
-      assert_equal @controller.current_user, @controller.serialization_scope
+      expected = @controller.current_user
+      actual = @controller.serialization_scope
+      assert_nil expected
+      assert_nil actual
     end
 
     def test_default_scope_non_admin
