@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.3...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...master)
 
 Breaking changes:
 
@@ -10,7 +10,12 @@ Fixes:
 
 Misc:
 
-- [#1993](https://github.com/rails-api/active_model_serializers/pull/1993) Swap out KeyTransform for CaseTransform gem for the possibility of native extension use (@NullVoxPopuli)
+### [v0.10.4 (2017-01-06)](https://github.com/rails-api/active_model_serializers/compare/v0.10.3...v0.10.4)
+
+Misc:
+
+- [#2005](https://github.com/rails-api/active_model_serializers/pull/2005) Update jsonapi runtime dependency to 0.1.1.beta6, support Ruby 2.4. (@kofronpi)
+- [#1993](https://github.com/rails-api/active_model_serializers/pull/1993) Swap out KeyTransform for CaseTransform gem for the possibility of native extension use. (@NullVoxPopuli)
 
 ### [v0.10.3 (2016-11-21)](https://github.com/rails-api/active_model_serializers/compare/v0.10.2...v0.10.3)
 
