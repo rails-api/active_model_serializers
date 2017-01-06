@@ -67,6 +67,7 @@ class SerializerGeneratorTest < Rails::Generators::TestCase
     yield
   ensure
     String.class_eval do
+      undef_method :safe_constantize
       alias_method :safe_constantize, :old
       undef_method :old
     end
