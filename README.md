@@ -90,8 +90,8 @@ reading documentation for our `master`, which may include features that have not
 been released yet. Please see below for the documentation relevant to you.
 
 - [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
-- [0.10.3 (latest release) Documentation](https://github.com/rails-api/active_model_serializers/tree/v0.10.3)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.3)
+- [0.10.4 (latest release) Documentation](https://github.com/rails-api/active_model_serializers/tree/v0.10.4)
+  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.4)
   - [Guides](docs)
 - [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
   - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)
