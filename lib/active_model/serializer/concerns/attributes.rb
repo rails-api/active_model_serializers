@@ -66,7 +66,7 @@ module ActiveModel
         end
 
         # @api private
-        # maps attribute value to explict key name
+        # maps attribute value to explicit key name
         # @see Serializer::attribute
         # @see FragmentCache#fragment_serializer
         def _attributes_keys

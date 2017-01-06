@@ -25,21 +25,21 @@ adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 serialization = adapter.as_json
 
 Benchmark.ams('camel', time: time, disable_gc: disable_gc) do
-  ActiveModelSerializers::KeyTransform.camel(serialization)
+  CaseTransform.camel(serialization)
 end
 
 Benchmark.ams('camel_lower', time: time, disable_gc: disable_gc) do
-  ActiveModelSerializers::KeyTransform.camel_lower(serialization)
+  CaseTransform.camel_lower(serialization)
 end
 
 Benchmark.ams('dash', time: time, disable_gc: disable_gc) do
-  ActiveModelSerializers::KeyTransform.dash(serialization)
+  CaseTransform.dash(serialization)
 end
 
 Benchmark.ams('unaltered', time: time, disable_gc: disable_gc) do
-  ActiveModelSerializers::KeyTransform.unaltered(serialization)
+  CaseTransform.unaltered(serialization)
 end
 
 Benchmark.ams('underscore', time: time, disable_gc: disable_gc) do
-  ActiveModelSerializers::KeyTransform.underscore(serialization)
+  CaseTransform.underscore(serialization)
 end
