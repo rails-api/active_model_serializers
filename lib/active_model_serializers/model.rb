@@ -34,6 +34,12 @@ module ActiveModelSerializers
       if subclass.attributes_are_always_the_initialization_data
         unless subclass.included_modules.include?(AttributesAreAlwaysTheInitializationData)
           subclass.prepend(AttributesAreAlwaysTheInitializationData)
+
+          deprecated_method = :attributes_are_always_the_initialization_data
+          target = is_a?(Module) ? "#{self}." : "#{self.class}#"
+          msg = ["NOTE: #{target}#{deprecated_method} is deprecated with no replacement",
+                 "\n#{target}#{deprecated_method} called from #{ActiveModelSerializers.location_of_caller.join(':')}"]
+          warn "#{msg.join}."
         end
       end
       super
