@@ -144,20 +144,25 @@ module ActiveModel
           end
 
           def test_node_not_included_when_no_link
-            expected = nil
-            assert_relationship(:unlinked_tags, expected)
+            expected = { meta: {} }
+            assert_relationship(:unlinked_tags, expected, key_transform: :unaltered)
           end
 
           private
+
+          def assert_relationship(relationship_name, expected, opts = {})
+            actual = relationship_data(relationship_name, opts)
+            assert_equal(expected, actual)
+          end
 
           def result(opts)
             opts = { adapter: :json_api }.merge(opts)
             serializable(@author, opts).serializable_hash
           end
 
-          def assert_relationship(relationship_name, expected, opts = {})
+          def relationship_data(relationship_name, opts = {})
             hash = result(opts)
-            assert_equal(expected, hash[:data][:relationships][relationship_name])
+            hash[:data][:relationships][relationship_name]
           end
         end
       end

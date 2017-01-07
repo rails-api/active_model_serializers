@@ -117,7 +117,7 @@ module ActiveModelSerializers
     def test_cache_key_definition
       assert_equal('post', @post_serializer.class._cache_key)
       assert_equal('writer', @author_serializer.class._cache_key)
-      assert_equal(nil, @comment_serializer.class._cache_key)
+      assert_nil(@comment_serializer.class._cache_key)
     end
 
     def test_cache_key_interpolation_with_updated_at_when_cache_key_is_not_defined_on_object
@@ -160,7 +160,7 @@ module ActiveModelSerializers
 
     def test_cache_options_definition
       assert_equal({ expires_in: 0.1, skip_digest: true }, @post_serializer.class._cache_options)
-      assert_equal(nil, @blog_serializer.class._cache_options)
+      assert_nil(@blog_serializer.class._cache_options)
       assert_equal({ expires_in: 1.day, skip_digest: true }, @comment_serializer.class._cache_options)
     end
 
@@ -171,8 +171,8 @@ module ActiveModelSerializers
 
     def test_associations_separately_cache
       cache_store.clear
-      assert_equal(nil, cache_store.fetch(@post.cache_key))
-      assert_equal(nil, cache_store.fetch(@comment.cache_key))
+      assert_nil(cache_store.fetch(@post.cache_key))
+      assert_nil(cache_store.fetch(@comment.cache_key))
 
       Timecop.freeze(Time.current) do
         render_object_with_cache(@post)

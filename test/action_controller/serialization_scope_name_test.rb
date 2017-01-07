@@ -33,7 +33,8 @@ module SerializationScopeTesting
     end
   end
   class PostTestController < ActionController::Base
-    attr_accessor :current_user
+    attr_writer :current_user
+
     def render_post_by_non_admin
       self.current_user = User.new(id: 3, name: 'Pete', admin: false)
       render json: new_post, serializer: serializer, adapter: :json
@@ -42,6 +43,10 @@ module SerializationScopeTesting
     def render_post_by_admin
       self.current_user = User.new(id: 3, name: 'Pete', admin: true)
       render json: new_post, serializer: serializer, adapter: :json
+    end
+
+    def current_user
+      defined?(@current_user) ? @current_user : :current_user_not_set
     end
 
     private
@@ -75,7 +80,8 @@ module SerializationScopeTesting
     end
 
     def test_default_serialization_scope_object
-      assert_equal @controller.current_user, @controller.serialization_scope
+      assert_equal :current_user_not_set, @controller.current_user
+      assert_equal :current_user_not_set, @controller.serialization_scope
     end
 
     def test_default_scope_non_admin
@@ -125,7 +131,7 @@ module SerializationScopeTesting
     end
 
     def test_defined_serialization_scope_object
-      assert_equal @controller.view_context.class, @controller.serialization_scope.class
+      assert_equal @controller.view_context.controller, @controller.serialization_scope.controller
     end
 
     def test_serialization_scope_non_admin
