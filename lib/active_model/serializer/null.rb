@@ -1,6 +1,7 @@
 module ActiveModel
   class Serializer
     class Null < Serializer
+      # :nocov:
       def attributes(*)
         {}
       end
@@ -12,6 +13,7 @@ module ActiveModel
       def serializable_hash(*)
         {}
       end
+      # :nocov:
     end
   end
 end
