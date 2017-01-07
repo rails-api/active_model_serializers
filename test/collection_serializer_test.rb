@@ -3,14 +3,27 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class CollectionSerializerTest < ActiveSupport::TestCase
+      class SingularModel < ::Model; end
+      class SingularModelSerializer < ActiveModel::Serializer
+      end
+      class HasManyModel < ::Model
+        associations :singular_models
+      end
+      class HasManyModelSerializer < ActiveModel::Serializer
+        has_many :singular_models
+
+        def custom_options
+          instance_options
+        end
+      end
       class MessagesSerializer < ActiveModel::Serializer
         type 'messages'
       end
 
       def setup
-        @comment = Comment.new
-        @post = Post.new
-        @resource = build_named_collection @comment, @post
+        @singular_model = SingularModel.new
+        @has_many_model = HasManyModel.new
+        @resource = build_named_collection @singular_model, @has_many_model
         @serializer = collection_serializer.new(@resource, some: :options)
       end
 
@@ -34,29 +47,29 @@ module ActiveModel
       def test_each_object_should_be_serialized_with_appropriate_serializer
         serializers =  @serializer.to_a
 
-        assert_kind_of CommentSerializer, serializers.first
-        assert_kind_of Comment, serializers.first.object
+        assert_kind_of SingularModelSerializer, serializers.first
+        assert_kind_of SingularModel, serializers.first.object
 
-        assert_kind_of PostSerializer, serializers.last
-        assert_kind_of Post, serializers.last.object
+        assert_kind_of HasManyModelSerializer, serializers.last
+        assert_kind_of HasManyModel, serializers.last.object
 
         assert_equal :options, serializers.last.custom_options[:some]
       end
 
       def test_serializer_option_not_passed_to_each_serializer
-        serializers = collection_serializer.new([@post], serializer: PostSerializer).to_a
+        serializers = collection_serializer.new([@has_many_model], serializer: HasManyModelSerializer).to_a
 
         refute serializers.first.custom_options.key?(:serializer)
       end
 
       def test_root_default
-        @serializer = collection_serializer.new([@comment, @post])
+        @serializer = collection_serializer.new([@singular_model, @has_many_model])
         assert_nil @serializer.root
       end
 
       def test_root
         expected =  'custom_root'
-        @serializer = collection_serializer.new([@comment, @post], root: expected)
+        @serializer = collection_serializer.new([@singular_model, @has_many_model], root: expected)
         assert_equal expected, @serializer.root
       end
 

@@ -3,10 +3,16 @@ require 'test_helper'
 module ActionController
   module Serialization
     class NamespaceLookupTest < ActionController::TestCase
-      class Book < ::Model; end
-      class Page < ::Model; end
-      class Chapter < ::Model; end
-      class Writer < ::Model; end
+      class Book < ::Model
+        attributes :title, :body
+        associations :writer, :chapters
+      end
+      class Chapter < ::Model
+        attributes :title
+      end
+      class Writer < ::Model
+        attributes :name
+      end
 
       module Api
         module V2
@@ -93,7 +99,7 @@ module ActionController
             end
 
             def invalid_namespace
-              book = Book.new(title: 'New Post', body: 'Body')
+              book = Book.new(id: 'invalid_namespace_book_id', title: 'New Post', body: 'Body')
 
               render json: book, namespace: :api_v2
             end
@@ -205,7 +211,7 @@ module ActionController
 
         assert_serializer ActiveModel::Serializer::Null
 
-        expected = { 'title' => 'New Post', 'body' => 'Body' }
+        expected = { 'id' => 'invalid_namespace_book_id', 'title' => 'New Post', 'body' => 'Body' }
         actual = JSON.parse(@response.body)
 
         assert_equal expected, actual

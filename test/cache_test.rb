@@ -34,6 +34,7 @@ module ActiveModelSerializers
     end
 
     class Article < ::Model
+      attributes :title
       # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
       undef_method :cache_key
     end
@@ -46,6 +47,16 @@ module ActiveModelSerializers
     class InheritedRoleSerializer < RoleSerializer
       cache key: 'inherited_role', only: [:name, :special_attribute]
       attribute :special_attribute
+    end
+
+    class Comment < ::Model
+      attributes :body
+      associations :post, :author
+
+      # Uses a custom non-time-based cache key
+      def cache_key
+        "comment/#{id}"
+      end
     end
 
     setup do
@@ -244,7 +255,7 @@ module ActiveModelSerializers
     # rubocop:disable Metrics/AbcSize
     def test_a_serializer_rendered_by_two_adapter_returns_differently_fetch_attributes
       Object.const_set(:Alert, Class.new(ActiveModelSerializers::Model) do
-        attr_accessor :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
+        attributes :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
       end)
       Object.const_set(:UncachedAlertSerializer, Class.new(ActiveModel::Serializer) do
         attributes :id, :status, :resource, :started_at, :ended_at, :updated_at, :created_at
@@ -271,7 +282,7 @@ module ActiveModelSerializers
         ended_at: nil,
         updated_at: alert.updated_at,
         created_at: alert.created_at
-      }
+      }.with_indifferent_access
       expected_cached_jsonapi_attributes = {
         id: '1',
         type: 'alerts',
@@ -283,15 +294,15 @@ module ActiveModelSerializers
           updated_at: alert.updated_at,
           created_at: alert.created_at
         }
-      }
+      }.with_indifferent_access
 
       # Assert attributes are serialized correctly
       serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :attributes)
-      attributes_serialization = serializable_alert.as_json
+      attributes_serialization = serializable_alert.as_json.with_indifferent_access
       assert_equal expected_fetch_attributes, alert.attributes
       assert_equal alert.attributes, attributes_serialization
       attributes_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
-      assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key)
+      assert_equal attributes_serialization, cache_store.fetch(attributes_cache_key).with_indifferent_access
 
       serializable_alert = serializable(alert, serializer: AlertSerializer, adapter: :json_api)
       jsonapi_cache_key = serializable_alert.adapter.serializer.cache_key(serializable_alert.adapter)
@@ -303,7 +314,7 @@ module ActiveModelSerializers
       serializable_alert = serializable(alert, serializer: UncachedAlertSerializer, adapter: :json_api)
       assert_equal serializable_alert.as_json, jsonapi_serialization
 
-      cached_serialization = cache_store.fetch(jsonapi_cache_key)
+      cached_serialization = cache_store.fetch(jsonapi_cache_key).with_indifferent_access
       assert_equal expected_cached_jsonapi_attributes, cached_serialization
     ensure
       Object.send(:remove_const, :Alert)
@@ -329,11 +340,15 @@ module ActiveModelSerializers
       actual = ActiveModel::Serializer.object_cache_keys(serializable.adapter.serializer, serializable.adapter, include_directive)
 
       assert_equal 3, actual.size
-      assert actual.any? { |key| key == "comment/1/#{serializable.adapter.cache_key}" }
-      assert actual.any? { |key| key =~ %r{post/post-\d+} }
-      assert actual.any? { |key| key =~ %r{author/author-\d+} }
+      expected_key = "comment/1/#{serializable.adapter.cache_key}"
+      assert actual.any? { |key| key == expected_key }, "actual '#{actual}' should include #{expected_key}"
+      expected_key = %r{post/post-\d+}
+      assert actual.any? { |key| key =~ expected_key }, "actual '#{actual}' should match '#{expected_key}'"
+      expected_key = %r{author/author-\d+}
+      assert actual.any? { |key| key =~ expected_key }, "actual '#{actual}' should match '#{expected_key}'"
     end
 
+    # rubocop:disable Metrics/AbcSize
     def test_fetch_attributes_from_cache
       serializers = ActiveModel::Serializer::CollectionSerializer.new([@comment, @comment])
 
@@ -344,10 +359,10 @@ module ActiveModelSerializers
         adapter_options = {}
         adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(serializers, adapter_options)
         serializers.serializable_hash(adapter_options, options, adapter_instance)
-        cached_attributes = adapter_options.fetch(:cached_attributes)
+        cached_attributes = adapter_options.fetch(:cached_attributes).with_indifferent_access
 
         include_directive = ActiveModelSerializers.default_include_directive
-        manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive)
+        manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive).with_indifferent_access
         assert_equal manual_cached_attributes, cached_attributes
 
         assert_equal cached_attributes["#{@comment.cache_key}/#{adapter_instance.cache_key}"], Comment.new(id: 1, body: 'ZOMG A COMMENT').attributes
@@ -358,6 +373,7 @@ module ActiveModelSerializers
         assert_equal cached_attributes["#{writer_cache_key}/#{adapter_instance.cache_key}"], Author.new(id: 'author', name: 'Joao M. D. Moura').attributes
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def test_cache_read_multi_with_fragment_cache_enabled
       post_serializer = Class.new(ActiveModel::Serializer) do

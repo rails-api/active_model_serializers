@@ -5,10 +5,10 @@ module ActiveModel
     class ReadAttributeForSerializationTest < ActiveSupport::TestCase
       # https://github.com/rails-api/active_model_serializers/issues/1653
       class Parent < ActiveModelSerializers::Model
-        attr_accessor :id
+        attributes :id
       end
       class Child < Parent
-        attr_accessor :name
+        attributes :name
       end
       class ParentSerializer < ActiveModel::Serializer
         attributes :$id
@@ -30,7 +30,7 @@ module ActiveModel
 
       # https://github.com/rails-api/active_model_serializers/issues/1658
       class ErrorResponse < ActiveModelSerializers::Model
-        attr_accessor :error
+        attributes :error
       end
       class ApplicationSerializer < ActiveModel::Serializer
         attributes :status

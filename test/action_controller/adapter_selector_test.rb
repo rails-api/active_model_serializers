@@ -15,7 +15,7 @@ module ActionController
         end
 
         def render_skipping_adapter
-          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          @profile = Profile.new(id: 'render_skipping_adapter_id', name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile, adapter: false
         end
       end
@@ -46,7 +46,7 @@ module ActionController
 
       def test_render_skipping_adapter
         get :render_skipping_adapter
-        assert_equal '{"name":"Name 1","description":"Description 1","comments":"Comments 1"}', response.body
+        assert_equal '{"id":"render_skipping_adapter_id","name":"Name 1","description":"Description 1"}', response.body
       end
     end
   end

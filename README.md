@@ -116,7 +116,7 @@ class SomeResource < ActiveRecord::Base
 end
 # or
 class SomeResource < ActiveModelSerializers::Model
-  attr_accessor :title, :body
+  attributes :title, :body
 end
 ```
 
@@ -279,7 +279,7 @@ which is a simple serializable PORO (Plain-Old Ruby Object).
 
 ```ruby
 class MyModel < ActiveModelSerializers::Model
-  attr_accessor :id, :name, :level
+  attributes :id, :name, :level
 end
 ```
 

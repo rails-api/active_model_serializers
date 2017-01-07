@@ -5,7 +5,16 @@ module ActionController
     class JsonApi
       class FieldsTest < ActionController::TestCase
         class FieldsTestController < ActionController::Base
-          class PostSerializer < ActiveModel::Serializer
+          class AuthorWithName < Author
+            attributes :first_name, :last_name
+          end
+          class AuthorWithNameSerializer < AuthorSerializer
+            type 'authors'
+          end
+          class PostWithPublishAt < Post
+            attributes :publish_at
+          end
+          class PostWithPublishAtSerializer < ActiveModel::Serializer
             type 'posts'
             attributes :title, :body, :publish_at
             belongs_to :author
@@ -14,19 +23,19 @@ module ActionController
 
           def setup_post
             ActionController::Base.cache_store.clear
-            @author = Author.new(id: 1, first_name: 'Bob', last_name: 'Jones')
+            @author = AuthorWithName.new(id: 1, first_name: 'Bob', last_name: 'Jones')
             @comment1 = Comment.new(id: 7, body: 'cool', author: @author)
             @comment2 = Comment.new(id: 12, body: 'awesome', author: @author)
-            @post = Post.new(id: 1337, title: 'Title 1', body: 'Body 1',
-                             author: @author, comments: [@comment1, @comment2],
-                             publish_at: '2020-03-16T03:55:25.291Z')
+            @post = PostWithPublishAt.new(id: 1337, title: 'Title 1', body: 'Body 1',
+                                          author: @author, comments: [@comment1, @comment2],
+                                          publish_at: '2020-03-16T03:55:25.291Z')
             @comment1.post = @post
             @comment2.post = @post
           end
 
           def render_fields_works_on_relationships
             setup_post
-            render json: @post, serializer: PostSerializer, adapter: :json_api, fields: { posts: [:author] }
+            render json: @post, serializer: PostWithPublishAtSerializer, adapter: :json_api, fields: { posts: [:author] }
           end
         end
 
