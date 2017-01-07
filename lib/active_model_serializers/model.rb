@@ -121,7 +121,7 @@ module ActiveModelSerializers
 
       # Defaults to the downcased model name.
       # This probably isn't a good default, since it's not a unique instance identifier,
-      # but that was the old behavior ¯\_(ツ)_/¯
+      # but that was the old behavior \_('-')_/
       def id
         @initialized_attributes.fetch(:id) { self.class.model_name.name && self.class.model_name.name.downcase }
       end
