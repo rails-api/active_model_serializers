@@ -69,9 +69,9 @@ class CachingConfigurationTest < ActiveSupport::TestCase
     end
 
     test 'the non-cached serializer cache_store is nil' do
-      assert_equal nil, @non_cached_serializer._cache
-      assert_equal nil, @non_cached_serializer.cache_store
-      assert_equal nil, @non_cached_serializer._cache
+      assert_nil @non_cached_serializer._cache
+      assert_nil @non_cached_serializer.cache_store
+      assert_nil @non_cached_serializer._cache
     end
 
     test 'the non-cached serializer does not have cache_enabled?' do
@@ -136,9 +136,9 @@ class CachingConfigurationTest < ActiveSupport::TestCase
     end
 
     test 'the non-cached serializer cache_store is nil' do
-      assert_equal nil, @non_cached_serializer._cache
-      assert_equal nil, @non_cached_serializer.cache_store
-      assert_equal nil, @non_cached_serializer._cache
+      assert_nil @non_cached_serializer._cache
+      assert_nil @non_cached_serializer.cache_store
+      assert_nil @non_cached_serializer._cache
     end
 
     test 'the non-cached serializer does not have cache_enabled?' do
