@@ -1,5 +1,7 @@
 require 'test_helper'
-require 'grape'
+TestHelper.silence_warnings do
+  require 'grape'
+end
 require 'grape/active_model_serializers'
 require 'kaminari'
 require 'kaminari/hooks'
@@ -53,7 +55,15 @@ module ActiveModelSerializers
 
     class GrapeTest < Grape::API
       format :json
-      include Grape::ActiveModelSerializers
+      TestHelper.silence_warnings do
+        include Grape::ActiveModelSerializers
+      end
+
+      def self.resources(*)
+        TestHelper.silence_warnings do
+          super
+        end
+      end
 
       resources :grape do
         get '/render' do
@@ -91,6 +101,14 @@ module ActiveModelSerializers
 
     def app
       Grape::Middleware::Globals.new(GrapeTest.new)
+    end
+
+    extend Minitest::Assertions
+    def self.run_one_method(*)
+      _, stderr = capture_io do
+        super
+      end
+      fail Minitest::Assertion, stderr if stderr !~ /grape/
     end
 
     def test_formatter_returns_json
