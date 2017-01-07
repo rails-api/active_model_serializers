@@ -40,6 +40,18 @@ require 'minitest'
 require 'minitest/autorun'
 Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
+module TestHelper
+  module_function
+
+  def silence_warnings
+    original_verbose = $VERBOSE
+    $VERBOSE = nil
+    yield
+  ensure
+    $VERBOSE = original_verbose
+  end
+end
+
 require 'support/rails_app'
 
 # require "rails/test_help"
