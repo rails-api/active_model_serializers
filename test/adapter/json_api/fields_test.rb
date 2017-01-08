@@ -4,9 +4,17 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class FieldsTest < ActiveSupport::TestCase
-        class Post < ::Model; end
-        class Author < ::Model; end
-        class Comment < ::Model; end
+        class Post < ::Model
+          attributes :title, :body
+          associations :author, :comments
+        end
+        class Author < ::Model
+          attributes :name, :birthday
+        end
+        class Comment < ::Model
+          attributes :body
+          associations :author, :post
+        end
 
         class PostSerializer < ActiveModel::Serializer
           type 'posts'

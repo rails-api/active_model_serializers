@@ -2,16 +2,16 @@ require 'test_helper'
 
 module SerializationScopeTesting
   class User < ActiveModelSerializers::Model
-    attr_accessor :id, :name, :admin
+    attributes :id, :name, :admin
     def admin?
       admin
     end
   end
   class Comment < ActiveModelSerializers::Model
-    attr_accessor :id, :body
+    attributes :id, :body
   end
   class Post < ActiveModelSerializers::Model
-    attr_accessor :id, :title, :body, :comments
+    attributes :id, :title, :body, :comments
   end
   class PostSerializer < ActiveModel::Serializer
     attributes :id, :title, :body, :comments

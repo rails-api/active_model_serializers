@@ -38,6 +38,14 @@ module ActiveModelSerializers
     @default_include_directive ||= JSONAPI::IncludeDirective.new(config.default_includes, allow_wildcard: true)
   end
 
+  def self.silence_warnings
+    original_verbose = $VERBOSE
+    $VERBOSE = nil
+    yield
+  ensure
+    $VERBOSE = original_verbose
+  end
+
   require 'active_model/serializer/version'
   require 'active_model/serializer'
   require 'active_model/serializable_resource'

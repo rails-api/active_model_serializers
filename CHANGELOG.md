@@ -6,9 +6,13 @@ Breaking changes:
 
 Features:
 
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. (@bf4)
+
 Fixes:
 
 Misc:
+
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) Make test attributes explicit. Tests have Model#associations. (@bf4)
 
 ### [v0.10.4 (2017-01-06)](https://github.com/rails-api/active_model_serializers/compare/v0.10.3...v0.10.4)
 
