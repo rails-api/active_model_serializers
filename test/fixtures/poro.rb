@@ -1,6 +1,4 @@
 class Model < ActiveModelSerializers::Model
-  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
-
   attr_writer :id
 
   # At this time, just for organization of intent
@@ -108,10 +106,6 @@ class PostPreviewSerializer < ActiveModel::Serializer
   has_many :comments, serializer: ::CommentPreviewSerializer
   belongs_to :author, serializer: ::AuthorPreviewSerializer
 end
-class PostWithTagsSerializer < ActiveModel::Serializer
-  attributes :id
-  has_many :tags
-end
 class PostWithCustomKeysSerializer < ActiveModel::Serializer
   attributes :id
   has_many :comments, key: :reviews
@@ -206,10 +200,6 @@ module Spam
     cache only: [:id]
     attributes :id
   end
-end
-
-class Tag < Model
-  attributes :name
 end
 
 class VirtualValue < Model; end

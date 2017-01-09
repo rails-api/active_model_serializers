@@ -3,6 +3,15 @@ require 'test_helper'
 module ActionController
   module Serialization
     class AdapterSelectorTest < ActionController::TestCase
+      class Profile < Model
+        attributes :id, :name, :description
+        associations :comments
+      end
+      class ProfileSerializer < ActiveModel::Serializer
+        type 'profiles'
+        attributes :name, :description
+      end
+
       class AdapterSelectorTestController < ActionController::Base
         def render_using_default_adapter
           @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')

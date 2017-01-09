@@ -4,6 +4,20 @@ require 'tempfile'
 
 module ActiveModelSerializers
   class CacheTest < ActiveSupport::TestCase
+    class Article < ::Model
+      attributes :title
+      # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
+      undef_method :cache_key
+    end
+    class ArticleSerializer < ActiveModel::Serializer
+      cache only: [:place], skip_digest: true
+      attributes :title
+    end
+
+    class Author < ::Model
+      attributes :id, :name
+      associations :posts, :bio, :roles
+    end
     # Instead of a primitive cache key (i.e. a string), this class
     # returns a list of objects that require to be expanded themselves.
     class AuthorWithExpandableCacheElements < Author
@@ -27,30 +41,32 @@ module ActiveModelSerializers
         ]
       end
     end
-
     class UncachedAuthor < Author
       # To confirm cache_key is set using updated_at and cache_key option passed to cache
       undef_method :cache_key
     end
+    class AuthorSerializer < ActiveModel::Serializer
+      cache key: 'writer', skip_digest: true
+      attributes :id, :name
 
-    class Article < ::Model
-      attributes :title
-      # To confirm error is raised when cache_key is not set and cache_key option not passed to cache
-      undef_method :cache_key
+      has_many :posts
+      has_many :roles
+      has_one :bio
     end
 
-    class ArticleSerializer < ActiveModel::Serializer
-      cache only: [:place], skip_digest: true
-      attributes :title
+    class Blog < ::Model
+      attributes :name
+      associations :writer
     end
+    class BlogSerializer < ActiveModel::Serializer
+      cache key: 'blog'
+      attributes :id, :name
 
-    class InheritedRoleSerializer < RoleSerializer
-      cache key: 'inherited_role', only: [:name, :special_attribute]
-      attribute :special_attribute
+      belongs_to :writer
     end
 
     class Comment < ::Model
-      attributes :body
+      attributes :id, :body
       associations :post, :author
 
       # Uses a custom non-time-based cache key
@@ -58,14 +74,52 @@ module ActiveModelSerializers
         "comment/#{id}"
       end
     end
+    class CommentSerializer < ActiveModel::Serializer
+      cache expires_in: 1.day, skip_digest: true
+      attributes :id, :body
+      belongs_to :post
+      belongs_to :author
+    end
+
+    class Post < ::Model
+      attributes :id, :title, :body
+      associations :author, :comments, :blog
+    end
+    class PostSerializer < ActiveModel::Serializer
+      cache key: 'post', expires_in: 0.1, skip_digest: true
+      attributes :id, :title, :body
+
+      has_many :comments
+      belongs_to :blog
+      belongs_to :author
+    end
+
+    class Role < ::Model
+      attributes :name, :description, :special_attribute
+      associations :author
+    end
+    class RoleSerializer < ActiveModel::Serializer
+      cache only: [:name, :slug], skip_digest: true
+      attributes :id, :name, :description
+      attribute :friendly_id, key: :slug
+      belongs_to :author
+
+      def friendly_id
+        "#{object.name}-#{object.id}"
+      end
+    end
+    class InheritedRoleSerializer < RoleSerializer
+      cache key: 'inherited_role', only: [:name, :special_attribute]
+      attribute :special_attribute
+    end
 
     setup do
       cache_store.clear
       @comment        = Comment.new(id: 1, body: 'ZOMG A COMMENT')
-      @post           = Post.new(title: 'New Post', body: 'Body')
+      @post           = Post.new(id: 'post', title: 'New Post', body: 'Body')
       @bio            = Bio.new(id: 1, content: 'AMS Contributor')
-      @author         = Author.new(name: 'Joao M. D. Moura')
-      @blog           = Blog.new(id: 999, name: 'Custom blog', writer: @author, articles: [])
+      @author         = Author.new(id: 'author', name: 'Joao M. D. Moura')
+      @blog           = Blog.new(id: 999, name: 'Custom blog', writer: @author)
       @role           = Role.new(name: 'Great Author')
       @location       = Location.new(lat: '-23.550520', lng: '-46.633309')
       @place          = Place.new(name: 'Amazing Place')
@@ -325,12 +379,14 @@ module ActiveModelSerializers
 
     def test_uses_file_digest_in_cache_key
       render_object_with_cache(@blog)
-      key = "#{@blog.cache_key}/#{adapter.cache_key}/#{::Model::FILE_DIGEST}"
+      file_digest = Digest::MD5.hexdigest(File.open(__FILE__).read)
+      key = "#{@blog.cache_key}/#{adapter.cache_key}/#{file_digest}"
       assert_equal(@blog_serializer.attributes, cache_store.fetch(key))
     end
 
     def test_cache_digest_definition
-      assert_equal(::Model::FILE_DIGEST, @post_serializer.class._cache_digest)
+      file_digest = Digest::MD5.hexdigest(File.open(__FILE__).read)
+      assert_equal(file_digest, @post_serializer.class._cache_digest)
     end
 
     def test_object_cache_keys
@@ -532,7 +588,7 @@ module ActiveModelSerializers
       role_hash = role_serializer.fetch_attributes_fragment(adapter_instance)
       assert_equal(role_hash, expected_result)
 
-      role.attributes[:id] = 'this has been updated'
+      role.id = 'this has been updated'
       role.name = 'this was cached'
 
       role_hash = role_serializer.fetch_attributes_fragment(adapter_instance)

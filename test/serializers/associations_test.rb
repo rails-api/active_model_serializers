@@ -2,13 +2,17 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class AssociationsTest < ActiveSupport::TestCase
+      class ModelWithoutSerializer < ::Model
+        attributes :id, :name
+      end
+
       def setup
         @author = Author.new(name: 'Steve K.')
         @author.bio = nil
         @author.roles = []
         @blog = Blog.new(name: 'AMS Blog')
         @post = Post.new(title: 'New Post', body: 'Body')
-        @tag = Tag.new(id: 'tagid', name: '#hashtagged')
+        @tag = ModelWithoutSerializer.new(id: 'tagid', name: '#hashtagged')
         @comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
         @post.comments = [@comment]
         @post.tags = [@tag]
@@ -46,7 +50,11 @@ module ActiveModel
       end
 
       def test_has_many_with_no_serializer
-        PostWithTagsSerializer.new(@post).associations.each do |association|
+        post_serializer_class = Class.new(ActiveModel::Serializer) do
+          attributes :id
+          has_many :tags
+        end
+        post_serializer_class.new(@post).associations.each do |association|
           key = association.key
           serializer = association.serializer
           options = association.options

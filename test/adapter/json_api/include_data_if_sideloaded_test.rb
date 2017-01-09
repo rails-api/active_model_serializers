@@ -14,9 +14,19 @@ module ActiveModel
               [{ foo: 'bar' }]
             end
           end
+          class Tag < ::Model
+            attributes :id, :name
+          end
 
           class TagSerializer < ActiveModel::Serializer
+            type 'tags'
             attributes :id, :name
+          end
+
+          class PostWithTagsSerializer < ActiveModel::Serializer
+            type 'posts'
+            attributes :id
+            has_many :tags
           end
 
           class IncludeParamAuthorSerializer < ActiveModel::Serializer

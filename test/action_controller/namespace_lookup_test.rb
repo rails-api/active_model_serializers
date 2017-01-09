@@ -4,7 +4,7 @@ module ActionController
   module Serialization
     class NamespaceLookupTest < ActionController::TestCase
       class Book < ::Model
-        attributes :title, :body
+        attributes :id, :title, :body
         associations :writer, :chapters
       end
       class Chapter < ::Model
