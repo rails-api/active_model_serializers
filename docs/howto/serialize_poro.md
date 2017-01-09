@@ -29,7 +29,7 @@ define and validate which methods ActiveModelSerializers expects to be implement
 
 An implementation of the complete spec is included either for use or as reference:
 [`ActiveModelSerializers::Model`](../../lib/active_model_serializers/model.rb).
-You can use in production code that will make your PORO a lot cleaner.  
+You can use in production code that will make your PORO a lot cleaner.
 
 The above code now becomes:
 
