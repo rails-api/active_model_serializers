@@ -6,9 +6,11 @@ Breaking changes:
 
 Features:
 
-- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. (@bf4)
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
 
 Fixes:
+
+- [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
 
 Misc:
 

@@ -4,6 +4,10 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class HasManyTest < ActiveSupport::TestCase
+        class ModelWithoutSerializer < ::Model
+          attributes :id, :name
+        end
+
         def setup
           ActionController::Base.cache_store.clear
           @author = Author.new(id: 1, name: 'Steve K.')
@@ -26,7 +30,7 @@ module ActiveModelSerializers
           @blog.articles = [@post]
           @post.blog = @blog
           @post_without_comments.blog = nil
-          @tag = Tag.new(id: 1, name: '#hash_tag')
+          @tag = ModelWithoutSerializer.new(id: 1, name: '#hash_tag')
           @post.tags = [@tag]
           @serializer = PostSerializer.new(@post)
           @adapter = ActiveModelSerializers::Adapter::JsonApi.new(@serializer)
@@ -129,7 +133,11 @@ module ActiveModelSerializers
         end
 
         def test_has_many_with_no_serializer
-          serializer = PostWithTagsSerializer.new(@post)
+          post_serializer_class = Class.new(ActiveModel::Serializer) do
+            attributes :id
+            has_many :tags
+          end
+          serializer = post_serializer_class.new(@post)
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
 
           assert_equal({

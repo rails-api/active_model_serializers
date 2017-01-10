@@ -6,6 +6,17 @@ module ActiveModelSerializers
     include ActiveModel::Serializers::JSON
     include ActiveModel::Model
 
+    # Declare names of attributes to be included in +sttributes+ hash.
+    # Is only available as a class-method since the ActiveModel::Serialization mixin in Rails
+    # uses an +attribute_names+ local variable, which may conflict if we were to add instance methods here.
+    #
+    # @overload attribute_names
+    #   @return [Array<Symbol>]
+    class_attribute :attribute_names, instance_writer: false, instance_reader: false
+    # Initialize +attribute_names+ for all subclasses.  The array is usually
+    # mutated in the +attributes+ method, but can be set directly, as well.
+    self.attribute_names = []
+
     # Easily declare instance attributes with setters and getters for each.
     #
     # All attributes to initialize an instance must have setters.
@@ -25,9 +36,43 @@ module ActiveModelSerializers
     #   @param names [Array<String, Symbol>]
     #   @param name [String, Symbol]
     def self.attributes(*names)
+      self.attribute_names |= names.map(&:to_sym)
       # Silence redefinition of methods warnings
       ActiveModelSerializers.silence_warnings do
         attr_accessor(*names)
+      end
+    end
+
+    # Opt-in to breaking change
+    def self.derive_attributes_from_names_and_fix_accessors
+      unless included_modules.include?(DeriveAttributesFromNamesAndFixAccessors)
+        prepend(DeriveAttributesFromNamesAndFixAccessors)
+      end
+    end
+
+    module DeriveAttributesFromNamesAndFixAccessors
+      def self.included(base)
+        # NOTE that +id+ will always be in +attributes+.
+        base.attributes :id
+      end
+
+      # Override the initialize method so that attributes aren't processed.
+      #
+      # @param attributes [Hash]
+      def initialize(attributes = {})
+        @errors = ActiveModel::Errors.new(self)
+        super
+      end
+
+      # Override the +attributes+ method so that the hash is derived from +attribute_names+.
+      #
+      # The the fields in +attribute_names+ determines the returned hash.
+      # +attributes+ are returned frozen to prevent any expectations that mutation affects
+      # the actual values in the model.
+      def attributes
+        self.class.attribute_names.each_with_object({}) do |attribute_name, result|
+          result[attribute_name] = public_send(attribute_name).freeze
+        end.with_indifferent_access.freeze
       end
     end
 
