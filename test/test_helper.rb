@@ -52,6 +52,8 @@ module TestHelper
   end
 end
 
+require 'support/poro'
+
 require 'support/rails_app'
 
 # require "rails/test_help"

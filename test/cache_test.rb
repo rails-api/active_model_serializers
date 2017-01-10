@@ -49,7 +49,7 @@ module ActiveModelSerializers
       attribute :special_attribute
     end
 
-    class Comment < ::Model
+    Comment = poro_without_legacy_model_support(::Model) do
       attributes :body
       associations :post, :author
 

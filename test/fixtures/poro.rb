@@ -1,3 +1,6 @@
+# The test poro superclass can't have the legacy behavior included because there's no simple way to remove it.
+# This lets us turn the legacy behavior on and off in the test context so that we can test it.
+ActiveModelSerializers::Model.attributes_are_always_the_initialization_data = false
 class Model < ActiveModelSerializers::Model
   FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
 

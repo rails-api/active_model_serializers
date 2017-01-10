@@ -20,7 +20,7 @@ module ActiveModelSerializers
     end
 
     def test_attributes_can_be_read_for_serialization
-      klass = Class.new(ActiveModelSerializers::Model) do
+      klass = poro_without_legacy_model_support do
         attributes :one, :two, :three
       end
       original_attributes = { one: 1, two: 2, three: 3 }
@@ -42,7 +42,7 @@ module ActiveModelSerializers
     end
 
     def test_id_attribute_can_be_read_for_serialization
-      klass = Class.new(ActiveModelSerializers::Model) do
+      klass = poro_without_legacy_model_support do
         attributes :id, :one, :two, :three
       end
       self.class.const_set(:SomeTestModel, klass)
