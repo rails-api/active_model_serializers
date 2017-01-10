@@ -1,6 +1,10 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.4...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.5...0-9-stable)
+
+### [v0.9.6 (2017-01-10)](https://github.com/rails-api/active_model_serializers/compare/v0.9.5...v0.9.6)
+
+- [#2008](https://github.com/rails-api/active_model_serializers/pull/2008) Fix warning on Thor. (@kirs)
 
 ### [v0.9.5 (2016-03-30)](https://github.com/rails-api/active_model_serializers/compare/v0.9.4...v0.9.5)
 
