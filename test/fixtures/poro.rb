@@ -1,10 +1,7 @@
 class Model < ActiveModelSerializers::Model
-  FILE_DIGEST = Digest::MD5.hexdigest(File.open(__FILE__).read)
+  rand(2).zero? && derive_attributes_from_names_and_fix_accessors
 
-  # Defaults to the downcased model name.
-  def id
-    @id ||= self.class.model_name.name.downcase
-  end
+  attr_writer :id
 
   # At this time, just for organization of intent
   class_attribute :association_names
@@ -22,6 +19,10 @@ class Model < ActiveModelSerializers::Model
     association_names.each_with_object({}) do |association_name, result|
       result[association_name] = public_send(association_name).freeze
     end.with_indifferent_access.freeze
+  end
+
+  def attributes
+    super.except(*association_names)
   end
 end
 
@@ -106,10 +107,6 @@ class PostPreviewSerializer < ActiveModel::Serializer
 
   has_many :comments, serializer: ::CommentPreviewSerializer
   belongs_to :author, serializer: ::AuthorPreviewSerializer
-end
-class PostWithTagsSerializer < ActiveModel::Serializer
-  attributes :id
-  has_many :tags
 end
 class PostWithCustomKeysSerializer < ActiveModel::Serializer
   attributes :id
@@ -205,10 +202,6 @@ module Spam
     cache only: [:id]
     attributes :id
   end
-end
-
-class Tag < Model
-  attributes :name
 end
 
 class VirtualValue < Model; end

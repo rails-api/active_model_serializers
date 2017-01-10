@@ -3,11 +3,8 @@ require 'test_helper'
 module ActiveModelSerializers
   module Adapter
     class AttributesTest < ActiveSupport::TestCase
-      class Person
-        include ActiveModel::Model
-        include ActiveModel::Serialization
-
-        attr_accessor :first_name, :last_name
+      class Person < ActiveModelSerializers::Model
+        attributes :first_name, :last_name
       end
 
       class PersonSerializer < ActiveModel::Serializer

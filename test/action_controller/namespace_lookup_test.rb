@@ -4,7 +4,7 @@ module ActionController
   module Serialization
     class NamespaceLookupTest < ActionController::TestCase
       class Book < ::Model
-        attributes :title, :body
+        attributes :id, :title, :body
         associations :writer, :chapters
       end
       class Chapter < ::Model
@@ -86,7 +86,7 @@ module ActionController
               book = Book.new(title: 'New Post', body: 'Body')
 
               # because this is a string, ruby can't auto-lookup the constant, so otherwise
-              # the looku things we mean ::Api::V2
+              # the lookup thinks we mean ::Api::V2
               render json: book, namespace: 'ActionController::Serialization::NamespaceLookupTest::Api::V2'
             end
 
@@ -94,7 +94,7 @@ module ActionController
               book = Book.new(title: 'New Post', body: 'Body')
 
               # because this is a string, ruby can't auto-lookup the constant, so otherwise
-              # the looku things we mean ::Api::V2
+              # the lookup thinks we mean ::Api::V2
               render json: book, namespace: :'ActionController::Serialization::NamespaceLookupTest::Api::V2'
             end
 

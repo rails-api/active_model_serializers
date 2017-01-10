@@ -44,7 +44,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
 
   def define_author_model_and_serializer
     TestController.const_set(:Author, Class.new(ActiveModelSerializers::Model) do
-      attributes :name
+      attributes :id, :name
     end)
     TestController.const_set(:AuthorSerializer, Class.new(ActiveModel::Serializer) do
       type 'users'

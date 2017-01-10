@@ -6,16 +6,16 @@ Breaking changes:
 
 Features:
 
-- [#1982](https://github.com/rails-api/active_model_serializers/pull/1982) Add ActiveModelSerializers::Model.attributes to configure PORO attributes. (@bf4)
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
 
 Fixes:
 
-- [#1984](https://github.com/rails-api/active_model_serializers/pull/1984) Mutation of ActiveModelSerializers::Model now changes the attributes. (@bf4)
+- [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
 
 Misc:
 
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) Make test attributes explicit. Tests have Model#associations. (@bf4)
 - [#1981](https://github.com/rails-api/active_model_serializers/pull/1981) Fix relationship link documentation. (@groyoh)
-- [#1984](https://github.com/rails-api/active_model_serializers/pull/1984) Make test attributes explicit. Test models have 'associations' support. (@bf4)
 
 ### [v0.10.4 (2017-01-06)](https://github.com/rails-api/active_model_serializers/compare/v0.10.3...v0.10.4)
 
