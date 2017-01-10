@@ -29,4 +29,10 @@ class MyModel < ActiveModelSerializers::Model
 end
 ```
 
-The default serializer would be `MyModelSerializer`.
+The default serializer would be `MyModelSerializer`:
+```ruby
+# my_model_serializer.rb
+class MyModelSerializer < ActiveModel::Serializer
+  attributes :id, :name, :level
+end
+```
