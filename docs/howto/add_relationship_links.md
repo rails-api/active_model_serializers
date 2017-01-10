@@ -15,40 +15,42 @@ class Api::V1::UsersController < ApplicationController
       serializer: Api::V1::UserSerializer,
       include: []
   end
+end
 ```
 
 Bear in mind though that ActiveModelSerializers are [framework-agnostic](outside_controller_use.md), Rails is just a common example here.
 
 ### Links as an attribute of a resource
-**This is applicable to JSONAPI, JSON and Attributes adapters**
+**This is applicable to JSON and Attributes adapters**
 
 You can define an attribute in the resource, named `links`.
 
 ```ruby
 class Api::V1::UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :links
+  include Rails.application.routes.url_helpers
 
-  def links
+  attributes :id, :name
+
+  attribute :links do
+    id = object.id
     {
-      self: api_v1_user_path(object.id),
-      microposts: api_v1_microposts_path(user_id: object.id)
+      self: api_v1_user_path(id),
+      microposts: api_v1_microposts_path(user_id: id)
     }
   end
 end
 ```
 
-This will result in (example is in JSONAPI adapter):
+Using the `JSON` adapter, this will result in:
+
 ```json
 {
-  "data": {
+  "user": {
     "id": "1",
-    "type": "users",
-    "attributes": {
-      "name": "Example User",
-      "links": {
-        "self": "/api/v1/users/1",
-        "microposts": "/api/v1/microposts?user_id=1"
-      }
+    "name": "John",
+    "links": {
+      "self": "/api/v1/users/1",
+      "microposts": "/api/v1/microposts?user_id=1"
     }
   }
 }
@@ -58,7 +60,7 @@ This will result in (example is in JSONAPI adapter):
 ### Links as a property of the resource definiton
 **This is only applicable to JSONAPI adapter**
 
-You can use the `links` class method to define the links you need in the resource's primary data.
+You can use the `link` class method to define the links you need in the resource's primary data.
 
 ```ruby
 class Api::V1::UserSerializer < ActiveModel::Serializer
@@ -69,7 +71,8 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 end
 ```
 
-This will result in (example is in JSONAPI adapter):
+Using the `JSONAPI` adapter, this will result in:
+
 ```json
 {
   "data": {
@@ -104,12 +107,12 @@ class Api::V1::UserSerializer < ActiveModel::Serializer
 
   has_many :microposts, serializer: Api::V1::MicropostSerializer do
     link(:related) { api_v1_microposts_path(user_id: object.id) }
-  end
 
-  #this is needed to avoid n+1, gem core devs are working to remove this necessity
-  #more on: https://github.com/rails-api/active_model_serializers/issues/1325
-  def microposts
-    object.microposts.loaded ? object.microposts : object.microposts.none
+    microposts = object.microposts
+    # The following code is needed to avoid n+1 queries.
+    # Core devs are working to remove this necessity.
+    # See: https://github.com/rails-api/active_model_serializers/issues/1325
+    microposts.loaded? ? microposts : microposts.none
   end
 end
 ```

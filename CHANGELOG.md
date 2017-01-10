@@ -15,6 +15,7 @@ Fixes:
 Misc:
 
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) Make test attributes explicit. Tests have Model#associations. (@bf4)
+- [#1981](https://github.com/rails-api/active_model_serializers/pull/1981) Fix relationship link documentation. (@groyoh)
 
 ### [v0.10.4 (2017-01-06)](https://github.com/rails-api/active_model_serializers/compare/v0.10.3...v0.10.4)
 
