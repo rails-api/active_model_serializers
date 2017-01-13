@@ -36,7 +36,7 @@ class RenderJsonTest < ActionController::TestCase
       @skip = skip
     end
 
-    def active_model_serializer
+    def active_model_serializer(*args)
       JsonSerializer unless @skip
     end
 
@@ -68,7 +68,7 @@ class RenderJsonTest < ActionController::TestCase
   end
 
   class HypermediaSerializable
-    def active_model_serializer
+    def active_model_serializer(*args)
       HypermediaSerializer
     end
   end

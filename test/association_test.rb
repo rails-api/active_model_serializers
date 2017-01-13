@@ -443,11 +443,11 @@ class AssociationTest < ActiveModel::TestCase
     end
 
     class Foo < Model
-      def active_model_serializer; FooSerializer; end
+      def active_model_serializer(*args); FooSerializer; end
     end
 
     class Bar < Model
-      def active_model_serializer; BarSerializer; end
+      def active_model_serializer(*args); BarSerializer; end
     end
 
     def setup
