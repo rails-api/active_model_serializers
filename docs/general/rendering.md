@@ -95,7 +95,7 @@ render json: @post, meta: { total: 10 }
 The key can be customized using `meta_key` option.
 
 ```ruby
-render json: @post, meta: { total: 10 }, meta_key: "custom_meta"
+render json: @post, custom_meta: { total: 10 }, meta_key: :custom_meta
 ```
 
 `meta` will only be included in your response if you are using an Adapter that
