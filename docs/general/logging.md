@@ -12,3 +12,9 @@ You may customize the logger in an initializer, for example:
 ```ruby
 ActiveModelSerializers.logger = Logger.new(STDOUT)
 ```
+
+You can also disable the logger, just put this in `config/application.rb`:
+
+```ruby
+ActiveSupport::Notifications.unsubscribe(ActiveModelSerializers::Logging::RENDER_EVENT)
+```
