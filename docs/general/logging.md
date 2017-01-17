@@ -13,7 +13,7 @@ You may customize the logger in an initializer, for example:
 ActiveModelSerializers.logger = Logger.new(STDOUT)
 ```
 
-You can also disable the logger, just put this in `config/application.rb`:
+You can also disable the logger, just put this in `config/initializers/active_model_serializers.rb`:
 
 ```ruby
 ActiveSupport::Notifications.unsubscribe(ActiveModelSerializers::Logging::RENDER_EVENT)
