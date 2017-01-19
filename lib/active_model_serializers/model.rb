@@ -56,14 +56,6 @@ module ActiveModelSerializers
         base.attributes :id
       end
 
-      # Override the initialize method so that attributes aren't processed.
-      #
-      # @param attributes [Hash]
-      def initialize(attributes = {})
-        @errors = ActiveModel::Errors.new(self)
-        super
-      end
-
       # Override the +attributes+ method so that the hash is derived from +attribute_names+.
       #
       # The the fields in +attribute_names+ determines the returned hash.
