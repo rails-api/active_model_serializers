@@ -187,7 +187,7 @@ and, if there is no serializer, primitives.
 
 ### ActiveModelSerializers::Adapter::Base
 
-The **`ActiveModelSerializeres::Adapter::Base`** describes the structure of the JSON document generated from a
+The **`ActiveModelSerializers::Adapter::Base`** describes the structure of the JSON document generated from a
 serializer. For example, the `Attributes` example represents each serializer as its
 unmodified attributes.  The `JsonApi` adapter represents the serializer as a [JSON
 API](http://jsonapi.org/) document.
