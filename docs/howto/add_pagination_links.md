@@ -117,7 +117,7 @@ ex.
 You can also achieve the same result if you have a helper method that adds the pagination info in the meta tag. For instance, in your action specify a custom serializer.
 
 ```ruby
-render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attributes(@post)
+render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attributes(@posts)
 ```
 
 ```ruby
