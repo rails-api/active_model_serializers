@@ -77,13 +77,13 @@ If you are using `JSON` adapter, pagination links will not be included automatic
 Add this method to your base API controller.
 
 ```ruby
-def pagination_dict(object)
+def pagination_dict(collection)
   {
-    current_page: object.current_page,
-    next_page: object.next_page,
-    prev_page: object.prev_page, # use object.previous_page when using will_paginate
-    total_pages: object.total_pages,
-    total_count: object.total_count
+    current_page: collection.current_page,
+    next_page: collection.next_page,
+    prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
+    total_pages: collection.total_pages,
+    total_count: collection.total_count
   }
 end
 ```
@@ -122,13 +122,13 @@ render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attribut
 
 ```ruby
 #expects pagination!
-def meta_attributes(resource, extra_meta = {})
+def meta_attributes(collection, extra_meta = {})
   {
-    current_page: resource.current_page,
-    next_page: resource.next_page,
-    prev_page: resource.prev_page, # use resource.previous_page when using will_paginate
-    total_pages: resource.total_pages,
-    total_count: resource.total_count
+    current_page: collection.current_page,
+    next_page: collection.next_page,
+    prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
+    total_pages: collection.total_pages,
+    total_count: collection.total_count
   }.merge(extra_meta)
 end
 ```
