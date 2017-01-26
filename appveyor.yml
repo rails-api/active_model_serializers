@@ -15,12 +15,11 @@ cache:
 install:
   # conditionally install jruby version, per https://github.com/shoes/shoes4/blob/428a09b4a4d884342a1bcecd541a172064396fb3/appveyor.yml
   # And see http://stackoverflow.com/a/16373842
-  - |
+  - >
     cmd /E:on /c "
-    if defined jruby_version (
-      cd ..
-      appveyor DownloadFile https://s3.amazonaws.com/jruby.org/downloads/9.1.6.0/jruby-bin-9.1.6.0.zip
-      7z x jruby-bin-9.1.6.0.zip -y
+    if defined jruby_version (cd ..;
+      appveyor DownloadFile https://s3.amazonaws.com/jruby.org/downloads/9.1.6.0/jruby-bin-9.1.6.0.zip;
+      7z x jruby-bin-9.1.6.0.zip -y;
       SET PATH=C:\projects\jruby-9.1.6.0\bin;%PATH%
     )
     else (
