@@ -1,4 +1,4 @@
-version: '{build}'
+version: 1.0.{build}-{branch}
 
 skip_tags: true
 
@@ -7,7 +7,7 @@ environment:
   matrix:
     - ruby_version: "Ruby21"
     - ruby_version: "Ruby21-x64"
-    - ruby_version: "jruby-9.0.0.0"
+    - ruby_version: "jruby-9.1.5.0" # no pre-installed versions https://www.appveyor.com/docs/installed-software/#ruby
 
 cache:
   - vendor/bundle
@@ -19,6 +19,11 @@ install:
   - gem install bundler -v 1.13.7
   - bundle env
   - bundle install --path=vendor/bundle --retry=3 --jobs=3
+
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
 
 test_script:
   - bundle exec rake ci
