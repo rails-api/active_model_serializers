@@ -7,15 +7,12 @@ environment:
   matrix:
     - ruby_version: "Ruby21"
     - ruby_version: "Ruby21-x64"
-    - jruby_version: "jruby-9.1.6.0" # no pre-installed versions https://www.appveyor.com/docs/installed-software/#ruby
 
 cache:
   - vendor/bundle
 
 install:
-  # conditionally install jruby version, per https://github.com/shoes/shoes4/blob/428a09b4a4d884342a1bcecd541a172064396fb3/appveyor.yml
-  # And see http://stackoverflow.com/a/16373842
-  - cmd /E:on /c "if defined jruby_version (cd ..; appveyor DownloadFile https://s3.amazonaws.com/jruby.org/downloads/9.1.6.0/jruby-bin-9.1.6.0.zip; 7z x jruby-bin-9.1.6.0.zip -y; SET PATH=C:\projects\jruby-9.1.6.0\bin;%PATH% ) else ( SET PATH=C:\%ruby_version%\bin;%PATH% )"
+  - SET PATH=C:\%ruby_version%\bin;%PATH%
   - gem update --system
   - gem uninstall bundler -a -x
   - gem install bundler -v 1.13.7
