@@ -7,12 +7,16 @@ rvm:
   - 2.2.6
   - 2.3.3
   - ruby-head
-  - jruby-9.0.4.0
+  - jruby-9.1.5.0 # is precompiled per http://rubies.travis-ci.org/
   - jruby-head
 
 jdk:
   - oraclejdk8
 
+before_install:
+  - gem update --system
+  - rvm @global do gem uninstall bundler -a -x
+  - rvm @global do gem install bundler -v 1.13.7
 install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
@@ -35,13 +39,13 @@ matrix:
   exclude:
   - rvm: 2.1
     env: RAILS_VERSION=master
-  - rvm: jruby-9.0.4.0
+  - rvm: jruby-9.1.5.0
     env: RAILS_VERSION=master
   - rvm: jruby-head
     env: RAILS_VERSION=master
   - rvm: 2.1
     env: RAILS_VERSION=5.0
-  - rvm: jruby-9.0.4.0
+  - rvm: jruby-9.1.5.0
     env: RAILS_VERSION=5.0
   - rvm: jruby-head
     env: RAILS_VERSION=5.0
