@@ -1,7 +1,5 @@
 require 'test_helper'
 
-Rails.application.config.filter_parameters += [:password]
-
 module ActiveModelSerializers
   module Test
     class SchemaTest < ActionController::TestCase
