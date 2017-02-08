@@ -10,8 +10,8 @@ In ActiveModelSerializers versions 0.10 or later, serializing resources outside 
 # Create our resource
 post = Post.create(title: "Sample post", body: "I love Active Model Serializers!")
 
-# Optional options parameters
-options = {}
+# Optional options parameters for both the serializer and instance
+options = {serializer: PostDetailedSerializer, username: 'sample user'}
 
 # Create a serializable resource instance
 serializable_resource = ActiveModelSerializers::SerializableResource.new(post, options)
