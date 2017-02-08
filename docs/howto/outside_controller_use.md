@@ -20,6 +20,7 @@ serializable_resource = ActiveModelSerializers::SerializableResource.new(post, o
 model_json = serializable_resource.as_json
 ```
 The object that is passed to `ActiveModelSerializers::SerializableResource.new` can be a single resource or a collection.
+The additional options are the same options that are passed [through controllers](https://github.com/rails-api/active_model_serializers/blob/master/docs/general/rendering.md#explicit-serializer).
 
 ### Looking up the Serializer for a Resource
 
