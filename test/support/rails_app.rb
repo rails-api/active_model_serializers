@@ -6,6 +6,8 @@ module ActiveModelSerializers
       config.active_support.test_order = :random
       config.action_controller.perform_caching = true
       config.action_controller.cache_store = :memory_store
+
+      config.filter_parameters += [:password]
     end
 
     app.routes.default_url_options = { host: 'example.com' }
