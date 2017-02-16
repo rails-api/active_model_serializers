@@ -125,16 +125,5 @@ module ActiveModelSerializers
         "#{id}-#{updated_at.strftime('%Y%m%d%H%M%S%9N')}"
       ].compact)
     end
-
-    # The following methods are needed to be minimally implemented for ActiveModel::Errors
-    # :nocov:
-    def self.human_attribute_name(attr, _options = {})
-      attr
-    end
-
-    def self.lookup_ancestors
-      [self]
-    end
-    # :nocov:
   end
 end
