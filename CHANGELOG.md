@@ -7,6 +7,9 @@ Breaking changes:
 Features:
 
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
+- [#2057](https://github.com/rails-api/active_model_serializers/pull/2057)
+  Update version constraint for jsonapi-renderer to `['>= 0.1.1.beta1', '< 0.2']`
+  (@jaredbeck)
 
 Fixes:
 
