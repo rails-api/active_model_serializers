@@ -14,6 +14,8 @@ Fixes:
 
 Misc:
 
+- [#2055](https://github.com/rails-api/active_model_serializers/pull/2055)
+  Replace deprecated dependency jsonapi with jsonapi-renderer. (@jaredbeck)
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) Make test attributes explicit. Tests have Model#associations. (@bf4)
 - [#1981](https://github.com/rails-api/active_model_serializers/pull/1981) Fix relationship link documentation. (@groyoh)
 - [#2035](https://github.com/rails-api/active_model_serializers/pull/2035) Document how to disable the logger. (@MSathieu)
