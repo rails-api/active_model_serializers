@@ -225,10 +225,10 @@ With the `:json` adapter, the previous serializer would be rendered as:
 link :self do
   href "https://example.com/link_author/#{object.id}"
 end
-link :author { link_author_url(object) }
-link :link_authors { link_authors_url }
+link(:author) { link_author_url(object) }
+link(:link_authors) { link_authors_url }
 link :other, 'https://example.com/resource'
-link :posts { link_author_posts_url(object) }
+link(:posts) { link_author_posts_url(object) }
 ```
 
 #### #object
