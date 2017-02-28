@@ -34,17 +34,18 @@ module ActiveModel
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
     # @return [ActiveModel::Serializer]
     #   Preferentially returns
-    #   1. resource.serializer
+    #   1. resource.serializer_class
     #   2. ArraySerializer when resource is a collection
     #   3. options[:serializer]
     #   4. lookup serializer when resource is a Class
-    def self.serializer_for(resource, options = {})
-      if resource.respond_to?(:serializer_class)
-        resource.serializer_class
-      elsif resource.respond_to?(:to_ary)
+    def self.serializer_for(resource_or_class, options = {})
+      if resource_or_class.respond_to?(:serializer_class)
+        resource_or_class.serializer_class
+      elsif resource_or_class.respond_to?(:to_ary)
         config.collection_serializer
       else
-        options.fetch(:serializer) { get_serializer_for(resource.class, options[:namespace]) }
+        resource_class = resource_or_class.class == Class ? resource_or_class : resource_or_class.class
+        options.fetch(:serializer) { get_serializer_for(resource_class, options[:namespace]) }
       end
     end
 
