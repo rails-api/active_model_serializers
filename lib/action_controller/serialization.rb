@@ -53,8 +53,14 @@ module ActionController
       true
     end
 
+    def use_serializer?(options)
+      options.key?(:serializer) || options.key?(:each_serializer)
+    end
+
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
+        return super(resource, options) unless use_serializer?(options)
+
         options.fetch(:serialization_context) do
           options[:serialization_context] = ActiveModelSerializers::SerializationContext.new(request, options)
         end
