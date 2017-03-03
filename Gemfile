@@ -45,6 +45,10 @@ tzinfo_platforms = @windows_platforms
 tzinfo_platforms += [:jruby] if version >= '4.1'
 gem 'tzinfo-data', platforms: tzinfo_platforms
 
+group :bench do
+  gem 'benchmark-ips', '>= 2.7.2'
+end
+
 group :test do
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
