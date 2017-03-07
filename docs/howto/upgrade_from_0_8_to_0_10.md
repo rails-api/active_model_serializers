@@ -107,7 +107,7 @@ end
 
 ```
 Add this class to your app however you see fit. This is the class that your existing serializers
-that inherit from `ActiveMode::Serializer` should inherit from.
+that inherit from `ActiveModel::Serializer` should inherit from.
 
 ### 3. Add `ActiveModel::V08::CollectionSerializer`
 ```ruby
