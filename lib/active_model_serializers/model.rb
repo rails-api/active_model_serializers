@@ -56,14 +56,6 @@ module ActiveModelSerializers
         base.attributes :id
       end
 
-      # Override the initialize method so that attributes aren't processed.
-      #
-      # @param attributes [Hash]
-      def initialize(attributes = {})
-        @errors = ActiveModel::Errors.new(self)
-        super
-      end
-
       # Override the +attributes+ method so that the hash is derived from +attribute_names+.
       #
       # The the fields in +attribute_names+ determines the returned hash.
@@ -133,16 +125,5 @@ module ActiveModelSerializers
         "#{id}-#{updated_at.strftime('%Y%m%d%H%M%S%9N')}"
       ].compact)
     end
-
-    # The following methods are needed to be minimally implemented for ActiveModel::Errors
-    # :nocov:
-    def self.human_attribute_name(attr, _options = {})
-      attr
-    end
-
-    def self.lookup_ancestors
-      [self]
-    end
-    # :nocov:
   end
 end

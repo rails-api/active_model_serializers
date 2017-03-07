@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.5...master)
 
 Breaking changes:
 
@@ -14,8 +14,29 @@ Fixes:
 
 Misc:
 
+### [v0.10.5 (2017-03-07)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...v0.10.5)
+
+Breaking changes:
+
+Features:
+
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
+- [#2057](https://github.com/rails-api/active_model_serializers/pull/2057)
+  Update version constraint for jsonapi-renderer to `['>= 0.1.1.beta1', '< 0.2']`
+  (@jaredbeck)
+
+Fixes:
+
+- [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
+
+Misc:
+
+- [#2055](https://github.com/rails-api/active_model_serializers/pull/2055)
+  Replace deprecated dependency jsonapi with jsonapi-renderer. (@jaredbeck)
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) Make test attributes explicit. Tests have Model#associations. (@bf4)
 - [#1981](https://github.com/rails-api/active_model_serializers/pull/1981) Fix relationship link documentation. (@groyoh)
+- [#2035](https://github.com/rails-api/active_model_serializers/pull/2035) Document how to disable the logger. (@MSathieu)
+- [#2039](https://github.com/rails-api/active_model_serializers/pull/2039) Documentation fixes. (@biow0lf)
 
 ### [v0.10.4 (2017-01-06)](https://github.com/rails-api/active_model_serializers/compare/v0.10.3...v0.10.4)
 
