@@ -1,6 +1,16 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.5...master)
+
+Breaking changes:
+
+Features:
+
+Fixes:
+
+Misc:
+
+### [v0.10.5 (2017-03-07)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...v0.10.5)
 
 Breaking changes:
 
