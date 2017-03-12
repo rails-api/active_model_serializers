@@ -6,11 +6,14 @@ version = ENV["RAILS_VERSION"] || "4.2"
 
 if version == 'master'
   gem 'rack', github: 'rack/rack'
+  gem 'arel', github: 'rails/arel'
+  gem 'rails', github: 'rails/rails'
   git 'https://github.com/rails/rails.git' do
     gem 'railties'
     gem 'activesupport'
     gem 'activemodel'
     gem 'actionpack'
+    gem 'activerecord', group: :test
     # Rails 5
     gem 'actionview'
   end
@@ -18,10 +21,12 @@ if version == 'master'
   gem 'rails-controller-testing', github: 'rails/rails-controller-testing'
 else
   gem_version = "~> #{version}.0"
+  gem 'rails', gem_version
   gem 'railties', gem_version
   gem 'activesupport', gem_version
   gem 'activemodel', gem_version
   gem 'actionpack', gem_version
+  gem 'activerecord', gem_version, group: :test
 end
 
 if RUBY_VERSION < '2'
@@ -36,14 +41,14 @@ end
 @windows_platforms = [:mswin, :mingw, :x64_mingw]
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
+tzinfo_platforms = @windows_platforms
+tzinfo_platforms += [:jruby] if version >= '4.1'
+gem 'tzinfo-data', platforms: tzinfo_platforms
 
 group :test do
-  gem 'activerecord'
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 
-  gem 'codeclimate-test-reporter', require: false
   gem 'simplecov', '~> 0.10', require: false, group: :development
 end
 

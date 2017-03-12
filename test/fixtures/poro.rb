@@ -49,7 +49,7 @@ end
 
 class SpecialPost < Post
   def special_comment
-    @speical_comment ||= Comment.new(content: 'special')
+    @special_comment ||= Comment.new(content: 'special')
   end
 end
 

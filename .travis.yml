@@ -33,10 +33,18 @@ env:
 
 matrix:
   exclude:
+    - rvm: 1.9.3
+      env: RAILS_VERSION=master
+    - rvm: 2.0.0
+      env: RAILS_VERSION=master
     - rvm: 2.1
       env: RAILS_VERSION=master
     - rvm: jruby-9.1.5.0
       env: RAILS_VERSION=master
+    - rvm: 1.9.3
+      env: RAILS_VERSION=5.0
+    - rvm: 2.0.0
+      env: RAILS_VERSION=5.0
     - rvm: 2.1
       env: RAILS_VERSION=5.0
     - rvm: jruby-9.1.5.0
