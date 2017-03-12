@@ -1,27 +1,47 @@
 language: ruby
 
-rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.1
-  - ruby-head
-  - jruby-19mode
-  - ruby-head
-
 sudo: false
 
+rvm:
+  - 1.9.3 # EOL
+  - 2.0.0 # EOL
+  - 2.1
+  - ruby-head
+  - jruby-9.1.5.0 # is precompiled per http://rubies.travis-ci.org/
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - gem update --system
+  - rvm @global do gem uninstall bundler -a -x
+  - rvm @global do gem install bundler -v 1.13.7
 install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
     - vendor/bundle
 
 env:
-  - "RAILS_VERSION=4.0"
-  - "RAILS_VERSION=4.1"
-  - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  global:
+    - "JRUBY_OPTS='--dev -J-Xmx1024M --debug'"
+  matrix:
+    - "RAILS_VERSION=4.0"
+    - "RAILS_VERSION=4.1"
+    - "RAILS_VERSION=4.2"
+    - "RAILS_VERSION=5.0"
+    - "RAILS_VERSION=master"
 
 matrix:
+  exclude:
+    - rvm: 2.1
+      env: RAILS_VERSION=master
+    - rvm: jruby-9.1.5.0
+      env: RAILS_VERSION=master
+    - rvm: 2.1
+      env: RAILS_VERSION=5.0
+    - rvm: jruby-9.1.5.0
+      env: RAILS_VERSION=5.0
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
+  fast_finish: true
