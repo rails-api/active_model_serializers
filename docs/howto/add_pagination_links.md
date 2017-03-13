@@ -72,7 +72,7 @@ ActiveModelSerializers pagination relies on a paginated collection with the meth
 
 ### JSON adapter
 
-If you are using `JSON` adapter, pagination links will not be included automatically, but it is possible to do so using `meta` key.
+If you are not using `JSON` adapter, pagination links will not be included automatically, but it is possible to do so using `meta` key.
 
 Add this method to your base API controller.
 
