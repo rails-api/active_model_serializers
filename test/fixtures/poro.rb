@@ -1,7 +1,9 @@
 class Model < ActiveModelSerializers::Model
-  rand(2).zero? && derive_attributes_from_names_and_fix_accessors
-
-  attr_writer :id
+  if rand(2).zero?
+    derive_attributes_from_names_and_fix_accessors
+  else
+    attr_writer :id
+  end
 
   # At this time, just for organization of intent
   class_attribute :association_names
