@@ -6,6 +6,12 @@ module ActiveModelSerializers
       include ActiveModelSerializers::Test::Serializer
 
       class MyController < ActionController::Base
+        def render_multi_using_serializer
+          render json: [Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
+                        Profile.new(name: 'Name 2', description: 'Description 2', comments: 'Comments 2')],
+                 each_serializer: ProfileSerializer
+        end
+
         def render_using_serializer
           render json: Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
         end
@@ -16,6 +22,11 @@ module ActiveModelSerializers
       end
 
       tests MyController
+
+      def test_supports_specifying_serializers_with_a_multi_serializer_class
+        get :render_multi_using_serializer
+        assert_serializer ProfileSerializer
+      end
 
       def test_supports_specifying_serializers_with_a_serializer_class
         get :render_using_serializer
