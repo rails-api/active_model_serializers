@@ -40,9 +40,9 @@ module ActiveModel
 
       module ClassMethods
         def inherited(base)
-          super
           caller_line = caller[1]
           base._cache_digest_file_path = caller_line
+          super
         end
 
         def _cache_digest
