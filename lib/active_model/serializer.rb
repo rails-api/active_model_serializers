@@ -92,6 +92,8 @@ module ActiveModel
           serializer_class
         elsif klass.superclass
           get_serializer_for(klass.superclass)
+        else
+          nil # No serializer found
         end
       end
     end
