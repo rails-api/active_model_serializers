@@ -66,7 +66,10 @@ end
             ArraySerializer
           end
         else
-          _const_get build_serializer_class(resource, options)
+          klass_name = build_serializer_class(resource, options)
+          Serializer.serializers_cache.fetch_or_store(klass_name) do
+            _const_get(klass_name)
+          end
         end
       end
 
