@@ -9,6 +9,14 @@ module ActiveModelSerializers
         self.class.transform_key_casing!(serialized_hash, instance_options)
       end
 
+      def root
+        if instance_options.key?(:root)
+          instance_options[:root]
+        elsif serializer.json_key
+          serializer.json_key.to_sym
+        end
+      end
+
       def meta
         instance_options.fetch(:meta, nil)
       end

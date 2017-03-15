@@ -74,10 +74,6 @@ module ActiveModelSerializers
       def serialization_options(options)
         options ||= {} # rubocop:disable Lint/UselessAssignment
       end
-
-      def root
-        serializer.json_key.to_sym if serializer.json_key
-      end
     end
   end
 end

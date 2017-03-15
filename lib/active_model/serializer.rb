@@ -19,7 +19,7 @@ require 'active_model/serializer/lint'
 module ActiveModel
   class Serializer
     # @see #serializable_hash for more details on these valid keys.
-    SERIALIZABLE_HASH_VALID_KEYS = [:only, :except, :methods, :include, :root].freeze
+    SERIALIZABLE_HASH_VALID_KEYS = [:only, :except, :methods, :include].freeze
     extend ActiveSupport::Autoload
     autoload :Adapter
     autoload :Null
@@ -114,7 +114,7 @@ module ActiveModel
       @serialization_adapter_instance ||= ActiveModelSerializers::Adapter::Attributes
     end
 
-    attr_accessor :object, :root, :scope
+    attr_accessor :object, :scope
 
     # `scope_name` is set as :current_user by default in the controller.
     # If the instance does not have a method named `scope_name`, it
@@ -122,7 +122,6 @@ module ActiveModel
     def initialize(object, options = {})
       self.object = object
       self.instance_options = options
-      self.root = instance_options[:root]
       self.scope = instance_options[:scope]
 
       return if !(scope_name = instance_options[:scope_name]) || respond_to?(scope_name)
@@ -177,8 +176,7 @@ module ActiveModel
     # TODO: When moving attributes adapter logic here, @see #serializable_hash
     # So that the below is true:
     #   @param options [nil, Hash] The same valid options passed to `as_json`
-    #      (:root, :only, :except, :methods, and :include).
-    #   The default for `root` is nil.
+    #      (:only, :except, :methods, and :include).
     #   The default value for include_root is false. You can change it to true if the given
     #   JSON string includes a single root node.
     def as_json(adapter_opts = nil)
@@ -187,7 +185,7 @@ module ActiveModel
 
     # Used by adapter as resource root.
     def json_key
-      root || _type || object.class.model_name.to_s.underscore
+      _type || object.class.model_name.to_s.underscore
     end
 
     def read_attribute_for_serialization(attr)
