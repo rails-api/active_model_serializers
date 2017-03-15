@@ -4,6 +4,7 @@ require 'active_model/serializer/association'
 require 'active_model/serializer/config'
 
 require 'thread'
+require 'concurrent/map'
 
 module ActiveModel
   class Serializer
@@ -65,7 +66,10 @@ end
             ArraySerializer
           end
         else
-          _const_get build_serializer_class(resource, options)
+          klass_name = build_serializer_class(resource, options)
+          Serializer.serializers_cache.fetch_or_store(klass_name) do
+            _const_get(klass_name)
+          end
         end
       end
 
@@ -98,6 +102,10 @@ end
 
       def has_many(*attrs)
         associate(Association::HasMany, *attrs)
+      end
+
+      def serializers_cache
+        @serializers_cache ||= Concurrent::Map.new
       end
 
       private

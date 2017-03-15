@@ -14,6 +14,9 @@ begin
       ActionController::Base.send(:include, ::ActionController::Serialization)
       ActionController::TestCase.send(:include, ::ActionController::SerializationAssertions)
     end
+    ActionDispatch::Reloader.to_prepare do
+      ActiveModel::Serializer.serializers_cache.clear
+    end
   end
 rescue LoadError
   # rails not installed, continuing
