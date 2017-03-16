@@ -68,6 +68,18 @@ module ActiveModel
           _cache_options && _cache_options[:skip_digest]
         end
 
+        # @api private
+        # maps attribute value to explicit key name
+        # @see Serializer::attribute
+        # @see Serializer::fragmented_attributes
+        def _attributes_keys
+          _attributes_data
+            .each_with_object({}) do |(key, attr), hash|
+            next if key == attr.name
+            hash[attr.name] = { key: key }
+          end
+        end
+
         def fragmented_attributes
           cached = _cache_only ? _cache_only : _attributes - _cache_except
           cached = cached.map! { |field| _attributes_keys.fetch(field, field) }

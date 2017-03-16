@@ -108,8 +108,8 @@ module ActiveModel
       @serialization_adapter_instance ||= ActiveModelSerializers::Adapter::Attributes
     end
 
-    # Configuration options may also be set in
-    # Serializers and Adapters
+    # Preferred interface is ActiveModelSerializers.config
+    # BEGIN DEFAULT CONFIGURATION
     config.collection_serializer = ActiveModel::Serializer::CollectionSerializer
     config.serializer_lookup_enabled = true
 
@@ -159,6 +159,7 @@ module ActiveModel
     config.serializer_lookup_chain = ActiveModelSerializers::LookupChain::DEFAULT.dup
 
     config.schema_path = 'test/support/schemas'
+    # END DEFAULT CONFIGURATION
 
     with_options instance_writer: false, instance_reader: false do |serializer|
       serializer.class_attribute :_attributes_data # @api private
@@ -180,11 +181,13 @@ module ActiveModel
       base._links = _links.dup
     end
 
-    # keys of attributes
+    # @return [Array<Symbol>] Key names of declared attributes
     # @see Serializer::attribute
     def self._attributes
       _attributes_data.keys
     end
+
+    # BEGIN SERIALIZER MACROS
 
     # @example
     #   class AdminAuthorSerializer < ActiveModel::Serializer
@@ -212,18 +215,6 @@ module ActiveModel
     def self.attribute(attr, options = {}, &block)
       key = options.fetch(:key, attr)
       _attributes_data[key] = Attribute.new(attr, options, block)
-    end
-
-    # @api private
-    # maps attribute value to explicit key name
-    # @see Serializer::attribute
-    # @see ActiveModel::Serializer::Caching#fragmented_attributes
-    def self._attributes_keys
-      _attributes_data
-        .each_with_object({}) do |(key, attr), hash|
-        next if key == attr.name
-        hash[attr.name] = { key: key }
-      end
     end
 
     # @param [Symbol] name of the association
@@ -301,6 +292,8 @@ module ActiveModel
     def self.type(type)
       self._type = type && type.to_s
     end
+
+    # END SERIALIZER MACROS
 
     attr_accessor :object, :root, :scope
 
