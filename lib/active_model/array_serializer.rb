@@ -64,10 +64,5 @@ module ActiveModel
       end
     end
 
-    private
-
-    def instrumentation_keys
-      [:object, :scope, :root, :meta_key, :meta, :each_serializer, :resource_name, :key_format, :context]
-    end
   end
 end

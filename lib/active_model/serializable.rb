@@ -52,15 +52,8 @@ module ActiveModel
     end
 
     def instrument(action, &block)
-      payload = instrumentation_keys.inject({ serializer: self.class.name }) do |payload, key|
-        payload[:payload] = self.instance_variable_get(:"@#{key}")
-        payload
-      end
+      payload = { serializer: self.class.name }
       ActiveSupport::Notifications.instrument("#{action}.active_model_serializers", payload, &block)
-    end
-
-    def instrumentation_keys
-      [:object, :scope, :root, :meta_key, :meta, :wrap_in_array, :only, :except, :key_format]
     end
   end
 end

@@ -21,12 +21,8 @@ module ActiveModel
         @wrap_in_array ? [hash] : hash
       end
     end
+
     alias serializable_hash as_json
     alias serializable_object as_json
-
-    private
-    def instrumentation_keys
-      [:object, :wrap_in_array]
-    end
   end
 end
