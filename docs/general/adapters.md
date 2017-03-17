@@ -141,17 +141,19 @@ This adapter follows **version 1.0** of the [format specified](../jsonapi/schema
 }
 ```
 
-#### Included
+### Include option
 
-It will include the associated resources in the `"included"` member
-when the resource names are included in the `include` option.
-Including nested associated resources is also supported.
+All built-in adapters allow to include the associated resources. Nested associated resources is also supported.
+Use `include` option for this:
 
 ```ruby
   render json: @posts, include: ['author', 'comments', 'comments.author']
   # or
   render json: @posts, include: 'author,comments,comments.author'
 ```
+**Note:** Serializer classes must declare associations explicitly, using `belongs_to` and `has_many` and etc., for `include` option to work.
+
+For JSON API adapter associated resources will be gathered in the `"included"` member.
 
 In addition, two types of wildcards may be used:
 
