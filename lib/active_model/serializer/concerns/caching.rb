@@ -40,9 +40,9 @@ module ActiveModel
 
       module ClassMethods
         def inherited(base)
-          super
           caller_line = caller[1]
           base._cache_digest_file_path = caller_line
+          super
         end
 
         def _cache_digest
@@ -66,6 +66,18 @@ module ActiveModel
 
         def _skip_digest?
           _cache_options && _cache_options[:skip_digest]
+        end
+
+        # @api private
+        # maps attribute value to explicit key name
+        # @see Serializer::attribute
+        # @see Serializer::fragmented_attributes
+        def _attributes_keys
+          _attributes_data
+            .each_with_object({}) do |(key, attr), hash|
+            next if key == attr.name
+            hash[attr.name] = { key: key }
+          end
         end
 
         def fragmented_attributes
