@@ -14,6 +14,8 @@ Fixes:
 
 Misc:
 
+- [#2081](https://github.com/rails-api/active_model_serializers/pull/2081) Documentation for `include` option in adapters. (@charlie-wasp)
+
 ### [v0.10.5 (2017-03-07)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...v0.10.5)
 
 Breaking changes:

@@ -143,7 +143,7 @@ This adapter follows **version 1.0** of the [format specified](../jsonapi/schema
 
 ### Include option
 
-Which [serializer associations](https://github.com/rails-api/active_model_serializers/blob/master/docs/general/serializers.md#associations) are rendered can be specified using the `include` option. The option usage is consistent with [the include option in the JSON API spec](http://jsonapi.org/format/#fetching-includes), but is available in all adapters.
+Which [serializer associations](https://github.com/rails-api/active_model_serializers/blob/master/docs/general/serializers.md#associations) are rendered can be specified using the `include` option. The option usage is consistent with [the include option in the JSON API spec](http://jsonapi.org/format/#fetching-includes), and is available in all adapters.
 
 Example of the usage:
 ```ruby
@@ -184,7 +184,7 @@ It could be combined, like above, with other paths in any combination desired.
   render json: @posts, include: 'author.comments.**'
 ```
 
-**Note:** Wildcards are AMS-specific, they are not part of the JSON API spec.
+**Note:** Wildcards are ActiveModelSerializers-specific, they are not part of the JSON API spec.
 
 The default include for the JSON API adapter is no associations. The default for the JSON and Attributes adapters is all associations.
 
