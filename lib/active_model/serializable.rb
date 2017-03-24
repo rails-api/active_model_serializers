@@ -2,12 +2,14 @@ require 'active_model/serializable/utils'
 
 module ActiveModel
   module Serializable
+    INSTRUMENTATION_KEY = "!serialize.active_model_serializers".freeze
+
     def self.included(base)
       base.extend Utils
     end
 
     def as_json(options={})
-      instrument('!serialize') do
+      instrument do
         if root = options.fetch(:root, json_key)
           hash = { root => serializable_object(options) }
           hash.merge!(serializable_data)
@@ -19,9 +21,7 @@ module ActiveModel
     end
 
     def serializable_object_with_notification(options={})
-      instrument('!serialize') do
-        serializable_object(options)
-      end
+      instrument { serializable_object(options) }
     end
 
     def serializable_data
@@ -51,9 +51,9 @@ module ActiveModel
       modules[0..-2].join('::') if modules.size > 1
     end
 
-    def instrument(action, &block)
+    def instrument(&block)
       payload = { serializer: self.class.name }
-      ActiveSupport::Notifications.instrument("#{action}.active_model_serializers", payload, &block)
+      ActiveSupport::Notifications.instrument(INSTRUMENTATION_KEY, payload, &block)
     end
   end
 end
