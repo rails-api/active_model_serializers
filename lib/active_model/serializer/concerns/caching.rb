@@ -287,7 +287,7 @@ module ActiveModel
       # check the custom key set in serializer_class first
       def object_cache_key 
         serializer_class._cache_options ||= {}
-        if (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key])
+        if (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
           object_time_safe = object.updated_at
           object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
           "#{serializer_cache_key}/#{object.id}-#{object_time_safe}"
