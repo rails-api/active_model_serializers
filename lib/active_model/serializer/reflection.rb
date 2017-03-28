@@ -154,6 +154,12 @@ module ActiveModel
           if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
             reflection_options[:serializer] = serializer
           else
+            # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
+            # *require* a serializer or we need to be a little clever about figuring out the id/type.
+            # In either case, returning the raw virtual value will almost always be incorrect.
+            #
+            # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
+            # with an object that is non-nil and has no defined serializer.
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
           end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
@@ -232,12 +238,16 @@ module ActiveModel
         }
         serializer_for_options[:serializer] = serializer if serializer?
         association_value = value(parent_serializer, include_slice)
-        parent_serializer_options.merge(
+        {
           association_value: association_value,
           association_serializer: parent_serializer.class.serializer_for(association_value, serializer_for_options)
-        )
+        }
       end
 
+      # NOTE(BF): This serializer throw/catch should only happen when the serializer is a collection
+      # serializer.  This is a good reason for the reflection to have a to_many? or collection? type method.
+      #
+      # @return [ActiveModel::Serializer, nil]
       def build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         catch(:no_serializer) do
           serializer_options = parent_serializer_options.except(:serializer)
