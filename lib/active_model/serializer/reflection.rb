@@ -143,6 +143,7 @@ module ActiveModel
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
         reflection_options = options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+
         association_options = build_association_options(parent_serializer, parent_serializer_options, include_slice)
         association_value = association_options[:association_value]
         serializer_class = association_options[:association_serializer]
@@ -150,14 +151,7 @@ module ActiveModel
         reflection_options[:meta] = options[:meta] # meta is mutated when the association_value is evaluated
 
         if serializer_class
-          serializer = catch(:no_serializer) do
-            serializer_options = parent_serializer_options.except(:serializer, :association_value, :association_serializer, :include_data)
-            serializer_options[:serializer_context_class] = parent_serializer.class
-            serializer = reflection_options.fetch(:serializer, nil)
-            serializer_options[:serializer] = serializer if serializer
-            serializer_class.new(association_value, serializer_options)
-          end
-          if serializer
+          if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
             reflection_options[:serializer] = serializer
           else
             reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
@@ -225,6 +219,15 @@ module ActiveModel
           association_value: association_value,
           association_serializer: parent_serializer.class.serializer_for(association_value, serializer_for_options),
         )
+      end
+
+      def build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
+        catch(:no_serializer) do
+          serializer_options = parent_serializer_options.except(:serializer)
+          serializer_options[:serializer_context_class] = parent_serializer.class
+          serializer_options[:serializer] = serializer if serializer
+          serializer_class.new(association_value, serializer_options)
+        end
       end
     end
   end
