@@ -121,23 +121,6 @@ module ActiveModel
         :nil
       end
 
-      def settings
-        options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
-      end
-
-      # Evaluation of the reflection.block will mutate options.
-      # So, the settings cannot be used until the block is evaluated.
-      # This means that each time the block is evaluated, it may set a new
-      # value in the reflection instance. This is not thread-safe.
-      # @example
-      #   has_many :likes do
-      #     meta liked: object.likes.any?
-      #     include_data: object.loaded?
-      #   end
-      def block?
-        !block.nil?
-      end
-
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -185,6 +168,23 @@ module ActiveModel
 
       # used in instance exec
       attr_accessor :object, :scope
+
+      def settings
+        options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+      end
+
+      # Evaluation of the reflection.block will mutate options.
+      # So, the settings cannot be used until the block is evaluated.
+      # This means that each time the block is evaluated, it may set a new
+      # value in the reflection instance. This is not thread-safe.
+      # @example
+      #   has_many :likes do
+      #     meta liked: object.likes.any?
+      #     include_data: object.loaded?
+      #   end
+      def block?
+        !block.nil?
+      end
 
       def serializer?
         options.key?(:serializer)
