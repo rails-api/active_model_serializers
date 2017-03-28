@@ -121,6 +121,23 @@ module ActiveModel
         :nil
       end
 
+      def settings
+        options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+      end
+
+      # Evaluation of the reflection.block will mutate options.
+      # So, the settings cannot be used until the block is evaluated.
+      # This means that each time the block is evaluated, it may set a new
+      # value in the reflection instance. This is not thread-safe.
+      # @example
+      #   has_many :likes do
+      #     meta liked: object.likes.any?
+      #     include_data: object.loaded?
+      #   end
+      def block?
+        !block.nil?
+      end
+
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -142,13 +159,13 @@ module ActiveModel
       #
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
-        reflection_options = options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+        reflection_options = settings.merge(include_data: include_data?(include_slice)) unless block?
 
         association_options = build_association_options(parent_serializer, parent_serializer_options, include_slice)
         association_value = association_options[:association_value]
         serializer_class = association_options[:association_serializer]
-        reflection_options[:include_data] = include_data?(include_slice) # Needs to be after association_value is evaluated unless reflection.block.nil?
-        reflection_options[:meta] = options[:meta] # meta is mutated when the association_value is evaluated
+
+        reflection_options ||= settings.merge(include_data: include_data?(include_slice))  # Needs to be after association_value is evaluated unless reflection.block.nil?
 
         if serializer_class
           if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
