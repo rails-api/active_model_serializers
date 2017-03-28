@@ -165,7 +165,7 @@ module ActiveModel
         association_value = association_options[:association_value]
         serializer_class = association_options[:association_serializer]
 
-        reflection_options ||= settings.merge(include_data: include_data?(include_slice))  # Needs to be after association_value is evaluated unless reflection.block.nil?
+        reflection_options ||= settings.merge(include_data: include_data?(include_slice)) # Needs to be after association_value is evaluated unless reflection.block.nil?
 
         if serializer_class
           if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
@@ -234,7 +234,7 @@ module ActiveModel
         association_value = value(parent_serializer, include_slice)
         parent_serializer_options.merge(
           association_value: association_value,
-          association_serializer: parent_serializer.class.serializer_for(association_value, serializer_for_options),
+          association_serializer: parent_serializer.class.serializer_for(association_value, serializer_for_options)
         )
       end
 
