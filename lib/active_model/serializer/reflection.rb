@@ -47,6 +47,8 @@ module ActiveModel
     #
     # So you can inspect reflections in your Adapters.
     class Reflection < Field
+      REFLECTION_OPTIONS = %i(key links polymorphic meta serializer virtual_value namespace).freeze
+
       def initialize(*)
         super
         options[:links] = {}
@@ -157,7 +159,7 @@ module ActiveModel
       #
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
-        reflection_options = options.dup
+        reflection_options = options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
 
         # Pass the parent's namespace onto the child serializer
         reflection_options[:namespace] ||= parent_serializer_options[:namespace]
