@@ -160,27 +160,31 @@ module ActiveModel
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
         reflection_options = options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+        association_options = { parent_serializer: parent_serializer, parent_serializer_options: parent_serializer_options,
+                                key: options.fetch(:key, name), include_slice: include_slice }
+        serializer_for_options = {
+          # Pass the parent's namespace onto the child serializer
+          namespace: reflection_options[:namespace] || association_options.fetch(:parent_serializer_options)[:namespace]
+        }
+        serializer_for_options[:serializer] = reflection_options[:serializer] if reflection_options.key?(:serializer)
 
-        # Pass the parent's namespace onto the child serializer
-        reflection_options[:namespace] ||= parent_serializer_options[:namespace]
-
-        association_value = value(parent_serializer, include_slice)
-        serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
-        reflection_options[:include_data] = include_data?(include_slice)
-        reflection_options[:links] = options[:links]
-        reflection_options[:meta] = options[:meta]
+        association_value = value(association_options.fetch(:parent_serializer), association_options.fetch(:include_slice))
+        serializer_class = association_options.fetch(:parent_serializer).class.serializer_for(association_value, serializer_for_options)
+        reflection_options[:include_data] = include_data?(association_options.fetch(:include_slice)) # Needs to be after association_value is evaluated unless block.nil?
+        reflection_options[:meta] = options[:meta] # meta is mutated when the association_value is evaluated
 
         if serializer_class
           serializer = catch(:no_serializer) do
-            serializer_class.new(
-              association_value,
-              serializer_options(parent_serializer, parent_serializer_options, reflection_options)
-            )
+            serializer_options = association_options.fetch(:parent_serializer_options).except(:serializer)
+            serializer_options[:serializer_context_class] = association_options.fetch(:parent_serializer).class
+            serializer = reflection_options.fetch(:serializer, nil)
+            serializer_options[:serializer] = serializer if serializer
+            serializer_class.new(association_value, serializer_options)
           end
-          if serializer.nil?
-            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
-          else
+          if serializer
             reflection_options[:serializer] = serializer
+          else
+            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
           end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           reflection_options[:virtual_value] = association_value
@@ -205,15 +209,6 @@ module ActiveModel
         when false          then false
         else fail ArgumentError, "Unknown include_data_setting '#{include_data_setting.inspect}'"
         end
-      end
-
-      def serializer_options(parent_serializer, parent_serializer_options, reflection_options)
-        serializer = reflection_options.fetch(:serializer, nil)
-
-        serializer_options = parent_serializer_options.except(:serializer)
-        serializer_options[:serializer] = serializer if serializer
-        serializer_options[:serializer_context_class] = parent_serializer.class
-        serializer_options
       end
     end
   end
