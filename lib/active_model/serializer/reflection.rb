@@ -1,4 +1,5 @@
 require 'active_model/serializer/field'
+require 'active_model/serializer/association'
 
 module ActiveModel
   class Serializer
