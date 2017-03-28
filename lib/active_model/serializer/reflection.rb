@@ -143,8 +143,7 @@ module ActiveModel
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
         reflection_options = settings.merge(include_data: include_data?(include_slice)) unless block?
-
-        association_options = build_association_options(parent_serializer, parent_serializer_options, include_slice)
+        association_options = build_association_options(parent_serializer, parent_serializer_options[:namespace], include_slice)
         association_value = association_options[:association_value]
         serializer_class = association_options[:association_serializer]
 
@@ -231,10 +230,10 @@ module ActiveModel
         end
       end
 
-      def build_association_options(parent_serializer, parent_serializer_options, include_slice)
+      def build_association_options(parent_serializer, parent_serializer_namespace_option, include_slice)
         serializer_for_options = {
           # Pass the parent's namespace onto the child serializer
-          namespace: namespace || parent_serializer_options[:namespace]
+          namespace: namespace || parent_serializer_namespace_option
         }
         serializer_for_options[:serializer] = serializer if serializer?
         association_value = value(parent_serializer, include_slice)
@@ -250,6 +249,8 @@ module ActiveModel
       # @return [ActiveModel::Serializer, nil]
       def build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         catch(:no_serializer) do
+          # Make all the parent serializer instance options available to associations
+          # except ActiveModelSerializers-specific ones we don't want.
           serializer_options = parent_serializer_options.except(:serializer)
           serializer_options[:serializer_context_class] = parent_serializer.class
           serializer_options[:serializer] = serializer if serializer
