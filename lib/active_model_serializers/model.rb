@@ -6,7 +6,7 @@ module ActiveModelSerializers
     include ActiveModel::Serializers::JSON
     include ActiveModel::Model
 
-    # Declare names of attributes to be included in +sttributes+ hash.
+    # Declare names of attributes to be included in +attributes+ hash.
     # Is only available as a class-method since the ActiveModel::Serialization mixin in Rails
     # uses an +attribute_names+ local variable, which may conflict if we were to add instance methods here.
     #
@@ -19,8 +19,8 @@ module ActiveModelSerializers
 
     # Easily declare instance attributes with setters and getters for each.
     #
-    # All attributes to initialize an instance must have setters.
-    # However, the hash turned by +attributes+ instance method will ALWAYS
+    # To initialize an instance, all attributes must have setters.
+    # However, the hash returned by +attributes+ instance method will ALWAYS
     # be the value of the initial attributes, regardless of what accessors are defined.
     # The only way to change the change the attributes after initialization is
     # to mutate the +attributes+ directly.
@@ -58,7 +58,7 @@ module ActiveModelSerializers
 
       # Override the +attributes+ method so that the hash is derived from +attribute_names+.
       #
-      # The the fields in +attribute_names+ determines the returned hash.
+      # The fields in +attribute_names+ determines the returned hash.
       # +attributes+ are returned frozen to prevent any expectations that mutation affects
       # the actual values in the model.
       def attributes
