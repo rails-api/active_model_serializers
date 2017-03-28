@@ -332,7 +332,6 @@ module ActiveModel
     # @param [JSONAPI::IncludeDirective] include_directive (defaults to the
     #   +default_include_directive+ config value when not provided)
     # @return [Enumerator<Association>]
-    #
     def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil)
       include_slice ||= include_directive
       return Enumerator.new unless object
