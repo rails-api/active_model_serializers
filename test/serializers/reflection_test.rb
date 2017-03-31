@@ -213,6 +213,37 @@ module ActiveModel
         end
         assert_match(/undefined method `href'/, exception.message)
       end
+
+      def test_mutating_reflection_block_is_not_thread_safe
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog do
+            meta(id: object.blog.id)
+          end
+        end
+        model1_meta = @expected_meta
+        # Evaluate reflection meta for model with id 1
+        serializer_instance = serializer_class.new(@model, @instance_options)
+        reflection = serializer_class._reflections.fetch(:blog)
+        assert_nil reflection.instance_variable_get(:@_meta)
+        association = reflection.build_association(serializer_instance, @instance_options)
+        assert_equal model1_meta, association.meta
+        assert_equal model1_meta, reflection.instance_variable_get(:@_meta)
+
+        model2_meta = @expected_meta.merge(id: 2)
+        # Evaluate reflection meta for model with id 2
+        @model.blog.id = 2
+        assert_equal 2, @model.blog.id # sanity check
+        serializer_instance = serializer_class.new(@model, @instance_options)
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # WARN: Thread-safety issue
+        # Before the reflection is evaluated, it has the value from the previous evaluation
+        assert_equal model1_meta, reflection.instance_variable_get(:@_meta)
+
+        association = reflection.build_association(serializer_instance, @instance_options)
+        assert_equal model2_meta, association.meta
+        assert_equal model2_meta, reflection.instance_variable_get(:@_meta)
+      end
     end
   end
 end
