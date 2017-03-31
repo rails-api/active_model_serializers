@@ -25,6 +25,125 @@ module ActiveModel
         @instance_options = {}
       end
 
+      def test_reflection_value
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog
+        end
+        serializer_instance = serializer_class.new(@model, @instance_options)
+
+        # Get Reflection
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # Assert
+        assert_nil reflection.block
+        assert_equal Serializer.config.include_data_default, reflection.instance_variable_get(:@_include_data)
+        assert_equal true, reflection.instance_variable_get(:@_include_data)
+
+        include_slice = :does_not_matter
+        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+      end
+
+      def test_reflection_value_block
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog do
+            object.blog
+          end
+        end
+        serializer_instance = serializer_class.new(@model, @instance_options)
+
+        # Get Reflection
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # Assert
+        assert_respond_to reflection.block, :call
+        assert_equal Serializer.config.include_data_default, reflection.instance_variable_get(:@_include_data)
+        assert_equal true, reflection.instance_variable_get(:@_include_data)
+
+        include_slice = :does_not_matter
+        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+      end
+
+      def test_reflection_value_block_with_explicit_include_data_true
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog do
+            include_data true
+            object.blog
+          end
+        end
+        serializer_instance = serializer_class.new(@model, @instance_options)
+
+        # Get Reflection
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # Assert
+        assert_respond_to reflection.block, :call
+        assert_equal Serializer.config.include_data_default, reflection.instance_variable_get(:@_include_data)
+        assert_equal true, reflection.instance_variable_get(:@_include_data)
+
+        include_slice = :does_not_matter
+        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+      end
+
+      def test_reflection_value_block_with_include_data_false_mutates_the_reflection_include_data
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog do
+            include_data false
+            object.blog
+          end
+        end
+        serializer_instance = serializer_class.new(@model, @instance_options)
+
+        # Get Reflection
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # Assert
+        assert_respond_to reflection.block, :call
+        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        include_slice = :does_not_matter
+        assert_nil reflection.value(serializer_instance, include_slice)
+        assert_equal false, reflection.instance_variable_get(:@_include_data)
+      end
+
+      def test_reflection_value_block_with_include_data_if_sideloaded_included_mutates_the_reflection_include_data
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog do
+            include_data :if_sideloaded
+            object.blog
+          end
+        end
+        serializer_instance = serializer_class.new(@model, @instance_options)
+
+        # Get Reflection
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # Assert
+        assert_respond_to reflection.block, :call
+        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        include_slice = {}
+        assert_nil reflection.value(serializer_instance, include_slice)
+        assert_equal :if_sideloaded, reflection.instance_variable_get(:@_include_data)
+      end
+
+      def test_reflection_value_block_with_include_data_if_sideloaded_excluded_mutates_the_reflection_include_data
+        serializer_class = Class.new(ActiveModel::Serializer) do
+          has_one :blog do
+            include_data :if_sideloaded
+            object.blog
+          end
+        end
+        serializer_instance = serializer_class.new(@model, @instance_options)
+
+        # Get Reflection
+        reflection = serializer_class._reflections.fetch(:blog)
+
+        # Assert
+        assert_respond_to reflection.block, :call
+        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        include_slice = { blog: :does_not_matter }
+        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+        assert_equal :if_sideloaded, reflection.instance_variable_get(:@_include_data)
+      end
+
       def test_reflection_block_with_link_mutates_the_reflection_links
         serializer_class = Class.new(ActiveModel::Serializer) do
           has_one :blog do
