@@ -245,7 +245,7 @@ module ActiveModel
         non_cached_fields = fields[:non_cached].dup
         non_cached_hash = attributes(non_cached_fields, true)
         include_directive = JSONAPI::IncludeDirective.new(non_cached_fields - non_cached_hash.keys)
-        non_cached_hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
+        non_cached_hash.merge! associations_hash({}, { include_directive: include_directive }, adapter_instance)
 
         cached_fields = fields[:cached].dup
         key = cache_key(adapter_instance)
@@ -254,7 +254,7 @@ module ActiveModel
             fetch(adapter_instance, serializer_class._cache_options, key) do
               hash = attributes(cached_fields, true)
               include_directive = JSONAPI::IncludeDirective.new(cached_fields - hash.keys)
-              hash.merge! resource_relationships({}, { include_directive: include_directive }, adapter_instance)
+              hash.merge! associations_hash({}, { include_directive: include_directive }, adapter_instance)
             end
           end
         # Merge both results
