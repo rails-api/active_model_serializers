@@ -25,6 +25,23 @@ module ActiveModel
         @instance_options = {}
       end
 
+      # TODO: Remaining tests
+      # test_reflection_value_block_with_scope
+      # test_reflection_value_uses_serializer_instance_method
+      # test_reflection_excluded_eh_blank_is_false
+      # test_reflection_excluded_eh_if
+      # test_reflection_excluded_eh_unless
+      # test_evaluate_condition_symbol_serializer_method
+      # test_evaluate_condition_string_serializer_method
+      # test_evaluate_condition_proc
+      # test_evaluate_condition_proc_yields_serializer
+      # test_evaluate_condition_other
+      # test_options_key
+      # test_options_polymorphic
+      # test_options_serializer
+      # test_options_virtual_value
+      # test_options_namespace
+
       def test_reflection_value
         serializer_class = Class.new(ActiveModel::Serializer) do
           has_one :blog
