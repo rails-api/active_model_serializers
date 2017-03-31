@@ -379,8 +379,7 @@ module ActiveModel
     def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
-      cached_attributes = adapter_options[:cached_attributes] ||= {}
-      resource = fetch_attributes(options[:fields], cached_attributes, adapter_instance)
+      resource = attributes_hash(adapter_options, options, adapter_instance)
       relationships = resource_relationships(adapter_options, options, adapter_instance)
       resource.merge(relationships)
     end
@@ -409,6 +408,17 @@ module ActiveModel
         send(attr)
       else
         object.read_attribute_for_serialization(attr)
+      end
+    end
+
+    # @api private
+    def attributes_hash(_adapter_options, options, adapter_instance)
+      if self.class.cache_enabled?
+        fetch_attributes(options[:fields], options[:cached_attributes] || {}, adapter_instance)
+      elsif self.class.fragment_cache_enabled?
+        fetch_attributes_fragment(adapter_instance, options[:cached_attributes] || {})
+      else
+        attributes(options[:fields], true)
       end
     end
 
