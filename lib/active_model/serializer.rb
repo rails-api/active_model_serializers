@@ -117,13 +117,13 @@ module ActiveModel
     config.serializer_lookup_enabled = true
 
     # @deprecated Use {#config.collection_serializer=} instead of this. Is
-    #   compatibilty layer for ArraySerializer.
+    #   compatibility layer for ArraySerializer.
     def config.array_serializer=(collection_serializer)
       self.collection_serializer = collection_serializer
     end
 
     # @deprecated Use {#config.collection_serializer} instead of this. Is
-    #   compatibilty layer for ArraySerializer.
+    #   compatibility layer for ArraySerializer.
     def config.array_serializer
       collection_serializer
     end
