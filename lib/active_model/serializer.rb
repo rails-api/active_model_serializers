@@ -380,7 +380,7 @@ module ActiveModel
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
       resource = attributes_hash(adapter_options, options, adapter_instance)
-      relationships = resource_relationships(adapter_options, options, adapter_instance)
+      relationships = associations_hash(adapter_options, options, adapter_instance)
       resource.merge(relationships)
     end
     alias to_hash serializable_hash
@@ -423,32 +423,15 @@ module ActiveModel
     end
 
     # @api private
-    def resource_relationships(adapter_options, options, adapter_instance)
+    def associations_hash(adapter_options, options, adapter_instance)
       relationships = {}
       include_directive = options.fetch(:include_directive)
       associations(include_directive).each do |association|
         adapter_opts = adapter_options.merge(include_directive: include_directive[association.key])
-        relationships[association.key] ||= relationship_value_for(association, adapter_opts, adapter_instance)
+        relationships[association.key] ||= association.serializable_hash(adapter_opts, adapter_instance)
       end
 
       relationships
-    end
-
-    # @api private
-    def relationship_value_for(association, adapter_options, adapter_instance)
-      return association.options[:virtual_value] if association.options[:virtual_value]
-      association_serializer = association.serializer
-      association_object = association_serializer && association_serializer.object
-      return unless association_object
-
-      relationship_value = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
-
-      if association.options[:polymorphic] && relationship_value
-        polymorphic_type = association_object.class.name.underscore
-        relationship_value = { type: polymorphic_type, polymorphic_type.to_sym => relationship_value }
-      end
-
-      relationship_value
     end
 
     protected

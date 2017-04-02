@@ -29,6 +29,22 @@ module ActiveModel
       def meta
         options[:meta]
       end
+
+      # @api private
+      def serializable_hash(adapter_options, adapter_instance)
+        return options[:virtual_value] if options[:virtual_value]
+        object = serializer && serializer.object
+        return unless object
+
+        serialization = serializer.serializable_hash(adapter_options, {}, adapter_instance)
+
+        if options[:polymorphic] && serialization
+          polymorphic_type = object.class.name.underscore
+          serialization = { type: polymorphic_type, polymorphic_type.to_sym => serialization }
+        end
+
+        serialization
+      end
     end
   end
 end
