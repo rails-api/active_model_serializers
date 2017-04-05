@@ -3,6 +3,8 @@ require 'case_transform'
 module ActiveModelSerializers
   module Adapter
     class Base
+      attr_reader :fieldset
+
       # Automatically register adapters when subclassing
       def self.inherited(subclass)
         ActiveModelSerializers::Adapter.register(subclass)
@@ -46,6 +48,7 @@ module ActiveModelSerializers
 
       def initialize(serializer, options = {})
         @serializer = serializer
+        @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(fields_to_hash(options.delete(:fields)))
         @instance_options = options
       end
 
@@ -77,6 +80,34 @@ module ActiveModelSerializers
 
       def root
         serializer.json_key.to_sym if serializer.json_key
+      end
+
+      def fields_to_hash(fields)
+        case fields
+        when Hash
+          fields
+        when Array
+          fields_from_array(fields)
+        else
+          {}
+        end
+      end
+
+      def fields_from_array(fields)
+        fields.reduce({}) do |memo, field|
+          case field
+          when Hash
+            memo.merge!(field)
+          when String, Symbol
+            memo[serializer.json_key.to_sym] ||= []
+            memo[serializer.json_key.to_sym] << field
+          end
+          memo
+        end
+      end
+
+      def fields
+        fieldset && fieldset.fields_for(serializer.json_key)
       end
     end
   end

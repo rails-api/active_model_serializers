@@ -12,7 +12,7 @@ module ActiveModelSerializers
           attributes :name, :birthday
         end
         class Comment < ::Model
-          attributes :body
+          attributes :title, :body
           associations :author, :post
         end
 
@@ -29,7 +29,7 @@ module ActiveModelSerializers
 
         class CommentSerializer < ActiveModel::Serializer
           type 'comments'
-          attributes :body
+          attributes :title, :body
           belongs_to :author
         end
 
@@ -45,14 +45,14 @@ module ActiveModelSerializers
         end
 
         def test_fields_attributes
-          fields = { posts: [:title] }
+          fields = [:title]
           hash = serializable(@post, adapter: :json, fields: fields).serializable_hash
           expected = { title: 'Title 1' }
           assert_equal(expected, hash[:posts])
         end
 
         def test_fields_included
-          fields = { posts: [:title], comments: [:body] }
+          fields = [:title, { comments: [:body] }]
           hash = serializable(@post, adapter: :json, include: [:comments], fields: fields).serializable_hash
           expected = [{ body: @comment1.body }, { body: @comment2.body }]
 

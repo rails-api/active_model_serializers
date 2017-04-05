@@ -379,6 +379,7 @@ module ActiveModel
     def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
+      options[:fields] ||= adapter_options[:fieldset] && adapter_options[:fieldset].fields_for(json_key)
       cached_attributes = adapter_options[:cached_attributes] ||= {}
       resource = fetch_attributes(options[:fields], cached_attributes, adapter_instance)
       relationships = resource_relationships(adapter_options, options, adapter_instance)
