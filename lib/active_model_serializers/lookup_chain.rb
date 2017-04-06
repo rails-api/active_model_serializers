@@ -28,6 +28,19 @@ module ActiveModelSerializers
       namespace ? "#{namespace}::#{resource_name}Serializer" : nil
     end
 
+    # Uses the list of nested controller namespaces of the resource to find the
+    # serializer; it starts one level higher than BY_NAMESPACE so that they
+    # don't overlap.
+    #
+    # Examples:
+    #  Api::V3::AuthorsController => [Api::AuthorSerializer]
+    #  Api::V3::Frontend::AuthorsController => [Api::V3::AuthorSerializer, Api::AuthorSerializer]
+    BY_NESTING_NAMESPACES = lambda do |_resource_class, _serializer_class, namespace|
+      nesting_namespaces(namespace.name).map do |container|
+        BY_NAMESPACE.call(_resource_class, _serializer_class, container)
+      end
+    end
+
     # Allows for serializers to be defined in parent serializers
     # - useful if a relationship only needs a different set of attributes
     #   than if it were rendered independently.
@@ -58,6 +71,11 @@ module ActiveModelSerializers
       BY_RESOURCE
     ].freeze
 
+    DEFAULT_WITH_NESTING_NAMESPACES = DEFAULT
+      .dup
+      .insert(DEFAULT.index(BY_NAMESPACE) + 1, BY_NESTING_NAMESPACES)
+      .freeze
+
     module_function
 
     def namespace_for(klass)
@@ -75,6 +93,17 @@ module ActiveModelSerializers
     def serializer_from(klass)
       name = resource_class_name(klass)
       serializer_from_resource_name(name)
+    end
+
+    def nesting_namespaces(klass_name)
+      namespace = klass_name
+      namespaces = []
+      loop do
+        namespace = namespace.deconstantize.presence
+        break if namespace.nil?
+        namespaces << namespace
+      end
+      namespaces
     end
   end
 end
