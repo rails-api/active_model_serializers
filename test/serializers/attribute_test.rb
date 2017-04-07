@@ -123,6 +123,7 @@ module ActiveModel
 
         scenarios.each do |s|
           serializer = Class.new(ActiveModel::Serializer) do
+            type :test_serializer
             attribute :attribute, s[:options]
 
             def true

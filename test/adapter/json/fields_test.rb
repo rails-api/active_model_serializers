@@ -34,7 +34,6 @@ module ActiveModelSerializers
         end
 
         def setup
-          ActiveModelSerializers.config.default_includes = ''
           @author = Author.new(id: 1, name: 'Lucas', birthday: '10.01.1990')
           @comment1 = Comment.new(id: 7, body: 'cool', author: @author)
           @comment2 = Comment.new(id: 12, body: 'awesome', author: @author)
@@ -46,7 +45,7 @@ module ActiveModelSerializers
 
         def test_fields_attributes
           fields = [:title]
-          hash = serializable(@post, adapter: :json, fields: fields).serializable_hash
+          hash = serializable(@post, adapter: :json, fields: fields, include: []).serializable_hash
           expected = { title: 'Title 1' }
           assert_equal(expected, hash[:posts])
         end

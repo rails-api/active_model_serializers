@@ -284,6 +284,7 @@ module ActiveModel
 
           scenarios.each do |s|
             serializer = Class.new(ActiveModel::Serializer) do
+              type :test_serializer
               belongs_to :association, s[:options]
 
               def true

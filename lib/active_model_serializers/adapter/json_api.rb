@@ -49,7 +49,6 @@ module ActiveModelSerializers
       def initialize(serializer, options = {})
         super
         @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
-        @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
       end
 
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
@@ -189,10 +188,6 @@ module ActiveModelSerializers
         end
         hash
       end
-
-      protected
-
-      attr_reader :fieldset
 
       private
 

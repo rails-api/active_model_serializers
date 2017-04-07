@@ -3,8 +3,6 @@ require 'case_transform'
 module ActiveModelSerializers
   module Adapter
     class Base
-      attr_reader :fieldset
-
       # Automatically register adapters when subclassing
       def self.inherited(subclass)
         ActiveModelSerializers::Adapter.register(subclass)
@@ -70,6 +68,10 @@ module ActiveModelSerializers
         self.class.fragment_cache(cached_hash, non_cached_hash)
       end
 
+      protected
+
+      attr_reader :fieldset
+
       private
 
       # see https://github.com/rails-api/active_model_serializers/pull/965
@@ -99,8 +101,8 @@ module ActiveModelSerializers
           when Hash
             memo.merge!(field)
           when String, Symbol
-            memo[serializer.json_key.to_sym] ||= []
-            memo[serializer.json_key.to_sym] << field
+            memo[root] ||= []
+            memo[root] << field
           end
           memo
         end
