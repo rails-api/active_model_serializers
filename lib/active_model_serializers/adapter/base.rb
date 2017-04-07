@@ -96,15 +96,13 @@ module ActiveModelSerializers
       end
 
       def fields_from_array(fields)
-        fields.reduce({}) do |memo, field|
-          case field
-          when Hash
-            memo.merge!(field)
-          when String, Symbol
-            memo[root] ||= []
-            memo[root] << field
+        fields.each_with_object({}) do |field, hash|
+          hash.merge!(field) if field.is_a?(Hash)
+
+          if field.is_a?(String) || field.is_a?(Symbol)
+            hash[root] ||= []
+            hash[root] << field
           end
-          memo
         end
       end
 
