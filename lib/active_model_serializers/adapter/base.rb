@@ -97,9 +97,9 @@ module ActiveModelSerializers
 
       def fields_from_array(fields)
         fields.each_with_object({}) do |field, hash|
-          hash.merge!(field) if field.is_a?(Hash)
-
-          if field.is_a?(String) || field.is_a?(Symbol)
+          if field.is_a?(Hash)
+            hash.merge!(field)
+          elsif field.is_a?(String) || field.is_a?(Symbol)
             hash[root] ||= []
             hash[root] << field
           end
