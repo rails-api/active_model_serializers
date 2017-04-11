@@ -10,6 +10,7 @@ Fixes:
 
 Misc:
 
+- [#2104](https://github.com/rails-api/active_model_serializers/pull/2104) Documentation for serializers and rendering. (@cassidycodes)
 - [#2081](https://github.com/rails-api/active_model_serializers/pull/2081) Documentation for `include` option in adapters. (@charlie-wasp)
 
 ### [v0.10.5 (2017-03-07)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...v0.10.5)
@@ -79,7 +80,7 @@ Misc:
 
 - [#1878](https://github.com/rails-api/active_model_serializers/pull/1878) Cache key generation for serializers now uses `ActiveSupport::Cache.expand_cache_key` instead of `Array#join` by default and is also overridable. This change should be backward-compatible. (@markiz)
 
-- [#1799](https://github.com/rails-api/active_model_serializers/pull/1799) Add documentation for setting the adapter. (@ScottKbka)
+- [#1799](https://github.com/rails-api/active_model_serializers/pull/1799) Add documentation for setting the adapter. (@cassidycodes)
 - [#1909](https://github.com/rails-api/active_model_serializers/pull/1909) Add documentation for relationship links. (@vasilakisfil, @NullVoxPopuli)
 - [#1959](https://github.com/rails-api/active_model_serializers/pull/1959) Add documentation for root. (@shunsuke227ono)
 - [#1967](https://github.com/rails-api/active_model_serializers/pull/1967) Improve type method documentation. (@yukideluxe)
