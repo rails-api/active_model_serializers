@@ -234,7 +234,7 @@ end
 
 You can specify that serializers use the lower-camel key format at the config, class or instance level.
 
-```ruby
+````ruby
 
 ActiveModel::Serializer.setup do |config|
   config.key_format = :lower_camel
@@ -245,13 +245,13 @@ class BlogLowerCamelSerializer < ActiveModel::Serializer
 end
 
 BlogSerializer.new(object, key_format: :lower_camel)
-```
+````
 
 ## Changing the default association key type
 
 You can specify that serializers use unsuffixed names as association keys by default.
 
-`````ruby
+````ruby
 ActiveModel::Serializer.setup do |config|
   config.default_key_type = :name
 end
