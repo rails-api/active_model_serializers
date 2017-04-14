@@ -1,6 +1,0 @@
-{
-  "properties": {
-    "name" : { "type" : "integer" },
-    "description" : { "type" : "boolean" }
-  }
-}

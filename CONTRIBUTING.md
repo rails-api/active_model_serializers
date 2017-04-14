@@ -6,11 +6,7 @@ Before opening an issue, try the following:
 
 See if your issue can be resolved by information in the documentation.
 
-- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
-  - [Guides](docs)
-- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
-- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
+TBD
 
 ##### Check for an existing issue
 
@@ -44,6 +40,8 @@ We also gladly welcome pull requests. When preparing to work on pull request,
 please adhere to these standards:
 
 - Base work on the master branch unless fixing an issue with
+  [0.10-stable](https://github.com/rails-api/active_model_serializers/tree/0-10-stable)
+  or
   [0.9-stable](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
   or
   [0.8-stable](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
@@ -72,34 +70,3 @@ Run a single test suite
 Run a single test
 
 `$ rake test TEST=path/to/test.rb TESTOPTS="--name=test_something"`
-
-Run tests against different Rails versions by setting the RAILS_VERSION variable
-and bundling gems.  (save this script somewhere executable and run from top of AMS repository)
-
-```bash
-#!/usr/bin/env bash
-
-rcommand='puts YAML.load_file("./.travis.yml")["env"]["matrix"].join(" ").gsub("RAILS_VERSION=", "")'
-versions=$(ruby -ryaml -e "$rcommand")
-
-for version in ${versions[@]}; do
-  export RAILS_VERSION="$version"
-  rm -f Gemfile.lock
-  bundle check || bundle --local || bundle
-  bundle exec rake test
-  if [ "$?" -eq 0 ]; then
-    # green in ANSI
-    echo -e "\033[32m **** Tests passed against Rails ${RAILS_VERSION} **** \033[0m"
-  else
-    # red in ANSI
-    echo -e "\033[31m **** Tests failed against Rails ${RAILS_VERSION} **** \033[0m"
-    read -p '[Enter] any key to continue, [q] to quit...' prompt
-    if [ "$prompt" = 'q' ]; then
-      unset RAILS_VERSION
-      exit 1
-    fi
-fi
-  unset RAILS_VERSION
-done
-```
-
