@@ -7,6 +7,7 @@ module ActiveModel
           @root_key = @embedded_key.to_s.pluralize
           @key ||= case CONFIG.default_key_type
             when :name then name.to_s.singularize
+            when polymorphic? then name
             else "#{name}_id"
           end
         end
