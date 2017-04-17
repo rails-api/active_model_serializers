@@ -432,6 +432,18 @@ class PostSerializer < ActiveModel::Serializer
 end
 ```
 
+Or if you want to override association in block format, you can use:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  has_many :comments do
+    "#{object.comments.active}"
+  end
+end
+```
+
 ## Overriding attribute methods
 
 To override an attribute, call `attribute` with a block:
@@ -457,5 +469,19 @@ class MySerializer < ActiveModel::Serializer
   end
 
   # the rest of the serializer
+end
+```
+
+Or if you want to override attribute in block format, you can use:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :body
+
+  has_many :comments
+
+  attribute :body do
+    "#{object.body.downcase}"
+  end
 end
 ```
