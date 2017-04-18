@@ -12,6 +12,10 @@ module ActiveModel
         include app.routes.url_helpers
       end
     end
+
+    config.to_prepare do
+      ActiveModel::Serializer.serializers_cache.clear
+    end
   end
 end
 
