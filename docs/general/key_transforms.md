@@ -26,9 +26,9 @@ Key translation precedence is as follows:
 
 ##### Configuration option
 
-`key_transform` is set in `ActiveModelSerializers.config.key_transform`.
+`key_transform` is set in `ActiveModel::Serializer.config.key_transform`.
 
-```ActiveModelSerializers.config.key_transform = :camel_lower```
+```ActiveModel::Serializer.config.key_transform = :camel_lower```
 
 ##### Adapter default
 
