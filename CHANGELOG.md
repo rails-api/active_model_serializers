@@ -2,6 +2,8 @@
 
 ### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.5...0-9-stable)
 
+- [#2080](https://github.com/rails-api/active_model_serializers/pull/2080) remove `{ payload: nil }` from `!serialize.active_model_serializers` ActiveSupport::Notification. `payload` never had a value.  Changes, for example `{ serializer: 'ActiveModel::DefaultSerializer', payload: nil }` to be `{ serializer: 'ActiveModel::DefaultSerializer' }` (@yosiat)
+
 ### [v0.9.6 (2017-01-10)](https://github.com/rails-api/active_model_serializers/compare/v0.9.5...v0.9.6)
 
 - [#2008](https://github.com/rails-api/active_model_serializers/pull/2008) Fix warning on Thor. (@kirs)
