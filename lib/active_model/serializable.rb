@@ -2,7 +2,7 @@ require 'active_model/serializable/utils'
 
 module ActiveModel
   module Serializable
-    INSTRUMENTATION_KEY = "!serialize.active_model_serializers".freeze
+    INSTRUMENTATION_KEY = '!serialize.active_model_serializers'.freeze
 
     def self.included(base)
       base.extend Utils
