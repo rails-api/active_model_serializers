@@ -121,6 +121,10 @@ module ActiveModel
         :nil
       end
 
+      def to_many?
+        false
+      end
+
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -150,17 +154,9 @@ module ActiveModel
         reflection_options ||= settings.merge(include_data: include_data?(include_slice)) # Needs to be after association_value is evaluated unless reflection.block.nil?
 
         if serializer_class
-          if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
-            reflection_options[:serializer] = serializer
-          else
-            # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
-            # *require* a serializer or we need to be a little clever about figuring out the id/type.
-            # In either case, returning the raw virtual value will almost always be incorrect.
-            #
-            # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
-            # with an object that is non-nil and has no defined serializer.
-            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
-          end
+          reflection_options.merge!(
+            serialize_association_value!(association_value, serializer_class, parent_serializer, parent_serializer_options)
+          )
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           reflection_options[:virtual_value] = association_value
         end
@@ -227,6 +223,20 @@ module ActiveModel
           block_value
         else
           serializer.read_attribute_for_serialization(name)
+        end
+      end
+
+      def serialize_association_value!(association_value, serializer_class, parent_serializer, parent_serializer_options)
+        if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
+          { serializer: serializer }
+        else
+          # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
+          # *require* a serializer or we need to be a little clever about figuring out the id/type.
+          # In either case, returning the raw virtual value will almost always be incorrect.
+          #
+          # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
+          # with an object that is non-nil and has no defined serializer.
+          { virtual_value: association_value.try(:as_json) || association_value }
         end
       end
 
