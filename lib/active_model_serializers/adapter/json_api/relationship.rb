@@ -34,13 +34,34 @@ module ActiveModelSerializers
         private
 
         def data_for(association)
+          if association.collection?
+            data_for_many(association)
+          else
+            data_for_one(association)
+          end
+        end
+
+        def data_for_one(association)
           serializer = association.lazy_association.serializer
-          if serializer.respond_to?(:each)
-            serializer.map { |s| ResourceIdentifier.new(s, serializable_resource_options).as_json }
+          if (virtual_value = association.virtual_value)
+            virtual_value
+          elsif serializer && association.object
+            ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+          else
+            nil
+          end
+        end
+
+        def data_for_many(association)
+          collection_serializer = association.lazy_association.serializer
+          if collection_serializer.respond_to?(:each)
+            collection_serializer.map do |serializer|
+              ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+            end
           elsif (virtual_value = association.virtual_value)
             virtual_value
-          elsif serializer && serializer.object
-            ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+          else
+            []
           end
         end
 

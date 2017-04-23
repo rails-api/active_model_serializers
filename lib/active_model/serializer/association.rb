@@ -4,44 +4,42 @@ module ActiveModel
   class Serializer
     # This class holds all information about serializer's association.
     #
-    # @attr [Symbol] name
-    # @attr [Hash{Symbol => Object}] options
-    # @attr [block]
-    #
-    # @example
-    #  Association.new(:comments, { serializer: CommentSummarySerializer })
-    #
-    class Association < Field
+    # @api private
+    Association = Struct.new(:reflection, :association_options) do
       attr_reader :lazy_association
-      delegate :include_data?, :virtual_value, to: :lazy_association
+      delegate :object, :include_data?, :virtual_value, :collection?, to: :lazy_association
 
       def initialize(*)
         super
-        @lazy_association = LazyAssociation.new(name, options, block)
+        @lazy_association = LazyAssociation.new(reflection, association_options)
       end
 
       # @return [Symbol]
+      delegate :name, to: :reflection
+
+      # @return [Symbol]
       def key
-        options.fetch(:key, name)
+        reflection_options.fetch(:key, name)
       end
 
       # @return [True,False]
       def key?
-        options.key?(:key)
+        reflection_options.key?(:key)
       end
 
       # @return [Hash]
       def links
-        options.fetch(:links) || {}
+        reflection_options.fetch(:links) || {}
       end
 
       # @return [Hash, nil]
+      # This gets mutated, so cannot use the cached reflection_options
       def meta
-        options[:meta]
+        reflection.options[:meta]
       end
 
       def polymorphic?
-        true == options[:polymorphic]
+        true == reflection_options[:polymorphic]
       end
 
       # @api private
@@ -63,7 +61,7 @@ module ActiveModel
 
       private
 
-      delegate :reflection, to: :lazy_association
+      delegate :reflection_options, to: :lazy_association
     end
   end
 end

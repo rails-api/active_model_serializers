@@ -379,8 +379,8 @@ module ActiveModel
 
           original_blog = @post_associations.detect { |assoc| assoc.name == :blog }
           inherited_blog = @inherited_post_associations.detect { |assoc| assoc.name == :blog }
-          original_parent_serializer = original_blog.lazy_association.options.delete(:parent_serializer)
-          inherited_parent_serializer = inherited_blog.lazy_association.options.delete(:parent_serializer)
+          original_parent_serializer = original_blog.lazy_association.association_options.delete(:parent_serializer)
+          inherited_parent_serializer = inherited_blog.lazy_association.association_options.delete(:parent_serializer)
           assert_equal PostSerializer, original_parent_serializer.class
           assert_equal InheritedPostSerializer, inherited_parent_serializer.class
         end
