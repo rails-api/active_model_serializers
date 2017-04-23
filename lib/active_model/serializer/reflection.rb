@@ -14,6 +14,19 @@ module ActiveModel
     #     end
     #     has_many :secret_meta_data, if: :is_admin?
     #
+    #     has_one :blog do |serializer|
+    #       meta count: object.roles.count
+    #       serializer.cached_blog
+    #     end
+    #
+    #     private
+    #
+    #     def cached_blog
+    #       cache_store.fetch("cached_blog:#{object.updated_at}") do
+    #         Blog.find(object.blog_id)
+    #       end
+    #     end
+    #
     #     def is_admin?
     #       current_user.admin?
     #     end
@@ -32,43 +45,82 @@ module ActiveModel
     #    # ]
     #
     # So you can inspect reflections in your Adapters.
-    #
     class Reflection < Field
       def initialize(*)
         super
-        @_links = {}
-        @_include_data = Serializer.config.include_data_default
-        @_meta = nil
+        options[:links] = {}
+        options[:include_data_setting] = Serializer.config.include_data_default
+        options[:meta] = nil
       end
 
+      # @api public
+      # @example
+      #   has_one :blog do
+      #     include_data false
+      #     link :self, 'a link'
+      #     link :related, 'another link'
+      #     link :self, '//example.com/link_author/relationships/bio'
+      #     id = object.profile.id
+      #     link :related do
+      #       "//example.com/profiles/#{id}" if id != 123
+      #     end
+      #     link :related do
+      #       ids = object.likes.map(&:id).join(',')
+      #       href "//example.com/likes/#{ids}"
+      #       meta ids: ids
+      #     end
+      #   end
       def link(name, value = nil, &block)
-        @_links[name] = block || value
+        options[:links][name] = block || value
         :nil
       end
 
+      # @api public
+      # @example
+      #   has_one :blog do
+      #     include_data false
+      #     meta(id: object.blog.id)
+      #     meta liked: object.likes.any?
+      #     link :self do
+      #       href object.blog.id.to_s
+      #       meta(id: object.blog.id)
+      #     end
       def meta(value = nil, &block)
-        @_meta = block || value
+        options[:meta] = block || value
         :nil
       end
 
+      # @api public
+      # @example
+      #   has_one :blog do
+      #     include_data false
+      #     link :self, 'a link'
+      #     link :related, 'another link'
+      #   end
+      #
+      #   has_one :blog do
+      #     include_data false
+      #     link :self, 'a link'
+      #     link :related, 'another link'
+      #   end
+      #
+      #    belongs_to :reviewer do
+      #      meta name: 'Dan Brown'
+      #      include_data true
+      #    end
+      #
+      #    has_many :tags, serializer: TagSerializer do
+      #      link :self, '//example.com/link_author/relationships/tags'
+      #      include_data :if_sideloaded
+      #    end
       def include_data(value = true)
-        @_include_data = value
+        options[:include_data_setting] = value
         :nil
       end
 
       # @param serializer [ActiveModel::Serializer]
       # @yield [ActiveModel::Serializer]
       # @return [:nil, associated resource or resource collection]
-      # @example
-      #   has_one :blog do |serializer|
-      #     serializer.cached_blog
-      #   end
-      #
-      #   def cached_blog
-      #     cache_store.fetch("cached_blog:#{object.updated_at}") do
-      #       Blog.find(object.blog_id)
-      #     end
-      #   end
       def value(serializer, include_slice)
         @object = serializer.object
         @scope = serializer.scope
@@ -103,7 +155,6 @@ module ActiveModel
       #    comments_reflection.build_association(post_serializer, foo: 'bar')
       #
       # @api private
-      #
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
         reflection_options = options.dup
 
@@ -113,8 +164,8 @@ module ActiveModel
         association_value = value(parent_serializer, include_slice)
         serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
         reflection_options[:include_data] = include_data?(include_slice)
-        reflection_options[:links] = @_links
-        reflection_options[:meta] = @_meta
+        reflection_options[:links] = options[:links]
+        reflection_options[:meta] = options[:meta]
 
         if serializer_class
           serializer = catch(:no_serializer) do
@@ -138,15 +189,18 @@ module ActiveModel
 
       protected
 
+      # used in instance exec
       attr_accessor :object, :scope
 
       private
 
       def include_data?(include_slice)
-        if @_include_data == :if_sideloaded
-          include_slice.key?(name)
-        else
-          @_include_data
+        include_data_setting = options[:include_data_setting]
+        case include_data_setting
+        when :if_sideloaded then include_slice.key?(name)
+        when true           then true
+        when false          then false
+        else fail ArgumentError, "Unknown include_data_setting '#{include_data_setting.inspect}'"
         end
       end
 
