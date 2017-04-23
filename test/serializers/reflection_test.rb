@@ -35,12 +35,12 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_equal @empty_links, reflection.instance_variable_get(:@_links)
+        assert_equal @empty_links, reflection.options.fetch(:links)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         assert_equal @expected_links, association.links
-        assert_equal @expected_links, reflection.instance_variable_get(:@_links)
+        assert_equal @expected_links, reflection.options.fetch(:links)
       end
 
       def test_reflection_block_with_link_block_mutates_the_reflection_links
@@ -55,7 +55,7 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_equal @empty_links, reflection.instance_variable_get(:@_links)
+        assert_equal @empty_links, reflection.options.fetch(:links)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
@@ -65,7 +65,7 @@ module ActiveModel
 
         # Assert after instance_eval link
         assert_equal @expected_links.fetch(:self), reflection.instance_eval(&link)
-        assert_respond_to reflection.instance_variable_get(:@_links).fetch(:self), :call
+        assert_respond_to reflection.options.fetch(:links).fetch(:self), :call
       end
 
       def test_reflection_block_with_meta_mutates_the_reflection_meta
@@ -78,12 +78,12 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         assert_equal @expected_meta, association.meta
-        assert_equal @expected_meta, reflection.instance_variable_get(:@_meta)
+        assert_equal @expected_meta, reflection.options.fetch(:meta)
       end
 
       def test_reflection_block_with_meta_block_mutates_the_reflection_meta
@@ -98,17 +98,17 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         # Assert before instance_eval meta
         assert_respond_to association.meta, :call
-        assert_respond_to reflection.instance_variable_get(:@_meta), :call
+        assert_respond_to reflection.options.fetch(:meta), :call
 
         # Assert after instance_eval meta
         assert_equal @expected_meta, reflection.instance_eval(&association.meta)
-        assert_respond_to reflection.instance_variable_get(:@_meta), :call
+        assert_respond_to reflection.options.fetch(:meta), :call
         assert_respond_to association.meta, :call
       end
 
@@ -125,23 +125,23 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_nil reflection.instance_variable_get(:@_meta)
-        assert_equal @empty_links, reflection.instance_variable_get(:@_links)
+        assert_nil reflection.options.fetch(:meta)
+        assert_equal @empty_links, reflection.options.fetch(:links)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         # Assert before instance_eval link meta
         assert_nil association.meta
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
 
         link = association.links.fetch(:self)
         assert_respond_to link, :call
-        assert_respond_to reflection.instance_variable_get(:@_links).fetch(:self), :call
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_respond_to reflection.options.fetch(:links).fetch(:self), :call
+        assert_nil reflection.options.fetch(:meta)
 
         # Assert after instance_eval link
         assert_equal 'no_uri_validation', reflection.instance_eval(&link)
-        assert_equal @expected_meta, reflection.instance_variable_get(:@_meta)
+        assert_equal @expected_meta, reflection.options.fetch(:meta)
         assert_nil association.meta
       end
 
@@ -161,16 +161,16 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         assert_nil association.meta
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
 
         # Assert before instance_eval link
         link = association.links.fetch(:self)
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
         assert_respond_to link, :call
         assert_respond_to association.links.fetch(:self), :call
 
@@ -178,11 +178,11 @@ module ActiveModel
         assert_equal 'no_uri_validation', reflection.instance_eval(&link)
         assert_respond_to association.links.fetch(:self), :call
         # Assert before instance_eval link meta
-        assert_respond_to reflection.instance_variable_get(:@_meta), :call
+        assert_respond_to reflection.options.fetch(:meta), :call
         assert_nil association.meta
 
         # Assert after instance_eval link meta
-        assert_equal @expected_meta, reflection.instance_eval(&reflection.instance_variable_get(:@_meta))
+        assert_equal @expected_meta, reflection.instance_eval(&reflection.options.fetch(:meta))
         assert_nil association.meta
       end
       # rubocop:enable Metrics/AbcSize
@@ -199,7 +199,7 @@ module ActiveModel
 
         # Get Reflection
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_equal @empty_links, reflection.instance_variable_get(:@_links)
+        assert_equal @empty_links, reflection.options.fetch(:links)
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
