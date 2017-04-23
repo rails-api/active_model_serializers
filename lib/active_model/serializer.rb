@@ -341,7 +341,8 @@ module ActiveModel
           next if reflection.excluded?(self)
           next unless include_directive.key?(key)
 
-          y.yield reflection.build_association(self, instance_options, include_slice)
+          association = reflection.build_association(self, instance_options, include_slice)
+          y.yield association
         end
       end
     end
@@ -390,14 +391,12 @@ module ActiveModel
 
     # @api private
     def associations_hash(adapter_options, options, adapter_instance)
-      relationships = {}
       include_directive = options.fetch(:include_directive)
-      associations(include_directive).each do |association|
-        adapter_opts = adapter_options.merge(include_directive: include_directive[association.key])
-        relationships[association.key] ||= association.serializable_hash(adapter_opts, adapter_instance)
+      include_slice = options[:include_slice]
+      associations(include_directive, include_slice).each_with_object({}) do |association, relationships|
+        adapter_opts = adapter_options.merge(include_directive: include_directive[association.key], adapter_instance: adapter_instance)
+        relationships[association.key] = association.serializable_hash(adapter_opts, adapter_instance)
       end
-
-      relationships
     end
 
     protected

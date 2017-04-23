@@ -37,13 +37,13 @@ module ActiveModel
     #  1) as 'comments' and named 'comments'.
     #  2) as 'object.comments.last(1)' and named 'last_comments'.
     #
-    #  PostSerializer._reflections #=>
-    #    # [
-    #    #   HasOneReflection.new(:author, serializer: AuthorSerializer),
-    #    #   HasManyReflection.new(:comments)
-    #    #   HasManyReflection.new(:comments, { key: :last_comments }, #<Block>)
-    #    #   HasManyReflection.new(:secret_meta_data, { if: :is_admin? })
-    #    # ]
+    #  PostSerializer._reflections # =>
+    #    # {
+    #    #   author: HasOneReflection.new(:author, serializer: AuthorSerializer),
+    #    #   comments: HasManyReflection.new(:comments)
+    #    #   last_comments: HasManyReflection.new(:comments, { key: :last_comments }, #<Block>)
+    #    #   secret_meta_data: HasManyReflection.new(:secret_meta_data, { if: :is_admin? })
+    #    # }
     #
     # So you can inspect reflections in your Adapters.
     class Reflection < Field
