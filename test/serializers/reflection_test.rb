@@ -224,10 +224,10 @@ module ActiveModel
         # Evaluate reflection meta for model with id 1
         serializer_instance = serializer_class.new(@model, @instance_options)
         reflection = serializer_class._reflections.fetch(:blog)
-        assert_nil reflection.instance_variable_get(:@_meta)
+        assert_nil reflection.options.fetch(:meta)
         association = reflection.build_association(serializer_instance, @instance_options)
         assert_equal model1_meta, association.meta
-        assert_equal model1_meta, reflection.instance_variable_get(:@_meta)
+        assert_equal model1_meta, reflection.options.fetch(:meta)
 
         model2_meta = @expected_meta.merge(id: 2)
         # Evaluate reflection meta for model with id 2
@@ -238,11 +238,11 @@ module ActiveModel
 
         # WARN: Thread-safety issue
         # Before the reflection is evaluated, it has the value from the previous evaluation
-        assert_equal model1_meta, reflection.instance_variable_get(:@_meta)
+        assert_equal model1_meta, reflection.options.fetch(:meta)
 
         association = reflection.build_association(serializer_instance, @instance_options)
         assert_equal model2_meta, association.meta
-        assert_equal model2_meta, reflection.instance_variable_get(:@_meta)
+        assert_equal model2_meta, reflection.options.fetch(:meta)
       end
     end
   end
