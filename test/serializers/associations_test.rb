@@ -30,18 +30,17 @@ module ActiveModel
       def test_has_many_and_has_one
         @author_serializer.associations.each do |association|
           key = association.key
-          serializer = association.serializer
-          options = association.options
+          serializer = association.lazy_association.serializer
 
           case key
           when :posts
-            assert_equal true, options.fetch(:include_data)
+            assert_equal true, association.include_data?
             assert_kind_of(ActiveModelSerializers.config.collection_serializer, serializer)
           when :bio
-            assert_equal true, options.fetch(:include_data)
+            assert_equal true, association.include_data?
             assert_nil serializer
           when :roles
-            assert_equal true, options.fetch(:include_data)
+            assert_equal true, association.include_data?
             assert_kind_of(ActiveModelSerializers.config.collection_serializer, serializer)
           else
             flunk "Unknown association: #{key}"
@@ -56,12 +55,11 @@ module ActiveModel
         end
         post_serializer_class.new(@post).associations.each do |association|
           key = association.key
-          serializer = association.serializer
-          options = association.options
+          serializer = association.lazy_association.serializer
 
           assert_equal :tags, key
           assert_nil serializer
-          assert_equal [{ id: 'tagid', name: '#hashtagged' }].to_json, options[:virtual_value].to_json
+          assert_equal [{ id: 'tagid', name: '#hashtagged' }].to_json, association.virtual_value.to_json
         end
       end
 
@@ -70,7 +68,7 @@ module ActiveModel
                       .associations
                       .detect { |assoc| assoc.key == :comments }
 
-        comment_serializer = association.serializer.first
+        comment_serializer = association.lazy_association.serializer.first
         class << comment_serializer
           def custom_options
             instance_options
@@ -82,7 +80,7 @@ module ActiveModel
       def test_belongs_to
         @comment_serializer.associations.each do |association|
           key = association.key
-          serializer = association.serializer
+          serializer = association.lazy_association.serializer
 
           case key
           when :post
@@ -93,7 +91,7 @@ module ActiveModel
             flunk "Unknown association: #{key}"
           end
 
-          assert_equal true, association.options.fetch(:include_data)
+          assert_equal true, association.include_data?
         end
       end
 
@@ -203,11 +201,11 @@ module ActiveModel
           @post_serializer.associations.each do |association|
             case association.key
             when :comments
-              assert_instance_of(ResourceNamespace::CommentSerializer, association.serializer.first)
+              assert_instance_of(ResourceNamespace::CommentSerializer, association.lazy_association.serializer.first)
             when :author
-              assert_instance_of(ResourceNamespace::AuthorSerializer, association.serializer)
+              assert_instance_of(ResourceNamespace::AuthorSerializer, association.lazy_association.serializer)
             when :description
-              assert_instance_of(ResourceNamespace::DescriptionSerializer, association.serializer)
+              assert_instance_of(ResourceNamespace::DescriptionSerializer, association.lazy_association.serializer)
             else
               flunk "Unknown association: #{key}"
             end
@@ -245,11 +243,11 @@ module ActiveModel
           @post_serializer.associations.each do |association|
             case association.key
             when :comments
-              assert_instance_of(PostSerializer::CommentSerializer, association.serializer.first)
+              assert_instance_of(PostSerializer::CommentSerializer, association.lazy_association.serializer.first)
             when :author
-              assert_instance_of(PostSerializer::AuthorSerializer, association.serializer)
+              assert_instance_of(PostSerializer::AuthorSerializer, association.lazy_association.serializer)
             when :description
-              assert_instance_of(PostSerializer::DescriptionSerializer, association.serializer)
+              assert_instance_of(PostSerializer::DescriptionSerializer, association.lazy_association.serializer)
             else
               flunk "Unknown association: #{key}"
             end
@@ -260,7 +258,7 @@ module ActiveModel
         def test_conditional_associations
           model = Class.new(::Model) do
             attributes :true, :false
-            associations :association
+            associations :something
           end.new(true: true, false: false)
 
           scenarios = [
@@ -284,7 +282,7 @@ module ActiveModel
 
           scenarios.each do |s|
             serializer = Class.new(ActiveModel::Serializer) do
-              belongs_to :association, s[:options]
+              belongs_to :something, s[:options]
 
               def true
                 true
@@ -296,7 +294,7 @@ module ActiveModel
             end
 
             hash = serializable(model, serializer: serializer).serializable_hash
-            assert_equal(s[:included], hash.key?(:association), "Error with #{s[:options]}")
+            assert_equal(s[:included], hash.key?(:something), "Error with #{s[:options]}")
           end
         end
 
@@ -341,8 +339,8 @@ module ActiveModel
           @author_serializer = AuthorSerializer.new(@author)
           @inherited_post_serializer = InheritedPostSerializer.new(@post)
           @inherited_author_serializer = InheritedAuthorSerializer.new(@author)
-          @author_associations = @author_serializer.associations.to_a
-          @inherited_author_associations = @inherited_author_serializer.associations.to_a
+          @author_associations = @author_serializer.associations.to_a.sort_by(&:name)
+          @inherited_author_associations = @inherited_author_serializer.associations.to_a.sort_by(&:name)
           @post_associations = @post_serializer.associations.to_a
           @inherited_post_associations = @inherited_post_serializer.associations.to_a
         end
@@ -361,28 +359,35 @@ module ActiveModel
 
         test 'a serializer inheriting from another serializer can redefine has_many and has_one associations' do
           expected = [:roles, :bio].sort
-          result = (@inherited_author_associations - @author_associations).map(&:name).sort
+          result = (@inherited_author_associations.map(&:reflection) - @author_associations.map(&:reflection)).map(&:name)
           assert_equal(result, expected)
+          assert_equal [true, false, true], @inherited_author_associations.map(&:polymorphic?)
+          assert_equal [false, false, false], @author_associations.map(&:polymorphic?)
         end
 
         test 'a serializer inheriting from another serializer can redefine belongs_to associations' do
           assert_equal [:author, :comments, :blog], @post_associations.map(&:name)
           assert_equal [:author, :comments, :blog, :comments], @inherited_post_associations.map(&:name)
 
-          refute @post_associations.detect { |assoc| assoc.name == :author }.options.key?(:polymorphic)
-          assert_equal true, @inherited_post_associations.detect { |assoc| assoc.name == :author }.options.fetch(:polymorphic)
+          refute @post_associations.detect { |assoc| assoc.name == :author }.polymorphic?
+          assert @inherited_post_associations.detect { |assoc| assoc.name == :author }.polymorphic?
 
-          refute @post_associations.detect { |assoc| assoc.name == :comments }.options.key?(:key)
+          refute @post_associations.detect { |assoc| assoc.name == :comments }.key?
           original_comment_assoc, new_comments_assoc = @inherited_post_associations.select { |assoc| assoc.name == :comments }
-          refute original_comment_assoc.options.key?(:key)
-          assert_equal :reviews, new_comments_assoc.options.fetch(:key)
+          refute original_comment_assoc.key?
+          assert_equal :reviews, new_comments_assoc.key
 
-          assert_equal @post_associations.detect { |assoc| assoc.name == :blog }, @inherited_post_associations.detect { |assoc| assoc.name == :blog }
+          original_blog = @post_associations.detect { |assoc| assoc.name == :blog }
+          inherited_blog = @inherited_post_associations.detect { |assoc| assoc.name == :blog }
+          original_parent_serializer = original_blog.lazy_association.options.delete(:parent_serializer)
+          inherited_parent_serializer = inherited_blog.lazy_association.options.delete(:parent_serializer)
+          assert_equal PostSerializer, original_parent_serializer.class
+          assert_equal InheritedPostSerializer, inherited_parent_serializer.class
         end
 
         test 'a serializer inheriting from another serializer can have an additional association with the same name but with different key' do
           expected = [:author, :comments, :blog, :reviews].sort
-          result = @inherited_post_serializer.associations.map { |a| a.options.fetch(:key, a.name) }.sort
+          result = @inherited_post_serializer.associations.map(&:key).sort
           assert_equal(result, expected)
         end
       end

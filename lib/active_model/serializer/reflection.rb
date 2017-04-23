@@ -170,7 +170,11 @@ module ActiveModel
         end
 
         association_block = nil
-        Association.new(name, reflection_options, association_block)
+        reflection_options[:reflection] = self
+        reflection_options[:parent_serializer] = parent_serializer
+        reflection_options[:parent_serializer_options] = parent_serializer_options
+        reflection_options[:include_slice] = include_slice
+        Association.new(name, reflection_options, block)
       end
 
       protected

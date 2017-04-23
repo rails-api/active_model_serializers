@@ -1,3 +1,5 @@
+require 'active_model/serializer/lazy_association'
+
 module ActiveModel
   class Serializer
     # This class holds all information about serializer's association.
@@ -10,14 +12,22 @@ module ActiveModel
     #  Association.new(:comments, { serializer: CommentSummarySerializer })
     #
     class Association < Field
+      attr_reader :lazy_association
+      delegate :include_data?, :virtual_value, to: :lazy_association
+
+      def initialize(*)
+        super
+        @lazy_association = LazyAssociation.new(name, options, block)
+      end
+
       # @return [Symbol]
       def key
         options.fetch(:key, name)
       end
 
-      # @return [ActiveModel::Serializer, nil]
-      def serializer
-        options[:serializer]
+      # @return [True,False]
+      def key?
+        options.key?(:key)
       end
 
       # @return [Hash]
@@ -30,21 +40,30 @@ module ActiveModel
         options[:meta]
       end
 
+      def polymorphic?
+        true == options[:polymorphic]
+      end
+
       # @api private
       def serializable_hash(adapter_options, adapter_instance)
-        return options[:virtual_value] if options[:virtual_value]
-        object = serializer && serializer.object
-        return unless object
+        association_serializer = lazy_association.serializer
+        return virtual_value if virtual_value
+        association_object = association_serializer && association_serializer.object
+        return unless association_object
 
-        serialization = serializer.serializable_hash(adapter_options, {}, adapter_instance)
+        serialization = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
 
-        if options[:polymorphic] && serialization
-          polymorphic_type = object.class.name.underscore
+        if polymorphic? && serialization
+          polymorphic_type = association_object.class.name.underscore
           serialization = { type: polymorphic_type, polymorphic_type.to_sym => serialization }
         end
 
         serialization
       end
+
+      private
+
+      delegate :reflection, to: :lazy_association
     end
   end
 end

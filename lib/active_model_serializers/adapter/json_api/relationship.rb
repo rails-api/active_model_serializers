@@ -15,9 +15,7 @@ module ActiveModelSerializers
         def as_json
           hash = {}
 
-          if association.options[:include_data]
-            hash[:data] = data_for(association)
-          end
+          hash[:data] = data_for(association) if association.include_data?
 
           links = links_for(association)
           hash[:links] = links if links.any?
@@ -36,10 +34,10 @@ module ActiveModelSerializers
         private
 
         def data_for(association)
-          serializer = association.serializer
+          serializer = association.lazy_association.serializer
           if serializer.respond_to?(:each)
             serializer.map { |s| ResourceIdentifier.new(s, serializable_resource_options).as_json }
-          elsif (virtual_value = association.options[:virtual_value])
+          elsif (virtual_value = association.virtual_value)
             virtual_value
           elsif serializer && serializer.object
             ResourceIdentifier.new(serializer, serializable_resource_options).as_json
