@@ -47,6 +47,8 @@ module ActiveModel
     #
     # So you can inspect reflections in your Adapters.
     class Reflection < Field
+      REFLECTION_OPTIONS = %i(key links polymorphic meta serializer virtual_value namespace).freeze
+
       def initialize(*)
         super
         options[:links] = {}
@@ -71,8 +73,8 @@ module ActiveModel
       #       meta ids: ids
       #     end
       #   end
-      def link(name, value = nil, &block)
-        options[:links][name] = block || value
+      def link(name, value = nil)
+        options[:links][name] = block_given? ? Proc.new : value
         :nil
       end
 
@@ -86,8 +88,8 @@ module ActiveModel
       #       href object.blog.id.to_s
       #       meta(id: object.blog.id)
       #     end
-      def meta(value = nil, &block)
-        options[:meta] = block || value
+      def meta(value = nil)
+        options[:meta] = block_given? ? Proc.new : value
         :nil
       end
 
@@ -119,23 +121,6 @@ module ActiveModel
         :nil
       end
 
-      # @param serializer [ActiveModel::Serializer]
-      # @yield [ActiveModel::Serializer]
-      # @return [:nil, associated resource or resource collection]
-      def value(serializer, include_slice)
-        @object = serializer.object
-        @scope = serializer.scope
-
-        block_value = instance_exec(serializer, &block) if block
-        return unless include_data?(include_slice)
-
-        if block && block_value != :nil
-          block_value
-        else
-          serializer.read_attribute_for_serialization(name)
-        end
-      end
-
       # Build association. This method is used internally to
       # build serializer's association by its reflection.
       #
@@ -157,35 +142,31 @@ module ActiveModel
       #
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
-        reflection_options = options.dup
+        reflection_options = settings.merge(include_data: include_data?(include_slice)) unless block?
+        association_options = build_association_options(parent_serializer, parent_serializer_options[:namespace], include_slice)
+        association_value = association_options[:association_value]
+        serializer_class = association_options[:association_serializer]
 
-        # Pass the parent's namespace onto the child serializer
-        reflection_options[:namespace] ||= parent_serializer_options[:namespace]
-
-        association_value = value(parent_serializer, include_slice)
-        serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
-        reflection_options[:include_data] = include_data?(include_slice)
-        reflection_options[:links] = options[:links]
-        reflection_options[:meta] = options[:meta]
+        reflection_options ||= settings.merge(include_data: include_data?(include_slice)) # Needs to be after association_value is evaluated unless reflection.block.nil?
 
         if serializer_class
-          serializer = catch(:no_serializer) do
-            serializer_class.new(
-              association_value,
-              serializer_options(parent_serializer, parent_serializer_options, reflection_options)
-            )
-          end
-          if serializer.nil?
-            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
-          else
+          if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
             reflection_options[:serializer] = serializer
+          else
+            # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
+            # *require* a serializer or we need to be a little clever about figuring out the id/type.
+            # In either case, returning the raw virtual value will almost always be incorrect.
+            #
+            # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
+            # with an object that is non-nil and has no defined serializer.
+            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
           end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           reflection_options[:virtual_value] = association_value
         end
 
-        block = nil
-        Association.new(name, reflection_options, block)
+        association_block = nil
+        Association.new(name, reflection_options, association_block)
       end
 
       protected
@@ -193,7 +174,34 @@ module ActiveModel
       # used in instance exec
       attr_accessor :object, :scope
 
-      private
+      def settings
+        options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+      end
+
+      # Evaluation of the reflection.block will mutate options.
+      # So, the settings cannot be used until the block is evaluated.
+      # This means that each time the block is evaluated, it may set a new
+      # value in the reflection instance. This is not thread-safe.
+      # @example
+      #   has_many :likes do
+      #     meta liked: object.likes.any?
+      #     include_data: object.loaded?
+      #   end
+      def block?
+        !block.nil?
+      end
+
+      def serializer?
+        options.key?(:serializer)
+      end
+
+      def serializer
+        options[:serializer]
+      end
+
+      def namespace
+        options[:namespace]
+      end
 
       def include_data?(include_slice)
         include_data_setting = options[:include_data_setting]
@@ -205,13 +213,49 @@ module ActiveModel
         end
       end
 
-      def serializer_options(parent_serializer, parent_serializer_options, reflection_options)
-        serializer = reflection_options.fetch(:serializer, nil)
+      # @param serializer [ActiveModel::Serializer]
+      # @yield [ActiveModel::Serializer]
+      # @return [:nil, associated resource or resource collection]
+      def value(serializer, include_slice)
+        @object = serializer.object
+        @scope = serializer.scope
 
-        serializer_options = parent_serializer_options.except(:serializer)
-        serializer_options[:serializer] = serializer if serializer
-        serializer_options[:serializer_context_class] = parent_serializer.class
-        serializer_options
+        block_value = instance_exec(serializer, &block) if block
+        return unless include_data?(include_slice)
+
+        if block && block_value != :nil
+          block_value
+        else
+          serializer.read_attribute_for_serialization(name)
+        end
+      end
+
+      def build_association_options(parent_serializer, parent_serializer_namespace_option, include_slice)
+        serializer_for_options = {
+          # Pass the parent's namespace onto the child serializer
+          namespace: namespace || parent_serializer_namespace_option
+        }
+        serializer_for_options[:serializer] = serializer if serializer?
+        association_value = value(parent_serializer, include_slice)
+        {
+          association_value: association_value,
+          association_serializer: parent_serializer.class.serializer_for(association_value, serializer_for_options)
+        }
+      end
+
+      # NOTE(BF): This serializer throw/catch should only happen when the serializer is a collection
+      # serializer.  This is a good reason for the reflection to have a to_many? or collection? type method.
+      #
+      # @return [ActiveModel::Serializer, nil]
+      def build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
+        catch(:no_serializer) do
+          # Make all the parent serializer instance options available to associations
+          # except ActiveModelSerializers-specific ones we don't want.
+          serializer_options = parent_serializer_options.except(:serializer)
+          serializer_options[:serializer_context_class] = parent_serializer.class
+          serializer_options[:serializer] = serializer if serializer
+          serializer_class.new(association_value, serializer_options)
+        end
       end
     end
   end
