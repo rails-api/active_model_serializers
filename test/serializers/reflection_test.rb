@@ -248,6 +248,7 @@ module ActiveModel
         assert_respond_to association.meta, :call
       end
 
+      # rubocop:disable Metrics/AbcSize
       def test_reflection_block_with_meta_in_link_block_mutates_the_reflection_meta
         serializer_class = Class.new(ActiveModel::Serializer) do
           has_one :blog do
@@ -280,6 +281,7 @@ module ActiveModel
         assert_equal @expected_meta, reflection.options.fetch(:meta)
         assert_nil association.meta
       end
+      # rubocop:enable Metrics/AbcSize
 
       # rubocop:disable Metrics/AbcSize
       def test_reflection_block_with_meta_block_in_link_block_mutates_the_reflection_meta
@@ -350,6 +352,7 @@ module ActiveModel
         assert_match(/undefined method `href'/, exception.message)
       end
 
+      # rubocop:disable Metrics/AbcSize
       def test_mutating_reflection_block_is_not_thread_safe
         serializer_class = Class.new(ActiveModel::Serializer) do
           has_one :blog do
@@ -380,6 +383,7 @@ module ActiveModel
         assert_equal model2_meta, association.meta
         assert_equal model2_meta, reflection.options.fetch(:meta)
       end
+      # rubocop:enable Metrics/AbcSize
     end
   end
 end
