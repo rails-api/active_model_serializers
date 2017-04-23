@@ -251,11 +251,11 @@ BlogSerializer.new(object, key_format: :lower_camel)
 
 You can specify that serializers use unsuffixed names as association keys by default.
 
-`````ruby
+```ruby
 ActiveModel::Serializer.setup do |config|
   config.default_key_type = :name
 end
-````
+```
 
 This will build association keys like `comments` or `author` instead of `comment_ids` or `author_id`.
 
@@ -932,7 +932,7 @@ now generates:
 class PostSerializer < ApplicationSerializer
   attributes :id
 end
-````
+```
 
 # Design and Implementation Guidelines
 
