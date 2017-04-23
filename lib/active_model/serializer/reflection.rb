@@ -121,7 +121,7 @@ module ActiveModel
         :nil
       end
 
-      def to_many?
+      def collection?
         false
       end
 
@@ -235,7 +235,7 @@ module ActiveModel
       end
 
       def build_serializer!(association_value, serializer_class, parent_serializer, parent_serializer_options)
-        if to_many?
+        if collection?
           build_association_collection_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         else
           build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)

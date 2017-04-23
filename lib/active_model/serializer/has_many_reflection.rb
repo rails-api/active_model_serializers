@@ -1,8 +1,8 @@
 module ActiveModel
   class Serializer
     # @api private
-    class HasManyReflection < CollectionReflection
-      def to_many?
+    class HasManyReflection < Reflection
+      def collection?
         true
       end
     end
