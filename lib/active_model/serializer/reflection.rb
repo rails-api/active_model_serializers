@@ -227,16 +227,20 @@ module ActiveModel
       end
 
       def serialize_association_value!(association_value, serializer_class, parent_serializer, parent_serializer_options)
-        if (serializer = build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
-          { serializer: serializer }
+        if to_many?
+          if (serializer = build_association_collection_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
+            { serializer: serializer }
+          else
+            # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
+            # *require* a serializer or we need to be a little clever about figuring out the id/type.
+            # In either case, returning the raw virtual value will almost always be incorrect.
+            #
+            # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
+            # with an object that is non-nil and has no defined serializer.
+            { virtual_value: association_value.try(:as_json) || association_value }
+          end
         else
-          # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
-          # *require* a serializer or we need to be a little clever about figuring out the id/type.
-          # In either case, returning the raw virtual value will almost always be incorrect.
-          #
-          # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
-          # with an object that is non-nil and has no defined serializer.
-          { virtual_value: association_value.try(:as_json) || association_value }
+          { serializer: build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class) }
         end
       end
 
@@ -254,18 +258,23 @@ module ActiveModel
       end
 
       # NOTE(BF): This serializer throw/catch should only happen when the serializer is a collection
-      # serializer.  This is a good reason for the reflection to have a to_many? or collection? type method.
+      # serializer.
       #
       # @return [ActiveModel::Serializer, nil]
-      def build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
+      def build_association_collection_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         catch(:no_serializer) do
-          # Make all the parent serializer instance options available to associations
-          # except ActiveModelSerializers-specific ones we don't want.
-          serializer_options = parent_serializer_options.except(:serializer)
-          serializer_options[:serializer_context_class] = parent_serializer.class
-          serializer_options[:serializer] = serializer if serializer
-          serializer_class.new(association_value, serializer_options)
+          build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         end
+      end
+
+      # @return [ActiveModel::Serializer, nil]
+      def build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
+        # Make all the parent serializer instance options available to associations
+        # except ActiveModelSerializers-specific ones we don't want.
+        serializer_options = parent_serializer_options.except(:serializer)
+        serializer_options[:serializer_context_class] = parent_serializer.class
+        serializer_options[:serializer] = serializer if serializer
+        serializer_class.new(association_value, serializer_options)
       end
     end
   end
