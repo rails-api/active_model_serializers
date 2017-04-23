@@ -36,8 +36,8 @@ module ActiveModel
 
         # Assert
         assert_nil reflection.block
-        assert_equal Serializer.config.include_data_default, reflection.instance_variable_get(:@_include_data)
-        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        assert_equal Serializer.config.include_data_default, reflection.options.fetch(:include_data_setting)
+        assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
         assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
@@ -56,8 +56,8 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal Serializer.config.include_data_default, reflection.instance_variable_get(:@_include_data)
-        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        assert_equal Serializer.config.include_data_default, reflection.options.fetch(:include_data_setting)
+        assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
         assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
@@ -77,8 +77,8 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal Serializer.config.include_data_default, reflection.instance_variable_get(:@_include_data)
-        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        assert_equal Serializer.config.include_data_default, reflection.options.fetch(:include_data_setting)
+        assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
         assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
@@ -98,10 +98,10 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        assert_equal true, reflection.options.fetch(:include_data_setting)
         include_slice = :does_not_matter
         assert_nil reflection.value(serializer_instance, include_slice)
-        assert_equal false, reflection.instance_variable_get(:@_include_data)
+        assert_equal false, reflection.options.fetch(:include_data_setting)
       end
 
       def test_reflection_value_block_with_include_data_if_sideloaded_included_mutates_the_reflection_include_data
@@ -118,10 +118,10 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        assert_equal true, reflection.options.fetch(:include_data_setting)
         include_slice = {}
         assert_nil reflection.value(serializer_instance, include_slice)
-        assert_equal :if_sideloaded, reflection.instance_variable_get(:@_include_data)
+        assert_equal :if_sideloaded, reflection.options.fetch(:include_data_setting)
       end
 
       def test_reflection_value_block_with_include_data_if_sideloaded_excluded_mutates_the_reflection_include_data
@@ -138,10 +138,10 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal true, reflection.instance_variable_get(:@_include_data)
+        assert_equal true, reflection.options.fetch(:include_data_setting)
         include_slice = { blog: :does_not_matter }
         assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
-        assert_equal :if_sideloaded, reflection.instance_variable_get(:@_include_data)
+        assert_equal :if_sideloaded, reflection.options.fetch(:include_data_setting)
       end
 
       def test_reflection_block_with_link_mutates_the_reflection_links
