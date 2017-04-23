@@ -147,16 +147,24 @@ module ActiveModel
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
         reflection_options = settings.merge(include_data: include_data?(include_slice)) unless block?
-        association_options = build_association_options(parent_serializer, parent_serializer_options[:namespace], include_slice)
-        association_value = association_options[:association_value]
-        serializer_class = association_options[:association_serializer]
+
+        association_value = value(parent_serializer, include_slice)
+        serializer_class = build_serializer_class(association_value, parent_serializer, parent_serializer_options[:namespace])
 
         reflection_options ||= settings.merge(include_data: include_data?(include_slice)) # Needs to be after association_value is evaluated unless reflection.block.nil?
 
         if serializer_class
-          reflection_options.merge!(
-            serialize_association_value!(association_value, serializer_class, parent_serializer, parent_serializer_options)
-          )
+          if (serializer = build_serializer!(association_value, serializer_class, parent_serializer, parent_serializer_options))
+            reflection_options[:serializer] = serializer
+          else
+            # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
+            # *require* a serializer or we need to be a little clever about figuring out the id/type.
+            # In either case, returning the raw virtual value will almost always be incorrect.
+            #
+            # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
+            # with an object that is non-nil and has no defined serializer.
+            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
+          end
         elsif !association_value.nil? && !association_value.instance_of?(Object)
           reflection_options[:virtual_value] = association_value
         end
@@ -226,35 +234,21 @@ module ActiveModel
         end
       end
 
-      def serialize_association_value!(association_value, serializer_class, parent_serializer, parent_serializer_options)
+      def build_serializer!(association_value, serializer_class, parent_serializer, parent_serializer_options)
         if to_many?
-          if (serializer = build_association_collection_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class))
-            { serializer: serializer }
-          else
-            # BUG: per #2027, JSON API resource relationships are only id and type, and hence either
-            # *require* a serializer or we need to be a little clever about figuring out the id/type.
-            # In either case, returning the raw virtual value will almost always be incorrect.
-            #
-            # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
-            # with an object that is non-nil and has no defined serializer.
-            { virtual_value: association_value.try(:as_json) || association_value }
-          end
+          build_association_collection_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         else
-          { serializer: build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class) }
+          build_association_serializer(parent_serializer, parent_serializer_options, association_value, serializer_class)
         end
       end
 
-      def build_association_options(parent_serializer, parent_serializer_namespace_option, include_slice)
+      def build_serializer_class(association_value, parent_serializer, parent_serializer_namespace_option)
         serializer_for_options = {
           # Pass the parent's namespace onto the child serializer
           namespace: namespace || parent_serializer_namespace_option
         }
         serializer_for_options[:serializer] = serializer if serializer?
-        association_value = value(parent_serializer, include_slice)
-        {
-          association_value: association_value,
-          association_serializer: parent_serializer.class.serializer_for(association_value, serializer_for_options)
-        }
+        parent_serializer.class.serializer_for(association_value, serializer_for_options)
       end
 
       # NOTE(BF): This serializer throw/catch should only happen when the serializer is a collection
