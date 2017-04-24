@@ -40,12 +40,16 @@ module ActionController
       options.fetch(:namespace) { options[:namespace] = namespace_for_serializer }
 
       serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options)
-      serializable_resource.serialization_scope ||= options.fetch(:scope) { serialization_scope }
-      serializable_resource.serialization_scope_name = options.fetch(:scope_name) { _serialization_scope }
-      # For compatibility with the JSON renderer: `json.to_json(options) if json.is_a?(String)`.
-      # Otherwise, since `serializable_resource` is not a string, the renderer would call
-      # `to_json` on a String and given odd results, such as `"".to_json #=> '""'`
-      serializable_resource.adapter.is_a?(String) ? serializable_resource.adapter : serializable_resource
+      if serializable_resource.serializer?
+        serializable_resource.serialization_scope ||= options.fetch(:scope) { serialization_scope }
+        serializable_resource.serialization_scope_name = options.fetch(:scope_name) { _serialization_scope }
+        # For compatibility with the JSON renderer: `json.to_json(options) if json.is_a?(String)`.
+        # Otherwise, since `serializable_resource` is not a string, the renderer would call
+        # `to_json` on a String and given odd results, such as `"".to_json #=> '""'`
+        serializable_resource.adapter.is_a?(String) ? serializable_resource.adapter : serializable_resource
+      else
+        resource
+      end
     end
 
     # Deprecated
