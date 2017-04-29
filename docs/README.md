@@ -39,3 +39,13 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 | Grape | 0.10.x + | [docs/integrations/grape.md](integrations/grape.md)  |
 | Grape | 0.9.x | https://github.com/jrhe/grape-active_model_serializers/ |
 | Sinatra | 0.9.x | https://github.com/SauloSilva/sinatra-active-model-serializers/
+
+#### JSON API Resource `type`
+
+##### Implicit
+
+Resource class name is used, e.g. the type of a `Post` will be `posts` in the resulting JSON API resource. For namespaced and multiword classes, AMS will use underscores to seperate words and namespaces. e.g.: `Namespaced::MultiWordClass` becomes `namespaced/multi_word_class`.
+
+##### Explicitly
+
+In the Serializer, declare `type 'foo'`, and `"type": "foo"` will be present in the corresponding resulting JSON API resource.
