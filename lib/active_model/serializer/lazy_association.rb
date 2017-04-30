@@ -40,17 +40,6 @@ module ActiveModel
         cached_result[:virtual_value] || reflection_options[:virtual_value]
       end
 
-      # NOTE(BF): Kurko writes:
-      # 1. This class is doing a lot more than it should. It has business logic (key/meta/links) and
-      #   it also looks like a factory (serializer/serialize_object/instantiate_serializer/serializer_class).
-      #   It's hard to maintain classes that you can understand what it's really meant to be doing,
-      #   so it ends up having all sorts of methods.
-      #   Perhaps we could replace all these methods with a class called... Serializer.
-      #   See how association is doing the job a serializer again?
-      # 2. I've seen code like this in many other places.
-      #   Perhaps we should just have it all in one place: Serializer.
-      #   We already have a class called Serializer, I know,
-      #   and that is doing things that are not responsibility of a serializer.
       def serializer_class
         return @serializer_class if defined?(@serializer_class)
         serializer_for_options = { namespace: namespace }
@@ -82,8 +71,6 @@ module ActiveModel
         end
       end
 
-      # NOTE(BF): This serializer throw/catch should only happen when the serializer is a collection
-      # serializer.  This is a good reason for the reflection to have a to_many? type method.
       def instantiate_serializer(object)
         serializer_options = association_options.fetch(:parent_serializer_options).except(:serializer)
         serializer_options[:serializer_context_class] = association_options.fetch(:parent_serializer).class

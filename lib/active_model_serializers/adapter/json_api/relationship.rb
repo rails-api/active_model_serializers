@@ -33,6 +33,7 @@ module ActiveModelSerializers
 
         private
 
+        # TODO(BF): Avoid db hit on belong_to_ releationship by using foreign_key on self
         def data_for(association)
           if association.collection?
             data_for_many(association)
@@ -42,6 +43,7 @@ module ActiveModelSerializers
         end
 
         def data_for_one(association)
+          # TODO(BF): Process relationship without evaluating lazy_association
           serializer = association.lazy_association.serializer
           if (virtual_value = association.virtual_value)
             virtual_value
@@ -53,6 +55,7 @@ module ActiveModelSerializers
         end
 
         def data_for_many(association)
+          # TODO(BF): Process relationship without evaluating lazy_association
           collection_serializer = association.lazy_association.serializer
           if collection_serializer.respond_to?(:each)
             collection_serializer.map do |serializer|
