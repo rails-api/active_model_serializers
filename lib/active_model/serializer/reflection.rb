@@ -1,4 +1,5 @@
 require 'active_model/serializer/field'
+require 'active_model/serializer/association'
 
 module ActiveModel
   class Serializer
@@ -36,13 +37,13 @@ module ActiveModel
     #  1) as 'comments' and named 'comments'.
     #  2) as 'object.comments.last(1)' and named 'last_comments'.
     #
-    #  PostSerializer._reflections #=>
-    #    # [
-    #    #   HasOneReflection.new(:author, serializer: AuthorSerializer),
-    #    #   HasManyReflection.new(:comments)
-    #    #   HasManyReflection.new(:comments, { key: :last_comments }, #<Block>)
-    #    #   HasManyReflection.new(:secret_meta_data, { if: :is_admin? })
-    #    # ]
+    #  PostSerializer._reflections # =>
+    #    # {
+    #    #   author: HasOneReflection.new(:author, serializer: AuthorSerializer),
+    #    #   comments: HasManyReflection.new(:comments)
+    #    #   last_comments: HasManyReflection.new(:comments, { key: :last_comments }, #<Block>)
+    #    #   secret_meta_data: HasManyReflection.new(:secret_meta_data, { if: :is_admin? })
+    #    # }
     #
     # So you can inspect reflections in your Adapters.
     class Reflection < Field
@@ -70,8 +71,8 @@ module ActiveModel
       #       meta ids: ids
       #     end
       #   end
-      def link(name, value = nil, &block)
-        options[:links][name] = block || value
+      def link(name, value = nil)
+        options[:links][name] = block_given? ? Proc.new : value
         :nil
       end
 
@@ -85,8 +86,8 @@ module ActiveModel
       #       href object.blog.id.to_s
       #       meta(id: object.blog.id)
       #     end
-      def meta(value = nil, &block)
-        options[:meta] = block || value
+      def meta(value = nil)
+        options[:meta] = block_given? ? Proc.new : value
         :nil
       end
 
@@ -116,6 +117,20 @@ module ActiveModel
       def include_data(value = true)
         options[:include_data_setting] = value
         :nil
+      end
+
+      def collection?
+        false
+      end
+
+      def include_data?(include_slice)
+        include_data_setting = options[:include_data_setting]
+        case include_data_setting
+        when :if_sideloaded then include_slice.key?(name)
+        when true           then true
+        when false          then false
+        else fail ArgumentError, "Unknown include_data_setting '#{include_data_setting.inspect}'"
+        end
       end
 
       # @param serializer [ActiveModel::Serializer]
@@ -156,62 +171,18 @@ module ActiveModel
       #
       # @api private
       def build_association(parent_serializer, parent_serializer_options, include_slice = {})
-        reflection_options = options.dup
-
-        # Pass the parent's namespace onto the child serializer
-        reflection_options[:namespace] ||= parent_serializer_options[:namespace]
-
-        association_value = value(parent_serializer, include_slice)
-        serializer_class = parent_serializer.class.serializer_for(association_value, reflection_options)
-        reflection_options[:include_data] = include_data?(include_slice)
-        reflection_options[:links] = options[:links]
-        reflection_options[:meta] = options[:meta]
-
-        if serializer_class
-          serializer = catch(:no_serializer) do
-            serializer_class.new(
-              association_value,
-              serializer_options(parent_serializer, parent_serializer_options, reflection_options)
-            )
-          end
-          if serializer.nil?
-            reflection_options[:virtual_value] = association_value.try(:as_json) || association_value
-          else
-            reflection_options[:serializer] = serializer
-          end
-        elsif !association_value.nil? && !association_value.instance_of?(Object)
-          reflection_options[:virtual_value] = association_value
-        end
-
-        block = nil
-        Association.new(name, reflection_options, block)
+        association_options = {
+          parent_serializer: parent_serializer,
+          parent_serializer_options: parent_serializer_options,
+          include_slice: include_slice
+        }
+        Association.new(self, association_options)
       end
 
       protected
 
       # used in instance exec
       attr_accessor :object, :scope
-
-      private
-
-      def include_data?(include_slice)
-        include_data_setting = options[:include_data_setting]
-        case include_data_setting
-        when :if_sideloaded then include_slice.key?(name)
-        when true           then true
-        when false          then false
-        else fail ArgumentError, "Unknown include_data_setting '#{include_data_setting.inspect}'"
-        end
-      end
-
-      def serializer_options(parent_serializer, parent_serializer_options, reflection_options)
-        serializer = reflection_options.fetch(:serializer, nil)
-
-        serializer_options = parent_serializer_options.except(:serializer)
-        serializer_options[:serializer] = serializer if serializer
-        serializer_options[:serializer_context_class] = parent_serializer.class
-        serializer_options
-      end
     end
   end
 end

@@ -193,12 +193,14 @@ module ActiveModel
             cache_keys << object_cache_key(serializer, adapter_instance)
 
             serializer.associations(include_directive).each do |association|
-              if association.serializer.respond_to?(:each)
-                association.serializer.each do |sub_serializer|
+              # TODO(BF): Process relationship without evaluating lazy_association
+              association_serializer = association.lazy_association.serializer
+              if association_serializer.respond_to?(:each)
+                association_serializer.each do |sub_serializer|
                   cache_keys << object_cache_key(sub_serializer, adapter_instance)
                 end
               else
-                cache_keys << object_cache_key(association.serializer, adapter_instance)
+                cache_keys << object_cache_key(association_serializer, adapter_instance)
               end
             end
           end

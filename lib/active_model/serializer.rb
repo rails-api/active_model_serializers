@@ -332,18 +332,17 @@ module ActiveModel
     # @param [JSONAPI::IncludeDirective] include_directive (defaults to the
     #   +default_include_directive+ config value when not provided)
     # @return [Enumerator<Association>]
-    #
     def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil)
       include_slice ||= include_directive
-      return unless object
+      return Enumerator.new unless object
 
       Enumerator.new do |y|
-        self.class._reflections.values.each do |reflection|
+        self.class._reflections.each do |key, reflection|
           next if reflection.excluded?(self)
-          key = reflection.options.fetch(:key, reflection.name)
           next unless include_directive.key?(key)
 
-          y.yield reflection.build_association(self, instance_options, include_slice)
+          association = reflection.build_association(self, instance_options, include_slice)
+          y.yield association
         end
       end
     end
@@ -351,31 +350,6 @@ module ActiveModel
     # @return [Hash] containing the attributes and first level
     # associations, similar to how ActiveModel::Serializers::JSON is used
     # in ActiveRecord::Base.
-    #
-    # TODO: Include <tt>ActiveModel::Serializers::JSON</tt>.
-    # So that the below is true:
-    #   @param options [nil, Hash] The same valid options passed to `serializable_hash`
-    #      (:only, :except, :methods, and :include).
-    #
-    #     See
-    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activemodel/lib/active_model/serializers/json.rb#L17-L101
-    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activemodel/lib/active_model/serialization.rb#L85-L123
-    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activerecord/lib/active_record/serialization.rb#L11-L17
-    #     https://github.com/rails/rails/blob/v5.0.0.beta2/activesupport/lib/active_support/core_ext/object/json.rb#L147-L162
-    #
-    #   @example
-    #     # The :only and :except options can be used to limit the attributes included, and work
-    #     # similar to the attributes method.
-    #     serializer.as_json(only: [:id, :name])
-    #     serializer.as_json(except: [:id, :created_at, :age])
-    #
-    #     # To include the result of some method calls on the model use :methods:
-    #     serializer.as_json(methods: :permalink)
-    #
-    #     # To include associations use :include:
-    #     serializer.as_json(include: :posts)
-    #     # Second level and higher order associations work as well:
-    #     serializer.as_json(include: { posts: { include: { comments: { only: :body } }, only: :title } })
     def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
@@ -387,13 +361,6 @@ module ActiveModel
     alias to_h serializable_hash
 
     # @see #serializable_hash
-    # TODO: When moving attributes adapter logic here, @see #serializable_hash
-    # So that the below is true:
-    #   @param options [nil, Hash] The same valid options passed to `as_json`
-    #      (:root, :only, :except, :methods, and :include).
-    #   The default for `root` is nil.
-    #   The default value for include_root is false. You can change it to true if the given
-    #   JSON string includes a single root node.
     def as_json(adapter_opts = nil)
       serializable_hash(adapter_opts)
     end
@@ -424,14 +391,12 @@ module ActiveModel
 
     # @api private
     def associations_hash(adapter_options, options, adapter_instance)
-      relationships = {}
       include_directive = options.fetch(:include_directive)
-      associations(include_directive).each do |association|
-        adapter_opts = adapter_options.merge(include_directive: include_directive[association.key])
-        relationships[association.key] ||= association.serializable_hash(adapter_opts, adapter_instance)
+      include_slice = options[:include_slice]
+      associations(include_directive, include_slice).each_with_object({}) do |association, relationships|
+        adapter_opts = adapter_options.merge(include_directive: include_directive[association.key], adapter_instance: adapter_instance)
+        relationships[association.key] = association.serializable_hash(adapter_opts, adapter_instance)
       end
-
-      relationships
     end
 
     protected

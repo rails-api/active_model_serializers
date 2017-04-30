@@ -25,6 +25,10 @@ module ActiveModel
         @instance_options = {}
       end
 
+      def evaluate_association_value(association)
+        association.lazy_association.eval_reflection_block
+      end
+
       # TODO: Remaining tests
       # test_reflection_value_block_with_scope
       # test_reflection_value_uses_serializer_instance_method
@@ -57,7 +61,7 @@ module ActiveModel
         assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
-        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+        assert_equal @model.blog, reflection.send(:value, serializer_instance, include_slice)
       end
 
       def test_reflection_value_block
@@ -77,7 +81,7 @@ module ActiveModel
         assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
-        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+        assert_equal @model.blog, reflection.send(:value, serializer_instance, include_slice)
       end
 
       def test_reflection_value_block_with_explicit_include_data_true
@@ -98,7 +102,7 @@ module ActiveModel
         assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
-        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+        assert_equal @model.blog, reflection.send(:value, serializer_instance, include_slice)
       end
 
       def test_reflection_value_block_with_include_data_false_mutates_the_reflection_include_data
@@ -117,7 +121,7 @@ module ActiveModel
         assert_respond_to reflection.block, :call
         assert_equal true, reflection.options.fetch(:include_data_setting)
         include_slice = :does_not_matter
-        assert_nil reflection.value(serializer_instance, include_slice)
+        assert_nil reflection.send(:value, serializer_instance, include_slice)
         assert_equal false, reflection.options.fetch(:include_data_setting)
       end
 
@@ -137,7 +141,7 @@ module ActiveModel
         assert_respond_to reflection.block, :call
         assert_equal true, reflection.options.fetch(:include_data_setting)
         include_slice = {}
-        assert_nil reflection.value(serializer_instance, include_slice)
+        assert_nil reflection.send(:value, serializer_instance, include_slice)
         assert_equal :if_sideloaded, reflection.options.fetch(:include_data_setting)
       end
 
@@ -157,7 +161,7 @@ module ActiveModel
         assert_respond_to reflection.block, :call
         assert_equal true, reflection.options.fetch(:include_data_setting)
         include_slice = { blog: :does_not_matter }
-        assert_equal @model.blog, reflection.value(serializer_instance, include_slice)
+        assert_equal @model.blog, reflection.send(:value, serializer_instance, include_slice)
         assert_equal :if_sideloaded, reflection.options.fetch(:include_data_setting)
       end
 
@@ -175,6 +179,13 @@ module ActiveModel
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
+
+        # Assert association links empty when not yet evaluated
+        assert_equal @empty_links, reflection.options.fetch(:links)
+        assert_equal @empty_links, association.links
+
+        evaluate_association_value(association)
+
         assert_equal @expected_links, association.links
         assert_equal @expected_links, reflection.options.fetch(:links)
       end
@@ -195,9 +206,16 @@ module ActiveModel
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
+
+        # Assert association links empty when not yet evaluated
+        assert_equal @empty_links, association.links
+
+        evaluate_association_value(association)
+
         # Assert before instance_eval link
         link = association.links.fetch(:self)
         assert_respond_to link, :call
+        assert_respond_to reflection.options.fetch(:links).fetch(:self), :call
 
         # Assert after instance_eval link
         assert_equal @expected_links.fetch(:self), reflection.instance_eval(&link)
@@ -218,6 +236,9 @@ module ActiveModel
 
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
+
+        evaluate_association_value(association)
+
         assert_equal @expected_meta, association.meta
         assert_equal @expected_meta, reflection.options.fetch(:meta)
       end
@@ -239,6 +260,9 @@ module ActiveModel
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         # Assert before instance_eval meta
+
+        evaluate_association_value(association)
+
         assert_respond_to association.meta, :call
         assert_respond_to reflection.options.fetch(:meta), :call
 
@@ -271,6 +295,8 @@ module ActiveModel
         assert_nil association.meta
         assert_nil reflection.options.fetch(:meta)
 
+        evaluate_association_value(association)
+
         link = association.links.fetch(:self)
         assert_respond_to link, :call
         assert_respond_to reflection.options.fetch(:links).fetch(:self), :call
@@ -279,7 +305,7 @@ module ActiveModel
         # Assert after instance_eval link
         assert_equal 'no_uri_validation', reflection.instance_eval(&link)
         assert_equal @expected_meta, reflection.options.fetch(:meta)
-        assert_nil association.meta
+        assert_equal @expected_meta, association.meta
       end
       # rubocop:enable Metrics/AbcSize
 
@@ -307,6 +333,9 @@ module ActiveModel
         assert_nil reflection.options.fetch(:meta)
 
         # Assert before instance_eval link
+
+        evaluate_association_value(association)
+
         link = association.links.fetch(:self)
         assert_nil reflection.options.fetch(:meta)
         assert_respond_to link, :call
@@ -317,11 +346,11 @@ module ActiveModel
         assert_respond_to association.links.fetch(:self), :call
         # Assert before instance_eval link meta
         assert_respond_to reflection.options.fetch(:meta), :call
-        assert_nil association.meta
+        assert_respond_to association.meta, :call
 
         # Assert after instance_eval link meta
         assert_equal @expected_meta, reflection.instance_eval(&reflection.options.fetch(:meta))
-        assert_nil association.meta
+        assert_respond_to association.meta, :call
       end
       # rubocop:enable Metrics/AbcSize
 
@@ -342,6 +371,9 @@ module ActiveModel
         # Build Association
         association = reflection.build_association(serializer_instance, @instance_options)
         # Assert before instance_eval link
+
+        evaluate_association_value(association)
+
         link = association.links.fetch(:self)
         assert_respond_to link, :call
 
@@ -365,6 +397,9 @@ module ActiveModel
         reflection = serializer_class._reflections.fetch(:blog)
         assert_nil reflection.options.fetch(:meta)
         association = reflection.build_association(serializer_instance, @instance_options)
+
+        evaluate_association_value(association)
+
         assert_equal model1_meta, association.meta
         assert_equal model1_meta, reflection.options.fetch(:meta)
 
@@ -380,6 +415,9 @@ module ActiveModel
         assert_equal model1_meta, reflection.options.fetch(:meta)
 
         association = reflection.build_association(serializer_instance, @instance_options)
+
+        evaluate_association_value(association)
+
         assert_equal model2_meta, association.meta
         assert_equal model2_meta, reflection.options.fetch(:meta)
       end

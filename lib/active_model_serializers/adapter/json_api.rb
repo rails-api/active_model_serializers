@@ -257,7 +257,8 @@ module ActiveModelSerializers
 
       def process_relationships(serializer, include_slice)
         serializer.associations(include_slice).each do |association|
-          process_relationship(association.serializer, include_slice[association.key])
+          # TODO(BF): Process relationship without evaluating lazy_association
+          process_relationship(association.lazy_association.serializer, include_slice[association.key])
         end
       end
 
