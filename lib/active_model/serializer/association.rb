@@ -38,6 +38,10 @@ module ActiveModel
         reflection.options[:meta]
       end
 
+      def belongs_to?
+        reflection.foreign_key_on == :self
+      end
+
       def polymorphic?
         true == reflection_options[:polymorphic]
       end
