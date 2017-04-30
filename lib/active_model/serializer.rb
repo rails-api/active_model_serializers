@@ -12,6 +12,9 @@ require 'active_model/serializer/lint'
 # reified when subclassed to decorate a resource.
 module ActiveModel
   class Serializer
+    undef_method :select, :display # These IO methods, which are mixed into Kernel,
+    # sometimes conflict with attribute names. We don't need these IO methods.
+
     # @see #serializable_hash for more details on these valid keys.
     SERIALIZABLE_HASH_VALID_KEYS = [:only, :except, :methods, :include, :root].freeze
     extend ActiveSupport::Autoload
