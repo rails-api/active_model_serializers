@@ -43,14 +43,21 @@ module ActiveModelSerializers
         end
 
         def data_for_one(association)
-          # TODO(BF): Process relationship without evaluating lazy_association
-          serializer = association.lazy_association.serializer
-          if (virtual_value = association.virtual_value)
-            virtual_value
-          elsif serializer && association.object
-            ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+          if association.belongs_to? &&
+              parent_serializer.object.respond_to?(association.reflection.foreign_key)
+            id = parent_serializer.object.send(association.reflection.foreign_key)
+            type = association.reflection.type.to_s
+            ResourceIdentifier.for_type_with_id(type, id, serializable_resource_options)
           else
-            nil
+            # TODO(BF): Process relationship without evaluating lazy_association
+            serializer = association.lazy_association.serializer
+            if (virtual_value = association.virtual_value)
+              virtual_value
+            elsif serializer && association.object
+              ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+            else
+              nil
+            end
           end
         end
 

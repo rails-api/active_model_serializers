@@ -47,11 +47,23 @@ module ActiveModel
     #
     # So you can inspect reflections in your Adapters.
     class Reflection < Field
+      attr_reader :foreign_key, :type
+
       def initialize(*)
         super
         options[:links] = {}
         options[:include_data_setting] = Serializer.config.include_data_default
         options[:meta] = nil
+        @type = options.fetch(:type) do
+          class_name = options.fetch(:class_name, name.to_s.camelize.singularize)
+          class_name.underscore.pluralize.to_sym
+        end
+        @foreign_key =
+          if collection?
+            "#{name.to_s.singularize}_ids".to_sym
+          else
+            "#{name}_id".to_sym
+          end
       end
 
       # @api public
@@ -148,6 +160,11 @@ module ActiveModel
         else
           serializer.read_attribute_for_serialization(name)
         end
+      end
+
+      # @api private
+      def foreign_key_on
+        :related
       end
 
       # Build association. This method is used internally to
