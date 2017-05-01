@@ -1,3 +1,4 @@
+# coding: utf-8
 # {http://jsonapi.org/format/ JSON API specification}
 # rubocop:disable Style/AsciiComments
 # TODO: implement!
@@ -135,7 +136,7 @@ module ActiveModelSerializers
         #     ]
         hash[:included] = included if included.any?
 
-        Jsonapi.add!(hash)
+        Jsonapi.add!(hash, instance_options)
 
         if instance_options[:links]
           hash[:links] ||= {}
@@ -170,7 +171,7 @@ module ActiveModelSerializers
       def failure_document
         hash = {}
         # PR Please :)
-        # Jsonapi.add!(hash)
+        # Jsonapi.add!(hash, instance_options)
 
         # toplevel_errors
         # definition:

@@ -37,9 +37,23 @@ module ActiveModelSerializers
           end
         end
 
+        def test_disable_toplevel_jsonapi_using_instance_options
+          with_config(jsonapi_include_toplevel_object: true) do
+            hash = serialize(@post, jsonapi_include_toplevel_object: false)
+            assert_nil(hash[:jsonapi])
+          end
+        end
+
         def test_enable_toplevel_jsonapi
           with_config(jsonapi_include_toplevel_object: true) do
             hash = serialize(@post)
+            refute_nil(hash[:jsonapi])
+          end
+        end
+
+        def test_enable_toplevel_jsonapi_using_instance_options
+          with_config(jsonapi_include_toplevel_object: false) do
+            hash = serialize(@post, jsonapi_include_toplevel_object: true)
             refute_nil(hash[:jsonapi])
           end
         end
