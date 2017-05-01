@@ -257,7 +257,8 @@ module ActiveModelSerializers
 
       def process_relationships(serializer, include_slice)
         serializer.associations(include_slice).each do |association|
-          process_relationship(association.serializer, include_slice[association.key])
+          # TODO(BF): Process relationship without evaluating lazy_association
+          process_relationship(association.lazy_association.serializer, include_slice[association.key])
         end
       end
 
@@ -294,20 +295,8 @@ module ActiveModelSerializers
 
       # {http://jsonapi.org/format/#document-resource-objects Document Resource Objects}
       def resource_object_for(serializer, include_slice = {})
-        resource_object = serializer.fetch(self) do
-          resource_object = ResourceIdentifier.new(serializer, instance_options).as_json
+        resource_object = data_for(serializer, include_slice)
 
-          requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
-          attributes = attributes_for(serializer, requested_fields)
-          resource_object[:attributes] = attributes if attributes.any?
-          resource_object
-        end
-
-        requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
-        relationships = relationships_for(serializer, requested_associations, include_slice)
-        resource_object[:relationships] = relationships if relationships.any?
-
-        links = links_for(serializer)
         # toplevel_links
         # definition:
         #   allOf
@@ -321,7 +310,10 @@ module ActiveModelSerializers
         # prs:
         #   https://github.com/rails-api/active_model_serializers/pull/1247
         #   https://github.com/rails-api/active_model_serializers/pull/1018
-        resource_object[:links] = links if links.any?
+        if (links = links_for(serializer)).any?
+          resource_object ||= {}
+          resource_object[:links] = links
+        end
 
         # toplevel_meta
         #   alias meta
@@ -331,10 +323,31 @@ module ActiveModelSerializers
         #   {
         #     :'git-ref' => 'abc123'
         #   }
-        meta = meta_for(serializer)
-        resource_object[:meta] = meta unless meta.blank?
+        if (meta = meta_for(serializer)).present?
+          resource_object ||= {}
+          resource_object[:meta] = meta
+        end
 
         resource_object
+      end
+
+      def data_for(serializer, include_slice)
+        data = serializer.fetch(self) do
+          resource_object = ResourceIdentifier.new(serializer, instance_options).as_json
+          break nil if resource_object.nil?
+
+          requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
+          attributes = attributes_for(serializer, requested_fields)
+          resource_object[:attributes] = attributes if attributes.any?
+          resource_object
+        end
+        data.tap do |resource_object|
+          next if resource_object.nil?
+          # NOTE(BF): the attributes are cached above, separately from the relationships, below.
+          requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
+          relationships = relationships_for(serializer, requested_associations, include_slice)
+          resource_object[:relationships] = relationships if relationships.any?
+        end
       end
 
       # {http://jsonapi.org/format/#document-resource-object-relationships Document Resource Object Relationship}

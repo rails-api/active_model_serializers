@@ -74,6 +74,9 @@ Then, in your controller you can tell rails you're accepting and rendering the j
 end
 ```
 
+#### Note: 
+In Rails 5, the "unsafe" method ( `jsonapi_parse!` vs the safe `jsonapi_parse`) throws an `InvalidDocument` exception when the payload does not meet basic criteria for JSON API deserialization.
+
 
 ### Adapter Changes
 

@@ -1,7 +1,7 @@
 module ActiveModel
   class Serializer
     # @api private
-    class HasOneReflection < SingularReflection
+    class HasOneReflection < Reflection
     end
   end
 end

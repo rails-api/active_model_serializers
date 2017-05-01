@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.5...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.6...master)
 
 Breaking changes:
 
@@ -13,6 +13,20 @@ Fixes:
 - [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
 
 Misc:
+
+### [v0.10.6 (2017-05-01)](https://github.com/rails-api/active_model_serializers/compare/v0.10.5...v0.10.6)
+
+Fixes:
+
+- [#1857](https://github.com/rails-api/active_model_serializers/pull/1857) JSON:API does not load belongs_to relation to get identifier id. (@bf4)
+- [#2119](https://github.com/rails-api/active_model_serializers/pull/2119) JSON:API returns null resource object identifier when 'id' is null. (@bf4)
+- [#2093](https://github.com/rails-api/active_model_serializers/pull/2093) undef problematic Serializer methods: display, select. (@bf4)
+
+Misc:
+
+- [#2104](https://github.com/rails-api/active_model_serializers/pull/2104) Documentation for serializers and rendering. (@cassidycodes)
+- [#2081](https://github.com/rails-api/active_model_serializers/pull/2081) Documentation for `include` option in adapters. (@charlie-wasp)
+- [#2120](https://github.com/rails-api/active_model_serializers/pull/2120) Documentation for association options: foreign_key, type, class_name, namespace. (@bf4)
 
 ### [v0.10.5 (2017-03-07)](https://github.com/rails-api/active_model_serializers/compare/v0.10.4...v0.10.5)
 
@@ -81,7 +95,7 @@ Misc:
 
 - [#1878](https://github.com/rails-api/active_model_serializers/pull/1878) Cache key generation for serializers now uses `ActiveSupport::Cache.expand_cache_key` instead of `Array#join` by default and is also overridable. This change should be backward-compatible. (@markiz)
 
-- [#1799](https://github.com/rails-api/active_model_serializers/pull/1799) Add documentation for setting the adapter. (@ScottKbka)
+- [#1799](https://github.com/rails-api/active_model_serializers/pull/1799) Add documentation for setting the adapter. (@cassidycodes)
 - [#1909](https://github.com/rails-api/active_model_serializers/pull/1909) Add documentation for relationship links. (@vasilakisfil, @NullVoxPopuli)
 - [#1959](https://github.com/rails-api/active_model_serializers/pull/1959) Add documentation for root. (@shunsuke227ono)
 - [#1967](https://github.com/rails-api/active_model_serializers/pull/1967) Improve type method documentation. (@yukideluxe)

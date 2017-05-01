@@ -22,6 +22,14 @@ module ActiveModelSerializers
           JsonApi.send(:transform_key_casing!, raw_type, transform_options)
         end
 
+        def self.for_type_with_id(type, id, options)
+          return nil if id.blank?
+          {
+            id: id.to_s,
+            type: type_for(:no_class_needed, type, options)
+          }
+        end
+
         # {http://jsonapi.org/format/#document-resource-identifier-objects Resource Identifier Objects}
         def initialize(serializer, options)
           @id   = id_for(serializer)
@@ -29,6 +37,7 @@ module ActiveModelSerializers
         end
 
         def as_json
+          return nil if id.blank?
           { id: id, type: type }
         end
 

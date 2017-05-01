@@ -203,7 +203,7 @@ link(:link_name) { url_for(controller: 'controller_name', action: 'index', only_
 
 #### include
 
-PR please :)
+See [Adapters: Include Option](/docs/general/adapters.md#include-option).
 
 #### Overriding the root key
 
@@ -260,15 +260,29 @@ Note that by using a string and symbol, Ruby will assume the namespace is define
 
 #### serializer
 
-PR please :)
+Specify which serializer to use if you want to use a serializer other than the default.
+
+For a single resource:
+
+```ruby
+@post = Post.first
+render json: @post, serializer: SpecialPostSerializer
+```
+
+To specify which serializer to use on individual items in a collection (i.e., an `index` action), use `each_serializer`:
+
+```ruby
+@posts = Post.all
+render json: @posts, each_serializer: SpecialPostSerializer
+```
 
 #### scope
 
-PR please :)
+See [Serializers: Scope](/docs/general/serializers.md#scope).
 
 #### scope_name
 
-PR please :)
+See [Serializers: Scope](/docs/general/serializers.md#scope).
 
 ## Using a serializer without `render`
 

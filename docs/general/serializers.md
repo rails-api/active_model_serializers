@@ -64,6 +64,10 @@ Where:
   - `unless:`
   - `virtual_value:`
   - `polymorphic:` defines if polymorphic relation type should be nested in serialized association.
+  - `type:` the resource type as used by JSON:API, especially on a `belongs_to` relationship.
+  - `class_name:` used to determine `type` when `type` not given
+  - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object.
+  - `namespace:` used when looking up the serializer and `serializer` is not given.  Falls back to the parent serializer's `:namespace` instance options, which, when present, comes from the render options. See [Rendering#namespace](rendering.md#namespace] for more details.
 - optional: `&block` is a context that returns the association's attributes.
   - prevents `association_name` method from being called.
   - return value of block is used as the association value.
@@ -382,11 +386,26 @@ The serialized value for a given key. e.g. `read_attribute_for_serialization(:ti
 
 #### #links
 
-PR please :)
+Allows you to modify the `links` node. By default, this node will be populated with the attributes set using the [::link](#link) method. Using `links: nil` will remove the `links` node.
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(
+  @post,
+  adapter: :json_api,
+  links: {
+    self: {
+      href: 'http://example.com/posts',
+      meta: {
+        stuff: 'value'
+      }
+    }
+  }
+)
+```
 
 #### #json_key
 
-PR please :)
+Returns the key used by the adapter as the resource root. See [root](#root) for more information.
 
 ## Examples
 
