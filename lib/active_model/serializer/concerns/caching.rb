@@ -226,8 +226,9 @@ module ActiveModel
         end
       end
 
-      def fetch(adapter_instance, cache_options = serializer_class._cache_options, key = cache_key(adapter_instance))
+      def fetch(adapter_instance, cache_options = serializer_class._cache_options, key = nil)
         if serializer_class.cache_store
+          key ||= cache_key(adapter_instance)
           serializer_class.cache_store.fetch(key, cache_options) do
             yield
           end
