@@ -9,6 +9,7 @@ module ActiveModel
     # @example
     #   class PostSerializer < ActiveModel::Serializer
     #     has_one :author, serializer: AuthorSerializer
+    #     belongs_to :boss, type: :users, foreign_key: :boss_id
     #     has_many :comments
     #     has_many :comments, key: :last_comments do
     #       object.comments.last(1)
@@ -58,12 +59,13 @@ module ActiveModel
           class_name = options.fetch(:class_name, name.to_s.camelize.singularize)
           class_name.underscore.pluralize.to_sym
         end
-        @foreign_key =
+        @foreign_key = options.fetch(:foreign_key) do
           if collection?
             "#{name.to_s.singularize}_ids".to_sym
           else
             "#{name}_id".to_sym
           end
+        end
       end
 
       # @api public

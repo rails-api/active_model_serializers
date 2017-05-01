@@ -64,6 +64,9 @@ Where:
   - `unless:`
   - `virtual_value:`
   - `polymorphic:` defines if polymorphic relation type should be nested in serialized association.
+  - `type:` the resource type as used by JSON:API, especially on a `belongs_to` relationship.
+  - `class_name:` used to determine `type` when `type` not given
+  - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object.
 - optional: `&block` is a context that returns the association's attributes.
   - prevents `association_name` method from being called.
   - return value of block is used as the association value.
