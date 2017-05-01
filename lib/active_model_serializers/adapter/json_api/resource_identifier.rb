@@ -23,6 +23,7 @@ module ActiveModelSerializers
         end
 
         def self.for_type_with_id(type, id, options)
+          return nil if id.blank?
           {
             id: id.to_s,
             type: type_for(:no_class_needed, type, options)
@@ -36,6 +37,7 @@ module ActiveModelSerializers
         end
 
         def as_json
+          return nil if id.blank?
           { id: id, type: type }
         end
 

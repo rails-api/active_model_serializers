@@ -19,7 +19,7 @@ module ActionController
         end
 
         def render_using_adapter_override
-          @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+          @profile = Profile.new(id: 'render_using_adapter_override', name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile, adapter: :json_api
         end
 
@@ -41,7 +41,7 @@ module ActionController
 
         expected = {
           data: {
-            id: @controller.instance_variable_get(:@profile).id.to_s,
+            id: 'render_using_adapter_override',
             type: 'profiles',
             attributes: {
               name: 'Name 1',
