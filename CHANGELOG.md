@@ -1,6 +1,8 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.5...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.7...0-9-stable)
+
+### [v0.9.7 (2017-05-01)](https://github.com/rails-api/active_model_serializers/compare/v0.9.6...v0.9.7)
 
 - [#2080](https://github.com/rails-api/active_model_serializers/pull/2080) remove `{ payload: nil }` from `!serialize.active_model_serializers` ActiveSupport::Notification. `payload` never had a value.  Changes, for example `{ serializer: 'ActiveModel::DefaultSerializer', payload: nil }` to be `{ serializer: 'ActiveModel::DefaultSerializer' }` (@yosiat)
 
