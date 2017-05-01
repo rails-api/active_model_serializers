@@ -67,6 +67,7 @@ Where:
   - `type:` the resource type as used by JSON:API, especially on a `belongs_to` relationship.
   - `class_name:` used to determine `type` when `type` not given
   - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object.
+  - `namespace:` used when looking up the serializer and `serializer` is not given.  Falls back to the parent serializer's `:namespace` instance options, which, when present, comes from the render options. See [Rendering#namespace](rendering.md#namespace] for more details.
 - optional: `&block` is a context that returns the association's attributes.
   - prevents `association_name` method from being called.
   - return value of block is used as the association value.
