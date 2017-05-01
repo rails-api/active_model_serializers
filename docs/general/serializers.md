@@ -382,11 +382,26 @@ The serialized value for a given key. e.g. `read_attribute_for_serialization(:ti
 
 #### #links
 
-PR please :)
+Allows you to modify the `links` node. By default, this node will be populated with the attributes set using the [::link](#link) method. Using `links: nil` will remove the `links` node.
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(
+  @post,
+  adapter: :json_api,
+  links: {
+    self: {
+      href: 'http://example.com/posts',
+      meta: {
+        stuff: 'value'
+      }
+    }
+  }
+)
+```
 
 #### #json_key
 
-PR please :)
+Returns the key used by the adapter as the resource root. See [root](#root) for more information.
 
 ## Examples
 
