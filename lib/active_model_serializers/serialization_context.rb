@@ -21,7 +21,7 @@ module ActiveModelSerializers
       end
     end
 
-    attr_reader :request_url, :query_parameters, :key_transform
+    attr_reader :request_url, :query_parameters, :key_transform, :url_helpers
 
     def initialize(*args)
       options = args.extract_options!
