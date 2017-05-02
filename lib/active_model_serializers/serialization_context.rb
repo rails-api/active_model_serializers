@@ -21,15 +21,17 @@ module ActiveModelSerializers
       end
     end
 
-    attr_reader :request_url, :query_parameters, :key_transform
+    attr_reader :request_url, :query_parameters, :key_transform, :format
 
     def initialize(*args)
       options = args.extract_options!
       if args.size == 1
         request = args.pop
+        options[:format] = request.format.to_sym
         options[:request_url] = request.original_url[/\A[^?]+/]
         options[:query_parameters] = request.query_parameters
       end
+      @format = options.delete(:format)
       @request_url = options.delete(:request_url)
       @query_parameters = options.delete(:query_parameters)
       @url_helpers = options.delete(:url_helpers) || self.class.url_helpers

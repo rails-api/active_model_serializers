@@ -55,6 +55,16 @@ module ActiveModelSerializers
       assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter.class
     end
 
+    def test_create_adapter_with_mime
+      json_context = ActiveModelSerializers::SerializationContext.new(format: :json)
+      adapter = ActiveModelSerializers::Adapter.create(@serializer, adapter: :mime, serialization_context: json_context)
+      assert_equal ActiveModelSerializers::Adapter::Json, adapter.class
+
+      json_api_context = ActiveModelSerializers::SerializationContext.new(format: :json_api)
+      adapter = ActiveModelSerializers::Adapter.create(@serializer, adapter: :mime, serialization_context: json_api_context)
+      assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter.class
+    end
+
     def test_inflected_adapter_class_for_known_adapter
       ActiveSupport::Inflector.inflections(:en) { |inflect| inflect.acronym 'API' }
       klass = ActiveModelSerializers::Adapter.adapter_class(:json_api)

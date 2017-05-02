@@ -6,6 +6,8 @@ Breaking changes:
 
 Features:
 
+- [#2122](https://github.com/rails-api/active_model_serializers/pull/2122) Introduces per-request adapter switching based on the request mime. (@fletcher91)
+
 Fixes:
 
 Misc:

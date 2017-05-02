@@ -8,6 +8,7 @@ module ActiveModelSerializers
           context = Minitest::Mock.new
           context.expect(:request_url, URI)
           context.expect(:query_parameters, {})
+          context.expect(:format, Mime::Type.new(:json))
           options = {}
           options[:key_transform] = key_transform if key_transform
           options[:serialization_context] = context
