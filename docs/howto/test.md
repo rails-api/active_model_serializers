@@ -105,6 +105,30 @@ default schema path in an initializer.
 ActiveModelSerializers.config.schema_path = 'spec/support/schemas'
 ```
 
+### RSpec test helpers
+
+ActiveModelSerializers provides a `have_valid_schema` matcher to be used on your controller/request specs to
+validate the response against a [JSON Schema](http://json-schema.org/). Let's look at the equivalent setup for the example above.
+
+```ruby
+# rails_helper.rb
+require 'active_model_serializers/rspec'
+
+# spec/controller/posts_controller_spec.rb
+describe PostsController do
+  describe 'index' do
+    it "should render right response" do
+      get :index
+      expect(response).to have_valid_schema
+    end
+  end
+end
+```
+
+It's usage is on par with `assert_response_schema`. See [ActiveModelSerializers::Test::Schema](../../lib/active_model_serializers/test/schema.rb) and [ActiveModelSerializers::RSpecMatchers::Schema](../../lib/active_model_serializers/rspec_matchers/schema.rb)
+for more examples and documentation.
+
+
 #### Using with the Heroku’s JSON Schema-based tools
 
 To use the test helper with the [prmd](https://github.com/interagent/prmd) and
