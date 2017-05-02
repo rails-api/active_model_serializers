@@ -57,6 +57,13 @@ Misc:
 
 ### [v0.10.3 (2016-11-21)](https://github.com/rails-api/active_model_serializers/compare/v0.10.2...v0.10.3)
 
+Known Issues:
+
+- [#2048](https://github.com/rails-api/active_model_serializers/pull/2048)
+  The output of `render json: MyModel.new` has changed when no serializer
+  is found for `MyModel`. Now, we just call `as_json` on anything that doesn't
+  have a serializer.
+
 Fixes:
 
 - [#1973](https://github.com/rails-api/active_model_serializers/pull/1973) Fix namespace lookup for collections and has_many relationships (@groyoh)
