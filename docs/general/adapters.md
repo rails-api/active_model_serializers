@@ -36,6 +36,20 @@ The `Attributes` adapter does not include a root key. It is just the serialized 
 
 Use either the `JSON` or `JSON API` adapters if you want the response document to have a root key.
 
+To automatically switch between adapters based on the request, set the adapter to `:mime`
+
+```ruby
+  # In configuration
+  ActiveModelSerializers.config.adapter = :mime
+  
+  # In controller action
+  respond_to do |format|
+    format.json { render json: Model.first }     # Uses the JSON adapter
+    format.json_api { render json: Model.first } # Users the JSON:API adapter
+    format.bug { render json: Model.first } # Will raise `UnknownAdapterError`
+  end
+```
+
 ## Built in Adapters
 
 ### Attributes - Default

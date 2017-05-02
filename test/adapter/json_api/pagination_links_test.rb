@@ -26,6 +26,7 @@ module ActiveModelSerializers
           context.expect(:request_url, original_url)
           context.expect(:query_parameters, query_parameters)
           context.expect(:key_transform, nil)
+          context.expect(:format, Mime::Type.new(:json_api))
         end
 
         def load_adapter(paginated_collection, mock_request = nil)

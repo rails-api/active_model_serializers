@@ -19,6 +19,11 @@ module ActiveModelSerializers
 
       def create(resource, options = {})
         override = options.delete(:adapter)
+        context = options[:serialization_context]
+        format = context && context.format
+        if format && (override || ActiveModelSerializers.config.adapter) == :mime
+          override = lookup(format)
+        end
         klass = override ? adapter_class(override) : configured_adapter
         klass.new(resource, options)
       end
