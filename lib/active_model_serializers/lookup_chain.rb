@@ -36,6 +36,7 @@ module ActiveModelSerializers
     #  Api::V3::AuthorsController => [Api::AuthorSerializer]
     #  Api::V3::Frontend::AuthorsController => [Api::V3::AuthorSerializer, Api::AuthorSerializer]
     BY_NESTING_NAMESPACES = lambda do |_resource_class, _serializer_class, namespace|
+      return nil unless namespace
       nesting_namespaces(namespace.name).map do |container|
         BY_NAMESPACE.call(_resource_class, _serializer_class, container)
       end
