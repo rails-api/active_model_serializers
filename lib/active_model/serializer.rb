@@ -317,6 +317,10 @@ module ActiveModel
       define_singleton_method scope_name, -> { scope }
     end
 
+    def ==(other)
+      other.respond_to?(:object) && other.object == object
+    end
+
     def success?
       true
     end
