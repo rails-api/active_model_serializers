@@ -165,6 +165,36 @@ module ActiveModel
         assert_equal expected, actual
       end
 
+      class ExternalBlog < Blog
+        attributes :external_id
+      end
+      class BelongsToExternalBlogModel < ::Model
+        attributes :id, :title, :external_blog_id
+        associations :external_blog
+      end
+      class BelongsToExternalBlogModelSerializer < ActiveModel::Serializer
+        type :posts
+        belongs_to :external_blog
+
+        def external_blog_id
+          object.external_blog.external_id
+        end
+      end
+
+      def test_belongs_to_allows_id_overwriting
+        attributes = {
+          id: 1,
+          title: 'Title',
+          external_blog: ExternalBlog.new(id: 5, external_id: 6)
+        }
+        post = BelongsToExternalBlogModel.new(attributes)
+
+        actual = serializable(post, adapter: :json_api, serializer: BelongsToExternalBlogModelSerializer).as_json
+        expected = { data: { id: '1', type: 'posts', relationships: { :'external-blog' => { data: { id: '6', type: 'external-blogs' } } } } }
+
+        assert_equal expected, actual
+      end
+
       class InlineAssociationTestPostSerializer < ActiveModel::Serializer
         has_many :comments
         has_many :comments, key: :last_comments do
