@@ -45,7 +45,7 @@ module ActiveModelSerializers
         def data_for_one(association)
           if association.belongs_to? &&
               parent_serializer.object.respond_to?(association.reflection.foreign_key)
-            id = parent_serializer.object.send(association.reflection.foreign_key)
+            id = parent_serializer.read_attribute_for_serialization(association.reflection.foreign_key)
             type = association.reflection.type.to_s
             ResourceIdentifier.for_type_with_id(type, id, serializable_resource_options)
           else
