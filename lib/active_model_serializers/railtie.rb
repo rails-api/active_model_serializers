@@ -2,6 +2,7 @@ require 'rails/railtie'
 require 'action_controller'
 require 'action_controller/railtie'
 require 'action_controller/serialization'
+require 'active_record/relation_serialization'
 
 module ActiveModelSerializers
   class Railtie < Rails::Railtie
@@ -12,6 +13,12 @@ module ActiveModelSerializers
     initializer 'active_model_serializers.action_controller' do
       ActiveSupport.on_load(:action_controller) do
         include(::ActionController::Serialization)
+      end
+    end
+
+    initializer 'active_model_serializers.active_record_relation' do
+      ActiveSupport.on_load(:active_record) do
+        ActiveRecord::Relation.include ActiveRecord::RelationSerialization
       end
     end
 
