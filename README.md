@@ -85,7 +85,7 @@ it exists, use it to serialize the `Post`.
 
 This also works with `respond_with`, which uses `to_json` under the hood. Also
 note that any options passed to `render :json` will be passed to your
-serializer and available as `@options` inside.
+serializer and available as `@serialization_options` inside.
 
 To specify a custom serializer for an object, you can specify the
 serializer when you render the object:
