@@ -4,13 +4,7 @@ Before opening an issue, try the following:
 
 ##### Consult the documentation
 
-See if your issue can be resolved by information in the documentation.
-
-- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/v0.10.0)
-  - [Guides](docs)
-- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
-- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
+See if your issue can be resolved by information in the [documentation](README.md).
 
 ##### Check for an existing issue
 
@@ -43,7 +37,9 @@ for discussion or add your comments to existing ones.
 We also gladly welcome pull requests. When preparing to work on pull request,
 please adhere to these standards:
 
-- Base work on the master branch unless fixing an issue with
+- Base work on the relevant branch:
+  [0.10-stable](https://github.com/rails-api/active_model_serializers/tree/0-10-stable)
+  or
   [0.9-stable](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
   or
   [0.8-stable](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
@@ -52,10 +48,10 @@ please adhere to these standards:
 - Note any specific areas that should be reviewed.
 - Include tests.
 - The test suite must pass on [supported Ruby versions](.travis.yml)
-- Include updates to the [documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
+- Include updates to the [documentation](docs)
   where applicable.
 - Update the
-  [CHANGELOG](https://github.com/rails-api/active_model_serializers/blob/master/CHANGELOG.md)
+  [CHANGELOG](CHANGELOG.md)
   to the appropriate sections with a brief description of the changes.
 - Do not change the VERSION file.
 
@@ -102,4 +98,3 @@ fi
   unset RAILS_VERSION
 done
 ```
-
