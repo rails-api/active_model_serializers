@@ -204,5 +204,15 @@ module AMS
     def send(*args)
       __send__(*args)
     end
+
+    private
+
+      def method_missing(name, *args, &block)
+        object.send(name, *args, &block)
+      end
+
+      def respond_to_missing?(name, include_private = false)
+        object.respond_to?(name, include_private)
+      end
   end
 end
