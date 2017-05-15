@@ -139,7 +139,7 @@ module AMS
       @object = object
     end
 
-    def as_json
+    def to_h
       {
         id: id,
         type: type
@@ -148,6 +148,7 @@ module AMS
         relationships: relations
       }.reject { |_, v| v.empty? })
     end
+    alias as_json to_h
 
     def to_json
       dump(as_json)
