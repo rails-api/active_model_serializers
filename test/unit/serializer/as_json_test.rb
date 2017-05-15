@@ -30,7 +30,7 @@ module AMS
           id: 1, type: :profiles,
           attributes: { name: "name", summary: "description" },
           relationships:
-          { child_models: [{ data: { id: 2, type: "comments" } }] }
+          { child_models: { data: [{ id: 2, type: "comments" }] } }
         }
         assert_equal expected, @serializer_instance.as_json
       end
@@ -40,7 +40,7 @@ module AMS
           id: 1, type: :profiles,
           attributes: { name: "name", summary: "description" },
           relationships:
-          { child_models: [{ data: { id: 2, type: "comments" } }] }
+          { child_models: { data: [{ id: 2, type: "comments" }] } }
         }.to_json
         assert_equal expected, @serializer_instance.to_json
       end

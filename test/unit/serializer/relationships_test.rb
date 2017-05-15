@@ -20,18 +20,18 @@ module AMS
 
       def test_model_instance_relations
         expected_relations = {
-          child_models: [{
-            data: { type: "comments", id: 2 }
-          }]
+          child_models: {
+            data: [{ type: "comments", id: 2 }]
+          }
         }
         assert_equal expected_relations, @serializer_instance.relations
       end
 
-      def test_model_instance_relationship_object
+      def test_model_instance_relationship_data
         expected = {
-          data: { type: :bananas, id: 5 }
+          type: :bananas, id: 5
         }
-        assert_equal expected, @serializer_instance.relationship_object(5, :bananas)
+        assert_equal expected, @serializer_instance.relationship_data(5, :bananas)
       end
     end
   end

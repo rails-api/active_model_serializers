@@ -108,9 +108,7 @@ module AMS
           end
 
           def #{relation_name}
-            related_#{relation_name}_ids.map do |id|
-              relationship_object(id, "#{type}")
-            end
+            relationship_object(related_#{relation_name}_ids, "#{type}")
           end
         METHOD
       end
@@ -183,10 +181,19 @@ module AMS
       self.class._relations
     end
 
-    def relationship_object(id, type)
-      {
-        "data": { "id": id, "type": type }, # resource linkage
-      }
+    def relationship_object(id_or_ids, type)
+      data =
+        if id_or_ids.respond_to?(:to_ary)
+          id_or_ids.map { |id| relationship_data(id, type) }
+        else
+          relationship_data(id_or_ids, type)
+        end
+      { "data": data }
+    end
+
+    # resource linkage
+    def relationship_data(id, type)
+      { "id": id, "type": type }
     end
 
     def dump(obj)
