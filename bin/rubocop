@@ -5,11 +5,12 @@
 #   bin/rubocop [file or path] [cli options]
 #
 # Options:
-#  Autocorrect    -A
-#  AutoGenConfig  -t
-#  Usage          -h,--help,help
+#  -A                      Autocorrect
+#  -t                      AutoGenConfig
+#  --update-config         Update config from Rails
+#  -h,--help,help          Usage
 
-set -e
+set -eou pipefail
 
 case $1 in
   -A)
@@ -25,6 +26,15 @@ case $1 in
   -h|--help|help)
      sed -ne '/^#/!q;s/.\{1,2\}//;1d;p' < "$0"
      ;;
+
+  --update-config)
+    curl -X GET https://raw.githubusercontent.com/rails/rails/master/.rubocop.yml -o .rubocop.yml
+    bundle check || bundle install --local || bundle install
+    echo "Current rubocop version is:"
+    bundle show rubocop
+    echo "Rails rubocop version is:"
+    curl -X GET https://raw.githubusercontent.com/rails/rails/master/Gemfile | grep rubocop
+    ;;
 
   *)
      # with no args, run vanilla rubocop
