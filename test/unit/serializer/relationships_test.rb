@@ -1,16 +1,16 @@
 # frozen_string_literal: true
-require 'test_helper'
+require "test_helper"
 
 module AMS
   class Serializer
     class RelationshipsTest < Test
       class ParentModelSerializer < Serializer
-        relation :child_models, type: :comments, to: :many, ids: 'object.child_models.map(&:id)'
+        relation :child_models, type: :comments, to: :many, ids: "object.child_models.map(&:id)"
       end
 
       def setup
         super
-        @relation = ChildModel.new(id: 2, name: 'comment')
+        @relation = ChildModel.new(id: 2, name: "comment")
         @object = ParentModel.new(
           child_models: [@relation]
         )
@@ -21,7 +21,7 @@ module AMS
       def test_model_instance_relations
         expected_relations = {
           child_models: [{
-            data: {type: 'comments', id: 2 }
+            data: { type: "comments", id: 2 }
           }]
         }
         assert_equal expected_relations, @serializer_instance.relations
@@ -29,7 +29,7 @@ module AMS
 
       def test_model_instance_relationship_object
         expected = {
-          data: {type: :bananas, id: 5 }
+          data: { type: :bananas, id: 5 }
         }
         assert_equal expected, @serializer_instance.relationship_object(5, :bananas)
       end

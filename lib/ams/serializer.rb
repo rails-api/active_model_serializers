@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'json'
+require "json"
 module AMS
   # Lightweight mapping of a model to a JSON API resource object
   # with attributes and relationships
@@ -38,7 +38,7 @@ module AMS
     class << self
       attr_accessor :_attributes, :_relations, :_id_field, :_type
 
-      def add_instance_method(body, receiver=self)
+      def add_instance_method(body, receiver = self)
         cl = caller_locations[0]
         silence_warnings { receiver.module_eval body, cl.absolute_path, cl.lineno }
       end
@@ -60,7 +60,7 @@ module AMS
         super
         base._attributes = _attributes.dup
         base._relations = _relations.dup
-        base._type = base.name.split('::')[-1].sub('Serializer', '').downcase
+        base._type = base.name.split("::")[-1].sub("Serializer", "").downcase
         add_class_method "def class; #{base}; end", base
         add_instance_method "def id; object.id; end", base
       end
@@ -79,7 +79,7 @@ module AMS
       end
 
       def attribute(attribute_name, key: attribute_name)
-        fail 'ForbiddenKey' if attribute_name == :id
+        fail "ForbiddenKey" if attribute_name == :id
         _attributes[attribute_name] = { key: key }
         add_instance_method <<-METHOD
         def #{attribute_name}

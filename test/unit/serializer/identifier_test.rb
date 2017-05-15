@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'test_helper'
+require "test_helper"
 
 module AMS
   class Serializer
@@ -10,7 +10,7 @@ module AMS
 
       def setup
         super
-        @object = ParentModel.new( id: 1,)
+        @object = ParentModel.new(id: 1,)
         @serializer_class = ParentModelSerializer
         @serializer_instance = @serializer_class.new(@object)
       end

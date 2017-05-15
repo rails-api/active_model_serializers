@@ -50,7 +50,7 @@ class PlainModel
   end
 end
 
-class ParentModel< PlainModel
+class ParentModel < PlainModel
   attributes :id, :name, :description
   associations :child_models
 end
