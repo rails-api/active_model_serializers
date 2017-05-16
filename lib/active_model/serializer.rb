@@ -295,8 +295,13 @@ module ActiveModel
     # @example
     #   class AdminAuthorSerializer < ActiveModel::Serializer
     #     type 'authors'
-    def self.type(type)
-      self._type = type && type.to_s
+    # @example
+    #   class AdminAuthorSerializer < ActiveModel::Serializer
+    #     type do
+    #       object.type
+    #     end
+    def self.type(type = nil, &block)
+      self._type = (type && type.to_s) || block
     end
 
     # END SERIALIZER MACROS

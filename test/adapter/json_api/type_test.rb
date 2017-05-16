@@ -15,6 +15,20 @@ module ActiveModel
             type :profile
           end
 
+          class BlockTypeSerializer < ActiveModel::Serializer
+            attribute :name
+            type do
+              'wri' + 'ter'
+            end
+          end
+
+          class BlockTypeSerializerWithObject < ActiveModel::Serializer
+            attribute :name
+            type do
+              object.class.to_s.downcase
+            end
+          end
+
           setup do
             @author = Author.new(id: 1, name: 'Steve K.')
           end
@@ -37,6 +51,14 @@ module ActiveModel
 
           def test_explicit_symbol_type_value
             assert_type(@author, 'profile', serializer: SymbolTypeSerializer)
+          end
+
+          def test_explicit_block_type_value_using_object
+            assert_type(@author, 'author', serializer: BlockTypeSerializerWithObject)
+          end
+
+          def test_explicit_block_type_value_using_arbitrary_code
+            assert_type(@author, 'writer', serializer: BlockTypeSerializer)
           end
 
           private
