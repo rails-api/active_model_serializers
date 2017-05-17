@@ -135,7 +135,6 @@ module ActiveModel
             assert_nil(hash[:included])
           end
 
-
           def test_nested_relationship
             expected = {
               data: [
