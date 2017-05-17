@@ -5,6 +5,7 @@
 Breaking changes:
 
 Features:
+- [#2136](https://github.com/rails-api/active_model_serializers/pull/2136) Enable inclusion of sideloaded relationship objects by `key`. (@caomania)
 
 Fixes:
 
