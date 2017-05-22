@@ -9,6 +9,7 @@ Features:
 
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
 - [#2130](https://github.com/rails-api/active_model_serializers/pull/2130) Allow serialized ID to be overwritten for belongs-to relationships. (@greysteil)
+- [#2140](https://github.com/rails-api/active_model_serializers/pull/2140) Allow for configuration option that will automatically look up serializers with a `belongs_to` relationship. (@cassidycodes)
 
 Fixes:
 

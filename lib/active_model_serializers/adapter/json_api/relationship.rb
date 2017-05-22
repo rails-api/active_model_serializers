@@ -43,7 +43,8 @@ module ActiveModelSerializers
         end
 
         def data_for_one(association)
-          if association.belongs_to? &&
+          if !ActiveModelSerializers.config.belongs_to_uses_id_on_self &&
+              association.belongs_to? &&
               parent_serializer.object.respond_to?(association.reflection.foreign_key)
             id = parent_serializer.read_attribute_for_serialization(association.reflection.foreign_key)
             type = association.reflection.type.to_s

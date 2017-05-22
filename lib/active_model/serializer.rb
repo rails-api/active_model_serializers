@@ -118,6 +118,7 @@ module ActiveModel
     # BEGIN DEFAULT CONFIGURATION
     config.collection_serializer = ActiveModel::Serializer::CollectionSerializer
     config.serializer_lookup_enabled = true
+    config.belongs_to_uses_id_on_self = false
 
     # @deprecated Use {#config.collection_serializer=} instead of this. Is
     #   compatibility layer for ArraySerializer.

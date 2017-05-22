@@ -28,6 +28,31 @@ Possible values:
 
 When `false`, serializers must be explicitly specified.
 
+##### belongs_to_uses_id_on_self
+
+Enable automatic serializer lookup when using a `belongs_to` without `has_many`.
+
+Possible values:
+
+- `true`
+- `false` (default)
+
+When `false`, serializers must be explicitly specified in order to use a custom `type` field in the serializer.
+
+```ruby
+class PostSerializer <  ActiveModel::Serializer
+  belongs_to :blog, type: 'custom-type'
+end
+```
+
+or to explicitly state the serializer:
+
+```ruby
+class PostSerializer <  ActiveModel::Serializer
+  belongs_to :foo, serializer: FooSerializer
+end
+```
+
 ##### key_transform
 
 The [key transform](key_transforms.md) to use.
