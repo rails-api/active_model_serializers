@@ -212,22 +212,20 @@ module ActiveModel
       end
 
       def test_belongs_to_allows_type_overwriting
-        begin
-          ActiveModelSerializers.config.belongs_to_uses_id_on_self = true
+        ActiveModelSerializers.config.belongs_to_uses_id_on_self = true
 
-          attributes = {
-            id: 1,
-            title: 'Belongs to Blog with Custom Type',
-            blog_with_custom_type: BlogWithCustomType.new(id: 1)
-          }
-          post = BelongsToBlogWithCustomTypeModel.new(attributes)
+        attributes = {
+          id: 1,
+          title: 'Belongs to Blog with Custom Type',
+          blog_with_custom_type: BlogWithCustomType.new(id: 1)
+        }
+        post = BelongsToBlogWithCustomTypeModel.new(attributes)
 
-          actual = serializable(post, adapter: :json_api, serializer: BelongsToBlogWithCustomTypeModelSerializer).as_json
-          expected = { data: { id: '1', type: 'posts', relationships: { :'blog-with-custom-type' => { data: { id: '1', type: 'custom-type' } } } } }
-          assert_equal expected, actual
-        ensure
-          ActiveModelSerializers.config.belongs_to_uses_id_on_self = false
-        end
+        actual = serializable(post, adapter: :json_api, serializer: BelongsToBlogWithCustomTypeModelSerializer).as_json
+        expected = { data: { id: '1', type: 'posts', relationships: { :'blog-with-custom-type' => { data: { id: '1', type: 'custom-type' } } } } }
+        assert_equal expected, actual
+      ensure
+        ActiveModelSerializers.config.belongs_to_uses_id_on_self = false
       end
 
       class InlineAssociationTestPostSerializer < ActiveModel::Serializer
