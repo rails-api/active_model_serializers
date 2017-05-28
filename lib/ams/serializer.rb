@@ -3,6 +3,7 @@
 require "json"
 require "ams/inflector"
 require "ams/dsl_support"
+require "ams/delegatable"
 module AMS
   # Lightweight mapping of a model to a JSON API resource object
   # with attributes and relationships
@@ -32,11 +33,8 @@ module AMS
   #  ums = UserModelSerializer.new(user)
   #  ums.to_json
   class Serializer < BasicObject
-    extend DSLSupport
-    # delegate constant lookup to Object
-    def self.const_missing(name)
-      ::Object.const_get(name)
-    end
+    extend ::AMS::DSLSupport
+    extend ::AMS::Delegatable
 
     class << self
       attr_accessor :_attributes, :_relations, :_id_field, :_type
@@ -422,16 +420,6 @@ module AMS
       JSON.dump(obj)
     end
 
-    # @!visibility private
-    def send(*args)
-      __send__(*args)
-    end
-
-    KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
-    def method(method_name)
-      KERNEL_METHOD_METHOD.bind(self).call(method_name)
-    end
-
     private
 
       def link_builder?
@@ -466,10 +454,6 @@ module AMS
 
       def foreign_key
         "#{object.class.table_name.singularize}_id"
-      end
-
-      def method_missing(name, *args, &block)
-        object.send(name, *args, &block)
       end
   end
 end
