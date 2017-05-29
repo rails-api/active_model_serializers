@@ -22,6 +22,18 @@ Serialization of the resource `title` and `body`
 | `attributes :title, :body`  | `{ title: 'Some Title', body: 'Some Body' }`
 | `attributes :title, :body`<br>`def body "Special #{object.body}" end` | `{ title: 'Some Title', body: 'Special Some Body' }`
 
+An `if` or `unless` option can make attributes conditional. It takes a symbol of a method name on the serializer, or a lambda literal.
+
+e.g.
+
+```ruby
+attributes :private_data, :another_private_data, if: :is_current_user?
+attributes :title, :body, if: -> { scope.admin? }
+
+def is_current_user?
+  object.id == current_user.id
+end
+```
 
 #### ::attribute
 

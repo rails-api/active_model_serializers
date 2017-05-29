@@ -97,7 +97,7 @@ module ActiveModel
       end
 
       # rubocop:disable Metrics/AbcSize
-      def test_conditional_associations
+      def test_conditional_attribute
         model = Class.new(::Model) do
           attributes :true, :false, :attribute
         end.new(true: true, false: false)
@@ -136,6 +136,51 @@ module ActiveModel
 
           hash = serializable(model, serializer: serializer).serializable_hash
           assert_equal(s[:included], hash.key?(:attribute), "Error with #{s[:options]}")
+        end
+      end
+
+      # rubocop:disable Metrics/AbcSize
+      def test_conditional_attributes
+        model = Class.new(::Model) do
+          attributes :true, :false, :attribute_1, :attribute_2
+        end.new(true: true, false: false)
+
+        scenarios = [
+          { options: { if:     :true  }, included: true  },
+          { options: { if:     :false }, included: false },
+          { options: { unless: :false }, included: true  },
+          { options: { unless: :true  }, included: false },
+          { options: { if:     'object.true'  }, included: true  },
+          { options: { if:     'object.false' }, included: false },
+          { options: { unless: 'object.false' }, included: true  },
+          { options: { unless: 'object.true'  }, included: false },
+          { options: { if:     -> { object.true }  }, included: true  },
+          { options: { if:     -> { object.false } }, included: false },
+          { options: { unless: -> { object.false } }, included: true  },
+          { options: { unless: -> { object.true }  }, included: false },
+          { options: { if:     -> (s) { s.object.true }  }, included: true  },
+          { options: { if:     -> (s) { s.object.false } }, included: false },
+          { options: { unless: -> (s) { s.object.false } }, included: true  },
+          { options: { unless: -> (s) { s.object.true }  }, included: false }
+        ]
+
+        scenarios.each do |s|
+          serializer = Class.new(ActiveModel::Serializer) do
+            attributes :attribute_1, s[:options]
+            attributes [:attribute_2], s[:options]
+
+            def true
+              true
+            end
+
+            def false
+              false
+            end
+          end
+
+          hash = serializable(model, serializer: serializer).serializable_hash
+          assert_equal(s[:included], hash.key?(:attribute_1), "Error with #{s[:options]}")
+          assert_equal(s[:included], hash.key?(:attribute_2), "Error with #{s[:options]}")
         end
       end
 
