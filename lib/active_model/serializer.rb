@@ -335,7 +335,7 @@ module ActiveModel
     # @param [JSONAPI::IncludeDirective] include_directive (defaults to the
     #   +default_include_directive+ config value when not provided)
     # @return [Enumerator<Association>]
-    def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil)
+    def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil, options = {})
       include_slice ||= include_directive
       return Enumerator.new unless object
 
@@ -344,7 +344,7 @@ module ActiveModel
           next if reflection.excluded?(self)
           next unless include_directive.key?(key)
 
-          association = reflection.build_association(self, instance_options, include_slice)
+          association = reflection.build_association(self, instance_options.merge(options), include_slice)
           y.yield association
         end
       end
@@ -396,9 +396,13 @@ module ActiveModel
     def associations_hash(adapter_options, options, adapter_instance)
       include_directive = options.fetch(:include_directive)
       include_slice = options[:include_slice]
-      associations(include_directive, include_slice).each_with_object({}) do |association, relationships|
+      associations(include_directive, include_slice, options).each_with_object({}) do |association, relationships|
         adapter_opts = adapter_options.merge(include_directive: include_directive[association.key], adapter_instance: adapter_instance)
-        relationships[association.key] = association.serializable_hash(adapter_opts, adapter_instance)
+        association_fields = options[:fields].try(:find) do |field_item|
+          field_item.is_a?(Hash) && field_item.key?(association.key)
+        end
+        association_opts = association_fields ? { fields: association_fields[association.key] } : {}
+        relationships[association.key] = association.serializable_hash(adapter_opts, association_opts, adapter_instance)
       end
     end
 

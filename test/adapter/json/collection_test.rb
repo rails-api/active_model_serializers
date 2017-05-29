@@ -98,6 +98,26 @@ module ActiveModelSerializers
 
           assert_equal(expected, actual)
         end
+
+        def test_fields_with_associations_include_option
+          actual = ActiveModelSerializers::SerializableResource.new(
+            [@first_post, @second_post], adapter: :json, fields: [:id, { author: [:name] }], include: ['author']
+          ).as_json
+
+          expected = { posts: [{
+            id: 1,
+            author: {
+              name: 'Steve K.'
+            }
+          }, {
+            id: 2,
+            author: {
+              name: 'Steve K.'
+            }
+          }] }
+
+          assert_equal(expected, actual)
+        end
       end
     end
   end

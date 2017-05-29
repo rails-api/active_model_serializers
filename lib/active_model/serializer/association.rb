@@ -47,13 +47,13 @@ module ActiveModel
       end
 
       # @api private
-      def serializable_hash(adapter_options, adapter_instance)
+      def serializable_hash(adapter_options, options, adapter_instance)
         association_serializer = lazy_association.serializer
         return virtual_value if virtual_value
         association_object = association_serializer && association_serializer.object
         return unless association_object
 
-        serialization = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
+        serialization = association_serializer.serializable_hash(adapter_options, options, adapter_instance)
 
         if polymorphic? && serialization
           polymorphic_type = association_object.class.name.underscore
