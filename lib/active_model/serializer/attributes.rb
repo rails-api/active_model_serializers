@@ -34,8 +34,7 @@ module ActiveModel
         #   class AdminAuthorSerializer < ActiveModel::Serializer
         #     attributes :id, :name, :recent_edits
         def attributes(*attrs)
-          options = attrs.last.class == Hash ? attrs.pop : {}
-          options = options.except(:key)
+          options = attrs.extract_options!.except(:key)
 
           attrs = attrs.first if attrs.first.class == Array
 
