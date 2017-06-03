@@ -9,6 +9,22 @@ module SerializationTesting
     ActiveModelSerializers::SerializableResource.new(obj).to_json
   end
 
+  def with_namespace_separator(separator)
+    original_separator = ActiveModelSerializers.config.jsonapi_namespace_separator
+    ActiveModelSerializers.config.jsonapi_namespace_separator = separator
+    yield
+  ensure
+    ActiveModelSerializers.config.jsonapi_namespace_separator = original_separator
+  end
+
+  def with_prepended_lookup(lookup_proc)
+    original_lookup = ActiveModelSerializers.config.serializer_lookup_cahin
+    ActiveModelSerializers.config.serializer_lookup_chain.unshift lookup_proc
+    yield
+  ensure
+    ActiveModelSerializers.config.serializer_lookup_cahin = original_lookup
+  end
+
   # Aliased as :with_configured_adapter to clarify that
   # this method tests the configured adapter.
   # When not testing configuration, it may be preferable
@@ -44,10 +60,12 @@ module SerializationTesting
   end
 end
 
-class Minitest::Test
-  def before_setup
-    ActionController::Base.cache_store.clear
-  end
+module Minitest
+  class Test
+    def before_setup
+      ActionController::Base.cache_store.clear
+    end
 
-  include SerializationTesting
+    include SerializationTesting
+  end
 end

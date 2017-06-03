@@ -1,10 +1,7 @@
 module ActiveModel
   class Serializer
     # @api private
-    class HasOneReflection < SingularReflection
-      def macro
-        :has_one
-      end
+    class HasOneReflection < Reflection
     end
   end
 end

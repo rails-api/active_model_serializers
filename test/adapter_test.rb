@@ -51,7 +51,7 @@ module ActiveModelSerializers
     end
 
     def test_create_adapter_with_override
-      adapter = ActiveModelSerializers::Adapter.create(@serializer, { adapter: :json_api })
+      adapter = ActiveModelSerializers::Adapter.create(@serializer, adapter: :json_api)
       assert_equal ActiveModelSerializers::Adapter::JsonApi, adapter.class
     end
 

@@ -10,8 +10,8 @@ In ActiveModelSerializers versions 0.10 or later, serializing resources outside 
 # Create our resource
 post = Post.create(title: "Sample post", body: "I love Active Model Serializers!")
 
-# Optional options parameters
-options = {}
+# Optional options parameters for both the serializer and instance
+options = {serializer: PostDetailedSerializer, username: 'sample user'}
 
 # Create a serializable resource instance
 serializable_resource = ActiveModelSerializers::SerializableResource.new(post, options)
@@ -19,10 +19,12 @@ serializable_resource = ActiveModelSerializers::SerializableResource.new(post, o
 # Convert your resource into json
 model_json = serializable_resource.as_json
 ```
+The object that is passed to `ActiveModelSerializers::SerializableResource.new` can be a single resource or a collection.
+The additional options are the same options that are passed [through controllers](../general/rendering.md#explicit-serializer).
 
 ### Looking up the Serializer for a Resource
 
-If you want to retrieve a serializer for a specific resource, you can do the following:
+If you want to retrieve the serializer class for a specific resource, you can do the following:
 
 ```ruby
 # Create our resource
@@ -41,7 +43,13 @@ You could also retrieve the serializer via:
 ActiveModelSerializers::SerializableResource.new(post, options).serializer
 ```
 
-Both approaches will return an instance, if any, of the resource's serializer.
+Both approaches will return the serializer class that will be used for the resource.
+
+Additionally, you could retrieve the serializer instance for the resource via:
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(post, options).serializer_instance
+```
 
 ## Serializing before controller render
 

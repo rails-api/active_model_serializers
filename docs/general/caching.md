@@ -2,6 +2,12 @@
 
 # Caching
 
+## Warning
+
+There is currently a problem with caching in AMS [Caching doesn't improve performance](https://github.com/rails-api/active_model_serializers/issues/1586). Adding caching _may_ slow down your application, rather than speeding it up. We suggest you benchmark any caching you implement before using in a production enviroment
+
+___
+
 To cache a serializer, call ```cache``` and pass its options.
 The options are the same options of ```ActiveSupport::Cache::Store```, plus
 a ```key``` option that will be the prefix of the object cache
@@ -17,7 +23,7 @@ The cache support is optimized to use the cached object in multiple request. An 
 cache(options = nil) # options: ```{key, expires_in, compress, force, race_condition_ttl}```
 ```
 
-Take the example bellow:
+Take the example below:
 
 ```ruby
 class PostSerializer < ActiveModel::Serializer

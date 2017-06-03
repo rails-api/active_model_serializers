@@ -17,25 +17,75 @@ To solve this, in Ember, both the adapter and the serializer will need some modi
 
 ### Server-Side Changes
 
-there are multiple mimetypes for json that should all be parsed similarly, so
-in `config/initializers/mime_types.rb`:
-```ruby
-api_mime_types = %W(
-  application/vnd.api+json
-  text/x-json
-  application/json
-)
+First, set the adapter type in an initializer file:
 
-Mime::Type.unregister :json
-Mime::Type.register 'application/json', :json, api_mime_types
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.adapter = :json_api
 ```
+
+or:
+
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.adapter = ActiveModelSerializers::Adapter::JsonApi
+```
+
+You will also want to set the `key_transform` to `:unaltered` since you will adjust the attributes in your Ember serializer to use underscores instead of dashes later. You could also use `:underscore`, but `:unaltered` is better for performance.
+
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveModelSerializers.config.key_transform = :unaltered
+```
+
+In order to properly handle JSON API responses, we need to register a JSON API renderer, like so:
+
+```ruby
+# config/initializers/active_model_serializers.rb
+ActiveSupport.on_load(:action_controller) do
+  require 'active_model_serializers/register_jsonapi_renderer'
+end
+```
+Rails also requires your controller to tell it that you accept and generate JSONAPI data.  To do that, you use `respond_to` in your controller handlers to tell rails you are consuming and returning jsonapi format data. Without this, Rails will refuse to parse the request body into params.  You can add `ActionController::MimeResponds` to your application controller to enable this:
+
+```ruby
+class ApplicationController < ActionController::API
+  include ActionController::MimeResponds
+end
+```
+Then, in your controller you can tell rails you're accepting and rendering the jsonapi format:
+```ruby
+ # POST /post
+  def create
+    @post = Post.new(post_params)
+    respond_to do |format|
+      if @post.save
+        format.jsonapi { render jsonapi: @post, status: :created, location: @post }
+      else
+        format.jsonapi { render jsonapi: @post.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
+    # Only allow a trusted parameter "white list" through.
+    def post_params
+      ActiveModelSerializers::Deserialization.jsonapi_parse!(params, only: [:title, :body] )
+    end
+end
+```
+
+#### Note: 
+In Rails 5, the "unsafe" method ( `jsonapi_parse!` vs the safe `jsonapi_parse`) throws an `InvalidDocument` exception when the payload does not meet basic criteria for JSON API deserialization.
+
 
 ### Adapter Changes
 
 ```javascript
 // app/adapters/application.js
+import Ember from 'ember';
 import DS from 'ember-data';
 import ENV from "../config/environment";
+const { underscore, pluralize } = Ember.String;
 
 export default  DS.JSONAPIAdapter.extend({
   namespace: 'api',
@@ -46,22 +96,10 @@ export default  DS.JSONAPIAdapter.extend({
 
   // allows the multiword paths in urls to be underscored
   pathForType: function(type) {
-    let underscored = Ember.String.underscore(type);
-    return Ember.String.pluralize(underscored);
+    let underscored = underscore(type);
+    return pluralize(underscored);
   },
 
-  // allows queries to be sent along with a findRecord
-  // hopefully Ember / EmberData will soon have this built in
-  // ember-data issue tracked here:
-  // https://github.com/emberjs/data/issues/3596
-  urlForFindRecord(id, modelName, snapshot) {
-    let url = this._super(...arguments);
-    let query = Ember.get(snapshot, 'adapterOptions.query');
-    if(query) {
-      url += '?' + Ember.$.param(query);
-    }
-    return url;
-  }
 });
 ```
 
@@ -85,22 +123,19 @@ export default DS.JSONAPISerializer.extend({
 
 ```
 
+
 ## Including Nested Resources
 
-Previously, `store.find` and `store.findRecord` did not allow specification of any query params.
-The ActiveModelSerializers default for the `include` parameter is to be `nil` meaning that if any associations are defined in your serializer, only the `id` and `type` will be in the `relationships` structure of the JSON API response.
-For more on `include` usage, see: [The JSON API include examples](./../general/adapters.md#JSON-API)
-
-With the above modifications, you can execute code as below in order to include nested resources while doing a find query.
+Ember Data can request related records by using `include`.  Below are some examples of how to make Ember Data request the inclusion of related records. For more on `include` usage, see: [The JSON API include examples](./../general/adapters.md#JSON-API)
 
 ```javascript
-store.findRecord('post', postId, { adapterOptions: { query: { include: 'comments' } } });
+store.findRecord('post', postId, { include: 'comments' } );
 ```
-will generate the path `/posts/{postId}?include='comments'`
+which will generate the path /posts/{postId}?include='comments'
 
 So then in your controller, you'll want to be sure to have something like:
 ```ruby
-render json: @post, include: params[:include]
+render jsonapi: @post, include: params[:include]
 ```
 
 If you want to use `include` on a collection, you'd write something like this:

@@ -48,42 +48,36 @@ render json: @posts, serializer: CollectionSerializer, each_serializer: PostPrev
 
 ## Serializing non-ActiveRecord objects
 
-All serializable resources must pass the
-[ActiveModel::Serializer::Lint::Tests](../../lib/active_model/serializer/lint.rb#L17).
-
-See the ActiveModelSerializers::Model for a base class that implements the full
-API for a plain-old Ruby object (PORO).
+See [README](../../README.md#what-does-a-serializable-resource-look-like)
 
 ## SerializableResource options
 
-The `options` hash passed to `render` or `ActiveModelSerializers::SerializableResource.new(resource, options)`
-are partitioned into `serializer_opts` and `adapter_opts`. `adapter_opts` are passed to new Adapters;
-`serializer_opts` are passed to new Serializers.
-
-The `adapter_opts` are specified in [ActiveModelSerializers::SerializableResource::ADAPTER_OPTIONS](../../lib/active_model_serializers/serializable_resource.rb#L5).
-The `serializer_opts` are the remaining options.
-
-(In Rails, the `options` are also passed to the `as_json(options)` or `to_json(options)`
-methods on the resource serialization by the Rails JSON renderer.  They are, therefore, important
-to know about, but not part of ActiveModelSerializers.)
-
-See [ARCHITECTURE](../ARCHITECTURE.md) for more information.
+See [README](../../README.md#activemodelserializersserializableresource)
 
 ### adapter_opts
 
 #### fields
 
-PR please :)
+If you are using `json` or `attributes` adapter
+```ruby
+render json: @user, fields: [:access_token]
+```
+
+See [Fields](fields.md) for more information.
 
 #### adapter
 
-PR please :)
+This option lets you explicitly set the adapter to be used by passing a registered adapter. Your options are `:attributes`, `:json`, and `:json_api`.
+
+```
+ActiveModel::Serializer.config.adapter = :json_api
+```
 
 #### key_transform
 
 ```render json: posts, each_serializer: PostSerializer, key_transform: :camel_lower```
 
-See [Key Transforms](key_transforms.md) for more informaiton.
+See [Key Transforms](key_transforms.md) for more information.
 
 #### meta
 
@@ -209,7 +203,7 @@ link(:link_name) { url_for(controller: 'controller_name', action: 'index', only_
 
 #### include
 
-PR please :)
+See [Adapters: Include Option](/docs/general/adapters.md#include-option).
 
 #### Overriding the root key
 
@@ -234,17 +228,61 @@ This will be rendered as:
 ```
 Note: the `Attributes` adapter (default) does not include a resource root. You also will not be able to create a single top-level root if you are using the :json_api adapter.
 
+#### namespace
+
+The namespace for serializer lookup is based on the controller.
+
+To configure the implicit namespace, in your controller, create a before filter
+
+```ruby
+before_action do
+  self.namespace_for_serializer = Api::V2
+end
+```
+
+`namespace` can also be passed in as a render option:
+
+
+```ruby
+@post = Post.first
+render json: @post, namespace: Api::V2
+```
+
+This tells the serializer lookup to check for the existence of `Api::V2::PostSerializer`, and if any relations are rendered with `@post`, they will also utilize the `Api::V2` namespace.  
+
+The `namespace` can be any object whose namespace can be represented by string interpolation (i.e. by calling to_s)
+- Module `Api::V2`
+- String `'Api::V2'`
+- Symbol `:'Api::V2'`
+
+Note that by using a string and symbol, Ruby will assume the namespace is defined at the top level.
+
+
 #### serializer
 
-PR please :)
+Specify which serializer to use if you want to use a serializer other than the default.
+
+For a single resource:
+
+```ruby
+@post = Post.first
+render json: @post, serializer: SpecialPostSerializer
+```
+
+To specify which serializer to use on individual items in a collection (i.e., an `index` action), use `each_serializer`:
+
+```ruby
+@posts = Post.all
+render json: @posts, each_serializer: SpecialPostSerializer
+```
 
 #### scope
 
-PR please :)
+See [Serializers: Scope](/docs/general/serializers.md#scope).
 
 #### scope_name
 
-PR please :)
+See [Serializers: Scope](/docs/general/serializers.md#scope).
 
 ## Using a serializer without `render`
 

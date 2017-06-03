@@ -71,7 +71,7 @@ module ActiveModelSerializers
           hash[:href] = @href if defined?(@href)
           hash[:meta] = @meta if defined?(@meta)
 
-          hash
+          hash.any? ? hash : nil
         end
 
         protected

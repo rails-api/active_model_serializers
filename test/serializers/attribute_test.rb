@@ -22,7 +22,7 @@ module ActiveModel
         inherited_klass = Class.new(AlternateBlogSerializer)
         blog_serializer = inherited_klass.new(@blog)
         adapter = ActiveModelSerializers::Adapter::Attributes.new(blog_serializer)
-        assert_equal({ :id => 1, :title => 'AMS Hints' }, adapter.serializable_hash)
+        assert_equal({ id: 1, title: 'AMS Hints' }, adapter.serializable_hash)
       end
 
       def test_multiple_calls_with_the_same_attribute
@@ -81,7 +81,7 @@ module ActiveModel
         assert_equal('custom', hash[:blog][:id])
       end
 
-      PostWithVirtualAttribute = Class.new(::Model)
+      class PostWithVirtualAttribute < ::Model; attributes :first_name, :last_name end
       class PostWithVirtualAttributeSerializer < ActiveModel::Serializer
         attribute :name do
           "#{object.first_name} #{object.last_name}"
@@ -98,7 +98,9 @@ module ActiveModel
 
       # rubocop:disable Metrics/AbcSize
       def test_conditional_associations
-        model = ::Model.new(true: true, false: false)
+        model = Class.new(::Model) do
+          attributes :true, :false, :attribute
+        end.new(true: true, false: false)
 
         scenarios = [
           { options: { if:     :true  }, included: true  },

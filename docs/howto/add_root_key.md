@@ -1,3 +1,5 @@
+[Back to Guides](../README.md)
+
 # How to add root key
 
 Add the root key to your API is quite simple with ActiveModelSerializers. The **Adapter** is what determines the format of your JSON response. The default adapter is the ```Attributes``` which doesn't have the root key, so your response is something similar to:
@@ -49,3 +51,5 @@ or if it returns a collection:
   ]
 }
 ```
+
+[There are several ways to specify root](../general/serializers.md#root) when using the JSON adapter.

@@ -7,18 +7,17 @@ module ActionController
         def test_active_model_with_multiple_errors
           get :render_resource_with_errors
 
-          expected_errors_object =
-            { :errors =>
-              [
-                { :source => { :pointer => '/data/attributes/name' }, :detail => 'cannot be nil' },
-                { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be longer' },
-                { :source => { :pointer => '/data/attributes/id' }, :detail => 'must be a uuid' }
-              ]
+          expected_errors_object = {
+            errors:               [
+              { source: { pointer: '/data/attributes/name' }, detail: 'cannot be nil' },
+              { source: { pointer: '/data/attributes/name' }, detail: 'must be longer' },
+              { source: { pointer: '/data/attributes/id' }, detail: 'must be a uuid' }
+            ]
           }.to_json
-          assert_equal json_reponse_body.to_json, expected_errors_object
+          assert_equal json_response_body.to_json, expected_errors_object
         end
 
-        def json_reponse_body
+        def json_response_body
           JSON.load(@response.body)
         end
 

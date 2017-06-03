@@ -18,16 +18,17 @@ This is the documentation of ActiveModelSerializers, it's focused on the **0.10.
 - JSON API
   - [Schema](jsonapi/schema.md)
   - [Errors](jsonapi/errors.md)
-- [ARCHITECTURE](ARCHITECTURE.md)
 
 ## How to
 
 - [How to add root key](howto/add_root_key.md)
 - [How to add pagination links](howto/add_pagination_links.md)
+- [How to add relationship links](howto/add_relationship_links.md)
 - [Using ActiveModelSerializers Outside Of Controllers](howto/outside_controller_use.md)
 - [Testing ActiveModelSerializers](howto/test.md)
 - [Passing Arbitrary Options](howto/passing_arbitrary_options.md)
 - [How to serialize a Plain-Old Ruby Object (PORO)](howto/serialize_poro.md)
+- [How to upgrade from `0.8` to `0.10` safely](howto/upgrade_from_0_8_to_0_10.md)
 
 ## Integrations
 

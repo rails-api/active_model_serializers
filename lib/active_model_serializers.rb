@@ -14,6 +14,7 @@ module ActiveModelSerializers
   autoload :Adapter
   autoload :JsonPointer
   autoload :Deprecate
+  autoload :LookupChain
 
   class << self; attr_accessor :logger; end
   self.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
@@ -29,6 +30,20 @@ module ActiveModelSerializers
     lineno = Regexp.last_match(2).to_i
 
     [file, lineno]
+  end
+
+  # Memoized default include directive
+  # @return [JSONAPI::IncludeDirective]
+  def self.default_include_directive
+    @default_include_directive ||= JSONAPI::IncludeDirective.new(config.default_includes, allow_wildcard: true)
+  end
+
+  def self.silence_warnings
+    original_verbose = $VERBOSE
+    $VERBOSE = nil
+    yield
+  ensure
+    $VERBOSE = original_verbose
   end
 
   require 'active_model/serializer/version'

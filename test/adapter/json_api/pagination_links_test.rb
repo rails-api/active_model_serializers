@@ -13,11 +13,11 @@ module ActiveModelSerializers
         def setup
           ActionController::Base.cache_store.clear
           @array = [
-            Profile.new({ id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1' }),
-            Profile.new({ id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2' }),
-            Profile.new({ id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3' }),
-            Profile.new({ id: 4, name: 'Name 4', description: 'Description 4', comments: 'Comments 4' }),
-            Profile.new({ id: 5, name: 'Name 5', description: 'Description 5', comments: 'Comments 5' })
+            Profile.new(id: 1, name: 'Name 1', description: 'Description 1', comments: 'Comments 1'),
+            Profile.new(id: 2, name: 'Name 2', description: 'Description 2', comments: 'Comments 2'),
+            Profile.new(id: 3, name: 'Name 3', description: 'Description 3', comments: 'Comments 3'),
+            Profile.new(id: 4, name: 'Name 4', description: 'Description 4', comments: 'Comments 4'),
+            Profile.new(id: 5, name: 'Name 5', description: 'Description 5', comments: 'Comments 5')
           ]
         end
 
@@ -43,7 +43,8 @@ module ActiveModelSerializers
         end
 
         def data
-          { data: [
+          {
+            data: [
               { id: '1', type: 'profiles', attributes: { name: 'Name 1', description: 'Description 1' } },
               { id: '2', type: 'profiles', attributes: { name: 'Name 2', description: 'Description 2' } },
               { id: '3', type: 'profiles', attributes: { name: 'Name 3', description: 'Description 3' } },
@@ -75,7 +76,7 @@ module ActiveModelSerializers
           }
         end
 
-        def expected_response_without_pagination_links
+        def expected_response_when_unpaginatable
           data
         end
 
@@ -83,6 +84,12 @@ module ActiveModelSerializers
           {}.tap do |hash|
             hash[:data] = data.values.flatten[2..3]
             hash.merge! links
+          end
+        end
+
+        def expected_response_without_pagination_links
+          {}.tap do |hash|
+            hash[:data] = data.values.flatten[2..3]
           end
         end
 
@@ -121,7 +128,7 @@ module ActiveModelSerializers
         end
 
         def test_pagination_links_with_additional_params
-          adapter = load_adapter(using_will_paginate, mock_request({ test: 'test' }))
+          adapter = load_adapter(using_will_paginate, mock_request(test: 'test'))
 
           assert_equal expected_response_with_pagination_links_and_additional_params,
             adapter.serializable_hash
@@ -158,7 +165,27 @@ module ActiveModelSerializers
         def test_not_showing_pagination_links
           adapter = load_adapter(@array, mock_request)
 
+          assert_equal expected_response_when_unpaginatable, adapter.serializable_hash
+        end
+
+        def test_raises_descriptive_error_when_serialization_context_unset
+          render_options = { adapter: :json_api }
+          adapter = serializable(using_kaminari, render_options)
+          exception = assert_raises do
+            adapter.as_json
+          end
+          exception_class = ActiveModelSerializers::Adapter::JsonApi::PaginationLinks::MissingSerializationContextError
+          assert_equal exception_class, exception.class
+          assert_match(/CollectionSerializer#paginated\?/, exception.message)
+        end
+
+        def test_pagination_links_not_present_when_disabled
+          ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = false
+          adapter = load_adapter(using_kaminari, mock_request)
+
           assert_equal expected_response_without_pagination_links, adapter.serializable_hash
+        ensure
+          ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = true
         end
       end
     end

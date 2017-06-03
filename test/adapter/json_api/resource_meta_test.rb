@@ -68,9 +68,9 @@ module ActiveModel
               adapter: :json_api
             ).serializable_hash
             expected = {
-              :data => [
-                { :id => '1337', :type => 'posts', :meta => { :"comments-count" => 0 } },
-                { :id => '1339', :type => 'posts', :meta => { :"comments-count" => 1 } }
+              data: [
+                { id: '1337', type: 'posts', meta: { :"comments-count" => 0 } },
+                { id: '1339', type: 'posts', meta: { :"comments-count" => 1 } }
               ]
             }
             assert_equal(expected, hash)

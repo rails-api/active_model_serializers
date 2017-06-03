@@ -4,7 +4,7 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class LinksTest < ActiveSupport::TestCase
-        LinkAuthor = Class.new(::Model)
+        class LinkAuthor < ::Model; associations :posts end
         class LinkAuthorSerializer < ActiveModel::Serializer
           link :self do
             href "http://example.com/link_author/#{object.id}"
@@ -17,6 +17,7 @@ module ActiveModelSerializers
           link :yet_another do
             "http://example.com/resource/#{object.id}"
           end
+          link(:nil) { nil }
         end
 
         def setup
@@ -40,7 +41,8 @@ module ActiveModelSerializers
                   stuff: 'value'
                 }
               }
-            }).serializable_hash
+            }
+          ).serializable_hash
           expected = {
             self: {
               href: 'http://example.com/posts',

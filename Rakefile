@@ -5,8 +5,9 @@ rescue LoadError
 end
 begin
   require 'simplecov'
-rescue LoadError
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
+import('lib/tasks/rubocop.rake')
 
 Bundler::GemHelper.install_tasks
 
@@ -27,36 +28,6 @@ namespace :yard do
     output_file = 'doc/erd.dot'
     sh "bundle exec yard graph --protected --full --dependencies > #{output_file}"
     puts 'open doc/erd.dot if you have graphviz installed'
-  end
-end
-
-begin
-  require 'rubocop'
-  require 'rubocop/rake_task'
-rescue LoadError
-else
-  Rake::Task[:rubocop].clear if Rake::Task.task_defined?(:rubocop)
-  require 'rbconfig'
-  # https://github.com/bundler/bundler/blob/1b3eb2465a/lib/bundler/constants.rb#L2
-  windows_platforms = /(msdos|mswin|djgpp|mingw)/
-  if RbConfig::CONFIG['host_os'] =~ windows_platforms
-    desc 'No-op rubocop on Windows-- unsupported platform'
-    task :rubocop do
-      puts 'Skipping rubocop on Windows'
-    end
-  elsif defined?(::Rubinius)
-    desc 'No-op rubocop to avoid rbx segfault'
-    task :rubocop do
-      puts 'Skipping rubocop on rbx due to segfault'
-      puts 'https://github.com/rubinius/rubinius/issues/3499'
-    end
-  else
-    Rake::Task[:rubocop].clear if Rake::Task.task_defined?(:rubocop)
-    desc 'Execute rubocop'
-    RuboCop::RakeTask.new(:rubocop) do |task|
-      task.options = ['--rails', '--display-cop-names', '--display-style-guide']
-      task.fail_on_error = true
-    end
   end
 end
 
@@ -100,4 +71,4 @@ else
 end
 
 desc 'CI test task'
-task :ci => [:default]
+task ci: [:default]

@@ -41,6 +41,7 @@ require 'active_support/core_ext/string/access'
 
 # These files do not require any others and are needed
 # to run the tests
+require 'active_support/testing/autorun'
 require 'active_support/testing/isolation'
 
 module TestHelpers
@@ -74,6 +75,8 @@ module TestHelpers
   end
 end
 
-class ActiveSupport::TestCase
-  include TestHelpers::Generation
+module ActiveSupport
+  class TestCase
+    include TestHelpers::Generation
+  end
 end

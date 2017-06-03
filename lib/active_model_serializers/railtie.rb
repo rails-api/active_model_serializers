@@ -23,7 +23,7 @@ module ActiveModelSerializers
     # This hook is run after the action_controller railtie has set the configuration
     # based on the *environment* configuration and before any config/initializers are run
     # and also before eager_loading (if enabled).
-    initializer 'active_model_serializers.set_configs', :after => 'action_controller.set_configs' do
+    initializer 'active_model_serializers.set_configs', after: 'action_controller.set_configs' do
       ActiveModelSerializers.logger = Rails.configuration.action_controller.logger
       ActiveModelSerializers.config.perform_caching = Rails.configuration.action_controller.perform_caching
       # We want this hook to run after the config has been set, even if ActionController has already loaded.
@@ -32,11 +32,13 @@ module ActiveModelSerializers
       end
     end
 
+    # :nocov:
     generators do |app|
       Rails::Generators.configure!(app.config.generators)
       Rails::Generators.hidden_namespaces.uniq!
       require 'generators/rails/resource_override'
     end
+    # :nocov:
 
     if Rails.env.test?
       ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Schema)

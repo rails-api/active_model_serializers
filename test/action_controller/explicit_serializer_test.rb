@@ -100,11 +100,12 @@ module ActionController
         get :render_array_using_explicit_serializer_and_custom_serializers
 
         expected = [
-          { 'title' => 'New Post',
+          {
+            'title' => 'New Post',
             'body' => 'Body',
-            'id' => assigns(:post).id,
+            'id' => @controller.instance_variable_get(:@post).id,
             'comments' => [{ 'id' => 1 }, { 'id' => 2 }],
-            'author' => { 'id' => assigns(:author).id }
+            'author' => { 'id' => @controller.instance_variable_get(:@author).id }
           }
         ]
 
@@ -122,7 +123,7 @@ module ActionController
               id: 42,
               lat: '-23.550520',
               lng: '-46.633309',
-              place: 'Nowhere' # is a virtual attribute on LocationSerializer
+              address: 'Nowhere' # is a virtual attribute on LocationSerializer
             }
           ]
         }

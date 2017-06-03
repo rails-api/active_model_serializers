@@ -2,10 +2,10 @@ module ActiveModel
   class Serializer
     class SerializationTest < ActiveSupport::TestCase
       class Blog < ActiveModelSerializers::Model
-        attr_accessor :id, :name, :authors
+        attributes :id, :name, :authors
       end
       class Author < ActiveModelSerializers::Model
-        attr_accessor :id, :name
+        attributes :id, :name
       end
       class BlogSerializer < ActiveModel::Serializer
         attributes :id

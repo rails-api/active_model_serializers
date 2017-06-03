@@ -74,7 +74,7 @@ module ActionController
         end
 
         def update_and_render_object_with_cache_enabled
-          @post.updated_at = Time.now
+          @post.updated_at = Time.zone.now
 
           generate_cached_serializer(@post)
           render json: @post
@@ -135,7 +135,7 @@ module ActionController
           like = Like.new(id: 1, likeable: comment, time: 3.days.ago)
 
           generate_cached_serializer(like)
-          like.likable = comment2
+          like.likeable = comment2
           like.time = Time.zone.now.to_s
 
           render json: like
@@ -163,7 +163,7 @@ module ActionController
         end
         expected = {
           data: {
-            id: assigns(:profile).id.to_s,
+            id: @controller.instance_variable_get(:@profile).id.to_s,
             type: 'profiles',
             attributes: {
               name: 'Name 1',
@@ -246,7 +246,7 @@ module ActionController
         expected = {
           data: [
             {
-              id: assigns(:profiles).first.id.to_s,
+              id: @controller.instance_variable_get(:@profiles).first.id.to_s,
               type: 'profiles',
               attributes: {
                 name: 'Name 1',
@@ -269,7 +269,7 @@ module ActionController
         expected = {
           data: [
             {
-              id: assigns(:profiles).first.id.to_s,
+              id: @controller.instance_variable_get(:@profiles).first.id.to_s,
               type: 'profiles',
               attributes: {
                 name: 'Name 1',
@@ -294,7 +294,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT'
+            }
           ],
           blog: {
             id: 999,
@@ -333,7 +334,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT'
+            }
           ],
           blog: {
             id: 999,
@@ -407,7 +409,8 @@ module ActionController
           comments: [
             {
               id: 1,
-              body: 'ZOMG A COMMENT' }
+              body: 'ZOMG A COMMENT'
+            }
           ],
           blog: {
             id: 999,
@@ -453,7 +456,7 @@ module ActionController
         end
       end
 
-      def test_render_event_is_emmited
+      def test_render_event_is_emitted
         subscriber = ::ActiveSupport::Notifications.subscribe('render.active_model_serializers') do |name|
           @name = name
         end

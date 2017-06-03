@@ -5,46 +5,86 @@ module ActiveModelSerializers
         # {http://jsonapi.org/format/#document-resource-object-related-resource-links Document Resource Object Related Resource Links}
         # {http://jsonapi.org/format/#document-links Document Links}
         # {http://jsonapi.org/format/#document-resource-object-linkage Document Resource Relationship Linkage}
-        # {http://jsonapi.org/format/#document-meta Docment Meta}
-        def initialize(parent_serializer, serializer, serializable_resource_options, args = {})
-          @object = parent_serializer.object
-          @scope = parent_serializer.scope
-          @association_options = args.fetch(:options, {})
+        # {http://jsonapi.org/format/#document-meta Document Meta}
+        def initialize(parent_serializer, serializable_resource_options, association)
+          @parent_serializer = parent_serializer
+          @association = association
           @serializable_resource_options = serializable_resource_options
-          @data = data_for(serializer)
-          @links = args.fetch(:links, {}).each_with_object({}) do |(key, value), hash|
-            hash[key] = ActiveModelSerializers::Adapter::JsonApi::Link.new(parent_serializer, value).as_json
-          end
-          meta = args.fetch(:meta, nil)
-          @meta = meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta
         end
 
         def as_json
           hash = {}
-          hash[:data] = data if association_options[:include_data]
-          links = self.links
+
+          hash[:data] = data_for(association) if association.include_data?
+
+          links = links_for(association)
           hash[:links] = links if links.any?
-          meta = self.meta
+
+          meta = meta_for(association)
           hash[:meta] = meta if meta
+          hash[:meta] = {} if hash.empty?
 
           hash
         end
 
         protected
 
-        attr_reader :object, :scope, :data, :serializable_resource_options,
-          :association_options, :links, :meta
+        attr_reader :parent_serializer, :serializable_resource_options, :association
 
         private
 
-        def data_for(serializer)
-          if serializer.respond_to?(:each)
-            serializer.map { |s| ResourceIdentifier.new(s, serializable_resource_options).as_json }
-          elsif association_options[:virtual_value]
-            association_options[:virtual_value]
-          elsif serializer && serializer.object
-            ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+        # TODO(BF): Avoid db hit on belong_to_ releationship by using foreign_key on self
+        def data_for(association)
+          if association.collection?
+            data_for_many(association)
+          else
+            data_for_one(association)
           end
+        end
+
+        def data_for_one(association)
+          if association.belongs_to? &&
+              parent_serializer.object.respond_to?(association.reflection.foreign_key)
+            id = parent_serializer.read_attribute_for_serialization(association.reflection.foreign_key)
+            type = association.reflection.type.to_s
+            ResourceIdentifier.for_type_with_id(type, id, serializable_resource_options)
+          else
+            # TODO(BF): Process relationship without evaluating lazy_association
+            serializer = association.lazy_association.serializer
+            if (virtual_value = association.virtual_value)
+              virtual_value
+            elsif serializer && association.object
+              ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+            else
+              nil
+            end
+          end
+        end
+
+        def data_for_many(association)
+          # TODO(BF): Process relationship without evaluating lazy_association
+          collection_serializer = association.lazy_association.serializer
+          if collection_serializer.respond_to?(:each)
+            collection_serializer.map do |serializer|
+              ResourceIdentifier.new(serializer, serializable_resource_options).as_json
+            end
+          elsif (virtual_value = association.virtual_value)
+            virtual_value
+          else
+            []
+          end
+        end
+
+        def links_for(association)
+          association.links.each_with_object({}) do |(key, value), hash|
+            result = Link.new(parent_serializer, value).as_json
+            hash[key] = result if result
+          end
+        end
+
+        def meta_for(association)
+          meta = association.meta
+          meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta
         end
       end
     end

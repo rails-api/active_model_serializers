@@ -12,8 +12,8 @@ module ActiveModelSerializers
 
         def test_active_model_with_error
           options = {
-              serializer: ActiveModel::Serializer::ErrorSerializer,
-              adapter: :json_api
+            serializer: ActiveModel::Serializer::ErrorSerializer,
+            adapter: :json_api
           }
 
           @resource.errors.add(:name, 'cannot be nil')
@@ -22,22 +22,21 @@ module ActiveModelSerializers
           assert_equal serializable_resource.serializer_instance.attributes, {}
           assert_equal serializable_resource.serializer_instance.object, @resource
 
-          expected_errors_object =
-            { :errors =>
-              [
-                {
-                  source: { pointer: '/data/attributes/name' },
-                  detail: 'cannot be nil'
-                }
-              ]
+          expected_errors_object = {
+            errors: [
+              {
+                source: { pointer: '/data/attributes/name' },
+                detail: 'cannot be nil'
+              }
+            ]
           }
           assert_equal serializable_resource.as_json, expected_errors_object
         end
 
         def test_active_model_with_multiple_errors
           options = {
-              serializer: ActiveModel::Serializer::ErrorSerializer,
-              adapter: :json_api
+            serializer: ActiveModel::Serializer::ErrorSerializer,
+            adapter: :json_api
           }
 
           @resource.errors.add(:name, 'cannot be nil')
@@ -48,13 +47,12 @@ module ActiveModelSerializers
           assert_equal serializable_resource.serializer_instance.attributes, {}
           assert_equal serializable_resource.serializer_instance.object, @resource
 
-          expected_errors_object =
-            { :errors =>
-              [
-                { :source => { :pointer => '/data/attributes/name' }, :detail => 'cannot be nil' },
-                { :source => { :pointer => '/data/attributes/name' }, :detail => 'must be longer' },
-                { :source => { :pointer => '/data/attributes/id' }, :detail => 'must be a uuid' }
-              ]
+          expected_errors_object = {
+            errors: [
+              { source: { pointer: '/data/attributes/name' }, detail: 'cannot be nil' },
+              { source: { pointer: '/data/attributes/name' }, detail: 'must be longer' },
+              { source: { pointer: '/data/attributes/id' }, detail: 'must be a uuid' }
+            ]
           }
           assert_equal serializable_resource.as_json, expected_errors_object
         end

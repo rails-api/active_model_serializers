@@ -1,7 +1,6 @@
 module ActiveModel
   class Serializer
     class CollectionSerializer
-      NoSerializerError = Class.new(StandardError)
       include Enumerable
       delegate :each, to: :@serializers
 
@@ -11,20 +10,21 @@ module ActiveModel
         @object                  = resources
         @options                 = options
         @root                    = options[:root]
-        serializer_context_class = options.fetch(:serializer_context_class, ActiveModel::Serializer)
-        @serializers = resources.map do |resource|
-          serializer_class = options.fetch(:serializer) { serializer_context_class.serializer_for(resource) }
-
-          if serializer_class.nil? # rubocop:disable Style/GuardClause
-            fail NoSerializerError, "No serializer found for resource: #{resource.inspect}"
-          else
-            serializer_class.new(resource, options.except(:serializer))
-          end
-        end
+        @serializers             = serializers_from_resources
       end
 
       def success?
         true
+      end
+
+      # @api private
+      def serializable_hash(adapter_options, options, adapter_instance)
+        include_directive = ActiveModel::Serializer.include_directive_from_options(adapter_options)
+        adapter_options[:cached_attributes] ||= ActiveModel::Serializer.cache_read_multi(self, adapter_instance, include_directive)
+        adapter_opts = adapter_options.merge(include_directive: include_directive)
+        serializers.map do |serializer|
+          serializer.serializable_hash(adapter_opts, options, adapter_instance)
+        end
       end
 
       # TODO: unify naming of root, json_key, and _type.  Right now, a serializer's
@@ -51,7 +51,8 @@ module ActiveModel
       # rubocop:enable Metrics/CyclomaticComplexity
 
       def paginated?
-        object.respond_to?(:current_page) &&
+        ActiveModelSerializers.config.jsonapi_pagination_links_enabled &&
+          object.respond_to?(:current_page) &&
           object.respond_to?(:total_pages) &&
           object.respond_to?(:size)
       end
@@ -59,6 +60,28 @@ module ActiveModel
       protected
 
       attr_reader :serializers, :options
+
+      private
+
+      def serializers_from_resources
+        serializer_context_class = options.fetch(:serializer_context_class, ActiveModel::Serializer)
+        object.map do |resource|
+          serializer_from_resource(resource, serializer_context_class, options)
+        end
+      end
+
+      def serializer_from_resource(resource, serializer_context_class, options)
+        serializer_class = options.fetch(:serializer) do
+          serializer_context_class.serializer_for(resource, namespace: options[:namespace])
+        end
+
+        if serializer_class.nil?
+          ActiveModelSerializers.logger.debug "No serializer found for resource: #{resource.inspect}"
+          throw :no_serializer
+        else
+          serializer_class.new(resource, options.except(:serializer))
+        end
+      end
     end
   end
 end

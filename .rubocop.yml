@@ -1,12 +1,13 @@
-inherit_from: .rubocop_todo.yml
-
 AllCops:
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.1
   Exclude:
-    - config/initializers/forbidden_yaml.rb
     - !ruby/regexp /(vendor|bundle|bin|db|tmp)\/.*/
   DisplayCopNames: true
   DisplayStyleGuide: true
+  # https://github.com/bbatsov/rubocop/blob/master/manual/caching.md
+  # https://github.com/bbatsov/rubocop/blob/e8680418b351491e111a18cf5b453fc07a3c5239/config/default.yml#L60-L77
+  UseCache: true
+  CacheRootDirectory: tmp
 
 Rails:
   Enabled: true
@@ -46,7 +47,7 @@ Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
 Style/ClassAndModuleChildren:
-  EnforcedStyle: compact
+  EnforcedStyle: nested
 
 Style/Documentation:
   Enabled: false

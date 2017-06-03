@@ -67,9 +67,11 @@ Doesn't follow any specific convention.
 
 ### JSON
 
-The response document always with a root key.
+The json response is always rendered with a root key.
 
-The root key **can't be overridden**, and will be derived from the resource being serialized.
+The root key can be overridden by:
+* passing the `root` option in the render call. See details in the [Rendering Guides](rendering.md#overriding-the-root-key).
+* setting the `type` of the serializer. See details in the [Serializers Guide](serializers.md#type).
 
 Doesn't follow any specific convention.
 
@@ -139,17 +141,24 @@ This adapter follows **version 1.0** of the [format specified](../jsonapi/schema
 }
 ```
 
-#### Included
+### Include option
 
-It will include the associated resources in the `"included"` member
-when the resource names are included in the `include` option.
-Including nested associated resources is also supported.
+Which [serializer associations](https://github.com/rails-api/active_model_serializers/blob/master/docs/general/serializers.md#associations) are rendered can be specified using the `include` option. The option usage is consistent with [the include option in the JSON API spec](http://jsonapi.org/format/#fetching-includes), and is available in all adapters.
 
+Example of the usage:
 ```ruby
   render json: @posts, include: ['author', 'comments', 'comments.author']
   # or
   render json: @posts, include: 'author,comments,comments.author'
 ```
+
+The format of the `include` option can be either:
+
+- a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes).
+- an Array of Symbols and Hashes.
+- a mix of both.
+
+An empty string or an empty array will prevent rendering of any associations.
 
 In addition, two types of wildcards may be used:
 
@@ -162,11 +171,6 @@ These can be combined with other paths.
   render json: @posts, include: '**' # or '*' for a single layer
 ```
 
-The format of the `include` option can be either:
-
-- a String composed of a comma-separated list of [relationship paths](http://jsonapi.org/format/#fetching-includes).
-- an Array of Symbols and Hashes.
-- a mix of both.
 
 The following would render posts and include:
 
@@ -178,6 +182,20 @@ It could be combined, like above, with other paths in any combination desired.
 
 ```ruby
   render json: @posts, include: 'author.comments.**'
+```
+
+**Note:** Wildcards are ActiveModelSerializers-specific, they are not part of the JSON API spec.
+
+The default include for the JSON API adapter is no associations. The default for the JSON and Attributes adapters is all associations.
+
+For the JSON API adapter associated resources will be gathered in the `"included"` member. For the JSON and Attributes
+adapters associated resources will be rendered among the other attributes.
+
+Only for the JSON API adapter you can specify, which attributes of associated resources will be rendered. This feature
+is called [sparse fieldset](http://jsonapi.org/format/#fetching-sparse-fieldsets):
+
+```ruby
+  render json: @posts, include: 'comments', fields: { comments: ['content', 'created_at'] }
 ```
 
 ##### Security Considerations

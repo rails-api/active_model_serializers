@@ -19,33 +19,36 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.executables   = []
 
-  spec.required_ruby_version = '>= 2.0.0'
+  spec.required_ruby_version = '>= 2.1'
 
-  rails_versions = '>= 4.0'
+  rails_versions = ['>= 4.1', '< 6']
   spec.add_runtime_dependency 'activemodel', rails_versions
-    # 'activesupport', rails_versions
-    # 'builder'
+  # 'activesupport', rails_versions
+  # 'builder'
 
   spec.add_runtime_dependency 'actionpack', rails_versions
-    # 'activesupport', rails_versions
-    # 'rack'
-    # 'rack-test', '~> 0.6.2'
+  # 'activesupport', rails_versions
+  # 'rack'
+  # 'rack-test', '~> 0.6.2'
 
-  spec.add_runtime_dependency 'railties', rails_versions
-    # 'activesupport', rails_versions
-    # 'actionpack', rails_versions
-    # 'rake', '>= 0.8.7'
+  spec.add_development_dependency 'railties', rails_versions
+  # 'activesupport', rails_versions
+  # 'actionpack', rails_versions
+  # 'rake', '>= 0.8.7'
 
   # 'activesupport', rails_versions
-    # 'i18n,
-    # 'tzinfo'
-    # 'minitest'
-    # 'thread_safe'
+  # 'i18n,
+  # 'tzinfo'
+  # 'minitest'
+  # 'thread_safe'
+
+  spec.add_runtime_dependency 'jsonapi-renderer', ['>= 0.1.1.beta1', '< 0.2']
+  spec.add_runtime_dependency 'case_transform', '>= 0.2'
 
   spec.add_development_dependency 'activerecord', rails_versions
-    # arel
-    # activesupport
-    # activemodel
+  # arel
+  # activesupport
+  # activemodel
 
   # Soft dependency for pagination
   spec.add_development_dependency 'kaminari', ' ~> 0.16.3'
@@ -54,13 +57,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'simplecov', '~> 0.11'
   spec.add_development_dependency 'timecop', '~> 0.7'
-  spec.add_development_dependency 'grape', ['>= 0.13', '< 1.0']
+  spec.add_development_dependency 'grape', ['>= 0.13', '< 0.19.1']
   spec.add_development_dependency 'json_schema'
   spec.add_development_dependency 'rake', ['>= 10.0', '< 12.0']
-
-  spec.post_install_message = <<-EOF
-NOTE: The default key case for the JsonApi adapter has changed to dashed.
-See https://github.com/rails-api/active_model_serializers/blob/master/docs/general/key_transforms.md
-for more information on configuring this behavior.
-EOF
 end

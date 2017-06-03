@@ -31,10 +31,21 @@ Serialization of the resource `title`
 |---------------------------- |-------------|
 | `attribute :title`          | `{ title: 'Some Title' } `
 | `attribute :title, key: :name` | `{ name: 'Some Title' } `
-| `attribute :title { 'A Different Title'}` | `{ title: 'A Different Title' } `
+| `attribute(:title) { 'A Different Title'}` | `{ title: 'A Different Title' } `
 | `attribute :title`<br>`def title 'A Different Title' end` | `{ title: 'A Different Title' }`
 
-[PR please for conditional attributes:)](https://github.com/rails-api/active_model_serializers/pull/1403)
+An `if` or `unless` option can make an attribute conditional. It takes a symbol of a method name on the serializer, or a lambda literal.
+
+e.g.
+
+```ruby
+attribute :private_data, if: :is_current_user?
+attribute :another_private_data, if: -> { scope.admin? }
+
+def is_current_user?
+  object.id == current_user.id
+end
+```
 
 ### Associations
 
@@ -52,6 +63,11 @@ Where:
   - `if:`
   - `unless:`
   - `virtual_value:`
+  - `polymorphic:` defines if polymorphic relation type should be nested in serialized association.
+  - `type:` the resource type as used by JSON:API, especially on a `belongs_to` relationship.
+  - `class_name:` used to determine `type` when `type` not given
+  - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object.
+  - `namespace:` used when looking up the serializer and `serializer` is not given.  Falls back to the parent serializer's `:namespace` instance options, which, when present, comes from the render options. See [Rendering#namespace](rendering.md#namespace] for more details.
 - optional: `&block` is a context that returns the association's attributes.
   - prevents `association_name` method from being called.
   - return value of block is used as the association value.
@@ -128,7 +144,7 @@ class PictureSerializer < ActiveModel::Serializer
 end
 ```
 
-For more context, see the [tests](../../test/adapter/polymorphic_test.rb) for each adapter.
+You can specify the serializers by [overriding serializer_for](serializers.md#overriding-association-serializer-lookup). For more context about polymorphic relationships, see the [tests](../../test/adapter/polymorphic_test.rb) for each adapter.
 
 ### Caching
 
@@ -161,18 +177,25 @@ end
 
 #### ::type
 
-The `::type` method defines the JSONAPI [type](http://jsonapi.org/format/#document-resource-object-identification) that will be rendered for this serializer.
+When using the `:json_api` adapter, the `::type` method defines the JSONAPI [type](http://jsonapi.org/format/#document-resource-object-identification) that will be rendered for this serializer.
+
+When using the `:json` adapter, the `::type` method defines the name of the root element.
+
 It either takes a `String` or `Symbol` as parameter.
 
-Note: This method is useful only when using the `:json_api` adapter.
+Note: This method is useful only when using the `:json_api` or `:json` adapter.
 
 Examples:
 ```ruby
 class UserProfileSerializer < ActiveModel::Serializer
   type 'profile'
+
+  attribute :name
 end
 class AuthorProfileSerializer < ActiveModel::Serializer
   type :profile
+
+  attribute :name
 end
 ```
 
@@ -182,7 +205,20 @@ With the `:json_api` adapter, the previous serializers would be rendered as:
 {
   "data": {
     "id": "1",
-    "type": "profile"
+    "type": "profile",
+    "attributes": {
+      "name": "Julia"
+    }
+  }
+}
+```
+
+With the `:json` adapter, the previous serializer would be rendered as:
+
+``` json
+{
+  "profile": {
+    "name": "Julia"
   }
 }
 ```
@@ -193,10 +229,10 @@ With the `:json_api` adapter, the previous serializers would be rendered as:
 link :self do
   href "https://example.com/link_author/#{object.id}"
 end
-link :author { link_author_url(object) }
-link :link_authors { link_authors_url }
+link(:author) { link_author_url(object) }
+link(:link_authors) { link_authors_url }
 link :other, 'https://example.com/resource'
-link :posts { link_author_posts_url(object) }
+link(:posts) { link_author_posts_url(object) }
 ```
 
 #### #object
@@ -205,7 +241,17 @@ The object being serialized.
 
 #### #root
 
-PR please :)
+Resource root which is included in `JSON` adapter. As you can see at [Adapters Document](adapters.md), `Attribute` adapter (default) and `JSON API` adapter does not include root at top level.
+By default, the resource root comes from the `model_name` of the serialized object's class.
+
+There are several ways to specify root:
+* [Overriding the root key](rendering.md#overriding-the-root-key)
+* [Setting `type`](serializers.md#type)
+* Specifying the `root` option, e.g. `root: 'specific_name'`, during the serializer's initialization:
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(foo, root: 'bar')
+```
 
 #### #scope
 
@@ -254,7 +300,7 @@ In the controller, the scope/scope_name options are equal to
 the [`serialization_scope`method](https://github.com/rails-api/active_model_serializers/blob/d02cd30fe55a3ea85e1d351b6e039620903c1871/lib/action_controller/serialization.rb#L13-L20),
 which is `:current_user`, by default.
 
-Specfically, the `scope_name` is defaulted to `:current_user`, and may be set as
+Specifically, the `scope_name` is defaulted to `:current_user`, and may be set as
 `serialization_scope :view_context`.  The `scope` is set to `send(scope_name)` when `scope_name` is
 present and the controller responds to `scope_name`.
 
@@ -302,17 +348,64 @@ So that when we render the `#edit` action, we'll get
 
 Where `can_edit` is `view_context.current_user.admin?` (true).
 
+You can also tell what to set as `serialization_scope` for specific actions.
+
+For example, use `admin_user` only for `Admin::PostSerializer` and `current_user` for rest.
+
+```ruby
+class PostsController < ActionController::Base
+
+  before_action only: :edit do
+    self.class.serialization_scope :admin_user
+  end
+
+  def show
+    render json: @post, serializer: PostSerializer
+  end
+
+  def edit
+    @post.save
+    render json: @post, serializer: Admin::PostSerializer
+  end
+
+  private
+
+  def admin_user
+    User.new(id: 2, name: 'Bob', admin: true)
+  end
+
+  def current_user
+    User.new(id: 2, name: 'Bob', admin: false)
+  end
+end
+```
+
 #### #read_attribute_for_serialization(key)
 
 The serialized value for a given key. e.g. `read_attribute_for_serialization(:title) #=> 'Hello World'`
 
 #### #links
 
-PR please :)
+Allows you to modify the `links` node. By default, this node will be populated with the attributes set using the [::link](#link) method. Using `links: nil` will remove the `links` node.
+
+```ruby
+ActiveModelSerializers::SerializableResource.new(
+  @post,
+  adapter: :json_api,
+  links: {
+    self: {
+      href: 'http://example.com/posts',
+      meta: {
+        stuff: 'value'
+      }
+    }
+  }
+)
+```
 
 #### #json_key
 
-PR please :)
+Returns the key used by the adapter as the resource root. See [root](#root) for more information.
 
 ## Examples
 
@@ -367,5 +460,21 @@ class PostSerializer < ActiveModel::Serializer
   attribute :body do
     object.body.downcase
   end
+end
+```
+
+## Overriding association serializer lookup
+
+If you want to define a specific serializer lookup for your associations, you can override
+the `ActiveModel::Serializer.serializer_for` method to return a serializer class based on defined conditions.
+
+```ruby
+class MySerializer < ActiveModel::Serializer
+  def self.serializer_for(model, options)
+    return SparseAdminSerializer if model.class == 'Admin'
+    super
+  end
+
+  # the rest of the serializer
 end
 ```

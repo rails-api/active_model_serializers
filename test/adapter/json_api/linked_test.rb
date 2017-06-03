@@ -1,10 +1,9 @@
 require 'test_helper'
 
-NestedPost = Class.new(Model)
+class NestedPost < ::Model; associations :nested_posts end
 class NestedPostSerializer < ActiveModel::Serializer
   has_many :nested_posts
 end
-
 module ActiveModelSerializers
   module Adapter
     class JsonApi
@@ -17,7 +16,7 @@ module ActiveModelSerializers
           @first_post = Post.new(id: 10, title: 'Hello!!', body: 'Hello, world!!')
           @second_post = Post.new(id: 20, title: 'New Post', body: 'Body')
           @third_post = Post.new(id: 30, title: 'Yet Another Post', body: 'Body')
-          @blog = Blog.new({ name: 'AMS Blog' })
+          @blog = Blog.new(name: 'AMS Blog')
           @first_comment = Comment.new(id: 1, body: 'ZOMG A COMMENT')
           @second_comment = Comment.new(id: 2, body: 'ZOMG ANOTHER COMMENT')
           @first_post.blog = @blog
@@ -224,6 +223,25 @@ module ActiveModelSerializers
           assert_equal expected, relationships
         end
 
+        def test_underscore_model_namespace_with_namespace_separator_for_linked_resource_type
+          spammy_post = Post.new(id: 123)
+          spammy_post.related = [Spam::UnrelatedLink.new(id: 456)]
+          serializer = SpammyPostSerializer.new(spammy_post)
+          adapter = ActiveModelSerializers::Adapter::JsonApi.new(serializer)
+          relationships = with_namespace_separator '--' do
+            adapter.serializable_hash[:data][:relationships]
+          end
+          expected = {
+            related: {
+              data: [{
+                type: 'spam--unrelated-links',
+                id: '456'
+              }]
+            }
+          }
+          assert_equal expected, relationships
+        end
+
         def test_multiple_references_to_same_resource
           serializer = ActiveModel::Serializer::CollectionSerializer.new([@first_comment, @second_comment])
           adapter = ActiveModelSerializers::Adapter::JsonApi.new(
@@ -283,8 +301,8 @@ module ActiveModelSerializers
       end
 
       class NoDuplicatesTest < ActiveSupport::TestCase
-        Post = Class.new(::Model)
-        Author = Class.new(::Model)
+        class Post < ::Model; associations :author end
+        class Author < ::Model; associations :posts, :roles, :bio end
 
         class PostSerializer < ActiveModel::Serializer
           type 'posts'
@@ -303,8 +321,8 @@ module ActiveModelSerializers
           @author.posts << @post1
           @author.posts << @post2
 
-          @nestedpost1 = ::NestedPost.new(id: 1, nested_posts: [])
-          @nestedpost2 = ::NestedPost.new(id: 2, nested_posts: [])
+          @nestedpost1 = NestedPost.new(id: 1, nested_posts: [])
+          @nestedpost2 = NestedPost.new(id: 2, nested_posts: [])
           @nestedpost1.nested_posts << @nestedpost1
           @nestedpost1.nested_posts << @nestedpost2
           @nestedpost2.nested_posts << @nestedpost1
@@ -341,9 +359,10 @@ module ActiveModelSerializers
 
         def test_no_duplicates_collection
           hash = ActiveModelSerializers::SerializableResource.new(
-            [@post1, @post2], adapter: :json_api,
-                              include: '*.*')
-                                                             .serializable_hash
+            [@post1, @post2],
+            adapter: :json_api,
+            include: '*.*'
+          ).serializable_hash
           expected = [
             {
               type: 'authors', id: '1',
@@ -364,7 +383,8 @@ module ActiveModelSerializers
           hash = ActiveModelSerializers::SerializableResource.new(
             @nestedpost1,
             adapter: :json_api,
-            include: '*').serializable_hash
+            include: '*'
+          ).serializable_hash
           expected = [
             type: 'nested-posts', id: '2',
             relationships: {
@@ -383,7 +403,8 @@ module ActiveModelSerializers
           hash = ActiveModelSerializers::SerializableResource.new(
             [@nestedpost1, @nestedpost2],
             adapter: :json_api,
-            include: '*').serializable_hash
+            include: '*'
+          ).serializable_hash
           assert_nil(hash[:included])
         end
       end

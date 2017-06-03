@@ -10,9 +10,9 @@ the resource is paginated and if you are using the ```JsonApi``` adapter.
 If you want pagination links in your response, use [Kaminari](https://github.com/amatsuda/kaminari)
 or [WillPaginate](https://github.com/mislav/will_paginate).
 
-Although the others adapters does not have this feature, it is possible to
+Although the other adapters do not have this feature, it is possible to
 implement pagination links to `JSON` adapter. For more information about it,
-please see in our docs 
+please check our docs.
 
 ###### Kaminari examples
 
@@ -72,18 +72,18 @@ ActiveModelSerializers pagination relies on a paginated collection with the meth
 
 ### JSON adapter
 
-If you are using `JSON` adapter, pagination links will not be included automatically, but it is possible to do so using `meta` key.
+If you are not using `JSON` adapter, pagination links will not be included automatically, but it is possible to do so using `meta` key.
 
 Add this method to your base API controller.
 
 ```ruby
-def pagination_dict(object)
+def pagination_dict(collection)
   {
-    current_page: object.current_page,
-    next_page: object.next_page,
-    prev_page: object.prev_page,
-    total_pages: object.total_pages,
-    total_count: object.total_count
+    current_page: collection.current_page,
+    next_page: collection.next_page,
+    prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
+    total_pages: collection.total_pages,
+    total_count: collection.total_count
   }
 end
 ```
@@ -117,22 +117,21 @@ ex.
 You can also achieve the same result if you have a helper method that adds the pagination info in the meta tag. For instance, in your action specify a custom serializer.
 
 ```ruby
-render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attributes(@post)
+render json: @posts, each_serializer: PostPreviewSerializer, meta: meta_attributes(@posts)
 ```
 
 ```ruby
 #expects pagination!
-def meta_attributes(resource, extra_meta = {})
+def meta_attributes(collection, extra_meta = {})
   {
-    current_page: resource.current_page,
-    next_page: resource.next_page,
-    prev_page: resource.prev_page,
-    total_pages: resource.total_pages,
-    total_count: resource.total_count
+    current_page: collection.current_page,
+    next_page: collection.next_page,
+    prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
+    total_pages: collection.total_pages,
+    total_count: collection.total_count
   }.merge(extra_meta)
 end
 ```
-
 
 ### Attributes adapter
 
