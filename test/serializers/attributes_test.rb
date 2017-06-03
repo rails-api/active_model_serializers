@@ -50,7 +50,9 @@ module ActiveModel
 
       # rubocop:disable Metrics/AbcSize
       def test_multiple_conditional_attributes
-        model = ::Model.new(true: true, false: false)
+        model = Class.new(::Model) do
+          attributes :true, :false, :attribute1, :attribute2
+        end.new(true: true, false: false)
 
         scenarios = [
           { options: { if:     :true  }, included: true  },
