@@ -9,6 +9,7 @@ Features:
 
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
 - [#2130](https://github.com/rails-api/active_model_serializers/pull/2130) Allow serialized ID to be overwritten for belongs-to relationships. (@greysteil)
+- [#2148](https://github.com/rails-api/active_model_serializers/pull/2148) Add options to multiple attributes at once. (@nicklandgrebe)
 
 Fixes:
 
@@ -144,7 +145,6 @@ Features:
 - [#1687](https://github.com/rails-api/active_model_serializers/pull/1687) Only calculate `_cache_digest` (in `cache_key`) when `skip_digest` is false. (@bf4)
 - [#1647](https://github.com/rails-api/active_model_serializers/pull/1647) Restrict usage of `serializable_hash` options
   to the ActiveModel::Serialization and ActiveModel::Serializers::JSON interface. (@bf4)
-- [#1714](https://github.com/rails-api/active_model_serializers/pull/1714) Add options to multiple attributes at once. (@nicklandgrebe)
 
 Fixes:
 - [#1700](https://github.com/rails-api/active_model_serializers/pull/1700) Support pagination link for Kaminari when no data is returned. (@iamnader)
