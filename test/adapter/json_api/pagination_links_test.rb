@@ -54,6 +54,14 @@ module ActiveModelSerializers
           }
         end
 
+        def empty_collection_links
+          {
+            self: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+            first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+            last: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2"
+          }
+        end
+
         def links
           {
             links: {
@@ -71,6 +79,7 @@ module ActiveModelSerializers
             links: {
               self: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
               first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
               prev: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2"
             }
           }
@@ -111,7 +120,7 @@ module ActiveModelSerializers
         def expected_response_with_no_data_pagination_links
           {}.tap do |hash|
             hash[:data] = []
-            hash[:links] = {}
+            hash.merge! links: empty_collection_links
           end
         end
 

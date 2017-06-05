@@ -35,19 +35,21 @@ module ActiveModelSerializers
         private
 
         def pages_from
-          return {} if collection.total_pages <= FIRST_PAGE
-
           {}.tap do |pages|
-            pages[:self] = collection.current_page
+            pages[:self]  = collection.current_page
+            pages[:first] = FIRST_PAGE
+            pages[:last]  = collection.total_pages
 
-            unless collection.current_page == FIRST_PAGE
-              pages[:first] = FIRST_PAGE
-              pages[:prev]  = collection.current_page - FIRST_PAGE
-            end
+            if collection.total_pages > 0
+              unless collection.current_page == FIRST_PAGE
+                pages[:prev] = collection.current_page - FIRST_PAGE
+              end
 
-            unless collection.current_page == collection.total_pages
-              pages[:next] = collection.current_page + FIRST_PAGE
-              pages[:last] = collection.total_pages
+              unless collection.current_page == collection.total_pages
+                pages[:next] = collection.current_page + FIRST_PAGE
+              end
+            else
+              pages[:last] = FIRST_PAGE
             end
           end
         end
