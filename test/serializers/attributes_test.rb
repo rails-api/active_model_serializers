@@ -91,6 +91,20 @@ module ActiveModel
           assert_equal(s[:included], hash.key?(:attribute2), "Error with #{s[:options]}")
         end
       end
+
+      def test_attributes_key_option
+        model = Class.new(::Model) do
+          attributes :true, :false, :attribute1, :attribute2
+        end.new(true: true, false: false)
+
+        serializer = Class.new(ActiveModel::Serializer) do
+          attributes :attribute1, :attribute2, key: :attribute
+        end
+
+        hash = serializable(model, serializer: serializer).serializable_hash
+        assert_equal(hash.key?(:attribute1), true)
+        assert_equal(hash.key?(:attribute2), true)
+      end
     end
   end
 end
