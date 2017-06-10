@@ -198,8 +198,8 @@ module ActiveModel
     # @example
     #   class AdminAuthorSerializer < ActiveModel::Serializer
     #     attributes :id, :name, :recent_edits
-    def self.attributes(*attrs)
-      options = attrs.extract_options!.except(:key)
+    def self.attributes(*attrs, **options)
+      options = options.except(:key)
 
       attrs = attrs.first if attrs.first.class == Array
 
