@@ -147,6 +147,10 @@ module ActiveModel
         end
       end
 
+      def include_resource_identifier?
+        false
+      end
+
       # @param serializer [ActiveModel::Serializer]
       # @yield [ActiveModel::Serializer]
       # @return [:nil, associated resource or resource collection]

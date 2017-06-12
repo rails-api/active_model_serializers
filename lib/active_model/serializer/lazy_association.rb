@@ -25,6 +25,10 @@ module ActiveModel
         )
       end
 
+      def include_resource_identifier?
+        include_data? || reflection.include_resource_identifier?
+      end
+
       # @return [ActiveModel::Serializer, nil]
       def serializer
         return @serializer if defined?(@serializer)

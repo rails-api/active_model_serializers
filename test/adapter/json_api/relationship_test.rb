@@ -374,6 +374,24 @@ module ActiveModelSerializers
           assert_equal(expected, actual)
         end
 
+        def test_include_belongs_to_relationships
+          ActiveModelSerializers.config.include_belongs_to_resource_identifier = true
+
+          expected = {
+            data: { id: '1337', type: 'authors' }
+          }
+
+          model_attributes = { author: Author.new(id: 1337), author_id: 1337 }
+          relationship_name = :author
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            belongs_to :author do
+              include_data false
+            end
+          end
+          assert_equal(expected, actual)
+        end
+
         private
 
         def build_serializer_and_serialize_relationship(model, relationship_name, &block)

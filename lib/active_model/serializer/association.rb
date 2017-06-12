@@ -7,7 +7,7 @@ module ActiveModel
     # @api private
     Association = Struct.new(:reflection, :association_options) do
       attr_reader :lazy_association
-      delegate :object, :include_data?, :virtual_value, :collection?, to: :lazy_association
+      delegate :object, :include_data?, :include_resource_identifier?, :virtual_value, :collection?, to: :lazy_association
 
       def initialize(*)
         super

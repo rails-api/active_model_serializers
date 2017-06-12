@@ -15,7 +15,7 @@ module ActiveModelSerializers
         def as_json
           hash = {}
 
-          hash[:data] = data_for(association) if association.include_data?
+          hash[:data] = data_for(association) if association.include_resource_identifier?
 
           links = links_for(association)
           hash[:links] = links if links.any?
