@@ -3,7 +3,6 @@ module ActiveModelSerializers
     class JsonApi < Base
       class PaginationLinks
         MissingSerializationContextError = Class.new(KeyError)
-        FIRST_PAGE = 1
 
         attr_reader :collection, :context
 
@@ -20,12 +19,13 @@ module ActiveModelSerializers
         end
 
         def as_json
-          per_page = collection.try(:per_page) || collection.try(:limit_value) || collection.size
-          pages_from.each_with_object({}) do |(key, value), hash|
-            params = query_parameters.merge(page: { number: value, size: per_page }).to_query
-
-            hash[key] = "#{url(adapter_options)}?#{params}"
-          end
+          {
+            "self":  location_url,
+            "first": first_page_url,
+            "prev":  prev_page_url,
+            "next":  next_page_url,
+            "last":  last_page_url
+          }
         end
 
         protected
@@ -34,36 +34,36 @@ module ActiveModelSerializers
 
         private
 
-        def pages_from
-          {}.tap do |pages|
-            pages[:self]  = collection.current_page
-            pages[:first] = FIRST_PAGE
-            pages[:last]  = collection.total_pages
-
-            if collection.total_pages > 0
-              unless collection.current_page == FIRST_PAGE
-                pages[:prev] = collection.current_page - FIRST_PAGE
-              end
-
-              unless collection.current_page == collection.total_pages
-                pages[:next] = collection.current_page + FIRST_PAGE
-              end
-            else
-              pages[:last] = FIRST_PAGE
-            end
-          end
+        def location_url
+          url_for_page(collection.current_page)
         end
 
-        def url(options)
-          @url ||= options.fetch(:links, {}).fetch(:self, nil) || request_url
+        def first_page_url
+          url_for_page(1)
         end
 
-        def request_url
-          @request_url ||= context.request_url
+        def prev_page_url
+          return nil if collection.first_page?
+          url_for_page(collection.prev_page)
+        end
+
+        def next_page_url
+          return nil if collection.last_page? || collection.out_of_range?
+          url_for_page(collection.next_page)
+        end
+
+        def url_for_page(number)
+          params = query_parameters.dup
+          params[:page] = { page: per_page, number: number }
+          context.url_for(action: :index, params: params)
         end
 
         def query_parameters
           @query_parameters ||= context.query_parameters
+        end
+
+        def per_page
+          @per_page ||= collection.try(:per_page) || collection.try(:limit_value) || collection.size
         end
       end
     end
