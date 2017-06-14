@@ -15,7 +15,7 @@ module ActiveModelSerializers
  JsonApi::PaginationLinks requires a ActiveModelSerializers::SerializationContext.
  Please pass a ':serialization_context' option or
  override CollectionSerializer#paginated? to return 'false'.
-             EOF
+            EOF
           end
         end
 
