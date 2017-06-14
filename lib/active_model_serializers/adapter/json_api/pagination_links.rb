@@ -21,11 +21,11 @@ module ActiveModelSerializers
 
         def as_json
           {
-            "self":  location_url,
-            "first": first_page_url,
-            "prev":  prev_page_url,
-            "next":  next_page_url,
-            "last":  last_page_url
+            self:  location_url,
+            first: first_page_url,
+            prev:  prev_page_url,
+            next:  next_page_url,
+            last:  last_page_url
           }
         end
 
