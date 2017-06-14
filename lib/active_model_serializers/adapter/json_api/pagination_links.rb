@@ -57,7 +57,7 @@ module ActiveModelSerializers
         end
 
         def next_page_url
-          return nil if (collection.total_pages == 0 || collection.current_page == collection.total_pages)
+          return nil if collection.total_pages == 0 || collection.current_page == collection.total_pages
           url_for_page(collection.next_page)
         end
 
