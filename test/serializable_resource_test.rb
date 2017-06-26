@@ -39,6 +39,12 @@ module ActiveModelSerializers
       refute SerializableResource.new(@resource, adapter: false).use_adapter?
     end
 
+    def test_cache_cache_value
+      resource = SerializableResource.new(@resource)
+      expected_value = resource.serializer_instance.cache_key(resource.adapter)
+      assert_equal resource.cache_key, expected_value
+    end
+
     class SerializableResourceErrorsTest < Minitest::Test
       def test_serializable_resource_with_errors
         options = nil

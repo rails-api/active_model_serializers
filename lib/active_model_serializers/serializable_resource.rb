@@ -75,6 +75,10 @@ module ActiveModelSerializers
       use_adapter? && !serializer.nil?
     end
 
+    def cache_key
+      serializer_instance.cache_key(adapter)
+    end
+
     protected
 
     attr_reader :resource, :adapter_opts, :serializer_opts
