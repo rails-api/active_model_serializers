@@ -12,6 +12,7 @@ Features:
 - [#2189](https://github.com/rails-api/active_model_serializers/pull/2189)
   Update version constraint for jsonapi-renderer to `['>= 0.1.1.beta1', '< 0.3']`
   (@tagliala)
+- [#2021](https://github.com/rails-api/active_model_serializers/pull/2159) add #cache_key method to serializable resource. (@ledhed2222)
 
 Fixes:
 
