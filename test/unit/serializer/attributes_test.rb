@@ -5,6 +5,7 @@ module AMS
   class Serializer
     class AttributesTest < Test
       class ParentModelSerializer < Serializer
+        # TODO: test :id is forbidden attribute name
         attribute :name
         attribute :description, key: :summary
       end

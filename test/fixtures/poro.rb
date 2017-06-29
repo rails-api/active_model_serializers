@@ -52,7 +52,7 @@ end
 
 class ParentModel < PlainModel
   attributes :id, :name, :description
-  associations :child_models
+  associations :child_models, :child_model
 end
 class ChildModel < PlainModel
   attributes :id, :name
