@@ -249,6 +249,7 @@ module AMS
     self._query_params = []
 
     attr_reader :object, :link_builder
+    attr_writer :object # useful for re-using the serializer when serializing a collection
 
     # @param object [Object] the model whose data is used in serialization
     def initialize(object, link_builder: :no_links)
