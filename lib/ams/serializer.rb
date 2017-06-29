@@ -434,6 +434,11 @@ module AMS
       __send__(*args)
     end
 
+    KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
+    def method(method_name)
+      KERNEL_METHOD_METHOD.bind(self).call(method_name)
+    end
+
     private
 
       def link_builder?
