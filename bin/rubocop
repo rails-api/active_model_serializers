@@ -12,7 +12,7 @@
 
 set -eou pipefail
 
-case $1 in
+case "${1-}" in
   -A)
      echo "Rubocop autocorrect is ON" >&2
      bin/rake -f lib/tasks/rubocop.rake rubocop:auto_correct
@@ -39,7 +39,7 @@ case $1 in
   *)
      # with no args, run vanilla rubocop
      # else assume we're passing in arbitrary arguments
-     if [ -z "$1" ]; then
+     if [ -z "${1:-}" ]; then
        bin/rake -f lib/tasks/rubocop.rake rubocop
      else
        bundle exec rubocop "$@"
