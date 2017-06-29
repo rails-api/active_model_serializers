@@ -23,7 +23,7 @@ Integrated application and version *(e.g., Rails, Grape, etc)*:
 
 
 
-#### Additonal helpful information
+#### Additional helpful information
 *(e.g., Gemfile.lock, configurations, PR containing a failing test, git bisect results)*
 
 
