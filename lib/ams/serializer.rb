@@ -136,6 +136,9 @@ module AMS
       #   relation :articles, type: :articles, to: :many, key: :posts, ids: "object.article_ids"
       #   relation :article, type: :articles, to: :one, key: :post
       #   relation :article, type: :articles, to: :one, key: :post, id: "object.article_id"
+      #
+      #   #=> { data: { id: 1, type: :users} }
+      #   #=> { data: [ { id: 1, type: :users}, { id: 2, type: :users] } }
       def relation(relation_name, type:, to:, key: relation_name, **options)
         _fields << key
         _relations[relation_name] = { key: key, type: type, to: to }
@@ -154,8 +157,19 @@ module AMS
       #       object.aritcles.pluck(:id)
       #     end
       #
+      #     def related_articles_data
+      #       related_articles_ids.map {|id| relationship_data(id, :articles) }
+      #     end
+      #
+      #     def related_articles_links
+      #       related_link_to_many(:articles)
+      #     end
+      #
       #     def articles
-      #       relationship_object(related_articles_ids, :articles)
+      #       {}.tap do |hash|
+      #         hash[:data] = related_articles_data
+      #         hash[:links] = related_articles_links if link_builder?
+      #       end
       #     end
       #
       # @example
@@ -165,8 +179,19 @@ module AMS
       #       object.article_ids
       #     end
       #
+      #     def related_articles_data
+      #       related_articles_ids.map {|id| relationship_data(id, :articles) }
+      #     end
+      #
+      #     def related_articles_links
+      #       related_link_to_many(:articles)
+      #     end
+      #
       #     def articles
-      #       relationship_object(related_articles_ids, :articles)
+      #       {}.tap do |hash|
+      #         hash[:data] = related_articles_data
+      #         hash[:links] = related_articles_links if link_builder?
+      #       end
       #     end
       def _relation_to_many(relation_name, type:, key: relation_name, **options)
         ids_method = options.fetch(:ids) do
@@ -176,9 +201,23 @@ module AMS
           def related_#{relation_name}_ids
             #{ids_method}
           end
-
+        METHOD
+        add_instance_method <<-METHOD
+          def related_#{relation_name}_data
+            related_#{relation_name}_ids.map { |id| relationship_data(id, "#{type}") }
+          end
+        METHOD
+        add_instance_method <<-METHOD
+          def related_#{relation_name}_links
+            related_link_to_many("#{type}")
+          end
+        METHOD
+        add_instance_method <<-METHOD
           def #{relation_name}
-            relationship_object(related_#{relation_name}_ids, "#{type}")
+            {}.tap do |hash|
+              hash[:data] = related_#{relation_name}_data
+              hash[:links] = related_#{relation_name}_links if link_builder?
+            end
           end
         METHOD
       end
@@ -190,8 +229,19 @@ module AMS
       #       object.article.id
       #     end
       #
+      #     def related_article_data
+      #       relationship_data(related_article_id, :articles)
+      #     end
+      #
+      #     def related_article_links
+      #       related_link_to_one(:articles)
+      #     end
+      #
       #     def article
-      #       relationship_object(related_article_id, :articles)
+      #       {}.tap do |hash|
+      #         hash[:data] = related_article_data
+      #         hash[:links] = related_article_links if link_builder?
+      #       end
       #     end
       #
       # @example
@@ -201,8 +251,19 @@ module AMS
       #       object.article_id
       #     end
       #
+      #     def related_article_data
+      #       relationship_data(related_article_id, :articles)
+      #     end
+      #
+      #     def related_article_links
+      #       related_link_to_one(:articles)
+      #     end
+      #
       #     def article
-      #       relationship_object(related_article_id, :articles)
+      #       {}.tap do |hash|
+      #         hash[:data] = related_article_data
+      #         hash[:links] = related_article_links if link_builder?
+      #       end
       #     end
       def _relation_to_one(relation_name, type:, key: relation_name, **options)
         id_method = options.fetch(:id) do
@@ -212,10 +273,23 @@ module AMS
           def related_#{relation_name}_id
             #{id_method}
           end
-
+        METHOD
+        add_instance_method <<-METHOD
+          def related_#{relation_name}_data
+            relationship_data(related_#{relation_name}_id, "#{type}")
+          end
+        METHOD
+        add_instance_method <<-METHOD
+          def related_#{relation_name}_links
+            related_link_to_one("#{type}")
+          end
+        METHOD
+        add_instance_method <<-METHOD
           def #{relation_name}
-            id = related_#{relation_name}_id
-            relationship_object(id, "#{type}")
+            {}.tap do |hash|
+              hash[:data] = related_#{relation_name}_data
+              hash[:links] = related_#{relation_name}_links if link_builder?
+            end
           end
         METHOD
       end
@@ -341,26 +415,6 @@ module AMS
     # The configured relations
     def _relations
       self.class._relations
-    end
-
-    # Builds a relationship object
-    #
-    # @example
-    #   relationship_object(1, :users)
-    #   #=> { data: { id: 1, type: :users} }
-    #
-    #   relationship_object([1,2], :users)
-    #   #=> { data: [ { id: 1, type: :users}, { id: 2, type: :users] } }
-    def relationship_object(id_or_ids, type)
-      {}.tap do |hash|
-        if id_or_ids.respond_to?(:to_ary)
-          hash[:data] = id_or_ids.map { |id| relationship_data(id, type) }
-          hash[:links] = related_link_to_many(type) if link_builder?
-        else
-          hash[:data] = relationship_data(id_or_ids, type)
-          hash[:links] = related_link_to_one(id_or_ids, type) if link_builder?
-        end
-      end
     end
 
     # resource linkage
