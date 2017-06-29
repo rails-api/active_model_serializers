@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "ams/inflector"
 module AMS
   # Lightweight mapping of a model to a JSON API resource object
   # with attributes and relationships
@@ -62,11 +63,21 @@ module AMS
         $VERBOSE = original_verbose
       end
 
+      # @!visibility private
+      def _infer_type(base)
+        Inflector.pluralize(
+          Inflector.underscore(
+            base.name.split("::")[-1].sub(/Serializer/, "")
+          )
+         )
+      end
+
       def inherited(base)
         super
         base._attributes = _attributes.dup
         base._relations = _relations.dup
-        base._type = base.name.split("::")[-1].sub("Serializer", "").downcase
+        base._type = _infer_type(base)
+
         add_class_method "def class; #{base}; end", base
         add_instance_method "def id; object.id; end", base
       end
