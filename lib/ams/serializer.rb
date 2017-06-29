@@ -248,11 +248,12 @@ module AMS
     self._fields = []
     self._query_params = []
 
-    attr_reader :object
+    attr_reader :object, :link_builder
 
     # @param object [Object] the model whose data is used in serialization
-    def initialize(object)
+    def initialize(object, link_builder: :no_links)
       @object = object
+      @link_builder = link_builder
     end
 
     # Builds a Hash representation of the object
@@ -263,7 +264,8 @@ module AMS
         type: type
       }.merge({
         attributes: attributes,
-        relationships: relations
+        relationships: relations,
+        links: resource_links_object
       }.reject { |_, v| v.empty? })
     end
     alias as_json to_h
@@ -314,7 +316,13 @@ module AMS
     def relations
       hash = {}
       _relations.each do |relation_name, config|
-        hash[config[:key]] = send(relation_name)
+        hash[config[:key]] =
+        if :many == config[:to] && link_builder?
+          relation_type = config.fetch(:type)
+          { links: related_link_to_many(relation_type) }
+        else
+          send(relation_name)
+        end
       end
       hash
     end
@@ -343,13 +351,15 @@ module AMS
     #   relationship_object([1,2], :users)
     #   #=> { data: [ { id: 1, type: :users}, { id: 2, type: :users] } }
     def relationship_object(id_or_ids, type)
-      data =
+      {}.tap do |hash|
         if id_or_ids.respond_to?(:to_ary)
-          id_or_ids.map { |id| relationship_data(id, type) }
+          hash[:data] = id_or_ids.map { |id| relationship_data(id, type) }
+          hash[:links] = related_link_to_many(type) if link_builder?
         else
-          relationship_data(id_or_ids, type)
+          hash[:data] = relationship_data(id_or_ids, type)
+          hash[:links] = related_link_to_one(id_or_ids, type) if link_builder?
         end
-      { "data": data }
+      end
     end
 
     # resource linkage
@@ -370,6 +380,32 @@ module AMS
     end
 
     private
+
+      def link_builder?
+        link_builder != :no_links
+      end
+
+      def related_link_to_one(id, type)
+        { related: link_builder.url_for(controller: type, action: :show, id: id) } # related resource link object
+      end
+
+      # related resource link object
+      def related_link_to_many(type)
+        filter = { foreign_key => object.id }
+        query_params = { filter: filter }
+        { related: link_builder.url_for(controller: type, action: :index, params: query_params) }
+      end
+
+      def resource_links_object
+        return {} unless link_builder?
+        {
+          self: link_builder.url_for(controller: type, action: :show, id: id)
+        }
+      end
+
+      def foreign_key
+        "#{object.class.table_name.singularize}_id"
+      end
 
       def method_missing(name, *args, &block)
         object.send(name, *args, &block)
