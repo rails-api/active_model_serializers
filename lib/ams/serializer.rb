@@ -234,7 +234,7 @@ module AMS
       #     end
       #
       #     def related_article_links
-      #       related_link_to_one(:articles)
+      #       related_link_to_one(related_article_id, :articles)
       #     end
       #
       #     def article
@@ -256,7 +256,7 @@ module AMS
       #     end
       #
       #     def related_article_links
-      #       related_link_to_one(:articles)
+      #       related_link_to_one(related_article_id, :articles)
       #     end
       #
       #     def article
@@ -281,7 +281,7 @@ module AMS
         METHOD
         add_instance_method <<-METHOD
           def related_#{relation_name}_links
-            related_link_to_one("#{type}")
+            related_link_to_one(related_#{relation_name}_id, "#{type}")
           end
         METHOD
         add_instance_method <<-METHOD
