@@ -446,21 +446,29 @@ module AMS
       end
 
       def related_link_to_one(id, type)
-        { related: link_builder.url_for(controller: type, action: :show, id: id) } # related resource link object
+        { related: show_url_for(id, type) } # related resource link object
       end
 
       # related resource link object
       def related_link_to_many(type)
         filter = { foreign_key => object.id }
         query_params = { filter: filter }
-        { related: link_builder.url_for(controller: type, action: :index, params: query_params) }
+        { related: index_url_for(type, query_params) }
       end
 
       def resource_links_object
         return {} unless link_builder?
         {
-          self: link_builder.url_for(controller: type, action: :show, id: id)
+          self: show_url_for(id, type)
         }
+      end
+
+      def show_url_for(id, type)
+        link_builder.url_for(controller: type, action: :show, id: id)
+      end
+
+      def index_url_for(type, query_params)
+        link_builder.url_for(controller: type, action: :index, params: query_params)
       end
 
       def foreign_key
