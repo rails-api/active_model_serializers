@@ -100,6 +100,16 @@ module AMS
         _fields << key
         _attributes[attribute_name] = { key: key }
 
+        # protect inheritance chains and open classes
+        # if a serializer inherits from another OR
+        #  attributes are added later in a classes lifecycle
+        # poison the cache
+        add_instance_method <<-METHOD, self
+          def _fast_attributes
+            raise NameError
+          end
+        METHOD
+
         add_instance_method <<-METHOD, self
         def #{attribute_name}
           object.#{attribute_name}
@@ -345,11 +355,15 @@ module AMS
     #
     # TODO: Support sparse fieldsets
     def attributes
-      hash = {}
+      _fast_attributes
+    rescue NameError
+      faster_method = String.new(%(def _fast_attributes\n hash={}\n))
       _attributes.each do |attribute_name, config|
-        hash[config[:key]] = send(attribute_name)
+        faster_method << %(hash[:"#{config[:key]}"] = #{attribute_name}\n)
       end
-      hash
+      faster_method << "hash\nend"
+      self.class.add_instance_method faster_method, self.class
+      _fast_attributes
     end
 
     # Builds a Hash of specified relations
