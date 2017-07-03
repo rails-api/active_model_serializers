@@ -2,6 +2,7 @@
 
 require "json"
 require "ams/inflector"
+require "ams/dsl_support"
 module AMS
   # Lightweight mapping of a model to a JSON API resource object
   # with attributes and relationships
@@ -31,6 +32,7 @@ module AMS
   #  ums = UserModelSerializer.new(user)
   #  ums.to_json
   class Serializer < BasicObject
+    extend DSLSupport
     # delegate constant lookup to Object
     def self.const_missing(name)
       ::Object.const_get(name)
@@ -39,30 +41,6 @@ module AMS
     class << self
       attr_accessor :_attributes, :_relations, :_id_field, :_type
       attr_accessor :_fields, :_query_params
-
-      # @api private
-      # Macro to add an instance method to the receiver
-      def add_instance_method(body, receiver = self)
-        cl = caller_locations[0]
-        silence_warnings { receiver.module_eval body, cl.absolute_path, cl.lineno }
-      end
-
-      # @api private
-      # Macro to add a class method to the receiver
-      def add_class_method(body, receiver)
-        cl = caller_locations[0]
-        silence_warnings { receiver.class_eval body, cl.absolute_path, cl.lineno }
-      end
-
-      # @api private
-      # Silence warnings, primarily when redefining methods
-      def silence_warnings
-        original_verbose = $VERBOSE
-        $VERBOSE = nil
-        yield
-      ensure
-        $VERBOSE = original_verbose
-      end
 
       # @!visibility private
       def _infer_type(base)
@@ -101,7 +79,7 @@ module AMS
       #   id_field :user_id
       def id_field(id_field)
         self._id_field = id_field
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
         def id
           object.#{id_field}
         end
@@ -121,7 +99,8 @@ module AMS
         fail "ForbiddenKey" if attribute_name == :id
         _fields << key
         _attributes[attribute_name] = { key: key }
-        add_instance_method <<-METHOD
+
+        add_instance_method <<-METHOD, self
         def #{attribute_name}
           object.#{attribute_name}
         end
@@ -197,22 +176,22 @@ module AMS
         ids_method = options.fetch(:ids) do
           "object.#{relation_name}.pluck(:id)"
         end
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def related_#{relation_name}_ids
             #{ids_method}
           end
         METHOD
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def related_#{relation_name}_data
             related_#{relation_name}_ids.map { |id| relationship_data(id, "#{type}") }
           end
         METHOD
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def related_#{relation_name}_links
             related_link_to_many("#{type}")
           end
         METHOD
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def #{relation_name}
             {}.tap do |hash|
               hash[:data] = related_#{relation_name}_data
@@ -269,22 +248,22 @@ module AMS
         id_method = options.fetch(:id) do
           "object.#{relation_name}.id"
         end
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def related_#{relation_name}_id
             #{id_method}
           end
         METHOD
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def related_#{relation_name}_data
             relationship_data(related_#{relation_name}_id, "#{type}")
           end
         METHOD
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def related_#{relation_name}_links
             related_link_to_one(related_#{relation_name}_id, "#{type}")
           end
         METHOD
-        add_instance_method <<-METHOD
+        add_instance_method <<-METHOD, self
           def #{relation_name}
             {}.tap do |hash|
               hash[:data] = related_#{relation_name}_data
