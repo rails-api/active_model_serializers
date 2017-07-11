@@ -1,5 +1,7 @@
 module AMS
   module Delegatable
+    KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
+
     # delegate constant lookup to Object
     def const_missing(name)
       ::Object.const_get(name)
@@ -12,6 +14,10 @@ module AMS
           __send__(*args)
         end
 
+        def method(method_name)
+          AMS::Delegatable::KERNEL_METHOD_METHOD.bind(self).call(method_name)
+        end
+
         private
 
         def method_missing(name, *args, &block)
@@ -21,16 +27,6 @@ module AMS
         def respond_to_missing?(name, include_private = false)
           object.respond_to?(name, include_private)
         end
-
-        const_set(:KERNEL_METHOD_METHOD, ::Kernel.instance_method(:method))
-        def method_handle_for(method_name)
-          KERNEL_METHOD_METHOD.bind(self).call(method_name)
-        rescue NameError => original
-          handle = self.method(method_name)
-          raise original unless handle.is_a? Method
-          handle
-        end
-        alias method method_handle_for
       end
     end
   end
