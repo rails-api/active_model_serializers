@@ -324,7 +324,7 @@ module AMS
     # using id, type, attributes, relationships
     def to_h
       {
-        id: id,
+        id: id.to_s,
         type: type
       }.merge({
         attributes: attributes,
@@ -412,7 +412,7 @@ module AMS
 
     # resource linkage
     def relationship_data(id, type)
-      { "id": id, "type": type }
+      { id: id.to_s, type: type }
     end
 
     # Dumps obj to JSON

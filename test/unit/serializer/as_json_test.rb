@@ -27,29 +27,29 @@ module AMS
 
       def test_model_instance_as_json
         expected = {
-          id: 1, type: :profiles,
+          id: "1", type: :profiles,
           attributes: { name: "name", summary: "description" },
           relationships:
-          { child_models: { data: [{ id: 2, type: "comments" }] } }
+          { child_models: { data: [{ id: "2", type: "comments" }] } }
         }
         assert_equal expected, @serializer_instance.as_json
       end
 
       def test_model_instance_to_json
         expected = {
-          id: 1, type: :profiles,
+          id: "1", type: :profiles,
           attributes: { name: "name", summary: "description" },
           relationships:
-          { child_models: { data: [{ id: 2, type: "comments" }] } }
+          { child_models: { data: [{ id: "2", type: "comments" }] } }
         }.to_json
         assert_equal expected, @serializer_instance.to_json
       end
 
       def test_model_instance_dump
         expected = {
-          id: 1, type: :profiles
+          id: "1", type: :profiles
         }.to_json
-        assert_equal expected, @serializer_instance.dump(id: 1, type: :profiles)
+        assert_equal expected, @serializer_instance.dump(id: "1", type: :profiles)
       end
     end
   end

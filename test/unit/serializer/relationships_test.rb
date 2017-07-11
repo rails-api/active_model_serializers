@@ -25,10 +25,10 @@ module AMS
       def test_model_instance_relations
         expected_relations = {
           child_models: {
-            data: [{ type: "comments", id: 2 }]
+            data: [{ type: "comments", id: "2" }]
           },
           child_model: {
-            data: { type: "comments", id: 1 }
+            data: { type: "comments", id: "1" }
           }
         }
         assert_equal expected_relations, @serializer_instance.relations
@@ -36,14 +36,14 @@ module AMS
 
       def test_model_instance_relationship_data
         expected = {
-          type: :bananas, id: 5
+          type: :bananas, id: "5"
         }
         assert_equal expected, @serializer_instance.relationship_data(5, :bananas)
       end
 
       def test_model_instance_relationship_to_one
         expected = {
-          data: { id: @object.child_model.id, type: "comments" }
+          data: { id: @object.child_model.id.to_s, type: "comments" }
         }
         assert_equal expected, @serializer_instance.child_model
       end
@@ -55,7 +55,7 @@ module AMS
 
       def test_model_instance_relationship_to_many
         expected = {
-          data: [{ id: @object.child_models.first.id, type: "comments" }]
+          data: [{ id: @object.child_models.first.id.to_s, type: "comments" }]
         }
         assert_equal expected, @serializer_instance.child_models
       end
