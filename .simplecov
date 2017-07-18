@@ -2,16 +2,9 @@
 # see https://github.com/colszowka/simplecov/blob/master/lib/simplecov/defaults.rb
 # vim: set ft=ruby
 
-## DEFINE VARIABLES
-@minimum_coverage = 100.0
 ENV['FULL_BUILD'] ||= ENV['CI']
-@running_ci       = !!(ENV['FULL_BUILD'] =~ /\Atrue\z/i)
-@generate_report  = @running_ci || !!(ENV['COVERAGE'] =~ /\Atrue\z/i)
-@output = STDOUT
-# rubocop:enable Style/DoubleNegation
 
 ## CONFIGURE SIMPLECOV
-
 SimpleCov.profiles.define 'app' do
   coverage_dir 'coverage'
   load_profile 'test_frameworks'
@@ -35,18 +28,21 @@ SimpleCov.profiles.define 'app' do
   add_filter '/.bundle/'
 end
 
-if @generate_report
-  SimpleCov.start 'app'
-  if @running_ci
-    require 'codeclimate-test-reporter'
-    @output.puts '[COVERAGE] Running with SimpleCov Simple Formatter and CodeClimate Test Reporter'
-    formatters = [
-      SimpleCov::Formatter::SimpleFormatter,
-      CodeClimate::TestReporter::Formatter
-    ]
-  else
-    @output.puts '[COVERAGE] Running with SimpleCov HTML Formatter'
-    formatters = [SimpleCov::Formatter::HTMLFormatter]
+generate_report = !!(ENV['COVERAGE'] =~ /\Atrue\z/i)
+running_ci = !!(ENV['FULL_BUILD'] =~ /\Atrue\z/i)
+generate_result = running_ci || generate_report
+require_relative 'scripts/coverage_report'
+reporter = CoverageReport.new
+if generate_report
+  reporter.configure_to_generate_report!
+  SimpleCov.at_exit do
+    reporter.generate_report!
   end
-  SimpleCov.formatters = formatters
 end
+if generate_result
+  # only start when generating a result
+  SimpleCov.start 'app'
+  STDERR.puts '[COVERAGE] Running'
+  reporter.configure_to_generate_result!
+end
+SimpleCov.formatters = reporter.formatters
