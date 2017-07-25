@@ -59,6 +59,8 @@ end
       def serializer_for(resource, options = {})
         if resource.respond_to?(:serializer_class)
           resource.serializer_class
+        elsif resource.nil?
+          DefaultSerializer
         elsif resource.respond_to?(:to_ary)
           if Object.constants.include?(:ArraySerializer)
             ::ArraySerializer
