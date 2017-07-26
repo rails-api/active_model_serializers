@@ -300,8 +300,11 @@ module ActiveModel
     #     type do
     #       object.type
     #     end
-    def self.type(type = nil, &block)
-      self._type = (type && type.to_s) || block
+    # def self.type(type = nil, &block)
+    #   self._type = (type && type.to_s) || block
+    # end
+    def self.type(type)
+      self._type = type && type.to_s
     end
 
     # END SERIALIZER MACROS
