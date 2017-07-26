@@ -109,6 +109,21 @@ module ActiveModel
       # @example
       #   has_one :blog do
       #     include_data false
+      #     meta(id: object.blog.id)
+      #     meta liked: object.likes.any?
+      #     link :self do
+      #       href object.blog.id.to_s
+      #       meta(id: object.blog.id)
+      #     end
+      def set_type(value = nil)
+        @type = block_given? ? Proc.new : value
+        :nil
+      end
+
+      # @api public
+      # @example
+      #   has_one :blog do
+      #     include_data false
       #     link :self, 'a link'
       #     link :related, 'another link'
       #   end
