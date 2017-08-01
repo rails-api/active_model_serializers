@@ -50,7 +50,7 @@ ams                        :   12565796 allocated - 3.53x more
 Every scenario builds and renders [JSONAPI.org](jsonapi.org) documents of 301 records.
 
 eager means eager loaded data (no db hits).
-The benchmark for this can be found [here](https://github.com/NullVoxPopuli/rails-NPlusOneTests/blob/master/serialization_benchmark.rb)
+The benchmark for this can be found [here](https://github.com/NullVoxPopuli/rails-NPlusOneTests/blob/2a5ebfec262e53d8bcb7f3308388fc5ba64f599d/serialization_benchmark.rb)
 
 ## About
 
