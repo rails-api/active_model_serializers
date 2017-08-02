@@ -12,12 +12,12 @@ module ActiveModelSerializers
 
       # @api private
       def _attributes_for(jsonapi)
-        AttributeFormatter.new(jsonapi).render
+        Formatters::Attributes.new(jsonapi).render
       end
 
       # @api private
       def _json_for(jsonapi)
-        JsonFormatter.new(jsonapi).render
+        Formatters::Json.new(jsonapi).render
       end
 
       # @api private
