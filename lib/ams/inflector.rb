@@ -37,6 +37,16 @@ module AMS
       def pluralize(word)
         word + "s".freeze
       end
+
+      def singularize(word)
+        if word.end_with?("es")
+          word[0..-3]
+        elsif word.end_with?("s")
+          word[0..-2]
+        else
+          word
+        end
+      end
     end
   end
 end

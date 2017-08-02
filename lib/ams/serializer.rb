@@ -453,7 +453,7 @@ module AMS
       end
 
       def foreign_key
-        "#{object.class.table_name.singularize}_id"
+        "#{Inflector.singularize(object.class.table_name)}_id"
       end
   end
 end
