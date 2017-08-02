@@ -7,7 +7,6 @@ module AMS
       class ParentModelSerializer < Serializer
         # TODO: test to: :many without :ids option
         # TODO: test to: :one without :id option
-        # TODO: test to: :unknown_option raises ArgumentError
         relation :child_models, type: :comments, to: :many, ids: "object.child_models.map(&:id)"
         relation :child_model, type: :comments, to: :one, id: "object.child_model.id"
       end
@@ -20,6 +19,27 @@ module AMS
         )
         @serializer_class = ParentModelSerializer
         @serializer_instance = @serializer_class.new(@object)
+      end
+
+      def test_relation_macro_missing_type
+        exception = assert_raises(ArgumentError) do
+          ParentModelSerializer.relation :missing_type, to: :anything
+        end
+        assert_match(/missing keyword: type/, exception.message)
+      end
+
+      def test_relation_macro_bad_to
+        exception = assert_raises(ArgumentError) do
+          ParentModelSerializer.relation :unknown_relation_to, type: :anything, to: :unknown_option
+        end
+        assert_match(/UnknownRelationship to='unknown_option'/, exception.message)
+      end
+
+      def test_relation_macro_missing_to
+        exception = assert_raises(ArgumentError) do
+          ParentModelSerializer.relation :missing_relation_to, type: :anything
+        end
+        assert_match(/missing keyword: to/, exception.message)
       end
 
       def test_model_instance_relations

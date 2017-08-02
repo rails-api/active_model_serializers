@@ -128,13 +128,13 @@ module AMS
       #   #=> { data: [ { id: 1, type: :users}, { id: 2, type: :users] } }
       def relation(relation_name, type:, to:, key: relation_name, **options)
         _fields << key
-        _relations[relation_name] = { key: key, type: type, to: to }
         case to
         when :many then _relation_to_many(relation_name, type: type, key: key, **options)
         when :one then _relation_to_one(relation_name, type: type, key: key, **options)
         else
           fail ArgumentError, "UnknownRelationship to='#{to}'"
         end
+        _relations[relation_name] = { key: key, type: type, to: to }
       end
 
       # @example
