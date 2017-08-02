@@ -1,8 +1,16 @@
-# ActiveModelSerializers (Deprecated)
+# ActiveModelSerializers
 
-Please use [jsonapi-rb](https://github.com/jsonapi-rb) ([docs](http://jsonapi.org))
+## Status of AMS
+AMS has had quite the rocky history. 3 rewrites, and possibly a 4th. Currently AMS is open to Proof of Concept Design PRs.
 
-Comparison of jsonapi-rb vs AMS 0.10.6
+### Motivation for yet another re-write
+ - The maintainers of AMS have cycled in and out a few times, and the code base has become unwieldy
+ - 0.10.x's architecture could not handle all the feature requests in an elegant way.
+ - performance of AMS is bad/slow.
+
+##### Performance Comparison (jsonapi-rb vs AMS 0.10.6).
+
+AMS is about 6 times slower than [jsonapi-rb](http://jsonapi-rb.org)
 
 ```
 Calculating -------------------------------------
@@ -51,6 +59,9 @@ Every scenario builds and renders [JSONAPI.org](jsonapi.org) documents of 301 re
 
 eager means eager loaded data (no db hits).
 The benchmark for this can be found [here](https://github.com/NullVoxPopuli/rails-NPlusOneTests/blob/2a5ebfec262e53d8bcb7f3308388fc5ba64f599d/serialization_benchmark.rb)
+
+
+
 
 ## About
 
