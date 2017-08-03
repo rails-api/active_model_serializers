@@ -324,7 +324,7 @@ module AMS
       {
         id: id.to_s,
         type: type
-      }.merge({
+      }.merge!({
         attributes: attributes,
         relationships: relations,
         links: resource_links_object
