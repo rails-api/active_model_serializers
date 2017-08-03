@@ -26,8 +26,8 @@ module AMS
 
       def setup
         super
-        @to_many_relation = [ChildRecord.new(id: 2, name: "comment")]
-        @to_one_relation = ChildRecord.new(id: 3, name: "post")
+        @to_many_relation = [ChildRecord.new(id: 2, name: "to_many")]
+        @to_one_relation = ChildRecord.new(id: 3, name: "to_one")
         @object = ParentRecord.new(
           id: 1,
           name: "name",

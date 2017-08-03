@@ -5,17 +5,15 @@ module AMS
   class Serializer
     class RelationshipsTest < Test
       class ParentModelSerializer < Serializer
-        # TODO: test to: :many without :ids option
-        # TODO: test to: :one without :id option
         relation :child_models, type: :comments, to: :many, ids: "object.child_models.map(&:id)"
-        relation :child_model, type: :comments, to: :one, id: "object.child_model.id"
+        relation :child_model, type: :posts, to: :one, id: "object.child_model.id"
       end
 
       def setup
         super
         @object = ParentModel.new(
-          child_models: [ ChildModel.new(id: 2, name: "comments") ],
-          child_model: ChildModel.new(id: 1, name: "comment")
+          child_models: [ ChildModel.new(id: 2, name: "to_many") ],
+          child_model: ChildModel.new(id: 1, name: "to_one")
         )
         @serializer_class = ParentModelSerializer
         @serializer_instance = @serializer_class.new(@object)
@@ -48,7 +46,7 @@ module AMS
             data: [{ type: "comments", id: "2" }]
           },
           child_model: {
-            data: { type: "comments", id: "1" }
+            data: { type: "posts", id: "1" }
           }
         }
         assert_equal expected_relations, @serializer_instance.relations
@@ -63,7 +61,7 @@ module AMS
 
       def test_model_instance_relationship_to_one
         expected = {
-          data: { id: @object.child_model.id.to_s, type: "comments" }
+          data: { id: @object.child_model.id.to_s, type: "posts" }
         }
         assert_equal expected, @serializer_instance.child_model
       end
