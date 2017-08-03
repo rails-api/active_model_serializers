@@ -11,23 +11,29 @@ module AMS
         attribute :name
         attribute :description, key: :summary
         relation :child_records, type: :comments, to: :many
+        relation :child_record, type: :posts, to: :one
       end
+
       class ParentRecord < ParentModel
         def self.table_name
           "parent_records"
         end
+
+        alias child_record child_model
       end
       class ChildRecord < ChildModel
       end
 
       def setup
         super
-        @relation = ChildRecord.new(id: 2, name: "comment")
+        @to_many_relation = [ChildRecord.new(id: 2, name: "comment")]
+        @to_one_relation = ChildRecord.new(id: 3, name: "post")
         @object = ParentRecord.new(
           id: 1,
           name: "name",
           description: "description",
-          child_models: [@relation]
+          child_models: @to_many_relation,
+          child_model: @to_one_relation
         )
         @serializer_class = ParentRecordSerializer
         link_builder = Object.new
@@ -49,8 +55,10 @@ module AMS
         expected = {
           id: "1", type: :profiles,
           attributes: { name: "name", summary: "description" },
-          relationships:
-          { child_records: { links: { related: "https://example.com/comments/index?filter[parent_record_id]=1" } } },
+          relationships: {
+           child_records: { links: { related: "https://example.com/comments/index?filter[parent_record_id]=1" } } ,
+           child_record: { data: { id: "3", type: "posts" }, links: { related: "https://example.com/posts/show/3" } },
+},
           links: { self: "https://example.com/profiles/show/1" }
         }
         assert_equal expected, @serializer_instance.as_json
@@ -60,8 +68,10 @@ module AMS
         expected = {
           id: "1", type: :profiles,
           attributes: { name: "name", summary: "description" },
-          relationships:
-          { child_records: { links: { related: "https://example.com/comments/index?filter[parent_record_id]=1" } } },
+          relationships: {
+           child_records: { links: { related: "https://example.com/comments/index?filter[parent_record_id]=1" } } ,
+           child_record: { data: { id: "3", type: "posts" }, links: { related: "https://example.com/posts/show/3" } },
+},
           links: { self: "https://example.com/profiles/show/1" }
         }.to_json
         assert_equal expected, @serializer_instance.to_json
