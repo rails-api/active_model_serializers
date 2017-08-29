@@ -72,6 +72,11 @@ module ActiveModel
         ActiveModelSerializers::SerializableResource.new(@post).serializable_hash
         assert_match(/\(\d+\.\d+ms\)/, @logger.messages)
       end
+
+      def test_logs_without_serializer
+        ActiveModelSerializers::SerializableResource.new(foo: :bar).to_json
+        assert_equal('', @logger.messages)
+      end
     end
   end
 end
