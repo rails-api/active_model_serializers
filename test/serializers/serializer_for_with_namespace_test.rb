@@ -7,6 +7,7 @@ module ActiveModel
         attributes :title, :author_name
         associations :publisher, :pages
       end
+      class Ebook < Book; end
       class Page < ::Model; attributes :number, :text end
       class Publisher < ::Model; attributes :name end
 
@@ -82,6 +83,11 @@ module ActiveModel
           }
         }
         assert_equal expected, result
+      end
+
+      test 'follows inheritance with a namespace' do
+        serializer = ActiveModel::Serializer.serializer_for(Ebook.new, namespace: Api::V3)
+        assert_equal Api::V3::BookSerializer, serializer
       end
     end
   end
