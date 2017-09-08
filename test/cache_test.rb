@@ -415,7 +415,7 @@ module ActiveModelSerializers
         adapter_options = {}
         adapter_instance = ActiveModelSerializers::Adapter::Attributes.new(serializers, adapter_options)
         serializers.serializable_hash(adapter_options, options, adapter_instance)
-        cached_attributes = adapter_options.fetch(:cached_attributes).with_indifferent_access
+        cached_attributes = options.fetch(:cached_attributes).with_indifferent_access
 
         include_directive = ActiveModelSerializers.default_include_directive
         manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive).with_indifferent_access
@@ -446,9 +446,9 @@ module ActiveModelSerializers
         serializers.serializable_hash(adapter_options, options, adapter_instance)
 
         # Should find something with read_multi now
-        adapter_options = {}
+        options = {}
         serializers.serializable_hash(adapter_options, options, adapter_instance)
-        cached_attributes = adapter_options.fetch(:cached_attributes)
+        cached_attributes = options.fetch(:cached_attributes)
 
         include_directive = ActiveModelSerializers.default_include_directive
         manual_cached_attributes = ActiveModel::Serializer.cache_read_multi(serializers, adapter_instance, include_directive)
