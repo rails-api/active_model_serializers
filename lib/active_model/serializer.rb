@@ -337,7 +337,7 @@ module ActiveModel
     # @return [Enumerator<Association>]
     def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil)
       include_slice ||= include_directive
-      return Enumerator.new { } unless object
+      return Enumerator.new {} unless object
 
       Enumerator.new do |y|
         self.class._reflections.each do |key, reflection|
