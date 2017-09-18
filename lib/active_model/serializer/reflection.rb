@@ -154,8 +154,9 @@ module ActiveModel
         @object = serializer.object
         @scope = serializer.scope
 
-        block_value = instance_exec(serializer, &block) if block
         return unless include_data?(include_slice)
+
+        block_value = instance_exec(serializer, &block) if block
 
         if block && block_value != :nil
           block_value
