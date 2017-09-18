@@ -106,6 +106,43 @@ module ActionController
 
           assert_equal(expected, response)
         end
+
+        def test_deserialization_with_links_relationship
+          hash = {
+            'data' => {
+              'type' => 'photos',
+              'id' => 'zorglub',
+              'attributes' => {
+                'title' => 'Ember Hamster',
+                'src' => 'http://example.com/images/productivity.png',
+                'image-width' => '200',
+                'imageHeight' => '200',
+                'ImageSize' => '1024'
+              },
+              'relationships' => {
+                'images' => {
+                  'links' => {
+                    'related' => 'https://example.com/images/tomster/related'
+                  }
+                }
+              }
+            }
+          }
+
+          post :render_parsed_payload, params: hash
+
+          response = JSON.parse(@response.body)
+          expected = {
+            'id' => 'zorglub',
+            'title' => 'Ember Hamster',
+            'src' => 'http://example.com/images/productivity.png',
+            'image_width' => '200',
+            'image_height' => '200',
+            'image_size' => '1024'
+          }
+
+          assert_equal(expected, response)
+        end
       end
     end
   end

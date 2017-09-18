@@ -7,6 +7,9 @@ module ActiveModelSerializers
       module Deserialization
         InvalidDocument = Class.new(ArgumentError)
 
+        # http://jsonapi.org/format/#document-resource-object-relationships
+        VALID_RELATIONSHIP_KEYS = %w(links data meta).freeze
+
         module_function
 
         # Transform a JSON API document, containing a single data object,
@@ -132,8 +135,8 @@ module ActiveModelSerializers
           end
 
           relationships.each do |(key, value)|
-            unless value.is_a?(Hash) && value.key?('data')
-              yield payload, { data: { relationships: { key => 'Expected hash with :data key' } } }
+            unless value.is_a?(Hash) && value.keys.any? { |k| VALID_RELATIONSHIP_KEYS.include?(k) }
+              yield payload, { data: { relationships: { key => "Expected hash with at least a #{VALID_RELATIONSHIP_KEYS.to_sentence(last_word_connector: 'or')} key" } } }
             end
           end
         end
@@ -163,6 +166,8 @@ module ActiveModelSerializers
         # Given an association name, and a relationship data attribute, build a hash
         # mapping the corresponding ActiveRecord attribute to the corresponding value.
         #
+        # Ignores relationships specifying 'link' or 'meta' keys.
+        #
         # @example
         #   parse_relationship(:comments, [{ 'id' => '1', 'type' => 'comments' },
         #                                  { 'id' => '2', 'type' => 'comments' }],
@@ -173,12 +178,15 @@ module ActiveModelSerializers
         #   parse_relationship(:author, nil, {})
         #    # => { :author_id => nil }
         # @param [Symbol] assoc_name
-        # @param [Hash] assoc_data
+        # @param [Hash] association
         # @param [Hash] options
         # @return [Hash{Symbol, Object}]
         #
         # @api private
-        def parse_relationship(assoc_name, assoc_data, options)
+        def parse_relationship(assoc_name, association, options)
+          return {} unless association.key?('data')
+          assoc_data = association['data']
+
           prefix_key = field_key(assoc_name, options).to_s.singularize
           hash =
             if assoc_data.is_a?(Array)
@@ -198,7 +206,7 @@ module ActiveModelSerializers
         # @api private
         def parse_relationships(relationships, options)
           transform_keys(relationships, options)
-            .map { |(k, v)| parse_relationship(k, v['data'], options) }
+            .map { |(k, v)| parse_relationship(k, v, options) }
             .reduce({}, :merge)
         end
 
