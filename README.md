@@ -20,14 +20,21 @@ Thanks!
 If you're reading this at https://github.com/rails-api/active_model_serializers you are
 reading documentation for our `master`, which is not yet released.
 
-- [0.10 (0-10-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-10-stable)
-- [0.10.6 (latest release) Documentation](https://github.com/rails-api/active_model_serializers/tree/v0.10.6)
-[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.6)
-  - [Guides](https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs)
-- [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
-[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)
-- [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
-[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable)
+<table>
+  <tr>  
+    <td> [0.10 (0-10-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-10-stable) </td>
+    <td>[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.6) </td>
+    <td>[Guides](https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs)</td>
+  </tr>
+  <tr>
+    <td>[0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)</td>
+    <td>[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)</td>
+  </tr>
+  <tr>
+    <td>[0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)</td>
+    <td>[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable)</td>
+  </tr>
+</table>
 
 
 ## Status of AMS
