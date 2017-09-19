@@ -53,3 +53,5 @@ end
 class Object
   undef_method :id if respond_to?(:id)
 end
+
+require "support/rails5_shims"
