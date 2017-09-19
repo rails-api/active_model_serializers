@@ -48,7 +48,7 @@ reading documentation for our `master`, which is not yet released.
 
 ### *Changes to 0.10.x maintenance*:
 
-- The 0.10.x version has become a huge maintenance version.  We had hoped to get it in shape for a 1.0 release, but it is clear that isn't going to happen.  Almost none of the maintainers from 0.8, 0.9, or earlier 0.10 are still working on AMS. We'll continue to maintain 0.10.x on the 0-10-stable branch, but maintainers won't otherwise be actively developing on it
+- The 0.10.x version has become a huge maintenance version.  We had hoped to get it in shape for a 1.0 release, but it is clear that isn't going to happen.  Almost none of the maintainers from 0.8, 0.9, or earlier 0.10 are still working on AMS. We'll continue to maintain 0.10.x on the 0-10-stable branch, but maintainers won't otherwise be actively developing on it.
   - We may choose to make a 0.11.x ( 0-11-stable) release based on 0-10-stable that just removes the deprecations.
 
 ### *What's happening to AMS*:
