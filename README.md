@@ -36,14 +36,7 @@ reading documentation for our `master`, which is not yet released.
 
 - ❗️ All existing PRs against master will need to be closed and re-opened against 0-10-stable, if so desired
 - ❗️ Master, for the moment, won't have any released version of AMS on it.
-
-
-#### Alternatives
-
-- [jsonapi-rb](http://jsonapi-rb.org/) is a [highly performant](https://gist.github.com/NullVoxPopuli/748e89ddc1732b42fdf42435d773734a) and modular JSON:API-only implementation.  There's a vibrant community around it that has produced projects such as [JSON:API Suite](https://jsonapi-suite.github.io/jsonapi_suite/).
-
-For benchmarks against alternatives, see https://github.com/rails-api/active_model_serializers/tree/benchmarks
-
+- :eyes: See below for [alternatives](#alternatives)
 
 
 ### *Changes to 0.10.x maintenance*:
@@ -60,6 +53,16 @@ For benchmarks against alternatives, see https://github.com/rails-api/active_mod
 - If this works out, the idea is to get something into Rails that existing libraries can use.
 
 See [PR 2121](https://github.com/rails-api/active_model_serializers/pull/2121) where these changes were introduced for more information and any discussion.
+
+
+
+## Alternatives
+
+- [jsonapi-rb](http://jsonapi-rb.org/) is a [highly performant](https://gist.github.com/NullVoxPopuli/748e89ddc1732b42fdf42435d773734a) and modular JSON:API-only implementation.  There's a vibrant community around it that has produced projects such as [JSON:API Suite](https://jsonapi-suite.github.io/jsonapi_suite/).
+
+For benchmarks against alternatives, see https://github.com/rails-api/active_model_serializers/tree/benchmarks
+
+
 
 ## Semantic Versioning
 
