@@ -5,8 +5,8 @@ skip_tags: true
 environment:
   JRUBY_OPTS: "--dev -J-Xmx1024M --debug"
   matrix:
-    - ruby_version: "Ruby21"
-    - ruby_version: "Ruby21-x64"
+    - ruby_version: "Ruby23"
+    - ruby_version: "Ruby23-x64"
 
 cache:
   - vendor/bundle

@@ -36,6 +36,13 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
 
+if ENV['CI']
+  if RUBY_VERSION < '2.4'
+    # Windows: An error occurred while installing nokogiri (1.8.0)
+    gem 'nokogiri', '< 1.7', platforms: @windows_platforms
+  end
+end
+
 group :bench do
   # https://github.com/rails-api/active_model_serializers/commit/cb4459580a6f4f37f629bf3185a5224c8624ca76
   gem 'benchmark-ips', '>= 2.7.2', require: false, group: :development
