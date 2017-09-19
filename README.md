@@ -2,7 +2,7 @@
 
 ## About
 
-ActiveModelSerializers is undergoing some renovations. see [Development Status](#status-of-ams)
+ActiveModelSerializers is undergoing some renovations. See [Development Status](#status-of-ams).
 
 ## Getting Help
 
