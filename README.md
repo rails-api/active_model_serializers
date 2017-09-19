@@ -32,25 +32,26 @@ reading documentation for our `master`, which is not yet released.
 
 ## Status of AMS
 
-### Alternatives
-
-- [jsonapi-rb](http://jsonapi-rb.org/) is a [highly performant](https://gist.github.com/NullVoxPopuli/748e89ddc1732b42fdf42435d773734a) and modular JSON:API-only implementation.  There's a vibrant community around it that has produced projects such as [JSON:API Suite](https://jsonapi-suite.github.io/jsonapi_suite/).
-
-For benchmarks against alternatives, see https://github.com/rails-api/active_model_serializers/tree/benchmarks
-
-
 ### *Status*:
 
 - ❗️ All existing PRs against master will need to be closed and re-opened against 0-10-stable, if so desired
 - ❗️ Master, for the moment, won't have any released version of AMS on it.
 
 
-*Changes to 0.10.x maintenance*:
+#### Alternatives
+
+- [jsonapi-rb](http://jsonapi-rb.org/) is a [highly performant](https://gist.github.com/NullVoxPopuli/748e89ddc1732b42fdf42435d773734a) and modular JSON:API-only implementation.  There's a vibrant community around it that has produced projects such as [JSON:API Suite](https://jsonapi-suite.github.io/jsonapi_suite/).
+
+For benchmarks against alternatives, see https://github.com/rails-api/active_model_serializers/tree/benchmarks
+
+
+
+### *Changes to 0.10.x maintenance*:
 
 - The 0.10.x version has become a huge maintenance version.  We had hoped to get it in shape for a 1.0 release, but it is clear that isn't going to happen.  Almost none of the maintainers from 0.8, 0.9, or earlier 0.10 are still working on AMS. We'll continue to maintain 0.10.x on the 0-10-stable branch, but maintainers won't otherwise be actively developing on it
   - We may choose to make a 0.11.x ( 0-11-stable) release based on 0-10-stable that just removes the deprecations.
 
-*What's happening to AMS*:
+### *What's happening to AMS*:
 
 - There's been a lot of churn around AMS since it began back in [Rails 3.2](CHANGELOG-prehistory.md) and a lot of new libraries are around and the JSON:API spec has reached 1.0.
 - If there is to be a 1.0 release of AMS, it will need to address the general needs of serialization in much the way ActiveJob can be used with different workers.
