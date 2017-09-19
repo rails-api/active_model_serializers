@@ -411,7 +411,7 @@ Misc:
 - [#936](https://github.com/rails-api/active_model_serializers/pull/936) Include meta when using json adapter with custom root (@chrisbranson)
 - [#942](https://github.com/rails-api/active_model_serializers/pull/942) Small code styling issue (@thiagofm)
 - [#930](https://github.com/rails-api/active_model_serializers/pull/930) Reverting PR #909 (@joaomdmoura)
-- [#924](https://github.com/rails-api/active_model_serializers/pull/924) Avoid unecessary calls to attribute methods when fragment caching (@navinpeiris)
+- [#924](https://github.com/rails-api/active_model_serializers/pull/924) Avoid unnecessary calls to attribute methods when fragment caching (@navinpeiris)
 - [#925](https://github.com/rails-api/active_model_serializers/pull/925) Updates JSON API Adapter to generate RC4 schema (@benedikt)
   * adds JSON API support 1.0
 - [#918](https://github.com/rails-api/active_model_serializers/pull/918) Adding rescue_with_handler to clear state (@ryansch)
