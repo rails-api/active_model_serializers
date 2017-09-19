@@ -31,15 +31,33 @@ reading documentation for our `master`, which is not yet released.
         <img src='http://img.shields.io/badge/yard-docs-blue.svg' />
       </a>
     </td>
-    <td>[Guides](https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs)</td>
+    <td>
+      <a href='https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs'>
+        Guides
+      </a>
+    </td>
   </tr>
   <tr>
-    <td>[0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)</td>
-    <td>[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)</td>
+    <td>
+      <a href='https://github.com/rails-api/active_model_serializers/tree/0-9-stable'>0.9 (0-9-stable) Documentation
+      </a>
+    </td>
+    <td>
+      <a href='http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable'>
+        <img src='http://img.shields.io/badge/yard-docs-blue.svg' />
+      </a>
+    </td>
   </tr>
   <tr>
-    <td>[0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)</td>
-    <td>[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable)</td>
+    <td>
+      <a href='https://github.com/rails-api/active_model_serializers/tree/0-8-stable'>0.8 (0-8-stable) Documentation
+      </a>
+    </td>
+    <td>
+      <a href='http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable'>
+        <img src='http://img.shields.io/badge/yard-docs-blue.svg' />
+      </a>
+    </td>
   </tr>
 </table>
 
