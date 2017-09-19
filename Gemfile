@@ -12,6 +12,7 @@ version = ENV['RAILS_VERSION'] || '4.2'
 if version == 'master'
   gem 'rack', github: 'rack/rack'
   gem 'arel', github: 'rails/arel'
+  gem 'rails', github: 'rails/rails'
   git 'https://github.com/rails/rails.git' do
     gem 'railties'
     gem 'activesupport'
@@ -23,6 +24,7 @@ if version == 'master'
   end
 else
   gem_version = "~> #{version}.0"
+  gem 'rails', gem_version
   gem 'railties', gem_version
   gem 'activesupport', gem_version
   gem 'activemodel', gem_version
