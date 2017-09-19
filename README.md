@@ -22,8 +22,15 @@ reading documentation for our `master`, which is not yet released.
 
 <table>
   <tr>  
-    <td> [0.10 (0-10-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-10-stable) </td>
-    <td>[![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.6) </td>
+    <td>
+      <a href='https://github.com/rails-api/active_model_serializers/tree/0-10-stable'>0.10 (0-10-stable) Documentation
+      </a>
+    </td>
+    <td>
+      <a href='http://www.rubydoc.info/gems/active_model_serializers/0.10.6'>
+        <img src='http://img.shields.io/badge/yard-docs-blue.svg' />
+      </a>
+    </td>
     <td>[Guides](https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs)</td>
   </tr>
   <tr>
