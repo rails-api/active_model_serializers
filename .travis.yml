@@ -20,12 +20,14 @@ env:
     - "RAILS_VERSION=4.1"
     - "RAILS_VERSION=4.2"
     - "RAILS_VERSION=5.0"
+    - "RAILS_VERSION=5.1"
     - "RAILS_VERSION=master"
 
 rvm:
-  - 2.1
-  - 2.2.6
-  - 2.3.3
+  - 2.1.10
+  - 2.2.8
+  - 2.3.5
+  - 2.4.2
   - ruby-head
 
 matrix:
@@ -37,8 +39,11 @@ matrix:
   # - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   # - { rvm: jruby-head,     jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   exclude:
-  - { rvm: 2.1,           env: RAILS_VERSION=master }
-  - { rvm: 2.1,           env: RAILS_VERSION=5.0 }
+  - { rvm: 2.1.10,        env: RAILS_VERSION=master }
+  - { rvm: 2.1.10,        env: RAILS_VERSION=5.0 }
+  - { rvm: 2.1.10,        env: RAILS_VERSION=5.1 }
+  - { rvm: 2.4.2,         env: RAILS_VERSION=4.1 }
+  - { rvm: ruby-head,     env: RAILS_VERSION=4.1 }
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
