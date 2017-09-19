@@ -7,11 +7,6 @@ rvm:
   - 2.2.6
   - 2.3.3
   - ruby-head
-  - jruby-9.1.5.0 # is precompiled per http://rubies.travis-ci.org/
-  - jruby-head
-
-jdk:
-  - oraclejdk8
 
 before_install:
   - gem update --system
@@ -27,8 +22,6 @@ script:
 after_success:
   - codeclimate-test-reporter
 env:
-  global:
-    - "JRUBY_OPTS='--dev -J-Xmx1024M --debug'"
   matrix:
     - "RAILS_VERSION=4.1"
     - "RAILS_VERSION=4.2"
@@ -36,14 +29,18 @@ env:
     - "RAILS_VERSION=master"
 
 matrix:
+  include:
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-head,     jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   exclude:
   - { rvm: 2.1,           env: RAILS_VERSION=master }
-  - { rvm: jruby-9.1.5.0, env: RAILS_VERSION=master }
-  - { rvm: jruby-head,    env: RAILS_VERSION=master }
   - { rvm: 2.1,           env: RAILS_VERSION=5.0 }
-  - { rvm: jruby-9.1.5.0, env: RAILS_VERSION=5.0 }
-  - { rvm: jruby-head,    env: RAILS_VERSION=5.0 }
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   fast_finish: true
