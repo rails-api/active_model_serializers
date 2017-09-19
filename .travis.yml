@@ -24,23 +24,11 @@ env:
   - "RAILS_VERSION=4.0"
   - "RAILS_VERSION=4.1"
   - "RAILS_VERSION=4.2"
-  - "RAILS_VERSION=master"
+  # - "RAILS_VERSION=master"
 matrix:
   exclude:
   # - rvm: 1.8.7
   # - ree
   # - jruby-18mode
   # - rvm: 1.9.2
-  - rvm: 1.9.3
-    env: RAILS_VERSION=master
-  - rvm: jruby-19mode
-    env: RAILS_VERSION=master
-  - rvm: 2.0.0
-    env: RAILS_VERSION=master
-  - rvm: 2.1
-    env: RAILS_VERSION=master
-  - rvm: 2.2
-    env: RAILS_VERSION=master
-  - rvm: rbx-2
-    env: RAILS_VERSION=master
   fast_finish: true
