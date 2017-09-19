@@ -12,6 +12,7 @@ version = ENV['RAILS_VERSION'] || '4.2'
 if version == 'master'
   gem 'rack', github: 'rack/rack'
   gem 'arel', github: 'rails/arel'
+  gem 'rails', github: 'rails/rails'
   git 'https://github.com/rails/rails.git' do
     gem 'railties'
     gem 'activesupport'
@@ -23,6 +24,7 @@ if version == 'master'
   end
 else
   gem_version = "~> #{version}.0"
+  gem 'rails', gem_version
   gem 'railties', gem_version
   gem 'activesupport', gem_version
   gem 'activemodel', gem_version
@@ -36,18 +38,32 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: (@windows_platforms + [:jruby])
 
+if ENV['CI']
+  if RUBY_VERSION < '2.4'
+    # Windows: An error occurred while installing nokogiri (1.8.0)
+    gem 'nokogiri', '< 1.7', platforms: @windows_platforms
+  end
+end
+
 group :bench do
   # https://github.com/rails-api/active_model_serializers/commit/cb4459580a6f4f37f629bf3185a5224c8624ca76
   gem 'benchmark-ips', '>= 2.7.2', require: false, group: :development
 end
 
 group :test do
-  gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+  gem 'sqlite3', platform: (@windows_platforms + [:ruby])
+  platforms :jruby do
+    if version == 'master' || version >= '5'
+      gem 'activerecord-jdbcsqlite3-adapter', github: 'jruby/activerecord-jdbc-adapter', branch: 'rails-5'
+    else
+      gem 'activerecord-jdbcsqlite3-adapter'
+    end
+  end
   gem 'codeclimate-test-reporter', require: false
   gem 'm', '~> 1.5'
-  gem 'pry', '~> 0.10'
-  gem 'pry-byebug', '~> 3.4', platform: :ruby
+  gem 'pry', '>= 0.10'
+  gem 'byebug', '~> 8.2' if RUBY_VERSION < '2.2'
+  gem 'pry-byebug', platform: :ruby
 end
 
 group :development, :test do

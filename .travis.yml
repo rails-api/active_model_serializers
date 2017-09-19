@@ -1,55 +1,47 @@
 language: ruby
-
 sudo: false
 
-rvm:
-  - 2.1
-  - 2.2.6
-  - 2.3.3
-  - ruby-head
-  - jruby-9.1.5.0 # is precompiled per http://rubies.travis-ci.org/
-  - jruby-head
-
-jdk:
-  - oraclejdk8
-
-before_install:
-  - gem update --system
-  - rvm @global do gem uninstall bundler -a -x
-  - rvm @global do gem install bundler -v 1.13.7
-install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
     - vendor/bundle
+
+before_install:
+  - "travis_retry gem update --system"
+  - "travis_retry gem update bundler"
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 
 script:
   - bundle exec rake ci
 after_success:
   - codeclimate-test-reporter
+
 env:
-  global:
-    - "JRUBY_OPTS='--dev -J-Xmx1024M --debug'"
   matrix:
     - "RAILS_VERSION=4.1"
     - "RAILS_VERSION=4.2"
     - "RAILS_VERSION=5.0"
     - "RAILS_VERSION=master"
 
+rvm:
+  - 2.1
+  - 2.2.6
+  - 2.3.3
+  - ruby-head
+
 matrix:
+  include:
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  # See JRuby currently failing on Rails 5+ https://github.com/jruby/activerecord-jdbc-adapter/issues/708
+  # - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  # - { rvm: jruby-head,     jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   exclude:
-  - rvm: 2.1
-    env: RAILS_VERSION=master
-  - rvm: jruby-9.1.5.0
-    env: RAILS_VERSION=master
-  - rvm: jruby-head
-    env: RAILS_VERSION=master
-  - rvm: 2.1
-    env: RAILS_VERSION=5.0
-  - rvm: jruby-9.1.5.0
-    env: RAILS_VERSION=5.0
-  - rvm: jruby-head
-    env: RAILS_VERSION=5.0
+  - { rvm: 2.1,           env: RAILS_VERSION=master }
+  - { rvm: 2.1,           env: RAILS_VERSION=5.0 }
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+    # See JRuby currently failing on Rails 5+ https://github.com/jruby/activerecord-jdbc-adapter/issues/708
+    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   fast_finish: true

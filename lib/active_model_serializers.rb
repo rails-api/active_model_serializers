@@ -49,5 +49,5 @@ module ActiveModelSerializers
   require 'active_model/serializer/version'
   require 'active_model/serializer'
   require 'active_model/serializable_resource'
-  require 'active_model_serializers/railtie' if defined?(::Rails)
+  require 'active_model_serializers/railtie' if defined?(::Rails::Railtie)
 end
