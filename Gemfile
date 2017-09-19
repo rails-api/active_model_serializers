@@ -8,6 +8,7 @@ version = ENV['RAILS_VERSION'] || '4.0'
 if version == 'master'
   gem 'rack', github: 'rack/rack'
   gem 'arel', github: 'rails/arel'
+  gem 'rails', github: 'rails/rails'
   git 'https://github.com/rails/rails.git' do
     gem 'railties'
     gem 'activesupport'
