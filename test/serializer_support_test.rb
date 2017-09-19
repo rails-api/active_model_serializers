@@ -25,7 +25,7 @@ module Mongoid
   end
 end
 
-class SerializerSupportTest < ActiveModel::TestCase
+class SerializerSupportTest < ActiveSupport::TestCase
   test "it returns nil if no serializer exists" do
     assert_equal nil, RandomModel.new.active_model_serializer
   end

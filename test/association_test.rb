@@ -1,6 +1,6 @@
 require "test_helper"
 
-class AssociationTest < ActiveModel::TestCase
+class AssociationTest < ActiveSupport::TestCase
   def def_serializer(&block)
     Class.new(ActiveModel::Serializer, &block)
   end

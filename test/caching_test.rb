@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CachingTest < ActiveModel::TestCase
+class CachingTest < ActiveSupport::TestCase
   class NullStore
     def fetch(key)
       return store[key] if store[key]
