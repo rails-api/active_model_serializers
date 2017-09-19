@@ -2,6 +2,11 @@
 
 ## About
 
+ActiveModelSerializers is undergoing some rennovations.
+
+In the mean time, if you're looking for a json:api renderer, [jsonapi-rb](http://jsonapi-rb.org/) will meet your needs --
+with a [performance boost](https://gist.github.com/NullVoxPopuli/748e89ddc1732b42fdf42435d773734a), too.
+
 ## Installation
 
 ## Getting Started
