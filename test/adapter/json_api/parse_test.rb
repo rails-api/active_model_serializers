@@ -125,7 +125,7 @@ module ActiveModelSerializers
               src: 'http://example.com/images/productivity.png',
               author_id: nil,
               photographer_id: '9',
-              photographer_type: 'people',
+              photographer_type: 'Person',
               comment_ids: %w(1 2)
             }
             assert_equal(expected, parsed_hash)

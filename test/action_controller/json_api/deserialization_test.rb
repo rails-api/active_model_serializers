@@ -45,7 +45,7 @@ module ActionController
           response = JSON.parse(@response.body)
           expected = {
             'restriction_for_id' => '67',
-            'restriction_for_type' => 'discounts',
+            'restriction_for_type' => 'Discount',
             'restricted_to_id' => nil,
             'restricted_to_type' => nil
           }
