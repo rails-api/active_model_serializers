@@ -1,5 +1,68 @@
 # ActiveModelSerializers
 
+## Status of AMS
+AMS has had quite the rocky history. 3 rewrites, and possibly a 4th. Currently AMS is open to Proof of Concept Design PRs.
+
+### Motivation for yet another re-write
+ - The maintainers of AMS have cycled in and out a few times, and the code base has become unwieldy
+ - 0.10.x's architecture could not handle all the feature requests in an elegant way.
+ - performance of AMS is bad/slow.
+
+##### Performance Comparison (jsonapi-rb vs AMS 0.10.6).
+
+AMS is about 6 times slower than [jsonapi-rb](http://jsonapi-rb.org)
+
+```
+Calculating -------------------------------------
+ams                        
+                          5.509  (± 1.8%) i/s -     55.000  in  10.102302s
+jsonapi-rb                 
+                         15.872  (± 0.6%) i/s -    159.000  in  10.042557s
+ams        eager           
+                          6.166  (± 1.3%) i/s -     62.000  in  10.097632s
+jsonapi-rb eager           
+                         32.555  (± 0.8%) i/s -    327.000  in  10.079955s
+                   with 95.0% confidence
+
+Comparison:
+jsonapi-rb eager           :       32.6 i/s
+jsonapi-rb                 :       15.9 i/s - 2.05x  (± 0.02) slower
+ams        eager           :        6.2 i/s - 5.28x  (± 0.08) slower
+ams                        :        5.5 i/s - 5.90x  (± 0.12) slower
+                   with 95.0% confidence
+
+Calculating -------------------------------------
+ams                        
+                        12.566M memsize (   945.066k retained)
+                       153.201k objects (    12.896k retained)
+                        50.000  strings (    50.000  retained)
+jsonapi-rb                 
+                         5.670M memsize (     0.000  retained)
+                        66.887k objects (     0.000  retained)
+                        50.000  strings (     0.000  retained)
+ams        eager           
+                        11.316M memsize (   917.250k retained)
+                       136.794k objects (    12.203k retained)
+                        50.000  strings (    50.000  retained)
+jsonapi-rb eager           
+                         3.564M memsize (     0.000  retained)
+                        37.653k objects (     0.000  retained)
+                        50.000  strings (     0.000  retained)
+
+Comparison:
+jsonapi-rb eager           :    3564036 allocated
+jsonapi-rb                 :    5670156 allocated - 1.59x more
+ams        eager           :   11316060 allocated - 3.18x more
+ams                        :   12565796 allocated - 3.53x more
+```
+Every scenario builds and renders [JSONAPI.org](jsonapi.org) documents of 301 records.
+
+eager means eager loaded data (no db hits).
+The benchmark for this can be found [here](https://github.com/rails-api/active_model_serializers/blob/43c1518cfff680781b943075ceeb6ca61a3536dd/benchmarks/serialization_libraries/benchmark.rb)
+
+
+
+
 ## About
 
 ActiveModelSerializers is undergoing some renovations. See [Development Status](#status-of-ams).
