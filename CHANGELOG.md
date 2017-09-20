@@ -13,6 +13,7 @@ Features:
 Fixes:
 
 - [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
+- [#2200](https://github.com/rails-api/active_model_serializers/pull/2200) Fix deserialization of polymorphic relationships. (@dennis95stumm)
 
 Misc:
 
