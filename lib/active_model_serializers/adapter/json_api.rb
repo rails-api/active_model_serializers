@@ -344,7 +344,7 @@ module ActiveModelSerializers
         data.tap do |resource_object|
           next if resource_object.nil?
           # NOTE(BF): the attributes are cached above, separately from the relationships, below.
-          requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
+          requested_associations = fieldset.fields_for(resource_object[:type]) || ActiveModelSerializers.config.default_includes
           relationships = relationships_for(serializer, requested_associations, include_slice)
           resource_object[:relationships] = relationships if relationships.any?
         end
