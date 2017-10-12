@@ -52,10 +52,10 @@ module BenchHelper
   end
 
   def render_with_jsonapi_rb(data)
-    JSONAPI::Serializable::SuccessRenderer.new.render(
+    JSONAPI::Serializable::Renderer.new.render(
       data,
       include: 'posts.comments',
-      class: SerializableUser
+      class: { User: SerializableUser, Post: SerializablePost, Comment: SerializableComment }
     )
   end
 end
