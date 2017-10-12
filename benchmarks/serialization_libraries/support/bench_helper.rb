@@ -32,7 +32,6 @@ module BenchHelper
 
   def test_manual_eagerload(render_gem)
     render_data(
-      # User.auto_include(false).includes(posts: [:comments]).first,
       User.includes(posts: [:comments]).first,
       render_gem
     )
@@ -48,7 +47,6 @@ module BenchHelper
     ActiveModelSerializers::SerializableResource.new(
       data,
       include: 'posts.comments',
-      # fields: params[:fields],
       adapter: :json_api
     ).as_json
   end
@@ -57,7 +55,6 @@ module BenchHelper
     JSONAPI::Serializable::SuccessRenderer.new.render(
       data,
       include: 'posts.comments',
-      # fields: params[:fields] || [],
       class: SerializableUser
     )
   end
