@@ -7,7 +7,7 @@
 ```bash
 cd benchmarks/serialization_libraries
 bundle install
-bundle exec ruby benchmark
+bundle exec ruby benchmark.rb
 ```
 
 yields
