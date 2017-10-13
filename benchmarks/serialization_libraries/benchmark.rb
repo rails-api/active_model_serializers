@@ -3,6 +3,8 @@ Bundler.require(*Rails.groups)
 
 ActiveRecord::Base.logger = nil
 ActiveModelSerializers.logger = nil
+ActiveModelSerializers.config.adapter = :json_api
+ActiveModelSerializers.config.key_transform = :unaltered
 
 require './support/rails'
 require './support/bench_helper'
