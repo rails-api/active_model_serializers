@@ -32,3 +32,4 @@ tags
 Icon?
 ehthumbs.db
 Thumbs.db
+*.sqlite3
