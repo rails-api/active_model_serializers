@@ -38,10 +38,14 @@ module BenchHelper
     )
   end
 
-  def render_data(data, render_gem)
-    return render_with_ams(data) if render_gem == :ams
+  # protected
 
-    render_with_jsonapi_rb(data)
+  def render_data(data, render_gem)
+    case render_gem
+    when :ams then render_with_ams(data)
+    when :jsonapi_rb then render_with_jsonapi_rb(data)
+    else fail ArgumentError, "Cannot render unknown gem '#{render_gem.inspect}'"
+    end
   end
 
   def render_with_ams(data)
