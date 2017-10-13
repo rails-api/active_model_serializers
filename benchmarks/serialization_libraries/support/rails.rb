@@ -36,14 +36,17 @@ class ApplicationRecord < ActiveRecord::Base
 end
 
 class Comment < ApplicationRecord
+  default_scope { order(:id) }
   belongs_to :post
 end
 
 class Post < ApplicationRecord
+  default_scope { order(:id) }
   has_many :comments
   belongs_to :user
 end
 
 class User < ApplicationRecord
+  default_scope { order(:id) }
   has_many :posts
 end
