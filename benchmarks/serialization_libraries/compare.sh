@@ -18,13 +18,19 @@ get_for_file() {
 compare_files() {
   local actual
   local expected
+  local pattern
   actual="$1"
   expected="$2"
+  pattern="$3"
+
   if [ "$DEBUG" = "true" ]; then get_for_file "${expected}" >&2; fi
-  diff --side-by-side \
-    <(jq '.' -S <(get_for_file "${expected}")) \
-    <(jq '.' -S <(get_for_file "${actual}"))
+  diff --side-by-side --suppress-common-lines \
+    <(jq "${pattern}" -S <(get_for_file "${expected}")) \
+    <(jq "${pattern}" -S <(get_for_file "${actual}"))
 }
 echo
 
-compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json
+echo "data"
+compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".data"
+echo "included"
+compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included"
