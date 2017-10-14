@@ -30,9 +30,13 @@ compare_files() {
 }
 echo
 
-echo "data"
+echo "-------------------------------------data"
 compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".data"
-echo "included"
-# compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type == \"posts\")"
-# compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type == \"comments\")"
-compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type != \"comments\", .type != \"posts\")"
+echo "-------------------------------------included posts"
+compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type == \"posts\")"
+echo "-------------------------------------included comments"
+compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type == \"comments\")"
+echo "-------------------------------------included types: ams"
+jq '.included | .[] |  .type' -S < support/json_document-ams.json  | sort -u
+echo "-------------------------------------included types: jsonapi_rb"
+jq '.included | .[] |  .type' -S < support/json_document-jsonapi_rb.json  | sort -u
