@@ -24,7 +24,7 @@ compare_files() {
   pattern="$3"
 
   if [ "$DEBUG" = "true" ]; then get_for_file "${expected}" >&2; fi
-  diff --side-by-side --suppress-common-lines \
+  diff --side-by-side \
     <(jq "${pattern}" -S <(get_for_file "${expected}")) \
     <(jq "${pattern}" -S <(get_for_file "${actual}"))
 }
@@ -33,4 +33,6 @@ echo
 echo "data"
 compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".data"
 echo "included"
-compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included"
+# compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type == \"posts\")"
+# compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type == \"comments\")"
+compare_files support/json_document-ams.json support/json_document-jsonapi_rb.json ".included | .[] | select(.type != \"comments\", .type != \"posts\")"
