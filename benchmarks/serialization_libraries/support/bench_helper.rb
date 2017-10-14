@@ -14,12 +14,16 @@ module BenchHelper
     }
 
     anchor_time = Time.new(2017,7,1).utc
-    user = User.create(first_name: 'Diana', last_name: 'Prince', birthday: anchor_time, created_at: anchor_time, updated_at: anchor_time)
+    id = 1
+    user = User.create!(id: id, first_name: 'Diana', last_name: 'Prince', birthday: anchor_time, created_at: anchor_time, updated_at: anchor_time)
+    id += 1
 
     data_config[:posts].times do
-      post = Post.create(user_id: user.id, title: 'Some Post', body: 'awesome content', created_at: anchor_time, updated_at: anchor_time)
+      post = Post.create!(id: id, user_id: user.id, title: 'Some Post', body: 'awesome content', created_at: anchor_time, updated_at: anchor_time)
+      id += 1
       data_config[:comments_per_post].times do
-        Comment.create(author: 'me', comment: 'nice blog', post_id: post.id, created_at: anchor_time, updated_at: anchor_time)
+        Comment.create!(id: id, author: 'me', comment: 'nice blog', post_id: post.id, created_at: anchor_time, updated_at: anchor_time)
+        id += 1
       end
     end
   end

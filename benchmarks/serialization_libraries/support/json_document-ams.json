@@ -13,19 +13,7 @@
       "posts": {
         "data": [
           {
-            "id": "1",
-            "type": "posts"
-          },
-          {
             "id": "2",
-            "type": "posts"
-          },
-          {
-            "id": "3",
-            "type": "posts"
-          },
-          {
-            "id": "4",
             "type": "posts"
           },
           {
@@ -33,23 +21,7 @@
             "type": "posts"
           },
           {
-            "id": "6",
-            "type": "posts"
-          },
-          {
-            "id": "7",
-            "type": "posts"
-          },
-          {
             "id": "8",
-            "type": "posts"
-          },
-          {
-            "id": "9",
-            "type": "posts"
-          },
-          {
-            "id": "10",
             "type": "posts"
           },
           {
@@ -57,23 +29,7 @@
             "type": "posts"
           },
           {
-            "id": "12",
-            "type": "posts"
-          },
-          {
-            "id": "13",
-            "type": "posts"
-          },
-          {
             "id": "14",
-            "type": "posts"
-          },
-          {
-            "id": "15",
-            "type": "posts"
-          },
-          {
-            "id": "16",
             "type": "posts"
           },
           {
@@ -81,15 +37,59 @@
             "type": "posts"
           },
           {
-            "id": "18",
-            "type": "posts"
-          },
-          {
-            "id": "19",
-            "type": "posts"
-          },
-          {
             "id": "20",
+            "type": "posts"
+          },
+          {
+            "id": "23",
+            "type": "posts"
+          },
+          {
+            "id": "26",
+            "type": "posts"
+          },
+          {
+            "id": "29",
+            "type": "posts"
+          },
+          {
+            "id": "32",
+            "type": "posts"
+          },
+          {
+            "id": "35",
+            "type": "posts"
+          },
+          {
+            "id": "38",
+            "type": "posts"
+          },
+          {
+            "id": "41",
+            "type": "posts"
+          },
+          {
+            "id": "44",
+            "type": "posts"
+          },
+          {
+            "id": "47",
+            "type": "posts"
+          },
+          {
+            "id": "50",
+            "type": "posts"
+          },
+          {
+            "id": "53",
+            "type": "posts"
+          },
+          {
+            "id": "56",
+            "type": "posts"
+          },
+          {
+            "id": "59",
             "type": "posts"
           }
         ]
@@ -97,68 +97,6 @@
     }
   },
   "included": [
-    {
-      "id": "1",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "1",
-              "type": "comments"
-            },
-            {
-              "id": "2",
-              "type": "comments"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": "1",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "1",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "2",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "1",
-            "type": "posts"
-          }
-        }
-      }
-    },
     {
       "id": "2",
       "type": "posts",
@@ -222,7 +160,7 @@
       }
     },
     {
-      "id": "3",
+      "id": "5",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -240,30 +178,14 @@
         "comments": {
           "data": [
             {
-              "id": "5",
+              "id": "6",
               "type": "comments"
             },
             {
-              "id": "6",
+              "id": "7",
               "type": "comments"
             }
           ]
-        }
-      }
-    },
-    {
-      "id": "5",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "3",
-            "type": "posts"
-          }
         }
       }
     },
@@ -277,39 +199,9 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "3",
+            "id": "5",
             "type": "posts"
           }
-        }
-      }
-    },
-    {
-      "id": "4",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "7",
-              "type": "comments"
-            },
-            {
-              "id": "8",
-              "type": "comments"
-            }
-          ]
         }
       }
     },
@@ -323,7 +215,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "4",
+            "id": "5",
             "type": "posts"
           }
         }
@@ -331,22 +223,6 @@
     },
     {
       "id": "8",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "4",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "5",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -385,7 +261,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "5",
+            "id": "8",
             "type": "posts"
           }
         }
@@ -401,14 +277,14 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "5",
+            "id": "8",
             "type": "posts"
           }
         }
       }
     },
     {
-      "id": "6",
+      "id": "11",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -426,30 +302,14 @@
         "comments": {
           "data": [
             {
-              "id": "11",
+              "id": "12",
               "type": "comments"
             },
             {
-              "id": "12",
+              "id": "13",
               "type": "comments"
             }
           ]
-        }
-      }
-    },
-    {
-      "id": "11",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "6",
-            "type": "posts"
-          }
         }
       }
     },
@@ -463,39 +323,9 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "6",
+            "id": "11",
             "type": "posts"
           }
-        }
-      }
-    },
-    {
-      "id": "7",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "13",
-              "type": "comments"
-            },
-            {
-              "id": "14",
-              "type": "comments"
-            }
-          ]
         }
       }
     },
@@ -509,7 +339,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "7",
+            "id": "11",
             "type": "posts"
           }
         }
@@ -517,22 +347,6 @@
     },
     {
       "id": "14",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "7",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "8",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -571,7 +385,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "8",
+            "id": "14",
             "type": "posts"
           }
         }
@@ -587,14 +401,14 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "8",
+            "id": "14",
             "type": "posts"
           }
         }
       }
     },
     {
-      "id": "9",
+      "id": "17",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -612,30 +426,14 @@
         "comments": {
           "data": [
             {
-              "id": "17",
+              "id": "18",
               "type": "comments"
             },
             {
-              "id": "18",
+              "id": "19",
               "type": "comments"
             }
           ]
-        }
-      }
-    },
-    {
-      "id": "17",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "9",
-            "type": "posts"
-          }
         }
       }
     },
@@ -649,39 +447,9 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "9",
+            "id": "17",
             "type": "posts"
           }
-        }
-      }
-    },
-    {
-      "id": "10",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "19",
-              "type": "comments"
-            },
-            {
-              "id": "20",
-              "type": "comments"
-            }
-          ]
         }
       }
     },
@@ -695,7 +463,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "10",
+            "id": "17",
             "type": "posts"
           }
         }
@@ -703,22 +471,6 @@
     },
     {
       "id": "20",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "10",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "11",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -757,7 +509,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "11",
+            "id": "20",
             "type": "posts"
           }
         }
@@ -773,14 +525,14 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "11",
+            "id": "20",
             "type": "posts"
           }
         }
       }
     },
     {
-      "id": "12",
+      "id": "23",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -798,30 +550,14 @@
         "comments": {
           "data": [
             {
-              "id": "23",
+              "id": "24",
               "type": "comments"
             },
             {
-              "id": "24",
+              "id": "25",
               "type": "comments"
             }
           ]
-        }
-      }
-    },
-    {
-      "id": "23",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "12",
-            "type": "posts"
-          }
         }
       }
     },
@@ -835,39 +571,9 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "12",
+            "id": "23",
             "type": "posts"
           }
-        }
-      }
-    },
-    {
-      "id": "13",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "25",
-              "type": "comments"
-            },
-            {
-              "id": "26",
-              "type": "comments"
-            }
-          ]
         }
       }
     },
@@ -881,7 +587,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "13",
+            "id": "23",
             "type": "posts"
           }
         }
@@ -889,22 +595,6 @@
     },
     {
       "id": "26",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "13",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "14",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -943,7 +633,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "14",
+            "id": "26",
             "type": "posts"
           }
         }
@@ -959,14 +649,14 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "14",
+            "id": "26",
             "type": "posts"
           }
         }
       }
     },
     {
-      "id": "15",
+      "id": "29",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -984,30 +674,14 @@
         "comments": {
           "data": [
             {
-              "id": "29",
+              "id": "30",
               "type": "comments"
             },
             {
-              "id": "30",
+              "id": "31",
               "type": "comments"
             }
           ]
-        }
-      }
-    },
-    {
-      "id": "29",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "15",
-            "type": "posts"
-          }
         }
       }
     },
@@ -1021,39 +695,9 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "15",
+            "id": "29",
             "type": "posts"
           }
-        }
-      }
-    },
-    {
-      "id": "16",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "31",
-              "type": "comments"
-            },
-            {
-              "id": "32",
-              "type": "comments"
-            }
-          ]
         }
       }
     },
@@ -1067,7 +711,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "16",
+            "id": "29",
             "type": "posts"
           }
         }
@@ -1075,22 +719,6 @@
     },
     {
       "id": "32",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "16",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "17",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -1129,7 +757,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "17",
+            "id": "32",
             "type": "posts"
           }
         }
@@ -1145,14 +773,14 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "17",
+            "id": "32",
             "type": "posts"
           }
         }
       }
     },
     {
-      "id": "18",
+      "id": "35",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -1170,30 +798,14 @@
         "comments": {
           "data": [
             {
-              "id": "35",
+              "id": "36",
               "type": "comments"
             },
             {
-              "id": "36",
+              "id": "37",
               "type": "comments"
             }
           ]
-        }
-      }
-    },
-    {
-      "id": "35",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "18",
-            "type": "posts"
-          }
         }
       }
     },
@@ -1207,39 +819,9 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "18",
+            "id": "35",
             "type": "posts"
           }
-        }
-      }
-    },
-    {
-      "id": "19",
-      "type": "posts",
-      "attributes": {
-        "title": "Some Post",
-        "body": "awesome content",
-        "created_at": "2017-07-01 05:00:00 UTC",
-        "updated_at": "2017-07-01 05:00:00 UTC"
-      },
-      "relationships": {
-        "user": {
-          "data": {
-            "id": "1",
-            "type": "users"
-          }
-        },
-        "comments": {
-          "data": [
-            {
-              "id": "37",
-              "type": "comments"
-            },
-            {
-              "id": "38",
-              "type": "comments"
-            }
-          ]
         }
       }
     },
@@ -1253,7 +835,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "19",
+            "id": "35",
             "type": "posts"
           }
         }
@@ -1261,22 +843,6 @@
     },
     {
       "id": "38",
-      "type": "comments",
-      "attributes": {
-        "author": "me",
-        "comment": "nice blog"
-      },
-      "relationships": {
-        "post": {
-          "data": {
-            "id": "19",
-            "type": "posts"
-          }
-        }
-      }
-    },
-    {
-      "id": "20",
       "type": "posts",
       "attributes": {
         "title": "Some Post",
@@ -1315,7 +881,7 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "20",
+            "id": "38",
             "type": "posts"
           }
         }
@@ -1331,7 +897,441 @@
       "relationships": {
         "post": {
           "data": {
-            "id": "20",
+            "id": "38",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "41",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "42",
+              "type": "comments"
+            },
+            {
+              "id": "43",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "42",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "41",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "43",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "41",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "44",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "45",
+              "type": "comments"
+            },
+            {
+              "id": "46",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "45",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "44",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "46",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "44",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "47",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "48",
+              "type": "comments"
+            },
+            {
+              "id": "49",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "48",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "47",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "49",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "47",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "50",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "51",
+              "type": "comments"
+            },
+            {
+              "id": "52",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "51",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "50",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "52",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "50",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "53",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "54",
+              "type": "comments"
+            },
+            {
+              "id": "55",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "54",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "53",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "55",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "53",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "56",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "57",
+              "type": "comments"
+            },
+            {
+              "id": "58",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "57",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "56",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "58",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "56",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "59",
+      "type": "posts",
+      "attributes": {
+        "title": "Some Post",
+        "body": "awesome content",
+        "created_at": "2017-07-01 05:00:00 UTC",
+        "updated_at": "2017-07-01 05:00:00 UTC"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "id": "1",
+            "type": "users"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "60",
+              "type": "comments"
+            },
+            {
+              "id": "61",
+              "type": "comments"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "60",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "59",
+            "type": "posts"
+          }
+        }
+      }
+    },
+    {
+      "id": "61",
+      "type": "comments",
+      "attributes": {
+        "author": "me",
+        "comment": "nice blog"
+      },
+      "relationships": {
+        "post": {
+          "data": {
+            "id": "59",
             "type": "posts"
           }
         }
