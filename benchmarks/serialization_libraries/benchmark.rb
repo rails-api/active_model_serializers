@@ -24,6 +24,8 @@ GC.disable
 %i[ips memory].each do |bench|
   BenchHelper.clear_data
   BenchHelper.seed_data
+  BenchHelper.validate_render(:ams)
+  BenchHelper.validate_render(:jsonapi_rb)
 
   Benchmark.send(bench) do |x|
     x.config(time: 10, warmup: 5, stats: :bootstrap, confidence: 95) if x.respond_to?(:config)
