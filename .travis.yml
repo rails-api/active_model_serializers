@@ -1,0 +1,10 @@
+language: ruby
+
+sudo: false
+
+cache:
+  directories:
+    - vendor/bundle
+
+script:
+  - true

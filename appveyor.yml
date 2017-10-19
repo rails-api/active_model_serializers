@@ -1,0 +1,11 @@
+version: 1.0.{build}-{branch}
+
+skip_tags: true
+
+cache:
+  - vendor/bundle
+
+test_script:
+  - true
+
+build: off
