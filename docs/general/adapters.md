@@ -36,6 +36,12 @@ The `Attributes` adapter does not include a root key. It is just the serialized 
 
 Use either the `JSON` or `JSON API` adapters if you want the response document to have a root key.
 
+***IMPORTANT***: Adapter configuration has *no effect* on a serializer instance
+being used directly. That is, `UserSerializer.new(user).as_json` will *always*
+behave as if the adapter were the 'Attributes' adapter. See [Outside Controller
+Usage](../howto/outside_controller_use.md) for more details on recommended
+usage.
+
 ## Built in Adapters
 
 ### Attributes - Default

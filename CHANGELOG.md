@@ -20,6 +20,8 @@ Fixes:
 
 Misc:
 
+- #2176 Documentation for global adapter config (@mrpinsky)
+
 ### [v0.10.6 (2017-05-01)](https://github.com/rails-api/active_model_serializers/compare/v0.10.5...v0.10.6)
 
 Fixes:
