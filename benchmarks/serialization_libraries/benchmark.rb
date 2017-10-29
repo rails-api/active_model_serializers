@@ -3,6 +3,8 @@ Bundler.require(*Rails.groups)
 
 ActiveRecord::Base.logger = nil
 ActiveModelSerializers.logger = nil
+ActiveModelSerializers.config.adapter = :json_api
+ActiveModelSerializers.config.key_transform = :unaltered
 
 require './support/rails'
 require './support/bench_helper'
@@ -22,6 +24,8 @@ GC.disable
 %i[ips memory].each do |bench|
   BenchHelper.clear_data
   BenchHelper.seed_data
+  BenchHelper.validate_render(:ams)
+  BenchHelper.validate_render(:jsonapi_rb)
 
   Benchmark.send(bench) do |x|
     x.config(time: 10, warmup: 5, stats: :bootstrap, confidence: 95) if x.respond_to?(:config)
