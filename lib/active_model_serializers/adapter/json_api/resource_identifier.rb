@@ -2,23 +2,8 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi
       class ResourceIdentifier
-        def self.type_for(class_name, serializer_type = nil, transform_options = {})
-          if serializer_type
-            raw_type = serializer_type
-          else
-            inflection =
-              if ActiveModelSerializers.config.jsonapi_resource_type == :singular
-                :singularize
-              else
-                :pluralize
-              end
-
-            raw_type = class_name.underscore
-            raw_type = ActiveSupport::Inflector.public_send(inflection, raw_type)
-            raw_type
-              .gsub!('/'.freeze, ActiveModelSerializers.config.jsonapi_namespace_separator)
-            raw_type
-          end
+        def self.type_for(serializer, serializer_type = nil, transform_options = {})
+          raw_type = serializer_type ? serializer_type : raw_type_from_serializer_object(serializer.object)
           JsonApi.send(:transform_key_casing!, raw_type, transform_options)
         end
 
@@ -28,6 +13,17 @@ module ActiveModelSerializers
             id: id.to_s,
             type: type_for(:no_class_needed, type, options)
           }
+        end
+
+        def self.raw_type_from_serializer_object(object)
+          class_name = object.class.name # should use model_name
+          serializer_type = class_name.underscore
+          singularize = ActiveModelSerializers.config.jsonapi_resource_type == :singular
+          inflection = singularize ? :singularize : :pluralize
+          serializer_type = ActiveSupport::Inflector.public_send(inflection, serializer_type)
+          serializer_type
+            .gsub!('/'.freeze, ActiveModelSerializers.config.jsonapi_namespace_separator)
+          serializer_type
         end
 
         # {http://jsonapi.org/format/#document-resource-identifier-objects Resource Identifier Objects}
@@ -48,7 +44,7 @@ module ActiveModelSerializers
         private
 
         def type_for(serializer, transform_options)
-          self.class.type_for(serializer.object.class.name, serializer._type, transform_options)
+          self.class.type_for(serializer, serializer._type, transform_options)
         end
 
         def id_for(serializer)
