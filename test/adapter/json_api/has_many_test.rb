@@ -145,7 +145,7 @@ module ActiveModelSerializers
                            id: '1',
                            type: 'posts',
                            relationships: {
-                             tags: { data: [@tag.as_json] }
+                             tags: { data: [@tag.as_json] } # invalid jsonapi
                            }
                          }
                        }, adapter.serializable_hash)

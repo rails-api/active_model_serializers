@@ -11,6 +11,7 @@ module ActiveModel
 
           class CustomCommentLoader
             def all
+              # array of hash... shouldn't allow this to be passed through
               [{ foo: 'bar' }]
             end
           end
@@ -175,6 +176,7 @@ module ActiveModel
             assert_relationship(:locations, expected)
           end
 
+          # invalid jsonapi...
           def test_block_relationship
             expected = {
               data: [

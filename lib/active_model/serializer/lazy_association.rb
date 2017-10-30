@@ -62,7 +62,7 @@ module ActiveModel
             #
             # Should be reflection_options[:virtual_value] or adapter needs to figure out what to do
             # with an object that is non-nil and has no defined serializer.
-            cached_result[:virtual_value] = object.try(:as_json) || object
+            cached_result[:virtual_value] = object
           else
             cached_result[:serializer] = serializer
           end
