@@ -12,6 +12,7 @@ Features:
 - [#2189](https://github.com/rails-api/active_model_serializers/pull/2189)
   Update version constraint for jsonapi-renderer to `['>= 0.1.1.beta1', '< 0.3']`
   (@tagliala)
+- [#2215](https://github.com/rails-api/active_model_serializers/pull/2215) Update `serializers.md` documentation to denote alternate use cases for `scope`. (@stratigos)
 
 Fixes:
 
