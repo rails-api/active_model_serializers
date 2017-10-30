@@ -165,6 +165,53 @@ module ActiveModel
 
           assert_equal(expected, serialization(@picture, :json_api))
         end
+
+        def test_json_api_serialization_with_polymorphic_belongs_to
+          expected = {
+            data: {
+              id: '1',
+              type: 'poly-tags',
+              attributes: { phrase: 'foo' },
+              relationships: {
+                :"object-tags" => {
+                  data: [
+                    { id: '1', type: 'object-tags' },
+                    { id: '5', type: 'object-tags' }
+                  ]
+                }
+              }
+            },
+            included: [
+              {
+                id: '1',
+                type: 'object-tags',
+                relationships: {
+                  taggable: {
+                    data: { id: '42', type: 'employees' }
+                  }
+                }
+              },
+              {
+                id: '42',
+                type: 'employees'
+              },
+              {
+                id: '5',
+                type: 'object-tags',
+                relationships: {
+                  taggable: {
+                    data: { id: '1', type: 'pictures' }
+                  }
+                }
+              },
+              {
+                id: '1',
+                type: 'pictures'
+              }
+            ]
+          }
+          assert_equal(expected, tag_serialization(:json_api))
+        end
       end
     end
   end
