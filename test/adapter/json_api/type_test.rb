@@ -72,33 +72,33 @@ module ActiveModelSerializers
 
         def test_defined_type
           actual = with_jsonapi_inflection :plural do
-            actual_resource_identifier_object(WithDefinedTypeSerializer)
+            actual_resource_identifier_object(WithDefinedTypeSerializer, @model)
           end
-          expected = { id: expected_model_id, type: 'with-defined-types' }
+          expected = { id: expected_model_id(@model), type: 'with-defined-types' }
           assert_equal actual, expected
         end
 
         def test_defined_type_not_inflected
           actual = with_jsonapi_inflection :singular do
-            actual_resource_identifier_object(WithDefinedTypeSerializer)
+            actual_resource_identifier_object(WithDefinedTypeSerializer, @model)
           end
-          expected = { id: expected_model_id, type: 'with-defined-types' }
+          expected = { id: expected_model_id(@model), type: 'with-defined-types' }
           assert_equal actual, expected
         end
 
         def test_singular_type
           actual = with_jsonapi_inflection :singular do
-            actual_resource_identifier_object(AuthorSerializer)
+            actual_resource_identifier_object(AuthorSerializer, @model)
           end
-          expected = { id: expected_model_id, type: 'author' }
+          expected = { id: expected_model_id(@model), type: 'author' }
           assert_equal actual, expected
         end
 
         def test_plural_type
           actual = with_jsonapi_inflection :plural do
-            actual_resource_identifier_object(AuthorSerializer)
+            actual_resource_identifier_object(AuthorSerializer, @model)
           end
-          expected = { id: expected_model_id, type: 'authors' }
+          expected = { id: expected_model_id(@model), type: 'authors' }
           assert_equal actual, expected
         end
 
@@ -123,45 +123,69 @@ module ActiveModelSerializers
         end
 
         def test_id_defined_on_object
-          actual = actual_resource_identifier_object(AuthorSerializer)
-          expected = { id: @model.id.to_s, type: expected_model_type }
+          actual = actual_resource_identifier_object(AuthorSerializer, @model)
+          expected = { id: @model.id.to_s, type: expected_model_type(@model) }
           assert_equal actual, expected
         end
 
         def test_blank_id
-          @model.id = nil
-          actual = actual_resource_identifier_object(AuthorSerializer)
-          expected = { type: expected_model_type }
+          model = Author.new(id: nil, name: 'Steve K.')
+          actual = actual_resource_identifier_object(AuthorSerializer, model)
+          expected = { type: expected_model_type(model) }
+          assert_equal actual, expected
+        end
+
+        def test_for_type_with_id
+          id = 1
+          actual = ResourceIdentifier.for_type_with_id('admin_user', id, {})
+          expected = { id: "1", type: 'admin-users' }
+          assert_equal actual, expected
+        end
+
+        def test_for_type_with_id_given_blank_id
+          id = ""
+          actual = ResourceIdentifier.for_type_with_id('admin_user', id, {})
+          expected = { type: 'admin-users' }
+          assert_equal actual, expected
+        end
+
+        def test_for_type_with_id_inflected
+          id = 2
+          actual = with_jsonapi_inflection :singular do
+            ResourceIdentifier.for_type_with_id('admin_users', id, {})
+          end
+          expected = { id: "2", type: 'admin-user' }
           assert_equal actual, expected
         end
 
         def test_id_defined_on_serializer
-          actual = actual_resource_identifier_object(WithDefinedIdSerializer)
-          expected = { id: 'special_id', type: expected_model_type }
+          actual = actual_resource_identifier_object(WithDefinedIdSerializer, @model)
+          expected = { id: 'special_id', type: expected_model_type(@model) }
           assert_equal actual, expected
         end
 
         def test_id_defined_on_fragmented
-          actual = actual_resource_identifier_object(FragmentedSerializer)
-          expected = { id: 'special_id', type: expected_model_type }
+          actual = actual_resource_identifier_object(FragmentedSerializer, @model)
+          expected = { id: 'special_id', type: expected_model_type(@model) }
           assert_equal actual, expected
         end
 
         private
 
-        def actual_resource_identifier_object(serializer_class)
-          serializer = serializer_class.new(@model)
+        def actual_resource_identifier_object(serializer_class, model)
+          serializer = serializer_class.new(model)
           resource_identifier = ResourceIdentifier.new(serializer, nil)
           resource_identifier.as_json
         end
 
-        def expected_model_type
-          inflection = ActiveModelSerializers.config.jsonapi_resource_type
-          @model.class.model_name.send(inflection)
+        def expected_model_type(model, inflection = ActiveModelSerializers.config.jsonapi_resource_type)
+          with_jsonapi_inflection inflection do
+            model.class.model_name.send(inflection)
+          end
         end
 
-        def expected_model_id
-          @model.id.to_s
+        def expected_model_id(model)
+          model.id.to_s
         end
       end
     end

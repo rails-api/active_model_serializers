@@ -8,12 +8,13 @@ module ActiveModelSerializers
         end
 
         def self.for_type_with_id(type, id, options)
-          return nil if id.blank?
           type = inflect_type(type)
-          {
-            id: id.to_s,
-            type: type_for(:no_class_needed, type, options)
-          }
+          type = type_for(:no_class_needed, type, options)
+          if id.blank?
+            { type: type }
+          else
+            { id: id.to_s, type: type }
+          end
         end
 
         def self.raw_type_from_serializer_object(object)
