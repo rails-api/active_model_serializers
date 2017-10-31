@@ -48,7 +48,7 @@ module ActiveModelSerializers
       end
       class ResourceIdentifierTest < ActiveSupport::TestCase
         class WithDefinedTypeSerializer < ActiveModel::Serializer
-          type 'with_defined_type'
+          type 'with_defined_types'
         end
 
         class WithDefinedIdSerializer < ActiveModel::Serializer
@@ -71,8 +71,18 @@ module ActiveModelSerializers
         end
 
         def test_defined_type
-          actual = actual_resource_identifier_object(WithDefinedTypeSerializer)
-          expected = { id: expected_model_id, type: 'with-defined-type' }
+          actual = with_jsonapi_inflection :plural do
+            actual_resource_identifier_object(WithDefinedTypeSerializer)
+          end
+          expected = { id: expected_model_id, type: 'with-defined-types' }
+          assert_equal actual, expected
+        end
+
+        def test_defined_type_not_inflected
+          actual = with_jsonapi_inflection :singular do
+            actual_resource_identifier_object(WithDefinedTypeSerializer)
+          end
+          expected = { id: expected_model_id, type: 'with-defined-types' }
           assert_equal actual, expected
         end
 
