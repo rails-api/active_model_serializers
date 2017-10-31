@@ -138,12 +138,12 @@ module ActiveModelSerializers
         def test_for_type_with_id
           id = 1
           actual = ResourceIdentifier.for_type_with_id('admin_user', id, {})
-          expected = { id: "1", type: 'admin-users' }
+          expected = { id: '1', type: 'admin-users' }
           assert_equal actual, expected
         end
 
         def test_for_type_with_id_given_blank_id
-          id = ""
+          id = ''
           actual = ResourceIdentifier.for_type_with_id('admin_user', id, {})
           expected = { type: 'admin-users' }
           assert_equal actual, expected
@@ -154,7 +154,7 @@ module ActiveModelSerializers
           actual = with_jsonapi_inflection :singular do
             ResourceIdentifier.for_type_with_id('admin_users', id, {})
           end
-          expected = { id: "2", type: 'admin-user' }
+          expected = { id: '2', type: 'admin-user' }
           assert_equal actual, expected
         end
 
