@@ -20,13 +20,13 @@ module ActiveModel
           end
 
           def test_config_plural
-            with_jsonapi_resource_type :plural do
+            with_jsonapi_inflection :plural do
               assert_type(@author, 'authors')
             end
           end
 
           def test_config_singular
-            with_jsonapi_resource_type :singular do
+            with_jsonapi_inflection :singular do
               assert_type(@author, 'author')
             end
           end
@@ -45,14 +45,6 @@ module ActiveModel
             opts = opts.reverse_merge(adapter: :json_api)
             hash = serializable(resource, opts).serializable_hash
             assert_equal(expected_type, hash.fetch(:data).fetch(:type))
-          end
-
-          def with_jsonapi_resource_type(inflection)
-            old_inflection = ActiveModelSerializers.config.jsonapi_resource_type
-            ActiveModelSerializers.config.jsonapi_resource_type = inflection
-            yield
-          ensure
-            ActiveModelSerializers.config.jsonapi_resource_type = old_inflection
           end
         end
       end
