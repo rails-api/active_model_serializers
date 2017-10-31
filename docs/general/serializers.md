@@ -294,6 +294,8 @@ end
 Whether you write the method as above or as `object.comments.where(created_by: scope)`
 is a matter of preference (assuming `scope_name` has been set).
 
+Keep in mind that the scope can be set to any available controller reference. This can be utilized to provide access to any other data scopes or presentation helpers. 
+
 ##### Controller Authorization Context
 
 In the controller, the scope/scope_name options are equal to
@@ -311,7 +313,7 @@ current authorization scope when you call `render :json`.
 called on every request.  This was [also a problem](https://github.com/rails-api/active_model_serializers/pull/1252#issuecomment-159810477)
 in [`0.9`](https://github.com/rails-api/active_model_serializers/tree/0-9-stable#customizing-scope).
 
-We can change the scope from `current_user` to `view_context`.
+We can change the scope from `current_user` to `view_context`, which is included in subclasses of `ActionController::Base`.
 
 ```diff
 class SomeController < ActionController::Base
@@ -379,6 +381,7 @@ class PostsController < ActionController::Base
   end
 end
 ```
+Note that any controller reference which provides the desired scope is acceptable, such as another controller method for loading a different resource or reference to helpers. For example, `ActionController::API` does not include `ActionView::ViewContext`, and would need a different reference for passing any helpers into a serializer via `serialization_scope`. 
 
 #### #read_attribute_for_serialization(key)
 
