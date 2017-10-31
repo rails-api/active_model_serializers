@@ -128,6 +128,13 @@ module ActiveModelSerializers
           assert_equal actual, expected
         end
 
+        def test_blank_id
+          @model.id = nil
+          actual = actual_resource_identifier_object(AuthorSerializer)
+          expected = { type: expected_model_type }
+          assert_equal actual, expected
+        end
+
         def test_id_defined_on_serializer
           actual = actual_resource_identifier_object(WithDefinedIdSerializer)
           expected = { id: 'special_id', type: expected_model_type }

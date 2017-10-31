@@ -38,8 +38,11 @@ module ActiveModelSerializers
         end
 
         def as_json
-          return nil if id.blank?
-          { id: id, type: type }
+          if id.blank?
+            { type: type }
+          else
+            { id: id.to_s, type: type }
+          end
         end
 
         protected
