@@ -1,8 +1,5 @@
 source 'https://rubygems.org'
 
-# Specify gem dependencies in active_model_serializers.gemspec
-gemspec
-
 version = ENV['RAILS_VERSION'] || '4.0'
 
 if version == 'master'
@@ -26,6 +23,9 @@ else
   gem 'actionpack', gem_version
   gem 'activerecord', gem_version, group: :test
 end
+
+# Specify gem dependencies in active_model_serializers.gemspec
+gemspec
 
 # https://github.com/bundler/bundler/blob/89a8778c19269561926cea172acdcda241d26d23/lib/bundler/dependency.rb#L30-L54
 @windows_platforms = [:mswin, :mingw, :x64_mingw]
