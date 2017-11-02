@@ -1,7 +1,7 @@
 require "test_helper"
 require "test_fakes"
 
-class ArraySerializerTest < ActiveModel::TestCase
+class ArraySerializerTest < ActiveSupport::TestCase
 
   def test_array_items_do_not_have_root
     array = [

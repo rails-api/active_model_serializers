@@ -1,7 +1,7 @@
 require "test_helper"
 require "test_fakes"
 
-class SerializerTest < ActiveModel::TestCase
+class SerializerTest < ActiveSupport::TestCase
   def test_scope_works_correct
     serializer = ActiveModel::Serializer.new :foo, :scope => :bar
     assert_equal serializer.scope, :bar
