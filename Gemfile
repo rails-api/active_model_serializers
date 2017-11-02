@@ -17,6 +17,7 @@ if version == 'master'
   end
 else
   gem_version = "~> #{version}.0"
+  gem 'rails', gem_version
   gem 'railties', gem_version
   gem 'activesupport', gem_version
   gem 'activemodel', gem_version
