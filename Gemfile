@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-version = ENV['RAILS_VERSION'] || '4.0'
+version = ENV['RAILS_VERSION'] || '4.1'
 
 if version == 'master'
   gem 'rack', github: 'rack/rack'
