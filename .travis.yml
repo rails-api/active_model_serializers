@@ -10,7 +10,6 @@ rvm:
   - 2.0.0
   - 2.1
   - 2.2
-  - rbx-2
 install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
