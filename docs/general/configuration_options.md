@@ -57,6 +57,7 @@ still prefer the render option `:key_transform` over this setting.
 application, setting `config.key_transform` to `:unaltered` will provide a performance boost.*
 
 ##### default_includes
+
 What relationships to serialize by default.  Default: `'*'`, which includes one level of related
 objects. See [includes](adapters.md#included) for more info.
 
@@ -162,6 +163,21 @@ Default: `{}`.
 
 *Used when `jsonapi_include_toplevel_object` is `true`*
 
+##### jsonapi_use_foreign_key_on_belongs_to_relationship
+
+When true, the relationship will determine its resource object identifier
+without calling the association or its serializer.  This can be useful when calling
+the association object is triggering unnecessary queries.
+
+For example, if a `comment` belongs to a `post`, and the comment
+uses the foreign key `post_id`, we can determine the resource object
+identifier `id` as `comment.post_id` and the `type` from the association options.
+Or quite simply, it behaves as `belongs_to :post, type: :posts, foreign_key: :post_id`.
+
+Note: This option has *no effect* on polymorphic associations as we cannot reliably
+determine the associated object's type without instantiating it.
+
+Default: `false`.
 
 ## Hooks
 
