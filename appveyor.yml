@@ -13,11 +13,9 @@ cache:
 
 install:
   - SET PATH=C:\%ruby_version%\bin;%PATH%
-  - gem update --system
-  - gem uninstall bundler -a -x
-  - gem install bundler -v 1.13.7
   - bundle env
-  - bundle install --path=vendor/bundle --retry=3 --jobs=3
+  - bundle check || bundle install --path=vendor/bundle --retry=3 --jobs=3
+  - bundle clean --force
 
 before_test:
   - ruby -v
