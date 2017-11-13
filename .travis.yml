@@ -32,9 +32,9 @@ rvm:
 
 matrix:
   include:
-  - { rvm: jruby-9.1.9.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
-  - { rvm: jruby-9.1.9.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
-  - { rvm: jruby-9.1.9.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+  - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   # See JRuby currently failing on Rails 5+ https://github.com/jruby/activerecord-jdbc-adapter/issues/708
   # - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   # - { rvm: jruby-head,     jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
@@ -48,5 +48,5 @@ matrix:
     - rvm: ruby-head
     - rvm: jruby-head
     # See JRuby currently failing on Rails 5+ https://github.com/jruby/activerecord-jdbc-adapter/issues/708
-    - { rvm: jruby-9.1.9.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   fast_finish: true
