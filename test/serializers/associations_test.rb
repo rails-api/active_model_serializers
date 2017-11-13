@@ -159,7 +159,14 @@ module ActiveModel
           end
         end
 
-        actual = serializable(post, adapter: :json_api, serializer: BelongsToBlogModelSerializer).as_json
+        actual =
+          begin
+            original_option = BelongsToBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship
+            BelongsToBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = true
+            serializable(post, adapter: :json_api, serializer: BelongsToBlogModelSerializer).as_json
+          ensure
+            BelongsToBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = original_option
+          end
         expected = { data: { id: '1', type: 'posts', relationships: { blog: { data: { id: '5', type: 'blogs' } } } } }
 
         assert_equal expected, actual
@@ -189,7 +196,14 @@ module ActiveModel
         }
         post = BelongsToExternalBlogModel.new(attributes)
 
-        actual = serializable(post, adapter: :json_api, serializer: BelongsToExternalBlogModelSerializer).as_json
+        actual =
+          begin
+            original_option = BelongsToExternalBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship
+            BelongsToExternalBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = true
+            serializable(post, adapter: :json_api, serializer: BelongsToExternalBlogModelSerializer).as_json
+          ensure
+            BelongsToExternalBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = original_option
+          end
         expected = { data: { id: '1', type: 'posts', relationships: { :'external-blog' => { data: { id: '6', type: 'external-blogs' } } } } }
 
         assert_equal expected, actual
