@@ -183,10 +183,11 @@ module ActiveModelSerializers
         def test_raises_descriptive_error_when_serialization_context_unset
           render_options = { adapter: :json_api }
           adapter = serializable(using_kaminari, render_options)
-          exception = assert_raises do
+          exception_class = ActiveModelSerializers::Adapter::JsonApi::PaginationLinks::MissingSerializationContextError
+
+          exception = assert_raises(exception_class) do
             adapter.as_json
           end
-          exception_class = ActiveModelSerializers::Adapter::JsonApi::PaginationLinks::MissingSerializationContextError
           assert_equal exception_class, exception.class
           assert_match(/CollectionSerializer#paginated\?/, exception.message)
         end
