@@ -1,12 +1,41 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.6...master)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.7...0-10-stable)
 
 Breaking changes:
 
 Features:
-- [#2136](https://github.com/rails-api/active_model_serializers/pull/2136) Enable inclusion of sideloaded relationship objects by `key`. (@caomania)
 
+Fixes:
+
+Misc:
+
+### [v0.10.7 (2017-11-14)](https://github.com/rails-api/active_model_serializers/compare/v0.10.6...v0.10.7)
+
+Regressions Fixed From v0.10.6:
+
+- [#2211](https://github.com/rails-api/active_model_serializers/pull/2211). Fixes #2125, #2160. (@bf4)
+  - Fix polymorphic belongs_to tests; passes on v0.10.5, fails on v0.10.6
+  - Fix JSON:API polymorphic type regression from v0.10.5
+  - Fix JSON:API: for_type_and_id should always inflect_type
+      ```
+      Should Serializer._type ever be inflected?
+      Right now, it won't be, but association.serializer._type will be inflected.
+
+      That's the current behavior.
+       ```
+- [#2216](https://github.com/rails-api/active_model_serializers/pull/2216). Fixes #2132, #2180. (@bf4)
+  - Fix JSON:API: Serialize resource type for unpersisted records (blank id)
+- [#2218](https://github.com/rails-api/active_model_serializers/pull/2218). Fixes #2178. (@bf4)
+  - Fix JSON:API: Make using foreign key on belongs_to opt-in. No effect on polymorphic relationships.
+      ```
+        # set to true to opt-in
+        ActiveModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = true
+      ```
+
+Features:
+
+- [#2136](https://github.com/rails-api/active_model_serializers/pull/2136) Enable inclusion of sideloaded relationship objects by `key`. (@caomania)
 - [#2021](https://github.com/rails-api/active_model_serializers/pull/2021) ActiveModelSerializers::Model#attributes. Originally in [#1982](https://github.com/rails-api/active_model_serializers/pull/1982). (@bf4)
 - [#2130](https://github.com/rails-api/active_model_serializers/pull/2130) Allow serialized ID to be overwritten for belongs-to relationships. (@greysteil)
 - [#2189](https://github.com/rails-api/active_model_serializers/pull/2189)
@@ -18,11 +47,14 @@ Fixes:
 - [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
 - [#2200](https://github.com/rails-api/active_model_serializers/pull/2200) Fix deserialization of polymorphic relationships. (@dennis95stumm)
 - [#2214](https://github.com/rails-api/active_model_serializers/pull/2214) Fail if unable to infer collection type with json adapter. (@jmeredith16)
+- [#2149](https://github.com/rails-api/active_model_serializers/pull/2149) Always include self, first, last pagination link. (@mecampbellsoup)
+- [#2179](https://github.com/rails-api/active_model_serializers/pull/2179) Fixes #2173, Pass block to Enumerator.new. (@drn)
 
 Misc:
 
-- #2176 Documentation for global adapter config (@mrpinsky)
+- [#2176](https://github.com/rails-api/active_model_serializers/pull/2176) Documentation for global adapter config. (@mrpinsky)
 - [#2215](https://github.com/rails-api/active_model_serializers/pull/2215) Update `serializers.md` documentation to denote alternate use cases for `scope`. (@stratigos)
+- [#2212](https://github.com/rails-api/active_model_serializers/pull/2212) Remove legacy has_many_embed_ids test. (@bf4)
 
 ### [v0.10.6 (2017-05-01)](https://github.com/rails-api/active_model_serializers/compare/v0.10.5...v0.10.6)
 
