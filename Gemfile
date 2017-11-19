@@ -54,9 +54,9 @@ group :test do
   gem 'sqlite3', platform: (@windows_platforms + [:ruby])
   platforms :jruby do
     if version == 'master' || version >= '5'
-      gem 'activerecord-jdbcsqlite3-adapter', '>= 1.3.0' # github: 'jruby/activerecord-jdbc-adapter', branch: 'master'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 50'
     else
-      gem 'activerecord-jdbcsqlite3-adapter'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.0'
     end
   end
   gem 'codeclimate-test-reporter', require: false
