@@ -24,7 +24,7 @@ module ActiveModelSerializers
           pages_from.each_with_object({}) do |(key, value), hash|
             params = query_parameters.merge(page: { number: value, size: per_page }).to_query
 
-            hash[key] = "#{url(adapter_options)}?#{params}"
+            hash[key] = "#{url(adapter_options)}?#{params}" if url(adapter_options).present?
           end
         end
 
