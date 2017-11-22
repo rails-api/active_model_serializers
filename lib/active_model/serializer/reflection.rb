@@ -140,7 +140,7 @@ module ActiveModel
       def include_data?(include_slice)
         include_data_setting = options[:include_data_setting]
         case include_data_setting
-        when :if_sideloaded then include_slice.key?(name)
+        when :if_sideloaded then include_slice.key?(options.fetch(:key, name))
         when true           then true
         when false          then false
         else fail ArgumentError, "Unknown include_data_setting '#{include_data_setting.inspect}'"

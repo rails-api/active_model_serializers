@@ -49,8 +49,6 @@ Check how to change the adapter in the sections below.
 `0.10.x` is based on the `0.8.0` code, but with a more flexible
 architecture. We'd love your help. [Learn how you can help here.](CONTRIBUTING.md)
 
-It is generally safe and recommended to use the master branch.
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -187,7 +185,7 @@ and, if there is no serializer, primitives.
 
 ### ActiveModelSerializers::Adapter::Base
 
-The **`ActiveModelSerializeres::Adapter::Base`** describes the structure of the JSON document generated from a
+The **`ActiveModelSerializers::Adapter::Base`** describes the structure of the JSON document generated from a
 serializer. For example, the `Attributes` example represents each serializer as its
 unmodified attributes.  The `JsonApi` adapter represents the serializer as a [JSON
 API](http://jsonapi.org/) document.

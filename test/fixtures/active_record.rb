@@ -89,7 +89,7 @@ class ObjectTag < ActiveRecord::Base
 end
 class PolymorphicObjectTagSerializer < ActiveModel::Serializer
   attributes :id
-  has_many :taggable, serializer: PolymorphicSimpleSerializer, polymorphic: true
+  belongs_to :taggable, serializer: PolymorphicSimpleSerializer, polymorphic: true
 end
 
 class PolyTag < ActiveRecord::Base
@@ -109,5 +109,5 @@ class PolymorphicHasManySerializer < ActiveModel::Serializer
 end
 class PolymorphicBelongsToSerializer < ActiveModel::Serializer
   attributes :id, :title
-  has_one :imageable, serializer: PolymorphicHasManySerializer, polymorphic: true
+  belongs_to :imageable, serializer: PolymorphicHasManySerializer, polymorphic: true
 end

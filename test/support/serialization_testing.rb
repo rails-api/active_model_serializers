@@ -47,6 +47,14 @@ module SerializationTesting
     ActiveModelSerializers.config.replace(old_config)
   end
 
+  def with_jsonapi_inflection(inflection)
+    original_inflection = ActiveModelSerializers.config.jsonapi_resource_type
+    ActiveModelSerializers.config.jsonapi_resource_type = inflection
+    yield
+  ensure
+    ActiveModelSerializers.config.jsonapi_resource_type = original_inflection
+  end
+
   def with_serializer_lookup_disabled
     original_serializer_lookup = ActiveModelSerializers.config.serializer_lookup_enabled
     ActiveModelSerializers.config.serializer_lookup_enabled = false

@@ -142,6 +142,7 @@ module ActiveModel
     # Make JSON API top-level jsonapi member opt-in
     # ref: http://jsonapi.org/format/#document-top-level
     config.jsonapi_include_toplevel_object = false
+    config.jsonapi_use_foreign_key_on_belongs_to_relationship = false
     config.include_data_default = true
 
     # For configuring how serializers are found.
@@ -337,7 +338,7 @@ module ActiveModel
     # @return [Enumerator<Association>]
     def associations(include_directive = ActiveModelSerializers.default_include_directive, include_slice = nil)
       include_slice ||= include_directive
-      return Enumerator.new unless object
+      return Enumerator.new {} unless object
 
       Enumerator.new do |y|
         self.class._reflections.each do |key, reflection|

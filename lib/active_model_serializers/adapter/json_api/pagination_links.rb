@@ -15,17 +15,18 @@ module ActiveModelSerializers
  JsonApi::PaginationLinks requires a ActiveModelSerializers::SerializationContext.
  Please pass a ':serialization_context' option or
  override CollectionSerializer#paginated? to return 'false'.
-             EOF
+            EOF
           end
         end
 
         def as_json
-          per_page = collection.try(:per_page) || collection.try(:limit_value) || collection.size
-          pages_from.each_with_object({}) do |(key, value), hash|
-            params = query_parameters.merge(page: { number: value, size: per_page }).to_query
-
-            hash[key] = "#{url(adapter_options)}?#{params}" if url(adapter_options).present?
-          end
+          {
+            self:  location_url,
+            first: first_page_url,
+            prev:  prev_page_url,
+            next:  next_page_url,
+            last:  last_page_url
+          }.compact
         end
 
         protected
@@ -34,25 +35,39 @@ module ActiveModelSerializers
 
         private
 
-        def pages_from
-          return {} if collection.total_pages <= FIRST_PAGE
+        def location_url
+          url_for_page(collection.current_page)
+        end
 
-          {}.tap do |pages|
-            pages[:self] = collection.current_page
+        def first_page_url
+          url_for_page(1)
+        end
 
-            unless collection.current_page == FIRST_PAGE
-              pages[:first] = FIRST_PAGE
-              pages[:prev]  = collection.current_page - FIRST_PAGE
-            end
-
-            unless collection.current_page == collection.total_pages
-              pages[:next] = collection.current_page + FIRST_PAGE
-              pages[:last] = collection.total_pages
-            end
+        def last_page_url
+          if collection.total_pages == 0
+            url_for_page(FIRST_PAGE)
+          else
+            url_for_page(collection.total_pages)
           end
         end
 
-        def url(options)
+        def prev_page_url
+          return nil if collection.current_page == FIRST_PAGE
+          url_for_page(collection.current_page - FIRST_PAGE)
+        end
+
+        def next_page_url
+          return nil if collection.total_pages == 0 || collection.current_page == collection.total_pages
+          url_for_page(collection.next_page)
+        end
+
+        def url_for_page(number)
+          params = query_parameters.dup
+          params[:page] = { size: per_page, number: number }
+          "#{url(adapter_options)}?#{params.to_query}"
+        end
+
+        def url(options = {})
           @url ||= options.fetch(:links, {}).fetch(:self, nil) || request_url
         end
 
@@ -62,6 +77,10 @@ module ActiveModelSerializers
 
         def query_parameters
           @query_parameters ||= context.query_parameters
+        end
+
+        def per_page
+          @per_page ||= collection.try(:per_page) || collection.try(:limit_value) || collection.size
         end
       end
     end

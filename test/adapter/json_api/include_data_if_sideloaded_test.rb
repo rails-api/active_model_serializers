@@ -6,7 +6,7 @@ module ActiveModel
       class JsonApi
         class IncludeParamTest < ActiveSupport::TestCase
           IncludeParamAuthor = Class.new(::Model) do
-            associations :tags, :posts
+            associations :tags, :posts, :roles
           end
 
           class CustomCommentLoader
@@ -51,14 +51,19 @@ module ActiveModel
               include_data :if_sideloaded
               IncludeParamAuthorSerializer.comment_loader.all
             end
+            has_many :roles, key: :granted_roles do
+              include_data :if_sideloaded
+            end
           end
 
           def setup
             IncludeParamAuthorSerializer.comment_loader = Class.new(CustomCommentLoader).new
             @tag = Tag.new(id: 1337, name: 'mytag')
+            @role = Role.new(id: 1337, name: 'myrole')
             @author = IncludeParamAuthor.new(
               id: 1337,
-              tags: [@tag]
+              tags: [@tag],
+              roles: [@role]
             )
           end
 
@@ -103,6 +108,31 @@ module ActiveModel
             ]
             hash = result(include: :tags)
             assert_equal(expected, hash[:included])
+          end
+
+          def test_sideloads_included_when_using_key
+            expected = [
+              {
+                id: '1337',
+                type: 'roles',
+                attributes: {
+                  name: 'myrole',
+                  description: nil,
+                  slug: 'myrole-1337'
+                },
+                relationships: {
+                  author: { data: nil }
+                }
+              }
+            ]
+
+            hash = result(include: :granted_roles)
+            assert_equal(expected, hash[:included])
+          end
+
+          def test_sideloads_not_included_when_using_name_when_key_defined
+            hash = result(include: :roles)
+            assert_nil(hash[:included])
           end
 
           def test_nested_relationship

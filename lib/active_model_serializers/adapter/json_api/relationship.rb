@@ -43,10 +43,16 @@ module ActiveModelSerializers
         end
 
         def data_for_one(association)
-          if association.belongs_to? &&
-              parent_serializer.object.respond_to?(association.reflection.foreign_key)
-            id = parent_serializer.object.send(association.reflection.foreign_key)
-            type = association.reflection.type.to_s
+          if belongs_to_id_on_self?(association)
+            id = parent_serializer.read_attribute_for_serialization(association.reflection.foreign_key)
+            type =
+              if association.polymorphic?
+                # We can't infer resource type for polymorphic relationships from the serializer.
+                # We can ONLY know a polymorphic resource type by inspecting each resource.
+                association.lazy_association.serializer.json_key
+              else
+                association.reflection.type.to_s
+              end
             ResourceIdentifier.for_type_with_id(type, id, serializable_resource_options)
           else
             # TODO(BF): Process relationship without evaluating lazy_association
@@ -85,6 +91,12 @@ module ActiveModelSerializers
         def meta_for(association)
           meta = association.meta
           meta.respond_to?(:call) ? parent_serializer.instance_eval(&meta) : meta
+        end
+
+        def belongs_to_id_on_self?(association)
+          parent_serializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship &&
+            association.belongs_to? &&
+            parent_serializer.object.respond_to?(association.reflection.foreign_key)
         end
       end
     end

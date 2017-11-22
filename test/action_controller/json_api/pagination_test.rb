@@ -58,8 +58,10 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_last_and_next_pagination_links
+        def test_render_only_first_last_and_next_pagination_links
           expected_links = { 'self' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+                             'first' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+                             'prev' => nil,
                              'next' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
                              'last' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2" }
           get :render_pagination_using_will_paginate, params: { page: { number: 1, size: 2 } }
@@ -78,17 +80,21 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_prev_and_first_pagination_links
+        def test_render_only_prev_first_and_last_pagination_links
           expected_links = { 'self' => "#{KAMINARI_URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1",
                              'first' => "#{KAMINARI_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1",
-                             'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1" }
+                             'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1",
+                             'next' => nil,
+                             'last' => "#{KAMINARI_URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1" }
           get :render_pagination_using_kaminari, params: { page: { number: 3, size: 1 } }
           response = JSON.parse(@response.body)
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_last_and_next_pagination_links_with_additional_params
+        def test_render_only_first_last_and_next_pagination_links_with_additional_params
           expected_links = { 'self' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2&teste=additional",
+                             'first' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2&teste=additional",
+                             'prev' => nil,
                              'next' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2&teste=additional",
                              'last' => "#{WILL_PAGINATE_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2&teste=additional" }
           get :render_pagination_using_will_paginate, params: { page: { number: 1, size: 2 }, teste: 'additional' }
@@ -96,10 +102,12 @@ module ActionController
           assert_equal expected_links, response['links']
         end
 
-        def test_render_only_prev_and_first_pagination_links_with_additional_params
+        def test_render_only_prev_first_and_last_pagination_links_with_additional_params
           expected_links = { 'self' => "#{KAMINARI_URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1&teste=additional",
                              'first' => "#{KAMINARI_URI}?page%5Bnumber%5D=1&page%5Bsize%5D=1&teste=additional",
-                             'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1&teste=additional" }
+                             'prev' => "#{KAMINARI_URI}?page%5Bnumber%5D=2&page%5Bsize%5D=1&teste=additional",
+                             'next' => nil,
+                             'last' => "#{KAMINARI_URI}?page%5Bnumber%5D=3&page%5Bsize%5D=1&teste=additional" }
           get :render_pagination_using_kaminari, params: { page: { number: 3, size: 1 }, teste: 'additional' }
           response = JSON.parse(@response.body)
           assert_equal expected_links, response['links']

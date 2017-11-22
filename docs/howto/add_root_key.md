@@ -18,6 +18,13 @@ In order to add the root key you need to use the ```JSON``` Adapter, you can cha
 ActiveModelSerializers.config.adapter = :json
 ```
 
+Note that adapter configuration has no effect on a serializer that is called
+directly, e.g. in a serializer unit test. Instead, something like
+`UserSerializer.new(user).as_json` will *always* behave as if the adapter were
+the 'Attributes' adapter. See [Outside Controller
+Usage](../howto/outside_controller_use.md) for more details on recommended
+usage.
+
 You can also specify a class as adapter, as long as it complies with the ActiveModelSerializers adapters interface.
 It will add the root key to all your serialized endpoints.
 

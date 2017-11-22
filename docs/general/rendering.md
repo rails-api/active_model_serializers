@@ -290,4 +290,4 @@ See [Usage outside of a controller](../howto/outside_controller_use.md#serializi
 
 ## Pagination
 
-See [How to add pagination links](https://github.com/rails-api/active_model_serializers/blob/master/docs/howto/add_pagination_links.md).
+See [How to add pagination links](../howto/add_pagination_links.md).
