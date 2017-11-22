@@ -58,8 +58,6 @@ module ActiveModelSerializers
           {
             self: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
             first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
-            prev: nil,
-            next: nil,
             last: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2"
           }
         end
@@ -82,7 +80,6 @@ module ActiveModelSerializers
               self: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
               first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
               prev: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
-              next: nil,
               last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2"
             }
           }
