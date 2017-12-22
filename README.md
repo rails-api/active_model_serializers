@@ -47,6 +47,7 @@ reading documentation for our `master`, which is not yet released.
         <img src='http://img.shields.io/badge/yard-docs-blue.svg' />
       </a>
     </td>
+    <td></td>
   </tr>
   <tr>
     <td>
@@ -58,6 +59,7 @@ reading documentation for our `master`, which is not yet released.
         <img src='http://img.shields.io/badge/yard-docs-blue.svg' />
       </a>
     </td>
+    <td></td>
   </tr>
 </table>
 
