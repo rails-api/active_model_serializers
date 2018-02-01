@@ -93,6 +93,9 @@ See [PR 2121](https://github.com/rails-api/active_model_serializers/pull/2121) w
 ## Alternatives
 
 - [jsonapi-rb](http://jsonapi-rb.org/) is a [highly performant](https://gist.github.com/NullVoxPopuli/748e89ddc1732b42fdf42435d773734a) and modular JSON:API-only implementation.  There's a vibrant community around it that has produced projects such as [JSON:API Suite](https://jsonapi-suite.github.io/jsonapi_suite/).
+- [fast_jsonapi](https://github.com/rails-api/active_model_serializers/) is a lightning fast JSON:API serializer for Ruby Objects from the team of Netflix.
+
+
 
 For benchmarks against alternatives, see https://github.com/rails-api/active_model_serializers/tree/benchmarks
 
