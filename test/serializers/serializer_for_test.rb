@@ -37,6 +37,11 @@ module ActiveModel
           end
         end
 
+        module SerializerNamespace
+          class ProfileSerializer < ActiveModel::Serializer
+          end
+        end
+
         class MyProfile < Profile
         end
 
@@ -82,6 +87,11 @@ module ActiveModel
         def test_serializer_inherited_serializer
           serializer = ActiveModel::Serializer.serializer_for(@my_profile)
           assert_equal ProfileSerializer, serializer
+        end
+
+        def test_serializer_inherited_serializer_with_namespace
+          serializer = ActiveModel::Serializer.serializer_for(@my_profile, namespace: SerializerNamespace)
+          assert_equal SerializerNamespace::ProfileSerializer, serializer
         end
 
         def test_serializer_inherited_serializer_with_lookup_disabled
