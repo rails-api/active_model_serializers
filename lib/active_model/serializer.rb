@@ -24,8 +24,6 @@ module ActiveModel
       autoload :Attribute
       autoload :Association
       autoload :Reflection
-      autoload :SingularReflection
-      autoload :CollectionReflection
       autoload :BelongsToReflection
       autoload :HasOneReflection
       autoload :HasManyReflection
