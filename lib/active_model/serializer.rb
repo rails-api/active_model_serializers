@@ -18,16 +18,18 @@ module ActiveModel
     # @see #serializable_hash for more details on these valid keys.
     SERIALIZABLE_HASH_VALID_KEYS = [:only, :except, :methods, :include, :root].freeze
     extend ActiveSupport::Autoload
-    autoload :Adapter
-    autoload :Null
-    autoload :Attribute
-    autoload :Association
-    autoload :Reflection
-    autoload :SingularReflection
-    autoload :CollectionReflection
-    autoload :BelongsToReflection
-    autoload :HasOneReflection
-    autoload :HasManyReflection
+    eager_autoload do
+      autoload :Adapter
+      autoload :Null
+      autoload :Attribute
+      autoload :Association
+      autoload :Reflection
+      autoload :SingularReflection
+      autoload :CollectionReflection
+      autoload :BelongsToReflection
+      autoload :HasOneReflection
+      autoload :HasManyReflection
+    end
     include ActiveSupport::Configurable
     include Caching
 
