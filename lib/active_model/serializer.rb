@@ -343,6 +343,7 @@ module ActiveModel
       Enumerator.new do |y|
         self.class._reflections.each do |key, reflection|
           next if reflection.excluded?(self)
+          next if reflection.options[:optional] && ( instance_options[:included].nil? || !instance_options[:included].include?(key.to_s) )
           next unless include_directive.key?(key)
 
           association = reflection.build_association(self, instance_options, include_slice)
