@@ -65,7 +65,7 @@ Where:
   - `virtual_value:`
   - `polymorphic:` defines if polymorphic relation type should be nested in serialized association.
   - `type:` the resource type as used by JSON:API, especially on a `belongs_to` relationship.
-  - `class_name:` used to determine `type` when `type` not given. `class_name` option to supply the model name as string.
+  - `class_name:` used to determine `type` when `type` is not given. `class_name` option to supply the model name as string.
   - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object.
   - `namespace:` used when looking up the serializer and `serializer` is not given.  Falls back to the parent serializer's `:namespace` instance options, which, when present, comes from the render options. See [Rendering#namespace](rendering.md#namespace] for more details.
 - optional: `&block` is a context that returns the association's attributes.
