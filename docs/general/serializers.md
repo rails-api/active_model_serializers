@@ -81,6 +81,7 @@ e.g.
 ```ruby
 has_one :bio
 has_one :blog, key: :site
+has_one :blog, class_name: "Blog"
 has_one :maker, virtual_value: { id: 1 }
 
 has_one :blog do |serializer|
@@ -114,6 +115,7 @@ e.g.
 has_many :comments
 has_many :comments, key: :reviews
 has_many :comments, serializer: CommentPreviewSerializer
+has_many :comments, class_name: "Comment"
 has_many :reviews, virtual_value: [{ id: 1 }, { id: 2 }]
 has_many :comments, key: :last_comments do
   last(1)
@@ -127,6 +129,7 @@ e.g.
 ```ruby
 belongs_to :author, serializer: AuthorPreviewSerializer
 belongs_to :author, key: :writer
+belongs_to :author, class_name: "Author"
 belongs_to :post
 belongs_to :blog
 def blog
@@ -294,7 +297,7 @@ end
 Whether you write the method as above or as `object.comments.where(created_by: scope)`
 is a matter of preference (assuming `scope_name` has been set).
 
-Keep in mind that the scope can be set to any available controller reference. This can be utilized to provide access to any other data scopes or presentation helpers. 
+Keep in mind that the scope can be set to any available controller reference. This can be utilized to provide access to any other data scopes or presentation helpers.
 
 ##### Controller Authorization Context
 
@@ -381,7 +384,7 @@ class PostsController < ActionController::Base
   end
 end
 ```
-Note that any controller reference which provides the desired scope is acceptable, such as another controller method for loading a different resource or reference to helpers. For example, `ActionController::API` does not include `ActionView::ViewContext`, and would need a different reference for passing any helpers into a serializer via `serialization_scope`. 
+Note that any controller reference which provides the desired scope is acceptable, such as another controller method for loading a different resource or reference to helpers. For example, `ActionController::API` does not include `ActionView::ViewContext`, and would need a different reference for passing any helpers into a serializer via `serialization_scope`.
 
 #### #read_attribute_for_serialization(key)
 
