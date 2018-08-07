@@ -237,6 +237,16 @@ module ActiveModel
 
     # @param [Symbol] name of the association
     # @param [Hash<Symbol => any>] options for the reflection
+    # @option options [Symbol] :key The name used for the serialized association.
+    # @option options [Symbol] :serializer
+    # @option options [Symbol] :if
+    # @option options [Symbol] :unless
+    # @option options [Symbol] :virtual_value
+    # @option options [Symbol] :polymorphic defines if polymorphic relation type should be nested in serialized association.
+    # @option options [Symbol] :type the resource type as used by JSON:API, especially on a `belongs_to` relationship.
+    # @option options [Symbol] :class_name the (String) model name used to determine `type`, when `type` is not given. e.g. `class_name: "Comment"` would imply the type `comments`
+    # @option options [Symbol] :foreign_key used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object. This can also be used to override the `id` attribute set in the [`relationships` data field](http://jsonapi.org/format/#document-resource-object-relationships) if you are exposing a different value to the outside world instead of DB IDs
+    # @option options [Symbol] :namespace used when looking up the serializer and `serializer` is not given.  Falls back to the parent serializer's `:namespace` instance options, which, when present, comes from the render options. See [Rendering#namespace](rendering.md#namespace] for more details.
     # @return [void]
     #
     # @example
