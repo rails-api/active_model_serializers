@@ -341,7 +341,7 @@ module ActiveModel
       return Enumerator.new {} unless object
 
       Enumerator.new do |y|
-        self.class._reflections.each do |key, reflection|
+        (@reflections ||= self.class._reflections.deep_dup).each do |key, reflection|
           next if reflection.excluded?(self)
           next unless include_directive.key?(key)
 
@@ -405,6 +405,6 @@ module ActiveModel
 
     protected
 
-    attr_accessor :instance_options
+    attr_accessor :instance_options, :reflections
   end
 end
