@@ -357,6 +357,12 @@ module ActiveModel
     def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
+
+      # [Note] Add this clause to provide selective fields for associations in json adapter.
+      if !options[:fields] && (h = options[:include_directive].to_hash[:only])
+        options[:fields] = h.keys
+      end
+
       resource = attributes_hash(adapter_options, options, adapter_instance)
       relationships = associations_hash(adapter_options, options, adapter_instance)
       resource.merge(relationships)
