@@ -22,6 +22,7 @@ module ActiveModel
       autoload :Adapter
       autoload :Null
       autoload :Attribute
+      autoload :Link
       autoload :Association
       autoload :Reflection
       autoload :BelongsToReflection
@@ -275,9 +276,14 @@ module ActiveModel
     #   link(:self) { "http://example.com/resource/#{object.id}" }
     # @example
     #   link :resource, "http://example.com/resource"
+    # @example
+    #   link(:callback, if: :internal?), { "http://example.com/callback" }
     #
-    def self.link(name, value = nil, &block)
-      _links[name] = block || value
+    def self.link(name, *args, &block)
+      options = args.extract_options!
+      # For compatibility with the use cae of passing link directly as string argument
+      # without block, we are creating a wrapping block
+      _links[name] = Link.new(name, options, block || ->(_serializer) { args.first })
     end
 
     # Set the JSON API meta attribute of a serializer.

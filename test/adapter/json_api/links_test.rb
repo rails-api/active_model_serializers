@@ -17,7 +17,21 @@ module ActiveModelSerializers
           link :yet_another do
             "http://example.com/resource/#{object.id}"
           end
+          link :conditional1, if: -> { instance_truth } do
+            "http://example.com/conditional1/#{object.id}"
+          end
+          link :conditional2, if: :instance_falsey do
+            "http://example.com/conditional2/#{object.id}"
+          end
           link(:nil) { nil }
+
+          def instance_truth
+            true
+          end
+
+          def instance_falsey
+            false
+          end
         end
 
         def setup
@@ -85,7 +99,8 @@ module ActiveModelSerializers
             :"link-authors" => 'http://example.com/link_authors',
             resource: 'http://example.com/resource',
             posts: 'http://example.com/link_authors/1337/posts',
-            :"yet-another" => 'http://example.com/resource/1337'
+            :"yet-another" => 'http://example.com/resource/1337',
+            conditional1: 'http://example.com/conditional1/1337'
           }
           assert_equal(expected, hash[:data][:links])
         end
