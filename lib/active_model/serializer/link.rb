@@ -2,7 +2,7 @@ require 'active_model/serializer/field'
 
 module ActiveModel
   class Serializer
-    # Holds all the data about an serializer link
+    # Holds all the data about a serializer link
     #
     # @example
     #   class PostSerializer < ActiveModel::Serializer

@@ -281,7 +281,7 @@ module ActiveModel
     #
     def self.link(name, *args, &block)
       options = args.extract_options!
-      # For compatibility with the use cae of passing link directly as string argument
+      # For compatibility with the use case of passing link directly as string argument
       # without block, we are creating a wrapping block
       _links[name] = Link.new(name, options, block || ->(_serializer) { args.first })
     end
