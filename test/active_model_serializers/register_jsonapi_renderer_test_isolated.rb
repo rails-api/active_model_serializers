@@ -140,6 +140,7 @@ class JsonApiRendererTest < ActionDispatch::IntegrationTest
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       post '/render_with_jsonapi_renderer', params: payload, headers: headers
       assert_equal expected.to_json, response.body
+      assert_equal "application/vnd.api+json", response.headers["Content-Type"]
     end
 
     def test_jsonapi_parser
