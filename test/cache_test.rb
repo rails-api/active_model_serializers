@@ -151,8 +151,11 @@ module ActiveModelSerializers
       @blog_serializer     = BlogSerializer.new(@blog)
     end
 
-    def test_expire_of_cache
-      ARModels::Author.cache_versioning = true
+    def test_expiring_of_cache_at_update_of_record
+      if ARModels::Author.respond_to?(:cache_versioning)
+        ARModels::Author.cache_versioning = true
+      end
+
       author = ARModels::Author.create(name: 'Foo')
       author_json = AuthorSerializerWithCache.new(author).as_json
 
