@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   # 'activesupport', rails_versions
   # 'i18n,
   # 'tzinfo'
-  # 'minitest'
+  spec.add_development_dependency 'minitest', ['~> 5.0', '< 5.11']
   # 'thread_safe'
 
   spec.add_runtime_dependency 'jsonapi-renderer', ['>= 0.1.1.beta1', '< 0.3']
