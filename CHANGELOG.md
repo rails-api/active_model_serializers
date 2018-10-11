@@ -8,6 +8,9 @@ Features:
 
 Fixes:
 
+- [#2289](https://github.com/rails-api/active_model_serializers/pull/2289) Fixes #2255 (@f-mer)
+  - Fix autoloading race condition, especially in Rails 5.
+
 Misc:
 
 ### [v0.10.7 (2017-11-14)](https://github.com/rails-api/active_model_serializers/compare/v0.10.6...v0.10.7)
