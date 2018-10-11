@@ -22,14 +22,16 @@ module ActiveModelSerializers
   module Adapter
     class JsonApi < Base
       extend ActiveSupport::Autoload
-      autoload :Jsonapi
-      autoload :ResourceIdentifier
-      autoload :Relationship
-      autoload :Link
-      autoload :PaginationLinks
-      autoload :Meta
-      autoload :Error
-      autoload :Deserialization
+      eager_autoload do
+        autoload :Jsonapi
+        autoload :ResourceIdentifier
+        autoload :Link
+        autoload :PaginationLinks
+        autoload :Meta
+        autoload :Error
+        autoload :Deserialization
+        autoload :Relationship
+      end
 
       def self.default_key_transform
         :dash

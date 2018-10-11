@@ -5,6 +5,8 @@ require 'action_controller/serialization'
 
 module ActiveModelSerializers
   class Railtie < Rails::Railtie
+    config.eager_load_namespaces << ActiveModelSerializers
+
     config.to_prepare do
       ActiveModel::Serializer.serializers_cache.clear
     end
