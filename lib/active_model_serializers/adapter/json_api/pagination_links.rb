@@ -26,7 +26,7 @@ module ActiveModelSerializers
             prev:  prev_page_url,
             next:  next_page_url,
             last:  last_page_url
-          }
+          }.compact
         end
 
         protected
