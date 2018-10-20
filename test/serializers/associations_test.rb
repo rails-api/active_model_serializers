@@ -285,6 +285,56 @@ module ActiveModel
         end
       end
 
+      class AssociationsNamespacedSerializersTest < ActiveSupport::TestCase
+        class Post < ::Model
+          associations :comments, :author, :description
+
+          def latest_comments
+            comments[0..3]
+          end
+        end
+        class Comment < ::Model; end
+        class Author  < ::Model; end
+        class Description < ::Model; end
+
+        class ResourceNamespace
+          class PostSerializer < ActiveModel::Serializer
+            has_many :comments, namespace: ResourceNamespace
+            has_many :latest_comments, namespace: ResourceNamespace
+            belongs_to :author, namespace: ResourceNamespace
+            has_one :description, namespace: ResourceNamespace
+          end
+          class CommentSerializer     < ActiveModel::Serializer; end
+          class AuthorSerializer      < ActiveModel::Serializer; end
+          class DescriptionSerializer < ActiveModel::Serializer; end
+        end
+
+        def setup
+          @comment = Comment.new
+          @author = Author.new
+          @description = Description.new
+          @post = Post.new(comments: [@comment],
+                           author: @author,
+                           description: @description)
+          @post_serializer = ResourceNamespace::PostSerializer.new(@post)
+        end
+
+        def test_associations_namespaced_serializers
+          @post_serializer.associations.each do |association|
+            case association.key
+            when :comments, :latest_comments
+              assert_instance_of(ResourceNamespace::CommentSerializer, association.lazy_association.serializer.first)
+            when :author
+              assert_instance_of(ResourceNamespace::AuthorSerializer, association.lazy_association.serializer)
+            when :description
+              assert_instance_of(ResourceNamespace::DescriptionSerializer, association.lazy_association.serializer)
+            else
+              flunk "Unknown association: #{key}"
+            end
+          end
+        end
+      end
+
       class NestedSerializersTest < ActiveSupport::TestCase
         class Post < ::Model
           associations :comments, :author, :description
