@@ -76,6 +76,7 @@ module ActiveModel
         serializer_options[:serializer_context_class] = association_options.fetch(:parent_serializer).class
         serializer = reflection_options.fetch(:serializer, nil)
         serializer_options[:serializer] = serializer if serializer
+        serializer_options[:namespace]  = reflection_options[:namespace] if reflection_options[:namespace]
         serializer_class.new(object, serializer_options)
       end
 
