@@ -477,7 +477,7 @@ the `ActiveModel::Serializer.serializer_for` method to return a serializer class
 ```ruby
 class MySerializer < ActiveModel::Serializer
   def self.serializer_for(model, options)
-    return SparseAdminSerializer if model.class == 'Admin'
+    return SparseAdminSerializer if model.class.name == 'Admin'
     super
   end
 
