@@ -49,6 +49,7 @@ matrix:
   - { rvm: 2.3.5,        env: RAILS_VERSION=master }
   - { rvm: 2.1.10,        env: RAILS_VERSION=5.0 }
   - { rvm: 2.1.10,        env: RAILS_VERSION=5.1 }
+  - { rvm: 2.1.10,        env: RAILS_VERSION=5.2 }
   - { rvm: 2.4.2,         env: RAILS_VERSION=4.1 }
   - { rvm: ruby-head,     env: RAILS_VERSION=4.1 }
   allow_failures:
