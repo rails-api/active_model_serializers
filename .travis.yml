@@ -21,6 +21,7 @@ env:
     - "RAILS_VERSION=4.2"
     - "RAILS_VERSION=5.0"
     - "RAILS_VERSION=5.1"
+    - "RAILS_VERSION=5.2"
     - "RAILS_VERSION=master"
 
 rvm:
@@ -29,6 +30,10 @@ rvm:
   - 2.3.5
   - 2.4.2
   - ruby-head
+
+branches:
+  only:
+  - 0-10-stable
 
 matrix:
   include:
