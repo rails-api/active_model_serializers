@@ -5,6 +5,7 @@
 Breaking changes:
 
 Features:
+- [#2279](https://github.com/rails-api/active_model_serializers/pull/2279) Support condition options in serializer link statements
 
 Fixes:
 

@@ -238,6 +238,15 @@ link :other, 'https://example.com/resource'
 link(:posts) { link_author_posts_url(object) }
 ```
 
+Just like attributes, links also support conditions in options
+```ruby
+link(:secret, if: :internal?) { object.secret_link }
+
+def internal?
+  instance_options[:context] == :internal
+end
+```
+
 #### #object
 
 The object being serialized.

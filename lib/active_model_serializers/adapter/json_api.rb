@@ -482,7 +482,8 @@ module ActiveModelSerializers
       #   }.reject! {|_,v| v.nil? }
       def links_for(serializer)
         serializer._links.each_with_object({}) do |(name, value), hash|
-          result = Link.new(serializer, value).as_json
+          next if value.excluded?(serializer)
+          result = Link.new(serializer, value.block).as_json
           hash[name] = result if result
         end
       end
