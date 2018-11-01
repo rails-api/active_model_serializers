@@ -423,5 +423,57 @@ module ActiveModel
       end
       # rubocop:enable Metrics/AbcSize
     end
+    class ThreadedReflectionTest < ActiveSupport::TestCase
+      class Post < ::Model
+        attributes :id, :title, :body
+        associations :comments
+      end
+      class Comment < ::Model
+        attributes :id, :body
+        associations :post
+      end
+      class CommentSerializer < ActiveModel::Serializer
+        type 'comment'
+        attributes :id, :body
+        has_one :post
+      end
+      class PostSerializer < ActiveModel::Serializer
+        type 'post'
+        attributes :id, :title, :body
+        has_many :comments, serializer: CommentSerializer do
+          sleep 0.1
+          object.comments
+        end
+      end
+
+      # per https://github.com/rails-api/active_model_serializers/issues/2270
+      def test_concurrent_serialization
+        post1 = Post.new(id: 1, title: "Post 1 Title", body: "Post 1 Body")
+        post1.comments = [Comment.new(id: 1, body: "Comment on Post 1", post: post1)]
+        post2 = Post.new(id: 2, title: "Post 2 Title", body: "Post 2 Body")
+        post2.comments = [Comment.new(id: 2, body: "Comment on Post 2", post: post2)]
+        serialized_posts = {
+          first: Set.new,
+          second: Set.new,
+        }
+        t1 = Thread.new {
+          10.times do
+            serialized_posts[:first] << PostSerializer.new(post1, {}).to_json
+          end
+        }
+        t2 = Thread.new {
+          10.times do
+            serialized_posts[:second] << PostSerializer.new(post2, {}).to_json
+          end
+        }
+        t1.join
+        t2.join
+        expected_first_post_serialization  = "{\"id\":1,\"title\":\"Post 1 Title\",\"body\":\"Post 1 Body\",\"comments\":[{\"id\":1,\"body\":\"Comment on Post 1\"}]}"
+        expected_second_post_serialization = "{\"id\":2,\"title\":\"Post 2 Title\",\"body\":\"Post 2 Body\",\"comments\":[{\"id\":2,\"body\":\"Comment on Post 2\"}]}"
+
+        assert_equal [expected_second_post_serialization], serialized_posts[:second].to_a
+        assert_equal [expected_first_post_serialization], serialized_posts[:first].to_a
+      end
+    end
   end
 end
