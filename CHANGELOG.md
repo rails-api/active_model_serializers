@@ -1,8 +1,17 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.7...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.8...0-10-stable)
 
 Breaking changes:
+
+Features:
+
+Fixes:
+
+
+Misc:
+
+### [v0.10.8 (2018-11-01)](https://github.com/rails-api/active_model_serializers/compare/v0.10.7...v0.10.8)
 
 Features:
 - [#2279](https://github.com/rails-api/active_model_serializers/pull/2279) Support condition options in serializer link statements
@@ -15,8 +24,6 @@ Fixes:
   - Fix autoloading race condition, especially in Rails 5.
 - [#2299](https://github.com/rails-api/active_model_serializers/pull/2299) Fixes #2270 (@chau-bao-long via #2276)
   - Fix reflection thread-safety bug
-
-Misc:
 
 ### [v0.10.7 (2017-11-14)](https://github.com/rails-api/active_model_serializers/compare/v0.10.6...v0.10.7)
 
