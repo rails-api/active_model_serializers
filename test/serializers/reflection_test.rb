@@ -448,28 +448,28 @@ module ActiveModel
 
       # per https://github.com/rails-api/active_model_serializers/issues/2270
       def test_concurrent_serialization
-        post1 = Post.new(id: 1, title: "Post 1 Title", body: "Post 1 Body")
-        post1.comments = [Comment.new(id: 1, body: "Comment on Post 1", post: post1)]
-        post2 = Post.new(id: 2, title: "Post 2 Title", body: "Post 2 Body")
-        post2.comments = [Comment.new(id: 2, body: "Comment on Post 2", post: post2)]
+        post1 = Post.new(id: 1, title: 'Post 1 Title', body: 'Post 1 Body')
+        post1.comments = [Comment.new(id: 1, body: 'Comment on Post 1', post: post1)]
+        post2 = Post.new(id: 2, title: 'Post 2 Title', body: 'Post 2 Body')
+        post2.comments = [Comment.new(id: 2, body: 'Comment on Post 2', post: post2)]
         serialized_posts = {
           first: Set.new,
-          second: Set.new,
+          second: Set.new
         }
-        t1 = Thread.new {
+        t1 = Thread.new do
           10.times do
             serialized_posts[:first] << PostSerializer.new(post1, {}).to_json
           end
-        }
-        t2 = Thread.new {
+        end
+        t2 = Thread.new do
           10.times do
             serialized_posts[:second] << PostSerializer.new(post2, {}).to_json
           end
-        }
+        end
         t1.join
         t2.join
-        expected_first_post_serialization  = "{\"id\":1,\"title\":\"Post 1 Title\",\"body\":\"Post 1 Body\",\"comments\":[{\"id\":1,\"body\":\"Comment on Post 1\"}]}"
-        expected_second_post_serialization = "{\"id\":2,\"title\":\"Post 2 Title\",\"body\":\"Post 2 Body\",\"comments\":[{\"id\":2,\"body\":\"Comment on Post 2\"}]}"
+        expected_first_post_serialization  = '{"id":1,"title":"Post 1 Title","body":"Post 1 Body","comments":[{"id":1,"body":"Comment on Post 1"}]}'
+        expected_second_post_serialization = '{"id":2,"title":"Post 2 Title","body":"Post 2 Body","comments":[{"id":2,"body":"Comment on Post 2"}]}'
 
         assert_equal [expected_second_post_serialization], serialized_posts[:second].to_a
         assert_equal [expected_first_post_serialization], serialized_posts[:first].to_a
