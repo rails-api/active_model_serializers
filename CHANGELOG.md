@@ -13,6 +13,8 @@ Fixes:
   - Fix finding of namespaced serializer and non-namespaced model.
 - [#2289](https://github.com/rails-api/active_model_serializers/pull/2289) Fixes #2255 (@f-mer)
   - Fix autoloading race condition, especially in Rails 5.
+- [#2299](https://github.com/rails-api/active_model_serializers/pull/2299) Fixes #2270 (@chau-bao-long via #2276)
+  - Fix reflection thread-safety bug
 
 Misc:
 
