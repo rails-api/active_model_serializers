@@ -151,6 +151,9 @@ module ActiveModel
       # @yield [ActiveModel::Serializer]
       # @return [:nil, associated resource or resource collection]
       def value(serializer, include_slice)
+        # NOTE(BF): This method isn't thread-safe because the _reflections class attribute is not thread-safe
+        # Therefore, when we build associations from reflections, we dup the entire reflection instance.
+        # Better solutions much appreciated!
         @object = serializer.object
         @scope = serializer.scope
 
