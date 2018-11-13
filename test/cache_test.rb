@@ -169,7 +169,7 @@ module ActiveModelSerializers
       if ENV['APPVEYOR'] && actual != expected
         skip('Cache expiration tests sometimes fail on Appveyor. FIXME :)')
       else
-        assert_equal actual, expected
+        assert_equal expected, actual
       end
     end
 
