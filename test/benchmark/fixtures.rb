@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.configuration.serializers = []
 class HasOneRelationshipSerializer < ActiveModel::Serializer
   attributes :id, :first_name, :last_name

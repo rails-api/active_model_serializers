@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A Grape response formatter that can be used as 'formatter :json, Grape::Formatters::ActiveModelSerializers'
 #
 # Serializer options can be passed as a hash from your Grape endpoint using env[:active_model_serializer_options],

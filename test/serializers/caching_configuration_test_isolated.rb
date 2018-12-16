@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Execute this test in isolation
 require 'support/isolated_unit'
 

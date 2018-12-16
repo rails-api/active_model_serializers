@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Based on discussion in https://github.com/rails/rails/pull/23712#issuecomment-184977238,
 # the JSON API media type will have its own format/renderer.
 #

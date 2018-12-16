@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveModelSerializers
   module LookupChain
     # Standard appending of Serializer to the resource name.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Adapted from
 # https://github.com/rails/rails/blob/7f18ea14c8/activejob/lib/active_job/callbacks.rb
 require 'active_support/callbacks'

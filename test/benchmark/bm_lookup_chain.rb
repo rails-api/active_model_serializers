@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './benchmarking_support'
 require_relative './app'
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helpers can be included in your Grape endpoint as: helpers Grape::Helpers::ActiveModelSerializers
 
 module Grape

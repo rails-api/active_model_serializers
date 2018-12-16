@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 #
 # Add a Gemfile.local to locally bundle gems outside of version control

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveModel
   class Serializer
     UndefinedCacheKey = Class.new(StandardError)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'thread_safe'
 require 'jsonapi/include_directive'
 require 'active_model/serializer/collection_serializer'
