@@ -59,6 +59,10 @@ Style/MissingElse:
 Style/EmptyElse:
   EnforcedStyle: empty
 
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
 Style/MultilineOperationIndentation:
   EnforcedStyle: indented
 
