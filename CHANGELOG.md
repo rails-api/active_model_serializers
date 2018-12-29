@@ -8,6 +8,7 @@ Features:
 
 Fixes:
 
+- [#2307](https://github.com/rails-api/active_model_serializers/pull/2307) Falsey attribute values should not be reevaluated.
 
 Misc:
 
