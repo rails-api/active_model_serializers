@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Model < ActiveModelSerializers::Model
   rand(2).zero? && derive_attributes_from_names_and_fix_accessors
 

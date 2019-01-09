@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrimaryResourceController < ActionController::Base
   PRIMARY_RESOURCE =
     begin

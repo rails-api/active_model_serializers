@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # {http://jsonapi.org/format/ JSON API specification}
 # rubocop:disable Style/AsciiComments
 # TODO: implement!

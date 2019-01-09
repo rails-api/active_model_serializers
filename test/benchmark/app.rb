@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # https://github.com/rails-api/active_model_serializers/pull/872
 # approx ref 792fb8a9053f8db3c562dae4f40907a582dd1720 to test against
 require 'bundler/setup'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'generators/rails/resource_override'
 require 'generators/rails/serializer_generator'

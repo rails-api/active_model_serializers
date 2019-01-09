@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveModel
   class Serializer
     class ErrorSerializer < ActiveModel::Serializer

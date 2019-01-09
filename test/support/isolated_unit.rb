@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # https://github.com/rails/rails/blob/v5.0.0.beta1/railties/test/isolation/abstract_unit.rb
 
 # Usage Example:

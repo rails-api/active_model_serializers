@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'support/isolated_unit'
 module ActiveModelSerializers
   RailsApplication = TestHelpers::Generation.make_basic_app do |app|

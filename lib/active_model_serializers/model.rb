@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ActiveModelSerializers::Model is a convenient superclass for making your models
 # from Plain-Old Ruby Objects (PORO). It also serves as a reference implementation
 # that satisfies ActiveModel::Serializer::Lint::Tests.

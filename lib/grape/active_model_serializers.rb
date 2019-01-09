@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # To add Grape support, require 'grape/active_model_serializers' in the base of your Grape endpoints
 # Then add 'include Grape::ActiveModelSerializers' to enable the formatter and helpers
 require 'active_model_serializers'

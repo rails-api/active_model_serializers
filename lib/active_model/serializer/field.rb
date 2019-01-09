@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveModel
   class Serializer
     # Holds all the meta-data about a field (i.e. attribute or association) as it was

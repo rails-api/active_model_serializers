@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SerializationTesting
   def config
     ActiveModelSerializers.config
