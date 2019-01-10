@@ -13,7 +13,8 @@ module ActiveModel
       end
 
       def object
-        @object ||= reflection.value(
+        return @object if defined?(@object)
+        @object = reflection.value(
           association_options.fetch(:parent_serializer),
           association_options.fetch(:include_slice)
         )
