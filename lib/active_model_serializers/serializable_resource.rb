@@ -16,8 +16,8 @@ module ActiveModelSerializers
     # @return the serializable_resource, ready for #as_json/#to_json/#serializable_hash.
     def initialize(resource, options = {})
       @resource = resource
-      @adapter_opts, @serializer_opts =
-        options.partition { |k, _| ADAPTER_OPTION_KEYS.include? k }.map { |h| Hash[h] }
+      @adapter_opts = options.select { |k, _| ADAPTER_OPTION_KEYS.include? k }
+      @serializer_opts = options.reject { |k, _| ADAPTER_OPTION_KEYS.include? k }
     end
 
     def serialization_scope=(scope)
