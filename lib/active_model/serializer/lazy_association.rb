@@ -9,7 +9,7 @@ module ActiveModel
       delegate :collection?, to: :reflection
 
       def reflection_options
-        @reflection_options ||= reflection.options.dup.reject { |k, _| !REFLECTION_OPTIONS.include?(k) }
+        @reflection_options ||= reflection.options.select { |k, _| REFLECTION_OPTIONS.include?(k) }
       end
 
       def object
