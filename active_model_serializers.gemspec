@@ -55,7 +55,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'kaminari', ' ~> 0.16.3'
   spec.add_development_dependency 'will_paginate', '~> 3.0', '>= 3.0.7'
 
-  spec.add_development_dependency 'bundler', '~> 1.6'
+  spec.add_development_dependency 'bundler', ['>= 1.3.0', '< 2.0']
   spec.add_development_dependency 'simplecov', '~> 0.11'
   spec.add_development_dependency 'timecop', '~> 0.7'
   spec.add_development_dependency 'grape', ['>= 0.13', '< 0.19.1']
