@@ -231,7 +231,6 @@ module ActiveModel
       def fetch(adapter_instance, cache_options = serializer_class._cache_options, key = nil)
         if serializer_class.cache_store
           key ||= cache_key(adapter_instance)
-          cache_options = cache_options.merge(version: object_cache_version) if object_cache_version
           serializer_class.cache_store.fetch(key, cache_options) do
             yield
           end
@@ -281,14 +280,12 @@ module ActiveModel
         ActiveSupport::Cache.expand_cache_key(parts)
       end
 
-      def object_cache_version
-        object.cache_version if object.respond_to?(:cache_version)
-      end
-
       # Use object's cache_key if available, else derive a key from the object
       # Pass the `key` option to the `cache` declaration or override this method to customize the cache key
       def object_cache_key
-        if object.respond_to?(:cache_key)
+        if object.respond_to?(:cache_key_with_version)
+          object.cache_key_with_version
+        elsif object.respond_to?(:cache_key)
           object.cache_key
         elsif (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
           object_time_safe = object.updated_at
