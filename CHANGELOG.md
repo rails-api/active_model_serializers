@@ -11,6 +11,7 @@ Fixes:
 - [#2307](https://github.com/rails-api/active_model_serializers/pull/2307) Falsey attribute values should not be reevaluated.
 
 Misc:
+- [#2309](https://github.com/rails-api/active_model_serializers/pull/2309) Performance and memory usage fixes
 
 ### [v0.10.8 (2018-11-01)](https://github.com/rails-api/active_model_serializers/compare/v0.10.7...v0.10.8)
 
