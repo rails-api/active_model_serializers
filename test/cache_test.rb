@@ -188,7 +188,7 @@ module ActiveModelSerializers
       assert_equal [{ name: foo }, { name: foo }, { name: foo2 }], collection_json
 
       bar = 'Bar'
-      author.update_attributes(name: bar)
+      author.update!(name: bar)
 
       collection_json = render_object_with_cache(author_collection, each_serializer: AuthorSerializerWithCache)
       assert_equal [{ name: bar }, { name: bar }, { name: foo2 }], collection_json
