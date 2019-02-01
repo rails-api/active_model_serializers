@@ -173,6 +173,27 @@ module ActiveModelSerializers
       end
     end
 
+    def test_cache_expiration_in_collection_on_update_of_record
+      if ARModels::Author.respond_to?(:cache_versioning)
+        ARModels::Author.cache_versioning = true
+      end
+
+      foo               = 'Foo'
+      foo2              = 'Foo2'
+      author            = ARModels::Author.create(name: foo)
+      author2           = ARModels::Author.create(name: foo2)
+      author_collection = [author, author, author2]
+
+      collection_json = render_object_with_cache(author_collection, each_serializer: AuthorSerializerWithCache)
+      assert_equal [{ name: foo }, { name: foo }, { name: foo2 }], collection_json
+
+      bar = 'Bar'
+      author.update_attributes(name: bar)
+
+      collection_json = render_object_with_cache(author_collection, each_serializer: AuthorSerializerWithCache)
+      assert_equal [{ name: bar }, { name: bar }, { name: foo2 }], collection_json
+    end
+
     def test_explicit_cache_store
       default_store = Class.new(ActiveModel::Serializer) do
         cache
