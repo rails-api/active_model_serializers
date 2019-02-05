@@ -152,7 +152,10 @@ module ActiveModelSerializers
     end
 
     def test_expiring_of_cache_at_update_of_record
+      original_cache_versioning = :none
+
       if ARModels::Author.respond_to?(:cache_versioning)
+        original_cache_versioning = ARModels::Author.cache_versioning
         ARModels::Author.cache_versioning = true
       end
 
@@ -171,10 +174,15 @@ module ActiveModelSerializers
       else
         assert_equal expected, actual
       end
+    ensure
+      ARModels::Author.cache_versioning = original_cache_versioning unless original_cache_versioning == :none
     end
 
     def test_cache_expiration_in_collection_on_update_of_record
+      original_cache_versioning = :none
+
       if ARModels::Author.respond_to?(:cache_versioning)
+        original_cache_versioning = ARModels::Author.cache_versioning
         ARModels::Author.cache_versioning = true
       end
 
@@ -198,6 +206,8 @@ module ActiveModelSerializers
 
       collection_json = render_object_with_cache(author_collection, each_serializer: AuthorSerializerWithCache)
       assert_equal [{ name: bar }, { name: bar }, { name: foo2 }], collection_json
+    ensure
+      ARModels::Author.cache_versioning = original_cache_versioning unless original_cache_versioning == :none
     end
 
     def test_explicit_cache_store
