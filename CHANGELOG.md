@@ -1,17 +1,27 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.8...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.9...0-10-stable)
 
 Breaking changes:
 
 Features:
 
 Fixes:
-  - [#2288](https://github.com/rails-api/active_model_serializers/pull/2288). Fixes #2287. (@cintamani) 
 
+Misc:
+
+### [v0.10.9 (2019-02-08)](https://github.com/rails-api/active_model_serializers/compare/v0.10.8...v0.10.9)
+
+
+Fixes:
+
+- [#2288](https://github.com/rails-api/active_model_serializers/pull/2288)
+  Change the fetch method to deal with recyclable key cache strategy.
+  Fixes #2287. (@cintamani, @wasifhossain)
 - [#2307](https://github.com/rails-api/active_model_serializers/pull/2307) Falsey attribute values should not be reevaluated.
 
 Misc:
+
 - [#2309](https://github.com/rails-api/active_model_serializers/pull/2309) Performance and memory usage fixes
 
 ### [v0.10.8 (2018-11-01)](https://github.com/rails-api/active_model_serializers/compare/v0.10.7...v0.10.8)
