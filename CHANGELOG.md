@@ -7,6 +7,7 @@ Breaking changes:
 Features:
 
 Fixes:
+  - [#2288](https://github.com/rails-api/active_model_serializers/pull/2288). Fixes #2287. (@cintamani) 
 
 - [#2307](https://github.com/rails-api/active_model_serializers/pull/2307) Falsey attribute values should not be reevaluated.
 

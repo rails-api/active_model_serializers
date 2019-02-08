@@ -283,7 +283,9 @@ module ActiveModel
       # Use object's cache_key if available, else derive a key from the object
       # Pass the `key` option to the `cache` declaration or override this method to customize the cache key
       def object_cache_key
-        if object.respond_to?(:cache_key)
+        if object.respond_to?(:cache_key_with_version)
+          object.cache_key_with_version
+        elsif object.respond_to?(:cache_key)
           object.cache_key
         elsif (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
           object_time_safe = object.updated_at
