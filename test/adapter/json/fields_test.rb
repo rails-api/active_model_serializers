@@ -17,7 +17,7 @@ module ActiveModelSerializers
         end
 
         class PostSerializer < ActiveModel::Serializer
-          type 'posts'
+          type 'post'
           attributes :title, :body
           belongs_to :author
           has_many :comments
@@ -28,7 +28,7 @@ module ActiveModelSerializers
         end
 
         class CommentSerializer < ActiveModel::Serializer
-          type 'comments'
+          type 'comment'
           attributes :title, :body
           belongs_to :author
         end
@@ -47,7 +47,7 @@ module ActiveModelSerializers
           fields = [:title]
           hash = serializable(@post, adapter: :json, fields: fields, include: []).serializable_hash
           expected = { title: 'Title 1' }
-          assert_equal(expected, hash[:posts])
+          assert_equal(expected, hash[:post])
         end
 
         def test_fields_included
@@ -55,7 +55,7 @@ module ActiveModelSerializers
           hash = serializable(@post, adapter: :json, include: [:comments], fields: fields).serializable_hash
           expected = [{ body: @comment1.body }, { body: @comment2.body }]
 
-          assert_equal(expected, hash[:posts][:comments])
+          assert_equal(expected, hash[:post][:comments])
         end
       end
     end

@@ -16,6 +16,8 @@ module ActiveModelSerializers
         self.class.transform_key_casing!(serialized_hash, instance_options)
       end
 
+      private
+
       def fields_to_fieldset(fields)
         return fields if fields.nil?
         resource_fields = []
@@ -27,7 +29,7 @@ module ActiveModelSerializers
           else fail ArgumentError, "Unknown conversion of fields to fieldset: '#{field.inspect}' in '#{fields.inspect}'"
           end
         end
-        relationship_fields.merge(serializer.json_key.to_sym => resource_fields)
+        relationship_fields.merge!(serializer.json_key.to_sym => resource_fields)
       end
     end
   end
