@@ -19,28 +19,28 @@ ActiveRecord::Schema.define do
     t.text :contents
     t.references :author
     t.references :post
-    t.timestamp null: false
+    t.timestamps null: false
   end
   create_table :employees, force: true do |t|
     t.string :name
     t.string :email
-    t.timestamp null: false
+    t.timestamps null: false
   end
   create_table :object_tags, force: true do |t|
     t.string :poly_tag_id
     t.string :taggable_type
     t.string :taggable_id
-    t.timestamp null: false
+    t.timestamps null: false
   end
   create_table :poly_tags, force: true do |t|
     t.string :phrase
-    t.timestamp null: false
+    t.timestamps null: false
   end
   create_table :pictures, force: true do |t|
     t.string :title
     t.string :imageable_type
     t.string :imageable_id
-    t.timestamp null: false
+    t.timestamps null: false
   end
 end
 
