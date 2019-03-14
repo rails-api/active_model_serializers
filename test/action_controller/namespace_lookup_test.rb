@@ -125,7 +125,12 @@ module ActionController
       tests Api::V3::LookupTestController
 
       setup do
-        @test_namespace = self.class.parent
+        @test_namespace =
+          if Module.method_defined?(:module_parent)
+            self.class.module_parent
+          else
+            self.class.parent
+          end
       end
 
       test 'uses request headers to determine the namespace' do

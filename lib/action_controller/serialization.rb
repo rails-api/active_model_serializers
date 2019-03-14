@@ -23,7 +23,15 @@ module ActionController
     end
 
     def namespace_for_serializer
-      @namespace_for_serializer ||= self.class.parent unless self.class.parent == Object
+      @namespace_for_serializer ||= namespace_for_class(self.class) unless namespace_for_class(self.class) == Object
+    end
+
+    def namespace_for_class(klass)
+      if Module.method_defined?(:module_parent)
+        klass.module_parent
+      else
+        klass.parent
+      end
     end
 
     def serialization_scope

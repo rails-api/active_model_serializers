@@ -7,6 +7,9 @@ Breaking changes:
 Features:
 
 Fixes:
+- [#2319](https://github.com/rails-api/active_model_serializers/pull/2319) Fixes #2316. (@kylekeesling)
+  - Fix Rails 6.0 deprication warnings
+  - update test fixture schema to use `timestamps` instead of `timestamp`
 
 Misc:
 
