@@ -452,7 +452,7 @@ serializer classes.
 
 ## More Info
 
-For more information, see [the Serializer class on GitHub](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model/serializer.rb)
+For more information, see [the Serializer class on GitHub](https://github.com/rails-api/active_model_serializers/blob/0-10-stable/lib/active_model/serializer.rb)
 
 ## Overriding association methods
 
