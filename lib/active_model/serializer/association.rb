@@ -55,7 +55,25 @@ module ActiveModel
         association_object = association_serializer && association_serializer.object
         return unless association_object
 
-        serialization = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
+        adapter_sub_options = adapter_options.deep_dup
+        fields = adapter_options.fetch(:fields, nil)
+        sub_fields = []
+        if fields.is_a?(Hash)
+          sub_fields = fields.fetch(association_serializer.json_key, nil)
+        else
+          fields.each do |f|
+            sub_fields = f.fetch(association_serializer.json_key, nil) if f.is_a?(Hash)
+            break if sub_fields.present?
+          end unless fields.nil?
+        end
+
+        if sub_fields.present?
+          adapter_sub_options[:fields] = sub_fields.collect { |f| f.to_sym }
+        else
+          adapter_sub_options = {}
+        end
+
+        serialization = association_serializer.serializable_hash(adapter_options, adapter_sub_options, adapter_instance)
 
         if polymorphic? && serialization
           polymorphic_type = association_object.class.name.underscore
