@@ -83,12 +83,16 @@ module ActiveModelSerializers
     #
     #   model.attributes[:foo] = :bar
     # @return [Hash]
-    attr_reader :attributes
+    # reader for @ams_attributes
+    def attributes
+      @ams_attributes
+    end
 
     # @param attributes [Hash]
+    # Head underscore in order not to override @attributes in ActiveModel::Attributes
     def initialize(attributes = {})
       attributes ||= {} # protect against nil
-      @attributes = attributes.symbolize_keys.with_indifferent_access
+      @ams_attributes = attributes.symbolize_keys.with_indifferent_access
       @errors = ActiveModel::Errors.new(self)
       super
     end

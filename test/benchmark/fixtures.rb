@@ -172,10 +172,12 @@ else
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
-    attr_reader :attributes
+    def attributes
+      @ams_attributes
+    end
 
     def initialize(attributes = {})
-      @attributes = attributes
+      @ams_attributes = attributes
       super
     end
 
