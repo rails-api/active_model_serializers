@@ -11,6 +11,7 @@ module ActiveModelSerializers
     class JsonApi
       class PaginationLinksTest < ActiveSupport::TestCase
         URI = 'http://example.com'.freeze
+        RECORDS_PER_PAGE = 2
 
         def setup
           ActionController::Base.cache_store.clear
@@ -21,6 +22,10 @@ module ActiveModelSerializers
             Profile.new(id: 4, name: 'Name 4', description: 'Description 4', comments: 'Comments 4'),
             Profile.new(id: 5, name: 'Name 5', description: 'Description 5', comments: 'Comments 5')
           ]
+        end
+
+        def last_page_number
+          (@array.size / RECORDS_PER_PAGE.to_f).ceil
         end
 
         def mock_request(query_parameters = {}, original_url = URI)
@@ -37,11 +42,11 @@ module ActiveModelSerializers
         end
 
         def using_kaminari(page = 2)
-          Kaminari.paginate_array(@array).page(page).per(2)
+          Kaminari.paginate_array(@array).page(page).per(RECORDS_PER_PAGE)
         end
 
         def using_will_paginate(page = 2)
-          @array.paginate(page: page, per_page: 2)
+          @array.paginate(page: page, per_page: RECORDS_PER_PAGE)
         end
 
         def data
@@ -165,13 +170,13 @@ module ActiveModelSerializers
         end
 
         def test_last_page_pagination_links_using_kaminari
-          adapter = load_adapter(using_kaminari(3), mock_request)
+          adapter = load_adapter(using_kaminari(last_page_number), mock_request)
 
           assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash
         end
 
         def test_last_page_pagination_links_using_will_paginate
-          adapter = load_adapter(using_will_paginate(3), mock_request)
+          adapter = load_adapter(using_will_paginate(last_page_number), mock_request)
 
           assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash
         end
