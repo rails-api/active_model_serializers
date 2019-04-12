@@ -46,9 +46,7 @@ module ActiveModelSerializers
         end
 
         def last_page_url
-          if ActiveModelSerializers.config.jsonapi_omit_total_pages
-            return nil
-          end
+          return nil if ActiveModelSerializers.config.jsonapi_omit_total_pages
 
           if collection.total_pages == 0
             url_for_page(FIRST_PAGE)

@@ -237,12 +237,12 @@ module ActiveModelSerializers
 
           collection = using_kaminari
           def collection.total_pages
-            raise "total_pages was called, but should not have been due to " \
-              "`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`"
+            fail 'total_pages was called, but should not have been due to ' \
+              '`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`'
           end
           adapter = load_adapter(collection, mock_request)
 
-          expected_response = {data: data.values.flatten[2..3]}
+          expected_response = { data: data.values.flatten[2..3] }
           expected_response.merge!(links_without_last_page_link)
 
           assert_equal expected_response, adapter.serializable_hash
@@ -255,12 +255,12 @@ module ActiveModelSerializers
 
           collection = using_kaminari(last_page_number)
           def collection.total_pages
-            raise "total_pages was called, but should not have been due to " \
-              "`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`"
+            fail 'total_pages was called, but should not have been due to ' \
+              '`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`'
           end
           adapter = load_adapter(collection, mock_request)
 
-          expected_response = {data: [data.values.flatten.last]}
+          expected_response = { data: [data.values.flatten.last] }
           expected_response.merge!(last_page_links_without_next_page_link)
 
           assert_equal expected_response, adapter.serializable_hash
