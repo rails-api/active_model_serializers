@@ -95,6 +95,30 @@ module ActiveModelSerializers
           }
         end
 
+        def links_without_last_page_link
+          {
+            links: {
+              self: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+              first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              prev: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              next: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
+              last: nil
+            }
+          }
+        end
+
+        def last_page_links_without_next_page_link
+          {
+            links: {
+              self: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
+              first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              prev: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+              next: nil,
+              last: nil
+            }
+          }
+        end
+
         def expected_response_when_unpaginatable
           data
         end
@@ -206,6 +230,30 @@ module ActiveModelSerializers
           assert_equal expected_response_without_pagination_links, adapter.serializable_hash
         ensure
           ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = true
+        end
+
+        def test_last_link_not_present_when_using_jsonapi_omit_total_pages
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = true
+          adapter = load_adapter(using_kaminari, mock_request)
+
+          expected_response = {data: data.values.flatten[2..3]}
+          expected_response.merge!(links_without_last_page_link)
+
+          assert_equal expected_response, adapter.serializable_hash
+        ensure
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = false
+        end
+
+        def test_next_link_not_present_on_last_page_when_using_jsonapi_omit_total_pages
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = true
+          adapter = load_adapter(using_kaminari(last_page_number), mock_request)
+
+          expected_response = {data: [data.values.flatten.last]}
+          expected_response.merge!(last_page_links_without_next_page_link)
+
+          assert_equal expected_response, adapter.serializable_hash
+        ensure
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = false
         end
       end
     end
