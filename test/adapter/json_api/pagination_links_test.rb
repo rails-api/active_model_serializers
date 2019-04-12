@@ -234,7 +234,13 @@ module ActiveModelSerializers
 
         def test_last_link_not_present_when_using_jsonapi_omit_total_pages
           ActiveModel::Serializer.config.jsonapi_omit_total_pages = true
-          adapter = load_adapter(using_kaminari, mock_request)
+
+          collection = using_kaminari
+          def collection.total_pages
+            raise "total_pages was called, but should not have been due to " \
+              "`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`"
+          end
+          adapter = load_adapter(collection, mock_request)
 
           expected_response = {data: data.values.flatten[2..3]}
           expected_response.merge!(links_without_last_page_link)
@@ -246,7 +252,13 @@ module ActiveModelSerializers
 
         def test_next_link_not_present_on_last_page_when_using_jsonapi_omit_total_pages
           ActiveModel::Serializer.config.jsonapi_omit_total_pages = true
-          adapter = load_adapter(using_kaminari(last_page_number), mock_request)
+
+          collection = using_kaminari(last_page_number)
+          def collection.total_pages
+            raise "total_pages was called, but should not have been due to " \
+              "`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`"
+          end
+          adapter = load_adapter(collection, mock_request)
 
           expected_response = {data: [data.values.flatten.last]}
           expected_response.merge!(last_page_links_without_next_page_link)
