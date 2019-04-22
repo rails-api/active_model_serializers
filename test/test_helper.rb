@@ -56,6 +56,8 @@ end
 
 require 'support/rails_app'
 
+require 'support/ruby_2_6_rails_4_2_patch'
+
 # require "rails/test_help"
 
 require 'support/serialization_testing'
