@@ -53,7 +53,7 @@ group :bench do
 end
 
 group :test do
-  platforms *(@windows_platforms + [:ruby]) do
+  platforms(*(@windows_platforms + [:ruby])) do
     if version == 'master' || version >= '6'
       gem 'sqlite3', '~> 1.4'
     else
@@ -71,7 +71,7 @@ group :test do
   gem 'm', '~> 1.5'
   gem 'pry', '>= 0.10'
   gem 'byebug', '~> 8.2' if RUBY_VERSION < '2.2'
-  gem 'pry-byebug', platform: :ruby
+  gem 'pry-byebug', platforms: :ruby
 end
 
 group :development, :test do
