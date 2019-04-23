@@ -13,6 +13,12 @@ if RUBY_VERSION >= '2.6.0'
       end
     end
   else
-    puts 'Monkeypatch for ActionController::TestResponse no longer needed'
+    msg = 'Monkeypatch for ActionController::TestResponse not needed for '\
+      'Rails 5+. We can drop this patch once we drop support for Rails < 5. '\
+      "Current Rails version: #{ENV['RAILS_VERSION']}"
+
+    puts
+    puts "\033[33m **** #{msg} **** \033[0m"
+    puts
   end
 end

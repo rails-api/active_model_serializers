@@ -365,6 +365,9 @@ module ActiveModel
     def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
       adapter_options ||= {}
       options[:include_directive] ||= ActiveModel::Serializer.include_directive_from_options(adapter_options)
+      if (fieldset = adapter_options[:fieldset])
+        options[:fields] = fieldset.fields_for(json_key)
+      end
       resource = attributes_hash(adapter_options, options, adapter_instance)
       relationships = associations_hash(adapter_options, options, adapter_instance)
       resource.merge(relationships)
@@ -379,7 +382,12 @@ module ActiveModel
 
     # Used by adapter as resource root.
     def json_key
-      root || _type || object.class.model_name.to_s.underscore
+      root || _type ||
+        begin
+          object.class.model_name.to_s.underscore
+        rescue ArgumentError
+          'anonymous_object'
+        end
     end
 
     def read_attribute_for_serialization(attr)
