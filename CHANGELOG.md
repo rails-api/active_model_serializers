@@ -7,6 +7,7 @@ Breaking changes:
 Features:
 
 - [#2327](https://github.com/rails-api/active_model_serializers/pull/2327) Add support for Ruby 2.6 on Travis CI (@wasifhossain)
+- [#2304](https://github.com/rails-api/active_model_serializers/pull/2304) Slim down bundled gem by excluding test files and docs (@greysteil)
 
 Fixes:
 
