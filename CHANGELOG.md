@@ -6,10 +6,14 @@ Breaking changes:
 
 Features:
 
+- [#2327](https://github.com/rails-api/active_model_serializers/pull/2327) Add support for Ruby 2.6 on Travis CI (@wasifhossain)
+
 Fixes:
+
 - [#2319](https://github.com/rails-api/active_model_serializers/pull/2319) Fixes #2316. (@kylekeesling)
-  - Fix Rails 6.0 deprication warnings
-  - update test fixture schema to use `timestamps` instead of `timestamp`
+    - Fix Rails 6.0 deprication warnings
+    - update test fixture schema to use `timestamps` instead of `timestamp`
+- [#2223](https://github.com/rails-api/active_model_serializers/pull/2223) Support Fieldset in Attributes/JSON adapters documented in [docs/general/fields.md](https://github.com/rails-api/active_model_serializers/blob/0-10-stable/docs/general/fields.md) that worked partially before (@bf4)
 
 Misc:
 
