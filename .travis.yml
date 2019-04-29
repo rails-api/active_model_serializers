@@ -24,7 +24,7 @@ cache:
     - vendor/bundle
 
 before_install:
-  - "travis_retry gem update --system 3.0.3"
+  - "travis_retry gem update --system 2.7.9"
   - "travis_retry gem install bundler -v '1.17.3'"
 install: BUNDLER_VERSION=1.17.3 bundle install --path=vendor/bundle --retry=3 --jobs=3
 
