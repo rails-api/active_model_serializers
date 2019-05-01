@@ -15,6 +15,7 @@ Fixes:
     - Fix Rails 6.0 deprication warnings
     - update test fixture schema to use `timestamps` instead of `timestamp`
 - [#2223](https://github.com/rails-api/active_model_serializers/pull/2223) Support Fieldset in Attributes/JSON adapters documented in [docs/general/fields.md](https://github.com/rails-api/active_model_serializers/blob/0-10-stable/docs/general/fields.md) that worked partially before (@bf4)
+- [#2329](https://github.com/rails-api/active_model_serializers/pull/2329) Prevent undefined method for Array:Class error
 
 Misc:
 
