@@ -164,7 +164,7 @@ module ActiveModelSerializers
 
       assert_equal 'Foo', author_json[:name]
 
-      author.update_attributes(name: 'Bar')
+      author.update(name: 'Bar')
       author_json = AuthorSerializerWithCache.new(author).as_json
 
       expected = 'Bar'
@@ -202,10 +202,12 @@ module ActiveModelSerializers
       end
 
       bar = 'Bar'
-      author.update!(name: bar)
+      Timecop.travel(10.seconds.from_now) do
+        author.update!(name: bar)
 
-      collection_json = render_object_with_cache(author_collection, each_serializer: AuthorSerializerWithCache)
-      assert_equal [{ name: bar }, { name: bar }, { name: foo2 }], collection_json
+        collection_json = render_object_with_cache(author_collection, each_serializer: AuthorSerializerWithCache)
+        assert_equal [{ name: bar }, { name: bar }, { name: foo2 }], collection_json
+      end
     ensure
       ARModels::Author.cache_versioning = original_cache_versioning unless original_cache_versioning == :none
     end
