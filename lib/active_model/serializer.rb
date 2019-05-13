@@ -384,7 +384,11 @@ module ActiveModel
     def json_key
       root || _type ||
         begin
-          object.class.model_name.to_s.underscore
+          if object.respond_to?(:model_name)
+            object.model_name
+          else
+            object.class.model_name
+          end.to_s.underscore
         rescue ArgumentError
           'anonymous_object'
         end
