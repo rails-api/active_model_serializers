@@ -98,6 +98,23 @@ module ActiveModel
         assert_equal(expected, hash)
       end
 
+      class EmptyPost < ::Model; end
+      class EmptyPostSerializer < ActiveModel::Serializer
+        attributes :root
+
+        def root
+          true
+        end
+      end
+
+      def test_serializer_with_attribute_name_root
+        post = EmptyPost.new
+        hash = serializable(post).serializable_hash
+        expected = { root: true }
+
+        assert_equal(expected, hash)
+      end
+
       # rubocop:disable Metrics/AbcSize
       def test_conditional_associations
         model = Class.new(::Model) do
