@@ -311,6 +311,7 @@ module ActiveModel
     # END SERIALIZER MACROS
 
     attr_accessor :object, :root, :scope
+    alias _root root # @api private
 
     # `scope_name` is set as :current_user by default in the controller.
     # If the instance does not have a method named `scope_name`, it
@@ -382,7 +383,7 @@ module ActiveModel
 
     # Used by adapter as resource root.
     def json_key
-      root || _type ||
+      _root || _type ||
         begin
           object.class.model_name.to_s.underscore
         rescue ArgumentError
