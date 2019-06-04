@@ -35,6 +35,20 @@ module ActiveModelSerializers
           assert_equal(expected, actual)
         end
 
+        def test_relationship_with_nil_model_and_belongs_to_id_on_self
+          ActiveModelSerializers.config.jsonapi_use_foreign_key_on_belongs_to_relationship = true
+
+          expected = { data: nil }
+
+          model_attributes = { blog: nil }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            belongs_to :blog
+          end
+          assert_equal(expected, actual)
+        end
+
         def test_relationship_with_data_array
           expected = {
             data: [
