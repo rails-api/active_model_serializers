@@ -147,8 +147,7 @@ module ActiveModelSerializers
         def test_for_type_with_id_given_blank_id
           id = ''
           actual = ResourceIdentifier.for_type_with_id('admin_user', id, {})
-          expected = { type: 'admin-users' }
-          assert_equal actual, expected
+          assert_nil actual
         end
 
         def test_for_type_with_id_inflected

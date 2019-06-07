@@ -55,7 +55,6 @@ module ActiveModelSerializers
               else
                 association.reflection.type.to_s
               end
-            # TODO: probably return nil if association.object is nil?
             ResourceIdentifier.for_type_with_id(type, id, serializable_resource_options)
           else
             # TODO(BF): Process relationship without evaluating lazy_association
