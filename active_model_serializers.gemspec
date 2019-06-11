@@ -42,7 +42,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'minitest', ['~> 5.0', '< 5.11']
   # 'thread_safe'
 
-  spec.add_runtime_dependency 'jsonapi-renderer', ['>= 0.1.1.beta1', '< 0.3']
+  # this is locked to < 0.2.1 untill `jsonapi-rb/jsonapi-renderer#38` gets merged and released
+  spec.add_runtime_dependency 'jsonapi-renderer', ['>= 0.1.1.beta1', '< 0.2.1']
   spec.add_runtime_dependency 'case_transform', '>= 0.2'
 
   spec.add_development_dependency 'activerecord', rails_versions
