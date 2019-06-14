@@ -82,7 +82,7 @@ module ActionController
 
           def render_collection_with_include
             setup_post
-            render json: [@post], adapter: :json_api, include: 'author, comments'
+            render json: [@post], adapter: :json_api, include: 'author,comments'
           end
         end
 
