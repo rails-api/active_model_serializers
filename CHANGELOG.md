@@ -15,6 +15,8 @@ Fixes:
     - Fix Rails 6.0 deprication warnings
     - update test fixture schema to use `timestamps` instead of `timestamp`
 - [#2223](https://github.com/rails-api/active_model_serializers/pull/2223) Support Fieldset in Attributes/JSON adapters documented in [docs/general/fields.md](https://github.com/rails-api/active_model_serializers/blob/0-10-stable/docs/general/fields.md) that worked partially before (@bf4)
+- [#2337](https://github.com/rails-api/active_model_serializers/pull/2337) fix incorrect belongs_to serialization when foreign_key on object and belongs_to is blank (@InteNs)
+    - Fixes incorrect json-api generation when `jsonapi_use_foreign_key_on_belongs_to_relationship` is `true` and the relationship is blank
 
 Misc:
 
