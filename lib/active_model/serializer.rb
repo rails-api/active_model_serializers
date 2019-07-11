@@ -94,7 +94,7 @@ module ActiveModel
         if serializer_class
           serializer_class
         elsif klass.superclass
-          get_serializer_for(klass.superclass)
+          get_serializer_for(klass.superclass, namespace)
         else
           nil # No serializer found
         end
