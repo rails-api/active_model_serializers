@@ -1,13 +1,16 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.9...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.10...0-10-stable)
 
 Breaking changes:
 
 Features:
 
-- [#2327](https://github.com/rails-api/active_model_serializers/pull/2327) Add support for Ruby 2.6 on Travis CI (@wasifhossain)
-- [#2304](https://github.com/rails-api/active_model_serializers/pull/2304) Slim down bundled gem by excluding test files and docs (@greysteil)
+Fixes:
+
+Misc:
+
+### [v0.10.10 (2019-07-13)](https://github.com/rails-api/active_model_serializers/compare/v0.10.9...v0.10.10)
 
 Fixes:
 
@@ -21,8 +24,10 @@ Fixes:
 
 Misc:
 
-### [v0.10.9 (2019-02-08)](https://github.com/rails-api/active_model_serializers/compare/v0.10.8...v0.10.9)
+- [#2327](https://github.com/rails-api/active_model_serializers/pull/2327) Add support for Ruby 2.6 on Travis CI (@wasifhossain)
+- [#2304](https://github.com/rails-api/active_model_serializers/pull/2304) Slim down bundled gem by excluding test files and docs (@greysteil)
 
+### [v0.10.9 (2019-02-08)](https://github.com/rails-api/active_model_serializers/compare/v0.10.8...v0.10.9)
 
 Fixes:
 
