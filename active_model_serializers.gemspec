@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/rails-api/active_model_serializers'
   spec.license       = 'MIT'
 
-  spec.files         = Dir["CHANGELOG.md", "MIT-LICENSE", "README.md", "lib/**/*"]
+  spec.files         = Dir['CHANGELOG.md', 'MIT-LICENSE', 'README.md', 'lib/**/*']
   spec.require_paths = ['lib']
   spec.executables   = []
 
