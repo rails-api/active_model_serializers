@@ -4,8 +4,8 @@
   <tr>
     <td>Build Status</td>
     <td>
-      <a href="https://travis-ci.org/rails-api/active_model_serializers"><img src="https://travis-ci.org/rails-api/active_model_serializers.svg?branch=master" alt="Build Status" ></a>
-      <a href="https://ci.appveyor.com/project/joaomdmoura/active-model-serializers/branch/master"><img src="https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true" alt="Build status"></a>
+      <a href="https://travis-ci.org/rails-api/active_model_serializers"><img src="https://api.travis-ci.org/rails-api/active_model_serializers.svg?branch=0-10-stable" alt="Build Status" ></a>
+      <a href="https://ci.appveyor.com/project/bf4/active-model-serializers/branch/0-10-stable"><img src="https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true" alt="Build status"></a>
     </td>
   </tr>
   <tr>
@@ -41,7 +41,7 @@ these methods to the adapter.)
 
 By default ActiveModelSerializers will use the **Attributes Adapter** (no JSON root).
 But we strongly advise you to use **JsonApi Adapter**, which
-follows 1.0 of the format specified in [jsonapi.org/format](http://jsonapi.org/format).
+follows 1.0 of the format specified in [jsonapi.org/format](https://jsonapi.org/format).
 Check how to change the adapter in the sections below.
 
 `0.10.x` is **not** backward compatible with `0.9.x` nor `0.8.x`.
@@ -75,9 +75,9 @@ More information is available in the [Guides](docs) and
 If you find a bug, please report an [Issue](https://github.com/rails-api/active_model_serializers/issues/new)
 and see our [contributing guide](CONTRIBUTING.md).
 
-If you have a question, please [post to Stack Overflow](http://stackoverflow.com/questions/tagged/active-model-serializers).
+If you have a question, please [post to Stack Overflow](https://stackoverflow.com/questions/tagged/active-model-serializers).
 
-If you'd like to chat, we have a [community slack](http://amserializers.herokuapp.com).
+If you'd like to chat, we have a [community slack](https://amserializers.herokuapp.com).
 
 Thanks!
 
@@ -87,14 +87,14 @@ If you're reading this at https://github.com/rails-api/active_model_serializers 
 reading documentation for our `master`, which may include features that have not
 been released yet. Please see below for the documentation relevant to you.
 
-- [0.10 (master) Documentation](https://github.com/rails-api/active_model_serializers/tree/master)
-- [0.10.6 (latest release) Documentation](https://github.com/rails-api/active_model_serializers/tree/v0.10.6)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/active_model_serializers/0.10.6)
-  - [Guides](docs)
+- [0.10 (0-10-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-10-stable)
+- [0.10.10 (latest release) Documentation](https://github.com/rails-api/active_model_serializers/tree/v0.10.10)
+    - [![API Docs](https://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/gems/active_model_serializers/0.10.10)
+    - [Guides](docs)
 - [0.9 (0-9-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-9-stable)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-9-stable)
+    - [![API Docs](https://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/gems/active_model_serializers/0.9.7)
 - [0.8 (0-8-stable) Documentation](https://github.com/rails-api/active_model_serializers/tree/0-8-stable)
-  - [![API Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/github/rails-api/active_model_serializers/0-8-stable)
+    - [![API Docs](https://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/gems/active_model_serializers/0.8.4)
 
 
 ## High-level behavior
@@ -171,12 +171,12 @@ The original design is also available [here](https://github.com/rails-api/active
 
 ### ActiveModel::Serializer
 
-An **`ActiveModel::Serializer`** wraps a [serializable resource](https://github.com/rails/rails/blob/4-2-stable/activemodel/lib/active_model/serialization.rb)
+An **`ActiveModel::Serializer`** wraps a [serializable resource](https://github.com/rails/rails/blob/master/activemodel/lib/active_model/serialization.rb)
 and exposes an `attributes` method, among a few others.
 It allows you to specify which attributes and associations should be represented in the serializatation of the resource.
 It requires an adapter to transform its attributes into a JSON document; it cannot be serialized itself.
 It may be useful to think of it as a
-[presenter](http://blog.steveklabnik.com/posts/2011-09-09-better-ruby-presenters).
+[presenter](https://blog.steveklabnik.com/posts/2011-09-09-better-ruby-presenters).
 
 #### ActiveModel::CollectionSerializer
 
@@ -188,7 +188,7 @@ and, if there is no serializer, primitives.
 The **`ActiveModelSerializers::Adapter::Base`** describes the structure of the JSON document generated from a
 serializer. For example, the `Attributes` example represents each serializer as its
 unmodified attributes.  The `JsonApi` adapter represents the serializer as a [JSON
-API](http://jsonapi.org/) document.
+API](https://jsonapi.org/) document.
 
 ### ActiveModelSerializers::SerializableResource
 
@@ -229,7 +229,7 @@ High-level overview:
   - `:each_serializer` specifies the serializer for each resource in the collection.
 - For a **single resource**, the `:serializer` option is the resource serializer.
 - Options are partitioned in serializer options and adapter options.  Keys for adapter options are specified by
-    [`ADAPTER_OPTION_KEYS`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/serializable_resource.rb#L5).
+    [`ADAPTER_OPTION_KEYS`](lib/active_model_serializers/serializable_resource.rb#L5).
     The remaining options are serializer options.
 
 Details:
@@ -254,7 +254,7 @@ Details:
     2. `adapter_instance = ActiveModel::Serializer::Adapter.create(serializer_instance, adapter_opts)`
 1. **ActiveModel::Serializer::CollectionSerializer#new**
   1. If the `serializer_instance` was a `CollectionSerializer` and the `:serializer` serializer_opts
-    is present, then [that serializer is passed into each resource](https://github.com/rails-api/active_model_serializers/blob/a54d237e2828fe6bab1ea5dfe6360d4ecc8214cd/lib/active_model/serializer/array_serializer.rb#L14-L16).
+    is present, then [that serializer is passed into each resource](https://github.com/rails-api/active_model_serializers/blob/0-10-stable/lib/active_model/serializer/collection_serializer.rb#L77-L79).
 1. **ActiveModel::Serializer#attributes** is used by the adapter to get the attributes for
   resource as defined by the serializer.
 
@@ -270,7 +270,7 @@ to know about, but not part of ActiveModelSerializers.)
   [(code)](lib/active_model/serializer/lint.rb).
 
 ActiveModelSerializers provides a
-[`ActiveModelSerializers::Model`](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/model.rb),
+[`ActiveModelSerializers::Model`](lib/active_model_serializers/model.rb),
 which is a simple serializable PORO (Plain-Old Ruby Object).
 
 `ActiveModelSerializers::Model` may be used either as a reference implementation, or in production code.
@@ -298,7 +298,7 @@ ActiveModelSerializers::SerializableResource.new(MyModel.new(level: 'awesome'), 
 
 ## Semantic Versioning
 
-This project adheres to [semver](http://semver.org/)
+This project adheres to [semver](https://semver.org/)
 
 ## Contributing
 

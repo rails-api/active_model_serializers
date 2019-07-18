@@ -8,6 +8,8 @@ Features:
 
 Fixes:
 
+- [#2344](https://github.com/rails-api/active_model_serializers/pull/2344) Fixes #2341 introduced since #2223 (@wasifhossain)
+
 Misc:
 
 ### [v0.10.10 (2019-07-13)](https://github.com/rails-api/active_model_serializers/compare/v0.10.9...v0.10.10)
