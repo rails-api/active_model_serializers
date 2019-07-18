@@ -5,7 +5,7 @@ require 'active_model/serializer/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'active_model_serializers'
-  spec.version       = ActiveModel::Serializer::VERSION
+  spec.version       = '0.10.6'
   spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Steve Klabnik']
   spec.email         = ['steve@steveklabnik.com']
