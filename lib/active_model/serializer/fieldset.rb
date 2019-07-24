@@ -12,7 +12,7 @@ module ActiveModel
       end
 
       def fields_for(type)
-        fields[type.singularize.to_sym] || fields[type.pluralize.to_sym]
+        fields[type.to_s.singularize.to_sym] || fields[type.to_s.pluralize.to_sym]
       end
 
       protected
