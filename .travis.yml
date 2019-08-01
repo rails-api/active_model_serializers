@@ -16,7 +16,7 @@ rails_supported_versions:
   - &rails_5_0 RAILS_VERSION=5.0
   - &rails_5_1 RAILS_VERSION=5.1
   - &rails_5_2 RAILS_VERSION=5.2
-  - &rails_6_0_0_rc1 RAILS_VERSION=6.0.0.rc1
+  - &rails_6_0 RAILS_VERSION=6.0.0.rc2
   - &rails_master RAILS_VERSION=master
 
 cache:
@@ -40,7 +40,7 @@ env:
     - *rails_5_0
     - *rails_5_1
     - *rails_5_2
-    - *rails_6_0_0_rc1
+    - *rails_6_0
     - *rails_master
 
 rvm:
@@ -68,10 +68,10 @@ matrix:
     - { rvm: *ruby_2_1,  env: *rails_5_1 }
     - { rvm: *ruby_2_1,  env: *rails_5_2 }
 
-    - { rvm: *ruby_2_1,  env: *rails_6_0_0_rc1 }
-    - { rvm: *ruby_2_2,  env: *rails_6_0_0_rc1 }
-    - { rvm: *ruby_2_3,  env: *rails_6_0_0_rc1 }
-    - { rvm: *ruby_2_4,  env: *rails_6_0_0_rc1 }
+    - { rvm: *ruby_2_1,  env: *rails_6_0 }
+    - { rvm: *ruby_2_2,  env: *rails_6_0 }
+    - { rvm: *ruby_2_3,  env: *rails_6_0 }
+    - { rvm: *ruby_2_4,  env: *rails_6_0 }
 
     - { rvm: *ruby_2_1,  env: *rails_master }
     - { rvm: *ruby_2_2,  env: *rails_master }
@@ -95,7 +95,7 @@ matrix:
     # - { rvm: *ruby_head, env: *rails_5_0 }
     # - { rvm: *ruby_head, env: *rails_5_1 }
     # - { rvm: *ruby_head, env: *rails_5_2 }
-    # - { rvm: *ruby_head, env: *rails_6_0_0_rc1 }
+    # - { rvm: *ruby_head, env: *rails_6_0 }
     # - { rvm: *ruby_head, env: *rails_master }
 
     - rvm: jruby-head
