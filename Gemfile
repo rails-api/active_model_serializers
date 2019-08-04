@@ -61,8 +61,14 @@ group :test do
     end
   end
   platforms :jruby do
-    if version == 'master' || version >= '5'
-      gem 'activerecord-jdbcsqlite3-adapter', '~> 50'
+    if version == 'master' || version >= '6.0'
+      gem 'activerecord-jdbcsqlite3-adapter', github: 'jruby/activerecord-jdbc-adapter'
+    elsif version == '5.2'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 52.0'
+    elsif version == '5.1'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 51.0'
+    elsif version == '5.0'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 50.0'
     else
       gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.0'
     end
