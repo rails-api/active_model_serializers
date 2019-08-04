@@ -93,6 +93,11 @@ matrix:
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_master_jruby }
 
   exclude:
+    - { rvm: *ruby_2_4,  env: *rails_4_1 }
+    - { rvm: *ruby_2_5,  env: *rails_4_1 }
+    - { rvm: *ruby_2_6,  env: *rails_4_1 }
+    - { rvm: *ruby_head, env: *rails_4_1 }
+
     - { rvm: *ruby_2_1,  env: *rails_5_0 }
     - { rvm: *ruby_2_1,  env: *rails_5_1 }
     - { rvm: *ruby_2_1,  env: *rails_5_2 }
@@ -108,10 +113,6 @@ matrix:
     - { rvm: *ruby_2_4,  env: *rails_master }
 
   allow_failures:
-    - { rvm: *ruby_2_4,  env: *rails_4_1 }
-    - { rvm: *ruby_2_5,  env: *rails_4_1 }
-    - { rvm: *ruby_2_6,  env: *rails_4_1 }
-
     - { rvm: *ruby_2_5,  env: *rails_master }
     - { rvm: *ruby_2_6,  env: *rails_master }
 
