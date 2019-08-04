@@ -10,6 +10,14 @@ ruby_supported_versions:
   - &ruby_2_6 2.6.3
   - &ruby_head ruby-head
 
+jruby_supported_versions:
+  - &jruby_9_1 jruby-9.1.17.0
+  - &jruby_9_2 jruby-9.2.7.0
+  - &jruby_head jruby-head
+
+jdk_supported_versions:
+  - &jdk_8 openjdk8
+
 rails_supported_versions:
   - &rails_4_1 RAILS_VERSION=4.1
   - &rails_4_2 RAILS_VERSION=4.2
@@ -57,12 +65,25 @@ branches:
 
 matrix:
   include:
-    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
-    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
-    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
-    # See JRuby currently failing on Rails 5+ https://github.com/jruby/activerecord-jdbc-adapter/issues/708
-    # - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
-    # - { rvm: jruby-head,     jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_1,  jdk: *jdk_8, env: "RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_1,  jdk: *jdk_8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_1,  jdk: *jdk_8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_1,  jdk: *jdk_8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_1,  jdk: *jdk_8, env: "RAILS_VERSION=5.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+
+    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: "RAILS_VERSION=5.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: "RAILS_VERSION=6.0.0.rc2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: "RAILS_VERSION=master JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+
+    - { rvm: *jruby_head, jdk: *jdk_8, env: "RAILS_VERSION=4.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_head, jdk: *jdk_8, env: "RAILS_VERSION=5.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_head, jdk: *jdk_8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_head, jdk: *jdk_8, env: "RAILS_VERSION=5.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_head, jdk: *jdk_8, env: "RAILS_VERSION=6.0.0.rc2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - { rvm: *jruby_head, jdk: *jdk_8, env: "RAILS_VERSION=master JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
   exclude:
     - { rvm: *ruby_2_1,  env: *rails_5_0 }
     - { rvm: *ruby_2_1,  env: *rails_5_1 }
@@ -98,7 +119,7 @@ matrix:
     # - { rvm: *ruby_head, env: *rails_6_0 }
     # - { rvm: *ruby_head, env: *rails_master }
 
-    - rvm: jruby-head
-    # See JRuby currently failing on Rails 5+ https://github.com/jruby/activerecord-jdbc-adapter/issues/708
-    - { rvm: jruby-9.1.13.0, jdk: oraclejdk8, env: "RAILS_VERSION=5.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'" }
+    - rvm: *jruby_9_1
+    - rvm: *jruby_9_2
+    - rvm: *jruby_head
   fast_finish: true
