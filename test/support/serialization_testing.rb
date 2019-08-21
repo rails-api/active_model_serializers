@@ -20,11 +20,11 @@ module SerializationTesting
   end
 
   def with_prepended_lookup(lookup_proc)
-    original_lookup = ActiveModelSerializers.config.serializer_lookup_cahin
+    original_lookup = ActiveModelSerializers.config.serializer_lookup_chain
     ActiveModelSerializers.config.serializer_lookup_chain.unshift lookup_proc
     yield
   ensure
-    ActiveModelSerializers.config.serializer_lookup_cahin = original_lookup
+    ActiveModelSerializers.config.serializer_lookup_chain = original_lookup
   end
 
   # Aliased as :with_configured_adapter to clarify that
