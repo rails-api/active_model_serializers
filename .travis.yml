@@ -12,7 +12,7 @@ ruby_supported_versions:
 
 jruby_supported_versions:
   - &jruby_9_1 jruby-9.1.17.0
-  - &jruby_9_2 jruby-9.2.7.0
+  - &jruby_9_2 jruby-9.2.8.0
   - &jruby_head jruby-head
 
 jdk_supported_versions:
