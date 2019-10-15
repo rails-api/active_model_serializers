@@ -447,13 +447,13 @@ module ActiveModelSerializers
 
     def test_uses_file_digest_in_cache_key
       render_object_with_cache(@blog)
-      file_digest = Digest::MD5.hexdigest(File.open(__FILE__).read)
+      file_digest = Digest::SHA1.hexdigest(File.open(__FILE__).read)
       key = "#{@blog.cache_key}/#{adapter.cache_key}/#{file_digest}"
       assert_equal(@blog_serializer.attributes, cache_store.fetch(key))
     end
 
     def test_cache_digest_definition
-      file_digest = Digest::MD5.hexdigest(File.open(__FILE__).read)
+      file_digest = Digest::SHA1.hexdigest(File.open(__FILE__).read)
       assert_equal(file_digest, @post_serializer.class._cache_digest)
     end
 
@@ -560,7 +560,7 @@ module ActiveModelSerializers
       path = file.path
       caller_line = "#{path}:1:in `<top (required)>'"
       file.close
-      assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::MD5.hexdigest(contents)
+      assert_equal ActiveModel::Serializer.digest_caller_file(caller_line), Digest::SHA1.hexdigest(contents)
     ensure
       file.unlink
       FileUtils.remove_entry dir
