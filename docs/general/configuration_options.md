@@ -111,6 +111,18 @@ ActiveModelSerializers.config.serializer_lookup_chain.unshift(
 
 See [lookup_chain.rb](https://github.com/rails-api/active_model_serializers/blob/master/lib/active_model_serializers/lookup_chain.rb) for further explanations and examples.
 
+#### use_sha1_digests
+
+Determines which hashing algorithm to use internally when caching serializers.
+
+Possible values:
+
+- `true`
+- `false` (default)
+
+When `true`, ActiveModelSerializers will use SHA1. Otherwise, it will default to using MD5.
+Be warned that changing this value may result in serializer caches being invalidated.
+
 ## JSON API
 
 ##### jsonapi_resource_type
