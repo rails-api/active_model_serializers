@@ -52,7 +52,7 @@ module ActiveModelSerializers
 
       def initialize(serializer, options = {})
         super
-        @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
+        @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: ActiveModelSerializers.config.allow_wildcard)
         @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
       end
 
@@ -452,7 +452,7 @@ module ActiveModelSerializers
       def relationships_for(serializer, requested_associations, include_slice)
         include_directive = JSONAPI::IncludeDirective.new(
           requested_associations,
-          allow_wildcard: true
+          allow_wildcard: ActiveModelSerializers.config.allow_wildcard
         )
         serializer.associations(include_directive, include_slice).each_with_object({}) do |association, hash|
           hash[association.key] = Relationship.new(serializer, instance_options, association).as_json

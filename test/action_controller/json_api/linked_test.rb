@@ -150,6 +150,23 @@ module ActionController
           assert_equal expected_linked, response['included']
         end
 
+        def test_render_resource_with_nested_has_many_include_with_wildcards_disabled
+          ActiveModel::Serializer.config.allow_wildcard = false
+          get '/render_resource_with_nested_has_many_include_wildcard'
+          ActiveModel::Serializer.config.allow_wildcard = true
+          response = JSON.parse(@response.body)
+          expected_linked = [
+            {
+              'id' => '1',
+              'type' => 'authors',
+              'attributes' => {
+                'name' => 'Steve K.'
+              }
+            }
+          ]
+          assert_equal expected_linked, response['included']
+        end
+
         def test_render_resource_with_include_of_custom_key_by_original
           get '/render_resource_with_include_of_custom_key_by_original'
           response = JSON.parse(@response.body)

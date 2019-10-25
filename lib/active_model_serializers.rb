@@ -40,7 +40,7 @@ module ActiveModelSerializers
   # Memoized default include directive
   # @return [JSONAPI::IncludeDirective]
   def self.default_include_directive
-    @default_include_directive ||= JSONAPI::IncludeDirective.new(config.default_includes, allow_wildcard: true)
+    @default_include_directive ||= JSONAPI::IncludeDirective.new(config.default_includes, allow_wildcard: config.allow_wildcard)
   end
 
   def self.silence_warnings

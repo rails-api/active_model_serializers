@@ -62,6 +62,18 @@ What relationships to serialize by default.  Default: `'*'`, which includes one 
 objects. See [includes](adapters.md#included) for more info.
 
 
+##### allow_wildcard
+
+Enable wildcard `include` directives (`*`, `**`).
+
+Possible values:
+
+- `true` (default)
+- `false`
+
+When `false`, nested associations to be included must be explicitly specified. Note: this will override default_includes configuration as `*` include will no longer be accepted.
+
+
 ##### serializer_lookup_chain
 
 Configures how serializers are searched for. By default, the lookup chain is

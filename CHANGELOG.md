@@ -6,6 +6,8 @@ Breaking changes:
 
 Features:
 
+- [#2362](https://github.com/rails-api/active_model_serializers/pull/2362) Add `allow_wildcard` configuration option (@Borzik)
+
 Fixes:
 
 - [#2344](https://github.com/rails-api/active_model_serializers/pull/2344) Fixes #2341 introduced since #2223 (@wasifhossain)
