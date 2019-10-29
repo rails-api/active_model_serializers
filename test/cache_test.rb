@@ -446,15 +446,39 @@ module ActiveModelSerializers
     # rubocop:enable Metrics/AbcSize
 
     def test_uses_file_digest_in_cache_key
+      reset_cache_digest(@blog_serializer)
       render_object_with_cache(@blog)
       file_digest = Digest::MD5.hexdigest(File.open(__FILE__).read)
       key = "#{@blog.cache_key}/#{adapter.cache_key}/#{file_digest}"
       assert_equal(@blog_serializer.attributes, cache_store.fetch(key))
     end
 
+    def test_uses_sha1_digest_in_cache_key_when_configured
+      reset_cache_digest(@blog_serializer)
+      previous_use_sha1_digests = ActiveModelSerializers.config.use_sha1_digests
+      ActiveModelSerializers.config.use_sha1_digests = true
+      render_object_with_cache(@blog)
+      file_digest = Digest::SHA1.hexdigest(File.open(__FILE__).read)
+      key = "#{@blog.cache_key}/#{adapter.cache_key}/#{file_digest}"
+      assert_equal(@blog_serializer.attributes, cache_store.fetch(key))
+    ensure
+      ActiveModelSerializers.config.use_sha1_digests = previous_use_sha1_digests
+    end
+
     def test_cache_digest_definition
+      reset_cache_digest(@post_serializer)
       file_digest = Digest::MD5.hexdigest(File.open(__FILE__).read)
       assert_equal(file_digest, @post_serializer.class._cache_digest)
+    end
+
+    def test_cache_sha1_digest_definition
+      reset_cache_digest(@post_serializer)
+      previous_use_sha1_digests = ActiveModelSerializers.config.use_sha1_digests
+      ActiveModelSerializers.config.use_sha1_digests = true
+      file_digest = Digest::SHA1.hexdigest(File.open(__FILE__).read)
+      assert_equal(file_digest, @post_serializer.class._cache_digest)
+    ensure
+      ActiveModelSerializers.config.use_sha1_digests = previous_use_sha1_digests
     end
 
     def test_object_cache_keys
@@ -714,6 +738,11 @@ module ActiveModelSerializers
 
     def adapter
       @serializable_resource.adapter
+    end
+
+    def reset_cache_digest(serializer)
+      return unless serializer.class.instance_variable_defined?(:@_cache_digest)
+      serializer.class.remove_instance_variable(:@_cache_digest)
     end
   end
 end

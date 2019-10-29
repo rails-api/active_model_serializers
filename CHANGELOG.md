@@ -6,6 +6,8 @@ Breaking changes:
 
 Features:
 
+- [#2361](https://github.com/rails-api/active_model_serializers/pull/2361) Add `ActiveModelSerializers.config.use_sha1_digests` to allow customization of the hashing algorithm used for serializer caching (@alexzherdev)
+
 Fixes:
 
 - [#2344](https://github.com/rails-api/active_model_serializers/pull/2344) Fixes #2341 introduced since #2223 (@wasifhossain)
