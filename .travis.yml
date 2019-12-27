@@ -40,12 +40,16 @@ cache:
     - vendor/bundle
 
 before_install:
-  - "travis_retry gem update --system 2.7.9"
-  - "travis_retry gem install bundler -v '1.17.3'"
-install: BUNDLER_VERSION=1.17.3 bundle install --path=vendor/bundle --retry=3 --jobs=3
+  - gem update --system 2.7.10
+  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
+  - gem install bundler -v '< 2'
+
+install:
+  - bundle install --path=vendor/bundle --retry=3 --jobs=3
 
 script:
   - bundle exec rake ci
+
 after_success:
   - codeclimate-test-reporter
 
