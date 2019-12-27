@@ -40,12 +40,11 @@ cache:
     - vendor/bundle
 
 before_install:
-  - gem update --system 2.7.10
-  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
-  - gem install bundler -v '< 2'
+  - yes | gem update --system --force
+  - gem install bundler -v 1.17.3
 
 install:
-  - bundle install --path=vendor/bundle --retry=3 --jobs=3
+  - BUNDLER_VERSION=1.17.3 bundle install --path=vendor/bundle --retry=3 --jobs=3
 
 script:
   - bundle exec rake ci
