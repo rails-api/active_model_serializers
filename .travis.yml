@@ -40,7 +40,6 @@ cache:
     - vendor/bundle
 
 before_install:
-  - yes | gem update --system --force
   - gem install bundler -v 1.17.3
 
 install:
@@ -105,6 +104,7 @@ matrix:
     - { rvm: *ruby_head, env: *rails_4_1 }
 
     - { rvm: *ruby_2_7,  env: *rails_4_2 }
+    - { rvm: *ruby_head, env: *rails_4_2 }
 
     - { rvm: *ruby_2_1,  env: *rails_5_0 }
     - { rvm: *ruby_2_1,  env: *rails_5_1 }
@@ -121,15 +121,14 @@ matrix:
     - { rvm: *ruby_2_4,  env: *rails_master }
 
   allow_failures:
-    - env: *rails_4_1
-    - env: *rails_4_2
+    # Rails 5.2.4.1 used safe-navigation operator (&.), which caused ruby 2.2 to fail
+    # https://buildkite.com/rails/rails/builds/65743#e3a74619-d8f6-493f-b590-1203028167d3
+    - { rvm: *ruby_2_2,  env: *rails_5_2 }
 
     - { rvm: *ruby_2_5,  env: *rails_master }
     - { rvm: *ruby_2_6,  env: *rails_master }
     - { rvm: *ruby_2_7,  env: *rails_master }
 
-    - rvm: *ruby_2_1
-    - rvm: *ruby_2_2
     - rvm: *ruby_head
 
     - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_master_jruby }
