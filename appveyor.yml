@@ -15,7 +15,7 @@ cache:
 
 install:
   - SET PATH=C:\%ruby_version%\bin;%PATH%
-  - gem uninstall bundler -v '>= 2' -a -x -I
+  - gem uninstall bundler -x
   - # gem update --system 2.7.10
   - gem install bundler -v 1.17.3
   - bundle env
