@@ -5,7 +5,6 @@ skip_tags: true
 environment:
   JRUBY_OPTS: "--dev -J-Xmx1024M --debug"
   RAILS_VERSION: 5.2
-  BUNDLER_VERSION: 1.17.3
   matrix:
     - ruby_version: "Ruby23"
     - ruby_version: "Ruby23-x64"
@@ -15,9 +14,9 @@ cache:
 
 install:
   - SET PATH=C:\%ruby_version%\bin;%PATH%
-  - gem uninstall bundler -x
-  - # gem update --system 2.7.10
-  - gem install bundler -v 1.17.3
+  - gem uninstall bundler -a -x -I
+  - gem update --system 2.7.9
+  - # gem install bundler -v '1.17.3'
   - bundle env
   - bundle check || bundle install --path=vendor/bundle --retry=3 --jobs=3
   - bundle clean --force
