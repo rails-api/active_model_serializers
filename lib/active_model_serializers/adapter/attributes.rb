@@ -5,7 +5,7 @@ module ActiveModelSerializers
     class Attributes < Base
       def initialize(*)
         super
-        instance_options[:fieldset] ||= ActiveModel::Serializer::Fieldset.new(fields_to_fieldset(instance_options.delete(:fields)))
+        instance_options[:fieldset] ||= fields_to_fieldset(instance_options.delete(:fields))
       end
 
       def serializable_hash(options = nil)
@@ -29,7 +29,7 @@ module ActiveModelSerializers
           else fail ArgumentError, "Unknown conversion of fields to fieldset: '#{field.inspect}' in '#{fields.inspect}'"
           end
         end
-        relationship_fields.merge!(serializer.json_key.to_sym => resource_fields)
+        ActiveModel::Serializer::Fieldset.new(relationship_fields.merge!(serializer.json_key.to_sym => resource_fields))
       end
     end
   end
