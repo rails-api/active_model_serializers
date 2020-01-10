@@ -40,9 +40,10 @@ cache:
     - vendor/bundle
 
 before_install:
-  - "travis_retry gem update --system 2.7.9"
-  - "travis_retry gem install bundler -v '1.17.3'"
-install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+  - gem install bundler -v 1.17.3
+
+install:
+  - bundle install --path=vendor/bundle --retry=3 --jobs=3
 
 script:
   - bundle exec rake ci
@@ -65,6 +66,9 @@ rvm:
   - *ruby_2_1
   - *ruby_2_2
   - *ruby_2_3
+  - *ruby_2_4
+  - *ruby_2_5
+  - *ruby_2_6
   - *ruby_2_7
   - *ruby_head
 
@@ -72,10 +76,9 @@ branches:
   only: 0-10-stable
 
 jobs:
+  fast_finish: true
+
   include:
-    - { rvm: *ruby_2_4,  env: *rails_4_2 }
-    - { rvm: *ruby_2_5,  env: *rails_4_2 }
-    - { rvm: *ruby_2_6,  env: *rails_4_2 }
     - { rvm: *jruby_9_1,  jdk: *jdk_8, env: *rails_4_1_jruby }
     - { rvm: *jruby_9_1,  jdk: *jdk_8, env: *rails_4_2_jruby }
     - { rvm: *jruby_9_1,  jdk: *jdk_8, env: *rails_5_0_jruby }
@@ -97,7 +100,14 @@ jobs:
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_master_jruby }
 
   exclude:
+    - { rvm: *ruby_2_4,  env: *rails_4_1 }
+    - { rvm: *ruby_2_5,  env: *rails_4_1 }
+    - { rvm: *ruby_2_6,  env: *rails_4_1 }
+    - { rvm: *ruby_2_7,  env: *rails_4_1 }
     - { rvm: *ruby_head, env: *rails_4_1 }
+
+    - { rvm: *ruby_2_7,  env: *rails_4_2 }
+    - { rvm: *ruby_head, env: *rails_4_2 }
 
     - { rvm: *ruby_2_1,  env: *rails_5_0 }
     - { rvm: *ruby_2_1,  env: *rails_5_1 }
@@ -106,17 +116,25 @@ jobs:
     - { rvm: *ruby_2_1,  env: *rails_6_0 }
     - { rvm: *ruby_2_2,  env: *rails_6_0 }
     - { rvm: *ruby_2_3,  env: *rails_6_0 }
+    - { rvm: *ruby_2_4,  env: *rails_6_0 }
 
     - { rvm: *ruby_2_1,  env: *rails_master }
     - { rvm: *ruby_2_2,  env: *rails_master }
     - { rvm: *ruby_2_3,  env: *rails_master }
+    - { rvm: *ruby_2_4,  env: *rails_master }
 
   allow_failures:
+    # Rails 5.2.4.1 used safe-navigation operator (&.), which caused ruby 2.2 to fail
+    # Rails 5.2.4.1+ is going to have the fix, after which we can remove this line
+    # https://buildkite.com/rails/rails/builds/65743#e3a74619-d8f6-493f-b590-1203028167d3
+    - { rvm: *ruby_2_2,  env: *rails_5_2 }
+
+    - { rvm: *ruby_2_5,  env: *rails_master }
+    - { rvm: *ruby_2_6,  env: *rails_master }
+    - { rvm: *ruby_2_7,  env: *rails_master }
 
     - rvm: *ruby_head
 
     - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_master_jruby }
 
     - rvm: *jruby_head
-
-  fast_finish: true
