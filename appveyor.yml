@@ -16,7 +16,7 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
-  - gem install bundler
+  - gem install bundler -v 1.17.3
   - bundler --version
   - bundle platform
   - bundle install --path=vendor/bundle --retry=3 --jobs=3
