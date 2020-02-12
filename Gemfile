@@ -33,8 +33,11 @@ if RUBY_VERSION < '2'
   gem 'mime-types', [ '>= 2.6.2', '< 3' ]
 end
 
-if RUBY_VERSION < '2.1'
-  gem 'nokogiri', '< 1.7'
+if ENV['CI']
+  if RUBY_VERSION < '2.4'
+    # Windows: An error occurred while installing nokogiri (1.8.0)
+    gem 'nokogiri', '< 1.7', platforms: @windows_platforms
+  end
 end
 
 # https://github.com/bundler/bundler/blob/89a8778c19269561926cea172acdcda241d26d23/lib/bundler/dependency.rb#L30-L54
