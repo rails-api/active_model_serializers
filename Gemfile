@@ -50,9 +50,26 @@ group :bench do
 end
 
 group :test do
-  gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
-
+  platforms(*(@windows_platforms + [:ruby])) do
+    if version == 'master' || version >= '6'
+      gem 'sqlite3', '~> 1.4'
+    else
+      gem 'sqlite3', '~> 1.3.13'
+    end
+  end
+  platforms :jruby do
+    if version == 'master' || version >= '6.0'
+      gem 'activerecord-jdbcsqlite3-adapter', github: 'jruby/activerecord-jdbc-adapter'
+    elsif version == '5.2'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 52.0'
+    elsif version == '5.1'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 51.0'
+    elsif version == '5.0'
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 50.0'
+    else
+      gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.0'
+    end
+  end
   gem 'simplecov', '~> 0.10', require: false, group: :development
 end
 
