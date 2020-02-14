@@ -49,7 +49,7 @@ group :bench do
   gem 'benchmark-ips', '>= 2.7.2'
 end
 
-group :test do
+group :development, :test do
   gem 'sqlite3',                          platform: (@windows_platforms + [:ruby])
   gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 
