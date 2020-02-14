@@ -9,12 +9,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby 2.1
-      uses: actions/setup-ruby@v1
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.1.x
-    - name: Build and test with Rake
+        ruby-version: 2.2.10
+    - name: Ruby gem cache
+      uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+    - name: Install gems
       run: |
         gem install bundler -v 1.13.7
+        bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
+    - name: Build and test with Rake
+      run: |
         bundle exec rake
