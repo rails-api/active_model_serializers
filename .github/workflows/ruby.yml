@@ -1,0 +1,20 @@
+name: Ruby
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby 2.1
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.1.x
+    - name: Build and test with Rake
+      run: |
+        gem install bundler -v 1.13.7
+        bundle install --jobs 4 --retry 3
+        bundle exec rake
