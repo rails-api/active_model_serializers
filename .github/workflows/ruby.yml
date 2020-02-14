@@ -17,10 +17,12 @@ jobs:
       run: |
         sudo apt-get -yqq install libsqlite3-dev
     - name: Install gems
+			env:
+				RAILS_VERSION: "4.2"
       run: |
-        gem install bundler -v 1.13.7
-        bundle config path vendor/bundle
+        gem uninstall -aIx bundler
+        gem install bundler -v 1.17.3
         bundle install --jobs 4 --retry 3
-    - name: Build and test with Rake
+    - name: Test
       run: |
         bundle exec rake
