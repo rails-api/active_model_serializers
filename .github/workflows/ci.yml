@@ -1,4 +1,4 @@
-name: Ruby
+name: CI
 
 on: [push]
 
@@ -17,8 +17,8 @@ jobs:
       run: |
         sudo apt-get -yqq install libsqlite3-dev
     - name: Install gems
-			env:
-				RAILS_VERSION: "4.2"
+      env:
+        RAILS_VERSION: "4.2"
       run: |
         gem uninstall -aIx bundler
         gem install bundler -v 1.17.3
