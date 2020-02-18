@@ -13,8 +13,7 @@ jdk:
   - openjdk8
 
 before_install:
-  - gem install rubygems-update -v '<3'
-  - if [ "$RUBY_VERSION" = "jruby-9.1.5.0" ] ; then gem uninstall rubygems-update -v 3.1.2 ; fi
+  - gem update --system 2.6.8
   - update_rubygems
   - rvm @global do gem install bundler -v 1.13.7
 install: bundle _1.13.7_ install --path=vendor/bundle --retry=3 --jobs=3
