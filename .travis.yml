@@ -14,9 +14,8 @@ jdk:
 
 before_install:
   - gem i rubygems-update -v '<3' && update_rubygems
-  - rvm @global do gem uninstall bundler -a -x
   - rvm @global do gem install bundler -v 1.13.7
-install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+install: bundle _1.13.7_ install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
     - vendor/bundle
