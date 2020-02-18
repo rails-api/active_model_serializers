@@ -39,7 +39,7 @@ if ENV['CI']
     gem 'nokogiri', '< 1.7', platforms: @windows_platforms
   end
 
-  if RUBY_VERSION < '2.2'
+  if RUBY_VERSION < '2.2' || RUBY_VERSION == 'jruby-9.1.5.0'
     # >= 12.3 and < 13 requires ruby >= 2.0, rake >= 13 requires ruby >= 2.2
     gem 'rake', '< 12.3' 
     # > 5.12 requires ruby >= 2.2
