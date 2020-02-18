@@ -40,7 +40,8 @@ if ENV['CI']
   end
 
   if RUBY_VERSION < '2.2'
-    gem 'rake', '< 13.0'
+    # >= 12.3 and < 13 requires ruby >= 2.0, rake >= 13 requires ruby >= 2.2
+    gem 'rake', '< 12.3' 
   end
 end
 
