@@ -37,17 +37,17 @@ if ENV['CI']
   if RUBY_VERSION < '2.4'
     # Windows: An error occurred while installing nokogiri (1.8.0)
     gem 'nokogiri', '< 1.7', platforms: @windows_platforms
+    # >= 4.0 requires ruby >= 2.5
+    gem 'sprockets', '< 4.0'
   end
 
-  if RUBY_VERSION < '2.2' || RUBY_VERSION == 'jruby-9.1.5.0'
+  if RUBY_VERSION < '2.2'
     # >= 12.3 and < 13 requires ruby >= 2.0, rake >= 13 requires ruby >= 2.2
     gem 'rake', '< 12.3' 
     # > 5.12 requires ruby >= 2.2
     gem 'minitest', '< 5.12'
     # >= 1.0 requires ruby >= 2.0
     gem 'thor', '< 1.0'
-    # >= 4.0 requires ruby >= 2.5
-    gem 'sprockets', '< 4.0'
   end
 end
 
