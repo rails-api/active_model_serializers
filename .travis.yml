@@ -13,7 +13,7 @@ jdk:
   - openjdk8
 
 before_install:
-  - gem update --system
+  - gem i rubygems-update -v '<3' && update_rubygems
   - rvm @global do gem uninstall bundler -a -x
   - rvm @global do gem install bundler -v 1.13.7
 install: bundle install --path=vendor/bundle --retry=3 --jobs=3
