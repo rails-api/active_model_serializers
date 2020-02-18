@@ -13,7 +13,10 @@ jdk:
   - openjdk8
 
 before_install:
-  - gem i rubygems-update -v '<3' && update_rubygems
+  - env
+  - gem install rubygems-update -v '<3'
+  - if [ "$JRUBY_BUILD" ] ; then gem uninstall rubygems-update -v 3.1.2 ; fi
+  - update_rubygems
   - rvm @global do gem install bundler -v 1.13.7
 install: bundle _1.13.7_ install --path=vendor/bundle --retry=3 --jobs=3
 cache:
@@ -40,6 +43,7 @@ matrix:
       env: RAILS_VERSION=master
     - rvm: jruby-9.1.5.0
       env: RAILS_VERSION=master
+      env: JRUBY_BUILD=true
     - rvm: 1.9.3
       env: RAILS_VERSION=5.0
     - rvm: 2.0.0
@@ -48,6 +52,7 @@ matrix:
       env: RAILS_VERSION=5.0
     - rvm: jruby-9.1.5.0
       env: RAILS_VERSION=5.0
+      env: JRUBY_BUILD=true
   allow_failures:
     - rvm: ruby-head
     - env: "RAILS_VERSION=master"
