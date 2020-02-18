@@ -38,6 +38,10 @@ if ENV['CI']
     # Windows: An error occurred while installing nokogiri (1.8.0)
     gem 'nokogiri', '< 1.7', platforms: @windows_platforms
   end
+
+  if RUBY_VERSION < '2.2'
+    gem 'rake', '< 13.0'
+  end
 end
 
 # https://github.com/bundler/bundler/blob/89a8778c19269561926cea172acdcda241d26d23/lib/bundler/dependency.rb#L30-L54
