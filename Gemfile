@@ -78,9 +78,15 @@ group :test do
       gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.0'
     end
   end
-  gem 'simplecov', '~> 0.10', require: false, group: :development
 end
 
 group :development, :test do
   gem 'rubocop', '~> 0.34.0', require: false
+  
+  # 0.12 requires ruby 2.4
+  if RUBY_VERSION < '2.4'
+    gem 'simplecov', '< 0.12', require: false
+  else
+    gem 'simplecov', '~> 0.10', require: false
+  end
 end
