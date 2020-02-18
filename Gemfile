@@ -42,6 +42,8 @@ if ENV['CI']
   if RUBY_VERSION < '2.2'
     # >= 12.3 and < 13 requires ruby >= 2.0, rake >= 13 requires ruby >= 2.2
     gem 'rake', '< 12.3' 
+    # > 5.12 requires ruby >= 2.2
+    gem 'minitest', '< 5.12'
   end
 end
 
@@ -81,7 +83,9 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rubocop', '~> 0.34.0', require: false
+  unless ENV['CI']
+    gem 'rubocop', '~> 0.34.0', require: false
+  end
   
   # 0.12 requires ruby 2.4
   if RUBY_VERSION < '2.4'
