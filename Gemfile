@@ -44,6 +44,10 @@ if ENV['CI']
     gem 'rake', '< 12.3' 
     # > 5.12 requires ruby >= 2.2
     gem 'minitest', '< 5.12'
+    # >= 1.0 requires ruby >= 2.0
+    gem 'thor', '< 1.0'
+    # >= 4.0 requires ruby >= 2.5
+    gem 'sprockets', '< 4.0'
   end
 end
 
