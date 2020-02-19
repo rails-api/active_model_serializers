@@ -28,6 +28,8 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'actionpack', rails_versions
   # 'activesupport', rails_versions
+  # restrict rack version as long as grape < 1.3.0 is supported
+  spec.add_runtime_dependency 'rack', '<= 2.0.8'
   # 'rack'
   # 'rack-test', '~> 0.6.2'
 
