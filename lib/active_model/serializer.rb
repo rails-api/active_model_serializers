@@ -19,6 +19,10 @@ module ActiveModel
         base._associations = (_associations || {}).dup
       end
 
+      def generated_modules
+        @generated_attribute_methods ||= Module.new.tap { |mod| include mod }
+      end
+
       def setup
         @mutex.synchronize do
           yield CONFIG
@@ -90,9 +94,9 @@ end
 
           @_attributes << striped_attr
 
-          define_method striped_attr do
+          generated_modules.define_method striped_attr do
             object.read_attribute_for_serialization attr
-          end unless method_defined?(attr)
+          end
         end
       end
 
@@ -130,9 +134,9 @@ end
         options = attrs.extract_options!
 
         attrs.each do |attr|
-          define_method attr do
+          generated_modules.define_method attr do
             object.send attr
-          end unless method_defined?(attr)
+          end
 
           @_associations[attr] = klass.new(attr, options)
         end

@@ -128,12 +128,12 @@ class UserInfoSerializer < ActiveModel::Serializer
 end
 
 class ProfileSerializer < ActiveModel::Serializer
+  attributes :name, :description
+
   def description
-    description = object.read_attribute_for_serialization(:description)
+    description = super
     scope ? "#{description} - #{scope}" : description
   end
-
-  attributes :name, :description
 end
 
 class CategorySerializer < ActiveModel::Serializer
@@ -147,7 +147,7 @@ class PostSerializer < ActiveModel::Serializer
 
   def title
     keyword = serialization_options[:highlight_keyword]
-    title = object.read_attribute_for_serialization(:title)
+    title = super
     title = title.gsub(keyword,"'#{keyword}'") if keyword
     title
   end
