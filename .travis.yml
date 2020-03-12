@@ -10,13 +10,13 @@ rvm:
   - jruby-9.1.5.0 # is precompiled per http://rubies.travis-ci.org/
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 before_install:
-  - gem update --system
-  - rvm @global do gem uninstall bundler -a -x
+  - gem update --system 2.6.8
+  - if [ "$RUBY_VERSION" != "jruby-9.1.5.0" ] ; then update_rubygems ; fi 
   - rvm @global do gem install bundler -v 1.13.7
-install: bundle install --path=vendor/bundle --retry=3 --jobs=3
+install: bundle _1.13.7_ install --path=vendor/bundle --retry=3 --jobs=3
 cache:
   directories:
     - vendor/bundle
