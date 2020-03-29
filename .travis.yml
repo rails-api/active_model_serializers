@@ -1,24 +1,25 @@
 language: ruby
-sudo: false
+os: linux
 
-ruby_supported_versions:
+_ruby_supported_versions:
   - &ruby_2_1 2.1.10
   - &ruby_2_2 2.2.10
   - &ruby_2_3 2.3.8
   - &ruby_2_4 2.4.9
   - &ruby_2_5 2.5.7
   - &ruby_2_6 2.6.5
+  - &ruby_2_7 2.7.0
   - &ruby_head ruby-head
 
-jruby_supported_versions:
+_jruby_supported_versions:
   - &jruby_9_1 jruby-9.1.17.0
   - &jruby_9_2 jruby-9.2.8.0
   - &jruby_head jruby-head
 
-jdk_supported_versions:
+_jdk_supported_versions:
   - &jdk_8 openjdk8
 
-rails_supported_versions:
+_rails_supported_versions:
   - &rails_4_1 RAILS_VERSION=4.1
   - &rails_4_1_jruby RAILS_VERSION=4.1 JRUBY_OPTS='--dev -J-Xmx1024M --debug'
   - &rails_4_2 RAILS_VERSION=4.2
@@ -41,7 +42,7 @@ cache:
 before_install:
   - "travis_retry gem update --system 2.7.9"
   - "travis_retry gem install bundler -v '1.17.3'"
-install: BUNDLER_VERSION=1.17.3 bundle install --path=vendor/bundle --retry=3 --jobs=3
+install: bundle install --path=vendor/bundle --retry=3 --jobs=3
 
 script:
   - bundle exec rake ci
@@ -49,7 +50,9 @@ after_success:
   - codeclimate-test-reporter
 
 env:
-  matrix:
+  global:
+    - BUNDLER_VERSION=1.17.3
+  jobs:
     - *rails_4_1
     - *rails_4_2
     - *rails_5_0
@@ -62,16 +65,17 @@ rvm:
   - *ruby_2_1
   - *ruby_2_2
   - *ruby_2_3
-  - *ruby_2_4
-  - *ruby_2_5
-  - *ruby_2_6
+  - *ruby_2_7
   - *ruby_head
 
 branches:
   only: 0-10-stable
 
-matrix:
+jobs:
   include:
+    - { rvm: *ruby_2_4,  env: *rails_4_2 }
+    - { rvm: *ruby_2_5,  env: *rails_4_2 }
+    - { rvm: *ruby_2_6,  env: *rails_4_2 }
     - { rvm: *jruby_9_1,  jdk: *jdk_8, env: *rails_4_1_jruby }
     - { rvm: *jruby_9_1,  jdk: *jdk_8, env: *rails_4_2_jruby }
     - { rvm: *jruby_9_1,  jdk: *jdk_8, env: *rails_5_0_jruby }
@@ -93,9 +97,6 @@ matrix:
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_master_jruby }
 
   exclude:
-    - { rvm: *ruby_2_4,  env: *rails_4_1 }
-    - { rvm: *ruby_2_5,  env: *rails_4_1 }
-    - { rvm: *ruby_2_6,  env: *rails_4_1 }
     - { rvm: *ruby_head, env: *rails_4_1 }
 
     - { rvm: *ruby_2_1,  env: *rails_5_0 }
@@ -105,16 +106,12 @@ matrix:
     - { rvm: *ruby_2_1,  env: *rails_6_0 }
     - { rvm: *ruby_2_2,  env: *rails_6_0 }
     - { rvm: *ruby_2_3,  env: *rails_6_0 }
-    - { rvm: *ruby_2_4,  env: *rails_6_0 }
 
     - { rvm: *ruby_2_1,  env: *rails_master }
     - { rvm: *ruby_2_2,  env: *rails_master }
     - { rvm: *ruby_2_3,  env: *rails_master }
-    - { rvm: *ruby_2_4,  env: *rails_master }
 
   allow_failures:
-    - { rvm: *ruby_2_5,  env: *rails_master }
-    - { rvm: *ruby_2_6,  env: *rails_master }
 
     - rvm: *ruby_head
 

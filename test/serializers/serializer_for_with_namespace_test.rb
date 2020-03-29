@@ -35,12 +35,11 @@ module ActiveModel
       class BookSerializer < ActiveModel::Serializer
         attributes :title, :author_name
       end
+
       test 'resource without a namespace' do
         book = Book.new(title: 'A Post', author_name: 'hello')
 
-        # TODO: this should be able to pull up this serializer without explicitly specifying the serializer
-        #       currently, with no options, it still uses the Api::V3 serializer
-        result = ActiveModelSerializers::SerializableResource.new(book, serializer: BookSerializer).serializable_hash
+        result = ActiveModelSerializers::SerializableResource.new(book).serializable_hash
 
         expected = { title: 'A Post', author_name: 'hello' }
         assert_equal expected, result
