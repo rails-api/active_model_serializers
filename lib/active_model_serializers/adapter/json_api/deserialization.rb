@@ -59,6 +59,7 @@ module ActiveModelSerializers
         #     # {
         #     #   title: 'Title 1',
         #     #   date: '2015-12-20',
+        #     #   id: 1,
         #     #   author_id: 2,
         #     #   second_author_id: nil
         #     #   comment_ids: [3, 4]
@@ -70,8 +71,8 @@ module ActiveModelSerializers
         #     # {
         #     #   title: 'Title 1',
         #     #   published_at: '2015-12-20',
-        #     #   author_id: '2',
-        #     #   author_type: 'people'
+        #     #   author_id: 2,
+        #     #   author_type: 'User'
         #     # }
         #
         def parse!(document, options = {})
