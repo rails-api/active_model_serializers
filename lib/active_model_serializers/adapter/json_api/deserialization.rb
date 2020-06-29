@@ -25,30 +25,30 @@ module ActiveModelSerializers
         #
         # @example
         #   document = {
-        #     data: {
-        #       id: 1,
-        #       type: 'post',
-        #       attributes: {
-        #         title: 'Title 1',
-        #         date: '2015-12-20'
+        #     'data' => {
+        #       'id' => 1,
+        #       'type' => 'post',
+        #       'attributes' => {
+        #         'title' => 'Title 1',
+        #         'date' => '2015-12-20'
         #       },
-        #       associations: {
-        #         author: {
-        #           data: {
-        #             type: 'user',
-        #             id: 2
+        #       'relationships' => {
+        #         'author' => {
+        #           'data' => {
+        #             'type' => 'user',
+        #             'id' => 2
         #           }
         #         },
-        #         second_author: {
-        #           data: nil
+        #         'second_author' => {
+        #           'data' => nil
         #         },
-        #         comments: {
-        #           data: [{
-        #             type: 'comment',
-        #             id: 3
+        #         'comments' => {
+        #           'data' => [{
+        #             'type' => 'comment',
+        #             'id' => 3
         #           },{
-        #             type: 'comment',
-        #             id: 4
+        #             'type' => 'comment',
+        #             'id' => 4
         #           }]
         #         }
         #       }
