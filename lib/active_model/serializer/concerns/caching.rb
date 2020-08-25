@@ -286,12 +286,12 @@ module ActiveModel
       def object_cache_key
         if object.respond_to?(:cache_key_with_version)
           object.cache_key_with_version
-        elsif object.respond_to?(:cache_key)
-          object.cache_key
         elsif (serializer_cache_key = (serializer_class._cache_key || serializer_class._cache_options[:key]))
           object_time_safe = object.updated_at
           object_time_safe = object_time_safe.strftime('%Y%m%d%H%M%S%9N') if object_time_safe.respond_to?(:strftime)
           "#{serializer_cache_key}/#{object.id}-#{object_time_safe}"
+        elsif object.respond_to?(:cache_key)
+          object.cache_key
         else
           fail UndefinedCacheKey, "#{object.class} must define #cache_key, or the 'key:' option must be passed into '#{serializer_class}.cache'"
         end
