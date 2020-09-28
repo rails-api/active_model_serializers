@@ -15,7 +15,7 @@ eval_gemfile local_gemfile if File.readable?(local_gemfile)
 # Specify your gem's dependencies in active_model_serializers.gemspec
 gemspec
 
-version = ENV['RAILS_VERSION'] || '4.2'
+version = ENV['RAILS_VERSION'] || '6.0'
 
 if version == 'master'
   gem 'rack', github: 'rack/rack'
