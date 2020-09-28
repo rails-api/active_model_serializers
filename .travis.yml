@@ -68,9 +68,6 @@ rvm:
   - *ruby_2_7
   - *ruby_head
 
-branches:
-  only: 0-10-stable
-
 jobs:
   include:
     - { rvm: *ruby_2_4,  env: *rails_4_2 }
