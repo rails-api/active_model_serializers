@@ -83,7 +83,6 @@ group :test do
   gem 'm', '~> 1.5'
   gem 'pry', '>= 0.10'
   gem 'byebug', '~> 8.2' if RUBY_VERSION < '2.2'
-  gem 'pry-byebug', platforms: :ruby
 end
 
 group :development, :test do
