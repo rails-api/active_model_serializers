@@ -28,6 +28,8 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'actionpack', rails_versions
   # 'activesupport', rails_versions
+  # restrict rack version as long as grape < 1.3.0 is supported
+  spec.add_runtime_dependency 'rack', '<= 2.0.8'
   # 'rack'
   # 'rack-test', '~> 0.6.2'
 
@@ -55,7 +57,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'will_paginate', '~> 3.0', '>= 3.0.7'
 
   spec.add_development_dependency 'bundler', '~> 1.6'
-  spec.add_development_dependency 'simplecov', '~> 0.11'
+  spec.add_development_dependency 'simplecov', '~> 0.17.1'
   spec.add_development_dependency 'timecop', '~> 0.7'
   spec.add_development_dependency 'grape', ['>= 0.13', '< 0.19.1']
   spec.add_development_dependency 'json_schema'
