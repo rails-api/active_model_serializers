@@ -9,6 +9,8 @@ module ActionController
         INCLUDE_STRING = 'posts.comments'.freeze
         INCLUDE_HASH = { posts: :comments }.freeze
         DEEP_INCLUDE = 'posts.comments.author'.freeze
+        WILDCARD_INCLUDE = '*'.freeze
+        DEEP_WILDCARD_INCLUDE = '**'.freeze
 
         class IncludeTestController < ActionController::Base
           def setup_data
@@ -55,6 +57,16 @@ module ActionController
           def render_resource_with_deep_include
             setup_data
             render json: @author, include: DEEP_INCLUDE, adapter: :json
+          end
+
+          def render_resource_with_wildcard_include
+            setup_data
+            render json: @author, include: WILDCARD_INCLUDE, adapter: :json
+          end
+
+          def render_resource_with_deep_wildcard_include
+            setup_data
+            render json: @author, include: DEEP_WILDCARD_INCLUDE, adapter: :json
           end
 
           def render_without_recursive_relationships
@@ -112,6 +124,48 @@ module ActionController
           response = JSON.parse(@response.body)
 
           assert_equal(expected_deep_include_response, response)
+        end
+
+        def test_render_resource_with_wildcard_include
+          get :render_resource_with_wildcard_include
+
+          response = JSON.parse(@response.body)
+
+          assert_equal(expected_wildcard_include_response, response)
+        end
+
+        def test_render_resource_with_wildcard_include_with_wildcards_disabled
+          with_wildcards_disabled do
+            get :render_resource_with_wildcard_include
+          end
+
+          expected = {
+            'author' => {
+              'id' => 1,
+              'name' => 'Steve K.'
+            }
+          }
+
+          response = JSON.parse(@response.body)
+
+          assert_equal(expected, response)
+        end
+
+        def test_render_resource_with_deep_wildcard_include_with_wildcards_disabled
+          with_wildcards_disabled do
+            get :render_resource_with_deep_wildcard_include
+          end
+
+          expected = {
+            'author' => {
+              'id' => 1,
+              'name' => 'Steve K.'
+            }
+          }
+
+          response = JSON.parse(@response.body)
+
+          assert_equal(expected, response)
         end
 
         def test_render_with_empty_default_includes
@@ -176,6 +230,22 @@ module ActionController
 
         private
 
+        def expected_wildcard_include_response
+          {
+            'author' => {
+              'id' => 1,
+              'name' => 'Steve K.',
+              'posts' => [
+                {
+                  'id' => 42, 'title' => 'New Post', 'body' => 'Body'
+                }
+              ],
+              'roles' => [],
+              'bio' => {}
+            }
+          }
+        end
+
         def expected_include_response
           {
             'author' => {
@@ -236,6 +306,14 @@ module ActionController
         ensure
           ActiveModelSerializers.config.default_includes = original
           clear_include_directive_cache
+        end
+
+        def with_wildcards_disabled
+          original = ActiveModelSerializers.config.allow_wildcard
+          ActiveModelSerializers.config.allow_wildcard = false
+          yield
+        ensure
+          ActiveModelSerializers.config.allow_wildcard = original
         end
 
         def clear_include_directive_cache

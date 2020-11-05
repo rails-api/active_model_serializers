@@ -6,6 +6,7 @@ Breaking changes:
 
 Features:
 
+- [#2362](https://github.com/rails-api/active_model_serializers/pull/2362) Add `allow_wildcard` configuration option (@Borzik)
 - [#2361](https://github.com/rails-api/active_model_serializers/pull/2361) Add `ActiveModelSerializers.config.use_sha1_digests` to allow customization of the hashing algorithm used for serializer caching (@alexzherdev)
 
 Fixes:

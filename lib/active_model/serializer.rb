@@ -105,7 +105,7 @@ module ActiveModel
       if options[:include_directive]
         options[:include_directive]
       elsif options[:include]
-        JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
+        JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: config.allow_wildcard)
       else
         ActiveModelSerializers.default_include_directive
       end
@@ -134,6 +134,7 @@ module ActiveModel
     end
 
     config.default_includes = '*'
+    config.allow_wildcard = true
     config.adapter = :attributes
     config.key_transform = nil
     config.jsonapi_pagination_links_enabled = true
