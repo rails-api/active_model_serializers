@@ -1,8 +1,16 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.10...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.11...0-10-stable)
 
 Breaking changes:
+
+Features:
+
+Fixes:
+
+Misc:
+
+### [v0.10.11 (2020-12-04)](https://github.com/rails-api/active_model_serializers/compare/v0.10.10...v0.10.11)
 
 Features:
 
@@ -11,8 +19,7 @@ Features:
 Fixes:
 
 - [#2344](https://github.com/rails-api/active_model_serializers/pull/2344) Fixes #2341 introduced since #2223 (@wasifhossain)
-
-Misc:
+- [#2395](https://github.com/rails-api/active_model_serializers/pull/2395) remove explicit require for thread_safe (@ritikesh)
 
 ### [v0.10.10 (2019-07-13)](https://github.com/rails-api/active_model_serializers/compare/v0.10.9...v0.10.10)
 
