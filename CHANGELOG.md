@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.11...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.12...0-10-stable)
 
 Breaking changes:
 
@@ -9,6 +9,12 @@ Features:
 Fixes:
 
 Misc:
+
+### [v0.10.12 (2020-12-10)](https://github.com/rails-api/active_model_serializers/compare/v0.10.11...v0.10.12)
+
+Fixes:
+
+- [#2398](https://github.com/rails-api/active_model_serializers/pull/2398) Update rails dependency to < 6.2 (@ritikesh)
 
 ### [v0.10.11 (2020-12-04)](https://github.com/rails-api/active_model_serializers/compare/v0.10.10...v0.10.11)
 
