@@ -113,6 +113,14 @@ module ActiveModelSerializers
       fail Minitest::Assertion, stderr if stderr !~ /grape/
     end
 
+    if Rails.version > '6.1'
+      msg = 'Skipping grape tests.'\
+        "Current Rails version: #{ENV['RAILS_VERSION']}"
+
+      puts
+      puts "\033[33m **** #{msg} **** \033[0m"
+      puts
+    else
     def test_formatter_returns_json
       get '/grape/render'
 
@@ -193,6 +201,7 @@ module ActiveModelSerializers
       assert representation['data'].count == Models.collection_per
       assert representation.include?('links')
       assert representation['links'].count > 0
+    end
     end
   end
 end
