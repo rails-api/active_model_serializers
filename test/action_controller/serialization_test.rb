@@ -155,7 +155,7 @@ module ActionController
           description: 'Description 1'
         }
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
@@ -174,7 +174,7 @@ module ActionController
           }
         }
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
@@ -183,7 +183,7 @@ module ActionController
           get :render_array_using_custom_root
         end
         expected = { custom_root: [{ name: 'Name 1', description: 'Description 1' }] }
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
@@ -193,7 +193,7 @@ module ActionController
         end
 
         expected = { custom_root: [] }
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
@@ -203,14 +203,14 @@ module ActionController
         end
 
         expected = { custom_root: { name: 'Name 1', description: 'Description 1' } }
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
       def test_render_json_object_without_serializer
         get :render_json_object_without_serializer
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         expected_body = { error: 'Result is Invalid' }
         assert_equal expected_body.to_json, @response.body
       end
@@ -218,14 +218,14 @@ module ActionController
       def test_render_json_array_object_without_serializer
         get :render_json_array_object_without_serializer
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         expected_body = [{ error: 'Result is Invalid' }]
         assert_equal expected_body.to_json, @response.body
       end
 
       def test_render_array_using_implicit_serializer
         get :render_array_using_implicit_serializer
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
 
         expected = [
           {
@@ -261,7 +261,7 @@ module ActionController
           }
         }
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
@@ -284,7 +284,7 @@ module ActionController
           }
         }
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal expected.to_json, @response.body
       end
 
@@ -313,7 +313,7 @@ module ActionController
         Timecop.freeze(Time.zone.now) do
           get :render_object_with_cache_enabled
 
-          assert_equal 'application/json', @response.content_type
+          assert_match(%r{\Aapplication/json}, @response.content_type)
           assert_equal expected.to_json, @response.body
 
           get :render_changed_object_with_cache_enabled
@@ -349,7 +349,7 @@ module ActionController
           }
         }
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         actual   = @response.body
         expected = expected.to_json
         if ENV['APPVEYOR'] && actual != expected
@@ -364,7 +364,7 @@ module ActionController
         get :render_fragment_changed_object_with_only_cache_enabled
         response = JSON.parse(@response.body)
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal 'ZOMG A ROLE', response['name']
         assert_equal 'HUEHUEBRBR', response['description']
       end
@@ -374,7 +374,7 @@ module ActionController
         get :render_fragment_changed_object_with_except_cache_enabled
         response = JSON.parse(@response.body)
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal 5, response['rating']
         assert_equal 'lol', response['content']
       end
@@ -395,7 +395,7 @@ module ActionController
             }
           }
 
-          assert_equal 'application/json', @response.content_type
+          assert_match(%r{\Aapplication/json}, @response.content_type)
           assert_equal expected_return, response
         end
       end
@@ -426,7 +426,7 @@ module ActionController
 
         get :update_and_render_object_with_cache_enabled
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         actual   = @response.body
         expected = expected.to_json
         if ENV['APPVEYOR'] && actual != expected
