@@ -68,7 +68,7 @@ module TestHelpers
         fake_logger = Logger.new(nil)
         config.logger = fake_logger
         Rails.application.routes.default_url_options = { host: 'example.com' }
-        if Rails.version >= '6.1'
+        if Rails.version >= '6.0'
           config.hosts << "www.example.com"
         end
       end

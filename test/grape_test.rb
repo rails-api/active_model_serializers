@@ -113,7 +113,7 @@ module ActiveModelSerializers
       fail Minitest::Assertion, stderr if stderr !~ /grape/
     end
 
-    if Rails.version > '6.1'
+    if Rails.version > '6.0'
       msg = 'Skipping grape tests.'\
         "Current Rails version: #{ENV['RAILS_VERSION']}"
 

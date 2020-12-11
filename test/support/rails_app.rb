@@ -15,7 +15,7 @@ module ActiveModelSerializers
 
       config.filter_parameters += [:password]
 
-      if Rails.version >= '6.1'
+      if Rails.version >= '6.0'
         config.hosts << "www.example.com"
       end
     end
