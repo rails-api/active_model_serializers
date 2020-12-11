@@ -68,6 +68,7 @@ module TestHelpers
         fake_logger = Logger.new(nil)
         config.logger = fake_logger
         Rails.application.routes.default_url_options = { host: 'example.com' }
+        config.hosts << 'www.example.com' if Rails.version >= '6.0'
       end
       def app.name; 'IsolatedRailsApp'; end # rubocop:disable Style/SingleLineMethods
       app.respond_to?(:secrets) && app.secrets.secret_key_base = '3b7cd727ee24e8444053437c36cc66c4'

@@ -14,6 +14,8 @@ module ActiveModelSerializers
       end
 
       config.filter_parameters += [:password]
+
+      config.hosts << 'www.example.com' if Rails.version >= '6.0'
     end
 
     app.routes.default_url_options = { host: 'example.com' }
