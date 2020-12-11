@@ -56,7 +56,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'timecop', '~> 0.7'
-  spec.add_development_dependency 'grape', ['>= 0.13', '< 0.19.1']
+  spec.add_development_dependency 'grape', '>= 0.13'
   spec.add_development_dependency 'json_schema'
-  spec.add_development_dependency 'rake', ['>= 10.0', '< 13.0']
+  spec.add_development_dependency 'rake', '>= 10.0'
 end
