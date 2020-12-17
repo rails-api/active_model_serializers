@@ -2,7 +2,6 @@ name: CI
 
 on:
   - push
-  - pull_request
 
 jobs:
   test:
@@ -29,12 +28,12 @@ jobs:
 
     - name: Install gems
       env:
-        RAILS_VERSION: "6.0"
+        RAILS_VERSION: "5.2"
       run: |
         bundle install
 
     - name: Test
       env:
-        RAILS_VERSION: "6.0"
+        RAILS_VERSION: "5.2"
       run: |
         bundle exec rake
