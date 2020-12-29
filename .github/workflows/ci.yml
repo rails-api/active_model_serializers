@@ -1,39 +1,49 @@
+---
+
 name: CI
 
 on:
-  - push
+  - "push"
 
 jobs:
   test:
+    name: "Testing"
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:
-        ruby: [2.6]
-        env: [CI]
+        ruby:
+          - 2.6
+        env:
+          - RAILS_VERSION: "5.2"
+
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') }}
+
+    env:
+      BUNDLE_GEMFILE:             "./gemfiles/v${{ matrix.bundler || '2' }}/Gemfile"
+
     steps:
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
+      - name:                     "Checkout Code"
+        uses:                     "actions/checkout@v2"
+        timeout-minutes:          5
+        with:
+          fetch-depth:            0
 
-    - uses: actions/checkout@v2
+      - name: Install required libs
+        run: |
+          sudo apt-get -yqq install libsqlite3-dev
 
-    - name: 'set ENV'
-      run: echo "${{ matrix.env }}=1" >> $GITHUB_ENV
+      - name: "Build Ruby"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler:                "${{ matrix.bundler || 2 }}"
+          bundler-cache:          true
 
-    - name: Install missing libs
-      run: |
-        sudo apt-get -yqq install libsqlite3-dev
+      - name: Install gems
+        run: |
+          bundle install
 
-    - name: Install gems
-      env:
-        RAILS_VERSION: "5.2"
-      run: |
-        bundle install
-
-    - name: Test
-      env:
-        RAILS_VERSION: "5.2"
-      run: |
-        bundle exec rake
+      - name: "Run tests"
+        run: |
+          bundle exec rake
