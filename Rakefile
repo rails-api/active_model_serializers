@@ -52,7 +52,7 @@ namespace :test do
     # https://github.com/rails/rails/blob/3d590add45/railties/lib/rails/generators/app_base.rb#L345-L363
     _bundle_command = Gem.bin_path('bundler', 'bundle')
     require 'bundler'
-    with_clean_env = -> do
+    with_clean_env = proc do
       isolated_test_files.all? do |test_file|
         command = "-w -I#{dir}/lib -I#{dir}/test #{Shellwords.shellescape(test_file)}"
         full_command = %("#{Gem.ruby}" #{command})
