@@ -14,11 +14,15 @@ jobs:
       matrix:
         ruby:
           - 2.6
+        env:
+          - RAILS_VERSION: "5.2"
+          - RAILS_VERSION: "6.0"
+
 
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') }}
 
     env:
-      RAILS_VERSION: "5.2"
+      CI: "1"
 
     steps:
       - name:                     "Checkout Code"
