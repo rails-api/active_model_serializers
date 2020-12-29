@@ -14,13 +14,11 @@ jobs:
       matrix:
         ruby:
           - 2.6
-        env:
-          - RAILS_VERSION: "5.2"
 
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') }}
 
     env:
-      BUNDLE_GEMFILE:             "./gemfiles/v${{ matrix.bundler || '2' }}/Gemfile"
+      RAILS_VERSION: "5.2"
 
     steps:
       - name:                     "Checkout Code"
