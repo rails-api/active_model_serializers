@@ -5,10 +5,6 @@ begin
 rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
-begin
-  require 'simplecov'
-rescue LoadError # rubocop:disable Lint/HandleExceptions
-end
 import('lib/tasks/rubocop.rake')
 
 Bundler::GemHelper.install_tasks

@@ -4,13 +4,6 @@
 ENV['RAILS_ENV'] = 'test'
 require 'bundler/setup'
 
-begin
-  require 'simplecov'
-  AppCoverage.start
-rescue LoadError
-  STDERR.puts 'Running without SimpleCov'
-end
-
 require 'pry'
 require 'timecop'
 require 'rails'
