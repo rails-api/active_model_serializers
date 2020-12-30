@@ -11,6 +11,7 @@ module ActiveModelSerializers
     class JsonApi
       class PaginationLinksTest < ActiveSupport::TestCase
         URI = 'http://example.com'.freeze
+        RECORDS_PER_PAGE = 2
 
         def setup
           ActionController::Base.cache_store.clear
@@ -21,6 +22,10 @@ module ActiveModelSerializers
             Profile.new(id: 4, name: 'Name 4', description: 'Description 4', comments: 'Comments 4'),
             Profile.new(id: 5, name: 'Name 5', description: 'Description 5', comments: 'Comments 5')
           ]
+        end
+
+        def last_page_number
+          (@array.size / RECORDS_PER_PAGE.to_f).ceil
         end
 
         def mock_request(query_parameters = {}, original_url = URI)
@@ -37,11 +42,11 @@ module ActiveModelSerializers
         end
 
         def using_kaminari(page = 2)
-          Kaminari.paginate_array(@array).page(page).per(2)
+          Kaminari.paginate_array(@array).page(page).per(RECORDS_PER_PAGE)
         end
 
         def using_will_paginate(page = 2)
-          @array.paginate(page: page, per_page: 2)
+          @array.paginate(page: page, per_page: RECORDS_PER_PAGE)
         end
 
         def data
@@ -86,6 +91,30 @@ module ActiveModelSerializers
               prev: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
               next: nil,
               last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2"
+            }
+          }
+        end
+
+        def links_without_last_page_link
+          {
+            links: {
+              self: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+              first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              prev: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              next: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
+              last: nil
+            }
+          }
+        end
+
+        def last_page_links_without_next_page_link
+          {
+            links: {
+              self: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
+              first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              prev: "#{URI}?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+              next: nil,
+              last: nil
             }
           }
         end
@@ -165,13 +194,13 @@ module ActiveModelSerializers
         end
 
         def test_last_page_pagination_links_using_kaminari
-          adapter = load_adapter(using_kaminari(3), mock_request)
+          adapter = load_adapter(using_kaminari(last_page_number), mock_request)
 
           assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash
         end
 
         def test_last_page_pagination_links_using_will_paginate
-          adapter = load_adapter(using_will_paginate(3), mock_request)
+          adapter = load_adapter(using_will_paginate(last_page_number), mock_request)
 
           assert_equal expected_response_with_last_page_pagination_links, adapter.serializable_hash
         end
@@ -201,6 +230,42 @@ module ActiveModelSerializers
           assert_equal expected_response_without_pagination_links, adapter.serializable_hash
         ensure
           ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = true
+        end
+
+        def test_last_link_not_present_when_using_jsonapi_omit_total_pages
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = true
+
+          collection = using_kaminari
+          def collection.total_pages
+            fail 'total_pages was called, but should not have been due to ' \
+              '`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`'
+          end
+          adapter = load_adapter(collection, mock_request)
+
+          expected_response = { data: data.values.flatten[2..3] }
+          expected_response.merge!(links_without_last_page_link)
+
+          assert_equal expected_response, adapter.serializable_hash
+        ensure
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = false
+        end
+
+        def test_next_link_not_present_on_last_page_when_using_jsonapi_omit_total_pages
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = true
+
+          collection = using_kaminari(last_page_number)
+          def collection.total_pages
+            fail 'total_pages was called, but should not have been due to ' \
+              '`ActiveModel::Serializer.config.jsonapi_omit_total_pages = true`'
+          end
+          adapter = load_adapter(collection, mock_request)
+
+          expected_response = { data: [data.values.flatten.last] }
+          expected_response.merge!(last_page_links_without_next_page_link)
+
+          assert_equal expected_response, adapter.serializable_hash
+        ensure
+          ActiveModel::Serializer.config.jsonapi_omit_total_pages = false
         end
       end
     end
