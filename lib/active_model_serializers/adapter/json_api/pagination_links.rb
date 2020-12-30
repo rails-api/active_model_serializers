@@ -55,11 +55,14 @@ module ActiveModelSerializers
 
         def prev_page_url
           return nil if collection.current_page == FIRST_PAGE
-          url_for_page(collection.current_page - FIRST_PAGE)
+
+          page_number = collection.current_page > collection.total_pages ? collection.total_pages : collection.current_page - FIRST_PAGE
+
+          url_for_page(page_number)
         end
 
         def next_page_url
-          return nil if collection.total_pages == 0 || collection.current_page == collection.total_pages
+          return nil if collection.total_pages == 0 || collection.current_page >= collection.total_pages
           url_for_page(collection.next_page)
         end
 

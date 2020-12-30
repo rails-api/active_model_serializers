@@ -106,6 +106,7 @@ Features:
 Fixes:
 
 - [#2022](https://github.com/rails-api/active_model_serializers/pull/2022) Mutation of ActiveModelSerializers::Model now changes the attributes. Originally in [#1984](https://github.com/rails-api/active_model_serializers/pull/1984). (@bf4)
+- [#2171](https://github.com/rails-api/active_model_serializers/pull/2171) Prevent the `next` link from getting populated in JSON:API when an out of bounds page is requested. (@bcaplan)
 - [#2200](https://github.com/rails-api/active_model_serializers/pull/2200) Fix deserialization of polymorphic relationships. (@dennis95stumm)
 - [#2214](https://github.com/rails-api/active_model_serializers/pull/2214) Fail if unable to infer collection type with json adapter. (@jmeredith16)
 - [#2149](https://github.com/rails-api/active_model_serializers/pull/2149) Always include self, first, last pagination link. (@mecampbellsoup)
