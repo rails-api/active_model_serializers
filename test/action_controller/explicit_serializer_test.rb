@@ -71,13 +71,13 @@ module ActionController
       def test_render_using_explicit_serializer
         get :render_using_explicit_serializer
 
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
         assert_equal '{"name":"Name 1"}', @response.body
       end
 
       def test_render_array_using_explicit_serializer
         get :render_array_using_explicit_serializer
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
 
         expected = [
           { 'name' => 'Name 1' },
@@ -89,7 +89,7 @@ module ActionController
 
       def test_render_array_using_implicit_serializer
         get :render_array_using_implicit_serializer
-        assert_equal 'application/json', @response.content_type
+        assert_match(%r{\Aapplication/json}, @response.content_type)
 
         expected = [
           { 'name' => 'Name 1' },

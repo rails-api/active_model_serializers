@@ -18,8 +18,6 @@
 
 - [Improve code quality](https://codeclimate.com/github/rails-api/active_model_serializers/code?sort=smell_count&sort_direction=desc).
 
-- [Improve amount of code exercised by tests](https://codeclimate.com/github/rails-api/active_model_serializers/coverage?sort=covered_percent&sort_direction=asc).
-
 - [Fix RuboCop (Style) TODOS](https://github.com/rails-api/active_model_serializers/blob/master/.rubocop_todo.yml).
   - Delete and offsense, run `rake rubocop` (or possibly `rake rubocop:auto_correct`),
     and [submit a PR](CONTRIBUTING.md#submitting-a-pull-request-pr).

@@ -1,0 +1,69 @@
+---
+
+name: CI
+
+on:
+  - "push"
+
+jobs:
+  test:
+    name: "Testing"
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Recent Rubies and Rails
+          - ruby-version: '2.6'
+            rails-version: '6.1'
+          - ruby-version: '2.6'
+            rails-version: '6.0'
+          - ruby-version: '2.7'
+            rails-version: '6.0'
+          - ruby-version: '2.6'
+            rails-version: '5.2'
+          # Old Rubies and Rails
+          - ruby-version: '2.5'
+            rails-version: '5.1'
+            bundler: '1'
+          - ruby-version: '2.4'
+            rails-version: '5.0'
+            bundler: '1'
+          - ruby-version: '2.4'
+            rails-version: '4.2'
+            bundler: '1'
+          # Failing with a stack trace in active support
+          # - ruby-version: '2.4'
+          #   rails-version: '4.1'
+          #   bundler: '1'
+
+    continue-on-error: "${{ endsWith(matrix.ruby-version, 'head') }}"
+
+    env:
+      CI: "1"
+
+    steps:
+      - name:                     "Checkout Code"
+        uses:                     "actions/checkout@v2"
+        timeout-minutes:          5
+        with:
+          fetch-depth:            0
+
+      - name: Install required libs
+        run: |
+          sudo apt-get -yqq install libsqlite3-dev
+
+      - name: "Build Ruby"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version:   "${{ matrix.ruby-version }}"
+          bundler:        "${{ matrix.bundler || 2 }}"
+          bundler-cache:  true
+        env:
+          RAILS_VERSION: ${{ matrix.rails-version }}
+
+      - name: "Run tests"
+        run: |
+          bundle exec rake
+        env:
+          RAILS_VERSION: ${{ matrix.rails-version }}

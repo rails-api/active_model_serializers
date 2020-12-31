@@ -5,10 +5,6 @@ begin
 rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
-begin
-  require 'simplecov'
-rescue LoadError # rubocop:disable Lint/HandleExceptions
-end
 import('lib/tasks/rubocop.rake')
 
 Bundler::GemHelper.install_tasks
@@ -56,13 +52,20 @@ namespace :test do
     # https://github.com/rails/rails/blob/3d590add45/railties/lib/rails/generators/app_base.rb#L345-L363
     _bundle_command = Gem.bin_path('bundler', 'bundle')
     require 'bundler'
-    Bundler.with_clean_env do
+    with_clean_env = proc do
       isolated_test_files.all? do |test_file|
         command = "-w -I#{dir}/lib -I#{dir}/test #{Shellwords.shellescape(test_file)}"
         full_command = %("#{Gem.ruby}" #{command})
         system(full_command)
       end or fail 'Failures' # rubocop:disable Style/AndOr
     end
+    bundler_method =
+      if Bundler.method_defined?(:with_unbundled_env)
+        :with_unbundled_env
+      else
+        :with_clean_env
+      end
+    Bundler.public_send(bundler_method, &with_clean_env)
   end
 end
 
