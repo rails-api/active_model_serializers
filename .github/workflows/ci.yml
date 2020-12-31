@@ -17,6 +17,8 @@ jobs:
             rails-version: 5.2
           - ruby-version: 2.6
             rails-version: 6.0
+          - ruby-version: 2.6
+            rails-version: 6.1
 
     continue-on-error: ${{ endsWith(matrix.ruby-version, 'head') }}
 
