@@ -15,6 +15,7 @@ Misc:
 Fixes:
 
 - [#2398](https://github.com/rails-api/active_model_serializers/pull/2398) Update rails dependency to < 6.2 (@ritikesh)
+- [#2399](https://github.com/rails-api/active_model_serializers/pull/2399) Handles edge case where requested current_page > total_pages (@f3z0)
 
 ### [v0.10.11 (2020-12-04)](https://github.com/rails-api/active_model_serializers/compare/v0.10.10...v0.10.11)
 
@@ -534,7 +535,7 @@ Misc:
 - [#888](https://github.com/rails-api/active_model_serializers/pull/888) Changed duplicated test name in action controller test (@groyoh)
 - [#890](https://github.com/rails-api/active_model_serializers/pull/890) Remove unused method `def_serializer` (@JustinAiken)
 - [#887](https://github.com/rails-api/active_model_serializers/pull/887) Fixing tests on JRuby (@joaomdmoura)
-- [#885](https://github.com/rails-api/active_model_serializers/pull/885) Updates rails versions for test and dev (@tonyta)
+- [#885](https://github.com/rails-api/active_model_serializers/pull/885) Updates rails   for test and dev (@tonyta)
 
 ### [v0.10.0.rc1 (2015-04-22)](https://github.com/rails-api/active_model_serializers/compare/86fc7d7227f3ce538fcb28c1e8c7069ce311f0e1...v0.10.0.rc1)
 - [#810](https://github.com/rails-api/active_model_serializers/pull/810) Adding Fragment Cache to AMS (@joaomdmoura)
