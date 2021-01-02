@@ -536,7 +536,7 @@ Misc:
 - [#888](https://github.com/rails-api/active_model_serializers/pull/888) Changed duplicated test name in action controller test (@groyoh)
 - [#890](https://github.com/rails-api/active_model_serializers/pull/890) Remove unused method `def_serializer` (@JustinAiken)
 - [#887](https://github.com/rails-api/active_model_serializers/pull/887) Fixing tests on JRuby (@joaomdmoura)
-- [#885](https://github.com/rails-api/active_model_serializers/pull/885) Updates rails   for test and dev (@tonyta)
+- [#885](https://github.com/rails-api/active_model_serializers/pull/885) Updates rails versions for test and dev (@tonyta)
 
 ### [v0.10.0.rc1 (2015-04-22)](https://github.com/rails-api/active_model_serializers/compare/86fc7d7227f3ce538fcb28c1e8c7069ce311f0e1...v0.10.0.rc1)
 - [#810](https://github.com/rails-api/active_model_serializers/pull/810) Adding Fragment Cache to AMS (@joaomdmoura)
