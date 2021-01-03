@@ -90,6 +90,18 @@ module ActiveModelSerializers
           }
         end
 
+        def greater_than_last_page_links
+          {
+            links: {
+              self: "#{URI}?page%5Bnumber%5D=4&page%5Bsize%5D=2",
+              first: "#{URI}?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+              prev: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2",
+              next: nil,
+              last: "#{URI}?page%5Bnumber%5D=3&page%5Bsize%5D=2"
+            }
+          }
+        end
+
         def expected_response_when_unpaginatable
           data
         end
@@ -122,6 +134,13 @@ module ActiveModelSerializers
           end
         end
 
+        def expected_response_with_greater_than_last_page_pagination_links
+          {}.tap do |hash|
+            hash[:data] = []
+            hash.merge! greater_than_last_page_links
+          end
+        end
+
         def expected_response_with_empty_collection_pagination_links
           {}.tap do |hash|
             hash[:data] = []
@@ -139,6 +158,18 @@ module ActiveModelSerializers
           adapter = load_adapter(using_will_paginate, mock_request)
 
           assert_equal expected_response_with_pagination_links, adapter.serializable_hash
+        end
+
+        def test_pagination_links_invalid_current_page_using_kaminari
+          adapter = load_adapter(using_kaminari(4), mock_request)
+
+          assert_equal expected_response_with_greater_than_last_page_pagination_links, adapter.serializable_hash
+        end
+
+        def test_pagination_links_invalid_current_page_using_will_paginate
+          adapter = load_adapter(using_will_paginate(4), mock_request)
+
+          assert_equal expected_response_with_greater_than_last_page_pagination_links, adapter.serializable_hash
         end
 
         def test_pagination_links_with_additional_params

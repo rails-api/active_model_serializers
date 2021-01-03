@@ -8,6 +8,8 @@ Features:
 
 Fixes:
 
+- [#2399](https://github.com/rails-api/active_model_serializers/pull/2399) Handles edge case where requested current_page > total_pages (@f3z0)
+
 Misc:
 
 ### [v0.10.12 (2020-12-10)](https://github.com/rails-api/active_model_serializers/compare/v0.10.11...v0.10.12)
