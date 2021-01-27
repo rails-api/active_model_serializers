@@ -1,4 +1,4 @@
-# [UNRELEASED](https://github.com/rails-api/active_model_serializers/compare/v0.8.4...0-08-stable)
+# [UNRELEASED](https://github.com/rails-api/active_model_serializers/compare/v0.8.4...0-8-stable)
 
 - [#2196](https://github.com/rails-api/active_model_serializers/pull/2196) Fix CI for Rails 5 (@bf4)
 
