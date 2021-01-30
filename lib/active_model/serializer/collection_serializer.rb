@@ -40,7 +40,7 @@ module ActiveModel
         return root if root
         # 1. get from options[:serializer] for empty resource collection
         key = object.empty? &&
-          (explicit_serializer_class = options[:serializer]) &&
+          (explicit_serializer_class = options[:serializer] || options[:each_serializer]) &&
           explicit_serializer_class._type
         # 2. get from first serializer instance in collection
         key ||= (serializer = serializers.first) && serializer.json_key

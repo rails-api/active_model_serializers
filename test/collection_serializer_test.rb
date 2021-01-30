@@ -18,8 +18,8 @@ module ActiveModel
           instance_options
         end
       end
-      class MessagesSerializer < ActiveModel::Serializer
-        type 'messages'
+      class MessageSerializer < ActiveModel::Serializer
+        type 'message'
       end
 
       def setup
@@ -109,7 +109,13 @@ module ActiveModel
 
       def test_json_key_with_empty_resources_with_serializer
         resource = []
-        serializer = collection_serializer.new(resource, serializer: MessagesSerializer)
+        serializer = collection_serializer.new(resource, serializer: MessageSerializer)
+        assert_equal 'messages', serializer.json_key
+      end
+
+      def test_json_key_with_empty_resources_with_each_serializer
+        resource = []
+        serializer = collection_serializer.new(resource, each_serializer: MessageSerializer)
         assert_equal 'messages', serializer.json_key
       end
 
