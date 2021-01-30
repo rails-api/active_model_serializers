@@ -56,12 +56,9 @@ module ActiveModelSerializers
     def serializer
       @serializer ||=
         begin
+          serializer_opts[:serializer] = serializer_opts.delete(:each_serializer) if serializer_opts.key?(:each_serializer)
           @serializer = serializer_opts.delete(:serializer)
           @serializer ||= ActiveModel::Serializer.serializer_for(resource, serializer_opts)
-
-          if serializer_opts.key?(:each_serializer)
-            serializer_opts[:serializer] = serializer_opts.delete(:each_serializer)
-          end
           @serializer
         end
     end

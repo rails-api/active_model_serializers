@@ -65,8 +65,7 @@ module ActiveModelSerializers
         resource.errors.add(:title, 'must be amazing')
         resources << ModelWithErrors.new
         serializable_resource = SerializableResource.new(
-          resources, serializer: ActiveModel::Serializer::ErrorsSerializer,
-                     each_serializer: ActiveModel::Serializer::ErrorSerializer,
+          resources, each_serializer: ActiveModel::Serializer::ErrorsSerializer,
                      adapter: :json_api
         )
         expected_response_document = {
