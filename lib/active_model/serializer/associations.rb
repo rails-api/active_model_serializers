@@ -48,7 +48,13 @@ module ActiveModel
 
         def target_serializer
           serializer = option(:serializer)
-          serializer.is_a?(String) ? serializer.constantize : serializer
+          if serializer.is_a?(String)
+            serializer.constantize
+          elsif serializer.is_a?(Symbol)
+            source_serializer.send(serializer)
+          else
+            serializer
+          end
         end
 
         def source_serializer
