@@ -22,6 +22,8 @@ module ActiveModel
         type 'messages'
       end
 
+      class NonTypeSerializer < ActiveModel::Serializer; end
+
       def setup
         @singular_model = SingularModel.new
         @has_many_model = HasManyModel.new
@@ -95,16 +97,34 @@ module ActiveModel
         resource = []
         resource.define_singleton_method(:name) { nil }
         serializer = collection_serializer.new(resource)
-        assert_raise ArgumentError do
+        assert_raise ActiveModel::Serializer::CollectionSerializer::CannotInferRootKeyError do
           serializer.json_key
         end
       end
 
       def test_json_key_with_resource_without_name_and_no_serializers
         serializer = collection_serializer.new([])
-        assert_raise ArgumentError do
+        assert_raise ActiveModel::Serializer::CollectionSerializer::CannotInferRootKeyError do
           serializer.json_key
         end
+      end
+
+      def test_json_key_with_empty_resources_with_non_type_serializer
+        resource = []
+        serializer = collection_serializer.new(resource, serializer: NonTypeSerializer)
+        assert_raise ActiveModel::Serializer::CollectionSerializer::CannotInferRootKeyError do
+          serializer.json_key
+        end
+      end
+
+      def test_json_key_with_empty_resources_with_non_type_serializer_when_raise_cannot_infer_root_key_error_is_false
+        previous_raise_cannot_infer_root_key_error = ActiveModelSerializers.config.raise_cannot_infer_root_key_error
+        ActiveModelSerializers.config.raise_cannot_infer_root_key_error = false
+        resource = []
+        serializer = collection_serializer.new(resource, serializer: NonTypeSerializer)
+        assert_nil serializer.json_key
+      ensure
+        ActiveModelSerializers.config.raise_cannot_infer_root_key_error = previous_raise_cannot_infer_root_key_error
       end
 
       def test_json_key_with_empty_resources_with_serializer
