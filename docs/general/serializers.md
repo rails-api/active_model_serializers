@@ -66,7 +66,7 @@ Where:
   - `polymorphic:` defines if polymorphic relation type should be nested in serialized association.
   - `type:` the resource type as used by JSON:API, especially on a `belongs_to` relationship.
   - `class_name:` the (String) model name used to determine `type`, when `type` is not given. e.g. `class_name: "Comment"` would imply the type `comments`
-  - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object.
+  - `foreign_key:` used by JSON:API on a `belongs_to` relationship to avoid unnecessarily loading the association object. This can also be used to override the `id` attribute set in the [`relationships` data field](http://jsonapi.org/format/#document-resource-object-relationships) if you are exposing a different value to the outside world. For example, if you are building an API and you want your consumers to access data via UUID instead of your database's ID, specifying the name of the foreign key like `foreign_key: :user_uuid` will cause the `relationships.data.id` to be set to the `#user_uuid` return value.
   - `namespace:` used when looking up the serializer and `serializer` is not given.  Falls back to the parent serializer's `:namespace` instance options, which, when present, comes from the render options. See [Rendering#namespace](rendering.md#namespace] for more details.
 - optional: `&block` is a context that returns the association's attributes.
   - prevents `association_name` method from being called.
