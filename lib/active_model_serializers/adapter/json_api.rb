@@ -53,7 +53,7 @@ module ActiveModelSerializers
       def initialize(serializer, options = {})
         super
         @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
-        @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
+        @fieldset = options[:fieldset] || fields_to_fieldset(options.delete(:fields))
       end
 
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
@@ -335,6 +335,7 @@ module ActiveModelSerializers
         resource_object
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def data_for(serializer, include_slice)
         data = serializer.fetch(self) do
           resource_object = ResourceIdentifier.new(serializer, instance_options).as_json
@@ -348,11 +349,12 @@ module ActiveModelSerializers
         data.tap do |resource_object|
           next if resource_object.nil?
           # NOTE(BF): the attributes are cached above, separately from the relationships, below.
-          requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
+          requested_associations = (fieldset && fieldset.fields_for(resource_object[:type])) || '*'
           relationships = relationships_for(serializer, requested_associations, include_slice)
           resource_object[:relationships] = relationships if relationships.any?
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       # {http://jsonapi.org/format/#document-resource-object-relationships Document Resource Object Relationship}
       # relationships
@@ -528,6 +530,12 @@ module ActiveModelSerializers
       # {http://jsonapi.org/format/#document-meta Docment Meta}
       def meta_for(serializer)
         Meta.new(serializer).as_json
+      end
+
+      def fields_to_fieldset(fields)
+        return fields if fields.nil?
+
+        ActiveModel::Serializer::Fieldset.new(fields)
       end
     end
   end
