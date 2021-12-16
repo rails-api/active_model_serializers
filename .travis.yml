@@ -32,8 +32,6 @@ _rails_supported_versions:
   - &rails_5_2_jruby RAILS_VERSION=5.2 JRUBY_OPTS='--dev -J-Xmx1024M --debug'
   - &rails_6_0 RAILS_VERSION=6.0
   - &rails_6_0_jruby RAILS_VERSION=6.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'
-  - &rails_7_0 RAILS_VERSION=7.0
-  - &rails_7_0_jruby RAILS_VERSION=7.0 JRUBY_OPTS='--dev -J-Xmx1024M --debug'
   - &rails_master RAILS_VERSION=master
   - &rails_master_jruby RAILS_VERSION=master JRUBY_OPTS='--dev -J-Xmx1024M --debug'
 
@@ -61,7 +59,6 @@ env:
     - *rails_5_1
     - *rails_5_2
     - *rails_6_0
-    - *rails_7_0
     - *rails_master
 
 rvm:
@@ -90,7 +87,6 @@ jobs:
     - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_5_1_jruby }
     - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_5_2_jruby }
     - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_6_0_jruby }
-    - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_7_0_jruby }
     - { rvm: *jruby_9_2,  jdk: *jdk_8, env: *rails_master_jruby }
 
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_4_2_jruby }
@@ -98,7 +94,6 @@ jobs:
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_5_1_jruby }
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_5_2_jruby }
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_6_0_jruby }
-    - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_7_0_jruby }
     - { rvm: *jruby_head, jdk: *jdk_8, env: *rails_master_jruby }
 
   exclude:
@@ -111,13 +106,6 @@ jobs:
     - { rvm: *ruby_2_1,  env: *rails_6_0 }
     - { rvm: *ruby_2_2,  env: *rails_6_0 }
     - { rvm: *ruby_2_3,  env: *rails_6_0 }
-
-    - { rvm: *ruby_2_1,  env: *rails_7_0 }
-    - { rvm: *ruby_2_2,  env: *rails_7_0 }
-    - { rvm: *ruby_2_3,  env: *rails_7_0 }
-    - { rvm: *ruby_2_4,  env: *rails_7_0 }
-    - { rvm: *ruby_2_5,  env: *rails_7_0 }
-    - { rvm: *ruby_2_6,  env: *rails_7_0 }
 
     - { rvm: *ruby_2_1,  env: *rails_master }
     - { rvm: *ruby_2_2,  env: *rails_master }
