@@ -7,6 +7,7 @@ module ActionController
     class ImplicitSerializerTest < ActionController::TestCase
       class ImplicitSerializationTestController < ActionController::Base
         include SerializationTesting
+
         def render_using_implicit_serializer
           @profile = Profile.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
           render json: @profile
@@ -75,8 +76,12 @@ module ActionController
           render json: [{ error: 'Result is Invalid' }]
         end
 
+        # HACK: to prevent the resetting of instance variables after each request in Rails 7
+        # see https://github.com/rails/rails/pull/43735
+        def clear_instance_variables_between_requests; end
+
         def update_and_render_object_with_cache_enabled
-          @post.updated_at = Time.zone.now
+          @post.updated_at = Time.zone.now # requires hack above to prevent `NoMethodError: undefined method `updated_at=' for nil:NilClass`
 
           generate_cached_serializer(@post)
           render json: @post

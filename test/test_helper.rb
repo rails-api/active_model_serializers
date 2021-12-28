@@ -49,7 +49,6 @@ end
 
 require 'support/rails_app'
 
-require 'support/rails_7_patch'
 require 'support/ruby_2_6_rails_4_2_patch'
 
 # require "rails/test_help"
