@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.12...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.13...0-10-stable)
 
 Breaking changes:
 
@@ -8,9 +8,13 @@ Features:
 
 Fixes:
 
-- [#2399](https://github.com/rails-api/active_model_serializers/pull/2399) Handles edge case where requested current_page > total_pages (@f3z0)
-
 Misc:
+
+### [v0.10.13 (2022-01013)](https://github.com/rails-api/active_model_serializers/compare/v0.10.12...v0.10.13)
+
+Fixes:
+
+- [#2399](https://github.com/rails-api/active_model_serializers/pull/2399) Handles edge case where requested current_page > total_pages (@f3z0)
 
 ### [v0.10.12 (2020-12-10)](https://github.com/rails-api/active_model_serializers/compare/v0.10.11...v0.10.12)
 
