@@ -60,7 +60,7 @@ namespace :test do
       end or fail 'Failures' # rubocop:disable Style/AndOr
     end
     bundler_method =
-      if Bundler.method_defined?(:with_unbundled_env)
+      if Bundler.respond_to?(:with_unbundled_env)
         :with_unbundled_env
       else
         :with_clean_env
