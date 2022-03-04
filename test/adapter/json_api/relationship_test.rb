@@ -53,6 +53,24 @@ module ActiveModelSerializers
           ActiveModelSerializers.config.jsonapi_use_foreign_key_on_belongs_to_relationship = original_config
         end
 
+        def test_relationship_with_model_and_belongs_to_id_on_self_and_use_foreign_key_false
+          original_config = ActiveModelSerializers.config.jsonapi_use_foreign_key_on_belongs_to_relationship
+          ActiveModelSerializers.config.jsonapi_use_foreign_key_on_belongs_to_relationship = true
+
+          expected = { data: { id: 'ABC', type: 'blogs' } }
+
+          model_attributes = { blog: Blog.new(id: 'ABC'), blog_id: 1 }
+          relationship_name = :blog
+          model = new_model(model_attributes)
+          actual = build_serializer_and_serialize_relationship(model, relationship_name) do
+            belongs_to :blog, use_foreign_key: false
+          end
+
+          assert_equal(expected, actual)
+        ensure
+          ActiveModelSerializers.config.jsonapi_use_foreign_key_on_belongs_to_relationship = original_config
+        end
+
         def test_relationship_with_data_array
           expected = {
             data: [

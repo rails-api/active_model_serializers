@@ -98,6 +98,7 @@ module ActiveModelSerializers
         def belongs_to_id_on_self?(association)
           parent_serializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship &&
             association.belongs_to? &&
+            association.reflection.options.fetch(:use_foreign_key, true) &&
             parent_serializer.object.respond_to?(association.reflection.foreign_key)
         end
       end
