@@ -174,6 +174,41 @@ module ActiveModel
         assert_equal expected, actual
       end
 
+      class BelongsToPolymorphicBlogModelSerializer < ActiveModel::Serializer
+        type :posts
+        belongs_to :blog, polymorphic: true
+      end
+
+      def test_works_for_empty_polymorphic_relationship
+        attributes = { id: 1, title: 'Belongs to Blog', blog: Blog.new(id: 5) }
+        post = BelongsToBlogModel.new(attributes)
+        class << post
+          def blog
+            nil
+          end
+
+          def blog_id
+            nil
+          end
+
+          def blog_type
+            nil
+          end
+        end
+
+        actual =
+          begin
+            original_option = BelongsToPolymorphicBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship
+            BelongsToPolymorphicBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = true
+            serializable(post, adapter: :json_api, serializer: BelongsToPolymorphicBlogModelSerializer).as_json
+          ensure
+            BelongsToPolymorphicBlogModelSerializer.config.jsonapi_use_foreign_key_on_belongs_to_relationship = original_option
+          end
+        expected = { data: { id: '1', type: 'posts', relationships: { blog: { data: nil } } } }
+
+        assert_equal expected, actual
+      end
+
       class ExternalBlog < Blog
         attributes :external_id
       end
