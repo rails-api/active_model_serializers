@@ -151,8 +151,7 @@ module ActiveModelSerializers
           hash[:links].update(pagination_links_for(serializer))
         end
 
-        hash[:meta] = instance_options[:meta] unless instance_options[:meta].blank?
-
+        hash[:meta] = instance_options[:meta]
         hash
       end
       # rubocop:enable Metrics/CyclomaticComplexity
