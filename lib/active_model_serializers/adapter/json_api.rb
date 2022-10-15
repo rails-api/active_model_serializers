@@ -152,6 +152,10 @@ module ActiveModelSerializers
         end
 
         hash[:meta] = instance_options[:meta]
+        
+        if instance_options[:meta].blank?
+          hash[:meta] ||= {}
+        end
         hash
       end
       # rubocop:enable Metrics/CyclomaticComplexity
