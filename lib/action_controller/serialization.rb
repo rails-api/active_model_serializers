@@ -59,14 +59,23 @@ module ActionController
 
     private
 
+    def inherited(subclass)
+      super
+      subclass.class_eval do
+        @namespace_for_serializer ||= nil
+      end
+    end
+
     def namespace_for_serializer
       @namespace_for_serializer ||= namespace_for_class(self.class) unless namespace_for_class(self.class) == Object
     end
 
-    def namespace_for_class(klass)
-      if Module.method_defined?(:module_parent)
+    if Module.method_defined?(:module_parent)
+      def namespace_for_class(klass)
         klass.module_parent
-      else
+      end
+    else
+      def namespace_for_class(klass)
         klass.parent
       end
     end
