@@ -45,6 +45,11 @@ module ActionController
       end
     end
 
+    def initialize(...)
+      super
+      @namespace_for_serializer = nil
+    end
+
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
         serializer = build_json_serializer(resource, options)
@@ -59,15 +64,9 @@ module ActionController
 
     private
 
-    def inherited(subclass)
-      super
-      subclass.class_eval do
-        @namespace_for_serializer ||= nil
-      end
-    end
-
     def namespace_for_serializer
-      @namespace_for_serializer ||= namespace_for_class(self.class) unless namespace_for_class(self.class) == Object
+      @namespace_for_serializer ||= namespace_for_class(self.class)
+      @namespace_for_serializer unless @namespace_for_serializer == Object
     end
 
     if Module.method_defined?(:module_parent)
