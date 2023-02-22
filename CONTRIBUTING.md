@@ -51,7 +51,7 @@ please adhere to these standards:
 - Provide a description of the changes contained in the pull request.
 - Note any specific areas that should be reviewed.
 - Include tests.
-- The test suite must pass on [supported Ruby versions](.travis.yml)
+- The test suite must pass on [supported Ruby versions](.github/workflows/ci.yml)
 - Include updates to the [documentation](https://github.com/rails-api/active_model_serializers/tree/master/docs)
   where applicable.
 - Update the
@@ -79,7 +79,7 @@ and bundling gems.  (save this script somewhere executable and run from top of A
 ```bash
 #!/usr/bin/env bash
 
-rcommand='puts YAML.load_file("./.travis.yml")["env"]["matrix"].join(" ").gsub("RAILS_VERSION=", "")'
+rcommand='puts YAML.load_file(".github/workflows/ci.yml").dig("jobs", "test", "strategy", "matrix", "include").map{|v| v["ruby-version"]}.join(" ")'
 versions=$(ruby -ryaml -e "$rcommand")
 
 for version in ${versions[@]}; do
