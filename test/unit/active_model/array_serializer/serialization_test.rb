@@ -49,6 +49,7 @@ module ActiveModel
         def object.serializer_class; CustomSerializer; end
 
         assert_equal CustomSerializer, Serializer.serializer_for(object)
+        assert_equal CustomSerializer, Serializer.serializer_for('Custom')
       end
     end
 

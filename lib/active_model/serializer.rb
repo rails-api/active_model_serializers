@@ -122,7 +122,11 @@ end
         "".tap do |klass_name|
           klass_name << "#{options[:namespace]}::" if options[:namespace]
           klass_name << options[:prefix].to_s.classify if options[:prefix]
-          klass_name << "#{resource.class.name}Serializer"
+          if resource.is_a?(String)
+            klass_name << "#{resource}Serializer"
+          else
+            klass_name << "#{resource.class.name}Serializer"
+          end
         end
       end
 
