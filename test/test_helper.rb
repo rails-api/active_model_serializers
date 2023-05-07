@@ -2,6 +2,8 @@ require 'bundler/setup'
 require 'minitest/autorun'
 require 'active_model_serializers'
 require 'fixtures/poro'
+require 'rails-controller-testing'
+Rails::Controller::Testing.install
 
 # Ensure backward compatibility with Minitest 4
 Minitest::Test = MiniTest::Unit::TestCase unless defined?(Minitest::Test)
