@@ -66,10 +66,14 @@ end
             ArraySerializer
           end
         else
-          klass_name = build_serializer_class(resource, options)
-          Serializer.serializers_cache.fetch_or_store(klass_name) do
-            _const_get(klass_name)
-          end
+          search_list = build_serializer_class_list(resource, options)
+          result = search_list.map do |klass_name|
+                     Serializer.serializers_cache.fetch_or_store(klass_name) do
+                       _const_get(klass_name)
+                     end
+                   end
+
+          result.find { |serializer| !serializer.nil? }
         end
       end
 
@@ -116,6 +120,12 @@ end
         attr = attr.to_s.gsub(/\?\Z/, '')
         attr = attr.to_sym if symbolized
         attr
+      end
+
+      def build_serializer_class_list(resource, options)
+        list = []
+        list << build_serializer_class(resource, options)
+        list << build_serializer_class(resource.class.name.demodulize, {})
       end
 
       def build_serializer_class(resource, options)
