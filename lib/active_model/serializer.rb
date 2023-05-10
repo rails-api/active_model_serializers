@@ -125,6 +125,7 @@ end
       def build_serializer_class_list(resource, options)
         list = []
         list << build_serializer_class(resource, options)
+        list << build_serializer_class(resource, {})
         list << build_serializer_class(resource.class.name.demodulize, {})
       end
 
