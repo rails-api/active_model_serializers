@@ -18,6 +18,19 @@ end
 ###
 ## Models
 ###
+
+module TestNamespace2
+  class Test < Model
+    attr_writer :sub_test
+
+    def sub_test
+      @sub_test ||= TestNamespace2::SubTest.new(name: 'N1', description: 'D1')
+    end
+  end
+
+  class SubTest < Model; end
+end
+
 class User < Model
   def profile
     @profile ||= Profile.new(name: 'N1', description: 'D1')
@@ -101,6 +114,24 @@ end
 ###
 ## Serializers
 ###
+
+module TestNamespace2
+  class TestSerializer < ActiveModel::Serializer
+    attributes :name, :email
+
+    has_one :sub_test
+  end
+
+  class SubTestSerializer < ActiveModel::Serializer
+    def description
+      description = object.read_attribute_for_serialization(:description)
+      scope ? "#{description} - #{scope}" : description
+    end
+
+    attributes :name, :description
+  end
+end
+
 class UserSerializer < ActiveModel::Serializer
   attributes :name, :email
 
