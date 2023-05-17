@@ -4,7 +4,7 @@
   <tr>
     <td>Build Status</td>
     <td>
-      <a href="https://travis-ci.org/rails-api/active_model_serializers"><img src="https://api.travis-ci.org/rails-api/active_model_serializers.svg?branch=0-10-stable" alt="Build Status" ></a>
+      <a href="https://github.com/rails-api/active_model_serializers/actions"><img src="https://github.com/rails-api/active_model_serializers/actions/workflows/ci.yml/badge.svg?branch=0-10-stable" alt="Build Status" ></a>
       <a href="https://ci.appveyor.com/project/bf4/active-model-serializers/branch/0-10-stable"><img src="https://ci.appveyor.com/api/projects/status/x6xdjydutm54gvyt/branch/master?svg=true" alt="Build status"></a>
     </td>
   </tr>
