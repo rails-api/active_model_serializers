@@ -49,6 +49,29 @@ module ActiveModel
         def object.serializer_class; CustomSerializer; end
 
         assert_equal CustomSerializer, Serializer.serializer_for(object)
+        assert_equal CustomSerializer, Serializer.serializer_for('Custom')
+      end
+    end
+
+    class ModelSerializationNamespaceTest < Minitest::Test
+      def test_namespace
+        test1 = TestNamespace2::Test.new(name: 'Test 1', email: 'test1@test.com', gender: 'M')
+        test2 = TestNamespace2::Test.new(name: 'Test 2', email: 'test2@test.com', gender: 'M')
+        sub_test1 = TestNamespace2::SubTest.new(name: 'Name 1', description: 'Description 1', comments: 'Comments 1')
+        sub_test2 = TestNamespace2::SubTest.new(name: 'Name 2', description: 'Description 2', comments: 'Comments 2')
+        test1.sub_test = sub_test1
+        test2.sub_test = sub_test2
+
+        array = [test1, test2]
+        serializer = ArraySerializer.new(array)
+
+        expected = [
+          { name: 'Test 1', email: 'test1@test.com', sub_test: { name: 'Name 1', description: 'Description 1' }},
+          { name: 'Test 1', email: 'test2@test.com', sub_test: { name: 'Name 2', description: 'Description 2' }}
+        ]
+
+        assert_equal expected, serializer.serializable_array
+        assert_equal expected, serializer.as_json
       end
     end
 

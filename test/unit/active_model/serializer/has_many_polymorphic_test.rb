@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class HasManyPolymorphicTest < ActiveModel::TestCase
+    class HasManyPolymorphicTest < Minitest::Test
       def setup
         @association = MailSerializer._associations[:attachments]
         @old_association = @association.dup

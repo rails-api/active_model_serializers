@@ -66,10 +66,14 @@ end
             ArraySerializer
           end
         else
-          klass_name = build_serializer_class(resource, options)
-          Serializer.serializers_cache.fetch_or_store(klass_name) do
-            _const_get(klass_name)
-          end
+          search_list = build_serializer_class_list(resource, options)
+          result = search_list.map do |klass_name|
+                     Serializer.serializers_cache.fetch_or_store(klass_name) do
+                       _const_get(klass_name)
+                     end
+                   end
+
+          result.find { |serializer| !serializer.nil? }
         end
       end
 
@@ -118,11 +122,22 @@ end
         attr
       end
 
+      def build_serializer_class_list(resource, options)
+        list = []
+        list << build_serializer_class(resource, options)
+        list << build_serializer_class(resource, {})
+        list << build_serializer_class(resource.class.name.demodulize, {})
+      end
+
       def build_serializer_class(resource, options)
         "".tap do |klass_name|
           klass_name << "#{options[:namespace]}::" if options[:namespace]
           klass_name << options[:prefix].to_s.classify if options[:prefix]
-          klass_name << "#{resource.class.name}Serializer"
+          if resource.is_a?(String)
+            klass_name << "#{resource}Serializer"
+          else
+            klass_name << "#{resource.class.name}Serializer"
+          end
         end
       end
 

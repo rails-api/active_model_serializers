@@ -9,7 +9,7 @@ module ActionController
         end
 
         def render_text
-          render text: 'ok'
+          render plain: 'ok'
         end
 
         def render_template

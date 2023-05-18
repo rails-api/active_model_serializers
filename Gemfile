@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 
 gemspec
 
-version = ENV["RAILS_VERSION"] || "4.2"
+default_rails_version = RUBY_VERSION > '2.5' ? '5.2' : '4.2'
+version = ENV['RAILS_VERSION'] || default_rails_version
 
 if version == 'master'
   gem 'rack', github: 'rack/rack'
@@ -27,6 +28,7 @@ else
   gem 'activemodel', gem_version
   gem 'actionpack', gem_version
   gem 'activerecord', gem_version, group: :test
+  gem 'rails-controller-testing' if version > '4.2'
 end
 
 if RUBY_VERSION < '2'
