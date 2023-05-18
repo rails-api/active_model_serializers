@@ -1,6 +1,10 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.8...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.9...0-9-stable)
+
+### [v0.9.9 (2023-05-18)](https://github.com/rails-api/active_model_serializers/compare/v0.9.8...v0.9.8)
+
+- [#2446](https://github.com/rails-api/active_model_serializers/pull/2446) Fix Ruby > 2.5 constant lookup. (@Physium)
 
 ### [v0.9.8 (2020-12-10)](https://github.com/rails-api/active_model_serializers/compare/v0.9.7...v0.9.8)
 
