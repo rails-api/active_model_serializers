@@ -66,8 +66,8 @@ module ActiveModel
         serializer = ArraySerializer.new(array)
 
         expected = [
-          { name: 'Test 1', email: 'test1@test.com', sub_test: { name: 'Name 1', description: 'Description 1' }},
-          { name: 'Test 1', email: 'test2@test.com', sub_test: { name: 'Name 2', description: 'Description 2' }}
+          { name: 'Test 1', email: 'test1@test.com', sub_test: { name: 'Name 1', description: 'Description 1' } },
+          { name: 'Test 2', email: 'test2@test.com', sub_test: { name: 'Name 2', description: 'Description 2' } }
         ]
 
         assert_equal expected, serializer.serializable_array
