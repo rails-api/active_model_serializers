@@ -29,6 +29,8 @@ jobs:
           #   rails-version: '5.2'
           # Old Rubies and Rails
           - ruby-version: '2.5'
+            rails-version: '5.2'
+          - ruby-version: '2.5'
             rails-version: '4.2'
             bundler: '1'
           - ruby-version: '2.4'
