@@ -1,0 +1,77 @@
+---
+
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Ruby ${{ matrix.ruby-version }} Rails ${{ matrix.rails-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Recent Rubies and Rails
+          # - ruby-version: '3.1'
+          #   rails-version: '7.0'
+          # - ruby-version: '3.0'
+          #   rails-version: '7.0'
+          # - ruby-version: '2.7'
+          #   rails-version: '7.0'
+          # - ruby-version: '2.6'
+          #   rails-version: '6.1'
+          # - ruby-version: '2.6'
+          #   rails-version: '6.0'
+          # - ruby-version: '2.7'
+          #   rails-version: '6.0'
+          # - ruby-version: '2.6'
+          #   rails-version: '5.2'
+          # Old Rubies and Rails
+          - ruby-version: '2.7'
+            rails-version: '5.2'
+          - ruby-version: '2.6'
+            rails-version: '5.2'
+          - ruby-version: '2.5'
+            rails-version: '5.2'
+          - ruby-version: '2.5'
+            rails-version: '4.2'
+            bundler: '1'
+          - ruby-version: '2.4'
+            rails-version: '5.2'
+            bundler: '1'
+          - ruby-version: '2.4'
+            rails-version: '4.2'
+            bundler: '1'
+#          - ruby-version: '2.4'
+#            rails-version: '4.1'
+#            bundler: '1'
+#          - ruby-version: '2.4'
+#            rails-version: '4.0'
+#            bundler: '1'
+
+    continue-on-error: "${{ endsWith(matrix.ruby-version, 'head') }}"
+
+    env:
+      CI: "1"
+      BUNDLE_JOBS: 4
+      BUNDLE_RETRY: 3
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: "Build Ruby"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version:   "${{ matrix.ruby-version }}"
+          bundler:        "${{ matrix.bundler || 2 }}"
+          bundler-cache:  true
+        env:
+          RAILS_VERSION: ${{ matrix.rails-version }}
+
+      - name: "Run tests"
+        run: |
+          bundle exec rake
+        env:
+          RAILS_VERSION: ${{ matrix.rails-version }}

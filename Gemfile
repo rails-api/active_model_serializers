@@ -36,6 +36,9 @@ if RUBY_VERSION < '2'
 end
 
 if ENV['CI']
+  # loofah has a breaking change 2.21 onwards which does not work with < 2.5 ruby
+  gem 'loofah', '< 2.21' if RUBY_VERSION < '2.5'
+
   if RUBY_VERSION < '2.4'
     # Windows: An error occurred while installing nokogiri (1.8.0)
     gem 'nokogiri', '< 1.7', platforms: @windows_platforms
