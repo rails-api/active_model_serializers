@@ -53,7 +53,8 @@ module ActiveModelSerializers
       def initialize(serializer, options = {})
         super
         @include_directive = JSONAPI::IncludeDirective.new(options[:include], allow_wildcard: true)
-        @fieldset = options[:fieldset] || ActiveModel::Serializer::Fieldset.new(options.delete(:fields))
+        option_fields = options.delete(:fields)
+        @fieldset = ActiveModel::Serializer::Fieldset.new(option_fields) if option_fields
       end
 
       # {http://jsonapi.org/format/#crud Requests are transactional, i.e. success or failure}
@@ -348,7 +349,8 @@ module ActiveModelSerializers
         data.tap do |resource_object|
           next if resource_object.nil?
           # NOTE(BF): the attributes are cached above, separately from the relationships, below.
-          requested_associations = fieldset.fields_for(resource_object[:type]) || '*'
+          requested_fields = fieldset && fieldset.fields_for(resource_object[:type])
+          requested_associations = requested_fields || '*'
           relationships = relationships_for(serializer, requested_associations, include_slice)
           resource_object[:relationships] = relationships if relationships.any?
         end
