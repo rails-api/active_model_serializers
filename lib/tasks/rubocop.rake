@@ -31,7 +31,12 @@ else
     ]
     desc 'Execute rubocop'
     RuboCop::RakeTask.new(:rubocop) do |task|
-      task.options = ['--rails', '--display-cop-names', '--display-style-guide']
+      task.options = [
+        ('--rails' if Gem::Version.new(RuboCop::Version.version) < Gem::Version.new('0.72.0')),
+        '--display-cop-names',
+        '--display-style-guide',
+        ['--config', RUBY_VERSION < '3.0' ? '.rubocop_v0.yml' : '.rubocop_v1.yml']
+      ].compact
       task.formatters = ['progress']
       task.patterns = patterns
       task.fail_on_error = true
