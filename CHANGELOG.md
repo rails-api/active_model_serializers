@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.13...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.14...0-10-stable)
 
 Breaking changes:
 
@@ -10,7 +10,21 @@ Fixes:
 
 Misc:
 
-### [v0.10.13 (2022-01013)](https://github.com/rails-api/active_model_serializers/compare/v0.10.12...v0.10.13)
+### [v0.10.14 (2023-10-05)](https://github.com/rails-api/active_model_serializers/compare/v0.10.13...v0.10.14)
+
+Breaking changes:
+
+Features:
+
+Fixes:
+  - [#2427](https://github.com/rails-api/active_model_serializers/pull/2427) Fix checking of method defined or not (@y-yagi)
+
+Misc:
+  - [#2453](https://github.com/rails-api/active_model_serializers/pull/2453) Update gem requirement to allow Rails 7.1 (@schinery, @mediafinger)
+  - [#2451](https://github.com/rails-api/active_model_serializers/pull/2451) Upgrade to Ubuntu 22.04 on Github Actions (@wasifhossain)
+  - [#2442](https://github.com/rails-api/active_model_serializers/pull/2442) Remove travis settings (@ohbarye)
+
+### [v0.10.13 (2022-10-13)](https://github.com/rails-api/active_model_serializers/compare/v0.10.12...v0.10.13)
 
 Fixes:
 
