@@ -61,7 +61,7 @@ end
 group :test do
   platforms(*(@windows_platforms + [:ruby])) do
     if version == 'master' || version >= '6'
-      gem 'sqlite3', '~> 1.4'
+      gem 'sqlite3', '< 1.6'
     else
       gem 'sqlite3', '~> 1.3.13'
     end
@@ -86,6 +86,17 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rubocop', '~> 0.40.0', require: false
+  if RUBY_VERSION < '3.0'
+    gem 'rubocop', '~> 0.40.0', require: false
+  else
+    gem 'rubocop', '~> 1.56.0', require: false
+    gem 'rubocop-minitest', '~> 0.31.0', require: false
+    gem 'rubocop-rails', '~> 2.20.0', require: false
+    gem 'rubocop-rake', '~> 0.6.0', require: false
+  end
+  if version <= '5.0'
+    gem 'loofah', '< 2.21.0'
+    gem 'rails-html-sanitizer', '< 1.6.0'
+  end
   gem 'yard', require: false
 end
