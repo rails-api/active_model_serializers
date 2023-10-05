@@ -14,13 +14,13 @@ jobs:
         include:
           # Recent Rubies and Rails
           - ruby-version: '3.2'
-            rails-version: '7.0'
+            rails-version: '7.1'
           - ruby-version: '3.1'
-            rails-version: '7.0'
+            rails-version: '7.1'
           - ruby-version: '3.0'
-            rails-version: '7.0'
+            rails-version: '7.1'
           - ruby-version: '2.7'
-            rails-version: '7.0'
+            rails-version: '7.1'
           - ruby-version: '2.6'
             rails-version: '6.1'
           - ruby-version: '2.6'
