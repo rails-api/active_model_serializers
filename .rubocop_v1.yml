@@ -1,0 +1,329 @@
+require:
+  - rubocop-rails
+  - rubocop-minitest
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 3.0
+  Exclude:
+    - !ruby/regexp /(vendor|bundle|bin|db|tmp)\/.*/
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  # https://github.com/bbatsov/rubocop/blob/master/manual/caching.md
+  # https://github.com/bbatsov/rubocop/blob/e8680418b351491e111a18cf5b453fc07a3c5239/config/default.yml#L60-L77
+  UseCache: true
+  CacheRootDirectory: tmp
+
+Bundler/DuplicatedGem:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+Layout/ArgumentAlignment:
+  Enabled: false
+
+Layout/ClosingHeredocIndentation:
+  Enabled: false
+
+Layout/DotPosition:
+  EnforcedStyle: leading
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: false
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: false
+
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 251 # TODO: Lower to 80
+
+Layout/MultilineOperationIndentation:
+  Enabled: false
+  # EnforcedStyle: indented
+
+Layout/SpaceInLambdaLiteral:
+  Enabled: false
+
+Lint/BooleanSymbol:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
+
+Lint/DisjunctiveAssignmentInConstructor:
+  Enabled: false
+
+Lint/MissingCopEnableDirective:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/NestedMethodDefinition:
+  Enabled: false
+  Exclude:
+    - test/action_controller/serialization_test.rb
+
+Lint/OrderedMagicComments:
+  Enabled: false
+
+Lint/RedundantCopDisableDirective:
+  Enabled: false
+
+Lint/SendWithMixinArgument:
+  Enabled: false
+
+Lint/UselessAccessModifier:
+  Enabled: false
+
+Lint/UselessMethodDefinition:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 44 # TODO: Lower to 15
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Max: 261 # TODO: Lower to 100
+  Exclude:
+    - test/**/*.rb
+
+Metrics/CyclomaticComplexity:
+  Max: 8 # TODO: Lower to 6
+
+Metrics/MethodLength:
+  Max: 106 # TODO: Lower to 10
+
+Metrics/PerceivedComplexity:
+  Max: 12 # TODO: Lower to 7
+
+Minitest/AssertEmptyLiteral:
+  Enabled: false
+
+Minitest/AssertIncludes:
+  Enabled: false
+
+Minitest/AssertInstanceOf:
+  Enabled: false
+
+Minitest/AssertRespondTo:
+  Enabled: false
+
+Minitest/AssertTruthy:
+  Enabled: false
+
+Minitest/RefuteFalse:
+  Enabled: false
+
+Minitest/RefuteRespondTo:
+  Enabled: false
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
+Rails/ApplicationController:
+  Enabled: false
+
+Rails/ApplicationRecord:
+  Enabled: false
+
+Rails/IndexWith:
+  Enabled: false
+
+Rails/Present:
+  Enabled: false
+
+Rails/RakeEnvironment:
+  Enabled: false
+
+Rails/RedundantReceiverInWithOptions:
+  Enabled: false
+
+Rails/RefuteMethods:
+  Enabled: false
+
+Rake/Desc:
+  Enabled: false
+
+Rake/DuplicateTask:
+  Enabled: false
+
+Security/JSONLoad:
+  Enabled: false
+
+Style/Alias:
+  EnforcedStyle: prefer_alias
+
+#Style/AlignParameters:
+#  EnforcedStyle: with_fixed_indentation
+
+Style/BlockDelimiters:
+  Enabled: true
+  EnforcedStyle: line_count_based
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: nested
+
+Style/ClassEqualityComparison:
+  Enabled: false
+
+Style/CombinableLoops:
+  Enabled: false
+
+Style/CommentAnnotation:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/EmptyElse:
+  EnforcedStyle: empty
+
+Style/EmptyMethod:
+  Enabled: false
+
+Style/Encoding:
+  Enabled: false
+
+Style/ExpandPathArguments:
+  Enabled: false
+
+Style/ExplicitBlockArgument:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
+Style/GlobalStdStream:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/HashAsLastArrayItem:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/MissingElse:
+  Enabled: true
+  EnforcedStyle: case
+
+Style/MultipleComparison:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Style/RedundantAssignment:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false
+
+Style/RedundantCondition:
+  Enabled: false
+
+Style/RedundantFreeze:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: semantic
+
+Style/SoleNestedConditional:
+  Enabled: false
+
+Style/StderrPuts:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/TernaryParentheses:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
+  # EnforcedStyleForMultiline: no_comma
+
+Style/YodaCondition:
+  Enabled: false
+
+########## test_helper.rb sanity
+Style/EndBlock:
+  Exclude:
+    - test/test_helper.rb
+
+Style/SpecialGlobalVars:
+  Exclude:
+    - test/test_helper.rb
+
+Style/GlobalVars:
+  Exclude:
+    - test/test_helper.rb
+
+Style/AndOr:
+  Exclude:
+    - test/test_helper.rb
+    - 'lib/active_model/serializer/lint.rb'
+
+Style/Not:
+  Exclude:
+    - test/test_helper.rb
+
+Style/ClassCheck:
+  Exclude:
+    - test/test_helper.rb
