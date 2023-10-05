@@ -88,6 +88,7 @@ end
 group :development, :test do
   if RUBY_VERSION < '3.0'
     gem 'rubocop', '~> 0.40.0', require: false
+    gem 'rdoc', '6.3.3', require: false
   else
     gem 'rubocop', '~> 1.56.0', require: false
     gem 'rubocop-minitest', '~> 0.31.0', require: false
