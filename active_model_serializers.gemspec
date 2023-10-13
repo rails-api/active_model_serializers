@@ -40,7 +40,8 @@ Gem::Specification.new do |spec|
   # 'i18n,
   # 'tzinfo'
   spec.add_development_dependency 'minitest', ['~> 5.0', '< 5.11']
-  # 'thread_safe'
+
+  spec.add_dependency 'thread_safe','~> 0.3', '>= 0.3.4'
 
   spec.add_runtime_dependency 'jsonapi-renderer', ['>= 0.1.1.beta1', '< 0.3']
   spec.add_runtime_dependency 'case_transform', '>= 0.2'
