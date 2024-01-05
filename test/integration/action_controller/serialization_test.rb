@@ -13,7 +13,7 @@ module ActionController
 
       def test_render_using_implicit_serializer
         get :render_using_implicit_serializer
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1"}}', @response.body
       end
     end
@@ -35,7 +35,7 @@ module ActionController
 
       def test_render_using_implicit_serializer_and_scope
         get :render_using_implicit_serializer_and_scope
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_user"}}', @response.body
       end
     end
@@ -65,7 +65,7 @@ module ActionController
 
       def test_render_using_scope_set_in_default_serializer_options
         get :render_using_scope_set_in_default_serializer_options
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
     end
@@ -91,7 +91,7 @@ module ActionController
 
       def test_render_using_implicit_serializer_and_explicit_scope
         get :render_using_implicit_serializer_and_explicit_scope
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
     end
@@ -117,7 +117,7 @@ module ActionController
 
       def test_render_overriding_serialization_scope
         get :render_overriding_serialization_scope
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_admin"}}', @response.body
       end
     end
@@ -141,7 +141,7 @@ module ActionController
 
       def test_render_calling_serialization_scope
         get :render_calling_serialization_scope
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"profile":{"name":"Name 1","description":"Description 1 - current_user"}}', @response.body
       end
     end
@@ -157,7 +157,7 @@ module ActionController
 
       def test_render_using_json_dump
         get :render_using_json_dump
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"hello":"world"}', @response.body
       end
     end
@@ -173,7 +173,7 @@ module ActionController
 
       def test_render_using_rails_behavior
         get :render_using_rails_behavior
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '[{"attributes":{"name":"Name 1","description":"Description 1","comments":"Comments 1"}}]', @response.body
       end
     end
@@ -189,7 +189,7 @@ module ActionController
 
       def test_render_array
         get :render_array
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"my":[{"name":"Name 1","description":"Description 1"}]}', @response.body
       end
     end
@@ -205,7 +205,7 @@ module ActionController
 
       def test_render_array
         get :render_array
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"webLog":[{"name":"Name 1","displayName":"Display Name 1"},{"name":"Name 2","displayName":"Display Name 2"}]}', @response.body
       end
     end
@@ -223,7 +223,7 @@ module ActionController
 
       def test_render_without_root
         get :render_without_root
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '{"name":"Name 1","displayName":"Display Name 1"}', @response.body
       end
     end
@@ -242,7 +242,7 @@ module ActionController
 
       def test_render_array_without_root
         get :render_array_without_root
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
         assert_equal '[{"name":"Name 1","displayName":"Display Name 1"},{"name":"Name 2","displayName":"Display Name 2"}]', @response.body
       end
     end
@@ -278,7 +278,7 @@ module ActionController
         @association.embed_in_root = true
 
         get :render_array_embeding_in_root
-        assert_equal 'application/json', @response.content_type
+        assert_match %r{\Aapplication/json}, @response.content_type
 
         assert_equal("{\"my\":[{\"name\":\"Name 1\",\"email\":\"mail@server.com\",\"profile_id\":#{@controller.user.profile.object_id}}],\"profiles\":[{\"name\":\"N1\",\"description\":\"D1\"}]}", @response.body)
       end
