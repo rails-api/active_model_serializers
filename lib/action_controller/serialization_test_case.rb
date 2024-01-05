@@ -20,7 +20,7 @@ module ActionController
       ActiveSupport::Notifications.unsubscribe("!serialize.active_model_serializers")
     end
 
-    def process(*args)
+    def process(*, **)
       @serializers = Hash.new(0)
       super
     end
