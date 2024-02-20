@@ -128,7 +128,7 @@ def meta_attributes(collection, extra_meta = {})
     next_page: collection.next_page,
     prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
     total_pages: collection.total_pages,
-    total_count: collection.total_count
+    total_count: collection.total_count # use collection.total_entries when using will_paginate
   }.merge(extra_meta)
 end
 ```
