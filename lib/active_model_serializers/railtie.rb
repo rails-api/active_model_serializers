@@ -44,9 +44,19 @@ module ActiveModelSerializers
     end
     # :nocov:
 
+    def extend_action_controller_test_case(&block)
+      if Rails::VERSION::MAJOR >= 6 || Rails::VERSION::MAJOR == 5 && Rails::VERSION::MINOR >= 2
+        ActiveSupport.on_load(:action_controller_test_case, run_once: true, &block)
+      else
+        ActionController::TestCase.instance_eval(&block)
+      end
+    end
+
     if Rails.env.test?
-      ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Schema)
-      ActionController::TestCase.send(:include, ActiveModelSerializers::Test::Serializer)
+      extend_action_controller_test_case do
+        include ActiveModelSerializers::Test::Schema
+        include ActiveModelSerializers::Test::Serializer
+      end
     end
   end
 end
