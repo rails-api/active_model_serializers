@@ -33,3 +33,6 @@ tags
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# sdk
+.idea
