@@ -2,7 +2,7 @@ require 'test_helper'
 
 module ActiveModel
   class Serializer
-    class HasOnePolymorphicTest < ActiveModel::TestCase
+    class HasOnePolymorphicTest < ActiveSupport::TestCase
       def setup
         @association = InterviewSerializer._associations[:attachment]
         @old_association = @association.dup

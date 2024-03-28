@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-version = ENV["RAILS_VERSION"] || "4.2"
+version = ENV["RAILS_VERSION"] || "7.0"
 
 if version == 'master'
   gem 'rack', github: 'rack/rack'
@@ -29,28 +29,6 @@ else
   gem 'activerecord', gem_version, group: :test
 end
 
-if RUBY_VERSION < '2'
-  gem 'mime-types', [ '>= 2.6.2', '< 3' ]
-end
-
-if ENV['CI']
-  if RUBY_VERSION < '2.4'
-    # Windows: An error occurred while installing nokogiri (1.8.0)
-    gem 'nokogiri', '< 1.7', platforms: @windows_platforms
-    # >= 4.0 requires ruby >= 2.5
-    gem 'sprockets', '< 4.0'
-  end
-
-  if RUBY_VERSION < '2.2'
-    # >= 12.3 and < 13 requires ruby >= 2.0, rake >= 13 requires ruby >= 2.2
-    gem 'rake', '< 12.3' 
-    # > 5.12 requires ruby >= 2.2
-    gem 'minitest', '< 5.12'
-    # >= 1.0 requires ruby >= 2.0
-    gem 'thor', '< 1.0'
-  end
-end
-
 # https://github.com/bundler/bundler/blob/89a8778c19269561926cea172acdcda241d26d23/lib/bundler/dependency.rb#L30-L54
 @windows_platforms = [:mswin, :mingw, :x64_mingw]
 
@@ -66,22 +44,9 @@ end
 group :test do
   platforms(*(@windows_platforms + [:ruby])) do
     if version == 'master' || version >= '6'
-      gem 'sqlite3', '~> 1.4'
+      gem 'sqlite3'
     else
       gem 'sqlite3', '~> 1.3.13'
-    end
-  end
-  platforms :jruby do
-    if version == 'master' || version >= '6.0'
-      gem 'activerecord-jdbcsqlite3-adapter', github: 'jruby/activerecord-jdbc-adapter'
-    elsif version == '5.2'
-      gem 'activerecord-jdbcsqlite3-adapter', '~> 52.0'
-    elsif version == '5.1'
-      gem 'activerecord-jdbcsqlite3-adapter', '~> 51.0'
-    elsif version == '5.0'
-      gem 'activerecord-jdbcsqlite3-adapter', '~> 50.0'
-    else
-      gem 'activerecord-jdbcsqlite3-adapter', '~> 1.3.0'
     end
   end
 end

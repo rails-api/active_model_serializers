@@ -1,3 +1,5 @@
+require "rails/railtie"
+
 module ActiveModel
   class Railtie < Rails::Railtie
     initializer 'generators' do |app|

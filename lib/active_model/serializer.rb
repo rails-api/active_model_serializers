@@ -119,11 +119,10 @@ end
       end
 
       def build_serializer_class(resource, options)
-        "".tap do |klass_name|
-          klass_name << "#{options[:namespace]}::" if options[:namespace]
-          klass_name << options[:prefix].to_s.classify if options[:prefix]
-          klass_name << "#{resource.class.name}Serializer"
-        end
+        klass_name = +""
+        klass_name << "#{options[:namespace]}::" if options[:namespace]
+        klass_name << options[:prefix].to_s.classify if options[:prefix]
+        klass_name << "#{resource.class.name}Serializer"
       end
 
       def associate(klass, *attrs)

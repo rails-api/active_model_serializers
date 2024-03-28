@@ -3,6 +3,8 @@ require 'test_helper'
 module ActionController
   module SerializationsAssertions
     class RenderSerializerTest < ActionController::TestCase
+      include ActionController::SerializationAssertions
+
       class MyController < ActionController::Base
         def render_using_serializer
           render json: Profile.new({ name: 'Name 1', description: 'Description 1', comments: 'Comments 1' })

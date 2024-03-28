@@ -1,4 +1,5 @@
 require 'active_support/core_ext/class/attribute'
+require 'active_support/core_ext/module/introspection'
 
 module ActionController
   # Action Controller Serialization

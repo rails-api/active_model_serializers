@@ -3,6 +3,8 @@ require 'test_helper'
 module ActionController
   module Serialization
     class NamespacedSerializationTest < ActionController::TestCase
+      include ActionController::SerializationAssertions
+
       class TestNamespace::MyController < ActionController::Base
         def render_profile_with_namespace
           render json: Profile.new({ name: 'Name 1', description: 'Description 1'})
@@ -54,6 +56,8 @@ module ActionController
     end
 
     class OptionNamespacedSerializationTest < ActionController::TestCase
+      include ActionController::SerializationAssertions
+
       class MyController < ActionController::Base
         def default_serializer_options
           {
