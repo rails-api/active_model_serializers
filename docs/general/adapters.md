@@ -149,7 +149,7 @@ This adapter follows **version 1.0** of the [format specified](../jsonapi/schema
 
 ### Include option
 
-Which [serializer associations](https://github.com/rails-api/active_model_serializers/blob/master/docs/general/serializers.md#associations) are rendered can be specified using the `include` option. The option usage is consistent with [the include option in the JSON API spec](http://jsonapi.org/format/#fetching-includes), and is available in all adapters.
+Which [serializer associations](https://github.com/rails-api/active_model_serializers/blob/0-10-stable/docs/general/serializers.md#associations) are rendered can be specified using the `include` option. The option usage is consistent with [the include option in the JSON API spec](http://jsonapi.org/format/#fetching-includes), and is available in all adapters.
 
 Example of the usage:
 ```ruby
