@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_model'
 require 'active_model/serializer'
 require 'active_model/serializer_support'
