@@ -1,6 +1,11 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.10...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.11...0-9-stable)
+
+### [v0.9.11 (2024-04-09)](https://github.com/rails-api/active_model_serializers/compare/v0.9.10...v0.9.11)
+
+v0.9.10 was built with an extra file included and so was yanked.
+v0.9.11 is the same as v0.9.10 but doesn't have the extra file.
 
 ### [v0.9.10 (2024-04-09)](https://github.com/rails-api/active_model_serializers/compare/v0.9.9...v0.9.10)
 
