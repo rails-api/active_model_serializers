@@ -70,10 +70,10 @@ end
 
 group :test do
   platforms(*(@windows_platforms + [:ruby])) do
-    if version == 'master' || version >= '6'
-      gem 'sqlite3', '~> 1.4'
-    else
+    if RUBY_VERSION < '2.5' || version < '6'
       gem 'sqlite3', '~> 1.3.13'
+    else
+      gem 'sqlite3'
     end
   end
   platforms :jruby do
