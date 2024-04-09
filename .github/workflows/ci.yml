@@ -75,3 +75,4 @@ jobs:
           bundle exec rake
         env:
           RAILS_VERSION: ${{ matrix.rails-version }}
+          RAILS_ENV: test
