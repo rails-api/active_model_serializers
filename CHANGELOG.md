@@ -1,6 +1,18 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.9...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.10...0-9-stable)
+
+### [v0.9.10 (2024-04-09)](https://github.com/rails-api/active_model_serializers/compare/v0.9.9...v0.9.10)
+
+- Fix
+  - [#2464](https://github.com/rails-api/active_model_serializers/pull/2464) Do not load ActionController::TestCase in production (@byroot)
+- Perf
+  - [#2465](https://github.com/rails-api/active_model_serializers/pull/2465) Make compatible with enable-frozen-string-literal (@byroot)
+  - [#2463](https://github.com/rails-api/active_model_serializers/pull/2463) Shape Friendly ActionController:Serialization (@byroot)
+- Chore
+  - [#2462](https://github.com/rails-api/active_model_serializers/pull/2462]) Rails 7.1, Ruby 3.3 compat (@byroot)
+- Test
+  - [#2447](https://github.com/rails-api/active_model_serializers/pull/2447) Configure CI on GitHub actoins (@Physium)
 
 ### [v0.9.9 (2023-05-18)](https://github.com/rails-api/active_model_serializers/compare/v0.9.8...v0.9.8)
 
