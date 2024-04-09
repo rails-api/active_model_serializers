@@ -45,6 +45,12 @@ module ActionController
       end
     end
 
+    def initialize(*)
+      super
+      @namespace_for_serializer = nil
+    end
+    ruby2_keywords :initialize if respond_to?(:ruby2_keywords, true)
+
     [:_render_option_json, :_render_with_renderer_json].each do |renderer_method|
       define_method renderer_method do |resource, options|
         serializer = build_json_serializer(resource, options)
@@ -60,7 +66,8 @@ module ActionController
     private
 
     def namespace_for_serializer
-      @namespace_for_serializer ||= namespace_for_class(self.class) unless namespace_for_class(self.class) == Object
+      @namespace_for_serializer ||= namespace_for_class(self.class)
+      @namespace_for_serializer unless @namespace_for_serializer == Object
     end
 
     def namespace_for_class(klass)
