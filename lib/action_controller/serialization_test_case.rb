@@ -24,6 +24,7 @@ module ActionController
       @serializers = Hash.new(0)
       super
     end
+    ruby2_keywords :process if respond_to?(:ruby2_keywords, true)
 
     # Asserts that the request was rendered with the appropriate serializers.
     #
