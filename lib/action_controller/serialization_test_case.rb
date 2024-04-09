@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActionController
   module SerializationAssertions
     extend ActiveSupport::Concern

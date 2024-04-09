@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_model/array_serializer'
 require 'active_model/serializable'
 require 'active_model/serializer/association'
@@ -130,14 +132,13 @@ end
       end
 
       def build_serializer_class(resource, options)
-        "".tap do |klass_name|
-          klass_name << "#{options[:namespace]}::" if options[:namespace]
-          klass_name << options[:prefix].to_s.classify if options[:prefix]
-          if resource.is_a?(String)
-            klass_name << "#{resource}Serializer"
-          else
-            klass_name << "#{resource.class.name}Serializer"
-          end
+        klass_name = +""
+        klass_name << "#{options[:namespace]}::" if options[:namespace]
+        klass_name << options[:prefix].to_s.classify if options[:prefix]
+        if resource.is_a?(String)
+          klass_name << "#{resource}Serializer"
+        else
+          klass_name << "#{resource.class.name}Serializer"
         end
       end
 
