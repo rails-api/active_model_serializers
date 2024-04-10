@@ -1,4 +1,8 @@
 class TestApp < Rails::Application
+  if config.respond_to?(:load_defaults)
+    config.load_defaults("#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}")
+  end
+
   if Rails.version.to_s.first >= '4'
     config.eager_load = false
     config.secret_key_base = 'abc123'
