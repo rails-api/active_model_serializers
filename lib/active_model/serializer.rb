@@ -62,7 +62,7 @@ end
         if resource.respond_to?(:serializer_class)
           resource.serializer_class
         elsif resource.respond_to?(:to_ary)
-          if Object.constants.include?(:ArraySerializer)
+          if defined?(::ArraySerializer)
             ::ArraySerializer
           else
             ArraySerializer
