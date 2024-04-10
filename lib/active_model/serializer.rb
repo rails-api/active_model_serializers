@@ -68,14 +68,13 @@ end
             ArraySerializer
           end
         else
-          search_list = build_serializer_class_list(resource, options)
-          result = search_list.map do |klass_name|
-                     Serializer.serializers_cache.fetch_or_store(klass_name) do
-                       _const_get(klass_name)
-                     end
-                   end
-
-          result.find { |serializer| !serializer.nil? }
+          each_possible_serializer(resource, options) do |klass_name|
+            serializer = Serializer.serializers_cache.fetch_or_store(klass_name) do
+              _const_get(klass_name)
+            end
+            return serializer unless serializer.nil?
+          end
+          nil
         end
       end
 
@@ -124,11 +123,10 @@ end
         attr
       end
 
-      def build_serializer_class_list(resource, options)
-        list = []
-        list << build_serializer_class(resource, options)
-        list << build_serializer_class(resource, {})
-        list << build_serializer_class(resource.class.name.demodulize, {})
+      def each_possible_serializer(resource, options)
+        yield build_serializer_class(resource, options)
+        yield build_serializer_class(resource, {})
+        yield build_serializer_class(resource.class.name.demodulize, {})
       end
 
       def build_serializer_class(resource, options)
