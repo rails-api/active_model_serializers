@@ -144,14 +144,14 @@ end
 
 class SelfReferencingUserParentSerializer < ActiveModel::Serializer
   attributes :name
-  has_one :type, serializer: TypeSerializer, embed: :ids, include: true
+  has_one :type, serializer: TypeSerializer, embed: :ids, embed_in_root: true
 end
 
 class SelfReferencingUserSerializer < ActiveModel::Serializer
   attributes :name
 
-  has_one :type, serializer: TypeSerializer, embed: :ids, include: true
-  has_one :parent, serializer: SelfReferencingUserSerializer, embed: :ids, include: true
+  has_one :type, serializer: TypeSerializer, embed: :ids, embed_in_root: true
+  has_one :parent, serializer: SelfReferencingUserSerializer, embed: :ids, embed_in_root: true
 end
 
 class UserInfoSerializer < ActiveModel::Serializer
@@ -176,6 +176,7 @@ end
 class PostSerializer < ActiveModel::Serializer
   attributes :title, :body
 
+  alias_method :title, :title # silence method redefinition warning
   def title
     keyword = serialization_options[:highlight_keyword]
     title = object.read_attribute_for_serialization(:title)

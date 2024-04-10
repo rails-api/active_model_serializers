@@ -167,7 +167,8 @@ end
       @context       = options[:context]
       @namespace     = options[:namespace]
     end
-    attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format, :context, :polymorphic
+    attr_accessor :object, :scope, :root, :meta_key, :meta, :context, :polymorphic
+    attr_writer :key_format
 
     def json_key
       key = if root == true || root.nil?

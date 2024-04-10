@@ -21,6 +21,7 @@ module ActiveModel
         serializer = Class.new(ActiveModel::Serializer) do
           attributes :url
 
+          alias_method :url, :url # silence redefinition warning
           def url
             profile_url(id: object.object_id)
           end
