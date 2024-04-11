@@ -1,6 +1,16 @@
 ## 0.09.x
 
-### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.11...0-9-stable)
+### [0-9-stable](https://github.com/rails-api/active_model_serializers/compare/v0.9.12...0-9-stable)
+
+### [v0.9.12 (2024-04-11)](https://github.com/rails-api/active_model_serializers/compare/v0.9.11...v0.9.12)
+
+- Fix
+  - [#2468](https://github.com/rails-api/active_model_serializers/pull/2468) Fix bug introduced in v0.9.9. Revert "Allow serializer_for to accept String instead of just class objects". (@byroot)
+- Perf
+  - [#2466](https://github.com/rails-api/active_model_serializers/pull/2466) Prefer `defined?` to `Object.constants.include?` (@byroot)
+  - [#2467](https://github.com/rails-api/active_model_serializers/pull/2467) Lazily compute possible serializer class names (@byroot)
+- Chore
+  - [#2469](https://github.com/rails-api/active_model_serializers/pull/2469) Fix various warnings in the test suite (@byroot)
 
 ### [v0.9.11 (2024-04-09)](https://github.com/rails-api/active_model_serializers/compare/v0.9.10...v0.9.11)
 
