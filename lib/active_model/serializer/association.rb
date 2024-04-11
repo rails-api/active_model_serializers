@@ -9,11 +9,7 @@ module ActiveModel
     class Association
       def initialize(name, options={})
         if options.has_key?(:include)
-          puts '-' * 40
-          puts caller
-          ActiveSupport::Deprecation.warn <<-WARN
-** Notice: include was renamed to embed_in_root. **
-          WARN
+          ActiveSupport::Deprecation.warn("** Notice: include was renamed to embed_in_root. **")
         end
 
         @name          = name.to_s
