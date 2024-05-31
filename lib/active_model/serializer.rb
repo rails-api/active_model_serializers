@@ -90,15 +90,27 @@ end
       end
 
       def attributes(*attrs)
+        # Use `class_eval` rather than `define_method` for faster access
+        # and avoid retaining objects in the closure.
+        # Batch all methods in a single `class_eval` for efficiceny,
+        # and define all methods on the same line so the eventual backtrace
+        # properly maps to the `attributes` call.
+        source = ["# frozen_string_literal: true\n"]
         attrs.each do |attr|
           striped_attr = strip_attribute attr
 
           @_attributes << striped_attr
 
-          define_method striped_attr do
-            object.read_attribute_for_serialization attr
-          end unless method_defined?(attr)
+          unless method_defined?(attr)
+            source <<
+            "def #{striped_attr}" <<
+              "object.read_attribute_for_serialization(#{attr.inspect})" <<
+            "end" <<
+            "alias_method :#{striped_attr}, :#{striped_attr}" # suppress method redefinition warning
+          end
         end
+        caller = caller_locations(1, 1).first
+        class_eval(source.join(";"), caller.path, caller.lineno - 1)
       end
 
       def has_one(*attrs)
