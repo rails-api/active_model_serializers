@@ -97,6 +97,7 @@ See [PR 2121](https://github.com/rails-api/active_model_serializers/pull/2121) w
 - [jsonapi-resources](https://github.com/cerebris/jsonapi-resources) is a popular resource-focused framework for implementing JSON:API servers.
 - [blueprinter](https://github.com/procore/blueprinter) is a fast, declarative, and API spec agnostic serializer that uses composable views to reduce duplication. From your friends at Procore.
 - [Alba](https://github.com/okuramasafumi/alba) is fast and spec agnostic serialization solution. It has some unique features such as global or per-resource error handling.
+- [Transmutation](https://github.com/spellbook-technology/transmutation) is fast and lightweight JSON attribute serialization solution. It provides an intuitive serializer lookup, inspired from AMS.
 
 
 For benchmarks against alternatives, see https://github.com/rails-api/active_model_serializers/tree/benchmarks
