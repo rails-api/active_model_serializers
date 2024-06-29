@@ -3,16 +3,11 @@
 module ActiveModel
   class Serializer
     class Fieldset
-      begin
-        require 'concurrent'
-        CONCURRENT_MAP_AVAILABLE = true
-      rescue LoadError
-        CONCURRENT_MAP_AVAILABLE = false
-      end
+      CONCURRENT_MAP_AVAILABLE = defined?(Concurrent::Map)
 
       def initialize(fields)
         @raw_fields = fields || {}
-        @fields_for_cache = CONCURRENT_MAP_AVAILABLE ? Concurrent::Map.new : {}
+        @fields_for_cache = Concurrent::Map.new if CONCURRENT_MAP_AVAILABLE
       end
 
       def fields
@@ -25,7 +20,7 @@ module ActiveModel
             compute_fields_for(type)
           end
         else
-          @fields_for_cache[type] ||= compute_fields_for(type)
+          compute_fields_for(type)
         end
       end
 
