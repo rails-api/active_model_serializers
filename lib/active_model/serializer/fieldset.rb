@@ -3,8 +3,11 @@
 module ActiveModel
   class Serializer
     class Fieldset
+      CONCURRENT_MAP_AVAILABLE = defined?(Concurrent::Map)
+
       def initialize(fields)
         @raw_fields = fields || {}
+        @fields_for_cache = Concurrent::Map.new if CONCURRENT_MAP_AVAILABLE
       end
 
       def fields
@@ -12,7 +15,13 @@ module ActiveModel
       end
 
       def fields_for(type)
-        fields[type.to_s.singularize.to_sym] || fields[type.to_s.pluralize.to_sym]
+        if CONCURRENT_MAP_AVAILABLE
+          @fields_for_cache.fetch_or_store(type) do
+            compute_fields_for(type)
+          end
+        else
+          compute_fields_for(type)
+        end
       end
 
       protected
@@ -27,6 +36,12 @@ module ActiveModel
         else
           {}
         end
+      end
+
+      def compute_fields_for(type)
+        singular_type = type.to_s.singularize.to_sym
+        plural_type = type.to_s.pluralize.to_sym
+        fields[singular_type] || fields[plural_type]
       end
     end
   end
