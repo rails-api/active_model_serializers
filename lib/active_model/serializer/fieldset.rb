@@ -12,7 +12,14 @@ module ActiveModel
       end
 
       def fields_for(type)
-        fields[type.to_s.singularize.to_sym] || fields[type.to_s.pluralize.to_sym]
+        @fields_for_cache ||= {}
+        return @fields_for_cache[type] if @fields_for_cache.key?(type)
+
+        singular_type = type.to_s.singularize.to_sym
+        plural_type = type.to_s.pluralize.to_sym
+        result = fields[singular_type] || fields[plural_type]
+
+        @fields_for_cache[type] = result
       end
 
       protected
