@@ -30,7 +30,7 @@ v0.9.11 is the same as v0.9.10 but doesn't have the extra file.
   - [#2465](https://github.com/rails-api/active_model_serializers/pull/2465) Make compatible with enable-frozen-string-literal (@byroot)
   - [#2463](https://github.com/rails-api/active_model_serializers/pull/2463) Shape Friendly ActionController:Serialization (@byroot)
 - Chore
-  - [#2462](https://github.com/rails-api/active_model_serializers/pull/2462]) Rails 7.1, Ruby 3.3 compat (@byroot)
+  - [#2462](https://github.com/rails-api/active_model_serializers/pull/2462) Rails 7.1, Ruby 3.3 compat (@byroot)
 - Test
   - [#2447](https://github.com/rails-api/active_model_serializers/pull/2447) Configure CI on GitHub actoins (@Physium)
 
