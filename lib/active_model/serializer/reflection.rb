@@ -55,7 +55,7 @@ module ActiveModel
       def initialize(*)
         super
         options[:links] = {}
-        options[:include_data_setting] = Serializer.config.include_data_default
+        options[:include_data_setting] = ActiveModelSerializers.config.include_data_default
         options[:meta] = nil
         @type = options.fetch(:type) do
           class_name = options.fetch(:class_name, name.to_s.camelize.singularize)

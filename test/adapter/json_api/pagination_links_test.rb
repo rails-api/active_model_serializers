@@ -226,12 +226,12 @@ module ActiveModelSerializers
         end
 
         def test_pagination_links_not_present_when_disabled
-          ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = false
+          ActiveModelSerializers.config.jsonapi_pagination_links_enabled = false
           adapter = load_adapter(using_kaminari, mock_request)
 
           assert_equal expected_response_without_pagination_links, adapter.serializable_hash
         ensure
-          ActiveModel::Serializer.config.jsonapi_pagination_links_enabled = true
+          ActiveModelSerializers.config.jsonapi_pagination_links_enabled = true
         end
       end
     end

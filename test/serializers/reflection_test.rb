@@ -59,7 +59,7 @@ module ActiveModel
 
         # Assert
         assert_nil reflection.block
-        assert_equal Serializer.config.include_data_default, reflection.options.fetch(:include_data_setting)
+        assert_equal ActiveModelSerializers.config.include_data_default, reflection.options.fetch(:include_data_setting)
         assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
@@ -79,7 +79,7 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal Serializer.config.include_data_default, reflection.options.fetch(:include_data_setting)
+        assert_equal ActiveModelSerializers.config.include_data_default, reflection.options.fetch(:include_data_setting)
         assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
@@ -100,7 +100,7 @@ module ActiveModel
 
         # Assert
         assert_respond_to reflection.block, :call
-        assert_equal Serializer.config.include_data_default, reflection.options.fetch(:include_data_setting)
+        assert_equal ActiveModelSerializers.config.include_data_default, reflection.options.fetch(:include_data_setting)
         assert_equal true, reflection.options.fetch(:include_data_setting)
 
         include_slice = :does_not_matter
