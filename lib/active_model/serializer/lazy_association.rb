@@ -53,7 +53,7 @@ module ActiveModel
       private
 
       def cached_result
-        @cached_result ||= {}
+        @cached_result ||= Concurrent::Map.new
       end
 
       def serialize_object!(object)
