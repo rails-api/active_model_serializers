@@ -86,9 +86,8 @@ module ActiveModel
 
       cache_key = ActiveSupport::Cache.expand_cache_key(klass, namespace)
       serializers_cache.fetch_or_store(cache_key) do
-        # NOTE(beauby): When we drop 1.9.3 support we can lazify the map for perfs.
         lookup_chain = serializer_lookup_chain_for(klass, namespace)
-        serializer_class = lookup_chain.map(&:safe_constantize).find { |x| x && x < ActiveModel::Serializer }
+        serializer_class = lookup_chain.lazy.map(&:safe_constantize).find { |x| x && x < ActiveModel::Serializer }
 
         if serializer_class
           serializer_class
