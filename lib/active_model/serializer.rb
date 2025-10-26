@@ -13,6 +13,9 @@ require 'active_model/serializer/lint'
 # reified when subclassed to decorate a resource.
 module ActiveModel
   class Serializer
+    class_attribute :config
+    self.config = ActiveSupport::OrderedOptions.new
+
     undef_method :select, :display # These IO methods, which are mixed into Kernel,
     # sometimes conflict with attribute names. We don't need these IO methods.
 
@@ -30,7 +33,6 @@ module ActiveModel
       autoload :HasOneReflection
       autoload :HasManyReflection
     end
-    include ActiveSupport::Configurable
     include Caching
 
     # @param resource [ActiveRecord::Base, ActiveModelSerializers::Model]
