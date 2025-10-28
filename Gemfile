@@ -100,6 +100,7 @@ group :development, :test do
 
     if RUBY_VERSION >= '3.4.0'
       gem 'ostruct', require: false
+      gem 'mutex_m', require: false
     end
   end
   if version <= '5.0'
