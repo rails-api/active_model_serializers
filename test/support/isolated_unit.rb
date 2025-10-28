@@ -38,6 +38,7 @@
 # It is also good to know what is the bare minimum to get
 # Rails booted up.
 require 'bundler/setup' unless defined?(Bundler)
+require 'logger'
 require 'active_support'
 require 'active_support/core_ext/string/access'
 
