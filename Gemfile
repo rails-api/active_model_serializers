@@ -97,6 +97,10 @@ group :development, :test do
     gem 'rubocop-minitest', '~> 0.31.0', require: false
     gem 'rubocop-rails', '~> 2.20.0', require: false
     gem 'rubocop-rake', '~> 0.6.0', require: false
+
+    if RUBY_VERSION >= '3.4.0'
+      gem 'ostruct', require: false
+    end
   end
   if version <= '5.0'
     gem 'loofah', '< 2.21.0'
