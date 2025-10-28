@@ -82,6 +82,7 @@ group :test do
     end
   end
   gem 'codeclimate-test-reporter', require: false
+  gem 'json', '< 2.10', require: false
   gem 'm', '~> 1.5'
   gem 'pry', '>= 0.10'
   gem 'byebug', '~> 8.2' if RUBY_VERSION < '2.2'
