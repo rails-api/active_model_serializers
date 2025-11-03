@@ -82,6 +82,7 @@ group :test do
     end
   end
   gem 'codeclimate-test-reporter', require: false
+  gem 'json', '< 2.10', require: false
   gem 'm', '~> 1.5'
   gem 'pry', '>= 0.10'
   gem 'byebug', '~> 8.2' if RUBY_VERSION < '2.2'
@@ -96,6 +97,11 @@ group :development, :test do
     gem 'rubocop-minitest', '~> 0.31.0', require: false
     gem 'rubocop-rails', '~> 2.20.0', require: false
     gem 'rubocop-rake', '~> 0.6.0', require: false
+
+    if RUBY_VERSION >= '3.4.0'
+      gem 'ostruct', require: false
+      gem 'mutex_m', require: false
+    end
   end
   if version <= '5.0'
     gem 'loofah', '< 2.21.0'

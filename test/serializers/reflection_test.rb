@@ -383,7 +383,10 @@ module ActiveModel
         exception = assert_raise(NoMethodError) do
           reflection.instance_eval(&link)
         end
-        assert_match(/undefined method `href'/, exception.message)
+
+        expected = RUBY_VERSION >= '3.4.0' ? /undefined method 'href'/ : /undefined method `href'/
+
+        assert_match(expected, exception.message)
       end
 
       # rubocop:disable Metrics/AbcSize
