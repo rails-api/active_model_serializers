@@ -192,6 +192,7 @@ module ActiveModel
       base._attributes_data = _attributes_data.dup
       base._reflections = _reflections.dup
       base._links = _links.dup
+      base.config = ActiveSupport::InheritableOptions.new(config)
     end
 
     # @return [Array<Symbol>] Key names of declared attributes

@@ -5,6 +5,10 @@ require 'test_helper'
 module ActiveModel
   class Serializer
     class ConfigurationTest < ActiveSupport::TestCase
+      class CustomSerializer < ActiveModel::Serializer
+        config.adapter = :json_api
+      end
+
       def test_collection_serializer
         assert_equal ActiveModel::Serializer::CollectionSerializer, ActiveModelSerializers.config.collection_serializer
       end
@@ -28,6 +32,10 @@ module ActiveModel
 
       def test_default_adapter
         assert_equal :attributes, ActiveModelSerializers.config.adapter
+      end
+
+      def test_subclass_adapter
+        assert_equal :json_api, CustomSerializer.config.adapter
       end
     end
   end
