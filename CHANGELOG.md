@@ -1,6 +1,6 @@
 ## 0.10.x
 
-### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.15...0-10-stable)
+### [master (unreleased)](https://github.com/rails-api/active_model_serializers/compare/v0.10.16...0-10-stable)
 
 Breaking changes:
 
@@ -9,6 +9,12 @@ Features:
 Fixes:
 
 Misc:
+
+### [v0.10.16 (2025-12-05)](https://github.com/rails-api/active_model_serializers/compare/v0.10.15...v0.10.16)
+
+Misc:
+- [#2492](https://github.com/rails-api/active_model_serializers/pull/2492) Remove use of ActiveSupport::Configurable (@t27duck)
+- [#2495](https://github.com/rails-api/active_model_serializers/pull/2495) Fix changing config in subclass having global effect (@janko)
 
 ### [v0.10.15 (2024-11-30)](https://github.com/rails-api/active_model_serializers/compare/v0.10.14...v0.10.15)
 
