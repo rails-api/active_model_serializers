@@ -27,6 +27,20 @@ module ActiveModel
         assert_equal({ id: 1, title: 'AMS Hints' }, adapter.serializable_hash)
       end
 
+      def test_attribute_initialization_with_empty_fields
+        inherited_klass = Class.new(AlternateBlogSerializer)
+        blog_serializer = inherited_klass.new(@blog)
+        adapter = ActiveModelSerializers::Adapter::Attributes.new(blog_serializer, {fieldset: nil, fields: nil})
+        assert_nil(adapter.instance_options[:fieldset])
+      end
+
+      def test_attribute_initialization_with_present_fields
+        inherited_klass = Class.new(AlternateBlogSerializer)
+        blog_serializer = inherited_klass.new(@blog)
+        adapter = ActiveModelSerializers::Adapter::Attributes.new(blog_serializer, {fieldset: nil, fields: [:id]})
+        assert_instance_of(ActiveModel::Serializer::Fieldset, adapter.instance_options[:fieldset])
+      end
+
       def test_multiple_calls_with_the_same_attribute
         serializer_class = Class.new(ActiveModel::Serializer) do
           attribute :title
