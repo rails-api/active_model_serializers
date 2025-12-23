@@ -51,6 +51,7 @@ module ActiveModelSerializers
               if association.polymorphic?
                 # We can't infer resource type for polymorphic relationships from the serializer.
                 # We can ONLY know a polymorphic resource type by inspecting each resource.
+                return unless association.lazy_association.serializer
                 association.lazy_association.serializer.json_key
               else
                 association.reflection.type.to_s
