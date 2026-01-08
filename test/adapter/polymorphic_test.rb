@@ -12,8 +12,8 @@ module ActiveModel
           @picture.imageable = @employee
         end
 
-        def serialization(resource, adapter = :attributes)
-          serializable(resource, adapter: adapter, serializer: PolymorphicBelongsToSerializer).as_json
+        def serialization(resource, adapter: :attributes, serializer: PolymorphicBelongsToSerializer)
+          serializable(resource, adapter: adapter, serializer: serializer).as_json
         end
 
         def tag_serialization(adapter = :attributes)
@@ -38,6 +38,23 @@ module ActiveModel
             }
 
           assert_equal(expected, serialization(@picture))
+        end
+
+        def test_polymorphic_belongs_to_with_custom_type
+          expected =
+          {
+            id: 1,
+            title: 'headshot-1.jpg',
+            imageable: {
+              type: 'custom',
+              custom: {
+                id: 42,
+                name: 'Zoop Zoopler'
+              }
+            }
+          }
+
+          assert_equal(expected, serialization(@picture, serializer: PolymorphicBelongsToSerializerWithCustomBelongsToType))
         end
 
         def test_attributes_serialization_without_polymorphic_association
@@ -97,7 +114,7 @@ module ActiveModel
               }
             }
 
-          assert_equal(expected, serialization(@picture, :json))
+          assert_equal(expected, serialization(@picture, adapter: :json))
         end
 
         def test_json_serialization_without_polymorphic_association
@@ -111,7 +128,7 @@ module ActiveModel
             }
 
           simple_picture = Picture.new(id: 2, title: 'headshot-2.jpg')
-          assert_equal(expected, serialization(simple_picture, :json))
+          assert_equal(expected, serialization(simple_picture, adapter: :json))
         end
 
         def test_json_serialization_with_polymorphic_has_many
@@ -165,7 +182,7 @@ module ActiveModel
               }
             }
 
-          assert_equal(expected, serialization(@picture, :json_api))
+          assert_equal(expected, serialization(@picture, adapter: :json_api))
         end
 
         def test_json_api_serialization_with_polymorphic_belongs_to

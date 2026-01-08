@@ -113,3 +113,13 @@ class PolymorphicBelongsToSerializer < ActiveModel::Serializer
   attributes :id, :title
   belongs_to :imageable, serializer: PolymorphicHasManySerializer, polymorphic: true
 end
+
+class PolymorphicHasManySerializerWithCustomType < ActiveModel::Serializer
+  attributes :id, :name
+
+  type :custom
+end
+class PolymorphicBelongsToSerializerWithCustomBelongsToType < ActiveModel::Serializer
+  attributes :id, :title
+  belongs_to :imageable, serializer: PolymorphicHasManySerializerWithCustomType, polymorphic: true
+end

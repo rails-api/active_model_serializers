@@ -58,7 +58,7 @@ module ActiveModel
         serialization = association_serializer.serializable_hash(adapter_options, {}, adapter_instance)
 
         if polymorphic? && serialization
-          polymorphic_type = association_object.class.name.underscore
+          polymorphic_type = association_serializer.json_key || association_object.class.name.underscore
           serialization = { type: polymorphic_type, polymorphic_type.to_sym => serialization }
         end
 
