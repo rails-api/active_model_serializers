@@ -13,7 +13,8 @@ module ActiveModelSerializers
                 'id' => 'zorglub',
                 'attributes' => {
                   'title' => 'Ember Hamster',
-                  'src' => 'http://example.com/images/productivity.png'
+                  'src' => 'http://example.com/images/productivity.png',
+                  'created-at' => '2000-01-01'
                 },
                 'relationships' => {
                   'author' => {
@@ -38,7 +39,8 @@ module ActiveModelSerializers
               src: 'http://example.com/images/productivity.png',
               author_id: nil,
               photographer_id: '9',
-              comment_ids: %w(1 2)
+              comment_ids: %w(1 2),
+              created_at: '2000-01-01'
             }
 
             @illformed_payloads = [nil,
@@ -87,17 +89,40 @@ module ActiveModelSerializers
           end
 
           def test_filter_fields_only
-            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, only: [:id, :title, :author])
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, only: [:id, :title, :author, :created_at])
             expected = {
               id: 'zorglub',
               title: 'Ember Hamster',
-              author_id: nil
+              author_id: nil,
+              created_at: '2000-01-01'
+            }
+            assert_equal(expected, parsed_hash)
+          end
+
+          def test_filter_fields_only_from_kebab_case
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, only: [:id, :title, :author, :'created-at'])
+            expected = {
+              id: 'zorglub',
+              title: 'Ember Hamster',
+              author_id: nil,
+              created_at: '2000-01-01'
             }
             assert_equal(expected, parsed_hash)
           end
 
           def test_filter_fields_except
             parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, except: [:id, :title, :author])
+            expected = {
+              src: 'http://example.com/images/productivity.png',
+              photographer_id: '9',
+              comment_ids: %w(1 2),
+              created_at: '2000-01-01'
+            }
+            assert_equal(expected, parsed_hash)
+          end
+
+          def test_filter_fields_except_from_kebab_case
+            parsed_hash = ActiveModelSerializers::Adapter::JsonApi::Deserialization.parse!(@hash, except: [:id, :title, :author, :'created-at'])
             expected = {
               src: 'http://example.com/images/productivity.png',
               photographer_id: '9',
@@ -114,7 +139,8 @@ module ActiveModelSerializers
               src: 'http://example.com/images/productivity.png',
               user_id: nil,
               photographer_id: '9',
-              comment_ids: %w(1 2)
+              comment_ids: %w(1 2),
+              created_at: '2000-01-01'
             }
             assert_equal(expected, parsed_hash)
           end
@@ -128,7 +154,8 @@ module ActiveModelSerializers
               author_id: nil,
               photographer_id: '9',
               photographer_type: 'Person',
-              comment_ids: %w(1 2)
+              comment_ids: %w(1 2),
+              created_at: '2000-01-01'
             }
             assert_equal(expected, parsed_hash)
           end

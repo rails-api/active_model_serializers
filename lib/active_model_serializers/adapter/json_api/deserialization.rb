@@ -95,6 +95,9 @@ module ActiveModelSerializers
           attributes['id'] = primary_data['id'] if primary_data['id']
           relationships = primary_data['relationships'] || {}
 
+          attributes = transform_keys(attributes, options)
+          relationships = transform_keys(relationships, options)
+
           filter_fields(attributes, options)
           filter_fields(relationships, options)
 
@@ -143,9 +146,11 @@ module ActiveModelSerializers
 
         # @api private
         def filter_fields(fields, options)
-          if (only = options[:only])
+          only = transform_keys(options[:only], options)
+          except = transform_keys(options[:except], options)
+          if only
             fields.slice!(*Array(only).map(&:to_s))
-          elsif (except = options[:except])
+          elsif except
             fields.except!(*Array(except).map(&:to_s))
           end
         end
@@ -157,7 +162,7 @@ module ActiveModelSerializers
 
         # @api private
         def parse_attributes(attributes, options)
-          transform_keys(attributes, options)
+          attributes
             .map { |(k, v)| { field_key(k, options) => v } }
             .reduce({}, :merge)
         end
@@ -199,15 +204,15 @@ module ActiveModelSerializers
 
         # @api private
         def parse_relationships(relationships, options)
-          transform_keys(relationships, options)
+          relationships
             .map { |(k, v)| parse_relationship(k, v['data'], options) }
             .reduce({}, :merge)
         end
 
         # @api private
-        def transform_keys(hash, options)
+        def transform_keys(hash_or_array, options = {})
           transform = options[:key_transform] || :underscore
-          CaseTransform.send(transform, hash)
+          CaseTransform.send(transform, hash_or_array)
         end
       end
     end
