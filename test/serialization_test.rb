@@ -98,7 +98,7 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def render_json_render_to_string
-      render :text => render_to_string(:json => '[]')
+      render :plain => render_to_string(:json => '[]')
     end
 
     def render_json_hello_world
@@ -135,28 +135,28 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def render_json_with_serializer
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => JsonSerializable.new
     end
 
     def render_json_with_serializer_and_implicit_root
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => [JsonSerializable.new]
     end
 
     def render_json_with_serializer_and_options
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => JsonSerializable.new, :options => true
     end
 
     def render_json_with_serializer_and_scope_option
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      scope = Struct.new(:as_json).new(:current_user => false)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
+      scope = Struct.new(:as_json).new({:current_user => false})
       render :json => JsonSerializable.new, :scope => scope
     end
 
     def render_json_with_serializer_api_but_without_serializer
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => JsonSerializable.new(true)
     end
 

@@ -297,7 +297,7 @@ class SerializerTest < ActiveSupport::TestCase
       root false
     end
 
-    assert_equal(nil, serializer.new(blog, :scope => user).as_json)
+    assert_nil(serializer.new(blog, :scope => user).as_json)
   end
 
   def test_custom_root_with_nil_root_object
@@ -444,10 +444,8 @@ class SerializerTest < ActiveSupport::TestCase
     comments = [Comment.new(:title => "Comment1", :id => 1), Comment.new(:title => "Comment2", :id => 2)]
     post.comments = comments
 
-    post.class_eval do
-      define_method :comment_ids, lambda {
-        self.comments.map { |c| c.read_attribute_for_serialization(:id) }
-      }
+    post.define_singleton_method(:comment_ids) do
+      self.comments.map { |c| c.read_attribute_for_serialization(:id) }
     end
     json = post_serializer.new(post).as_json
     assert_equal({
