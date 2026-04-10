@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class AssociationTest < ActiveSupport::TestCase
@@ -478,7 +480,7 @@ class AssociationTest < ActiveSupport::TestCase
     end
 
     def test_mutual_relation_does_not_raise_error
-      assert_nothing_raised SystemStackError, 'stack level too deep' do
+      assert_nothing_raised do # no SystemStackError
         @serializer.as_json
       end
     end

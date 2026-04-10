@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require "test_fakes"
 
@@ -17,6 +19,7 @@ class ArraySerializerTest < ActiveSupport::TestCase
     each_serializer = array.active_model_serializer.new(array, :root => "root", :each_serializer => BasicSerializer)
 
     default_json = default_serializer.as_json
+    default_json['root'].map!(&:symbolize_keys)
     each_json = each_serializer.as_json
 
     assert_equal(expected, default_json)

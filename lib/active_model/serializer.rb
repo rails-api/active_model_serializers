@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/module/anonymous"
 require 'active_support/dependencies'
@@ -455,7 +457,7 @@ module ActiveModel
     def attributes
       _fast_attributes
       rescue NameError
-        method = "def _fast_attributes\n"
+        method = +"def _fast_attributes\n"
 
         method << "  h = {}\n"
 

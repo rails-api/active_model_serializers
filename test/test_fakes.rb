@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BasicActiveModel
   include ActiveModel::Serializers::JSON
   def initialize(hash = {})

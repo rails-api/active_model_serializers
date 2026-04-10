@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class RandomModel
@@ -27,7 +29,7 @@ end
 
 class SerializerSupportTest < ActiveSupport::TestCase
   test "it returns nil if no serializer exists" do
-    assert_equal nil, RandomModel.new.active_model_serializer
+    assert_nil RandomModel.new.active_model_serializer
   end
 
   test "it returns a deducted serializer if it exists exists" do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rubygems"
 require "bundler/setup"
 require "active_model_serializers"
