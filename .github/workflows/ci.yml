@@ -14,29 +14,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Recent Rubies and Rails
-          # NOTE(BF): Rails >= 5.0 has test failures which need to be fixed
-          # - ruby-version: '2.6'
-          #   rails-version: '6.1'
-          # - ruby-version: '2.7'
-          #   rails-version: '6.0'
-          # - ruby-version: '2.6'
-          #   rails-version: '5.2'
-          # - ruby-version: '2.5'
-          #   rails-version: '5.1'
-          #   bundler: '1'
-          # - ruby-version: '2.4'
-          #   rails-version: '5.0'
-          #   bundler: '1'
-          - ruby-version: '2.4'
-            rails-version: '4.2'
-            bundler: '1'
-          - ruby-version: '2.4'
-            rails-version: '4.1'
-            bundler: '1'
-          - ruby-version: '2.4'
-            rails-version: '4.0'
-            bundler: '1'
+          - ruby-version: '3.0'
+            rails-version: '6.0'
+          - ruby-version: '3.1'
+            rails-version: '6.1'
+          - ruby-version: '3.2'
+            rails-version: '7.0'
+          - ruby-version: '3.3'
+            rails-version: '7.1'
+          - ruby-version: '3.3'
+            rails-version: '7.2'
+          - ruby-version: '3.4'
+            rails-version: '8.0'
+          - ruby-version: '4.0'
+            rails-version: '8.1'
 
     continue-on-error: "${{ endsWith(matrix.ruby-version, 'head') }}"
 
@@ -44,17 +35,16 @@ jobs:
       CI: "1"
 
     steps:
-      - name:                     "Checkout Code"
-        uses:                     "actions/checkout@v2"
-        timeout-minutes:          5
+      - name: "Checkout Code"
+        uses: "actions/checkout@v2"
+        timeout-minutes: 5
         with:
-          fetch-depth:            0
+          fetch-depth: 0
 
       - name: "Build Ruby"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version:   "${{ matrix.ruby-version }}"
-          bundler:        "${{ matrix.bundler || 2 }}"
+          ruby-version: "${{ matrix.ruby-version }}"
           bundler-cache:  true
         env:
           RAILS_VERSION: ${{ matrix.rails-version }}
