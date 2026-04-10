@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rails5Shims
   module ControllerTests
     # https://github.com/rails/rails/blob/b217354/actionpack/lib/action_controller/test_case.rb

@@ -16,9 +16,10 @@ Gem::Specification.new do |gem|
   gem.name          = "active_model_serializers"
   gem.require_paths = ["lib"]
   gem.version       = ActiveModel::Serializer::VERSION
+  gem.required_ruby_version = '>= 2.7'
 
-  gem.add_dependency 'activemodel', '>= 3.0'
-  gem.add_development_dependency "rails", ">= 3.0"
+  gem.add_dependency 'activemodel', '>= 6.0'
+  gem.add_development_dependency "rails", ">= 6.0"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "minitest"
 end

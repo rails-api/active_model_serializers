@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # We do not recommend that you use AM::S in this way, but if you must, here
 # is a mixin that overrides ActiveRecord::Base#to_json and #as_json.
 

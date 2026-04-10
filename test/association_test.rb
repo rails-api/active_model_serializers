@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class AssociationTest < ActiveSupport::TestCase
@@ -367,11 +369,9 @@ class AssociationTest < ActiveSupport::TestCase
 
       # Count how often the @comment record is serialized.
       serialized_times = 0
-      @comment.class_eval do
-        define_method :read_attribute_for_serialization, lambda { |name|
-          serialized_times += 1 if name == :body
-          super(name)
-        }
+      @comment.define_singleton_method(:read_attribute_for_serialization) do |name|
+        serialized_times += 1 if name == :body
+        super(name)
       end
 
       include_bare! :comment
@@ -386,14 +386,12 @@ class AssociationTest < ActiveSupport::TestCase
       end
 
       association_name = nil
-      @post.class_eval do
-        define_method :read_attribute_for_serialization, lambda { |name|
-          association_name = name
-          send(name)
-        }
-        define_method :comment_id, lambda {
-          @attributes[:comment].id
-        }
+      @post.define_singleton_method(:read_attribute_for_serialization) do |name|
+        association_name = name
+        send(name)
+      end
+      @post.define_singleton_method(:comment_id) do
+        @attributes[:comment].id
       end
 
       include_bare! :comment
@@ -409,14 +407,12 @@ class AssociationTest < ActiveSupport::TestCase
       end
 
       association_name = nil
-      @post.class_eval do
-        define_method :read_attribute_for_serialization, lambda { |name|
-          association_name = name
-          send(name)
-        }
-        define_method :comment_ids, lambda {
-          @attributes[:comments].map(&:id)
-        }
+      @post.define_singleton_method(:read_attribute_for_serialization) do |name|
+        association_name = name
+        send(name)
+      end
+      @post.define_singleton_method(:comment_ids) do
+        @attributes[:comments].map(&:id)
       end
 
       include_bare! :comments
@@ -478,7 +474,7 @@ class AssociationTest < ActiveSupport::TestCase
     end
 
     def test_mutual_relation_does_not_raise_error
-      assert_nothing_raised SystemStackError, 'stack level too deep' do
+      assert_nothing_raised do # no SystemStackError
         @serializer.as_json
       end
     end

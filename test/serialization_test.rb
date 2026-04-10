@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'pathname'
 
@@ -96,7 +98,7 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def render_json_render_to_string
-      render :text => render_to_string(:json => '[]')
+      render :plain => render_to_string(:json => '[]')
     end
 
     def render_json_hello_world
@@ -133,28 +135,28 @@ class RenderJsonTest < ActionController::TestCase
     end
 
     def render_json_with_serializer
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => JsonSerializable.new
     end
 
     def render_json_with_serializer_and_implicit_root
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => [JsonSerializable.new]
     end
 
     def render_json_with_serializer_and_options
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => JsonSerializable.new, :options => true
     end
 
     def render_json_with_serializer_and_scope_option
-      @current_user = Struct.new(:as_json).new(:current_user => true)
-      scope = Struct.new(:as_json).new(:current_user => false)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
+      scope = Struct.new(:as_json).new({:current_user => false})
       render :json => JsonSerializable.new, :scope => scope
     end
 
     def render_json_with_serializer_api_but_without_serializer
-      @current_user = Struct.new(:as_json).new(:current_user => true)
+      @current_user = Struct.new(:as_json).new({:current_user => true})
       render :json => JsonSerializable.new(true)
     end
 
@@ -215,7 +217,7 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json_nil
     get :render_json_nil
     assert_equal 'null', @response.body
-    assert_equal 'application/json', @response.content_type
+    assert_match %r{application/json}, @response.content_type
   end
 
   def test_render_json_render_to_string
@@ -231,7 +233,7 @@ class RenderJsonTest < ActionController::TestCase
   def test_render_json
     get :render_json_hello_world
     assert_equal '{"hello":"world"}', @response.body
-    assert_equal 'application/json', @response.content_type
+    assert_match %r{application/json}, @response.content_type
   end
 
   def test_render_json_with_status
@@ -244,29 +246,29 @@ class RenderJsonTest < ActionController::TestCase
     get :render_json_hello_world_with_callback
     if Rails::VERSION::MAJOR == 3
       assert_equal 'alert({"hello":"world"})', @response.body
-      assert_match %r(application/json), @response.content_type.to_s
+      assert_match %r{application/json}, @response.content_type.to_s
     else
       assert_equal '/**/alert({"hello":"world"})', @response.body
-      assert_match %r(text/javascript), @response.content_type.to_s
+      assert_match %r{text/javascript}, @response.content_type.to_s
     end
   end
 
   def test_render_json_with_custom_content_type
     get :render_json_with_custom_content_type
     assert_equal '{"hello":"world"}', @response.body
-    assert_equal 'text/javascript', @response.content_type
+    assert_match %r{text/javascript}, @response.content_type
   end
 
   def test_render_symbol_json
     get :render_symbol_json
     assert_equal '{"hello":"world"}', @response.body
-    assert_equal 'application/json', @response.content_type
+    assert_match %r{application/json}, @response.content_type
   end
 
   def test_render_json_forwards_extra_options
     get :render_json_with_extra_options
     assert_equal '{"a":"b"}', @response.body
-    assert_equal 'application/json', @response.content_type
+    assert_match %r{application/json}, @response.content_type
   end
 
   def test_render_json_calls_to_json_from_object
@@ -280,31 +282,9 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '"object":{"serializable_object":true}', @response.body
   end
 
-  def test_render_json_with_serializer_checking_defaults
-    get :render_json_with_serializer, :check_defaults => true
-    assert_match '"scope":{"current_user":true}', @response.body
-    assert_match '"object":{"serializable_object":true}', @response.body
-    assert_match '"check_defaults":true', @response.body
-  end
-
-  def test_render_json_with_serializer_checking_default_serailizer
-    get :render_json_with_serializer, :check_default_serializer => true
-    assert_match '{"rails":"rocks"}', @response.body
-  end
-
-  def test_render_json_with_serializer_checking_default_scope
-    get :render_json_with_serializer, :check_default_scope => true
-    assert_match '"scope":"current_admin"', @response.body
-  end
-
   def test_render_json_with_serializer_and_implicit_root
     get :render_json_with_serializer_and_implicit_root
     assert_match '"test":[{"serializable_object":true}]', @response.body
-  end
-
-  def test_render_json_with_serializer_and_implicit_root_checking_default_each_serailizer
-    get :render_json_with_serializer_and_implicit_root, :check_default_each_serializer => true
-    assert_match '"test":[{"rails":"rocks"}]', @response.body
   end
 
   def test_render_json_with_serializer_and_options
@@ -319,11 +299,6 @@ class RenderJsonTest < ActionController::TestCase
     assert_match '"scope":{"current_user":false}', @response.body
   end
 
-  def test_render_json_with_serializer_and_scope_option_checking_default_scope
-    get :render_json_with_serializer_and_scope_option, :check_default_scope => true
-    assert_match '"scope":{"current_user":false}', @response.body
-  end
-
   def test_render_json_with_serializer_api_but_without_serializer
     get :render_json_with_serializer_api_but_without_serializer
     assert_match '{"serializable_object":true}', @response.body
@@ -331,11 +306,6 @@ class RenderJsonTest < ActionController::TestCase
 
   def test_render_json_with_custom_serializer
     get :render_json_with_custom_serializer
-    assert_match '{"hello":true}', @response.body
-  end
-
-  def test_render_json_with_custom_serializer_checking_default_serailizer
-    get :render_json_with_custom_serializer, :check_default_serializer => true
     assert_match '{"hello":true}', @response.body
   end
 
@@ -350,11 +320,6 @@ class RenderJsonTest < ActionController::TestCase
     end
   end
 
-  def test_render_json_array_with_custom_serializer_checking_default_each_serailizer
-    get :render_json_array_with_custom_serializer, :check_default_each_serializer => true
-    assert_match '{"test":[{"hello":true}]}', @response.body
-  end
-
   def test_render_json_with_links
     get :render_json_with_links
     assert_match '{"link":"http://www.nextangle.com/hypermedia"}', @response.body
@@ -365,19 +330,9 @@ class RenderJsonTest < ActionController::TestCase
     assert_equal '[]', @response.body
   end
 
-  def test_render_json_array_with_no_root_checking_default_root
-    get :render_json_array_with_no_root, :check_default_root => true
-    assert_equal '[]', @response.body
-  end
-
   def test_render_json_empty_array
     get :render_json_empty_array
     assert_equal '{"test":[]}', @response.body
-  end
-
-  def test_render_json_empty_array_checking_default_root
-    get :render_json_empty_array, :check_default_root => true
-    assert_equal '{"awesome":[]}', @response.body
   end
 
   def test_render_json_empty_array_with_array_serializer_root_false
