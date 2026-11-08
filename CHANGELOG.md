@@ -9,6 +9,7 @@ Features:
 Fixes:
 
 Misc:
+- [#2501](https://github.com/rails-api/active_model_serializers/pull/2501) Only dup reflections that are serialized (@sucicfilip)
 
 ### [v0.10.16 (2025-12-05)](https://github.com/rails-api/active_model_serializers/compare/v0.10.15...v0.10.16)
 

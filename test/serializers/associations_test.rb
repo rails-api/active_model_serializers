@@ -50,6 +50,22 @@ module ActiveModel
         end
       end
 
+      def test_associations_only_dup_requested_reflections
+        include_directive = JSONAPI::IncludeDirective.new('posts')
+
+        assert_equal [:posts], @author_serializer.associations(include_directive).map(&:key)
+
+        instance_reflections = @author_serializer.send(:instance_reflections)
+        posts_reflection = instance_reflections.fetch(:posts)
+
+        assert_equal [:posts], instance_reflections.keys
+        refute_same AuthorSerializer._reflections.fetch(:posts), posts_reflection
+
+        @author_serializer.associations(include_directive).to_a
+
+        assert_same posts_reflection, @author_serializer.send(:instance_reflections).fetch(:posts)
+      end
+
       def test_has_many_with_no_serializer
         post_serializer_class = Class.new(ActiveModel::Serializer) do
           attributes :id

@@ -353,11 +353,11 @@ module ActiveModel
       return Enumerator.new {} unless object
 
       Enumerator.new do |y|
-        (self.instance_reflections ||= self.class._reflections.deep_dup).each do |key, reflection|
+        self.class._reflections.each do |key, reflection|
           next if reflection.excluded?(self)
           next unless include_directive.key?(key)
 
-          association = reflection.build_association(self, instance_options, include_slice)
+          association = instance_reflection(key, reflection).build_association(self, instance_options, include_slice)
           y.yield association
         end
       end
@@ -426,5 +426,12 @@ module ActiveModel
     protected
 
     attr_accessor :instance_options, :instance_reflections
+
+    private
+
+    def instance_reflection(key, reflection)
+      self.instance_reflections ||= {}
+      instance_reflections[key] ||= reflection.dup
+    end
   end
 end
